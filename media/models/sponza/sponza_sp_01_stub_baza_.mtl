@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<material>
+	<shader name="vertex">phong.vsh</shader>
+	<shader name="pixel">phong.psh</shader>
+	<diffuse>0.784314 0.784314 0.784314 1.000000</diffuse>
+	<shininess>79.999992</shininess>
+</material>

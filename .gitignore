@@ -1,0 +1,9 @@
+[Bb]in/
+[Oo]bj/
+[Ll]ib/
+[Bb]uild/
+
+![Bb]uild/scripts/builder.py
+![Bb]uild/scripts/cleanup.bat
+![Bb]uild/scripts/gen_vs2010
+![Bb]uild/scripts/gen_vs2013

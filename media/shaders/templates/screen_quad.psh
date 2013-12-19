@@ -1,0 +1,27 @@
+
+/********************************************************************
+	Copyright (c) 2012, 杭州电魂,	All rights reserved.
+	
+	日期:		2012-5-14
+	文件名: 	screen_quad.psh
+	创建者:		王延兴
+	
+	描述:		后处理输出到后背缓冲
+*********************************************************************/
+
+#include <common.hlsl>
+
+uniform const sampler2D image;
+
+struct VS_OUTPUT
+{
+	float4 Position 		: POSITION;
+	float2 Texcoord 		: TEXCOORD0;
+};
+
+PS_OUTPUT ps_main( VS_OUTPUT In )
+{
+	PS_OUTPUT Out;
+	Out.Color = tex2D(image,In.Texcoord);
+	return Out;
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material>
+ <shader name="vertex">lambert.vsh</shader>
+ <shader name="pixel">lambert.psh</shader>
+ <diffuse>0.992157 0.996078 0.996078 1.000000</diffuse>
+</material>

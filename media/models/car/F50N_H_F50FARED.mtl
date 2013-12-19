@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material>
+ <shader name="vertex">lambert.vsh</shader>
+ <shader name="pixel">lambert.psh</shader>
+ <blendMode>ALPHA</blendMode>
+ <diffuse>1 0 0 1.000000</diffuse>
+ <opacity>0.750000</opacity>
+</material>
