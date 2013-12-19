@@ -1,0 +1,129 @@
+
+/********************************************************************
+    File:       EnginePrerequisites.h
+    Creator:    demiwangya
+*********************************************************************/
+
+#pragma once
+
+#include "CommonEnum.h"
+
+namespace Demi 
+{
+    class    DiArchive;
+    class    DiFileArchive;
+    class    DiArchiveManager;
+    class    DiSystem;
+    class    DiTerrainDesc;
+    class    DiTerrain;
+    class    DiTerrainNode;
+    class    DiGpuVariable;
+    class    DiShaderEnvironment;
+    class    DiMaterial;
+    class    DiShaderParameter;
+    class    DiAsset;
+    class    DiAssetManager;
+    class    DiTexture;
+    class    DiCamera;
+    class    DiViewport;
+    class    DiGraphics;
+    class    DiRenderPipeline;
+    class    DiRenderBatchGroup;
+    class    DiRenderUnit;
+    class    DiTransformUnit;
+    class    DiRenderVisitor;
+    class    DiNode;
+    class    DiCullNode;
+    class    DiFrustum;
+    class    DiSceneManager;
+    class    DiStateManager;
+    class    DiLight;
+    class    DiDirLight;
+    class    DiPointLight;
+    class    DiDeviceLostListener;
+    class    DiRenderTarget;
+    class    DiVertexBuffer;
+    class    DiIndexBuffer;
+    class    DiVertexDeclaration;
+    class    DiVertexElements;
+    class    DiRenderWindow;
+    class    DiRenderDevice;
+    class    DiShaderProgram;
+    class    DiTerrainMap;
+    class    DiTerrainChunk;
+    class    DiTerrainDesc;
+    class    DiWaterMap;
+    class    DiWaterChunk;
+    class    DiFoliageMap;
+    class    DiFoliageChunk;
+    class    DiFoliageLayer;
+    class    DiCliffMap;
+    class    DiCliff;
+    class    DiQuadNode;
+    class    DiSprite;
+    class    DiPostEffectRt;
+    class    DiPostEffect;
+    class    DiPostEffectPass;
+    class    DiPostEffectManager;
+    class    DiPixelBox;
+    class    DiBox;
+    class    DiRandomTable;
+    class    DiInstanceBatch;
+    class    DiInstanceManager;
+    class    DiInstancedModel;
+    class    DiInstanceBatchShader;
+    class    DiInstanceBatchHardware;
+    class    DiOctree;
+    class    DiAABBQuery;
+    class    DiSphereSceneQuery;
+    class    DiPBVListSceneQuery;
+    class    DiRaySceneQuery;
+    class    DiShadowManager;
+    class    DiTransPlane;
+    class    DiDepthBuffer;
+    class    DiSkybox;
+    class    DiShaderManager;
+    class    DiGBuffer;
+    class    DiBillboard;
+    class    DiScene;
+    class    DiMotion;
+    class    DiEntity;
+    class    DiSceneNode;
+    class    DiOctant;
+    class    DiOctantRoot;
+    class    DiGfxDriver;
+    class    DiShaderInstance;
+    class    DiTextureDrv;
+    class    DiWindow;
+    class    DiCommandManager;
+    class    DiConsoleVar;
+    class    DiConsoleVarListener;
+    struct   DiVisibleObjectsBoundsInfo;
+    struct   DiFoliageLayerDesc;
+    struct   DiRenderUnitList;
+    class    DiMesh;
+    class    DiSubMesh;
+    class    DiModel;
+    class    DiAnimModel;
+    class    DiSubModel;
+    class    DiObject;
+    class    DiBone;
+    class    DiSkeleton;
+    class    DiSkeletonInstance;
+    class    DiAttachNode;
+    class    DiAttachSet;
+    class    DiAttachSetInstance;
+    class    DiKeyFrame;
+    class    DiTransformKeyFrame;
+    class    DiAnimation;
+    class    DiAnimationClip;
+    class    DiClipController;
+    class    DiClipControllerSet;
+    class    DiNodeClip;
+    class    DiPostController;
+    class    DiConsoleLogger;
+    class    DiSimpleShape;
+    class    DiLineList;
+}
+
+#include "GfxBase.h"
