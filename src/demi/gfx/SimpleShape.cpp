@@ -51,7 +51,11 @@ namespace Demi
         int NUM_SEGMENTS  = DiMath::Max(segments,3);
         int NUM_RINGS = DiMath::Max(rings,2);
 
-        mSourceData.push_back(Driver->CreateVertexBuffer());
+        auto vb = Driver->CreateVertexBuffer();
+        if (!vb)
+            return;
+
+        mSourceData.push_back(vb);
         mIndexBuffer = Driver->CreateIndexBuffer();
 
         float phiStart = 0;
@@ -61,10 +65,13 @@ namespace Demi
         float thetaLength = DiMath::PI;
 
         mVertexDecl = Driver->CreateVertexDeclaration();
-        mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
-        mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
-        mVertexDecl->AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
-        mVertexDecl->Create();
+        if (mVertexDecl)
+        {
+            mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
+            mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
+            mVertexDecl->AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+            mVertexDecl->Create();
+        }
 
         mPrimitiveType = PT_TRIANGLELIST;
 
@@ -139,7 +146,11 @@ namespace Demi
         ReleaseIndexBuffer();
         ReleaseVertexDeclaration();
 
-        mSourceData.push_back(Driver->CreateVertexBuffer());
+        auto vb = Driver->CreateVertexBuffer();
+        if (!vb)
+            return;
+
+        mSourceData.push_back(vb);
         mIndexBuffer = Driver->CreateIndexBuffer();
 
         mVertexDecl = Driver->CreateVertexDeclaration();

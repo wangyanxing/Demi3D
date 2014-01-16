@@ -94,6 +94,9 @@ namespace Demi
             return;
         }
 
+        if (!mShader)
+            return;
+
         mShader->mCompileDesc = desc;
         ParseHelperScript();
 

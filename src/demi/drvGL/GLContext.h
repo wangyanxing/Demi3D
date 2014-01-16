@@ -12,7 +12,7 @@ namespace Demi
     {
     public:
 
-        DiGLContext(){}
+        DiGLContext() {}
 
         virtual                 ~DiGLContext(){}
 

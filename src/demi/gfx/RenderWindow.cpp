@@ -173,7 +173,8 @@ namespace Demi
     void DiRenderWindow::SwapBuffer()
     {
         DI_PROFILE(RenderWindow_SwapBuffer);
-        Driver->SwapBuffer(mRenderBuffer);
+        if (mRenderBuffer)
+            Driver->SwapBuffer(mRenderBuffer);
     }
 
     void DiRenderWindow::Closing()
