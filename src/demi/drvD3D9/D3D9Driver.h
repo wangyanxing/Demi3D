@@ -54,6 +54,8 @@ namespace Demi
 
         void                    SetViewport(int x, int y, int w, int h, float minz = 0.0f, float maxz = 1.0f);
 
+        DiWindow*               CreateWnd();
+
         void                    SetFillMode(DiFillMode mode);
 
         bool                    IsDeviceLost() const;

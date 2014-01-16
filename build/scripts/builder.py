@@ -738,6 +738,18 @@ def generate():
     projDrvD3D9.pchHead = 'DrvD3D9Pch.h'
     projDrvD3D9.pchSrc = 'DrvD3D9Pch.cpp'
     projDrvD3D9.dependsProjs.extend([projMisc,projGfx])
+    
+    projDrvGL = sln.addProject('DiDrvGL','/demi/drvGL','DynamicLibrary')
+    projDrvGL.setExtraPreDefines('DI_GL_EXPORT')
+    projDrvGL.appendIncludeDir('../misc')
+    projDrvGL.appendIncludeDir('../gfx')
+    projDrvGL.appendIncludeDir('./GL')
+    projDrvGL.exludeDirs.append(os.path.normpath(srcDir + '/demi/drvGL/GL'))
+    projDrvGL.appendDependsLibDbg('DiMisc_d.lib;DiGfx_d.lib;shlwapi.lib;dbghelp.lib;version.lib;glu32.lib;opengl32.lib;')
+    projDrvGL.appendDependsLibRel('DiMisc.lib;DiGfx.lib;shlwapi.lib;dbghelp.lib;version.lib;glu32.lib;opengl32.lib;')
+    projDrvGL.pchHead = 'DrvGLPch.h'
+    projDrvGL.pchSrc = 'DrvGLPch.cpp'
+    projDrvGL.dependsProjs.extend([projMisc,projGfx])
 
     projExt = sln.addProject('DiExt','/demi/ext','DynamicLibrary')
     projExt.setExtraPreDefines('DI_EXT_EXPORT')
@@ -753,7 +765,7 @@ def generate():
     projExt.pchSrc = 'ExtPch.cpp'
     projExt.dependsProjs.extend([projMisc,projGfx])
 
-    coreProjs = [projMisc,projGfx,projExt,projDrvD3D9]
+    coreProjs = [projMisc,projGfx,projExt,projDrvD3D9,projDrvGL]
     ####################################################################################################################
     # Samples
     addAppProj('Sample_Lighting','/Samples/Lighting',coreProjs)

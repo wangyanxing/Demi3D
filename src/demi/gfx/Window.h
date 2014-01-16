@@ -12,13 +12,10 @@ namespace Demi
     {
     public:
 
-        DiWindow() : mWndHandle(nullptr), mDestroyWindow(false), mParentWnd(nullptr){}
+        DiWindow() : mWndHandle(nullptr), mDestroyWindow(false), 
+                     mParentWnd(nullptr), mVSync(false){}
 
         virtual             ~DiWindow() {}
-
-    public:
-
-        static DiWindow*    CreateWnd();
 
     public:
 
@@ -30,6 +27,10 @@ namespace Demi
         virtual bool        Close()  = 0;
 
         virtual bool        IsOpen() = 0;
+
+        virtual void        SetVSync(bool vsync) {}
+
+        bool                IsVSync() const { return mVSync; }
 
         bool                DestroyingWindow() const { return mDestroyWindow; }
 
@@ -54,5 +55,7 @@ namespace Demi
         DiRenderWindow*     mParentWnd;
 
         bool                mDestroyWindow;
+
+        bool	            mVSync;
     };
 }

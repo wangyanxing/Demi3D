@@ -8,6 +8,7 @@
 #include "VertexDeclaration.h"
 #include "GfxDriver.h"
 #include "RenderWindow.h"
+#include "Win32Window.h"
 
 #include "D3D9TypeMappings.h"
 #include "D3D9VertexBuffer.h"
@@ -818,6 +819,11 @@ namespace Demi
                 StateCache->SetRenderState(D3DRS_DESTBLEND,D3DBLEND_ZERO);
             }
         }
+    }
+
+    DiWindow* DiD3D9Driver::CreateWnd()
+    {
+        return DI_NEW DiWin32Window();
     }
 
 }
