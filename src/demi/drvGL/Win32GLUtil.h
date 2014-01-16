@@ -25,6 +25,10 @@ namespace Demi
 
         static DiString TranslateWGLError();
 
+        void*           GetProcAddress(const DiString& procname);
+
+        bool            SelectPixelFormat(HDC hdc, int colourDepth, int multisample, bool hwGamma);
+
     private:
 
         void            InitWGL();

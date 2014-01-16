@@ -18,7 +18,8 @@
 namespace Demi
 {
     DiGLDriver::DiGLDriver()
-        :mMainContext(nullptr)
+        :mMainContext(nullptr),
+        mGLUtil(nullptr)
     {
     }
     
@@ -30,6 +31,7 @@ namespace Demi
     {
         DI_LOG("OpenGL driver is intializing.");
 
+        mGLUtil = _CreateGLUtil();
         mMainContext = _CreateContext(wnd);
 
         return true;
@@ -63,6 +65,12 @@ namespace Demi
         {
             DI_DELETE mMainContext;
             mMainContext = nullptr;
+        }
+
+        if (mGLUtil)
+        {
+            DI_DELETE mGLUtil;
+            mGLUtil = nullptr;
         }
 
         DI_LOG("OpenGL stuff successfully released.");
@@ -150,10 +158,6 @@ namespace Demi
     void DiGLDriver::ConvertProjectionMatrix(const DiMat4& matrix, DiMat4& dest)
     {
         dest = matrix;
-        dest[2][0] = (dest[2][0] + dest[3][0]) / 2;
-        dest[2][1] = (dest[2][1] + dest[3][1]) / 2;
-        dest[2][2] = (dest[2][2] + dest[3][2]) / 2;
-        dest[2][3] = (dest[2][3] + dest[3][3]) / 2;
     }
 
     bool DiGLDriver::IsDeviceLost() const
@@ -252,9 +256,19 @@ namespace Demi
     {
         DiGLContext* ret = nullptr;
 #ifdef WIN32
-        ret = DI_NEW DiWin32GLContext(wnd);
+        ret = DI_NEW DiWin32GLContext(static_cast<DiWin32GLUtil*>(mGLUtil), wnd);
         DI_LOG("Win32 GL context created.");
 #endif
         return ret;
     }
+
+    DiGLUtil* DiGLDriver::_CreateGLUtil()
+    {
+        DiGLUtil* ret = nullptr;
+#ifdef WIN32
+        ret = DI_NEW DiWin32GLUtil();
+#endif
+        return ret;
+    }
+
 }

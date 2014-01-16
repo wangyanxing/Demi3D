@@ -46,9 +46,12 @@ namespace Demi
         mTexture->SetUsage(TU_RENDER_TARGET);
         mTexture->CreateTexture();
         mTexture->SetAddressing(AM_BORDER);
-        mRenderTarget = mTexture->GetRenderTarget();    
-        mRenderTarget->SetShouldUpdate(false);
-        mRenderTarget->SetDepthBufferPool(0);
+        mRenderTarget = mTexture->GetRenderTarget();
+        if (mRenderTarget)
+        {
+            mRenderTarget->SetShouldUpdate(false);
+            mRenderTarget->SetDepthBufferPool(0);
+        }
     }
 
     void DiPostEffectPass::BuildMaterial( const DiString& vpshader, const DiString& fpshader )

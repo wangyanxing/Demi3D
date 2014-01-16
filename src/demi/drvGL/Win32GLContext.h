@@ -14,9 +14,9 @@ namespace Demi
     {
     public:
 
-        DiWin32GLContext(DiWndHandle wnd);
+        DiWin32GLContext(DiWin32GLUtil* util, DiWndHandle wnd);
 
-        DiWin32GLContext(HDC hdc, HGLRC glrc);
+        DiWin32GLContext(DiWin32GLUtil* util, HDC dc, HGLRC glrc);
 
         ~DiWin32GLContext();
 
@@ -35,6 +35,8 @@ namespace Demi
         void            InitFromHwnd(HWND hwnd);
 
     private:
+
+        DiWin32GLUtil*  mGLUtil;
 
         HDC             mHDC;
 

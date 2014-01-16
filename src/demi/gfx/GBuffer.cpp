@@ -35,8 +35,9 @@ namespace Demi
         tex->CreateTexture();
         tex->SetAddressing(AM_BORDER);
 
-        DiRenderTarget* rt = tex->GetRenderTarget();    
-        rt->SetShouldUpdate(false);
+        DiRenderTarget* rt = tex->GetRenderTarget();
+        if (rt)
+            rt->SetShouldUpdate(false);
         //rt->SetDepthBufferPool(DiDepthBuffer::POOL_DEFAULT);
 
         //rt->AttachDepthBuffer(mParentWnd->GetRenderBuffer()->GetDepthBuffer());

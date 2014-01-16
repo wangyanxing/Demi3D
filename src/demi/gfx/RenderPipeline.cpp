@@ -129,6 +129,8 @@ namespace Demi
     void DiRenderPipeline::Render(DiSceneManager*sm, DiCamera* cam, DiRenderTarget* rt)
     {
         DI_PROFILE(RenderPipeline_Render);
+        if (!rt)
+            return;
 
         SetGlobalParams(sm, cam);
 

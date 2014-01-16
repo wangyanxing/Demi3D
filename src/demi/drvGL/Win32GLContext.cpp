@@ -4,14 +4,17 @@
 
 namespace Demi
 {
-    DiWin32GLContext::DiWin32GLContext(HDC hdc, HGLRC glrc)
-        :mHDC(hdc), mGLRc(glrc)
-    {
-    }
-
-    DiWin32GLContext::DiWin32GLContext(DiWndHandle wnd)
+    DiWin32GLContext::DiWin32GLContext(DiWin32GLUtil* glutil, DiWndHandle wnd)
+        : mGLUtil(glutil)
     {
         InitFromHwnd((HWND)wnd);
+    }
+
+    DiWin32GLContext::DiWin32GLContext(DiWin32GLUtil* glutil, HDC dc, HGLRC glrc)
+        : mGLUtil(glutil),
+        mHDC(dc),
+        mGLRc(glrc)
+    {
     }
 
     DiWin32GLContext::~DiWin32GLContext()
@@ -61,7 +64,7 @@ namespace Demi
         }
 
         wglMakeCurrent(oldhdc, oldrc);
-        return DI_NEW DiWin32GLContext(mHDC, newCtx);
+        return DI_NEW DiWin32GLContext(mGLUtil, mHDC, newCtx);
     }
 
     void DiWin32GLContext::InitFromHwnd(HWND hwnd)
@@ -72,7 +75,13 @@ namespace Demi
         mHDC = GetDC(hwnd);
 
         // select valid pixel format
-        
+        // todo
+        bool formatOk = mGLUtil->SelectPixelFormat(mHDC, 32, 0, false); // TODO!
+        if (!formatOk)
+        {
+            DI_ERROR("Invalid pixel format!");
+            return;
+        }
 
         mGLRc = wglCreateContext(mHDC);
         if (!mGLRc)

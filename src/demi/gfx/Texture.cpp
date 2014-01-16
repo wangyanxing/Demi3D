@@ -149,6 +149,9 @@ namespace Demi
 
     void DiTexture::CreateTexture()
     {
+        if (!mTextureDrv)
+            return;
+
         mTextureDrv->Release();
 
         if (mUsage & (TU_DEPTH_STENCIL | TU_RENDER_TARGET))
@@ -180,7 +183,8 @@ namespace Demi
 
     void DiTexture::Release()
     {
-        mTextureDrv->Release();
+        if (mTextureDrv)
+            mTextureDrv->Release();
         SAFE_DELETE(mRenderTarget);
     }
 
@@ -209,7 +213,8 @@ namespace Demi
         if (mUsage == TU_TEXURE && (mResUsage & (RU_DYNAMIC | RU_WRITE_ONLY)))
             return;
 
-        mTextureDrv->Release();
+        if (mTextureDrv)
+            mTextureDrv->Release();
         mDeviceLost = true;
 
         if (mRenderTarget)

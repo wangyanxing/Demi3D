@@ -91,6 +91,8 @@ namespace Demi
     public:
 
         DiGLContext*            _CreateContext(DiWndHandle wnd);
+
+        DiGLUtil*               _CreateGLUtil();
         
     private:
 
@@ -98,6 +100,6 @@ namespace Demi
 
         DiGLContext*            mMainContext;
 
-        DiGLUtil*            mGLUtil;
+        DiGLUtil*               mGLUtil;
     };
 }

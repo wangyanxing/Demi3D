@@ -57,10 +57,13 @@ namespace Demi
     DiSprite::DiSprite()
     {
         mVertexDecl = Driver->CreateVertexDeclaration();
-        mVertexDecl->AddElement(0,VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
-        mVertexDecl->AddElement(0,VERT_TYPE_COLOR,  VERT_USAGE_COLOR);
-        mVertexDecl->AddElement(0,VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
-        mVertexDecl->Create();
+        if (mVertexDecl)
+        {
+            mVertexDecl->AddElement(0,VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
+            mVertexDecl->AddElement(0,VERT_TYPE_COLOR,  VERT_USAGE_COLOR);
+            mVertexDecl->AddElement(0,VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+            mVertexDecl->Create();
+        }
 
         mPrimitiveType = PT_TRIANGLELIST;
 
@@ -119,7 +122,11 @@ namespace Demi
 
         ReleaseSourceData();
 
-        mSourceData.push_back(Driver->CreateVertexBuffer());
+        auto vb = Driver->CreateVertexBuffer();
+        if (!vb)
+            return;
+
+        mSourceData.push_back(vb);
 
         mVerticesNum = 6 * mQuads.size();
         mPrimitiveCount = 2 * mQuads.size();
