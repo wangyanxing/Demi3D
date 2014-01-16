@@ -85,7 +85,7 @@ namespace Demi
 
     void DiRenderWindow::Create(uint32 width, uint32 height, const DiString& title, bool fullscreen)
     {
-        mWindow = DiWindow::CreateWnd();
+        mWindow = Driver->CreateWnd();
         mWindow->SetParentRenderWnd(this);
         mWindow->Create(width, height, title.c_str(), fullscreen);
         mWndHandle = mWindow->GetWndHandle();

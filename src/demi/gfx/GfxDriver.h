@@ -12,6 +12,7 @@ namespace Demi
     {
         DRV_DIRECT3D9,
         DRV_DIRECT3D11,
+        DRV_OPENGL,
         DRV_NULL
     };
 
@@ -116,6 +117,8 @@ namespace Demi
         virtual void                BindMaterialStates(const DiMaterial* mat) = 0;
 
         virtual void                GetWindowDimension(DiWndHandle wnd, uint32& w, uint32& h) = 0;
+
+        virtual DiWindow*           CreateWnd() = 0;
 
         void                        CleanUpDepthBuffers(bool bCleanManualBuffers = true);
 
