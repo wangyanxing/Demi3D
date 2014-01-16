@@ -1,23 +1,23 @@
 
 
 /********************************************************************
-    File:       Win32GLSupport.h
+    File:       Win32GLUtil.h
     Creator:    demiwangya
 *********************************************************************/
 
 #pragma once
 
-#include "GLSupport.h"
+#include "GLUtil.h"
 
 namespace Demi
 {
-    class DI_GLDRV_API DiWin32GLSupport : public DiGLSupport
+    class DI_GLDRV_API DiWin32GLUtil : public DiGLUtil
     {
     public:
 
-        DiWin32GLSupport();
+        DiWin32GLUtil();
 
-        ~DiWin32GLSupport();
+        ~DiWin32GLUtil();
 
     public:
 

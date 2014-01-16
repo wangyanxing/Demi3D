@@ -1,9 +1,9 @@
 
-#include "Win32GLSupport.h"
+#include "Win32GLUtil.h"
 #include <sstream>
 #include <gl/wglew.h>
 
-GLenum wglewContextInit(Demi::DiGLSupport *glSupport);
+GLenum wglewContextInit(Demi::DiGLUtil *glSupport);
 
 namespace Demi
 {
@@ -20,7 +20,7 @@ namespace Demi
         c.erase(p, c.end());
     }
 
-    DiWin32GLSupport::DiWin32GLSupport()
+    DiWin32GLUtil::DiWin32GLUtil()
         : mHasPixelFormatARB(false)
         , mHasMultisample(false)
         , mHasHardwareGamma(false)
@@ -29,12 +29,12 @@ namespace Demi
         InitWGL();
     }
 
-    DiWin32GLSupport::~DiWin32GLSupport()
+    DiWin32GLUtil::~DiWin32GLUtil()
     {
 
     }
 
-    void DiWin32GLSupport::InitWGL()
+    void DiWin32GLUtil::InitWGL()
     {
 #ifdef DEMI_STATIC_API
         HINSTANCE hinst = GetModuleHandle(NULL);
@@ -154,9 +154,9 @@ namespace Demi
         UnregisterClass(dummyText, hinst);
     }
 
-    void DiWin32GLSupport::InitExtensions()
+    void DiWin32GLUtil::InitExtensions()
     {
-        DiGLSupport::InitExtensions();
+        DiGLUtil::InitExtensions();
 
         DI_ASSERT(mHDC);
         
@@ -180,7 +180,7 @@ namespace Demi
         }
     }
 
-    DiString DiWin32GLSupport::TranslateWGLError()
+    DiString DiWin32GLUtil::TranslateWGLError()
     {
         int winError = GetLastError();
         char* errDesc;

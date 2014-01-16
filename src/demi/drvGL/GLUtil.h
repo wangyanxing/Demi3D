@@ -1,6 +1,6 @@
 
 /********************************************************************
-    File:       GLSupport.h
+    File:       GLUtil.h
     Creator:    demiwangya
 *********************************************************************/
 
@@ -8,13 +8,13 @@
 
 namespace Demi
 {
-    class DI_GLDRV_API DiGLSupport
+    class DI_GLDRV_API DiGLUtil
     {
     public:
 
-        DiGLSupport(){}
+        DiGLUtil(){}
 
-        virtual ~DiGLSupport(){}
+        virtual ~DiGLUtil(){}
 
     public:
 
