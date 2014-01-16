@@ -89,9 +89,15 @@ namespace Demi
         DiWindow*               CreateWnd();
 
     public:
+
+        DiGLContext*            _CreateContext(DiWndHandle wnd);
         
     private:
 
         DiString                mWndClass;
+
+        DiGLContext*            mMainContext;
+
+        DiGLUtil*            mGLUtil;
     };
 }

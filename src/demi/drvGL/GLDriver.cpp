@@ -7,11 +7,18 @@
 #include "VertexDeclaration.h"
 #include "GfxDriver.h"
 #include "RenderWindow.h"
+#include "GLContext.h"
 
+#ifdef WIN32
+#   include "Win32Window.h"
+#   include "Win32GLContext.h"
+#   include "Win32GLUtil.h"
+#endif
 
 namespace Demi
 {
     DiGLDriver::DiGLDriver()
+        :mMainContext(nullptr)
     {
     }
     
@@ -22,6 +29,8 @@ namespace Demi
     bool DiGLDriver::InitGfx(DiWndHandle wnd)
     {
         DI_LOG("OpenGL driver is intializing.");
+
+        mMainContext = _CreateContext(wnd);
 
         return true;
     }
@@ -50,6 +59,12 @@ namespace Demi
 
     void DiGLDriver::ReleaseGfx()
     {
+        if (mMainContext)
+        {
+            DI_DELETE mMainContext;
+            mMainContext = nullptr;
+        }
+
         DI_LOG("OpenGL stuff successfully released.");
     }
 
@@ -230,7 +245,16 @@ namespace Demi
 
     DiWindow* DiGLDriver::CreateWnd()
     {
-        return nullptr;
+        return DI_NEW DiWin32Window();
     }
 
+    DiGLContext* DiGLDriver::_CreateContext(DiWndHandle wnd)
+    {
+        DiGLContext* ret = nullptr;
+#ifdef WIN32
+        ret = DI_NEW DiWin32GLContext(wnd);
+        DI_LOG("Win32 GL context created.");
+#endif
+        return ret;
+    }
 }

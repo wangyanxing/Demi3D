@@ -16,9 +16,11 @@
 namespace Demi
 {
 #ifdef _DEBUG
-    const DiString gfxDrvLib = "DiDrvD3D9_d";
+    const DiString gfxD3D9DrvLib = "DiDrvD3D9_d";
+    const DiString gfxGLDrvLib = "DiDrvGL_d";
 #else
-    const DiString gfxDrvLib = "DiDrvD3D9";
+    const DiString gfxD3D9DrvLib = "DiDrvD3D9";
+    const DiString gfxGLDrvLib = "DiDrvGL";
 #endif
 
     DiApp::DiApp(const DiString& mediaPath,const DiString& logName) :
@@ -79,7 +81,7 @@ namespace Demi
         DiLogManager* logmgr = new DiLogManager;
         logmgr->Init(mLogName);
 
-        DiPlugin::LoadPlugin(gfxDrvLib);
+        DiPlugin::LoadPlugin(gfxGLDrvLib);
 
         mAssetManager = new DiAssetManager;
         mAssetManager->SetBasePath(mMediaPath);
@@ -155,7 +157,7 @@ namespace Demi
         SAFE_DELETE(mCameraHelper);
         
         Driver->Shutdown();
-        DiPlugin::UnloadPlugin(gfxDrvLib);
+        DiPlugin::UnloadPlugin(gfxGLDrvLib);
 
         SAFE_DELETE(mAssetManager);
 

@@ -11,5 +11,5 @@ namespace Demi
     class DiGLStateCache;
     class DiGLDriver;
     class DiGLContext;
-    class DiGLSupport;
+    class DiGLUtil;
 }

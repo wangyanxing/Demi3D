@@ -30,7 +30,7 @@
 */
 
 // SJS
-#include "Win32GLSupport.h"
+#include "Win32GLUtil.h"
 // SJS
 
 #include <GL/glew.h>
@@ -61,13 +61,13 @@
 #  define GLEW_CONTEXT_ARG_DEF_LIST GLEWContext* ctx
 #else /* GLEW_MX */
 // SJS
-#  define GLEW_CONTEXT_ARG_DEF_INIT Demi::DiGLSupport *glSupport
+#  define GLEW_CONTEXT_ARG_DEF_INIT Demi::DiGLUtil *glSupport
 #  define GLEW_CONTEXT_ARG_VAR_INIT glSupport
-#  define GLEW_CONTEXT_ARG_DEF_LIST Demi::DiGLSupport *glSupport
-#  define WGLEW_CONTEXT_ARG_DEF_INIT Demi::DiGLSupport *glSupport
-#  define WGLEW_CONTEXT_ARG_DEF_LIST Demi::DiGLSupport *glSupport
-#  define GLXEW_CONTEXT_ARG_DEF_INIT Demi::DiGLSupport *glSupport
-#  define GLXEW_CONTEXT_ARG_DEF_LIST Demi::DiGLSupport *glSupport
+#  define GLEW_CONTEXT_ARG_DEF_LIST Demi::DiGLUtil *glSupport
+#  define WGLEW_CONTEXT_ARG_DEF_INIT Demi::DiGLUtil *glSupport
+#  define WGLEW_CONTEXT_ARG_DEF_LIST Demi::DiGLUtil *glSupport
+#  define GLXEW_CONTEXT_ARG_DEF_INIT Demi::DiGLUtil *glSupport
+#  define GLXEW_CONTEXT_ARG_DEF_LIST Demi::DiGLUtil *glSupport
 //#  define GLEW_CONTEXT_ARG_DEF_INIT void
 //#  define GLEW_CONTEXT_ARG_VAR_INIT
 //#  define GLEW_CONTEXT_ARG_DEF_LIST void

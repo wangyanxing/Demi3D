@@ -1,10 +1,10 @@
 
-#include "GLSupport.h"
+#include "GLUtil.h"
 #include <sstream>
 
 namespace Demi
 {
-    bool DiGLSupport::CheckMinGLVersion(const DiString& v) const
+    bool DiGLUtil::CheckMinGLVersion(const DiString& v) const
     {
         unsigned int first, second, third;
         unsigned int cardFirst, cardSecond, cardThird;
@@ -41,7 +41,7 @@ namespace Demi
         return false;
     }
 
-    bool DiGLSupport::CheckExtension(const DiString& ext) const
+    bool DiGLUtil::CheckExtension(const DiString& ext) const
     {
         if (mExtensionList.find(ext) == mExtensionList.end())
             return false;
@@ -49,7 +49,7 @@ namespace Demi
         return true;
     }
 
-    void DiGLSupport::InitExtensions()
+    void DiGLUtil::InitExtensions()
     {
         const GLubyte* pcVer = glGetString(GL_VERSION);
         DI_ASSERT(pcVer);
