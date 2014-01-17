@@ -12,6 +12,7 @@ namespace Demi
     class DiGLDriver;
     class DiGLContext;
     class DiGLUtil;
+    class DiGLBufferManager;
 
 #ifdef WIN32
     class DiWin32GLUtil;

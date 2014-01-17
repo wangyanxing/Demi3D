@@ -38,6 +38,5 @@ namespace Demi
         DiResUsage    mResUsage;
 
         uint32        mBufferSize;
-
     };
 }

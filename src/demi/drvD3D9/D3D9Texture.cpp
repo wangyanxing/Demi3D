@@ -147,8 +147,8 @@ namespace Demi
             DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_MINFILTER, DiD3D9Mappings::D3D9FilterMapping[mParent->GetMinFilter()]);
             DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_MAGFILTER, DiD3D9Mappings::D3D9FilterMapping[mParent->GetMagFilter()]);
             DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_MIPFILTER, DiD3D9Mappings::D3D9FilterMapping[mParent->GetMipFilter()]);
-            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_ADDRESSU, DiD3D9Mappings::D3D9AddModeMapping[mParent->GetAddressingU()]);
-            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_ADDRESSV, DiD3D9Mappings::D3D9AddModeMapping[mParent->GetAddressingV()]);
+            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_ADDRESSU,  DiD3D9Mappings::D3D9AddModeMapping[mParent->GetAddressingU()]);
+            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_ADDRESSV,  DiD3D9Mappings::D3D9AddModeMapping[mParent->GetAddressingV()]);
 
             if (mParent->GetAddressingU() == D3DTADDRESS_BORDER ||
                 mParent->GetAddressingV() == D3DTADDRESS_BORDER)

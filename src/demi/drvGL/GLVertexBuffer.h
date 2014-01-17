@@ -1,6 +1,6 @@
 
 /********************************************************************
-    File:       D3D9VertexBuffer.h
+    File:       GLVertexBuffer.h
     Creator:    demiwangya
 *********************************************************************/
 
@@ -10,13 +10,13 @@
 
 namespace Demi
 {
-    class DI_D3D9DRV_API DiD3D9VertexBuffer : public DiVertexBuffer
+    class DI_GLDRV_API DiGLVertexBuffer : public DiVertexBuffer
     {
     public:
 
-        DiD3D9VertexBuffer();
+        DiGLVertexBuffer();
 
-        ~DiD3D9VertexBuffer();
+        ~DiGLVertexBuffer();
 
     public:
 
@@ -36,10 +36,23 @@ namespace Demi
 
     private:
 
-        IDirect3DVertexBuffer9* mVertexBuffer;
+        void        ReadData(uint32 offset, uint32 length, void* pDest);
 
-        DWORD       mUsage;
+        void        WriteData(uint32 offset, uint32 length,
+                        const void* pSource, bool discardWholeBuffer = false);
 
-        D3DPOOL     mPool;
+    private:
+
+        GLuint      mBufferId;
+
+        bool        mLockedToScratch;
+        
+        uint32      mScratchOffset;
+        
+        uint32      mScratchSize;
+        
+        void*       mScratchPtr;
+
+        bool        mScratchUploadOnUnlock;
     };
 }

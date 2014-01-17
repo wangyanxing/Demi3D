@@ -41,7 +41,7 @@ namespace Demi
 
         uint32                  GetStride() const {return mStride;}
 
-        virtual void*           Lock(uint32 offset, uint32 size, uint32 flag = 0) = 0;
+        virtual void*           Lock(uint32 offset, uint32 size, DiLockFlag flag = LOCK_NORMAL) = 0;
 
         virtual void            Unlock() = 0;
 
