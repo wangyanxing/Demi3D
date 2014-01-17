@@ -40,13 +40,13 @@ namespace Demi
 
         DiAssetType                 GetAssetType() const {return TYPE;}
 
-        BOOL                        GetDepthWrite() const { return mDepthWrite; }
+        bool                        GetDepthWrite() const { return mDepthWrite; }
                                     
-        void                        SetDepthWrite(BOOL val) { mDepthWrite = val; }
+        void                        SetDepthWrite(bool val) { mDepthWrite = val; }
                                     
-        BOOL                        GetDepthCheck() const { return mDepthCheck; }
+        bool                        GetDepthCheck() const { return mDepthCheck; }
                                     
-        void                        SetDepthCheck(BOOL val) { mDepthCheck = val; }
+        void                        SetDepthCheck(bool val) { mDepthCheck = val; }
                                     
         DiShaderParameter*          GetShaderParameter() const { return mShaderParameter; }
 
@@ -72,13 +72,13 @@ namespace Demi
 
         BOOL                        LoadingComplete() const;
 
-        BOOL                        IsWireframe() const { return mWireframe; }
+        bool                        IsWireframe() const { return mWireframe; }
 
-        void                        SetWireframe(BOOL val) { mWireframe = val; }
+        void                        SetWireframe(bool val) { mWireframe = val; }
 
-        BOOL                        GetForceWireframe() const { return mForceWireframe; }
+        bool                        GetForceWireframe() const { return mForceWireframe; }
 
-        void                        SetForceWireframe(BOOL val) { mForceWireframe = val; }
+        void                        SetForceWireframe(bool val) { mForceWireframe = val; }
 
         DiBlendMode                 GetBlendMode() const { return mBlendMode; }
 
@@ -86,7 +86,7 @@ namespace Demi
 
         bool                        IsTransparent() const;
 
-        BOOL                        GetEnableVertColor() const { return mEnableVertColor; }
+        bool                        GetEnableVertColor() const { return mEnableVertColor; }
 
         void                        SetEnableVertColor(BOOL val);
 
@@ -150,15 +150,15 @@ namespace Demi
 
         DiCullMode                  mCullMode;
 
-        BOOL                        mDepthWrite;
+        bool                        mDepthWrite;
 
-        BOOL                        mDepthCheck;
+        bool                        mDepthCheck;
 
-        BOOL                        mWireframe;
+        bool                        mWireframe;
 
-        BOOL                        mForceWireframe;
+        bool                        mForceWireframe;
 
-        BOOL                        mEnableVertColor;
+        bool                        mEnableVertColor;
 
         DiInstanceType              mInstanceState;
 

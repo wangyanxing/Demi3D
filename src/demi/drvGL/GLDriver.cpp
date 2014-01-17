@@ -242,7 +242,78 @@ namespace Demi
 
     void DiGLDriver::BindMaterialStates(const DiMaterial* mat)
     {
-        
+        // filling mode
+        bool finalwireframe = false;
+        if (mat->GetForceWireframe())
+        {
+            finalwireframe = mat->IsWireframe();
+        }
+        else
+        {
+            if (mat->IsWireframe())
+                finalwireframe = true;
+        }
+        glPolygonMode(GL_FRONT_AND_BACK, finalwireframe ? GL_LINE : GL_FILL);
+
+        // culling mode
+        GLenum cullMode;
+        switch (mat->GetCullMode())
+        {
+        case CULL_NONE:
+            glDisable(GL_CULL_FACE);
+            return;
+            break;
+        case CULL_CW:
+            cullMode = GL_BACK;
+            break;
+        case CULL_CCW:
+            cullMode = GL_FRONT;
+            break;
+        }
+        glEnable(GL_CULL_FACE);
+        glCullFace(cullMode);
+
+        // depth check/write
+        if (mat->GetDepthCheck())
+        {
+            glClearDepth(1.0f);
+            glEnable(GL_DEPTH_TEST);
+        }
+        else
+        {
+            glDisable(GL_DEPTH_TEST);
+        }
+        glDepthMask(mat->GetDepthWrite() ? GL_TRUE : GL_FALSE);
+
+        // blending mode
+        GLint func = GL_FUNC_ADD;
+        switch(mat->GetBlendMode())
+        {
+        case BLEND_REPLACE:
+            glDisable(GL_BLEND);
+            break;
+        case BLEND_ADD:
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_ONE, GL_ONE);
+            break;
+        case BLEND_MULTIPLY:
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_DST_COLOR, GL_ZERO);
+            break;
+        case BLEND_ALPHA:
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+            break;
+        case BLEND_TRANS_COLOR:
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
+            break;
+        case  BLEND_ONE_INV_ALPHA:
+            glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+            break;
+        default:
+            glDisable(GL_BLEND);
+        }
     }
 
     void DiGLDriver::Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil /*= 0*/)
@@ -343,4 +414,5 @@ namespace Demi
         mColourWrite[2] = b;
         mColourWrite[3] = a;
     }
+
 }

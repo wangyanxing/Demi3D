@@ -321,5 +321,4 @@ namespace Demi
     {
         return mPipeline->GetShaderEnvironment();
     }
-
 }
