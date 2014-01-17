@@ -826,4 +826,17 @@ namespace Demi
         return DI_NEW DiWin32Window();
     }
 
+    void DiD3D9Driver::SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a)
+    {
+        DWORD val = 0;
+        if (r)
+            val |= D3DCOLORWRITEENABLE_RED;
+        if (g)
+            val |= D3DCOLORWRITEENABLE_GREEN;
+        if (b)
+            val |= D3DCOLORWRITEENABLE_BLUE;
+        if (a)
+            val |= D3DCOLORWRITEENABLE_ALPHA;
+        StateCache->SetRenderState(D3DRS_COLORWRITEENABLE, val);
+    }
 }

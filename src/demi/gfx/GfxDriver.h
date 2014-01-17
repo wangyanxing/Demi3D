@@ -156,6 +156,8 @@ namespace Demi
 
         void                        MarkClosing() { mClosing = true; }
 
+        virtual void                SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a) = 0;
+
     public:
 
         typedef DiVector<DiDepthBuffer*>            DepthBufferVec;

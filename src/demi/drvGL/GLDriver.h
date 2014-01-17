@@ -78,6 +78,8 @@ namespace Demi
 
         DiRenderTarget*         CreateRenderTarget();
 
+        void                    SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a);
+        
         void                    CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd);
 
         void                    BindMaterialStates(const DiMaterial* mat);
@@ -101,5 +103,11 @@ namespace Demi
         DiGLContext*            mMainContext;
 
         DiGLUtil*               mGLUtil;
+
+        bool                    mColourWrite[4];
+
+        bool                    mDepthWrite;
+
+        uint32                  mStencilMask;
     };
 }
