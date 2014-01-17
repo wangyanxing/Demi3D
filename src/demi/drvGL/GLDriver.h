@@ -90,6 +90,8 @@ namespace Demi
 
         DiWindow*               CreateWnd();
 
+        static DiGLBufferManager*   BufferMgr;
+
     private:
 
         DiGLContext*            _CreateContext(DiWndHandle wnd);
@@ -109,5 +111,7 @@ namespace Demi
         bool                    mDepthWrite;
 
         uint32                  mStencilMask;
+
+        DiGLBufferManager*      mGLBufferManager;
     };
 }

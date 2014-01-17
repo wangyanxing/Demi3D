@@ -104,4 +104,25 @@ namespace Demi
 #endif
         return mapping[d3dfmt];
     }
+
+    DWORD DiD3D9Mappings::GetLockOption(DiLockFlag lock, DiResUsage usage)
+    {
+        DWORD ret = 0;
+        if (lock == LOCK_DISCARD)
+        {
+            if (usage & RU_DYNAMIC)
+                ret |= D3DLOCK_DISCARD;
+        }
+        if (lock == LOCK_READ_ONLY)
+        {
+            if (!(usage & RU_WRITE_ONLY))
+                ret |= D3DLOCK_READONLY;
+        }
+        if (lock == LOCK_NO_OVERWRITE)
+        {
+            if (usage & RU_DYNAMIC)
+                ret |= D3DLOCK_NOOVERWRITE;
+        }
+        return ret;
+    }
 }

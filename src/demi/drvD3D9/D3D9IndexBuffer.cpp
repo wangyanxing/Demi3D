@@ -2,6 +2,7 @@
 #include "D3D9IndexBuffer.h"
 #include "D3D9Driver.h"
 #include "D3D9StateCache.h"
+#include "D3D9TypeMappings.h"
 
 namespace Demi
 {
@@ -77,12 +78,13 @@ namespace Demi
         }
     }
 
-    void* DiD3D9IndexBuffer::Lock(uint32 offset, uint32 size, uint32 flag)
+    void* DiD3D9IndexBuffer::Lock(uint32 offset, uint32 size, DiLockFlag flag)
     {
         void* lk = nullptr;
+        DWORD lock = DiD3D9Mappings::GetLockOption(flag, mResUsage);
         if (mIndexBuffer)
         {
-            HRESULT res = mIndexBuffer->Lock(offset, size, &lk, flag);
+            HRESULT res = mIndexBuffer->Lock(offset, size, &lk, lock);
             DX9_CHKERR(res);
         }
         return lk;

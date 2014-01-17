@@ -175,6 +175,16 @@ namespace Demi
         CMP_MAX
     };
 
+    enum DiLockFlag
+    {
+        LOCK_NORMAL = 0,
+        LOCK_DISCARD,
+        LOCK_READ_ONLY,
+        LOCK_NO_OVERWRITE,
+
+        LOCK_MAX
+    };
+
     enum DiCullMode
     {
         CULL_NONE,

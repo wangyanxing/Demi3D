@@ -8,6 +8,7 @@
 #include "GfxDriver.h"
 #include "RenderWindow.h"
 #include "GLContext.h"
+#include "GLBufferManager.h"
 
 #ifdef WIN32
 #   include "Win32Window.h"
@@ -21,9 +22,11 @@ namespace Demi
         :mMainContext(nullptr),
         mGLUtil(nullptr),
         mDepthWrite(true), 
-        mStencilMask(0xFFFFFFFF)
+        mStencilMask(0xFFFFFFFF),
+        mGLBufferManager(nullptr)
     {
         mColourWrite[0] = mColourWrite[1] = mColourWrite[2] = mColourWrite[3] = true;
+        mGLBufferManager = DI_NEW DiGLBufferManager();
     }
     
     DiGLDriver::~DiGLDriver()
@@ -74,6 +77,12 @@ namespace Demi
         {
             DI_DELETE mGLUtil;
             mGLUtil = nullptr;
+        }
+
+        if (mGLBufferManager)
+        {
+            DI_DELETE mGLBufferManager;
+            mGLBufferManager = nullptr;
         }
 
         DI_LOG("OpenGL stuff successfully released.");
@@ -286,7 +295,6 @@ namespace Demi
         glDepthMask(mat->GetDepthWrite() ? GL_TRUE : GL_FALSE);
 
         // blending mode
-        GLint func = GL_FUNC_ADD;
         switch(mat->GetBlendMode())
         {
         case BLEND_REPLACE:
@@ -314,6 +322,12 @@ namespace Demi
         default:
             glDisable(GL_BLEND);
         }
+
+        GLint func = GL_FUNC_ADD;
+        if (GLEW_VERSION_1_4 || GLEW_ARB_imaging)
+            glBlendEquation(func);
+        else if (GLEW_EXT_blend_minmax && (func == GL_MIN || func == GL_MAX))
+            glBlendEquationEXT(func);
     }
 
     void DiGLDriver::Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil /*= 0*/)
@@ -384,7 +398,11 @@ namespace Demi
 
     DiWindow* DiGLDriver::CreateWnd()
     {
+#ifdef WIN32
         return DI_NEW DiWin32Window();
+#else
+        return nullptr;
+#endif
     }
 
     DiGLContext* DiGLDriver::_CreateContext(DiWndHandle wnd)
@@ -414,5 +432,7 @@ namespace Demi
         mColourWrite[2] = b;
         mColourWrite[3] = a;
     }
+
+    DiGLBufferManager* DiGLDriver::BufferMgr = nullptr;
 
 }

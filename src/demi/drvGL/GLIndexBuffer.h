@@ -1,6 +1,6 @@
 
 /********************************************************************
-    File:       D3D9IndexBuffer.h
+    File:       GLIndexBuffer.h
     Creator:    demiwangya
 *********************************************************************/
 
@@ -10,13 +10,13 @@
 
 namespace Demi
 {
-    class DI_D3D9DRV_API DiD3D9IndexBuffer : public DiIndexBuffer
+    class DI_GLDRV_API DiGLIndexBuffer : public DiIndexBuffer
     {
     public:
 
-        DiD3D9IndexBuffer();
+        DiGLIndexBuffer();
 
-        ~DiD3D9IndexBuffer();
+        ~DiGLIndexBuffer();
 
     public:
 
@@ -36,10 +36,23 @@ namespace Demi
 
     private:
 
-        IDirect3DIndexBuffer9* mIndexBuffer;
+        void        ReadData(uint32 offset, uint32 length, void* pDest);
+        
+        void        WriteData(uint32 offset, uint32 length,
+                        const void* pSource, bool discardWholeBuffer = false);
 
-        DWORD       mUsage;
+    private:
 
-        D3DPOOL     mPool;
+        GLuint      mBufferId;
+        
+        bool        mLockedToScratch;
+        
+        size_t      mScratchOffset;
+        
+        size_t      mScratchSize;
+        
+        void*       mScratchPtr;
+
+        bool        mScratchUploadOnUnlock;
     };
 }
