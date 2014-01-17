@@ -92,10 +92,10 @@ namespace Demi
                                 
         static DiBlendMode      DEFAULT_BLEND_MODE;
                                 
-        static BOOL             DEFAULT_USER_MATERIAL;
-                                
-        static BOOL             DEFAULT_DEPTH_CHECK;
-                                
-        static BOOL             DEFAULT_DEPTH_WRITE;
+        static bool             DEFAULT_USER_MATERIAL;
+
+        static bool             DEFAULT_DEPTH_CHECK;
+
+        static bool             DEFAULT_DEPTH_WRITE;
     };
 }

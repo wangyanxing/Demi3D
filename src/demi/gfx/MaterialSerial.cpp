@@ -619,16 +619,16 @@ namespace Demi
         target->SetWireframe(FALSE);
     }
 
-    DiMap<DiString,DiBlendMode>            DiMaterialSerializer::sBlendModeMap;
-    DiMap<DiString,DiCullMode>            DiMaterialSerializer::sCullModeMap;
-    DiMap<DiString,DiAddMode>           DiMaterialSerializer::sAddrModeMap;
-    DiMap<DiString,DiFilterType>        DiMaterialSerializer::sFilterTypeMap;
+    DiMap<DiString, DiBlendMode>        DiMaterialSerializer::sBlendModeMap;
+    DiMap<DiString, DiCullMode>         DiMaterialSerializer::sCullModeMap;
+    DiMap<DiString, DiAddMode>          DiMaterialSerializer::sAddrModeMap;
+    DiMap<DiString, DiFilterType>       DiMaterialSerializer::sFilterTypeMap;
 
-    DiCullMode        DiMaterialSerializer::DEFAULT_CULL_MODE            = CULL_CW;
-    DiAddMode       DiMaterialSerializer::DEFAULT_ADDRESSING_MODE    = AM_WRAP;
-    DiFilterType     DiMaterialSerializer::DEFAULT_FILTER            = FT_LINEAR;
-    DiBlendMode        DiMaterialSerializer::DEFAULT_BLEND_MODE        = BLEND_REPLACE;
-    BOOL             DiMaterialSerializer::DEFAULT_DEPTH_WRITE         = TRUE;
-    BOOL             DiMaterialSerializer::DEFAULT_DEPTH_CHECK         = TRUE;
-    BOOL            DiMaterialSerializer::DEFAULT_USER_MATERIAL        = TRUE;
+    DiCullMode      DiMaterialSerializer::DEFAULT_CULL_MODE         = CULL_CW;
+    DiAddMode       DiMaterialSerializer::DEFAULT_ADDRESSING_MODE   = AM_WRAP;
+    DiFilterType    DiMaterialSerializer::DEFAULT_FILTER            = FT_LINEAR;
+    DiBlendMode     DiMaterialSerializer::DEFAULT_BLEND_MODE        = BLEND_REPLACE;
+    bool            DiMaterialSerializer::DEFAULT_DEPTH_WRITE       = TRUE;
+    bool            DiMaterialSerializer::DEFAULT_DEPTH_CHECK       = TRUE;
+    bool            DiMaterialSerializer::DEFAULT_USER_MATERIAL     = TRUE;
 }
