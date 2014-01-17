@@ -108,6 +108,7 @@ namespace Demi
 
         D3DFORMAT               GetAdapterFormat() { return mAdapterFormat; }
 
+        void                    SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a);
 
     public:
 

@@ -19,8 +19,11 @@ namespace Demi
 {
     DiGLDriver::DiGLDriver()
         :mMainContext(nullptr),
-        mGLUtil(nullptr)
+        mGLUtil(nullptr),
+        mDepthWrite(true), 
+        mStencilMask(0xFFFFFFFF)
     {
+        mColourWrite[0] = mColourWrite[1] = mColourWrite[2] = mColourWrite[3] = true;
     }
     
     DiGLDriver::~DiGLDriver()
@@ -244,7 +247,68 @@ namespace Demi
 
     void DiGLDriver::Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil /*= 0*/)
     {
+        bool colourMask = !mColourWrite[0] || !mColourWrite[1]
+            || !mColourWrite[2] || !mColourWrite[3];
 
+        GLbitfield clearBuf = 0;
+        if (flag & CLEAR_COLOR)
+        {
+            clearBuf |= GL_COLOR_BUFFER_BIT;
+            if (colourMask)
+                glColorMask(true, true, true, true);
+
+            glClearColor(col.r, col.g, col.b, col.a);
+        }
+        
+        if (flag & CLEAR_DEPTH)            
+        {
+            clearBuf |= GL_DEPTH_BUFFER_BIT;
+            if (!mDepthWrite)
+                glDepthMask(GL_TRUE);
+            
+            glClearDepth(depth);
+        }
+
+        if (flag & CLEAR_STENCIL)
+        {
+            clearBuf |= GL_STENCIL_BUFFER_BIT;
+
+            glStencilMask(0xFFFFFFFF);
+            glClearStencil(stencil);
+        }
+
+        GLboolean scissorTestEnabled = glIsEnabled(GL_SCISSOR_TEST);
+        if (!scissorTestEnabled)
+            glEnable(GL_SCISSOR_TEST);
+
+        // Sets the scissor box as same as viewport
+        GLint viewport[4] = { 0, 0, 0, 0 };
+        GLint scissor[4] = { 0, 0, 0, 0 };
+        glGetIntegerv(GL_VIEWPORT, viewport);
+        glGetIntegerv(GL_SCISSOR_BOX, scissor);
+        bool scissorBoxDifference =
+            viewport[0] != scissor[0] || viewport[1] != scissor[1] ||
+            viewport[2] != scissor[2] || viewport[3] != scissor[3];
+        if (scissorBoxDifference)
+            glScissor(viewport[0], viewport[1], viewport[2], viewport[3]);
+
+        glClear(clearBuf);
+
+        if (scissorBoxDifference)
+            glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+
+        if (!scissorTestEnabled)
+            glDisable(GL_SCISSOR_TEST);
+
+        // Reset buffer write state
+        if (!mDepthWrite && (flag & CLEAR_DEPTH))
+            glDepthMask(GL_FALSE);
+        
+        if (colourMask && (flag & CLEAR_COLOR))
+            glColorMask(mColourWrite[0], mColourWrite[1], mColourWrite[2], mColourWrite[3]);
+        
+        if (flag & CLEAR_STENCIL)
+            glStencilMask(mStencilMask);
     }
 
     DiWindow* DiGLDriver::CreateWnd()
@@ -271,4 +335,12 @@ namespace Demi
         return ret;
     }
 
+    void DiGLDriver::SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a)
+    {
+        glColorMask(r, g, b, a);
+        mColourWrite[0] = r;
+        mColourWrite[1] = g;
+        mColourWrite[2] = b;
+        mColourWrite[3] = a;
+    }
 }
