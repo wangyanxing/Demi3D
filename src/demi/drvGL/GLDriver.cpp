@@ -43,6 +43,9 @@ namespace Demi
 
         mGLUtil = _CreateGLUtil();
         mMainContext = _CreateContext(wnd);
+        
+        mMainContext->BeginContext();
+        mGLUtil->InitExtensions();
 
         return true;
     }

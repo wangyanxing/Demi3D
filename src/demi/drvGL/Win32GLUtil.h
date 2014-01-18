@@ -29,6 +29,10 @@ namespace Demi
 
         bool            SelectPixelFormat(HDC hdc, int colourDepth, int multisample, bool hwGamma);
 
+        void            SetMainHDC(HDC dc) { mHDC = dc; }
+
+        HDC             GetMainHDC() const { return mHDC; }
+
     private:
 
         void            InitWGL();
