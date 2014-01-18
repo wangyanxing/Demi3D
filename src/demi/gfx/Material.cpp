@@ -157,7 +157,7 @@ namespace Demi
             mShaderParameter->HasVariableType(DiGpuVariable::VARIABLE_SAMPLERCUBE);
     }
 
-    void DiMaterial::SetEnableVertColor( BOOL val )
+    void DiMaterial::SetEnableVertColor( bool val )
     {
         if (mEnableVertColor != val)
         {

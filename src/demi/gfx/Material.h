@@ -88,7 +88,7 @@ namespace Demi
 
         bool                        GetEnableVertColor() const { return mEnableVertColor; }
 
-        void                        SetEnableVertColor(BOOL val);
+        void                        SetEnableVertColor(bool val);
 
         void                        SetInstanceType(DiInstanceType val);
 
