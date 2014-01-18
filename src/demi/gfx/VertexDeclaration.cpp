@@ -35,6 +35,32 @@ namespace Demi
         Create();
     }
 
+    uint16 DiVertexElements::GetElementTypeCount(DiVertexType type)
+    {
+        switch (type)
+        {
+        case VERT_TYPE_FLOAT1:
+        case VERT_TYPE_COLOR:
+            return 1;
+            break;
+        case VERT_TYPE_FLOAT2:
+        case VERT_TYPE_SHORT2:
+            return 2;
+            break;
+        case VERT_TYPE_FLOAT3:
+            return 3;
+            break;
+        case VERT_TYPE_FLOAT4:
+        case VERT_TYPE_UBYTE4:
+        case VERT_TYPE_SHORT4:
+            return 4;
+            break;
+        default:
+            DI_WARNING("Unsupported vertex element type: %d", type);
+            return 0;
+        }
+    }
+
     uint16 DiVertexElements::GetElementTypeSize(DiVertexType type)
     {
         switch(type)
@@ -146,7 +172,7 @@ namespace Demi
     }
 
     uint16 DiVertexElements::GetTypeUsageAtStream(DiVertexType type,
-        DiVertexUsage usage, BYTE usageid/*=0*/)
+        DiVertexUsage usage, uint8 usageid/*=0*/)
     {
         for (auto it = mVertexElements.begin(); it != mVertexElements.end(); ++it)
         {
@@ -172,7 +198,7 @@ namespace Demi
     }
 
     DiVertexElements::Element DiVertexElements::FindElement(DiVertexType type,
-        DiVertexUsage usage, BYTE usageid/*=0*/)
+        DiVertexUsage usage, uint8 usageid/*=0*/)
     {
         auto itEnd = mVertexElements.end();
         for (auto it = mVertexElements.begin(); it != itEnd; ++it)
@@ -209,7 +235,7 @@ namespace Demi
         return result+1;
     }
 
-    void DiVertexElements::DeleteSource( WORD streamSorce )
+    void DiVertexElements::DeleteSource( uint16 streamSorce )
     {
         for (auto it = mVertexElements.begin(); it != mVertexElements.end(); )
         {
@@ -221,7 +247,7 @@ namespace Demi
         mStreamElementSize[streamSorce] = 0;
     }
 
-    DiVertexElements::ElementsList DiVertexElements::GetElementsAtStream( WORD streamSorce )
+    DiVertexElements::ElementsList DiVertexElements::GetElementsAtStream(uint16 streamSorce)
     {
         ElementsList list;
         for (auto it = mVertexElements.begin(); it != mVertexElements.end(); ++it)
@@ -232,9 +258,18 @@ namespace Demi
         return list;
     }
 
+    void DiVertexElements::GetElementsAtStream(uint16 streamSorce, ElementsList& list)
+    {
+        for (auto it = mVertexElements.begin(); it != mVertexElements.end(); ++it)
+        {
+            if (it->Stream == streamSorce)
+                list.push_back(*it);
+        }
+    }
+
     void DiVertexDeclaration::CreateDefaultDeclarations()
     {
-
+        // TODO
     }
 
     DiVertexDeclaration* DiVertexDeclaration::GetDefault(DiDefaultVertexFormat vf)

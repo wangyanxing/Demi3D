@@ -2,19 +2,23 @@
 #include "GLDriver.h"
 #include "RenderTarget.h"
 #include "RenderUnit.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexDeclaration.h"
+#include "GLVertexBuffer.h"
+#include "GLIndexBuffer.h"
+#include "GLVertexDeclaration.h"
 #include "GfxDriver.h"
 #include "RenderWindow.h"
 #include "GLContext.h"
 #include "GLBufferManager.h"
+#include "GLTypeMappings.h"
 
 #ifdef WIN32
 #   include "Win32Window.h"
 #   include "Win32GLContext.h"
 #   include "Win32GLUtil.h"
 #endif
+
+// Convenience macro from ARB_vertex_buffer_object spec
+#define VBO_BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 namespace Demi
 {
@@ -179,6 +183,17 @@ namespace Demi
 
     bool DiGLDriver::RenderGeometry(DiRenderUnit* unit)
     {
+        if (!_BindSourceData(unit))
+            return false;
+
+        if (!unit->mIndexBuffer)
+        {
+        }
+        else
+        {
+            unit->mIndexBuffer->Bind();
+        }
+
         return true;
     }
 
@@ -195,10 +210,24 @@ namespace Demi
 
     void DiGLDriver::SetViewport(int x, int y, int w, int h, float minz, float maxz)
     {
+        glViewport(x, y, w, h);
+        glScissor(x, y, w, h);
     }
 
     void DiGLDriver::SetFillMode(DiFillMode mode)
     {
+        switch (mode)
+        {
+        case FM_SOLID:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            break;
+        case FM_WIREFRAME:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            break;
+        case FM_POINT:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+            break;
+        }
     }
 
     DiTextureDrv* DiGLDriver::CreateTextureDriver(DiTexture* texture)
@@ -208,17 +237,17 @@ namespace Demi
 
     DiIndexBuffer* DiGLDriver::CreateIndexBuffer()
     {
-        return nullptr;
+        return DI_NEW DiGLIndexBuffer();
     }
 
     DiVertexBuffer* DiGLDriver::CreateVertexBuffer()
     {
-        return nullptr;
+        return DI_NEW DiGLVertexBuffer();
     }
 
     DiVertexDeclaration* DiGLDriver::CreateVertexDeclaration()
     {
-        return nullptr;
+        return DI_NEW DiGLVertexDeclaration();
     }
 
     DiShaderInstance* DiGLDriver::CreateVSInstance(DiShaderProgram* prog)
@@ -433,6 +462,59 @@ namespace Demi
         mColourWrite[3] = a;
     }
 
-    DiGLBufferManager* DiGLDriver::BufferMgr = nullptr;
+    bool DiGLDriver::_BindSourceData(DiRenderUnit* unit)
+    {
+        if (unit->mSourceData.empty() || !unit->mVertexDecl)
+            return false;
 
+        if (!unit->mPrimitiveCount)
+            return false;
+
+        DiVertexElements& elements = unit->mVertexDecl->GetElements();
+
+        for (auto it = unit->mSourceData.begin(); it != unit->mSourceData.end(); ++it)
+        {
+            DiGLVertexBuffer* vb = static_cast<DiGLVertexBuffer*>(*it);
+            DiVertexElements::ElementsList e;
+            elements.GetElementsAtStream(vb->GetStreamId(), e);
+            
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, vb->GetBufferId());
+
+            for (auto i = e.begin(); i != e.end(); ++i)
+            {
+                void* pBufferData = nullptr;
+                pBufferData = VBO_BUFFER_OFFSET(i->Offset);
+
+                GLint attrib = DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
+                uint16 count = elements.GetElementTypeCount((DiVertexType)i->Type);
+
+                GLboolean normalised = GL_FALSE;
+                switch (i->Type)
+                {
+                case VERT_TYPE_COLOR:
+                    // Because GL takes these as a sequence of single unsigned bytes, count needs to be 4
+                    // VertexElement::getTypeCount treats them as 1 (RGBA)
+                    // Also need to normalise the fixed-point data
+                    count = 4;
+                    normalised = GL_TRUE;
+                    break;
+                default:
+                    break;
+                };
+
+                glVertexAttribPointerARB(
+                    attrib,
+                    count,
+                    DiGLTypeMappings::GetGLType((DiVertexType)i->Type),
+                    normalised,
+                    static_cast<GLsizei>(vb->GetBufferSize()),
+                    pBufferData);
+                glEnableVertexAttribArrayARB(attrib);
+            }
+        }
+
+        return true;
+    }
+
+    DiGLBufferManager* DiGLDriver::BufferMgr = nullptr;
 }

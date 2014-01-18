@@ -7,9 +7,9 @@ namespace Demi
 {
     DiVertexBuffer::DiVertexBuffer()
     {
-        mBufferSize     = 0;
-        mStride         = 0;
-        mStreamId     = 0;
+        mBufferSize  = 0;
+        mStride      = 0;
+        mStreamId    = 0;
         mInstance    = SOURCE_NO_INSTANCE;
         mInstanceNum = 1;
         Driver->AddGpuResource(this);

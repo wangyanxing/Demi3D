@@ -14,10 +14,6 @@ namespace Demi
         Release();
     }
 
-    void DiGLVertexDeclaration::Bind()
-    {
-    }
-
     void DiGLVertexDeclaration::Release()
     {
         mVertexElements.ClearElements();
@@ -25,5 +21,7 @@ namespace Demi
 
     void DiGLVertexDeclaration::Create()
     {
+
     }
+
 }

@@ -34,6 +34,8 @@ namespace Demi
 
         void        Unlock();
 
+        GLuint      GetBufferId() const { return mBufferId; }
+
     private:
 
         void        ReadData(uint32 offset, uint32 length, void* pDest);
