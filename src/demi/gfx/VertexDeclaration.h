@@ -31,48 +31,53 @@ namespace Demi
 
     public:
 
-        Element             AddElement(uint16 stream, DiVertexType type, DiVertexUsage usage, uint8 usageid = 0);
+        Element               AddElement(uint16 stream, DiVertexType type, DiVertexUsage usage, uint8 usageid = 0);
 
-        void                AddElement(const Element& ele);
+        void                  AddElement(const Element& ele);
 
-        void                ClearElements();
-    
-        uint16              GetStreamElementsSize(uint16 stream);
+        void                  ClearElements();
 
-        uint32              GetNumVertexElements()const {return mVertexElements.size();}
+        uint16                GetStreamElementsSize(uint16 stream);
 
-        Element             GetElement(size_t index);
+        uint32                GetNumVertexElements()const { return mVertexElements.size(); }
 
-        Element             FindElement(DiVertexType type, DiVertexUsage usage, BYTE usageid = 0);
+        Element               GetElement(size_t index);
 
-        bool                Contains(DiVertexUsage usage);
+        Element               FindElement(DiVertexType type, DiVertexUsage usage, uint8 usageid = 0);
 
-        bool                Contains(DiVertexType type);
+        bool                  Contains(DiVertexUsage usage);
 
-        uint16              GetStreams() const { return (uint16)mStreamElementSize.size(); }
+        bool                  Contains(DiVertexType type);
 
-        uint16              GetTypeUsageAtStream(DiVertexType type, DiVertexUsage usage, BYTE usageid = 0);
+        uint16                GetStreams() const { return (uint16)mStreamElementSize.size(); }
 
-        uint16              GetUsageAtStream(DiVertexUsage type);
+        uint16                GetTypeUsageAtStream(DiVertexType type, DiVertexUsage usage, uint8 usageid = 0);
 
-        uint16              GetNextFreeTexcoord();
+        uint16                GetUsageAtStream(DiVertexUsage type);
 
-        void                DeleteSource(uint16 streamSorce);
+        uint16                GetNextFreeTexcoord();
 
-        ElementsList        GetElementsAtStream(uint16 streamSorce);
+        void                  DeleteSource(uint16 streamSorce);
 
-        static uint16       GetElementTypeSize(DiVertexType type);
+        ElementsList          GetElementsAtStream(uint16 streamSorce);
 
-        static bool         ElementValid(Element ele);
+        void                  GetElementsAtStream(uint16 streamSorce, ElementsList& elem);
+
+        static uint16         GetElementTypeSize(DiVertexType type);
+
+        static uint16         GetElementTypeCount(DiVertexType type);
+
+        static bool           ElementValid(Element ele);
 
     public:
 
-        ElementsList        mVertexElements;
+        ElementsList          mVertexElements;
 
-        DiMap<WORD,uint16>  mStreamElementSize;
+        DiMap<uint16,uint16>  mStreamElementSize;
     };
 
     //////////////////////////////////////////////////////////////////////////
+
     class DI_GFX_API DiVertexDeclaration : public DiBase
     {
     public:

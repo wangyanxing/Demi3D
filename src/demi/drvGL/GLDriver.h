@@ -98,6 +98,8 @@ namespace Demi
 
         DiGLUtil*               _CreateGLUtil();
 
+        bool                    _BindSourceData(DiRenderUnit* unit);
+
     private:
 
         DiString                mWndClass;

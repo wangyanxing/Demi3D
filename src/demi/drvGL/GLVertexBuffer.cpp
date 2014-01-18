@@ -42,6 +42,7 @@ namespace Demi
 
     void DiGLVertexBuffer::Bind()
     {
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, mBufferId);
     }
 
     void DiGLVertexBuffer::Release()

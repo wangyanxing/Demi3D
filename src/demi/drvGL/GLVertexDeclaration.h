@@ -20,7 +20,7 @@ namespace Demi
 
     public:
 
-        void                Bind();
+        void                Bind(){}
 
         void                Release();
 

@@ -41,6 +41,8 @@ namespace Demi
 
         uint32                  GetStride() const {return mStride;}
 
+        uint16                  GetStreamId() const { return mStreamId; }
+
         virtual void*           Lock(uint32 offset, uint32 size, DiLockFlag flag = LOCK_NORMAL) = 0;
 
         virtual void            Unlock() = 0;
@@ -57,7 +59,7 @@ namespace Demi
 
         uint32                  mStride;
 
-        uint32                  mStreamId;
+        uint16                  mStreamId;
 
         DiInstanceState         mInstance;
 

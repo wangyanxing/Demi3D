@@ -39,6 +39,10 @@ namespace Demi
 
     void DiGLIndexBuffer::Bind()
     {
+        if (mBufferId)
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, mBufferId);
+        else
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
     }
 
     void DiGLIndexBuffer::Release()
