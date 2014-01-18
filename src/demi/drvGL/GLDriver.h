@@ -100,11 +100,15 @@ namespace Demi
 
         bool                    _BindSourceData(DiRenderUnit* unit);
 
+        void                    _InitMainContext(DiGLContext* context);
+
     private:
 
         DiString                mWndClass;
 
         DiGLContext*            mMainContext;
+
+        DiGLContext*            mCurrentContext;
 
         DiGLUtil*               mGLUtil;
 

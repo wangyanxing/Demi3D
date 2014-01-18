@@ -120,6 +120,9 @@ namespace Demi
             return;
         }
 
+        if (!rt)
+            return;
+
         ReleaseSourceData();
 
         auto vb = Driver->CreateVertexBuffer();

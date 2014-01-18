@@ -20,6 +20,8 @@
 // Convenience macro from ARB_vertex_buffer_object spec
 #define VBO_BUFFER_OFFSET(i) ((char *)NULL + (i))
 
+GLenum glewContextInit(DiGLUtil*);
+
 namespace Demi
 {
     DiGLDriver::DiGLDriver()
@@ -27,7 +29,8 @@ namespace Demi
         mGLUtil(nullptr),
         mDepthWrite(true), 
         mStencilMask(0xFFFFFFFF),
-        mGLBufferManager(nullptr)
+        mGLBufferManager(nullptr),
+        mCurrentContext(nullptr)
     {
         mColourWrite[0] = mColourWrite[1] = mColourWrite[2] = mColourWrite[3] = true;
         mGLBufferManager = DI_NEW DiGLBufferManager();
@@ -42,11 +45,7 @@ namespace Demi
         DI_LOG("OpenGL driver is intializing.");
 
         mGLUtil = _CreateGLUtil();
-        mMainContext = _CreateContext(wnd);
-        
-        mMainContext->BeginContext();
-        mGLUtil->InitExtensions();
-
+        _InitMainContext(_CreateContext(wnd));
         return true;
     }
 
@@ -517,6 +516,19 @@ namespace Demi
         }
 
         return true;
+    }
+
+    void DiGLDriver::_InitMainContext(DiGLContext* context)
+    {
+        mMainContext = context;
+        mCurrentContext = mMainContext;
+
+        if (mCurrentContext)
+            mCurrentContext->BeginContext();
+
+        mGLUtil->InitExtensions();
+
+        glewContextInit(mGLUtil);
     }
 
     DiGLBufferManager* DiGLDriver::BufferMgr = nullptr;
