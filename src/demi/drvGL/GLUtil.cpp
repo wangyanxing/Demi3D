@@ -75,12 +75,13 @@ namespace Demi
         std::string str;
 
         const GLubyte* pcExt = glGetString(GL_EXTENSIONS);
-        DI_LOG("GL_EXTENSIONS = %s", (const char*)pcExt);
+        DI_LOG("Supported GL extensions:");
 
         ext << pcExt;
 
         while (ext >> str)
         {
+            DI_LOG(str.c_str());
             mExtensionList.insert(str.c_str());
         }
     }

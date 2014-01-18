@@ -8,6 +8,8 @@ namespace Demi
         : mGLUtil(glutil)
     {
         InitFromHwnd((HWND)wnd);
+        if (!glutil->GetMainHDC())
+            glutil->SetMainHDC(mHDC);
     }
 
     DiWin32GLContext::DiWin32GLContext(DiWin32GLUtil* glutil, HDC dc, HGLRC glrc)
@@ -15,6 +17,8 @@ namespace Demi
         mHDC(dc),
         mGLRc(glrc)
     {
+        if (!glutil->GetMainHDC())
+            glutil->SetMainHDC(mHDC);
     }
 
     DiWin32GLContext::~DiWin32GLContext()

@@ -31,7 +31,6 @@ namespace Demi
 
     DiWin32GLUtil::~DiWin32GLUtil()
     {
-
     }
 
     void DiWin32GLUtil::InitWGL()
@@ -172,7 +171,8 @@ namespace Demi
         std::stringstream ext;
         std::string instr;
         ext << wgl_extensions;
-        DI_LOG("Supported GL extension : ");
+
+        DI_LOG("Supported WGL extensions: ");
         while (ext >> instr)
         {
             DI_LOG(instr.c_str());
