@@ -133,9 +133,9 @@ namespace Demi
 
         DiRenderTarget*         GetRenderTarget();
 
-        SHORT                   GetUvSet() const { return mUvSet; }
+        uint16                  GetUvSet() const { return mUvSet; }
 
-        void                    SetUvSet(SHORT val) { mUvSet = val; }
+        void                    SetUvSet(uint16 val) { mUvSet = val; }
 
         bool                    IsAdaptedRT() const { return mAdaptedRT != nullptr; }
 
@@ -183,7 +183,7 @@ namespace Demi
                                 
         DiRenderTarget*         mRenderTarget;
                                 
-        SHORT                   mUvSet;
+        uint16                  mUvSet;
                                 
         DiVec2                  mViewportScale;
                                 

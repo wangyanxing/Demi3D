@@ -15,5 +15,9 @@ namespace Demi
         static GLenum   GetGLType(uint32 type);
 
         static GLuint   GetFixedAttributeIndex(uint8 semantic, uint8 index);
+
+        static GLenum   GLFormatMapping[PIXEL_FORMAT_MAX];
+
+        static GLenum   GetGLTextureType(uint16 type);
     };
 }

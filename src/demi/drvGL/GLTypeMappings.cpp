@@ -1,6 +1,7 @@
 
 #include "GLTypeMappings.h"
 #include "VertexFormat.h"
+#include "Texture.h"
 
 namespace Demi
 {
@@ -85,4 +86,49 @@ namespace Demi
             return 0;
         };
     }
+
+    GLenum DiGLTypeMappings::GLFormatMapping[PIXEL_FORMAT_MAX] =
+    {
+        GL_RGB8,
+        GL_RGBA8,
+        GL_RGBA8,
+        GL_RGB8,
+        GL_ALPHA8,
+        GL_LUMINANCE8,
+        GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,
+        GL_NONE,
+        GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,
+        GL_NONE,
+        GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,
+        GL_LUMINANCE16F_ARB,
+        GL_LUMINANCE_ALPHA16F_ARB,
+        GL_RGBA16F_ARB,
+        GL_LUMINANCE32F_ARB,
+        GL_LUMINANCE_ALPHA32F_ARB,
+        GL_RGBA32F_ARB,
+        GL_NONE,//D3DFMT_D16_LOCKABLE,
+        GL_DEPTH_COMPONENT32,//D3DFMT_D32,
+        GL_NONE,//D3DFMT_D15S1,
+        GL_DEPTH24_STENCIL8_EXT,//D3DFMT_D24S8,
+        GL_DEPTH_COMPONENT24,//D3DFMT_D24X8,
+        GL_NONE,//D3DFMT_D24X4S4,
+        GL_DEPTH_COMPONENT16,//D3DFMT_D16,
+        GL_NONE,//D3DFMT_D32F_LOCKABLE,
+        GL_NONE,//D3DFMT_D24FS8,
+        GL_NONE,//D3DFORMAT(MAKEFOURCC('N', 'U', 'L', 'L')),
+    };
+
+    GLenum DiGLTypeMappings::GetGLTextureType(uint16 type)
+    {
+        switch (type)
+        {
+        case TEXTURE_2D:
+            return GL_TEXTURE_2D;
+        case TEXTURE_CUBE:
+            return GL_TEXTURE_CUBE_MAP;
+        default:
+            return GL_TEXTURE_2D;
+        }
+    }
+
 }
