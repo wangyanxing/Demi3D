@@ -87,8 +87,7 @@ namespace Demi
                     texture->SetResourceUsage(RU_WRITE_ONLY);
                     texture->CreateTexture();
 
-                    uint32 pitch  = 0;
-                    void *buffer = texture->LockLevel(0, pitch);
+                    void *buffer = texture->LockLevel(0);
                     DI_ASSERT(buffer);
                     if(buffer)
                     {
@@ -97,7 +96,6 @@ namespace Demi
                         const uint32 levelWidth  = texture->GetWidthInBlocks();
                         const uint32 levelHeight = texture->GetHeightInBlocks();
                         const uint32 rowSrcSize  = levelWidth * texture->GetBlockSize();
-                        DI_ASSERT(rowSrcSize <= pitch);
                         for(uint32 row=0; row<levelHeight; row++)
                         { 
                             if( componentCount == 3 )
@@ -114,7 +112,7 @@ namespace Demi
                             else
                             {
                                 memcpy(levelDst, levelSrc, rowSrcSize);
-                                levelDst += pitch;
+                                levelDst += rowSrcSize;
                                 levelSrc += rowSrcSize;
                             }
                         }
@@ -157,63 +155,32 @@ namespace Demi
                 texture->SetResourceUsage(RU_WRITE_ONLY);
                 texture->SetNumLevels(ddsimage.get_num_mipmaps()+1);
                 texture->CreateTexture();
+                DiTextureDrv* texDrv = texture->GetTextureDriver();
 
                 int faces = ddsimage.is_cubemap()?6:1;
 
                 for (int f = 0; f < faces; f++)
                 {
-                    uint32 pitch  = 0;
-                    void *buffer = texture->LockLevel(0, pitch, f);
-                    DI_ASSERT(buffer);
-                    if(buffer)
-                    {
-                        uint8       *levelDst    = (uint8*)buffer;
-                        const uint8 *levelSrc    = nullptr;
-                        if (ddsimage.is_cubemap())
-                        {
-                            levelSrc = (uint8*)ddsimage.get_cubemap_face(f);
-                        }
-                        else
-                        {
-                            levelSrc = (uint8*)ddsimage;
-                        }
-                        
-                        const uint32 levelWidth  = texture->GetWidthInBlocks();
-                        const uint32 levelHeight = texture->GetHeightInBlocks();
-                        const uint32 rowSrcSize  = levelWidth * texture->GetBlockSize();
-                        DI_ASSERT(rowSrcSize <= pitch);
-                        for(uint32 row=0; row<levelHeight; row++)
-                        {
-                            memcpy(levelDst, levelSrc, rowSrcSize);
-                            levelDst += pitch;
-                            levelSrc += rowSrcSize;
-                        }
-                    }
-                    texture->UnlockLevel(0, f);
+                    void* levelSrc = nullptr;
+                    if (ddsimage.is_cubemap())
+                        levelSrc = (void*)ddsimage.get_cubemap_face(f);
+                    else
+                        levelSrc = (void*)ddsimage;
 
-                    for(uint32 i=1; i<texture->GetNumLevels(); i++)
+                    const uint32 levelWidth = texture->GetWidth();
+                    const uint32 levelHeight = texture->GetHeight();
+
+                    DiPixelBox pixbox(levelWidth, levelHeight, format, levelSrc);
+                    texDrv->CopyFromMemory(pixbox, 0, f);
+
+                    for (uint32 i = 1; i < texture->GetNumLevels(); i++)
                     {
-                        void *buffer = texture->LockLevel(i, pitch, f);
-                        DI_ASSERT(buffer);
-                        if(buffer && pitch )
-                        {
-                            const nv_dds::CSurface &surface = ddsimage.get_mipmap(i-1,f);
-                            uint8       *levelDst    = (uint8*)buffer;
-                            const uint8 *levelSrc    = (uint8*)(unsigned char*)surface;
-                            const uint32 levelWidth  = DiPixelBox::GetFormatNumBlocks(
-                                surface.get_width(),  texture->GetFormat());
-                            const uint32 levelHeight = DiPixelBox::GetFormatNumBlocks(
-                                surface.get_height(), texture->GetFormat());
-                            const uint32 rowSrcSize  = levelWidth * texture->GetBlockSize();
-                            DI_ASSERT(rowSrcSize <= pitch);
-                            for(uint32 row=0; row<levelHeight; row++)
-                            {
-                                memcpy(levelDst, levelSrc, rowSrcSize);
-                                levelDst += pitch;
-                                levelSrc += rowSrcSize;
-                            }
-                        }
-                        texture->UnlockLevel(i, f);
+                        const nv_dds::CSurface &surface = ddsimage.get_mipmap(i - 1, f);
+                        void* curLevelSrc = (void*)surface;
+                        const uint32 curLevelWidth = surface.get_width();
+                        const uint32 curLevelHeight = surface.get_height();
+                        DiPixelBox pixbox(curLevelWidth, curLevelHeight, format, curLevelSrc);
+                        texDrv->CopyFromMemory(pixbox, i, f);
                     }
                 }
             }
@@ -257,11 +224,9 @@ namespace Demi
     DiColor DiPixelBox::GetColourAt( size_t x, size_t y, size_t z )
     {
         DiColor cv;
-
         unsigned char pixelSize = (UCHAR)GetNumElemBytes(format);
         size_t pixelOffset = pixelSize * (z * slicePitch + y * rowPitch + x);
         UnpackColour(&cv, format, (unsigned char *)data + pixelOffset);
-
         return cv;
     }
 
@@ -289,14 +254,14 @@ namespace Demi
             size = numPixels * sizeof(float);
             break;
         case PF_DXT1:
-            width      = ComputeCompressedDimension(width);
-            height     = ComputeCompressedDimension(height);
+            width   = ComputeCompressedDimension(width);
+            height  = ComputeCompressedDimension(height);
             size    = ComputeImageByteSize(width, height, PF_A8R8G8B8) / 8;
             break;
         case PF_DXT3:
         case PF_DXT5:
-            width      = ComputeCompressedDimension(width);
-            height     = ComputeCompressedDimension(height);
+            width   = ComputeCompressedDimension(width);
+            height  = ComputeCompressedDimension(height);
             size    = ComputeImageByteSize(width, height, PF_A8R8G8B8) / 4;
             break;
         }
@@ -309,9 +274,8 @@ namespace Demi
         dimension >>=level;
 
         if(!dimension) 
-        {
             dimension=1;
-        }
+
         return dimension;
     }
 
@@ -509,8 +473,8 @@ namespace Demi
         SetConsecutive();
     }
 
-    DiPixelBox::DiPixelBox( size_t width, size_t height, DiPixelFormat pixelFormat, void *pixelData/*=0*/ ) :
-    DiBox(0, 0, width, height),
+    DiPixelBox::DiPixelBox(uint32 width, uint32 height, DiPixelFormat pixelFormat, void *pixelData/*=0*/) :
+        DiBox(0, 0, width, height),
         data(pixelData), format(pixelFormat)
     {
         SetConsecutive();

@@ -6,6 +6,7 @@
 #include "GLIndexBuffer.h"
 #include "GLVertexDeclaration.h"
 #include "GfxDriver.h"
+#include "GLTexture.h"
 #include "RenderWindow.h"
 #include "GLContext.h"
 #include "GLBufferManager.h"
@@ -234,7 +235,7 @@ namespace Demi
 
     DiTextureDrv* DiGLDriver::CreateTextureDriver(DiTexture* texture)
     {
-        return nullptr;
+        return DI_NEW DiGLTextureDrv(texture);
     }
 
     DiIndexBuffer* DiGLDriver::CreateIndexBuffer()

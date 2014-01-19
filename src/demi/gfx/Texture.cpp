@@ -142,9 +142,9 @@ namespace Demi
         return mRenderTarget;
     }
 
-    void DiTexture::BlitToMemory(const DiPixelBox &dst)
+    void DiTexture::CopyToMemory(const DiPixelBox &dst)
     {
-        BlitToMemory(DiBox(0, 0, mWidth, mHeight), dst);
+        CopyToMemory(DiBox(0, 0, mWidth, mHeight), dst);
     }
 
     void DiTexture::CreateTexture()
@@ -188,9 +188,9 @@ namespace Demi
         SAFE_DELETE(mRenderTarget);
     }
 
-    void DiTexture::BlitToMemory(const DiBox &srcBox, const DiPixelBox &dst)
+    void DiTexture::CopyToMemory(const DiBox &srcBox, const DiPixelBox &dst)
     {
-        mTextureDrv->BlitToMemory(srcBox, dst);
+        mTextureDrv->CopyToMemory(srcBox, dst);
     }
 
     void DiTexture::Bind(uint32 samplerIndex)
@@ -230,8 +230,14 @@ namespace Demi
         }
     }
 
-    void* DiTexture::LockLevel(uint32 level, uint32 &pitch, uint32 surface)
+    void* DiTexture::LockLevel(uint32 level, uint32 surface)
     {
-        return mTextureDrv->LockLevel(level,pitch,surface);
+        return mTextureDrv->LockLevel(level,surface);
+    }
+
+    void DiTextureDrv::CopyFromMemory(const DiPixelBox &srcBox, uint32 level, uint32 surface /*= 0*/)
+    {
+        DiBox dest(0, 0, srcBox.GetWidth(), srcBox.GetHeight());
+        CopyFromMemory(srcBox, dest, level, surface);
     }
 }

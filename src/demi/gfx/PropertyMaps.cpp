@@ -27,13 +27,13 @@ namespace Demi
 
         if (channel == CHANNEL_COLOR)
         {
-            map->BlitToMemory(*mPixels);
+            map->CopyToMemory(*mPixels);
         }
         else 
         {
             DiPixelBox tmpPixels(DiBox(0, 0, map->GetWidth(), map->GetHeight()), PF_A8B8G8R8);
             tmpPixels.data = new uint8[tmpPixels.GetConsecutiveSize()];
-            map->BlitToMemory(tmpPixels);
+            map->CopyToMemory(tmpPixels);
 
             size_t channelOffset;
             switch (channel)
@@ -201,13 +201,13 @@ namespace Demi
 
         if (channel == CHANNEL_COLOR)
         {
-            map->BlitToMemory(*mPixels);
+            map->CopyToMemory(*mPixels);
         }
         else 
         {
             DiPixelBox tmpPixels(DiBox(0, 0, map->GetWidth(), map->GetHeight()), PF_A8R8G8B8);
             tmpPixels.data = new uint8[tmpPixels.GetConsecutiveSize()];
-            map->BlitToMemory(tmpPixels);
+            map->CopyToMemory(tmpPixels);
 
             size_t channelOffset;
             switch (channel)

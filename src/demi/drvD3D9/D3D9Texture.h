@@ -24,13 +24,15 @@ namespace Demi
 
         void                    Release();
 
-        void*                   LockLevel(uint32 level, uint32 &pitch, uint32 surface = 0);
+        void*                   LockLevel(uint32 level, uint32 surface = 0, DiLockFlag lockflag = LOCK_NORMAL);
 
         void                    UnlockLevel(uint32 level, uint32 surface = 0);
 
         void                    Bind(uint32 samplerIndex);
 
-        void                    BlitToMemory(const DiBox &srcBox, const DiPixelBox &dst);
+        void                    CopyToMemory(const DiBox &srcBox, const DiPixelBox &dst);
+
+        void                    CopyFromMemory(const DiPixelBox &srcBox, const DiBox &dst, uint32 level, uint32 surface = 0);
 
         void*                   GetSurfaceHandle();
 
