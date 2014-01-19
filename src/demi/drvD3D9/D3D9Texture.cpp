@@ -7,6 +7,16 @@
 
 namespace Demi
 {
+    static RECT ToD3DRECT(const DiBox &lockBox)
+    {
+        RECT prect;
+        prect.left = static_cast<LONG>(lockBox.left);
+        prect.right = static_cast<LONG>(lockBox.right);
+        prect.top = static_cast<LONG>(lockBox.top);
+        prect.bottom = static_cast<LONG>(lockBox.bottom);
+        return prect;
+    }
+
     DiD3D9TextureDrv::DiD3D9TextureDrv(DiTexture* parent)
         :mD3DUsage(0),
         mPool(D3DPOOL_MANAGED),
@@ -43,7 +53,7 @@ namespace Demi
         rval.data = lrect.pBits;
     }
 
-    void DiD3D9TextureDrv::BlitToMemory(const DiBox &srcBox, const DiPixelBox &dst)
+    void DiD3D9TextureDrv::CopyToMemory(const DiBox &srcBox, const DiPixelBox &dst)
     {
         if (mParent->GetTextureType() == TEXTURE_CUBE)
         {
@@ -127,6 +137,7 @@ namespace Demi
                 DI_ASSERT(width == height);
                 IDirect3DCubeTexture9* texCUBE = DiD3D9Driver::CreateCubeTexture(width, numLevels,
                     mD3DUsage, d3dfmt, mPool);
+                DI_DEBUG("D3D9 cube texture created: (%d,%d), pool:%d, usage:%d, ptr:%x", width, width, mPool, mD3DUsage, (void*)texCUBE);
                 DI_ASSERT(texCUBE);
                 mTexture = texCUBE;
                 mSurface = nullptr;
@@ -159,22 +170,37 @@ namespace Demi
         }
     }
 
-    void* DiD3D9TextureDrv::LockLevel(uint32 level, uint32 &pitch, uint32 surface)
+    void* DiD3D9TextureDrv::LockLevel(uint32 level, uint32 surface, DiLockFlag lockflag)
     {
         void *buffer = nullptr;
         if (mTexture)
         {
+            DWORD d3dlockflag = 0;
+            switch (lockflag)
+            {
+            case LOCK_DISCARD:
+                // D3D only likes D3DLOCK_DISCARD if you created the texture with D3DUSAGE_DYNAMIC
+                // debug runtime flags this up, could cause problems on some drivers
+                if (mParent->GetResourceUsage() & RU_DYNAMIC)
+                    d3dlockflag |= D3DLOCK_DISCARD;
+                break;
+            case LOCK_READ_ONLY:
+                d3dlockflag |= D3DLOCK_READONLY;
+                break;
+            default:
+                break;
+            };
+
             if (mParent->GetTextureType() == TEXTURE_2D)
             {
                 DI_ASSERT(surface == 0);
                 IDirect3DTexture9* tex2D = static_cast<IDirect3DTexture9*>(mTexture);
                 D3DLOCKED_RECT lockedRect;
-                HRESULT result = tex2D->LockRect((DWORD)level, &lockedRect, 0, D3DLOCK_NOSYSLOCK);
+                HRESULT result = tex2D->LockRect((DWORD)level, &lockedRect, 0, d3dlockflag);
                 DX9_CHKERR(result);
                 if (result == D3D_OK)
                 {
                     buffer = lockedRect.pBits;
-                    pitch = (uint32)lockedRect.Pitch;
                 }
             }
             else if (mParent->GetTextureType() == TEXTURE_CUBE)
@@ -183,12 +209,11 @@ namespace Demi
                 IDirect3DCubeTexture9* texCUBE = static_cast<IDirect3DCubeTexture9*>(mTexture);
                 D3DLOCKED_RECT lockedRect;
                 HRESULT result = texCUBE->LockRect((D3DCUBEMAP_FACES)surface, (DWORD)level,
-                    &lockedRect, 0, D3DLOCK_NOSYSLOCK);
+                    &lockedRect, 0, d3dlockflag);
                 DX9_CHKERR(result);
                 if (result == D3D_OK)
                 {
                     buffer = lockedRect.pBits;
-                    pitch = (uint32)lockedRect.Pitch;
                 }
             }
         }
@@ -209,6 +234,47 @@ namespace Demi
                 IDirect3DCubeTexture9* texCUBE = static_cast<IDirect3DCubeTexture9*>(mTexture);
                 texCUBE->UnlockRect((D3DCUBEMAP_FACES)surface, level);
             }
+        }
+    }
+
+    void DiD3D9TextureDrv::CopyFromMemory(const DiPixelBox &srcBox, const DiBox &dst, uint32 level, uint32 surface /*= 0*/)
+    {
+        size_t rowWidth;
+        if (DiPixelBox::IsCompressedFormat(srcBox.format))
+        {
+            if (srcBox.format == PF_DXT1)
+                rowWidth = (srcBox.rowPitch / 4) * 8;
+            else
+                rowWidth = (srcBox.rowPitch / 4) * 16;
+        }
+        else
+        {
+            rowWidth = srcBox.rowPitch * DiPixelBox::GetNumElemBytes(srcBox.format);
+        }
+
+        RECT destRect, srcRect;
+        srcRect = ToD3DRECT(srcBox);
+        destRect = ToD3DRECT(dst);
+
+        IDirect3DSurface9* dxsurface = nullptr;
+
+        if (mParent->GetTextureType() == TEXTURE_2D)
+        {
+            IDirect3DTexture9* tex2D = static_cast<IDirect3DTexture9*>(mTexture);
+            DX9_CHKERR(tex2D->GetSurfaceLevel(level, &dxsurface));
+        }
+        else if (mParent->GetTextureType() == TEXTURE_CUBE)
+        {
+            IDirect3DCubeTexture9* texCUBE = static_cast<IDirect3DCubeTexture9*>(mTexture);
+            DX9_CHKERR(texCUBE->GetCubeMapSurface((D3DCUBEMAP_FACES)surface, level, &dxsurface));
+        }
+
+        if (D3DXLoadSurfaceFromMemory(dxsurface, NULL, &destRect,
+            srcBox.data, DiD3D9Mappings::D3D9FormatMapping[srcBox.format],
+            static_cast<UINT>(rowWidth),
+            NULL, &srcRect, D3DX_DEFAULT, 0) != D3D_OK)
+        {
+            DI_WARNING("D3DXLoadSurfaceFromMemory failed, cannot copy row stuff from memory.");
         }
     }
 }

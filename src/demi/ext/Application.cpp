@@ -13,6 +13,8 @@
 #include "GfxDriver.h"
 #include "Command.h"
 
+#define USE_OPEN_GL 0
+
 namespace Demi
 {
 #ifdef _DEBUG
@@ -81,7 +83,11 @@ namespace Demi
         DiLogManager* logmgr = new DiLogManager;
         logmgr->Init(mLogName);
 
+#if USE_OPEN_GL
         DiPlugin::LoadPlugin(gfxGLDrvLib);
+#else
+        DiPlugin::LoadPlugin(gfxD3D9DrvLib);
+#endif
 
         mAssetManager = new DiAssetManager;
         mAssetManager->SetBasePath(mMediaPath);
@@ -157,7 +163,12 @@ namespace Demi
         SAFE_DELETE(mCameraHelper);
         
         Driver->Shutdown();
+
+#if USE_OPEN_GL
         DiPlugin::UnloadPlugin(gfxGLDrvLib);
+#else
+        DiPlugin::UnloadPlugin(gfxD3D9DrvLib);
+#endif
 
         SAFE_DELETE(mAssetManager);
 

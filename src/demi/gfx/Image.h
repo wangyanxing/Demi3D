@@ -93,7 +93,7 @@ namespace Demi
         
         DiPixelBox(const DiBox& extents, DiPixelFormat pixelFormat, void *pixelData=0);
         
-        DiPixelBox(size_t width, size_t height,DiPixelFormat pixelFormat, void *pixelData=0);
+        DiPixelBox(uint32 width, uint32 height, DiPixelFormat pixelFormat, void *pixelData = 0);
 
     public:
 

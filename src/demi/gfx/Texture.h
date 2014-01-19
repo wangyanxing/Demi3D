@@ -25,13 +25,17 @@ namespace Demi
 
         virtual void    Release() = 0;
 
-        virtual void*   LockLevel(uint32 level, uint32 &pitch, uint32 surface = 0) = 0;
+        virtual void*   LockLevel(uint32 level, uint32 surface = 0, DiLockFlag lockflag = LOCK_NORMAL) = 0;
 
         virtual void    UnlockLevel(uint32 level, uint32 surface = 0) = 0;
 
         virtual void    Bind(uint32 samplerIndex) = 0;
 
-        virtual void    BlitToMemory(const DiBox &srcBox, const DiPixelBox &dst) = 0;
+        virtual void    CopyToMemory(const DiBox &srcBox, const DiPixelBox &dst) = 0;
+
+        void            CopyFromMemory(const DiPixelBox &srcBox, uint32 level, uint32 surface = 0);
+
+        virtual void    CopyFromMemory(const DiPixelBox &srcBox, const DiBox &dst, uint32 level, uint32 surface = 0) = 0;
 
         virtual void*   GetSurfaceHandle() = 0;
 
@@ -117,7 +121,7 @@ namespace Demi
 
         void                    OnDeviceReset(void);
 
-        void*                   LockLevel(uint32 level, uint32 &pitch, uint32 surface=0);
+        void*                   LockLevel(uint32 level, uint32 surface=0);
 
         void                    UnlockLevel(uint32 level, uint32 surface=0);
 
@@ -145,11 +149,13 @@ namespace Demi
 
         void                    SetViewportScale(DiVec2 val) { mViewportScale = val; }
 
-        void                    BlitToMemory(const DiPixelBox &dst);
+        void                    CopyToMemory(const DiPixelBox &dst);
 
-        void                    BlitToMemory(const DiBox &srcBox, const DiPixelBox &dst);
+        void                    CopyToMemory(const DiBox &srcBox, const DiPixelBox &dst);
 
         void*                   GetSurfaceHandle();
+
+        DiTextureDrv*           GetTextureDriver() { return mTextureDrv; }
 
     public:
 

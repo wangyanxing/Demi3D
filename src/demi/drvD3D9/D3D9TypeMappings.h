@@ -23,6 +23,5 @@ namespace Demi
         static DiPixelFormat        ConvertPixFormat(D3DFORMAT d3dfmt);
 
         static DWORD                GetLockOption(DiLockFlag lock, DiResUsage usage);
-
     };
 }
