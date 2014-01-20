@@ -36,6 +36,16 @@ namespace Demi
 
         void*                   GetSurfaceHandle();
 
+        void                    Upload(const DiPixelBox &src, const DiBox &dst, uint32 level, uint32 surface = 0);
+
+        void                    Download(const DiPixelBox &data, uint32 level, uint32 surface);
+
+    private:
+
+        void                    AllocateBuffer();
+
+        void                    DeallocateBuffer();
+
     private:
 
         GLenum                  mGLFormat;
