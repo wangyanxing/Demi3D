@@ -5,21 +5,11 @@
 
 namespace Demi
 {
-    DiD3D9DepthBuffer::DiD3D9DepthBuffer()
-    {
-    }
-
-    DiD3D9DepthBuffer::~DiD3D9DepthBuffer()
-    {
-        Release();
-    }
-
-    void DiD3D9DepthBuffer::Init(uint16 poolId, uint32 width, uint32 height,
+    DiD3D9DepthBuffer::DiD3D9DepthBuffer(uint16 poolId, uint32 width, uint32 height,
         void* depthBufferSurf, DiPixelFormat fmt,
         uint32 fsaa, uint32 multiSampleQuality, bool manual)
     {
         mPoolId = poolId;
-        mBitDepth = 0;
         mWidth = width;
         mHeight = height;
         mManual = manual;
@@ -43,6 +33,11 @@ namespace Demi
             mBitDepth = 32;
             break;
         }
+    }
+
+    DiD3D9DepthBuffer::~DiD3D9DepthBuffer()
+    {
+        Release();
     }
 
     void DiD3D9DepthBuffer::Release()

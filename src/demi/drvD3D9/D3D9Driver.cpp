@@ -545,8 +545,8 @@ namespace Demi
         if (FAILED(depthSurface->GetDesc(&dsDesc)))
             return NULL;
 
-        DiDepthBuffer *newDepthBuffer = DI_NEW DiD3D9DepthBuffer();
-        newDepthBuffer->Init(DiDepthBuffer::POOL_DEFAULT, dsDesc.Width, dsDesc.Height,
+        DiDepthBuffer *newDepthBuffer = DI_NEW DiD3D9DepthBuffer(
+            DiDepthBuffer::POOL_DEFAULT, dsDesc.Width, dsDesc.Height,
             depthSurface, DiD3D9Mappings::ConvertPixFormat(dsDesc.Format), 
             dsDesc.MultiSampleType, dsDesc.MultiSampleQuality, false);
 

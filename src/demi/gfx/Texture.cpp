@@ -13,6 +13,7 @@ namespace Demi
 
     DiTexture::DiTexture(const DiString& name)
         :DiAsset(name)
+        ,mTextureDrv(nullptr)
     {
         mMinFilter     = FT_LINEAR;
         mMagFilter     = FT_LINEAR;

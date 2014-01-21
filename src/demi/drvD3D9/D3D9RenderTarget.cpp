@@ -73,8 +73,8 @@ namespace Demi
 
         DX9_CHKERR(hr);
 
-        DiDepthBuffer* newDepthBuffer = DI_NEW DiD3D9DepthBuffer();
-        newDepthBuffer->Init(DiDepthBuffer::POOL_DEFAULT, srfDesc.Width, srfDesc.Height,
+        DiDepthBuffer* newDepthBuffer = DI_NEW DiD3D9DepthBuffer(
+            DiDepthBuffer::POOL_DEFAULT, srfDesc.Width, srfDesc.Height,
             depthBufferSurface, DiD3D9Mappings::ConvertPixFormat(dsfmt), 
             srfDesc.MultiSampleType, srfDesc.MultiSampleQuality, false);
 

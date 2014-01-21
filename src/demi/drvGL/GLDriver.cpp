@@ -1,6 +1,5 @@
 
 #include "GLDriver.h"
-#include "RenderTarget.h"
 #include "RenderUnit.h"
 #include "GLVertexBuffer.h"
 #include "GLIndexBuffer.h"
@@ -12,6 +11,7 @@
 #include "GLBufferManager.h"
 #include "GLTypeMappings.h"
 #include "GLFrameBuffer.h"
+#include "GLRenderTarget.h"
 
 #ifdef WIN32
 #   include "Win32Window.h"
@@ -264,7 +264,7 @@ namespace Demi
 
     DiRenderTarget* DiGLDriver::CreateRenderTarget()
     {
-        return nullptr;
+        return DI_NEW DiGLRenderTarget();
     }
 
     void DiGLDriver::CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd)
