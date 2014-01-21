@@ -14,6 +14,10 @@ namespace Demi
     class DiGLUtil;
     class DiGLBufferManager;
     class DiGLTextureDrv;
+    class DiGLFrameBuffer;
+    class DiGLDepthBuffer;
+    class DiGLRenderBuffer;
+    class DiGLFBOManager;
 
 #ifdef WIN32
     class DiWin32GLUtil;

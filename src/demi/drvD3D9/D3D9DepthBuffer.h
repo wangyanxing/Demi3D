@@ -21,8 +21,8 @@ namespace Demi
     public:
 
         void                Init(uint16 poolId, uint32 width, uint32 height,
-            void* depthBufferSurf, DiPixelFormat fmt,
-            uint32 fsaa, uint32 multiSampleQuality, bool manual);
+                                void* depthBufferSurf, DiPixelFormat fmt,
+                                uint32 fsaa, uint32 multiSampleQuality, bool manual);
 
         IDirect3DSurface9*  GetDepthBufferSurface() const
         {

@@ -18,28 +18,32 @@ namespace Demi
 
         DiGLRenderTarget();
 
-        virtual         ~DiGLRenderTarget();
+        virtual             ~DiGLRenderTarget();
 
     public:
 
-        void            AttachSurface();
+        void                AttachSurface();
 
-        void            DetachSurface();
+        void                DetachSurface();
 
-        bool            BindRenderTarget(uint8 mrtid);
+        bool                BindRenderTarget(uint8 mrtid);
 
-        bool            BindDepthStencil();
+        bool                BindDepthStencil();
 
-        bool            IsCompatibleWith(DiDepthBuffer* db);
+        bool                IsCompatibleWith(DiDepthBuffer* db);
 
-        DiDepthBuffer*  CreateDepthBuffer();
+        DiDepthBuffer*      CreateDepthBuffer();
 
-        void            PreBind();
+        void                PreBind();
 
     private:
 
-        GLuint          mRenderbufferID;
+        GLenum              mGLFormat;
 
-        GLenum          mGLFormat;
+        DiGLFrameBuffer*    mFrameBuffer;
+
+        DiGLRenderBuffer*   mDepthBuffer;
+
+        DiGLRenderBuffer*   mStencilBuffer;
     };
 }

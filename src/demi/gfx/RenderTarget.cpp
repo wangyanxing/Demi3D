@@ -38,7 +38,7 @@ namespace Demi
     {
     }
 
-    void DiRenderTarget::AttachTexture( DiTexture* surface )
+    void DiRenderTarget::AttachTexture(DiTexturePtr surface)
     {
         mParentTex = surface;
         mWidth = mParentTex->GetWidth();
