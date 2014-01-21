@@ -40,6 +40,8 @@ namespace Demi
 
         void                    Download(const DiPixelBox &data, uint32 level, uint32 surface);
 
+        void                    BindToFrameBuffer(GLenum attachment, uint32 level, uint32 surface);
+
     private:
 
         void                    AllocateBuffer();

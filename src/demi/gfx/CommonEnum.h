@@ -13,6 +13,7 @@ namespace Demi
 #define MAX_WORLD_MATS          75    
 #define MAX_TEXTURE_LAYERS      16
 #define MAX_LIGHTS              8    
+#define MAX_MRT                 8
 
     enum DiArchiveType
     {

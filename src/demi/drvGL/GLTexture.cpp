@@ -325,4 +325,15 @@ namespace Demi
             glPixelStorei(GL_PACK_ALIGNMENT, 4);
         }
     }
+
+    void DiGLTextureDrv::BindToFrameBuffer(GLenum attachment, uint32 level, uint32 surface)
+    {
+        GLenum faceType = GL_TEXTURE_2D;
+        if (mGLTextureType == GL_TEXTURE_CUBE_MAP)
+            faceType = GL_TEXTURE_CUBE_MAP_POSITIVE_X + surface;
+
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment,
+            faceType, mTextureID, level);
+    }
+
 }
