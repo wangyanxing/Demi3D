@@ -27,6 +27,20 @@ namespace Demi
 
     void DiGLTextureDrv::CopyToMemory(const DiBox &srcBox, const DiPixelBox &dst)
     {
+        DI_ASSERT(mBuffer);
+        if (!mBuffer->Contains(srcBox))
+        {
+            DI_WARNING("Source box out of range.");
+            return;
+        }
+
+        if (mBuffer->GetWidth() != srcBox.GetWidth() || mBuffer->GetHeight() != srcBox.GetHeight())
+        {
+            DI_WARNING("No scale is supported currently.");
+            return;
+        }
+
+        Download(dst,0,0);
     }
 
     void DiGLTextureDrv::Release()
