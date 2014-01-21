@@ -79,6 +79,9 @@ namespace Demi
         DiRenderTarget*         CreateRenderTarget();
 
         void                    SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a);
+
+        void                    GetDepthStencilFormatFor(GLenum internalColourFormat, GLenum *depthFormat,
+                                    GLenum *stencilFormat);
         
         void                    CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd);
 
@@ -91,6 +94,8 @@ namespace Demi
         DiWindow*               CreateWnd();
 
         static DiGLBufferManager*   BufferMgr;
+
+        static DiGLFBOManager*      FBOManager;
 
     private:
 
@@ -119,5 +124,7 @@ namespace Demi
         uint32                  mStencilMask;
 
         DiGLBufferManager*      mGLBufferManager;
+
+        DiGLFBOManager*         mGLFBOManager;
     };
 }

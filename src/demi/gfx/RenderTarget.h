@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "GfxPrerequisites.h"
 #include "DeviceLostListener.h"
+#include "Texture.h"
 
 namespace Demi 
 {
@@ -69,7 +69,7 @@ namespace Demi
                                 
         uint32                  GetHeight(void) const { return mHeight; }
 
-        void                    AttachTexture(DiTexture* texture);
+        void                    AttachTexture(DiTexturePtr texture);
 
         void                    DetachTexture();
 
@@ -135,7 +135,7 @@ namespace Demi
         
         DiViewport              mViewport;
 
-        DiTexture*              mParentTex;
+        DiTexturePtr            mParentTex;
 
         bool                    mShouldUpdate;
         

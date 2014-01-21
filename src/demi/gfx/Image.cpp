@@ -589,7 +589,7 @@ namespace Demi
         case PF_D24X8          : strncpy( pszStr, "PF_D24X8",          nBufLen ); return;
         case PF_D24X4S4        : strncpy( pszStr, "PF_D24X4S4",        nBufLen ); return;
         case PF_D24FS8         : strncpy( pszStr, "PF_D24FS8",         nBufLen ); return;
-        case PIXEL_FORMAT_MAX  : strncpy(pszStr,  "PF_MAX",            nBufLen ); return;
+        case PIXEL_FORMAT_MAX  : strncpy( pszStr, "PF_MAX",            nBufLen ); return;
         case PF_A8R8G8B8       : strncpy( pszStr, "PF_A8R8G8B8",       nBufLen ); return;
         case PF_X8R8G8B8       : strncpy( pszStr, "PF_X8R8G8B8",       nBufLen ); return;
         case PF_A8             : strncpy( pszStr, "PF_A8",             nBufLen ); return;
@@ -614,6 +614,15 @@ namespace Demi
         return;
     }
 
+    void DiPixelBox::GetBitDepths(DiPixelFormat format, int rgba[4])
+    {
+        const PixelFormatDescription &des = PixelFormatDescription::GetFormatDesc(format);
+        rgba[0] = des.rbits;
+        rgba[1] = des.gbits;
+        rgba[2] = des.bbits;
+        rgba[3] = des.abits;
+    }
+
     DiMap<DiPixelFormat,PixelFormatDescription> PixelFormatDescription::s_kDescs;
 
     PixelFormatDescription PixelFormatDescription::GetFormatDesc( DiPixelFormat format )
@@ -626,6 +635,21 @@ namespace Demi
 
         switch(format)
         {
+        case PF_R8G8B8:
+            {
+                PixelFormatDescription desc =
+                {
+                    3,  
+                    PFF_NATIVEENDIAN,
+                    PCT_BYTE, 3,
+                    8, 8, 8, 0,
+                    0xFF0000, 0x00FF00, 0x0000FF, 0,
+                    16, 8, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+            break;
         case PF_A8R8G8B8:
             {
                 PixelFormatDescription desc = 
@@ -636,6 +660,21 @@ namespace Demi
                     8, 8, 8, 8,
                     0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000,
                     16, 8, 0, 24
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+            break;
+        case PF_A8B8G8R8:
+            {
+                PixelFormatDescription desc = 
+                {
+                    4,
+                    PFF_HASALPHA | PFF_NATIVEENDIAN,
+                    PCT_BYTE, 4,
+                    8, 8, 8, 8,
+                    0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000,
+                    0, 8, 16, 24,
                 };
                 s_kDescs[format] = desc;
                 return desc;
@@ -698,6 +737,76 @@ namespace Demi
                 return desc;
             }
             break;
+        case PF_R16F:
+            {
+                PixelFormatDescription desc =
+                {
+                    2,
+                    PFF_FLOAT,
+                    PCT_FLOAT16, 1,
+                    16, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+            break;
+        case PF_G16R16F:
+            {
+                PixelFormatDescription desc =
+                {
+                    4,
+                    PFF_FLOAT,
+                    PCT_FLOAT16, 2,
+                    16, 16, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+            break;
+        case PF_A16B16G16R16F:
+            {
+                PixelFormatDescription desc =
+                {
+                    8,
+                    PFF_FLOAT | PFF_HASALPHA,
+                    PCT_FLOAT16, 4,
+                    16, 16, 16, 16,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+            break;
+        case PF_G32R32F:
+            {
+                PixelFormatDescription desc =
+                {
+                    8,
+                    PFF_FLOAT,
+                    PCT_FLOAT32, 2,
+                    32, 32, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+            break;
+        case PF_A32B32G32R32F:
+            {
+                PixelFormatDescription desc =
+                {
+                    16,
+                    PFF_FLOAT | PFF_HASALPHA,
+                    PCT_FLOAT32, 4,
+                    32, 32, 32, 32,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+            break;
         case PF_DXT1:
             {
                 PixelFormatDescription desc = 
@@ -712,7 +821,35 @@ namespace Demi
                 return desc;
             }
             break;
+        case PF_DXT2:
+            {
+                PixelFormatDescription desc = 
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+            break;
         case PF_DXT3:
+            {
+                PixelFormatDescription desc = 
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+            break;
+        case PF_DXT4:
             {
                 PixelFormatDescription desc = 
                 {

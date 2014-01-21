@@ -110,6 +110,8 @@ namespace Demi
         static uint32    GetFormatBlockSize(DiPixelFormat DiPixelFormat);
 
         static uint32    GetNumElemBytes( DiPixelFormat format );
+
+        static void      GetBitDepths(DiPixelFormat format, int rgba[4]);
                          
         static void      PackColour(const DiColor &colour, const DiPixelFormat pf,  void* dest);
                          

@@ -3,25 +3,31 @@
 #include "GLDepthBuffer.h"
 #include "GLDriver.h"
 #include "GLTypeMappings.h"
+#include "GLFrameBuffer.h"
+#include "GLRenderBuffer.h"
+
 #include "Texture.h"
 
 namespace Demi
 {
     DiGLRenderTarget::DiGLRenderTarget()
-        :mRenderbufferID(0),
-        mGLFormat(0)
+        :mGLFormat(0),
+        mFrameBuffer(nullptr),
+        mDepthBuffer(nullptr),
+        mStencilBuffer(nullptr)
     {
+        mFrameBuffer = DI_NEW DiGLFrameBuffer();
     }
 
     DiGLRenderTarget::~DiGLRenderTarget()
     {
+        DI_DELETE mFrameBuffer;
+        mFrameBuffer = nullptr;
     }
 
     bool DiGLRenderTarget::BindRenderTarget(uint8 mrtid)
     {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mRenderbufferID);
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, mrtid,
-            GL_RENDERBUFFER_EXT, mRenderbufferID);
+        mFrameBuffer->Bind();
         return true;
     }
 
@@ -34,20 +40,16 @@ namespace Demi
     {
         mGLFormat = DiGLTypeMappings::GLFormatMapping[mParentTex->GetFormat()];
 
-        glGenRenderbuffersEXT(1, &mRenderbufferID);
-        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mRenderbufferID);
-
-        // no MSAA now
-        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, mGLFormat, mWidth, mHeight);
+        mFrameBuffer->AttachSurface(0, mParentTex);
     }
 
     void DiGLRenderTarget::DetachSurface()
     {
-        glDeleteRenderbuffersEXT(1, &mRenderbufferID);
     }
 
     DiDepthBuffer* DiGLRenderTarget::CreateDepthBuffer()
     {
+
         return nullptr;
     }
 
@@ -69,6 +71,37 @@ namespace Demi
 
     bool DiGLRenderTarget::IsCompatibleWith(DiDepthBuffer* db)
     {
-        return false;
+        bool retVal = false;
+
+        if (mWidth != db->GetWidth() ||
+            mHeight != db->GetHeight() )
+            return retVal;
+
+        if (mDepthBuffer || mStencilBuffer)
+        {
+            GLenum internalFormat = DiGLTypeMappings::GLFormatMapping[mFrameBuffer->GetFormat()];
+            GLenum depthFormat, stencilFormat;
+
+            static_cast<DiGLDriver*>(Driver)->GetDepthStencilFormatFor(internalFormat, &depthFormat, &stencilFormat);
+
+            bool bSameDepth = false;
+
+            if (mDepthBuffer)
+                bSameDepth |= mDepthBuffer->GetGLFormat() == depthFormat;
+
+            bool bSameStencil = false;
+
+            if (!mStencilBuffer || mStencilBuffer == mDepthBuffer)
+                bSameStencil = stencilFormat == GL_NONE;
+            else
+            {
+                if (mStencilBuffer)
+                    bSameStencil = stencilFormat == mStencilBuffer->GetGLFormat();
+            }
+
+            retVal = bSameDepth && bSameStencil;
+        }
+
+        return retVal;
     }
 }

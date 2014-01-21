@@ -11,6 +11,7 @@
 #include "GLContext.h"
 #include "GLBufferManager.h"
 #include "GLTypeMappings.h"
+#include "GLFrameBuffer.h"
 
 #ifdef WIN32
 #   include "Win32Window.h"
@@ -31,7 +32,8 @@ namespace Demi
         mDepthWrite(true), 
         mStencilMask(0xFFFFFFFF),
         mGLBufferManager(nullptr),
-        mCurrentContext(nullptr)
+        mCurrentContext(nullptr),
+        mGLFBOManager(nullptr)
     {
         mColourWrite[0] = mColourWrite[1] = mColourWrite[2] = mColourWrite[3] = true;
         mGLBufferManager = DI_NEW DiGLBufferManager();
@@ -47,6 +49,9 @@ namespace Demi
 
         mGLUtil = _CreateGLUtil();
         _InitMainContext(_CreateContext(wnd));
+
+        mGLFBOManager = DI_NEW DiGLFBOManager(true);    // TODO: Check atimode
+
         return true;
     }
 
@@ -74,23 +79,17 @@ namespace Demi
 
     void DiGLDriver::ReleaseGfx()
     {
-        if (mMainContext)
-        {
-            DI_DELETE mMainContext;
-            mMainContext = nullptr;
-        }
+        DI_DELETE mMainContext;
+        mMainContext = nullptr;
 
-        if (mGLUtil)
-        {
-            DI_DELETE mGLUtil;
-            mGLUtil = nullptr;
-        }
+        DI_DELETE mGLUtil;
+        mGLUtil = nullptr;
 
-        if (mGLBufferManager)
-        {
-            DI_DELETE mGLBufferManager;
-            mGLBufferManager = nullptr;
-        }
+        DI_DELETE mGLBufferManager;
+        mGLBufferManager = nullptr;
+
+        DI_DELETE mGLFBOManager;
+        mGLFBOManager = nullptr;
 
         DI_LOG("OpenGL stuff successfully released.");
     }
@@ -532,5 +531,12 @@ namespace Demi
         glewContextInit(mGLUtil);
     }
 
+    void DiGLDriver::GetDepthStencilFormatFor(GLenum internalColourFormat, 
+        GLenum *depthFormat, GLenum *stencilFormat)
+    {
+        mGLFBOManager->GetBestDepthStencil(internalColourFormat, depthFormat, stencilFormat);
+    }
+
+    DiGLFBOManager* DiGLDriver::FBOManager = nullptr;
     DiGLBufferManager* DiGLDriver::BufferMgr = nullptr;
 }

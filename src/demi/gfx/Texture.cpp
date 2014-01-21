@@ -177,7 +177,7 @@ namespace Demi
         {
             if (!mRenderTarget)
                 mRenderTarget = Driver->CreateRenderTarget();
-            mRenderTarget->AttachTexture(this);
+            mRenderTarget->AttachTexture(shared_from_this());
         }
     }
 
