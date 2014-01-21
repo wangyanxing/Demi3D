@@ -48,6 +48,10 @@ namespace Demi
 
     private:
 
+        DiLockFlag              mCurrentLockFlag;
+
+        DiPixelBox*             mBuffer;
+
         GLenum                  mGLFormat;
 
         GLenum                  mGLTextureType;
@@ -55,7 +59,5 @@ namespace Demi
         GLuint                  mTextureID;
 
         uint32                  mImageSize;
-
-        void*                   mLockedBuffer;
     };
 }
