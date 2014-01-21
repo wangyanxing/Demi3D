@@ -8,6 +8,8 @@
 namespace Demi
 {
     DiGLRenderTarget::DiGLRenderTarget()
+        :mRenderbufferID(0),
+        mGLFormat(0)
     {
     }
 
@@ -17,6 +19,9 @@ namespace Demi
 
     bool DiGLRenderTarget::BindRenderTarget(uint8 mrtid)
     {
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mRenderbufferID);
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, mrtid,
+            GL_RENDERBUFFER_EXT, mRenderbufferID);
         return true;
     }
 
@@ -27,10 +32,18 @@ namespace Demi
 
     void DiGLRenderTarget::AttachSurface()
     {
+        mGLFormat = DiGLTypeMappings::GLFormatMapping[mParentTex->GetFormat()];
+
+        glGenRenderbuffersEXT(1, &mRenderbufferID);
+        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mRenderbufferID);
+
+        // no MSAA now
+        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, mGLFormat, mWidth, mHeight);
     }
 
     void DiGLRenderTarget::DetachSurface()
     {
+        glDeleteRenderbuffersEXT(1, &mRenderbufferID);
     }
 
     DiDepthBuffer* DiGLRenderTarget::CreateDepthBuffer()

@@ -14,8 +14,8 @@ namespace Demi
 
         enum PoolId
         {
-            POOL_NO_DEPTH        = 0,
-            POOL_MANUAL_USAGE    = 0,
+            POOL_NO_DEPTH       = 0,
+            POOL_MANUAL_USAGE   = 0,
             POOL_DEFAULT        = 1
         };
 

@@ -12,14 +12,13 @@
 
 namespace Demi
 {
-
     class DI_GLDRV_API DiGLRenderTarget : public DiRenderTarget
     {
     public:
 
         DiGLRenderTarget();
 
-        virtual     ~DiGLRenderTarget();
+        virtual         ~DiGLRenderTarget();
 
     public:
 
@@ -36,5 +35,11 @@ namespace Demi
         DiDepthBuffer*  CreateDepthBuffer();
 
         void            PreBind();
+
+    private:
+
+        GLuint          mRenderbufferID;
+
+        GLenum          mGLFormat;
     };
 }
