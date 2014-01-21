@@ -147,17 +147,17 @@ namespace Demi
         PF_G32R32F,
         PF_A32B32G32R32F,
 
-        PF_D16_LOCKABLE,
-        PF_D32,
-        PF_D15S1,
-        PF_D24S8,
-        PF_D24X8,
-        PF_D24X4S4,
-        PF_D16,
-        PF_D32F_LOCKABLE,
-        PF_D24FS8,
+        /* PF_D16_LOCKABLE,
+         PF_D32,
+         PF_D15S1,
+         PF_D24S8,
+         PF_D24X8,
+         PF_D24X4S4,
+         PF_D16,
+         PF_D32F_LOCKABLE,
+         PF_D24FS8,
 
-        PF_NULL,
+        PF_NULL,*/
 
         PIXEL_FORMAT_MAX
     };
