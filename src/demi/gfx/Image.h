@@ -103,8 +103,6 @@ namespace Demi
 
         static BOOL      IsCompressedFormat(DiPixelFormat DiPixelFormat);
                          
-        static BOOL      IsDepthStencilFormat(DiPixelFormat DiPixelFormat);
-                         
         static uint32    GetFormatNumBlocks(uint32 dimension, DiPixelFormat DiPixelFormat);
 
         static uint32    GetFormatBlockSize(DiPixelFormat DiPixelFormat);

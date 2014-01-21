@@ -88,8 +88,6 @@ namespace Demi
 
         DiTexturePtr            mCanvasTexture;
 
-        DiTexturePtr            mDepthStencil;
-
         typedef DiVector<DiRenderTarget*> UpdateRTs;
 
         UpdateRTs               mUpdateRTs;

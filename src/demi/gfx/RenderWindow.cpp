@@ -122,15 +122,6 @@ namespace Demi
         mCanvasTexture->SetAdaptedRT(mRenderBuffer);
         mCanvasTexture->SetViewportScale(DiVec2::UNIT_SCALE);
 
-        DiString depStencilName = "_can_ds_" + mName;
-        mDepthStencil = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(depStencilName);
-        mDepthStencil->SetDimensions(mWidth, mHeight);
-        mDepthStencil->SetFormat(PF_D24S8);
-        mDepthStencil->SetUsage(TU_DEPTH_STENCIL);
-        mDepthStencil->SetResourceUsage(RU_NONE);
-        mDepthStencil->CreateTexture();
-        mDepthStencil->SetAdaptedRT(mRenderBuffer);
-
         mPostEffectMgr = DI_NEW DiPostEffectManager(this);
         mGBuffer = DI_NEW DiGBuffer(this);
     }
@@ -140,7 +131,6 @@ namespace Demi
         DI_LOG("Closing render window : %s", mName.c_str());
 
         DiAssetManager::GetInstance().DestroyAsset(mCanvasTexture->GetName());
-        DiAssetManager::GetInstance().DestroyAsset(mDepthStencil->GetName());
 
         SAFE_DELETE(mGBuffer);
         SAFE_DELETE(mPostEffectMgr);

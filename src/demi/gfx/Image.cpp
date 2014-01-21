@@ -293,11 +293,6 @@ namespace Demi
         return FALSE;
     }
 
-    BOOL DiPixelBox::IsDepthStencilFormat( DiPixelFormat fmt )
-    {
-        return (fmt >= PF_D16_LOCKABLE && fmt <= PF_D24FS8);
-    }
-
     uint32 DiPixelBox::GetFormatNumBlocks( uint32 dimension, DiPixelFormat fmt )
     {
         uint32 blockDimension = 0;
@@ -584,11 +579,11 @@ namespace Demi
         switch( eFormat )
         {
         case PF_R8G8B8         : strncpy( pszStr, "PF_R8G8B8",         nBufLen ); return;
-        case PF_D32            : strncpy( pszStr, "PF_D32",            nBufLen ); return;
-        case PF_D15S1          : strncpy( pszStr, "PF_D15S1",          nBufLen ); return;
-        case PF_D24X8          : strncpy( pszStr, "PF_D24X8",          nBufLen ); return;
-        case PF_D24X4S4        : strncpy( pszStr, "PF_D24X4S4",        nBufLen ); return;
-        case PF_D24FS8         : strncpy( pszStr, "PF_D24FS8",         nBufLen ); return;
+//         case PF_D32            : strncpy( pszStr, "PF_D32",            nBufLen ); return;
+//         case PF_D15S1          : strncpy( pszStr, "PF_D15S1",          nBufLen ); return;
+//         case PF_D24X8          : strncpy( pszStr, "PF_D24X8",          nBufLen ); return;
+//         case PF_D24X4S4        : strncpy( pszStr, "PF_D24X4S4",        nBufLen ); return;
+//         case PF_D24FS8         : strncpy( pszStr, "PF_D24FS8",         nBufLen ); return;
         case PIXEL_FORMAT_MAX  : strncpy( pszStr, "PF_MAX",            nBufLen ); return;
         case PF_A8R8G8B8       : strncpy( pszStr, "PF_A8R8G8B8",       nBufLen ); return;
         case PF_X8R8G8B8       : strncpy( pszStr, "PF_X8R8G8B8",       nBufLen ); return;
@@ -599,10 +594,10 @@ namespace Demi
         case PF_DXT3           : strncpy( pszStr, "PF_DXT3",           nBufLen ); return;
         case PF_DXT4           : strncpy( pszStr, "PF_DXT4",           nBufLen ); return;
         case PF_DXT5           : strncpy( pszStr, "PF_DXT5",           nBufLen ); return;
-        case PF_D24S8          : strncpy( pszStr, "PF_D24S8",          nBufLen ); return;
-        case PF_D16_LOCKABLE   : strncpy( pszStr, "PF_D16_LOCKABLE",   nBufLen ); return;
-        case PF_D32F_LOCKABLE  : strncpy( pszStr, "PF_D32F_LOCKABLE",  nBufLen ); return;
-        case PF_D16            : strncpy( pszStr, "PF_D16",            nBufLen ); return;
+//         case PF_D24S8          : strncpy( pszStr, "PF_D24S8",          nBufLen ); return;
+//         case PF_D16_LOCKABLE   : strncpy( pszStr, "PF_D16_LOCKABLE",   nBufLen ); return;
+//         case PF_D32F_LOCKABLE  : strncpy( pszStr, "PF_D32F_LOCKABLE",  nBufLen ); return;
+//         case PF_D16            : strncpy( pszStr, "PF_D16",            nBufLen ); return;
         case PF_R16F           : strncpy( pszStr, "PF_R16F",           nBufLen ); return;
         case PF_G16R16F        : strncpy( pszStr, "PF_G16R16F",        nBufLen ); return;
         case PF_A16B16G16R16F  : strncpy( pszStr, "PF_A16B16G16R16F",  nBufLen ); return;

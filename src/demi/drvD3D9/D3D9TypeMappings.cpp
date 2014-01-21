@@ -50,16 +50,6 @@ namespace Demi
         D3DFMT_R32F,
         D3DFMT_G32R32F,
         D3DFMT_A32B32G32R32F,
-        D3DFMT_D16_LOCKABLE,
-        D3DFMT_D32,
-        D3DFMT_D15S1,
-        D3DFMT_D24S8,
-        D3DFMT_D24X8,
-        D3DFMT_D24X4S4,
-        D3DFMT_D16,
-        D3DFMT_D32F_LOCKABLE,
-        D3DFMT_D24FS8,
-        D3DFORMAT(MAKEFOURCC('N', 'U', 'L', 'L')),
     };
 
     DiPixelFormat DiD3D9Mappings::ConvertPixFormat(D3DFORMAT d3dfmt)
@@ -84,16 +74,6 @@ namespace Demi
             mapping[D3DFMT_R32F]     =    PF_R32F;
             mapping[D3DFMT_G32R32F]  =    PF_G32R32F;
             mapping[D3DFMT_A32B32G32R32F]=PF_A32B32G32R32F;
-            mapping[D3DFMT_D16_LOCKABLE] =PF_D16_LOCKABLE;
-            mapping[D3DFMT_D32]      =    PF_D32;
-            mapping[D3DFMT_D15S1]    =    PF_D15S1;
-            mapping[D3DFMT_D24S8]    =    PF_D24S8;
-            mapping[D3DFMT_D24X8]    =    PF_D24X8;
-            mapping[D3DFMT_D24X4S4]  =    PF_D24X4S4;
-            mapping[D3DFMT_D16]      =    PF_D16;
-            mapping[D3DFMT_D32F_LOCKABLE]  =  PF_D32F_LOCKABLE;
-            mapping[D3DFMT_D24FS8]   =    PF_D24FS8;
-            mapping[D3DFORMAT(MAKEFOURCC('N', 'U', 'L', 'L'))] = PF_NULL;
         }
 
 #ifdef _DEBUG
