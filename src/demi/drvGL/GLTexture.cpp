@@ -10,17 +10,18 @@ namespace Demi
         :mGLFormat(GL_NONE),
         mGLTextureType(GL_TEXTURE_2D),
         mTextureID(0),
-        mLockedBuffer(nullptr),
-        mImageSize(0)
+        mImageSize(0),
+        mBuffer(nullptr),
+        mCurrentLockFlag(LOCK_NORMAL)
     {
     }
 
     DiGLTextureDrv::~DiGLTextureDrv()
     {
-        if (mLockedBuffer)
+        if (mBuffer->data)
         {
-            DI_DELETE[] mLockedBuffer;
-            mLockedBuffer = nullptr;
+            delete[] (uint8*)mBuffer->data;
+            mBuffer->data = nullptr;
         }
     }
 
@@ -30,7 +31,12 @@ namespace Demi
 
     void DiGLTextureDrv::Release()
     {
-        glDeleteTextures(1, &mTextureID);
+        glDeleteTextures(1, &mTextureID); 
+        if (mBuffer)
+        {
+            DI_DELETE mBuffer;
+            mBuffer = nullptr;
+        }
     }
 
     void DiGLTextureDrv::CreateTexture()
@@ -39,6 +45,8 @@ namespace Demi
         uint32 height = mParent->GetHeight();
         uint32 numLevels = mParent->GetNumLevels();
         DiPixelFormat fmt = mParent->GetFormat();
+
+        mBuffer = DI_NEW DiPixelBox(width, height, fmt);
 
         mGLFormat = DiGLTypeMappings::GLFormatMapping[fmt];
         if (mGLFormat == GL_NONE)
@@ -137,20 +145,27 @@ namespace Demi
 
     void* DiGLTextureDrv::LockLevel(uint32 level, uint32 surface, DiLockFlag lockflag)
     {
+        DiBox lockbox(0, 0, mBuffer->GetWidth(), mBuffer->GetHeight());
+
         AllocateBuffer();
 
+        mCurrentLockFlag = lockflag;
         if (lockflag != LOCK_DISCARD)
         {
-            //Download();
-            // TODO
+            Download(*mBuffer, level, surface);
         }
 
-        return mLockedBuffer;
+        return mBuffer->data;
     }
 
     void DiGLTextureDrv::UnlockLevel(uint32 level, uint32 surface)
     {
-        // TODO
+        if (mCurrentLockFlag != LOCK_READ_ONLY)
+        {
+            DiBox lockbox(0, 0, mBuffer->GetWidth(), mBuffer->GetHeight());
+            Upload(*mBuffer, lockbox, level, surface);
+        }
+        DeallocateBuffer();
     }
 
     void* DiGLTextureDrv::GetSurfaceHandle()
@@ -167,9 +182,9 @@ namespace Demi
 
     void DiGLTextureDrv::AllocateBuffer()
     {
-        if (!mLockedBuffer)
+        if (!mBuffer->data)
         {
-            mLockedBuffer = DI_NEW uint8[mImageSize];
+            mBuffer->data = DI_NEW uint8[mImageSize];
         }
     }
 
@@ -177,8 +192,8 @@ namespace Demi
     {
         if (mParent->GetResourceUsage() & RU_STATIC)
         {
-            delete[](uint8*)mLockedBuffer;
-            mLockedBuffer = 0;
+            delete[] (uint8*)mBuffer->data;
+            mBuffer->data = nullptr;
         }
     }
 
