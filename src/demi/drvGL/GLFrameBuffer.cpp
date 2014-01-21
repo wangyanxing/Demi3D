@@ -4,7 +4,9 @@
 #include "GLDriver.h"
 #include "GLRenderTarget.h"
 #include "GLTexture.h"
+#include "GLDepthBuffer.h"
 #include "GLTypeMappings.h"
+#include "GLRenderBuffer.h"
 
 #include "Image.h"
 
@@ -154,7 +156,30 @@ namespace Demi
 
     void DiGLFrameBuffer::AttachDepthBuffer(DiDepthBuffer* depthBuffer)
     {
+        DiGLDepthBuffer *glDepthBuffer = static_cast<DiGLDepthBuffer*>(depthBuffer);
 
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mFBOId);
+
+        if (glDepthBuffer)
+        {
+            DiGLRenderBuffer *depthBuf = glDepthBuffer->GetDepthBuffer();
+            DiGLRenderBuffer *stencilBuf = glDepthBuffer->GetStencilBuffer();
+
+            // Attach depth buffer, if it has one.
+            if (depthBuf)
+                depthBuf->BindToFramebuffer(GL_DEPTH_ATTACHMENT_EXT);
+
+            // Attach stencil buffer, if it has one.
+            if (stencilBuf)
+                stencilBuf->BindToFramebuffer(GL_STENCIL_ATTACHMENT_EXT);
+        }
+        else
+        {
+            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT,
+                GL_RENDERBUFFER_EXT, 0);
+            glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT,
+                GL_RENDERBUFFER_EXT, 0);
+        }
     }
 
     void DiGLFrameBuffer::DetachDepthBuffer()

@@ -579,13 +579,9 @@ namespace Demi
         switch( eFormat )
         {
         case PF_R8G8B8         : strncpy( pszStr, "PF_R8G8B8",         nBufLen ); return;
-//         case PF_D32            : strncpy( pszStr, "PF_D32",            nBufLen ); return;
-//         case PF_D15S1          : strncpy( pszStr, "PF_D15S1",          nBufLen ); return;
-//         case PF_D24X8          : strncpy( pszStr, "PF_D24X8",          nBufLen ); return;
-//         case PF_D24X4S4        : strncpy( pszStr, "PF_D24X4S4",        nBufLen ); return;
-//         case PF_D24FS8         : strncpy( pszStr, "PF_D24FS8",         nBufLen ); return;
         case PIXEL_FORMAT_MAX  : strncpy( pszStr, "PF_MAX",            nBufLen ); return;
         case PF_A8R8G8B8       : strncpy( pszStr, "PF_A8R8G8B8",       nBufLen ); return;
+        case PF_A8B8G8R8       : strncpy( pszStr, "PF_A8B8G8R8",       nBufLen ); return;
         case PF_X8R8G8B8       : strncpy( pszStr, "PF_X8R8G8B8",       nBufLen ); return;
         case PF_A8             : strncpy( pszStr, "PF_A8",             nBufLen ); return;
         case PF_L8             : strncpy( pszStr, "PF_L8",             nBufLen ); return;
@@ -594,10 +590,6 @@ namespace Demi
         case PF_DXT3           : strncpy( pszStr, "PF_DXT3",           nBufLen ); return;
         case PF_DXT4           : strncpy( pszStr, "PF_DXT4",           nBufLen ); return;
         case PF_DXT5           : strncpy( pszStr, "PF_DXT5",           nBufLen ); return;
-//         case PF_D24S8          : strncpy( pszStr, "PF_D24S8",          nBufLen ); return;
-//         case PF_D16_LOCKABLE   : strncpy( pszStr, "PF_D16_LOCKABLE",   nBufLen ); return;
-//         case PF_D32F_LOCKABLE  : strncpy( pszStr, "PF_D32F_LOCKABLE",  nBufLen ); return;
-//         case PF_D16            : strncpy( pszStr, "PF_D16",            nBufLen ); return;
         case PF_R16F           : strncpy( pszStr, "PF_R16F",           nBufLen ); return;
         case PF_G16R16F        : strncpy( pszStr, "PF_G16R16F",        nBufLen ); return;
         case PF_A16B16G16R16F  : strncpy( pszStr, "PF_A16B16G16R16F",  nBufLen ); return;

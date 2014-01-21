@@ -28,6 +28,8 @@ namespace Demi
 
         bool                BindRenderTarget(uint8 mrtid);
 
+        bool                AttachDepthBuffer(DiDepthBuffer *depthBuffer);
+
         bool                BindDepthStencil();
 
         bool                IsCompatibleWith(DiDepthBuffer* db);

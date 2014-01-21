@@ -23,10 +23,6 @@ namespace Demi
 
         virtual             ~DiDepthBuffer();
 
-        virtual void        Init(uint16 poolId, uint32 width, uint32 height,
-                                void* depthBufferSurf, DiPixelFormat fmt,
-                                uint32 fsaa, uint32 multiSampleQuality, bool manual) = 0;
-
         void                SetPoolId( uint16 poolId );
 
         uint16              GetPoolId() const;

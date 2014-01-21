@@ -45,10 +45,28 @@ namespace Demi
 
     void DiGLRenderTarget::DetachSurface()
     {
+        mFrameBuffer->DetarchSurface(0);
     }
 
     DiDepthBuffer* DiGLRenderTarget::CreateDepthBuffer()
     {
+        DiDepthBuffer *ret = nullptr;
+
+        if (!mFrameBuffer) return ret;
+
+        GLenum glfmt = DiGLTypeMappings::GLFormatMapping[mFrameBuffer->GetFormat()];
+        GLuint depthFormat, stencilFormat;
+        DiGLDriver::FBOManager->GetBestDepthStencil(glfmt, &depthFormat, &stencilFormat);
+
+        DiGLRenderBuffer* db = DI_NEW DiGLRenderBuffer(depthFormat, GetWidth(), GetHeight());
+        DiGLRenderBuffer* sb = db;
+
+        if (depthFormat != GL_DEPTH24_STENCIL8_EXT && sb)
+        {
+            sb = DI_NEW DiGLRenderBuffer(stencilFormat, GetWidth(), GetHeight());
+        }
+
+        ret = DI_NEW DiGLDepthBuffer(0, GetWidth(), GetHeight(), db, sb, 0, 0, false);
 
         return nullptr;
     }
@@ -104,4 +122,16 @@ namespace Demi
 
         return retVal;
     }
+
+    bool DiGLRenderTarget::AttachDepthBuffer(DiDepthBuffer *depthBuffer)
+    {
+        bool result;
+        if ((result = DiRenderTarget::AttachDepthBuffer(depthBuffer)))
+        {
+            mFrameBuffer->AttachDepthBuffer(depthBuffer);
+        }
+
+        return result;
+    }
+
 }
