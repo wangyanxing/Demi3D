@@ -447,6 +447,7 @@ namespace Demi
         ret = DI_NEW DiWin32GLContext(static_cast<DiWin32GLUtil*>(mGLUtil), wnd);
         DI_LOG("Win32 GL context created.");
 #endif
+        mContextMap[wnd] = ret;
         return ret;
     }
 
@@ -539,6 +540,11 @@ namespace Demi
         GLenum *depthFormat, GLenum *stencilFormat)
     {
         mGLFBOManager->GetBestDepthStencil(internalColourFormat, depthFormat, stencilFormat);
+    }
+
+    DiGLContext* DiGLDriver::GetContext(DiWndHandle wnd)
+    {
+        return mContextMap[wnd];
     }
 
     DiGLFBOManager* DiGLDriver::FBOManager = nullptr;

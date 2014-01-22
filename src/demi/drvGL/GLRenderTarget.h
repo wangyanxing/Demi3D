@@ -61,5 +61,11 @@ namespace Demi
     public:
 
         void                Create(DiWndHandle wnd);
+
+        bool                SwapBuffer();
+
+    private:
+
+        DiWndHandle         mWnd;
     };
 }

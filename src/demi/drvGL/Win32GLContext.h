@@ -30,6 +30,8 @@ namespace Demi
 
         DiGLContext*    Clone() const;
 
+        void            SwapBuffer();
+
     private:
 
         void            InitFromHwnd(HWND hwnd);

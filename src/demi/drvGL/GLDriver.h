@@ -91,6 +91,8 @@ namespace Demi
 
         void                    Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil = 0);
 
+        DiGLContext*            GetContext(DiWndHandle wnd);
+
         DiWindow*               CreateWnd();
 
         static DiGLBufferManager*   BufferMgr;
@@ -114,6 +116,10 @@ namespace Demi
         DiGLContext*            mMainContext;
 
         DiGLContext*            mCurrentContext;
+
+        typedef DiMap<DiWndHandle, DiGLContext*> ContextMap;
+
+        ContextMap              mContextMap;
 
         DiGLUtil*               mGLUtil;
 
