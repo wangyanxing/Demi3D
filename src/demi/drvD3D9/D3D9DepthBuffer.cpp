@@ -6,7 +6,7 @@
 namespace Demi
 {
     DiD3D9DepthBuffer::DiD3D9DepthBuffer(uint16 poolId, uint32 width, uint32 height,
-        void* depthBufferSurf, DiPixelFormat fmt,
+        void* depthBufferSurf, D3DFORMAT fmt,
         uint32 fsaa, uint32 multiSampleQuality, bool manual)
     {
         mPoolId = poolId;
@@ -14,7 +14,7 @@ namespace Demi
         mHeight = height;
         mManual = manual;
         mMultiSampleQuality = multiSampleQuality;
-        mD3DFormat = DiD3D9Mappings::D3D9FormatMapping[fmt];
+        mD3DFormat = fmt;
         mDepthBuffer = (IDirect3DSurface9*)depthBufferSurf;
 
         switch (mD3DFormat)

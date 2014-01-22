@@ -15,7 +15,7 @@ namespace Demi
     public:
 
         DiD3D9DepthBuffer(uint16 poolId, uint32 width, uint32 height,
-            void* depthBufferSurf, DiPixelFormat fmt,
+            void* depthBufferSurf, D3DFORMAT fmt,
             uint32 fsaa, uint32 multiSampleQuality, bool manual);
 
         ~DiD3D9DepthBuffer();

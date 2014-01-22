@@ -48,4 +48,18 @@ namespace Demi
 
         DiGLRenderBuffer*   mStencilBuffer;
     };
+
+
+    class DI_GLDRV_API DiGLWindowTarget : public DiGLRenderTarget
+    {
+    public:
+
+        DiGLWindowTarget();
+
+        ~DiGLWindowTarget();
+
+    public:
+
+        void                Create(DiWndHandle wnd);
+    };
 }

@@ -18,6 +18,7 @@ namespace Demi
     class DiGLDepthBuffer;
     class DiGLRenderBuffer;
     class DiGLFBOManager;
+    class DiGLWindowTarget;
 
 #ifdef WIN32
     class DiWin32GLUtil;

@@ -71,10 +71,12 @@ namespace Demi
 
     void DiGLDriver::BeginFrame()
     {
+        glEnable(GL_SCISSOR_TEST);
     }
     
     void DiGLDriver::EndFrame()
     {
+        glDisable(GL_SCISSOR_TEST);
     }
 
     void DiGLDriver::ReleaseGfx()
@@ -269,7 +271,9 @@ namespace Demi
 
     void DiGLDriver::CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd)
     {
-        
+        auto wt = DI_NEW DiGLWindowTarget();
+        wt->Create(wnd);
+        outRT = wt;
     }
 
     void DiGLDriver::GetWindowDimension(DiWndHandle wnd, uint32& w, uint32& h)

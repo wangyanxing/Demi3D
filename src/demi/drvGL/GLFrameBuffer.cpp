@@ -139,6 +139,8 @@ namespace Demi
         case GL_FRAMEBUFFER_UNSUPPORTED_EXT:
             DI_WARNING("Unsupported frame buffer format.");
             break;
+        case GL_FRAMEBUFFER_COMPLETE_EXT:
+                break;
         default:
             DI_WARNING("Cannot init frame buffer object.");
         }
