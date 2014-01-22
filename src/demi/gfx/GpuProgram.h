@@ -100,15 +100,15 @@ namespace Demi
 
     public:
 
-        const DiString&            GetName(void) const;
+        const DiString&         GetName(void) const;
 
         Type                    GetType(void) const;
 
-        uint32                    GetDataSize(void) const;
+        uint32                  GetDataSize(void) const;
 
         virtual void            Bind() const = 0;
 
-        DiAny&                    GetData() {return mData;}
+        DiAny&                  GetData() {return mData;}
 
         const DiAny&            GetData() const {return mData;}
 
@@ -116,9 +116,9 @@ namespace Demi
 
         bool                    IsPublicVariable() const { return mPublicVar; }
 
-        HelperStruct&            GetHelperData() { return mHelperData; }
+        HelperStruct&           GetHelperData() { return mHelperData; }
 
-        const HelperStruct&        GetHelperData() const { return mHelperData; }
+        const HelperStruct&     GetHelperData() const { return mHelperData; }
 
         void                    ParsePublicHelperScript();
 
@@ -128,7 +128,7 @@ namespace Demi
 
         Type                    mType;
 
-        DiAny                    mData;
+        DiAny                   mData;
 
         bool                    mPublicVar;
         
@@ -199,9 +199,9 @@ namespace Demi
 
         virtual void            Bind(const DiShaderEnvironment& shaderEnv) = 0;
 
-        virtual void            Release()   = 0;
+        virtual void            Release() = 0;
 
-        virtual DiShaderType    GetType()   = 0;
+        virtual DiShaderType    GetType() = 0;
 
         virtual void            LoadVariables(std::function<void(DiGpuVariable*)> func) = 0;
 

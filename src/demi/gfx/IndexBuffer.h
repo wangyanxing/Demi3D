@@ -36,6 +36,8 @@ namespace Demi
 
         virtual void            Unlock() = 0;
 
+        DiIndexBufType          GetType() const { return mFormat; }
+
     protected:
 
         DiIndexBufType          mFormat;
