@@ -134,4 +134,27 @@ namespace Demi
         return result;
     }
 
+
+    DiGLWindowTarget::DiGLWindowTarget()
+    {
+       
+    }
+
+    DiGLWindowTarget::~DiGLWindowTarget()
+    {
+
+    }
+
+    void DiGLWindowTarget::Create(DiWndHandle wnd)
+    {
+        Driver->GetWindowDimension(wnd, mWidth, mHeight);
+
+        DiGLDepthBuffer *depthBuffer = DI_NEW DiGLDepthBuffer(DiDepthBuffer::POOL_DEFAULT, 
+            mWidth, mHeight,
+            nullptr, nullptr,
+            0, 0, true);
+
+        AttachDepthBuffer(depthBuffer);
+    }
+
 }

@@ -14,6 +14,7 @@ namespace Demi
         mBuffer(nullptr),
         mCurrentLockFlag(LOCK_NORMAL)
     {
+        mParent = parent;
     }
 
     DiGLTextureDrv::~DiGLTextureDrv()

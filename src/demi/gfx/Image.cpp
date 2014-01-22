@@ -243,16 +243,6 @@ namespace Demi
         uint32 numPixels = width * height ;
         switch(format)
         {
-        case PF_A8R8G8B8:
-            size = numPixels * sizeof(uint8) * 4;
-            break;
-        case PF_A8:
-        case PF_L8:
-            size = numPixels * sizeof(uint8);
-            break;
-        case PF_R32F:
-            size = numPixels * sizeof(float);
-            break;
         case PF_DXT1:
             width   = ComputeCompressedDimension(width);
             height  = ComputeCompressedDimension(height);
@@ -264,6 +254,8 @@ namespace Demi
             height  = ComputeCompressedDimension(height);
             size    = ComputeImageByteSize(width, height, PF_A8R8G8B8) / 4;
             break;
+        default:
+            size    = GetNumElemBytes(format) * numPixels;
         }
         DI_ASSERT(size);
         return size;

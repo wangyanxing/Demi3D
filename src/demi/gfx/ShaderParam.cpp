@@ -146,7 +146,7 @@ namespace Demi
         }
         else
         {
-            DI_WARNING("Failed to write the float variable : %s",name.c_str());
+            //DI_WARNING("Failed to write the float variable : %s",name.c_str());
         }
     }
 

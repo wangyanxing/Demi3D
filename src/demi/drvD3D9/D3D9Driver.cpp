@@ -547,7 +547,7 @@ namespace Demi
 
         DiDepthBuffer *newDepthBuffer = DI_NEW DiD3D9DepthBuffer(
             DiDepthBuffer::POOL_DEFAULT, dsDesc.Width, dsDesc.Height,
-            depthSurface, DiD3D9Mappings::ConvertPixFormat(dsDesc.Format), 
+            depthSurface, dsDesc.Format, 
             dsDesc.MultiSampleType, dsDesc.MultiSampleQuality, false);
 
         mDepthBufferPool[newDepthBuffer->GetPoolId()].push_back(newDepthBuffer);
