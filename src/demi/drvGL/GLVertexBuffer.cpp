@@ -35,8 +35,6 @@ namespace Demi
         }
 
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, mBufferId);
-
-        // Initialize mapped buffer and set usage
         glBufferDataARB(GL_ARRAY_BUFFER_ARB, size, NULL, DiGLTypeMappings::GetGLUsage(usage));
     }
 
@@ -83,16 +81,15 @@ namespace Demi
         if (!lk)
         {
             GLenum access = 0;
-            // Use glMapBuffer
+            
             glBindBufferARB(GL_ARRAY_BUFFER_ARB, mBufferId);
-            // Use glMapBuffer
+            
             if (flag == LOCK_DISCARD)
             {
-                // Discard the buffer
                 glBufferDataARB(GL_ARRAY_BUFFER_ARB, size, NULL,
                     DiGLTypeMappings::GetGLUsage(mResUsage));
-
             }
+
             if (mResUsage & RU_WRITE_ONLY)
                 access = GL_WRITE_ONLY_ARB;
             else if (flag == LOCK_READ_ONLY)

@@ -123,7 +123,7 @@ namespace Demi
 
         void    BindEnvironment(const DiShaderEnvironment& shaderEnv) const;
 
-        int        GetRegisterID(const char* name);
+        int     GetRegisterID(const char* name);
     };
 
     //////////////////////////////////////////////////////////////////////////

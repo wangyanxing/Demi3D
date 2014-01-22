@@ -190,12 +190,44 @@ namespace Demi
         if (!_BindSourceData(unit))
             return false;
 
+        GLint primType;
+        switch (unit->mPrimitiveType)
+        {
+        case PT_POINTLIST:
+            primType = GL_POINTS;
+            break;
+        case PT_LINELIST:
+            primType = GL_LINES;
+            break;
+        case PT_LINESTRIP:
+            primType = GL_LINE_STRIP;
+            break;
+        case PT_TRIANGLELIST:
+            primType = GL_TRIANGLES;
+            break;
+        case PT_TRIANGLESTRIP:
+            primType = GL_TRIANGLE_STRIP;
+            break;
+        case PT_TRIANGLEFAN:
+            primType = GL_TRIANGLE_FAN;
+            break;
+        }
+
         if (!unit->mIndexBuffer)
         {
+            // TODO
         }
         else
         {
             unit->mIndexBuffer->Bind();
+            GLenum indexType = unit->mIndexBuffer->GetType() == IB_16BITS ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
+            uint32 indexSize = unit->mIndexBuffer->GetType() == IB_16BITS ? sizeof(unsigned short) : sizeof(unsigned int);
+
+            void* pBufferData = nullptr;
+            pBufferData = VBO_BUFFER_OFFSET(
+                unit->mIndexOffset * indexSize);
+
+            glDrawElements(primType, unit->mIndexBuffer->GetMaxIndices(), indexType, pBufferData);
         }
 
         return true;
