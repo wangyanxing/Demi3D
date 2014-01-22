@@ -25,5 +25,7 @@ namespace Demi
         virtual void            Release() = 0;
 
         virtual DiGLContext*    Clone() const = 0;
+
+        virtual void            SwapBuffer() = 0;
     };
 }

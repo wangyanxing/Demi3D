@@ -5,6 +5,7 @@
 #include "GLTypeMappings.h"
 #include "GLFrameBuffer.h"
 #include "GLRenderBuffer.h"
+#include "GLContext.h"
 
 #include "Texture.h"
 
@@ -136,6 +137,7 @@ namespace Demi
 
 
     DiGLWindowTarget::DiGLWindowTarget()
+        :mWnd(NULL)
     {
        
     }
@@ -147,6 +149,7 @@ namespace Demi
 
     void DiGLWindowTarget::Create(DiWndHandle wnd)
     {
+        mWnd = wnd;
         Driver->GetWindowDimension(wnd, mWidth, mHeight);
 
         DiGLDepthBuffer *depthBuffer = DI_NEW DiGLDepthBuffer(DiDepthBuffer::POOL_DEFAULT, 
@@ -155,6 +158,13 @@ namespace Demi
             0, 0, true);
 
         AttachDepthBuffer(depthBuffer);
+    }
+
+    bool DiGLWindowTarget::SwapBuffer()
+    {
+        DiGLContext* context = static_cast<DiGLDriver*>(Driver)->GetContext(mWnd);
+        context->SwapBuffer();
+        return true;
     }
 
 }
