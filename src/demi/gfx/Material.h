@@ -144,10 +144,6 @@ namespace Demi
 
     protected:
 
-        void                        LoadVertexShader(const DiString& vsname);
-
-        void                        LoadPixelShader(const DiString& psname);
-
         DiCullMode                  mCullMode;
 
         bool                        mDepthWrite;
