@@ -8,6 +8,7 @@
 #include "VertexDeclaration.h"
 #include "GfxDriver.h"
 #include "RenderWindow.h"
+#include "ShaderProgram.h"
 #include "Win32Window.h"
 
 #include "D3D9TypeMappings.h"
@@ -838,5 +839,11 @@ namespace Demi
         if (a)
             val |= D3DCOLORWRITEENABLE_ALPHA;
         StateCache->SetRenderState(D3DRS_COLORWRITEENABLE, val);
+    }
+
+    void DiD3D9Driver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env)
+    {
+        vs->Bind(env);
+        ps->Bind(env);
     }
 }

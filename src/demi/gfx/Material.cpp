@@ -52,22 +52,19 @@ namespace Demi
         if (!mVertexShader || !mPixelShader)
             return;
 
-        if (mShaderParameter)
-            mShaderParameter->Bind();
-
         Driver->BindMaterialStates(this);
 
         DiShaderEnvironment &shaderEnv = *Driver->GetShaderEnvironment();
 
         // common lighting parameters
-        shaderEnv.ambientColor    = mAmbient;
-        shaderEnv.diffuseColor    = mDiffuse;
-        shaderEnv.specularColor = mSpecular;
+        shaderEnv.ambientColor   = mAmbient;
+        shaderEnv.diffuseColor   = mDiffuse;
+        shaderEnv.specularColor  = mSpecular;
         shaderEnv.opacity        = mOpacity;
-        shaderEnv.shininess        = mShininess;
+        shaderEnv.shininess      = mShininess;
 
-        mVertexShader->Bind(shaderEnv);
-        mPixelShader->Bind(shaderEnv);
+        Driver->BindShaders(mVertexShader, mPixelShader, shaderEnv);
+        mShaderParameter->Bind();
     }
 
     BOOL DiMaterial::Load( DiDataStreamPtr data )

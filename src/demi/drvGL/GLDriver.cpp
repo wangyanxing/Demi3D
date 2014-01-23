@@ -1,17 +1,20 @@
 
 #include "GLDriver.h"
-#include "RenderUnit.h"
 #include "GLVertexBuffer.h"
 #include "GLIndexBuffer.h"
 #include "GLVertexDeclaration.h"
 #include "GfxDriver.h"
 #include "GLTexture.h"
-#include "RenderWindow.h"
 #include "GLContext.h"
 #include "GLBufferManager.h"
 #include "GLTypeMappings.h"
 #include "GLFrameBuffer.h"
 #include "GLRenderTarget.h"
+#include "GLShader.h"
+#include "GLShaderVariable.h"
+
+#include "RenderWindow.h"
+#include "RenderUnit.h"
 
 #ifdef WIN32
 #   include "Win32Window.h"
@@ -26,6 +29,9 @@ GLenum glewContextInit(DiGLUtil*);
 
 namespace Demi
 {
+    DiGLFBOManager*    DiGLDriver::FBOManager = nullptr;
+    DiGLBufferManager* DiGLDriver::BufferMgr  = nullptr;
+
     DiGLDriver::DiGLDriver()
         :mMainContext(nullptr),
         mGLUtil(nullptr),
@@ -33,7 +39,8 @@ namespace Demi
         mStencilMask(0xFFFFFFFF),
         mGLBufferManager(nullptr),
         mCurrentContext(nullptr),
-        mGLFBOManager(nullptr)
+        mGLFBOManager(nullptr),
+        mCurrentProgram(nullptr)
     {
         mColourWrite[0] = mColourWrite[1] = mColourWrite[2] = mColourWrite[3] = true;
         mGLBufferManager = DI_NEW DiGLBufferManager();
@@ -579,6 +586,27 @@ namespace Demi
         return mContextMap[wnd];
     }
 
-    DiGLFBOManager* DiGLDriver::FBOManager = nullptr;
-    DiGLBufferManager* DiGLDriver::BufferMgr = nullptr;
+    void DiGLDriver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env)
+    {
+        DiGLShaderLinker* prog = _GetProgram(vs->GetShader(), ps->GetShader());
+        prog->Bind();
+    }
+
+    DiGLShaderLinker* DiGLDriver::_GetProgram(DiShaderInstance* vs, DiShaderInstance* ps)
+    {
+        auto it = mProgramMaps.find(DiPair<DiShaderInstance*, DiShaderInstance*>(vs, ps));
+        if (it != mProgramMaps.end())
+        {
+            return it->second;
+        }
+
+        // create a new one
+        DiGLShaderLinker* ret = new DiGLShaderLinker(static_cast<DiGLShaderInstance*>(vs),
+            static_cast<DiGLShaderInstance*>(ps));
+
+        mProgramMaps[DiPair<DiShaderInstance*, DiShaderInstance*>(vs, ps)] = ret;
+
+        return ret;
+    }
+
 }
