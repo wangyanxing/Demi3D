@@ -39,8 +39,8 @@ namespace Demi
             mShaderType = SHADER_PIXEL;
         }
 
-        mRowCodes = data->GetAsString();
-        return mRowCodes.empty()?FALSE:TRUE;
+        mRawCodes = data->GetAsString();
+        return mRawCodes.empty()?FALSE:TRUE;
     }
 
     BOOL DiShaderProgram::Load()
@@ -63,13 +63,13 @@ namespace Demi
 
     BOOL DiShaderProgram::LoadingComplete() const
     {
-        return mRowCodes.empty() ? FALSE : TRUE;
+        return mRawCodes.empty() ? FALSE : TRUE;
     }
 
     void DiShaderProgram::SetCode( DiShaderType type, const DiString& str )
     {
         mShaderType = type;
-        mRowCodes = str;
+        mRawCodes = str;
     }
 
     bool DiShaderProgram::Compile(const DiCompileDesc& desc)
@@ -95,13 +95,13 @@ namespace Demi
 
         mShader->mCompileDesc = desc;
 
-        if (mCodes.empty())
+        if (mRawCodes.empty())
         {
             DI_WARNING("Empty shader code : %s", mFileName.c_str());
             return false;
         }
 
-        return mShader->Compile(mCodes);
+        return mShader->Compile(mRawCodes);
     }
 
     bool DiShaderProgram::Compile()

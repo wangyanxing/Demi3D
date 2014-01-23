@@ -34,7 +34,7 @@ namespace Demi
 
         void                        SetCode(DiShaderType,const DiString& str);
 
-        DiString&                   GetCode(){return mCodes;}
+        DiString&                   GetCode(){ return mRawCodes; }
 
         bool                        Compile(const DiCompileDesc& desc);
 
@@ -63,9 +63,7 @@ namespace Demi
 
         DiString                    mFileName;
 
-        DiString                    mCodes;
-
-        DiString                    mRowCodes;
+        DiString                    mRawCodes;
 
         DiString                    mShaderFileName;
         
