@@ -623,8 +623,8 @@ namespace Demi
 
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(matName);
 
-        mat->LoadVertexShader(DiMaterialDefine::TERRAIN_VERTEX_SHADER);
-        mat->LoadPixelShader(DiMaterialDefine::TERRAIN_PIXEL_SHADER);
+        mat->LoadShader(DiMaterialDefine::TERRAIN_VERTEX_SHADER,
+                        DiMaterialDefine::TERRAIN_PIXEL_SHADER);
 
         DiShaderParameter* params = mat->GetShaderParameter();
     

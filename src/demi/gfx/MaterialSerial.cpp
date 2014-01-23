@@ -353,31 +353,32 @@ namespace Demi
         // op -> shader -> variables
         for(size_t i = 0; i < ops.size(); ++i)
             ParseMatOpNode(ops[i],target);
-        for(size_t i = 0; i < shaders.size(); ++i)
-            ParseShaderNode(shaders[i],target);
+
+        DiString vsFile, psFile;
+        for (size_t i = 0; i < shaders.size(); ++i)
+        {
+            DiXMLElement& shaderNode = shaders[i];
+            DiString shadertype = shaderNode.GetAttribute("name");
+            DiString shaderfile = shaderNode.GetValue();
+            if (shadertype.empty())
+            {
+                DI_WARNING("Parsing material failed, invalid shader tags.");
+                return;
+            }
+            if (shadertype == "vertex")
+                vsFile = shaderfile;
+            else if (shadertype == "pixel")
+                psFile = shaderfile;
+            else
+            {
+                DI_WARNING("Parsing material failed, invalid shader type.");
+            }
+        }
+        target->LoadShader(vsFile, psFile);
+
         for(size_t i = 0; i < variables.size(); ++i)
             ParseVarNode(variables[i],target);
     }
-
-    void DiMaterialSerializer::ParseShaderNode( DiXMLElement shaderNode, DiMaterial* target )
-    {
-        DiString shadertype = shaderNode.GetAttribute("name");
-        DiString shaderfile = shaderNode.GetValue();
-        if (shadertype.empty())
-        {
-            DI_WARNING("Parsing material failed, invalid shader tags.");
-            return;
-        }
-        if (shadertype == "vertex")
-            target->LoadVertexShader(shaderfile);
-        else if (shadertype == "pixel")
-            target->LoadPixelShader(shaderfile);
-        else
-        {
-            DI_WARNING("Parsing material failed, invalid shader type.");
-        }
-    }
-
 
     void DiMaterialSerializer::ParseVarNode( DiXMLElement varNode, DiMaterial* target )
     {

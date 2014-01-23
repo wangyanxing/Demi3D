@@ -54,10 +54,6 @@ namespace Demi
 
         void                        LoadShader(const DiString& vsname,const DiString& psname);
 
-        void                        LoadVertexShader(const DiString& vsname);
-
-        void                        LoadPixelShader(const DiString& psname);
-
         DiString                    GetVertexShaderName() const;
 
         DiString                    GetPixelShaderName() const;
@@ -147,6 +143,10 @@ namespace Demi
         static DiAssetType          TYPE;
 
     protected:
+
+        void                        LoadVertexShader(const DiString& vsname);
+
+        void                        LoadPixelShader(const DiString& psname);
 
         DiCullMode                  mCullMode;
 

@@ -96,7 +96,7 @@ namespace Demi
 
         DiGLShaderInstance* mPS;
 
-        bool                mLinked;
+        GLint               mLinked;
 
         DiSet<GLuint>       mValidAttributes;
     };

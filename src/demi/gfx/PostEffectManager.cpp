@@ -31,8 +31,8 @@ namespace Demi
 
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>("_post_out");
 
-        mat->LoadVertexShader(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER);
-        mat->LoadPixelShader(DiMaterialDefine::SCREEN_QUAD_PIXEL_SHADER);
+        mat->LoadShader(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,
+                        DiMaterialDefine::SCREEN_QUAD_PIXEL_SHADER);
 
         mScreenQuad->SetBatchGroup(BATCH_POST_FILTER);
         mScreenQuad->SetMaterial(mat);

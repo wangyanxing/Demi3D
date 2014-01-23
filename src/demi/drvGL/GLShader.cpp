@@ -127,7 +127,6 @@ namespace Demi
             if (infologLength > 0)
             {
                 GLint charsWritten = 0;
-
                 GLcharARB* infoLog = new GLcharARB[infologLength];
 
                 glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
@@ -173,7 +172,7 @@ namespace Demi
         : mGLHandle(0)
         , mVS(vs)
         , mPS(ps)
-        , mLinked(false)
+        , mLinked(0)
     {
     }
 
@@ -228,6 +227,14 @@ namespace Demi
         if (mPS)
         {
             mPS->LinkToProgramObject(mGLHandle);
+        }
+
+        glLinkProgramARB(mGLHandle);
+        glGetObjectParameterivARB(mGLHandle, GL_OBJECT_LINK_STATUS_ARB, &mLinked);
+
+        if (mLinked)
+        {
+            DiGLShaderInstance::LogObjectInfo(DiString(" GLSL link result : "), mGLHandle);
         }
     }
 
