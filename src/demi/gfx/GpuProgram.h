@@ -205,7 +205,7 @@ namespace Demi
 
         virtual void            LoadVariables(std::function<void(DiGpuVariable*)> func) = 0;
 
-        virtual void            Compile(const DiString& code) = 0;
+        virtual bool            Compile(const DiString& code) = 0;
 
         DiCompileDesc           mCompileDesc;
     };

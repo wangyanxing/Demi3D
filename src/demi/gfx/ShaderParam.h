@@ -65,8 +65,6 @@ namespace Demi
 
         bool                    HasVariableType(DiGpuVariable::Type varType);
 
-        void                    ProcessPublicVars(DiShaderProgram* prog);
-
     protected:
 
         DiShaderParameter &operator = (const DiShaderParameter&);

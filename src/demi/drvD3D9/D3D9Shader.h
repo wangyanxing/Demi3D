@@ -72,9 +72,9 @@ namespace Demi
     class DI_D3D9DRV_API DiShaderConstants : DiBase
     {
     public:
-        ID3DXConstantTable*    table;
+        ID3DXConstantTable* table;
 
-        DiShaderType    type;
+        DiShaderType type;
 
         int modelMatrix;
         int viewMatrix;
@@ -152,14 +152,14 @@ namespace Demi
         {
         }
 
-        void                Compile(const DiString& code)
+        bool                Compile(const DiString& code)
         {
-            DiD3D9ShaderUtils<type, _Myt>::CompileShader(this, code);
+            return DiD3D9ShaderUtils<type, _Myt>::CompileShader(this, code);
         }
 
         void                Load(DWORD* data)
         {
-            DiD3D9ShaderUtils<type, _Myt*>::LoadShader(this, data);
+            return DiD3D9ShaderUtils<type, _Myt*>::LoadShader(this, data);
         }
 
         void                Bind(const DiShaderEnvironment& shaderEnv)
@@ -227,7 +227,7 @@ namespace Demi
     {
     public:
 
-        static void CompileShader(T* shaderInstance, const DiString& code)
+        static bool CompileShader(T* shaderInstance, const DiString& code)
         {
             DiMarcoDefineList marcos;
             marcos = shaderInstance->mCompileDesc.marcos;
@@ -270,7 +270,7 @@ namespace Demi
                     errorLog = "Shader compile failed:" + errorLog.substr(i + 7);
                 }
 
-                DI_ERROR(errorLog.c_str());
+                DI_WARNING(errorLog.c_str());
             }
 
             SAFE_ARRAY_DELETE(defs);
@@ -279,6 +279,8 @@ namespace Demi
 
             SAFE_RELEASE(dXShaderBuffer);
             SAFE_RELEASE(dXErrorBuffer);
+
+            return hResult == S_OK;
         }
 
         template<DiShaderType shaderTp, typename T>

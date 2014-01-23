@@ -255,8 +255,6 @@ namespace Demi
             }
             this->mVariables.push_back(var);
         });
-
-        ProcessPublicVars(prog);
     }
 
     void DiShaderParameter::UnloadVariables()
@@ -313,20 +311,6 @@ namespace Demi
         else
         {
             DI_WARNING("Failed to write the color variable : %s",name.c_str());
-        }
-    }
-
-    void DiShaderParameter::ProcessPublicVars(DiShaderProgram* prog)
-    {
-        DiMap<DiString,DiString>& map = prog->GetVariableScripts();
-        for (auto it = map.begin(); it != map.end(); ++it)
-        {
-            DiGpuVariable* var = FindVariable(it->first);
-            if (var)
-            {
-                var->mHelperScript = it->second;
-                var->ParsePublicHelperScript();
-            }
         }
     }
 }
