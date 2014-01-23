@@ -84,6 +84,8 @@ namespace Demi
 
         virtual void                SetShaderConsts(DiShaderType type, int regID, const DiColor& col) = 0;
 
+        virtual void                BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env) = 0;
+
         virtual void                Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil = 0) = 0;
 
         virtual bool                IsDeviceLost() const = 0;

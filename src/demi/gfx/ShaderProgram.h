@@ -10,7 +10,7 @@
 
 namespace Demi 
 {
-    class DiShaderProgram : public DiBase
+    class DI_GFX_API DiShaderProgram : public DiBase
     {
     public:
 

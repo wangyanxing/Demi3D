@@ -52,6 +52,8 @@ namespace Demi
 
         void                    SetShaderConsts(DiShaderType type, int regID, const DiColor& col);
 
+        void                    BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env);
+
         void                    SetViewport(int x, int y, int w, int h, float minz = 0.0f, float maxz = 1.0f);
 
         void                    SetFillMode(DiFillMode mode);
@@ -95,9 +97,9 @@ namespace Demi
 
         DiWindow*               CreateWnd();
 
-        static DiGLBufferManager*   BufferMgr;
+        static DiGLBufferManager* BufferMgr;
 
-        static DiGLFBOManager*      FBOManager;
+        static DiGLFBOManager*    FBOManager;
 
     private:
 
@@ -108,6 +110,8 @@ namespace Demi
         bool                    _BindSourceData(DiRenderUnit* unit);
 
         void                    _InitMainContext(DiGLContext* context);
+
+        DiGLShaderLinker*       _GetProgram(DiShaderInstance* vs, DiShaderInstance* ps);
 
     private:
 
@@ -132,5 +136,11 @@ namespace Demi
         DiGLBufferManager*      mGLBufferManager;
 
         DiGLFBOManager*         mGLFBOManager;
+
+        typedef DiMap<DiPair<DiShaderInstance*, DiShaderInstance*>, DiGLShaderLinker*> ProgramMap;
+
+        ProgramMap              mProgramMaps;
+
+        DiGLShaderLinker*       mCurrentProgram;
     };
 }

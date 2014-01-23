@@ -16,7 +16,8 @@ namespace Demi
     enum DiVsVersion
     {
         VS_INVALID = -1,
-        VS_NONE = 0,
+
+        VS_NONE    = 0,
         VS_1_1,
         VS_2_0,
         VS_2_a,
@@ -29,7 +30,8 @@ namespace Demi
     enum DiPsVersion
     {
         PS_INVALID = -1,
-        PS_NONE = 0,
+
+        PS_NONE    = 0,
         PS_1_1,
         PS_1_2,
         PS_1_3,
@@ -43,8 +45,8 @@ namespace Demi
         NUM_PIXEL_SHADER_VERSIONS
     };
 
-    typedef DiPair<DiString,DiString>    DiMarcoDefine;
-    typedef DiVector<DiMarcoDefine>        DiMarcoDefineList;
+    typedef DiPair<DiString,DiString>   DiMarcoDefine;
+    typedef DiVector<DiMarcoDefine>     DiMarcoDefineList;
 
     struct DiCompileDesc
     {
@@ -55,7 +57,7 @@ namespace Demi
 
         DiString            profile;
 
-        DiMarcoDefineList    marcos;
+        DiMarcoDefineList   marcos;
 
         DiString            entryName;
     };
@@ -82,18 +84,6 @@ namespace Demi
             NUM_VARIABLE_TYPES
         };
 
-        struct HelperStruct
-        {
-            HelperStruct();
-
-            DiString    refName;
-            DiString    desc;
-            float        maxValue;
-            float        minValue;
-            float        stepValue;
-            bool        asColor;
-        };
-
         DiGpuVariable(const DiString& name, Type type);
 
         virtual                 ~DiGpuVariable(void);
@@ -114,14 +104,6 @@ namespace Demi
 
         void                    SetData(DiAny& a){ mData = a; }
 
-        bool                    IsPublicVariable() const { return mPublicVar; }
-
-        HelperStruct&           GetHelperData() { return mHelperData; }
-
-        const HelperStruct&     GetHelperData() const { return mHelperData; }
-
-        void                    ParsePublicHelperScript();
-
     protected:
 
         DiString                mName;
@@ -129,12 +111,6 @@ namespace Demi
         Type                    mType;
 
         DiAny                   mData;
-
-        bool                    mPublicVar;
-        
-        DiString                mHelperScript;
-
-        HelperStruct            mHelperData;
     };
 
 

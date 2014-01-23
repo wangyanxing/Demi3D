@@ -20,6 +20,7 @@ namespace Demi
     class DiGLFBOManager;
     class DiGLWindowTarget;
     class DiGLGpuVariable;
+    class DiGLShaderLinker;
 
 #ifdef WIN32
     class DiWin32GLUtil;

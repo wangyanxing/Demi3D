@@ -219,7 +219,7 @@ namespace Demi
 
     void DiGLShaderLinker::Link()
     {
-        // all shaders should be compiled before link to program object
+        // all shaders should be compiled before linking to program objects
         if (mVS)
         {
             mVS->LinkToProgramObject(mGLHandle);
