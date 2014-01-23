@@ -36,9 +36,9 @@ namespace Demi
 
         DiString&                   GetCode(){return mCodes;}
 
-        void                        Compile(const DiCompileDesc& desc);
+        bool                        Compile(const DiCompileDesc& desc);
 
-        void                        Compile();
+        bool                        Compile();
 
         DiShaderType                GetShaderType() const { return mShaderType; }
 
@@ -47,10 +47,6 @@ namespace Demi
         DiShaderInstance*           GetShader();
 
         void                        Bind(const DiShaderEnvironment& shaderEnv);
-
-        void                        ParseHelperScript();
-
-        DiMap<DiString,DiString>&   GetVariableScripts() { return mVariableScripts; }
 
         static DiString&            GetDefaultVsProfile() { return sDefaultVsProfile; }
 
@@ -80,8 +76,5 @@ namespace Demi
         static DiString             sDefaultVsProfile;
 
         static DiString             sDefaultPsProfile;
-
-        DiMap<DiString,DiString>    mVariableScripts;
-        
     };
 }

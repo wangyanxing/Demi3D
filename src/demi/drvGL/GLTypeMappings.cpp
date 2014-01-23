@@ -73,6 +73,8 @@ namespace Demi
             return 2;
         case VERT_USAGE_COLOR:
             return 3;
+        case VERT_USAGE_SECONDARY_COLOR:
+            return 4;
         case VERT_USAGE_BLENDINDICES:
             return 7;
         case VERT_USAGE_TEXCOORD:
@@ -121,4 +123,24 @@ namespace Demi
         }
     }
 
+    GLuint DiGLTypeMappings::IsAttributeValid(uint8 semantic)
+    {
+        switch (semantic)
+        {
+        case VERT_USAGE_POSITION:
+        case VERT_USAGE_NORMAL:
+        case VERT_USAGE_COLOR:
+        case VERT_USAGE_SECONDARY_COLOR:
+        case VERT_USAGE_TEXCOORD:
+            return false;
+
+        case VERT_USAGE_BLENDINDICES:
+        case VERT_USAGE_BLENDWEIGHT:
+        case VERT_USAGE_TANGENT:
+        case VERT_USAGE_BINORMAL:
+            return true;
+        }
+
+        return false;
+    }
 }
