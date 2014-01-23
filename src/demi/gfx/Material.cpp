@@ -83,83 +83,55 @@ namespace Demi
         return TRUE;    
     }
 
-    void DiMaterial::LoadShader( const DiString& vsname,
-                                const DiString& psname)
+    void DiMaterial::LoadShader(const DiString& vsname, const DiString& psname)
     {
-        LoadVertexShader(vsname);
-        LoadPixelShader(psname);
-    }
-
-    void DiMaterial::LoadVertexShader( const DiString& vsname)
-    {
-        if(!DiShaderManager::GetInstancePtr())
+        if (!DiShaderManager::GetInstancePtr())
             return;
 
-        mVertexShader = DiShaderManager::GetInstance().LoadShader(vsname,mShaderFlag);
+        mVertexShader = DiShaderManager::GetInstance().LoadShader(vsname, mShaderFlag);
+        mPixelShader  = DiShaderManager::GetInstance().LoadShader(psname, mShaderFlag);
 
         if (mVertexShader && mVertexShader->GetShader())
-        {
-            mShaderParameter->LoadVariables(mVertexShader,SHADER_VERTEX);
-        }
-    }
+            mShaderParameter->LoadVariables(mVertexShader, SHADER_VERTEX);
 
-    void DiMaterial::LoadPixelShader( const DiString& psname)
-    {
-        if(!DiShaderManager::GetInstancePtr())
-            return;
-
-        mPixelShader = DiShaderManager::GetInstance().LoadShader(psname,mShaderFlag);
-
-        if (mPixelShader->GetShader())
-            mShaderParameter->LoadVariables(mPixelShader,SHADER_PIXEL);
+        if (mPixelShader && mPixelShader->GetShader())
+            mShaderParameter->LoadVariables(mPixelShader, SHADER_PIXEL);
     }
 
     BOOL DiMaterial::LoadingComplete() const
     {
-        return (mVertexShader && mPixelShader)?TRUE:FALSE;
+        return (mVertexShader && mPixelShader) ? TRUE : FALSE;
     }
 
     DiString DiMaterial::GetVertexShaderName() const
     {
         if (!mVertexShader)
-        {
             return "";
-        }
         else
-        {
             return mVertexShader->GetName();
-        }
     }
 
     DiString DiMaterial::GetPixelShaderName() const
     {
         if (!mPixelShader)
-        {
             return "";
-        }
         else
-        {
             return mPixelShader->GetName();
-        }
     }
 
     bool DiMaterial::HasTexture()
     {
         if (!mShaderParameter)
-        {
             return false;
-        }
 
-        return mShaderParameter->HasVariableType(DiGpuVariable::VARIABLE_SAMPLER2D) || 
+        return mShaderParameter->HasVariableType(DiGpuVariable::VARIABLE_SAMPLER2D) ||
             mShaderParameter->HasVariableType(DiGpuVariable::VARIABLE_SAMPLERCUBE);
     }
 
     void DiMaterial::SetEnableVertColor( bool val )
     {
         if (mEnableVertColor != val)
-        {
             mEnableVertColor = val;
-        }
     }
 
     void DiMaterial::SetExtraParams(DiCompileDesc& desc)
@@ -171,14 +143,11 @@ namespace Demi
                                               const DiPair<DiString,DiString>& marco )
     {
         DiShaderProgram* shader;
+
         if (type == SHADER_VERTEX)
-        {
             shader = mVertexShader;
-        }
         else if (type == SHADER_PIXEL)
-        {
             shader = mPixelShader;
-        }
 
         if (shader)
         {
@@ -216,27 +185,15 @@ namespace Demi
     {
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateManualAsset<DiMaterial>(newname);
 
-        if (mVertexShader)
-            mat->LoadVertexShader(mVertexShader->GetName());
-        else
-        {
-            DI_WARNING("No Vertex Shader in this material");
-        }
+        mat->LoadShader(mVertexShader->GetName(), mPixelShader->GetName());
 
-        if (mPixelShader)
-            mat->LoadPixelShader(mPixelShader->GetName());
-        else
-        {
-            DI_WARNING("No Pixel Shader in this material");
-        }
-
-        mat->mCullMode         = mCullMode;
-        mat->mDepthWrite     = mDepthWrite;
-        mat->mDepthCheck     = mDepthCheck;
-        mat->mWireframe         = mWireframe;
-        mat->mForceWireframe = mForceWireframe;
-        mat->mEnableVertColor= mEnableVertColor;
-        mat->mBlendMode         = mBlendMode;
+        mat->mCullMode        = mCullMode;
+        mat->mDepthWrite      = mDepthWrite;
+        mat->mDepthCheck      = mDepthCheck;
+        mat->mWireframe       = mWireframe;
+        mat->mForceWireframe  = mForceWireframe;
+        mat->mEnableVertColor = mEnableVertColor;
+        mat->mBlendMode       = mBlendMode;
 
         mShaderParameter->CloneVarsTo(mat->GetShaderParameter());
         
