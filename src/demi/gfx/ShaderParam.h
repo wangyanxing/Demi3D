@@ -27,7 +27,7 @@ namespace Demi
 
     public:
 
-        void                    LoadVariables(DiShaderProgram* prog, DiShaderType shaderType);
+        void                    LoadVariables(DiShaderProgram* prog);
 
         void                    UnloadVariables();
 

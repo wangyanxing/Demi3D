@@ -11,6 +11,14 @@
 
 namespace Demi
 {
+    struct DiGLShaderConstant
+    {
+        GLint  location;
+        GLenum type;
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+
     class DiGLShaderInstance : public DiShaderInstance
     {
     public:
@@ -72,9 +80,15 @@ namespace Demi
 
         void                Link();
 
-        void                ExtractAttributes();
+        void                LoadConstants();
+
+        void                LoadAttributes();
 
         bool                IsAttributeValid(DiVertexUsage semantic, uint8 index);
+
+        DiGLShaderConstant* GetConstant(const DiString& constname);
+
+        bool                HasConstant(const DiString& constname);
 
     private:
 
@@ -99,5 +113,9 @@ namespace Demi
         GLint               mLinked;
 
         DiSet<GLuint>       mValidAttributes;
+
+        typedef DiHashMap<DiString, DiGLShaderConstant> Consts;
+
+        Consts              mConsts;
     };
 }

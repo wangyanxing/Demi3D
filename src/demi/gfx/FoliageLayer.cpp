@@ -66,9 +66,10 @@ namespace Demi
             {
                 si->mCompileDesc = desc;
                 si->Compile(vp->GetCode());
-                msp->LoadVariables(vp,SHADER_VERTEX);
             }
         }
+
+        msp->LoadVariables(vp);
 
         msp->WriteFloat("fadeRange", 100);
         msp->WriteTexture2D("diffuseTexture",mDesc->DemiureName);

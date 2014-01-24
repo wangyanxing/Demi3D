@@ -19,20 +19,20 @@ namespace Demi
     DiMaterial::DiMaterial(const DiString& name) :
         DiAsset(name),mShaderParameter(NULL)
     {
-        mOpacity        = 1.0f;
-        mDepthWrite     = TRUE;
-        mDepthCheck     = TRUE;
-        mCullMode       = CULL_CW;
-        mWireframe      = FALSE;
-        mForceWireframe = FALSE;
-        mBlendMode      = BLEND_REPLACE;
-        mEnableVertColor= FALSE;
-        mInstanceState  = INSTANCE_DISABLE;
-        mShaderFlag     = 0;
-        mCommonVsType   = CVT_MAX_MATS;
-        mVertexShader   = NULL;
-        mPixelShader    = NULL;
-        mShininess      = 32.0f;
+        mOpacity         = 1.0f;
+        mDepthWrite      = true;
+        mDepthCheck      = true;
+        mCullMode        = CULL_CW;
+        mWireframe       = false;
+        mForceWireframe  = false;
+        mBlendMode       = BLEND_REPLACE;
+        mEnableVertColor = false;
+        mInstanceState   = INSTANCE_DISABLE;
+        mShaderFlag      = 0;
+        mCommonVsType    = CVT_MAX_MATS;
+        mVertexShader    = NULL;
+        mPixelShader     = NULL;
+        mShininess       = 32.0f;
 
         mShaderParameter = DI_NEW DiShaderParameter(*this);
     }
@@ -50,7 +50,7 @@ namespace Demi
     void DiMaterial::Bind() const
     {
         if (!mVertexShader || !mPixelShader)
-            return;
+            return; // TODO: set a default material
 
         Driver->BindMaterialStates(this);
 
@@ -72,7 +72,7 @@ namespace Demi
         DiMaterialSerializer ms;
         if(ms.ParseMaterial(data,this) == FALSE)
         {
-            DI_ERROR("Failed to load the material : %s",data->GetName().c_str());
+            DI_WARNING("Failed to load the material : %s",data->GetName().c_str());
             return FALSE;
         }
         return TRUE;
@@ -88,14 +88,14 @@ namespace Demi
         if (!DiShaderManager::GetInstancePtr())
             return;
 
-        mVertexShader = DiShaderManager::GetInstance().LoadShader(vsname, mShaderFlag);
-        mPixelShader  = DiShaderManager::GetInstance().LoadShader(psname, mShaderFlag);
+        mVertexShader = DiShaderManager::GetInstance().LoadShader(vsname, SHADER_VERTEX, mShaderFlag);
+        mPixelShader  = DiShaderManager::GetInstance().LoadShader(psname, SHADER_PIXEL , mShaderFlag);
 
         if (mVertexShader && mVertexShader->GetShader())
-            mShaderParameter->LoadVariables(mVertexShader, SHADER_VERTEX);
+            mShaderParameter->LoadVariables(mVertexShader);
 
         if (mPixelShader && mPixelShader->GetShader())
-            mShaderParameter->LoadVariables(mPixelShader, SHADER_PIXEL);
+            mShaderParameter->LoadVariables(mPixelShader);
     }
 
     BOOL DiMaterial::LoadingComplete() const
@@ -105,18 +105,12 @@ namespace Demi
 
     DiString DiMaterial::GetVertexShaderName() const
     {
-        if (!mVertexShader)
-            return "";
-        else
-            return mVertexShader->GetName();
+        return mVertexShader ? mVertexShader->GetShaderFileName() : DiString::BLANK;
     }
 
     DiString DiMaterial::GetPixelShaderName() const
     {
-        if (!mPixelShader)
-            return "";
-        else
-            return mPixelShader->GetName();
+        return mPixelShader ? mPixelShader->GetShaderFileName() : DiString::BLANK;
     }
 
     bool DiMaterial::HasTexture()
@@ -139,8 +133,7 @@ namespace Demi
         desc.AddMarco(DiMaterialDefine::PARAM_VERTEX_COLOR,mEnableVertColor?"1":"0");
     }
 
-    void DiMaterial::RecompileShaderWithMarco( DiShaderType type, 
-                                              const DiPair<DiString,DiString>& marco )
+    void DiMaterial::RecompileShader( DiShaderType type, const DiPair<DiString,DiString>& marco )
     {
         DiShaderProgram* shader;
 
@@ -154,7 +147,7 @@ namespace Demi
             DiShaderInstance* si = shader->GetShader();
             si->mCompileDesc.AddMarco(marco.first,marco.second);
             si->Compile(shader->GetCode());
-            mShaderParameter->LoadVariables(shader,type);
+            mShaderParameter->LoadVariables(shader);
         }
     }
 
@@ -162,7 +155,7 @@ namespace Demi
     {
         static int quickcreateID = 0;
         DiString name;
-        name.Format("quick_%d",quickcreateID++);
+        name.Format("quick_%d", quickcreateID++);
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(name);
 
         mat->SetShaderFlag(flag);

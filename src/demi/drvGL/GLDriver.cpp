@@ -295,12 +295,12 @@ namespace Demi
 
     DiShaderInstance* DiGLDriver::CreateVSInstance(DiShaderProgram* prog)
     {
-        return nullptr;
+        return DI_NEW DiGLShaderInstance(SHADER_VERTEX, prog);
     }
 
     DiShaderInstance* DiGLDriver::CreatePSInstance(DiShaderProgram* prog)
     {
-        return nullptr;
+        return DI_NEW DiGLShaderInstance(SHADER_PIXEL, prog);
     }
 
     DiRenderTarget* DiGLDriver::CreateRenderTarget()

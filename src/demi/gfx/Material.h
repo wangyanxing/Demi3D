@@ -105,7 +105,7 @@ namespace Demi
         void                        BindVariable( const DiGpuVariable &variable, 
                                         const void *data) const;
 
-        void                        RecompileShaderWithMarco(DiShaderType shader,
+        void                        RecompileShader(DiShaderType shader,
                                         const DiPair<DiString,DiString>& marco);
 
         DiMaterialPtr               Clone(const DiString& newname);
