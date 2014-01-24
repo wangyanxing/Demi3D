@@ -8,10 +8,10 @@ namespace Demi
     DiString DiShaderProgram::sDefaultPsProfile = "ps_3_0";
     DiString DiShaderProgram::sDefaultVsProfile = "vs_3_0";
 
-    DiShaderProgram::DiShaderProgram( const DiString& name )
+    DiShaderProgram::DiShaderProgram(const DiString& name, DiShaderType shaderType)
         : mFileName(name),
-        mShaderType(SHADER_UNKNOW),
-        mShader(NULL)
+        mShaderType(shaderType),
+        mShader(nullptr)
     {
     }
 
@@ -25,45 +25,35 @@ namespace Demi
         return ASSET_SHADER;
     }
 
-    BOOL DiShaderProgram::Load( DiDataStreamPtr data )
+    bool DiShaderProgram::Load(DiDataStreamPtr data)
     {
         mShaderFileName = data->GetName();
         mShaderFileName.ToLower();
-
-        if (mShaderFileName.CheckFileExtension("vsh"))
-        {
-            mShaderType = SHADER_VERTEX;
-        }
-        else if (mShaderFileName.CheckFileExtension("psh"))
-        {
-            mShaderType = SHADER_PIXEL;
-        }
-
         mRawCodes = data->GetAsString();
-        return mRawCodes.empty()?FALSE:TRUE;
+        return mRawCodes.empty() ? false : true;
     }
 
-    BOOL DiShaderProgram::Load()
+    bool DiShaderProgram::Load()
     {
         return Load(mFileName);
     }
 
-    BOOL DiShaderProgram::Load( const DiString& filename )
+    bool DiShaderProgram::Load(const DiString& filename)
     {
         DiDataStreamPtr buf = DiAssetManager::GetInstance().OpenArchive(filename);
         if (!buf)
         {
-            return FALSE;
+            return false;
         }
 
         Load(buf);
 
-        return TRUE;
+        return true;
     }
 
-    BOOL DiShaderProgram::LoadingComplete() const
+    bool DiShaderProgram::LoadingComplete() const
     {
-        return mRawCodes.empty() ? FALSE : TRUE;
+        return mRawCodes.empty() ? false : true;
     }
 
     void DiShaderProgram::SetCode( DiShaderType type, const DiString& str )

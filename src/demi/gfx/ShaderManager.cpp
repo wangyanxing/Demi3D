@@ -49,7 +49,7 @@ namespace Demi
         }
     }
 
-    DiShaderProgram* DiShaderManager::LoadShader(const DiString& filename, uint64 flag)
+    DiShaderProgram* DiShaderManager::LoadShader(const DiString& filename, DiShaderType type, uint64 flag)
     {
         DiShaderProgram* shader = NULL;
 
@@ -63,7 +63,7 @@ namespace Demi
                 return flagIt->second;
         }
 
-        shader = DI_NEW DiShaderProgram(filename);
+        shader = DI_NEW DiShaderProgram(filename, type);
         BOOL ret = shader->Load();
 
         if(!ret)
@@ -73,10 +73,8 @@ namespace Demi
             return NULL;
         }
 
-        DiShaderType type = shader->GetShaderType();
-        
         DiCompileDesc desc;
-        desc.entryName = type == SHADER_VERTEX?"vs_main":"ps_main";
+        desc.entryName = type == SHADER_VERTEX ? "vs_main" : "ps_main";
         desc.profile = DiShaderProgram::GetDefaultProfile(type);
 
         ModifyMarcosByFlag(flag,desc);

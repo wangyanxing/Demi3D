@@ -14,7 +14,7 @@ namespace Demi
     {
     public:
 
-        DiShaderProgram(const DiString& name);
+        DiShaderProgram(const DiString& name, DiShaderType shaderType);
 
         virtual                     ~DiShaderProgram();
 
@@ -22,13 +22,13 @@ namespace Demi
 
         DiAssetType                 GetAssetType() const;
 
-        BOOL                        LoadingComplete() const;
+        bool                        LoadingComplete() const;
 
-        BOOL                        Load(DiDataStreamPtr data);
+        bool                        Load(DiDataStreamPtr data);
 
-        BOOL                        Load();
+        bool                        Load();
 
-        BOOL                        Load(const DiString& filename);
+        bool                        Load(const DiString& filename);
 
         DiString                    GetShaderFileName() const { return mShaderFileName; }
 

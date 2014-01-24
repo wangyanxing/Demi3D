@@ -152,9 +152,7 @@ namespace Demi
 
         GLenum glErr = glGetError();
         if (glErr != GL_NO_ERROR)
-        {
             LogGLSLError(glErr, "LinkToProgramObject error: ",programObject);
-        }
     }
 
     void DiGLShaderInstance::UnlinkToProgramObject(const GLhandleARB programObject)
@@ -163,9 +161,7 @@ namespace Demi
 
         GLenum glErr = glGetError();
         if (glErr != GL_NO_ERROR)
-        {
             LogGLSLError(glErr, "UnlinkToProgramObject error: ", programObject);
-        }
     }
 
     DiGLShaderLinker::DiGLShaderLinker(DiGLShaderInstance* vs, DiGLShaderInstance* ps)
@@ -190,29 +186,24 @@ namespace Demi
 
             GLenum glErr = glGetError();
             if (glErr != GL_NO_ERROR)
-            {
                 DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", 0);
-            }
 
             Link();
-            ExtractAttributes();
+            LoadConstants();
+            LoadAttributes();
         }
 
         if (mLinked)
         {
             GLenum glErr = glGetError();
             if (glErr != GL_NO_ERROR)
-            {
                 DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", mGLHandle);
-            }
 
             glUseProgramObjectARB(mGLHandle);
 
             glErr = glGetError();
             if (glErr != GL_NO_ERROR)
-            {
                 DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", mGLHandle);
-            }
         }
     }
 
@@ -220,25 +211,19 @@ namespace Demi
     {
         // all shaders should be compiled before linking to program objects
         if (mVS)
-        {
             mVS->LinkToProgramObject(mGLHandle);
-        }
 
         if (mPS)
-        {
             mPS->LinkToProgramObject(mGLHandle);
-        }
 
         glLinkProgramARB(mGLHandle);
         glGetObjectParameterivARB(mGLHandle, GL_OBJECT_LINK_STATUS_ARB, &mLinked);
 
         if (mLinked)
-        {
-            DiGLShaderInstance::LogObjectInfo(DiString(" GLSL link result : "), mGLHandle);
-        }
+            DiGLShaderInstance::LogObjectInfo(DiString("GLSL linking result : "), mGLHandle);
     }
 
-    void DiGLShaderLinker::ExtractAttributes()
+    void DiGLShaderLinker::LoadAttributes()
     {
         size_t numAttribs = sizeof(msCustomAttributes) / sizeof(CustomAttribute);
 
@@ -248,9 +233,7 @@ namespace Demi
             GLint attrib = glGetAttribLocationARB(mGLHandle, a.name.c_str());
 
             if (attrib != -1)
-            {
                 mValidAttributes.insert(a.attrib);
-            }
         }
     }
 
@@ -258,4 +241,55 @@ namespace Demi
     {
         return mValidAttributes.find(DiGLTypeMappings::GetFixedAttributeIndex(semantic, index)) != mValidAttributes.end();
     }
+
+    void DiGLShaderLinker::LoadConstants()
+    {
+        GLint uniformCount = 0;
+        glGetObjectParameterivARB(mGLHandle, GL_OBJECT_ACTIVE_UNIFORMS_ARB, &uniformCount);
+        
+        char uniformName[256] = "";
+        for (int index = 0; index < uniformCount; index++)
+        {
+            GLint arraySize = 0;
+            GLenum glType = 0;
+            glGetActiveUniformARB(mGLHandle, index, 256, NULL,
+                &arraySize, &glType, uniformName);
+
+            GLint location = glGetUniformLocationARB(mGLHandle, uniformName);
+            if (location >= 0)
+            {
+                // Check for array index included in the name and strip it
+                DiString name(uniformName);
+                unsigned index = name.find('[');
+                if (index != DiString::npos)
+                {
+                    // If not the first index, skip
+                    if (name.find("[0]", index) == DiString::npos)
+                        continue;
+
+                    name = name.substr(0, index);
+                }
+
+                DiGLShaderConstant p;
+                p.location = location;
+                p.type = glType;
+                mConsts[name] = p;
+            }
+        }
+    }
+
+    DiGLShaderConstant* DiGLShaderLinker::GetConstant(const DiString& constname)
+    {
+        auto i = mConsts.find(constname);
+        if (i != mConsts.end())
+            return &(i->second);
+        else
+            return nullptr;
+    }
+
+    bool DiGLShaderLinker::HasConstant(const DiString& constname)
+    {
+        return mConsts.find(constname) != mConsts.end();
+    }
+
 }

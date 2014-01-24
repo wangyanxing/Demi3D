@@ -240,7 +240,7 @@ namespace Demi
         }
     }
 
-    void DiShaderParameter::LoadVariables(DiShaderProgram* prog, DiShaderType shaderType)
+    void DiShaderParameter::LoadVariables(DiShaderProgram* prog)
     {
         prog->GetShader()->LoadVariables([this](DiGpuVariable* var) 
         {
