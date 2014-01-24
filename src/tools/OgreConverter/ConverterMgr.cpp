@@ -1,8 +1,15 @@
 #include "ConverterMgr.h"
 #include "AssetManager.h"
 #include "OgreFileSystem.h"
+#include "EnginePlugin.h"
 
 using namespace Ogre;
+
+#ifdef _DEBUG
+const DiString gfxDrvLib = "DiDrvD3D9_d";
+#else
+const DiString gfxDrvLib = "DiDrvD3D9";
+#endif
 
 void ConverterMgr::Init()
 {
@@ -36,9 +43,11 @@ void ConverterMgr::Init()
 
 	// philo trinity stuff
 
-	DiAssetManager* asmager = new DiAssetManager();
 	DiLogManager* logmgr = new DiLogManager;
 	logmgr->Init("DemiConverter.log");
+    //DiPlugin::LoadPlugin(gfxDrvLib);
+
+    DiAssetManager* asmager = new DiAssetManager();
 
 	asmager->SetBasePath("..\\..\\Media\\");
 }
@@ -47,6 +56,8 @@ void ConverterMgr::Shutdown()
 {
 	DiAssetManager* asmager = DiAssetManager::GetInstancePtr();
 	delete asmager;
+
+    //DiPlugin::UnloadPlugin(gfxDrvLib);
 
 	DiLogManager* logmgr = DiLogManager::GetInstancePtr();
 	delete logmgr;
