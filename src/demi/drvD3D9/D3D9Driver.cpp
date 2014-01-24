@@ -853,4 +853,9 @@ namespace Demi
         return DI_NEW DiD3D9ShaderParam(mat);
     }
 
+    const DiString& DiD3D9Driver::GetShaderFileExtension() const
+    {
+        static DiString shaderext = ".hlsl";
+        return shaderext;
+    }
 }

@@ -100,7 +100,7 @@ namespace Demi
         mMaterial->SetBlendMode(BLEND_ALPHA);
         mMaterial->SetCullMode(CULL_NONE);
 
-        mMaterial->LoadShader("grass.vsh", "unlighting_diffuse_color.psh");
+        mMaterial->LoadShader("grass", "unlighting_diffuse_color");
 
         mNeedUpdateMaterial = true;
     }

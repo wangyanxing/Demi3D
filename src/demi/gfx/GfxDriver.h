@@ -118,6 +118,8 @@ namespace Demi
 
         virtual void                CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd) = 0;
 
+        virtual const DiString&     GetShaderFileExtension() const = 0;
+
         virtual void                BindMaterialStates(const DiMaterial* mat) = 0;
 
         virtual void                GetWindowDimension(DiWndHandle wnd, uint32& w, uint32& h) = 0;

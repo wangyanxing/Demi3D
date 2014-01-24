@@ -19,20 +19,20 @@ void AddMeshes()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
-	DiMaterialPtr m0 = DiMaterial::QuickCreate("lambert.vsh","lambert.psh",CSF_USE_ENV_MAP | CSF_ENV_MAP_MIX);
+	DiMaterialPtr m0 = DiMaterial::QuickCreate("lambert_v","lambert_p",CSF_USE_ENV_MAP | CSF_ENV_MAP_MIX);
     m0->SetDiffuse(DiColor(1, 0, 0));
     m0->SetAmbient(DiColor(0.6f, 0.2f, 0));
 	m0->GetShaderParameter()->WriteFloat("reflectivity",0.3f);
 	m0->GetShaderParameter()->WriteTextureCUBE("envMap","SwedishRoyalCastle.dds");
 
-	DiMaterialPtr m1 = DiMaterial::QuickCreate("lambert.vsh","lambert.psh",CSF_USE_ENV_MAP | CSF_ENV_MAP_REFRACT);
+	DiMaterialPtr m1 = DiMaterial::QuickCreate("lambert_v","lambert_p",CSF_USE_ENV_MAP | CSF_ENV_MAP_REFRACT);
     m1->SetDiffuse(DiColor(0, 1, 0));
     m1->SetAmbient(DiColor(0.6f, 0.4f, 0));
 	m1->GetShaderParameter()->WriteFloat("reflectivity",1.0f);
 	m1->GetShaderParameter()->WriteFloat("refractionRatio",0.95f);
 	m1->GetShaderParameter()->WriteTextureCUBE("envMap","SwedishRoyalCastle.dds");
 
-	DiMaterialPtr m2 = DiMaterial::QuickCreate("lambert.vsh","lambert.psh",CSF_USE_ENV_MAP | CSF_ENV_MAP_MUL);
+	DiMaterialPtr m2 = DiMaterial::QuickCreate("lambert_v","lambert_p",CSF_USE_ENV_MAP | CSF_ENV_MAP_MUL);
     m2->SetDiffuse(DiColor(0, 0, 1));
     m2->SetAmbient(DiColor(0.67f, 0.67f, 0.67f));
 	m2->GetShaderParameter()->WriteFloat("reflectivity",1.0f);
@@ -67,7 +67,7 @@ void InitScene()
 
 	DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>();
     lightSphere->CreateSphere(1, 16, 8);
-	DiMaterialPtr m = DiMaterial::QuickCreate("basic.vsh","basic.psh");
+	DiMaterialPtr m = DiMaterial::QuickCreate("basic_v","basic_p");
     m->SetDiffuse(DiColor(1, 0.8f, 0));
 	lightSphere->SetMaterial(m);
 

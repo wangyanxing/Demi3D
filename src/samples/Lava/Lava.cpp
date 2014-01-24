@@ -22,7 +22,7 @@ void AddMeshes()
 {
 	DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
-	DiMaterialPtr m0 = DiMaterial::QuickCreate("lava.vsh","lava.psh");
+	DiMaterialPtr m0 = DiMaterial::QuickCreate("lava_v","lava_p");
 	m0->SetDiffuse(DiColor(1,0,0));
 	m0->SetAmbient(DiColor(0.6f,0.2f,0));
 	
@@ -52,7 +52,7 @@ void SetupPostEffects()
 
   	DiPostEffectPass* passFilm = effectFilm->CreatePass("output");
  	passFilm->SetQuadScale(1);
-  	passFilm->BuildMaterial("screen_quad.vsh","post_film.psh");
+  	passFilm->BuildMaterial("screen_quad_v","post_film_p");
 	passFilm->SetInput("image",INPUT_PREV_EFFECT);
 	passFilm->SetInput("nIntensity",0.35f);
 	passFilm->SetInput("sIntensity",0.95f);

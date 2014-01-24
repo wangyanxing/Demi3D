@@ -26,7 +26,7 @@ void AddMeshes()
 		DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
 		DiSimpleShapePtr model = make_shared<DiSimpleShape>();
 
-		DiMaterialPtr mat = DiMaterial::QuickCreate("sample_fresnel.vsh","sample_fresnel.psh");
+		DiMaterialPtr mat = DiMaterial::QuickCreate("sample_fresnel_v","sample_fresnel_p");
 
 		model->CreateSphere(10,20,20);
 		model->SetMaterial(mat);

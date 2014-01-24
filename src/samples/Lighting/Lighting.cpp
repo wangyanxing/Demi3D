@@ -24,7 +24,7 @@ void AddMesh(float x, float y, const DiColor& col, const DiString& shader)
 	else
 		model->CreateSphere(10,20,20);
 
-	DiMaterialPtr mat = DiMaterial::QuickCreate(shader + ".vsh", shader + ".psh");
+	DiMaterialPtr mat = DiMaterial::QuickCreate(shader + "_v", shader + "_p");
 	mat->SetDiffuse(col);
 
 	if(shader == "phong")
@@ -55,7 +55,7 @@ void InitScene()
 	// visbile mesh for the point light
 	DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>();
 	lightSphere->CreateSphere(1,16,8);
-	DiMaterialPtr m = DiMaterial::QuickCreate("basic.vsh","basic.psh");
+	DiMaterialPtr m = DiMaterial::QuickCreate("basic_v","basic_p");
 	m->SetDiffuse(DiColor(1,0.8f,0));
 	lightSphere->SetMaterial(m);
 
