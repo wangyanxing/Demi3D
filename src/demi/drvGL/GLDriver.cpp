@@ -88,6 +88,10 @@ namespace Demi
 
     void DiGLDriver::ReleaseGfx()
     {
+        for (auto i = mProgramMaps.begin(); i != mProgramMaps.end(); ++i)
+            DI_DELETE i->second;
+        mProgramMaps.clear();
+
         DI_DELETE mMainContext;
         mMainContext = nullptr;
 

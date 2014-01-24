@@ -204,7 +204,7 @@ namespace Demi
         return mValidAttributes.find(DiGLTypeMappings::GetFixedAttributeIndex(semantic, index)) != mValidAttributes.end();
     }
 
-    void DiGLShaderLinker::LoadConstants()
+    void DiGLShaderLinker::LoadConstants(DiGLShaderParam* params)
     {
         GLint uniformCount = 0;
         glGetObjectParameterivARB(mGLHandle, GL_OBJECT_ACTIVE_UNIFORMS_ARB, &uniformCount);
@@ -236,6 +236,16 @@ namespace Demi
                 p.location = location;
                 p.type = glType;
                 mConsts[name] = p;
+
+                auto demitype = DiGLTypeMappings::ConvertGLShaderConstType(glType);
+                if (demitype != DiShaderParameter::NUM_VARIABLE_TYPES)\
+                {
+                    params->AddParameter(demitype, name);
+                }
+                else
+                {
+                    DI_WARNING("Unsupported gl shader constant type: %d", glType);
+                }
             }
         }
     }
@@ -256,7 +266,7 @@ namespace Demi
 
     void DiGLShaderLinker::Link()
     {
-        if (!mLinked)
+        //if (!mLinked)
         {
             glGetError();
             mGLHandle = glCreateProgramObjectARB();
@@ -278,7 +288,6 @@ namespace Demi
             if (mLinked)
                 DiGLShaderInstance::LogObjectInfo(DiString("GLSL linking result : "), mGLHandle);
 
-            LoadConstants();
             LoadAttributes();
 
             glErr = glGetError();

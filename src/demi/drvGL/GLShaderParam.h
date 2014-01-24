@@ -26,5 +26,10 @@ namespace Demi
 
     private:
 
+        void            SetConstant(GLuint location, GLenum type, const float* data, uint32 count);
+
+    private:
+
+        DiGLShaderLinker*   mShaderLinker;
     };
 }

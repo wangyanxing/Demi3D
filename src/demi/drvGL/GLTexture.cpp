@@ -155,6 +155,7 @@ namespace Demi
         {
             glEnable(mGLTextureType);
             glBindTexture(mGLTextureType, mTextureID);
+            glActiveTextureARB(GL_TEXTURE0 + samplerIndex);
         }
     }
 
