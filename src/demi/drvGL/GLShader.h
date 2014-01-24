@@ -78,7 +78,7 @@ namespace Demi
 
         void                Bind();
 
-        void                LoadConstants();
+        void                LoadConstants(DiGLShaderParam* params);
 
         void                LoadAttributes();
 
@@ -87,6 +87,8 @@ namespace Demi
         DiGLShaderConstant* GetConstant(const DiString& constname);
 
         bool                HasConstant(const DiString& constname);
+
+        GLhandleARB         GetGLHandle() const { return mGLHandle; }
 
     private:
 

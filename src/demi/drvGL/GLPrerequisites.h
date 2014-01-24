@@ -21,6 +21,7 @@ namespace Demi
     class DiGLWindowTarget;
     class DiGLGpuVariable;
     class DiGLShaderLinker;
+    class DiGLShaderParam;
 
 #ifdef WIN32
     class DiWin32GLUtil;

@@ -2,6 +2,7 @@
 #include "GLTypeMappings.h"
 #include "VertexFormat.h"
 #include "Texture.h"
+#include "ShaderParam.h"
 
 namespace Demi
 {
@@ -143,4 +144,27 @@ namespace Demi
 
         return false;
     }
+
+    DiShaderParameter::ParamType DiGLTypeMappings::ConvertGLShaderConstType(GLenum gltype)
+    {
+        switch (gltype)
+        {
+        case GL_FLOAT:
+            return DiShaderParameter::VARIABLE_FLOAT;
+        case GL_FLOAT_VEC2:
+            return DiShaderParameter::VARIABLE_FLOAT2;
+        case GL_FLOAT_VEC3:
+            return DiShaderParameter::VARIABLE_FLOAT3;
+        case GL_FLOAT_VEC4:
+            return DiShaderParameter::VARIABLE_FLOAT4;
+        case GL_SAMPLER_2D:
+        case GL_SAMPLER_2D_RECT_ARB:
+            return DiShaderParameter::VARIABLE_SAMPLER2D;
+        case GL_SAMPLER_CUBE:
+            return DiShaderParameter::VARIABLE_SAMPLERCUBE;
+        default:
+            return DiShaderParameter::NUM_VARIABLE_TYPES;
+        }
+    }
+
 }
