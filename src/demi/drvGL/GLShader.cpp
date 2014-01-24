@@ -1,6 +1,6 @@
 
 #include "GLShader.h"
-#include "GLShaderVariable.h"
+#include "GLShaderParam.h"
 #include "GLDriver.h"
 #include "GLTypeMappings.h"
 #include "ShaderProgram.h"

@@ -41,7 +41,7 @@ namespace Demi
 
                 switch (i)
                 {
-                case DiGpuVariable::VARIABLE_FLOAT:
+                case DiShaderParameter::VARIABLE_FLOAT:
                     {
                         float val = any_cast<float>(data);
                         const float fdata[4] = {val, 0,0,0};
@@ -53,7 +53,7 @@ namespace Demi
 
                         break;
                     }
-                case DiGpuVariable::VARIABLE_FLOAT2:
+                case DiShaderParameter::VARIABLE_FLOAT2:
                     {
                         DiVec2 vec2 = any_cast<DiVec2>(data);
                         const float fdata[4] = {vec2.x, vec2.y, 0, 0};
@@ -65,7 +65,7 @@ namespace Demi
 
                         break;
                     }
-                case DiGpuVariable::VARIABLE_FLOAT3:
+                case DiShaderParameter::VARIABLE_FLOAT3:
                     {
                         DiVec3 vec3 = any_cast<DiVec3>(data);
                         const float fdata[4] = {vec3.x, vec3.y, vec3.z, 0};
@@ -77,7 +77,7 @@ namespace Demi
 
                         break;
                     }
-                case DiGpuVariable::VARIABLE_FLOAT4:
+                case DiShaderParameter::VARIABLE_FLOAT4:
                     {
                         DiVec4 vec4 = any_cast<DiVec4>(data);
 
@@ -88,7 +88,7 @@ namespace Demi
 
                         break;
                     }
-                case DiGpuVariable::VARIABLE_COLOR:
+                case DiShaderParameter::VARIABLE_COLOR:
                     {
                         DiColor c = any_cast<DiColor>(data);
                         DiVec4 vec4(c.r,c.g,c.b,c.a);
@@ -100,7 +100,7 @@ namespace Demi
 
                         break;
                     }
-                case DiGpuVariable::VARIABLE_FLOAT4_ARRAY:
+                case DiShaderParameter::VARIABLE_FLOAT4_ARRAY:
                     {
                         DiPair<DiVec4*,uint32> v4Arr = any_cast<DiPair<DiVec4*,uint32>>(data);
 
@@ -111,8 +111,8 @@ namespace Demi
 
                         break;
                     }
-                case DiGpuVariable::VARIABLE_SAMPLER2D:
-                case DiGpuVariable::VARIABLE_SAMPLERCUBE:
+                case DiShaderParameter::VARIABLE_SAMPLER2D:
+                case DiShaderParameter::VARIABLE_SAMPLERCUBE:
                     {
                         DiTexture* tex = any_cast<DiTexture*>(data);
                         tex->Bind(regID);
@@ -138,7 +138,7 @@ namespace Demi
         }
         if (mMaterial.GetPixelShader())
         {
-            DiD3D9VSInstance* ps = static_cast<DiD3D9VSInstance*>(mMaterial.GetPixelShader()->GetShader());
+            DiD3D9PSInstance* ps = static_cast<DiD3D9PSInstance*>(mMaterial.GetPixelShader()->GetShader());
             ps->LoadParameters(this);
         }
     }

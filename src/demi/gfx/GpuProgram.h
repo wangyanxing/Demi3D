@@ -63,58 +63,6 @@ namespace Demi
     };
 
     //////////////////////////////////////////////////////////////////////////
-
-    class DI_GFX_API DiGpuVariable
-    {
-        friend class DiShaderParameter;
-    public:
-
-        enum Type
-        {
-            VARIABLE_FLOAT = 0,
-            VARIABLE_FLOAT2,
-            VARIABLE_FLOAT3,
-            VARIABLE_COLOR,    
-            VARIABLE_FLOAT4,
-            VARIABLE_FLOAT4_ARRAY,
-
-            VARIABLE_SAMPLER2D,
-            VARIABLE_SAMPLERCUBE,
-
-            NUM_VARIABLE_TYPES
-        };
-
-        DiGpuVariable(const DiString& name, Type type);
-
-        virtual                 ~DiGpuVariable(void);
-
-    public:
-
-        const DiString&         GetName(void) const;
-
-        Type                    GetType(void) const;
-
-        uint32                  GetDataSize(void) const;
-
-        virtual void            Bind() const = 0;
-
-        DiAny&                  GetData() {return mData;}
-
-        const DiAny&            GetData() const {return mData;}
-
-        void                    SetData(DiAny& a){ mData = a; }
-
-    protected:
-
-        DiString                mName;
-
-        Type                    mType;
-
-        DiAny                   mData;
-    };
-
-
-    //////////////////////////////////////////////////////////////////////////
     class DiShaderEnvironment
     {
     public:

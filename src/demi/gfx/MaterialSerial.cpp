@@ -152,75 +152,86 @@ namespace Demi
         DiShaderParameter* sm = source->GetShaderParameter();
         if (sm)
         {
-            size_t varNum = sm->GetVariableNum();
-            DiXMLElement varNode;
-            if (varNum > 0)
+            bool hasVars = false;
+            for (uint32 i = 0; i < DiShaderParameter::NUM_VARIABLE_TYPES; ++i)
             {
-                varNode = rootNode.CreateChild("variables");
-            }
-            for (size_t i = 0; i < varNum; i++)
-            {
-                const DiGpuVariable* var = sm->GetVariable(i);
-                const DiAny& data = var->GetData();
-                if (var && !data.isEmpty())
+                if (sm->HasVariableType((DiShaderParameter::ParamType)i))
                 {
-                    DiGpuVariable::Type type = var->GetType();
-                    if (type == DiGpuVariable::VARIABLE_FLOAT)
+                    hasVars = true;
+                    break;
+                }
+            }
+            DiXMLElement varNode;
+            if (hasVars)
+                varNode = rootNode.CreateChild("variables");
+
+            for (uint32 i = 0; i < DiShaderParameter::NUM_VARIABLE_TYPES; ++i)
+            {
+                DiShaderParameter::ParamType type = (DiShaderParameter::ParamType)i;
+                auto& params = sm->GetShaderParams(type);
+                for (auto it = params.begin(); it != params.end(); ++it)
+                {
+                    const DiAny& data = it->second;
+                    DiString name = it->first;
+                    if (data.isEmpty())
+                        continue;
+
+                    if (type == DiShaderParameter::VARIABLE_FLOAT)
                     {
                         DiXMLElement nd = varNode.CreateChild("float");
-                        nd.SetAttribute("name",var->GetName());
+                        nd.SetAttribute("name", name);
                         float val = any_cast<float>(data);
                         DiString str;
                         str.SetFloat(val);
                         nd.SetValue(str);
                     }
-                    else if (type == DiGpuVariable::VARIABLE_FLOAT2)
+                    else if (type == DiShaderParameter::VARIABLE_FLOAT2)
                     {
                         DiXMLElement nd = varNode.CreateChild("float2");
-                        nd.SetAttribute("name",var->GetName());
+                        nd.SetAttribute("name", name);
                         DiVec2 val = any_cast<DiVec2>(data);
                         DiString str;
                         str.SetVector2(val);
                         nd.SetValue(str);
                     }
-                    else if (type == DiGpuVariable::VARIABLE_FLOAT3)
+                    else if (type == DiShaderParameter::VARIABLE_FLOAT3)
                     {
                         DiXMLElement nd = varNode.CreateChild("float3");
-                        nd.SetAttribute("name",var->GetName());
+                        nd.SetAttribute("name", name);
                         DiVec3 val = any_cast<DiVec3>(data);
                         DiString str;
                         str.SetVector3(val);
                         nd.SetValue(str);
                     }
-                    else if (type == DiGpuVariable::VARIABLE_FLOAT4)
+                    else if (type == DiShaderParameter::VARIABLE_FLOAT4)
                     {
                         DiXMLElement nd = varNode.CreateChild("float4");
-                        nd.SetAttribute("name",var->GetName());
+                        nd.SetAttribute("name", name);
                         DiVec4 val = any_cast<DiVec4>(data);
                         DiString str;
                         str.SetVector4(val);
                         nd.SetValue(str);
                     }
-                    else if (type == DiGpuVariable::VARIABLE_COLOR)
+                    else if (type == DiShaderParameter::VARIABLE_COLOR)
                     {
                         DiXMLElement nd = varNode.CreateChild("color");
-                        nd.SetAttribute("name",var->GetName());
+                        nd.SetAttribute("name", name);
                         DiColor val = any_cast<DiColor>(data);
                         DiString str;
                         str.SetColourValue(val);
                         nd.SetValue(str);
                     }
-                    else if (type == DiGpuVariable::VARIABLE_SAMPLER2D)
+                    else if (type == DiShaderParameter::VARIABLE_SAMPLER2D)
                     {
                         DiXMLElement nd = varNode.CreateChild("sampler2D");
                         DiTexture* tex = any_cast<DiTexture*>(data);
-                        SaveTextureXml(nd,tex,var->GetName());
+                        SaveTextureXml(nd, tex, name);
                     }
-                    else if (type == DiGpuVariable::VARIABLE_SAMPLERCUBE)
+                    else if (type == DiShaderParameter::VARIABLE_SAMPLERCUBE)
                     {
                         DiXMLElement nd = varNode.CreateChild("samplerCUBE");
                         DiTexture* tex = any_cast<DiTexture*>(data);
-                        SaveTextureXml(nd,tex,var->GetName());
+                        SaveTextureXml(nd, tex, name);
                     }
                 }
             }

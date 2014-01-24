@@ -46,6 +46,8 @@ namespace Demi
 
         void                    AddParameter(ParamType type, const DiString& name);
 
+        const ShaderParamMap&   GetShaderParams(ParamType type) { return mShaderParams[type]; }
+
         virtual void            LoadParameters() = 0;
 
         void                    CloneVarsTo(DiShaderParameter* ps);
@@ -77,8 +79,6 @@ namespace Demi
         static DiAny            GetDefault(ParamType type);
 
     protected:
-
-        DiShaderParameter &operator = (const DiShaderParameter&);
 
         DiMaterial&             mMaterial;
 

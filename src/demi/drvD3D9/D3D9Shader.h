@@ -14,33 +14,6 @@
 
 namespace Demi
 {
-    class DI_D3D9DRV_API DiD3D9GpuVariable : public DiGpuVariable
-    {
-    public:
-
-        DiD3D9GpuVariable(const DiString& name, Type type);
-
-        ~DiD3D9GpuVariable(void);
-
-    public:
-
-        void                    Bind() const;
-
-        void                    AddVertexHandle(ID3DXConstantTable &table, D3DXHANDLE handle);
-
-        void                    AddPixelHandle(ID3DXConstantTable &table, D3DXHANDLE handle);
-
-    private:
-
-        D3DXHANDLE              mVertexHandle;
-
-        uint32                  mVertexRegister;
-
-        D3DXHANDLE              mPixelHandle;
-
-        uint32                  mPixelRegisters;
-    };
-
     static DiShaderParameter::ParamType GetHlslVarType(const D3DXCONSTANT_DESC &desc)
     {
         DiShaderParameter::ParamType vt = DiShaderParameter::NUM_VARIABLE_TYPES;
