@@ -15,78 +15,16 @@ namespace Demi
 
     DiShaderParameter::~DiShaderParameter(void)
     {
-        UnloadVariables();
     }
 
-    DiGpuVariable* DiShaderParameter::FindVariable( const DiString& name,
-        DiGpuVariable::Type varType )
-    {
-        DiGpuVariable *var = 0;
-        uint32 numVariables = (uint32)mVariables.size();
-
-        for(uint32 i=0; i<numVariables; i++)
-        {
-            DiGpuVariable &v = *mVariables[i];
-            if (v.GetName() == name)
-            {
-                var = &v;
-                break;
-            }
-            else if(!v.GetName().empty() && v.GetName()[0] == '$')
-            {
-                DiString sub = v.GetName().substr(1);
-                if (sub == name)
-                {
-                    var = &v;
-                    break;
-                }
-            }
-        }
-        if(var && var->GetType() != varType)
-        {
-            var = 0;
-        }
-        return var;
-    }
-
-    DiGpuVariable* DiShaderParameter::FindVariable( const DiString& name )
-    {
-        DiGpuVariable *var = 0;
-        uint32 numVariables = (uint32)mVariables.size();
-
-        for(uint32 i=0; i<numVariables; i++)
-        {
-            DiGpuVariable &v = *mVariables[i];
-            if (v.GetName() == name)
-            {
-                var = &v;
-                break;
-            }
-            else if(!v.GetName().empty() && v.GetName()[0] == '$')
-            {
-                DiString sub = v.GetName().substr(1);
-                if (sub == name)
-                {
-                    var = &v;
-                    break;
-                }
-            }
-        }
-
-        if (!var)
-        {
-            DI_WARNING("Cannot find the variable :%s",name.c_str());
-        }
-        return var;
-    }
     void DiShaderParameter::WriteFloat4Array( const DiString& name,DiVec4* vec4,uint32 size )
     {
-        DiGpuVariable* var = FindVariable(name,DiGpuVariable::VARIABLE_FLOAT4_ARRAY);
-        if (var)
+        auto it = mShaderParams[VARIABLE_FLOAT4_ARRAY].find(name);
+        if (it != mShaderParams[VARIABLE_FLOAT4_ARRAY].end())
         {
             DiPair<DiVec4*,uint32> p(vec4,size);
             DiAny an(p);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
@@ -96,11 +34,11 @@ namespace Demi
 
     void DiShaderParameter::WriteFloat4( const DiString& name,DiVec4 vec4 )
     {
-        DiGpuVariable* var = FindVariable(name,DiGpuVariable::VARIABLE_FLOAT4);
-        if (var)
+        auto it = mShaderParams[VARIABLE_FLOAT4].find(name);
+        if (it != mShaderParams[VARIABLE_FLOAT4].end())
         {
             DiAny an(vec4);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
@@ -110,11 +48,11 @@ namespace Demi
 
     void DiShaderParameter::WriteFloat3( const DiString& name,DiVec3 vec3 )
     {
-        DiGpuVariable* var = FindVariable(name,DiGpuVariable::VARIABLE_FLOAT3);
-        if (var)
+        auto it = mShaderParams[VARIABLE_FLOAT3].find(name);
+        if (it != mShaderParams[VARIABLE_FLOAT3].end())
         {
             DiAny an(vec3);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
@@ -124,11 +62,11 @@ namespace Demi
 
     void DiShaderParameter::WriteFloat2( const DiString& name,DiVec2 ve2 )
     {
-        DiGpuVariable* var = FindVariable(name,DiGpuVariable::VARIABLE_FLOAT2);
-        if (var)
+        auto it = mShaderParams[VARIABLE_FLOAT2].find(name);
+        if (it != mShaderParams[VARIABLE_FLOAT2].end())
         {
             DiAny an(ve2);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
@@ -138,11 +76,11 @@ namespace Demi
 
     void DiShaderParameter::WriteFloat( const DiString& name,float ve1)
     {
-        DiGpuVariable* var = FindVariable(name,DiGpuVariable::VARIABLE_FLOAT);
-        if (var)
+        auto it = mShaderParams[VARIABLE_FLOAT].find(name);
+        if (it != mShaderParams[VARIABLE_FLOAT].end())
         {
             DiAny an(ve1);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
@@ -162,13 +100,12 @@ namespace Demi
             return DiTexturePtr();
         }
 
-        DiGpuVariable *var = FindVariable(name, DiGpuVariable::VARIABLE_SAMPLER2D);
-
-        if(var)
+        auto it = mShaderParams[VARIABLE_SAMPLER2D].find(name);
+        if (it != mShaderParams[VARIABLE_SAMPLER2D].end())
         {
             DiTexture* tex = textureAsset.get();
             DiAny an(tex);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
@@ -182,12 +119,12 @@ namespace Demi
     {
         DI_ASSERT(textureAsset);
 
-        DiGpuVariable *var = FindVariable(name, DiGpuVariable::VARIABLE_SAMPLER2D);
-        if(var)
+        auto it = mShaderParams[VARIABLE_SAMPLER2D].find(name);
+        if (it != mShaderParams[VARIABLE_SAMPLER2D].end())
         {
             DiTexture* tex = textureAsset.get();
             DiAny an(tex);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
@@ -207,13 +144,12 @@ namespace Demi
             return DiTexturePtr();
         }
 
-        DiGpuVariable *var = FindVariable(name, DiGpuVariable::VARIABLE_SAMPLERCUBE);
-
-        if(var)
+        auto it = mShaderParams[VARIABLE_SAMPLERCUBE].find(name);
+        if (it != mShaderParams[VARIABLE_SAMPLERCUBE].end())
         {
             DiTexture* tex = textureAsset.get();
             DiAny an(tex);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
@@ -227,12 +163,12 @@ namespace Demi
     {
         DI_ASSERT(textureAsset);
 
-        DiGpuVariable *var = FindVariable(name, DiGpuVariable::VARIABLE_SAMPLERCUBE);
-        if(var)
+        auto it = mShaderParams[VARIABLE_SAMPLERCUBE].find(name);
+        if (it != mShaderParams[VARIABLE_SAMPLERCUBE].end())
         {
             DiTexture* tex = textureAsset.get();
             DiAny an(tex);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
@@ -240,77 +176,67 @@ namespace Demi
         }
     }
 
-    void DiShaderParameter::LoadVariables(DiShaderProgram* prog)
+    bool DiShaderParameter::HasVariableType(DiShaderParameter::ParamType varType)
     {
-        prog->GetShader()->LoadVariables([this](DiGpuVariable* var) 
-        {
-            uint32 numVariables = (uint32)this->mVariables.size();
-            for (uint32 j = 0; j < numVariables; j++)
-            {
-                if (this->mVariables[j]->GetName() == var->GetName())
-                {
-                    DI_WARNING("The variable : %s, has already existed!", var->GetName().c_str());
-                    break;
-                }
-            }
-            this->mVariables.push_back(var);
-        });
-    }
-
-    void DiShaderParameter::UnloadVariables()
-    {
-        size_t numVariables = mVariables.size();
-        for(size_t i=0; i<numVariables; i++)
-        {
-            DI_DELETE mVariables[i];
-        }
-        mVariables.clear();
-    }
-
-    void DiShaderParameter::Bind() const
-    {
-        uint32 numVariables = (uint32)mVariables.size();
-        for(uint32 i=0; i<numVariables; i++)
-        {
-            const DiGpuVariable &variable = *mVariables[i];
-            variable.Bind();
-        }
-    }
-
-    bool DiShaderParameter::HasVariableType( DiGpuVariable::Type varType )
-    {
-        uint32 numVariables = (uint32)mVariables.size();
-
-        for(uint32 i=0; i<numVariables; i++)
-        {
-            DiGpuVariable &v = *mVariables[i];
-            if (v.GetType() == varType)
-                return true;
-        }
-        return false;
+        return !mShaderParams[VARIABLE_SAMPLERCUBE].empty();
     }
 
     void DiShaderParameter::CloneVarsTo( DiShaderParameter* ps )
     {
-        for (auto it = mVariables.begin(); it != mVariables.end(); ++it)
+        for (int i = 0; i < NUM_VARIABLE_TYPES; ++i)
         {
-            DiGpuVariable* var = ps->FindVariable((*it)->GetName(),(*it)->GetType());
-            if (var)
-                var->SetData((*it)->GetData());
+            ps->mShaderParams[i] = mShaderParams[i];
         }
     }
 
     void DiShaderParameter::WriteColor( const DiString& name,DiColor vec4 )
     {
-        DiGpuVariable* var = FindVariable(name,DiGpuVariable::VARIABLE_COLOR);
-        if (var)
+        auto it = mShaderParams[VARIABLE_COLOR].find(name);
+        if (it != mShaderParams[VARIABLE_COLOR].end())
         {
             DiAny an(vec4);
-            var->SetData(an);
+            it->second = an;
         }
         else
         {
             DI_WARNING("Failed to write the color variable : %s",name.c_str());
+        }
+    }
+
+    void DiShaderParameter::AddParameter(ParamType type, const DiString& name)
+    {
+        DI_ASSERT(type < NUM_VARIABLE_TYPES);
+        auto it = mShaderParams[type].find(name);
+        if (it != mShaderParams[type].end())
+        {
+            DI_WARNING("The parameter with name %s has already existed.", name.c_str());
+            return;
+        }
+        mShaderParams[type][name] = GetDefault(type);
+    }
+
+    DiAny DiShaderParameter::GetDefault(ParamType type)
+    {
+        switch (type)
+        {
+        case VARIABLE_FLOAT:
+            return DiAny(0.0f);
+        case VARIABLE_FLOAT2:
+            return DiAny(DiVec2::ZERO);
+        case VARIABLE_FLOAT3:
+            return DiAny(DiVec3::ZERO);
+        case VARIABLE_FLOAT4:
+            return DiAny(DiVec4::ZERO);
+        case VARIABLE_COLOR:
+            return DiAny(DiColor::Black);
+        case VARIABLE_FLOAT4_ARRAY:
+            return DiAny(DiPair<DiVec4*, uint32>(nullptr,0));
+        case VARIABLE_SAMPLER2D:
+        case VARIABLE_SAMPLERCUBE:
+            return DiAny(DiTexturePtr());
+        default:
+            DI_WARNING("Unsupported shader parameter type :%d", type);
+            return DiAny(nullptr);
         }
     }
 }

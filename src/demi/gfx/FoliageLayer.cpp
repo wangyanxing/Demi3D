@@ -69,7 +69,7 @@ namespace Demi
             }
         }
 
-        msp->LoadVariables(vp);
+        msp->LoadParameters();
 
         msp->WriteFloat("fadeRange", 100);
         msp->WriteTexture2D("diffuseTexture",mDesc->DemiureName);

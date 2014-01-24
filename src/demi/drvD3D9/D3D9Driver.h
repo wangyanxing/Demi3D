@@ -88,6 +88,8 @@ namespace Demi
 
         DiRenderTarget*         CreateRenderTarget();
 
+        DiShaderParameter*      CreateShaderParams(DiMaterial& mat);
+
         void                    CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd);
 
         void                    BindMaterialStates(const DiMaterial* mat);
