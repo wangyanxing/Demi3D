@@ -23,23 +23,32 @@ namespace Demi
 
         DiShaderParameter(DiMaterial& mat);
 
-        virtual                 ~DiShaderParameter(void);
+        virtual ~DiShaderParameter();
+
+        typedef DiHashMap<DiString, DiAny>  ShaderParamMap;
+
+        enum ParamType
+        {
+            VARIABLE_FLOAT = 0,
+            VARIABLE_FLOAT2,
+            VARIABLE_FLOAT3,
+            VARIABLE_COLOR,
+            VARIABLE_FLOAT4,
+            VARIABLE_FLOAT4_ARRAY,
+
+            VARIABLE_SAMPLER2D,
+            VARIABLE_SAMPLERCUBE,
+
+            NUM_VARIABLE_TYPES
+        };
 
     public:
 
-        void                    LoadVariables(DiShaderProgram* prog);
+        void                    AddParameter(ParamType type, const DiString& name);
 
-        void                    UnloadVariables();
+        virtual void            LoadParameters() = 0;
 
         void                    CloneVarsTo(DiShaderParameter* ps);
-
-        DiGpuVariable*          FindVariable(const DiString& name, DiGpuVariable::Type varType);
-
-        DiGpuVariable*          FindVariable(const DiString& name);
-
-        const DiGpuVariable*    GetVariable(size_t id) { return mVariables[id]; }
-
-        size_t                  GetVariableNum()const { return mVariables.size(); }
 
         void                    WriteFloat4(const DiString& name, DiVec4 vec4);
 
@@ -61,18 +70,18 @@ namespace Demi
 
         void                    WriteTextureCUBE(const DiString& name,DiTexturePtr texture);
 
-        void                    Bind() const;
+        virtual void            Bind() const = 0;
 
-        bool                    HasVariableType(DiGpuVariable::Type varType);
+        bool                    HasVariableType(ParamType varType);
+
+        static DiAny            GetDefault(ParamType type);
 
     protected:
 
         DiShaderParameter &operator = (const DiShaderParameter&);
 
-        typedef DiVector<DiGpuVariable*> VariableList;
-
         DiMaterial&             mMaterial;
 
-        VariableList            mVariables;
+        ShaderParamMap          mShaderParams[NUM_VARIABLE_TYPES];
     };
 }

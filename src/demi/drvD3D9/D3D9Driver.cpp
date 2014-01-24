@@ -20,6 +20,7 @@
 #include "D3D9Texture.h"
 #include "D3D9Shader.h"
 #include "D3D9DepthBuffer.h"
+#include "D3D9ShaderParam.h"
 
 namespace Demi
 {
@@ -846,4 +847,10 @@ namespace Demi
         vs->Bind(env);
         ps->Bind(env);
     }
+
+    DiShaderParameter* DiD3D9Driver::CreateShaderParams(DiMaterial& mat)
+    {
+        return DI_NEW DiD3D9ShaderParam(mat);
+    }
+
 }

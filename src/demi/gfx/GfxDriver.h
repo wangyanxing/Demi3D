@@ -114,6 +114,8 @@ namespace Demi
 
         virtual DiRenderTarget*     CreateRenderTarget() = 0;
 
+        virtual DiShaderParameter*  CreateShaderParams(DiMaterial& mat) = 0;
+
         virtual void                CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd) = 0;
 
         virtual void                BindMaterialStates(const DiMaterial* mat) = 0;

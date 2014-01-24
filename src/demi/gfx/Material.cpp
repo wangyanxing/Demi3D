@@ -34,7 +34,7 @@ namespace Demi
         mPixelShader     = NULL;
         mShininess       = 32.0f;
 
-        mShaderParameter = DI_NEW DiShaderParameter(*this);
+        mShaderParameter = Driver->CreateShaderParams(*this);
     }
 
     DiMaterial::~DiMaterial(void)
@@ -91,11 +91,7 @@ namespace Demi
         mVertexShader = DiShaderManager::GetInstance().LoadShader(vsname, SHADER_VERTEX, mShaderFlag);
         mPixelShader  = DiShaderManager::GetInstance().LoadShader(psname, SHADER_PIXEL , mShaderFlag);
 
-        if (mVertexShader && mVertexShader->GetShader())
-            mShaderParameter->LoadVariables(mVertexShader);
-
-        if (mPixelShader && mPixelShader->GetShader())
-            mShaderParameter->LoadVariables(mPixelShader);
+        mShaderParameter->LoadParameters();
     }
 
     BOOL DiMaterial::LoadingComplete() const
@@ -118,8 +114,8 @@ namespace Demi
         if (!mShaderParameter)
             return false;
 
-        return mShaderParameter->HasVariableType(DiGpuVariable::VARIABLE_SAMPLER2D) ||
-            mShaderParameter->HasVariableType(DiGpuVariable::VARIABLE_SAMPLERCUBE);
+        return mShaderParameter->HasVariableType(DiShaderParameter::VARIABLE_SAMPLER2D) ||
+            mShaderParameter->HasVariableType(DiShaderParameter::VARIABLE_SAMPLERCUBE);
     }
 
     void DiMaterial::SetEnableVertColor( bool val )
@@ -147,7 +143,7 @@ namespace Demi
             DiShaderInstance* si = shader->GetShader();
             si->mCompileDesc.AddMarco(marco.first,marco.second);
             si->Compile(shader->GetCode());
-            mShaderParameter->LoadVariables(shader);
+            mShaderParameter->LoadParameters();
         }
     }
 
