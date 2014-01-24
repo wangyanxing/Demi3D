@@ -6,21 +6,23 @@
 
 #pragma once
 
-#include "GpuProgram.h"
+#include "ShaderParam.h"
 
 namespace Demi
 {
-    class DI_GLDRV_API DiGLGpuVariable : public DiGpuVariable
+    class DI_GLDRV_API DiGLShaderParam : public DiShaderParameter
     {
     public:
 
-        DiGLGpuVariable(const DiString& name, Type type);
+        DiGLShaderParam(DiMaterial& mat);
 
-        ~DiGLGpuVariable(void);
+        ~DiGLShaderParam();
 
     public:
 
-        void        Bind() const;
+        void            Bind() const;
+
+        void            LoadParameters();
 
     private:
 

@@ -80,6 +80,8 @@ namespace Demi
 
         DiRenderTarget*         CreateRenderTarget();
 
+        DiShaderParameter*      CreateShaderParams(DiMaterial& mat);
+
         void                    SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a);
 
         void                    GetDepthStencilFormatFor(GLenum internalColourFormat, GLenum *depthFormat,

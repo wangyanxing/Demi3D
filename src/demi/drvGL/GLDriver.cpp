@@ -11,7 +11,7 @@
 #include "GLFrameBuffer.h"
 #include "GLRenderTarget.h"
 #include "GLShader.h"
-#include "GLShaderVariable.h"
+#include "GLShaderParam.h"
 
 #include "RenderWindow.h"
 #include "RenderUnit.h"
@@ -607,6 +607,11 @@ namespace Demi
         mProgramMaps[DiPair<DiShaderInstance*, DiShaderInstance*>(vs, ps)] = ret;
 
         return ret;
+    }
+
+    DiShaderParameter* DiGLDriver::CreateShaderParams(DiMaterial& mat)
+    {
+        return DI_NEW DiGLShaderParam(mat);
     }
 
 }
