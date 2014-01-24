@@ -771,12 +771,12 @@ def generate():
 
     ####################################################################################################################
     # Tools
-    # ogcvt = addAppProj('Tool_OgreConverter','/Tools/OgreConverter',coreProjs)
-    # ogcvt.appendIncludeDir(os.path.normpath(externalIncDir + "/ogremain"))
-    # ogcvt.appendDependsLibDbg('OgreMain_d.lib')
-    # ogcvt.appendDependsLibRel('OgreMain.lib')
-    # ogcvt.appendDebugLibDir(externalLibDbgDir)
-    # ogcvt.appendReleaseLibDir(externalLibRelDir)
+    ogcvt = addAppProj('Tool_OgreConverter','/Tools/OgreConverter',coreProjs)
+    ogcvt.appendIncludeDir(os.path.normpath(externalIncDir + "/ogremain"))
+    ogcvt.appendDependsLibDbg('OgreMain_d.lib')
+    ogcvt.appendDependsLibRel('OgreMain.lib')
+    ogcvt.appendDebugLibDir(externalLibDbgDir)
+    ogcvt.appendReleaseLibDir(externalLibRelDir)
 
     # generate them
     sln.generateSln()

@@ -18,6 +18,6 @@
 using namespace std;
 //using namespace Ogre;
 
-#include "CommonPch.h"
+#include "MiscPch.h"
 #include "GfxPch.h"
 #include "ExtPch.h"
