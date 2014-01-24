@@ -82,6 +82,8 @@ namespace Demi
 
         DiShaderParameter*      CreateShaderParams(DiMaterial& mat);
 
+        const DiString&         GetShaderFileExtension() const;
+
         void                    SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a);
 
         void                    GetDepthStencilFormatFor(GLenum internalColourFormat, GLenum *depthFormat,
@@ -94,6 +96,9 @@ namespace Demi
         void                    GetWindowDimension(DiWndHandle wnd, uint32& w, uint32& h);
 
         void                    Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil = 0);
+
+        // Create a new one if not existed
+        DiGLShaderLinker*       GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps);
 
         DiGLContext*            GetContext(DiWndHandle wnd);
 
@@ -112,8 +117,6 @@ namespace Demi
         bool                    _BindSourceData(DiRenderUnit* unit);
 
         void                    _InitMainContext(DiGLContext* context);
-
-        DiGLShaderLinker*       _GetProgram(DiShaderInstance* vs, DiShaderInstance* ps);
 
     private:
 

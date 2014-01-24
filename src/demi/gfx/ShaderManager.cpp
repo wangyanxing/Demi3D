@@ -33,19 +33,15 @@ namespace Demi
 
     void DiShaderManager::ModifyMarcosByFlag(uint64 flag, DiCompileDesc& desc)
     {
-        MapNameFlagsIt it     = mCommonFlag.begin();
+        MapNameFlagsIt it    = mCommonFlag.begin();
         MapNameFlagsIt itEnd = mCommonFlag.end();
 
         for(it = mCommonFlag.begin(); it != itEnd; ++it)
         {
             if(flag & it->second)
-            {
                 desc.AddMarco(it->first);
-            }
             else
-            {
                 desc.RemoveMarco(it->first);
-            }
         }
     }
 
@@ -53,7 +49,9 @@ namespace Demi
     {
         DiShaderProgram* shader = NULL;
 
-        ShaderLibsIt it = mShaderLibs.find(filename);
+        DiString file = filename + Driver->GetShaderFileExtension();
+
+        ShaderLibsIt it = mShaderLibs.find(file);
         if(it != mShaderLibs.end())
         {
             DiMap<uint64,DiShaderProgram*>::iterator flagIt =
@@ -63,12 +61,12 @@ namespace Demi
                 return flagIt->second;
         }
 
-        shader = DI_NEW DiShaderProgram(filename, type);
+        shader = DI_NEW DiShaderProgram(file, type);
         BOOL ret = shader->Load();
 
         if(!ret)
         {
-            DI_WARNING("Failed to load the shader : %s", filename.c_str());
+            DI_WARNING("Failed to load the shader : %s", file.c_str());
             DI_DELETE shader;
             return NULL;
         }
@@ -81,7 +79,7 @@ namespace Demi
 
         shader->Compile(desc);
 
-        mShaderLibs[filename].insert(DiMap<uint64,DiShaderProgram*>::iterator::value_type(flag,shader));
+        mShaderLibs[file].insert(DiMap<uint64, DiShaderProgram*>::iterator::value_type(flag, shader));
 
         return shader;
     }

@@ -588,30 +588,34 @@ namespace Demi
 
     void DiGLDriver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env)
     {
-        DiGLShaderLinker* prog = _GetProgram(vs->GetShader(), ps->GetShader());
+        DiGLShaderLinker* prog = GetShaderLinker(vs->GetShader(), ps->GetShader());
         prog->Bind();
     }
 
-    DiGLShaderLinker* DiGLDriver::_GetProgram(DiShaderInstance* vs, DiShaderInstance* ps)
+    DiGLShaderLinker* DiGLDriver::GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps)
     {
-        auto it = mProgramMaps.find(DiPair<DiShaderInstance*, DiShaderInstance*>(vs, ps));
+        auto p = DiPair<DiShaderInstance*, DiShaderInstance*>(vs, ps);
+        auto it = mProgramMaps.find(p);
         if (it != mProgramMaps.end())
-        {
             return it->second;
-        }
 
         // create a new one
         DiGLShaderLinker* ret = new DiGLShaderLinker(static_cast<DiGLShaderInstance*>(vs),
             static_cast<DiGLShaderInstance*>(ps));
 
-        mProgramMaps[DiPair<DiShaderInstance*, DiShaderInstance*>(vs, ps)] = ret;
-
+        mProgramMaps[p] = ret;
         return ret;
     }
 
     DiShaderParameter* DiGLDriver::CreateShaderParams(DiMaterial& mat)
     {
         return DI_NEW DiGLShaderParam(mat);
+    }
+
+    const DiString& DiGLDriver::GetShaderFileExtension() const
+    {
+        static DiString shaderext = ".glsl";
+        return shaderext;
     }
 
 }

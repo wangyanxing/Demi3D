@@ -33,8 +33,6 @@ namespace Demi
 
         void                Bind(const DiShaderEnvironment& shaderEnv);
 
-        void                LoadVariables(std::function<void(DiGpuVariable*)> func);
-
         void                LinkToProgramObject(const GLhandleARB programObject);
 
         void                UnlinkToProgramObject(const GLhandleARB programObject);
@@ -76,9 +74,9 @@ namespace Demi
 
     public:
 
-        void                Bind();
-
         void                Link();
+
+        void                Bind();
 
         void                LoadConstants();
 

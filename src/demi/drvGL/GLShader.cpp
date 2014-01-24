@@ -76,10 +76,6 @@ namespace Demi
     {
     }
 
-    void DiGLShaderInstance::LoadVariables(std::function<void(DiGpuVariable*)> func)
-    {
-    }
-
     void DiGLShaderInstance::Release()
     {
         glDeleteObjectARB(mShaderHandle);
@@ -179,48 +175,14 @@ namespace Demi
 
     void DiGLShaderLinker::Bind()
     {
-        if (!mLinked)
-        {
-            glGetError();
-            mGLHandle = glCreateProgramObjectARB();
-
-            GLenum glErr = glGetError();
-            if (glErr != GL_NO_ERROR)
-                DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", 0);
-
-            Link();
-            LoadConstants();
-            LoadAttributes();
-        }
-
         if (mLinked)
         {
-            GLenum glErr = glGetError();
-            if (glErr != GL_NO_ERROR)
-                DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", mGLHandle);
-
             glUseProgramObjectARB(mGLHandle);
 
-            glErr = glGetError();
+            GLenum glErr = glGetError();
             if (glErr != GL_NO_ERROR)
                 DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", mGLHandle);
         }
-    }
-
-    void DiGLShaderLinker::Link()
-    {
-        // all shaders should be compiled before linking to program objects
-        if (mVS)
-            mVS->LinkToProgramObject(mGLHandle);
-
-        if (mPS)
-            mPS->LinkToProgramObject(mGLHandle);
-
-        glLinkProgramARB(mGLHandle);
-        glGetObjectParameterivARB(mGLHandle, GL_OBJECT_LINK_STATUS_ARB, &mLinked);
-
-        if (mLinked)
-            DiGLShaderInstance::LogObjectInfo(DiString("GLSL linking result : "), mGLHandle);
     }
 
     void DiGLShaderLinker::LoadAttributes()
@@ -290,6 +252,39 @@ namespace Demi
     bool DiGLShaderLinker::HasConstant(const DiString& constname)
     {
         return mConsts.find(constname) != mConsts.end();
+    }
+
+    void DiGLShaderLinker::Link()
+    {
+        if (!mLinked)
+        {
+            glGetError();
+            mGLHandle = glCreateProgramObjectARB();
+
+            GLenum glErr = glGetError();
+            if (glErr != GL_NO_ERROR)
+                DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", 0);
+
+            // all shaders should be compiled before linking to program objects
+            if (mVS)
+                mVS->LinkToProgramObject(mGLHandle);
+
+            if (mPS)
+                mPS->LinkToProgramObject(mGLHandle);
+
+            glLinkProgramARB(mGLHandle);
+            glGetObjectParameterivARB(mGLHandle, GL_OBJECT_LINK_STATUS_ARB, &mLinked);
+
+            if (mLinked)
+                DiGLShaderInstance::LogObjectInfo(DiString("GLSL linking result : "), mGLHandle);
+
+            LoadConstants();
+            LoadAttributes();
+
+            glErr = glGetError();
+            if (glErr != GL_NO_ERROR)
+                DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", mGLHandle);
+        }
     }
 
 }
