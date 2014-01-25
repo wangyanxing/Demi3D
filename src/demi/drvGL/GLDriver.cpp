@@ -535,31 +535,70 @@ namespace Demi
                 void* pBufferData = nullptr;
                 pBufferData = VBO_BUFFER_OFFSET(i->Offset);
 
-                GLint attrib = DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
-                uint16 count = elements.GetElementTypeCount((DiVertexType)i->Type);
+                bool isCustomAttr = DiGLTypeMappings::IsAttributeValid(i->Usage);
+                auto elemNum = DiVertexElements::GetElementTypeCount((DiVertexType)i->Type);
+                auto gltype = DiGLTypeMappings::GetGLType((DiVertexType)i->Type);
+                GLsizei buffersize = static_cast<GLsizei>(vb->GetBufferSize());
 
-                GLboolean normalised = GL_FALSE;
-                switch (i->Type)
+                if (isCustomAttr)
                 {
-                case VERT_TYPE_COLOR:
-                    // Because GL takes these as a sequence of single unsigned bytes, count needs to be 4
-                    // VertexElement::getTypeCount treats them as 1 (RGBA)
-                    // Also need to normalise the fixed-point data
-                    count = 4;
-                    normalised = GL_TRUE;
-                    break;
-                default:
-                    break;
-                };
+                    GLint attrib = DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
+                    uint16 count = elements.GetElementTypeCount((DiVertexType)i->Type);
 
-                glVertexAttribPointerARB(
-                    attrib,
-                    count,
-                    DiGLTypeMappings::GetGLType((DiVertexType)i->Type),
-                    normalised,
-                    static_cast<GLsizei>(vb->GetBufferSize()),
-                    pBufferData);
-                glEnableVertexAttribArrayARB(attrib);
+                    GLboolean normalised = GL_FALSE;
+                    switch (i->Type)
+                    {
+                    case VERT_TYPE_COLOR:
+                        // Because GL takes these as a sequence of single unsigned bytes, count needs to be 4
+                        // VertexElement::getTypeCount treats them as 1 (RGBA)
+                        // Also need to normalise the fixed-point data
+                        count = 4;
+                        normalised = GL_TRUE;
+                        break;
+                    default:
+                        break;
+                    };
+
+                    glVertexAttribPointerARB(
+                        attrib, count,
+                        gltype, normalised,
+                        buffersize, pBufferData);
+                    glEnableVertexAttribArrayARB(attrib);
+                }
+                else
+                {
+                    switch (i->Usage)
+                    {
+                    case VERT_USAGE_POSITION:
+                        glVertexPointer(elemNum, gltype, buffersize, pBufferData);
+                        glEnableClientState(GL_VERTEX_ARRAY);
+                        break;
+                    case VERT_USAGE_NORMAL:
+                        glNormalPointer(gltype, buffersize, pBufferData);
+                        glEnableClientState(GL_NORMAL_ARRAY);
+                        break;
+                    case VERT_USAGE_COLOR:
+                        glColorPointer(4, gltype, buffersize, pBufferData);
+                        glEnableClientState(GL_COLOR_ARRAY);
+                        break;
+                    case VERT_USAGE_SECONDARY_COLOR:
+                        if (GLEW_EXT_secondary_color)
+                        {
+                            glSecondaryColorPointerEXT(4, gltype, buffersize, pBufferData);
+                            glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
+                        }
+                        break;
+                    case VERT_USAGE_TEXCOORD:
+
+                        glClientActiveTextureARB(GL_TEXTURE0 + i->UsageIndex);
+                        glTexCoordPointer(
+                            elemNum, gltype, buffersize, pBufferData);
+                        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                        break;
+                    default:
+                        break;
+                    };
+                }
             }
         }
 
