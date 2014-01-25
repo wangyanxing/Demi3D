@@ -18,7 +18,7 @@ namespace Demi
 
         static GLuint   GetFixedAttributeIndex(uint8 semantic, uint8 index);
 
-        static GLuint   IsAttributeValid(uint8 semantic);
+        static bool     IsAttributeValid(uint8 semantic);
 
         static GLenum   GLFormatMapping[PIXEL_FORMAT_MAX];
 

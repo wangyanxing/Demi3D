@@ -124,7 +124,7 @@ namespace Demi
         }
     }
 
-    GLuint DiGLTypeMappings::IsAttributeValid(uint8 semantic)
+    bool DiGLTypeMappings::IsAttributeValid(uint8 semantic)
     {
         switch (semantic)
         {
