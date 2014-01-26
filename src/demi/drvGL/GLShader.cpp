@@ -238,7 +238,7 @@ namespace Demi
                 mConsts[name] = p;
 
                 auto demitype = DiGLTypeMappings::ConvertGLShaderConstType(glType);
-                if (demitype != DiShaderParameter::NUM_VARIABLE_TYPES)\
+                if (demitype != DiShaderParameter::NUM_VARIABLE_TYPES)
                 {
                     params->AddParameter(demitype, name);
                 }

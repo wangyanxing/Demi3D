@@ -28,6 +28,8 @@ namespace Demi
                 vt = DiShaderParameter::VARIABLE_FLOAT3;
             else if (desc.Rows == 1 && desc.Columns == 4)
                 vt = DiShaderParameter::VARIABLE_FLOAT4;
+            else if (desc.Rows == 4 && desc.Columns == 4)
+                vt = DiShaderParameter::VARIABLE_MAT4;
             else if (desc.Rows > 1 && desc.Columns == 4)
                 vt = DiShaderParameter::VARIABLE_FLOAT4_ARRAY;
             break;

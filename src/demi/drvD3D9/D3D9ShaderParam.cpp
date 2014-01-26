@@ -88,6 +88,17 @@ namespace Demi
 
                         break;
                     }
+                case DiShaderParameter::VARIABLE_MAT4:
+                {
+                    DiMat4 mat4 = any_cast<DiMat4>(data);
+
+                    if (type == SHADER_VERTEX)
+                        sm->SetVertexShaderConstantF(regID, mat4[0], 4);
+                    else
+                        sm->SetPixelShaderConstantF(regID, mat4[0], 4);
+
+                    break;
+                }
                 case DiShaderParameter::VARIABLE_COLOR:
                     {
                         DiColor c = any_cast<DiColor>(data);

@@ -157,6 +157,8 @@ namespace Demi
             return DiShaderParameter::VARIABLE_FLOAT3;
         case GL_FLOAT_VEC4:
             return DiShaderParameter::VARIABLE_FLOAT4;
+        case GL_FLOAT_MAT4:
+            return DiShaderParameter::VARIABLE_MAT4;
         case GL_SAMPLER_2D:
         case GL_SAMPLER_2D_RECT_ARB:
             return DiShaderParameter::VARIABLE_SAMPLER2D;

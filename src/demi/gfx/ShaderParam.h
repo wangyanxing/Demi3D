@@ -35,6 +35,7 @@ namespace Demi
             VARIABLE_COLOR,
             VARIABLE_FLOAT4,
             VARIABLE_FLOAT4_ARRAY,
+            VARIABLE_MAT4,
 
             VARIABLE_SAMPLER2D,
             VARIABLE_SAMPLERCUBE,
@@ -57,6 +58,8 @@ namespace Demi
         void                    WriteColor(const DiString& name, DiColor vec4);
 
         void                    WriteFloat4Array(const DiString& name, DiVec4* vec4,uint32 size);
+
+        void                    WriteMatrix4(const DiString& name, DiMat4 mat4);
 
         void                    WriteFloat3(const DiString& name, DiVec3 vec3);
 
