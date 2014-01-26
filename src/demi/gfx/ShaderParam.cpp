@@ -32,6 +32,20 @@ namespace Demi
         }
     }
 
+    void DiShaderParameter::WriteMatrix4(const DiString& name, DiMat4 mat4)
+    {
+        auto it = mShaderParams[VARIABLE_MAT4].find(name);
+        if (it != mShaderParams[VARIABLE_MAT4].end())
+        {
+            DiAny an(mat4);
+            it->second = an;
+        }
+        else
+        {
+            DI_WARNING("Failed to write the float4 variable : %s", name.c_str());
+        }
+    }
+
     void DiShaderParameter::WriteFloat4( const DiString& name,DiVec4 vec4 )
     {
         auto it = mShaderParams[VARIABLE_FLOAT4].find(name);
