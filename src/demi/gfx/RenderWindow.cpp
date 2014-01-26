@@ -76,7 +76,8 @@ namespace Demi
         DiRenderPipeline* rp = Driver->GetPipeline();
         rp->ClearGroup();
         mSceneManager->GetVisibleObjects().AddToBatch(rp);
-        rp->Render(mSceneManager, mainCam, mSceneCanvas);
+        //rp->Render(mSceneManager, mainCam, mSceneCanvas);
+        rp->Render(mSceneManager, mainCam, mRenderBuffer);
 
         Driver->EndFrame();
         

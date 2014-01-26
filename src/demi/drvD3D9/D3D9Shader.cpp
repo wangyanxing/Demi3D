@@ -216,7 +216,7 @@ namespace Demi
         strcpy_s(fullpath, 1024, DiAssetManager::GetInstance().GetBasePath().c_str());
         if (includeType == D3DXINC_SYSTEM)
         {
-            strcat_s(fullpath, 1024, "shaders/include/");
+            strcat_s(fullpath, 1024, "shaders/hlsl/include/");  // TODO
         }
         strcat_s(fullpath, 1024, fileName);
 

@@ -102,6 +102,8 @@ namespace Demi
 
         DiGLContext*            GetContext(DiWndHandle wnd);
 
+        DiGLContext*            GetCurrentContext() { return mCurrentContext; }
+
         DiWindow*               CreateWnd();
 
         static DiGLBufferManager* BufferMgr;
@@ -127,7 +129,7 @@ namespace Demi
         DiGLContext*            mMainContext;
 
         DiGLContext*            mCurrentContext;
-
+        
         typedef DiMap<DiWndHandle, DiGLContext*> ContextMap;
 
         ContextMap              mContextMap;

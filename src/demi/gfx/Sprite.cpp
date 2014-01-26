@@ -13,42 +13,42 @@ namespace Demi
     DiQuadElement::DiQuadElement( const DiColor& col )
     {
         ARGB c = col.GetAsARGB();
-        topLeftColor        = c;
-        topRightColor        = c;
-        bottomLeftColor        = c;
-        bottomRightColor    = c;
+        topLeftColor     = c;
+        topRightColor    = c;
+        bottomLeftColor  = c;
+        bottomRightColor = c;
 
         absCoord = true;
 
-        left        = 0;
-        top            = 0;
-        right        = 0;
-        bottom        = 0;
-
-        leftUv        = 0;
-        topUv        = 0;
-        rightUv        = 1;
-        bottomUv    = 1;
+        left     = 0;
+        top      = 0;
+        right    = 0;
+        bottom   = 0;
+                 
+        leftUv   = 0;
+        topUv    = 0;
+        rightUv  = 1;
+        bottomUv = 1;
     }
 
     DiQuadElement::DiQuadElement()
     {
         ARGB c = DiColor::White.GetAsARGB();
-        topLeftColor        = c;
-        topRightColor        = c;
-        bottomLeftColor        = c;
-        bottomRightColor    = c;
+        topLeftColor     = c;
+        topRightColor    = c;
+        bottomLeftColor  = c;
+        bottomRightColor = c;
 
         absCoord = true;
 
         left     = 0;
-        top         = 0;
-        right     = 0;
-        bottom     = 0;
-                 
-        leftUv     = 0;
-        topUv     = 0;
-        rightUv     = 1;
+        top      = 0;
+        right    = 0;
+        bottom   = 0;
+                  
+        leftUv   = 0;
+        topUv    = 0;
+        rightUv  = 1;
         bottomUv = 1;
     }
 

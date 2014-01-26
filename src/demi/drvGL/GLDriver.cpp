@@ -241,6 +241,12 @@ namespace Demi
             glDrawElements(primType, unit->mIndexBuffer->GetMaxIndices(), indexType, pBufferData);
         }
 
+#if 1
+        GLenum glErr = glGetError();
+        if (glErr != GL_NO_ERROR)
+            DiGLShaderInstance::LogGLSLError(glErr, "renderGeometry: ", 0);
+#endif
+
         return true;
     }
 
@@ -309,13 +315,15 @@ namespace Demi
 
     DiRenderTarget* DiGLDriver::CreateRenderTarget()
     {
-        return DI_NEW DiGLRenderTarget();
+        auto rt = DI_NEW DiGLRenderTarget();
+        rt->Init();
+        return rt;
     }
 
     void DiGLDriver::CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd)
     {
         auto wt = DI_NEW DiGLWindowTarget();
-        wt->Create(wnd);
+        wt->Create(wnd, mCurrentContext);
         outRT = wt;
     }
 
@@ -456,6 +464,12 @@ namespace Demi
             glScissor(viewport[0], viewport[1], viewport[2], viewport[3]);
 
         glClear(clearBuf);
+
+#if 1
+        GLenum glErr = glGetError();
+        if (glErr != GL_NO_ERROR)
+            DiGLShaderInstance::LogGLSLError(glErr, "glClear error: ", 0);
+#endif
 
         if (scissorBoxDifference)
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);

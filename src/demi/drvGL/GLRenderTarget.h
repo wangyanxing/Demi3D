@@ -18,35 +18,39 @@ namespace Demi
 
         DiGLRenderTarget();
 
-        virtual             ~DiGLRenderTarget();
+        virtual                 ~DiGLRenderTarget();
 
     public:
 
-        void                AttachSurface();
+        void                    AttachSurface();
 
-        void                DetachSurface();
+        void                    DetachSurface();
 
-        bool                BindRenderTarget(uint8 mrtid);
+        bool                    BindRenderTarget(uint8 mrtid);
 
-        bool                AttachDepthBuffer(DiDepthBuffer *depthBuffer);
+        bool                    AttachDepthBuffer(DiDepthBuffer *depthBuffer);
 
-        bool                BindDepthStencil();
+        bool                    BindDepthStencil();
 
-        bool                IsCompatibleWith(DiDepthBuffer* db);
+        bool                    IsCompatibleWith(DiDepthBuffer* db);
 
-        DiDepthBuffer*      CreateDepthBuffer();
+        DiDepthBuffer*          CreateDepthBuffer();
 
-        void                PreBind();
+        void                    PreBind();
 
-    private:
+        virtual DiGLContext*    GetContext() { return nullptr; }
 
-        GLenum              mGLFormat;
+        virtual void            Init();
 
-        DiGLFrameBuffer*    mFrameBuffer;
+    protected:
 
-        DiGLRenderBuffer*   mDepthBuffer;
+        GLenum                  mGLFormat;
 
-        DiGLRenderBuffer*   mStencilBuffer;
+        DiGLFrameBuffer*        mFrameBuffer;
+
+        DiGLRenderBuffer*       mDepthBuffer;
+
+        DiGLRenderBuffer*       mStencilBuffer;
     };
 
 
@@ -60,12 +64,18 @@ namespace Demi
 
     public:
 
-        void                Create(DiWndHandle wnd);
+        void                    Create(DiWndHandle wnd, DiGLContext* context);
 
-        bool                SwapBuffer();
+        DiGLContext*            GetContext() { return mContext; }
+
+        bool                    SwapBuffer();
+
+        void                    Init();
 
     private:
 
-        DiWndHandle         mWnd;
+        DiWndHandle             mWnd;
+
+        DiGLContext*            mContext;
     };
 }
