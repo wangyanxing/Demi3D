@@ -255,6 +255,9 @@ namespace Demi
 
     void DiGLShaderLinker::LoadConstants(DiGLShaderParam* params)
     {
+        if (DiGLUniforms::msUniformFuncs.empty())
+            DiGLUniforms::InitUniformFuncs();
+
         GLint uniformCount = 0;
         glGetObjectParameterivARB(mGLHandle, GL_OBJECT_ACTIVE_UNIFORMS_ARB, &uniformCount);
         
@@ -284,6 +287,7 @@ namespace Demi
                 // built-in uniforms
                 if (!strncmp(uniformName, "g_", 2))
                 {
+                    params->AddBuiltinParam(location, DiGLUniforms::msUniformFuncs[name]);
                     continue;
                 }
 
@@ -351,4 +355,120 @@ namespace Demi
         }
     }
 
+    DiGLUniforms::UniformFuncs DiGLUniforms::msUniformFuncs;
+
+    void DiGLUniforms::InitUniformFuncs()
+    {
+        msUniformFuncs["g_modelMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->modelViewProjMatrix[0]);
+        };
+
+        msUniformFuncs["g_viewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->viewMatrix[0]);
+        };
+
+        msUniformFuncs["g_modelViewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->modelViewMatrix[0]);
+        };
+
+        msUniformFuncs["g_modelViewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->modelViewProjMatrix[0]);
+        };
+
+        msUniformFuncs["g_viewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->viewProjMatrix[0]);
+        };
+
+        msUniformFuncs["g_texViewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->texViewProjMatrix[0]);
+        };
+
+        msUniformFuncs["g_boneMatrices"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix3x4fv(location, env->numBones, GL_TRUE, (float*)(&env->boneMatrices));
+        };
+
+        msUniformFuncs["g_modelMatrices"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix3x4fv(location, env->numModelMatrices, GL_TRUE, (float*)(&env->modelMatrices));
+        };
+
+        msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform3fvARB(location, 1, env->eyePosition.ptr());
+        };
+
+        msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform3fvARB(location, 1, env->eyePosition.ptr());
+        };
+
+        msUniformFuncs["g_eyeDirection"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform3fvARB(location, 1, env->eyeDirection.ptr());
+        };
+
+        msUniformFuncs["g_eyePositionObjSpace"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform3fvARB(location, 1, env->eyePositionObjSpace.ptr());
+        };
+
+        msUniformFuncs["g_farnearPlane"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform2fvARB(location, 1, env->farnearPlane.ptr());
+        };
+
+        msUniformFuncs["g_time"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform1fvARB(location, 1, &env->time);
+        };
+
+        msUniformFuncs["g_globalAmbient"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, 1, env->globalAmbient.Ptr());
+        };
+
+        msUniformFuncs["g_ambientColor"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, 1, env->ambientColor.Ptr());
+        };
+
+        msUniformFuncs["g_diffuseColor"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform3fvARB(location, 1, env->diffuseColor.Ptr());
+        };
+
+        msUniformFuncs["g_specularColor"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform3fvARB(location, 1, env->specularColor.Ptr());
+        };
+
+        msUniformFuncs["g_opacity"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform1fvARB(location, 1, &env->opacity);
+        };
+
+        msUniformFuncs["g_shininess"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform1fvARB(location, 1, &env->shininess);
+        };
+
+        msUniformFuncs["g_texelOffsets"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, 1, env->texelOffsets.ptr());
+        };
+
+        msUniformFuncs["g_numDirLights"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform1ivARB(location, 1, &env->numDirLights);
+        };
+
+        msUniformFuncs["g_dirLightsColor"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, env->numDirLights, env->dirLightsColor[0].Ptr());
+        };
+
+        msUniformFuncs["g_dirLightsDir"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, env->numDirLights, env->dirLightsDir[0].ptr());
+        };
+
+        msUniformFuncs["g_numPointLights"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform1ivARB(location, 1, &env->numPointLights);
+        };
+
+        msUniformFuncs["g_pointLightsColor"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, env->numPointLights, env->pointLightsColor[0].Ptr());
+        };
+
+        msUniformFuncs["g_pointLightsPosition"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, env->numPointLights, env->pointLightsPosition[0].ptr());
+        };
+
+        msUniformFuncs["g_pointLightsAttenuation"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, env->numPointLights, env->pointLightsAttenuation[0].ptr());
+        };
+    }
 }

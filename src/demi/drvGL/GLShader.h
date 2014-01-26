@@ -8,6 +8,7 @@
 
 #include "GpuProgram.h"
 #include "VertexFormat.h"
+#include <functional>
 
 namespace Demi
 {
@@ -64,6 +65,21 @@ namespace Demi
         GLint               mCompiled;
 
         DiString            mProcessedShader;
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+
+    class DiGLUniforms
+    {
+    public:
+
+        typedef std::function<void(const DiShaderEnvironment*, GLuint)> BindingFunc;
+
+        typedef DiHashMap<DiString, BindingFunc> UniformFuncs;
+
+        static void InitUniformFuncs();
+
+        static UniformFuncs msUniformFuncs;
     };
 
     //////////////////////////////////////////////////////////////////////////
