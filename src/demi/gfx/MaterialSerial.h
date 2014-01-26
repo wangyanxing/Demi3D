@@ -46,8 +46,6 @@ namespace Demi
 
         void                    SaveTexture(std::stringstream& ss,DiTexture* tex,const DiString& varname);
 
-        void                    SaveShaderVariable(std::stringstream& ss,DiShaderParameter* sm);
-
         void                    ResetDefaultValue(DiMaterial* target);
 
     public:

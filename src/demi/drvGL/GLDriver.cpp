@@ -2,7 +2,6 @@
 #include "GLDriver.h"
 #include "GLVertexBuffer.h"
 #include "GLIndexBuffer.h"
-#include "GLVertexDeclaration.h"
 #include "GfxDriver.h"
 #include "GLTexture.h"
 #include "GLContext.h"
@@ -701,7 +700,7 @@ namespace Demi
         return mContextMap[wnd];
     }
 
-    void DiGLDriver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env)
+    void DiGLDriver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps)
     {
         DiGLShaderLinker* prog = GetShaderLinker(vs->GetShader(), ps->GetShader());
         prog->Bind();

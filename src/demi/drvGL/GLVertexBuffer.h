@@ -7,6 +7,7 @@
 #pragma once
 
 #include "VertexBuffer.h"
+#include "VertexDeclaration.h"
 
 namespace Demi
 {
@@ -38,11 +39,6 @@ namespace Demi
 
     private:
 
-        void        ReadData(uint32 offset, uint32 length, void* pDest);
-
-        void        WriteData(uint32 offset, uint32 length,
-                        const void* pSource, bool discardWholeBuffer = false);
-
         bool        SetData(const void* data);
 
         bool        SetDataRange(const void* data, uint32 start,
@@ -52,14 +48,6 @@ namespace Demi
 
         GLuint      mBufferId;
 
-        bool        mLockedToScratch;
-        
-        uint32      mScratchOffset;
-        
-        uint32      mScratchSize;
-        
-        void*       mScratchPtr;
-
         bool        mScratchUploadOnUnlock;
 
         void*       mLockingScratch;
@@ -67,5 +55,22 @@ namespace Demi
         uint32      mLockingOffset;
 
         uint32      mLockingSize;
+    };
+
+    class DI_GLDRV_API DiGLVertexDeclaration : public DiVertexDeclaration
+    {
+    public:
+
+        DiGLVertexDeclaration() {}
+
+        ~DiGLVertexDeclaration(){ Release(); }
+
+    public:
+
+        void                Bind(){}
+
+        void                Release(){ mVertexElements.ClearElements(); }
+
+        void                Create(){}
     };
 }

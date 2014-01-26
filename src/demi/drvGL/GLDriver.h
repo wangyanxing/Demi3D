@@ -52,7 +52,7 @@ namespace Demi
 
         void                    SetShaderConsts(DiShaderType type, int regID, const DiColor& col);
 
-        void                    BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env);
+        void                    BindShaders(DiShaderProgram* vs, DiShaderProgram* ps);
 
         void                    SetViewport(int x, int y, int w, int h, float minz = 0.0f, float maxz = 1.0f);
 
