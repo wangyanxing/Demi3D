@@ -59,8 +59,7 @@ namespace Demi
         DiString matname = mPassName + "_m";
         mMaterial = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(matname);
 
-        mMaterial->LoadVertexShader(vpshader);
-        mMaterial->LoadPixelShader(fpshader);
+        mMaterial->LoadShader(vpshader,fpshader);
     }
 
     void DiPostEffectPass::Process()

@@ -13,7 +13,7 @@ namespace Demi
     {
     public:
 
-        DiGLDepthBuffer(uint16 poolId, uint32 width, uint32 height, DiGLRenderBuffer* depth,
+        DiGLDepthBuffer(uint16 poolId, uint32 width, uint32 height, DiGLContext* context, DiGLRenderBuffer* depth,
             DiGLRenderBuffer* stencil, uint32 fsaa, uint32 multiSampleQuality, bool manual);
 
         ~DiGLDepthBuffer();
@@ -24,10 +24,14 @@ namespace Demi
 
         DiGLRenderBuffer*   GetStencilBuffer() { return mStencilBuffer; }
 
+        DiGLContext*        GetGLContext() { return mContext; }
+
     private:
 
         DiGLRenderBuffer*   mDepthBuffer;
 
         DiGLRenderBuffer*   mStencilBuffer;
+
+        DiGLContext*        mContext;
     };
 }

@@ -10,11 +10,11 @@
 
 namespace Demi 
 {
-    class DiShaderProgram : public DiBase
+    class DI_GFX_API DiShaderProgram : public DiBase
     {
     public:
 
-        DiShaderProgram(const DiString& name);
+        DiShaderProgram(const DiString& name, DiShaderType shaderType);
 
         virtual                     ~DiShaderProgram();
 
@@ -22,23 +22,23 @@ namespace Demi
 
         DiAssetType                 GetAssetType() const;
 
-        BOOL                        LoadingComplete() const;
+        bool                        LoadingComplete() const;
 
-        BOOL                        Load(DiDataStreamPtr data);
+        bool                        Load(DiDataStreamPtr data);
 
-        BOOL                        Load();
+        bool                        Load();
 
-        BOOL                        Load(const DiString& filename);
+        bool                        Load(const DiString& filename);
 
         DiString                    GetShaderFileName() const { return mShaderFileName; }
 
         void                        SetCode(DiShaderType,const DiString& str);
 
-        DiString&                   GetCode(){return mCodes;}
+        DiString&                   GetCode(){ return mRawCodes; }
 
-        void                        Compile(const DiCompileDesc& desc);
+        bool                        Compile(const DiCompileDesc& desc);
 
-        void                        Compile();
+        bool                        Compile();
 
         DiShaderType                GetShaderType() const { return mShaderType; }
 
@@ -47,10 +47,6 @@ namespace Demi
         DiShaderInstance*           GetShader();
 
         void                        Bind(const DiShaderEnvironment& shaderEnv);
-
-        void                        ParseHelperScript();
-
-        DiMap<DiString,DiString>&   GetVariableScripts() { return mVariableScripts; }
 
         static DiString&            GetDefaultVsProfile() { return sDefaultVsProfile; }
 
@@ -67,9 +63,7 @@ namespace Demi
 
         DiString                    mFileName;
 
-        DiString                    mCodes;
-
-        DiString                    mRowCodes;
+        DiString                    mRawCodes;
 
         DiString                    mShaderFileName;
         
@@ -80,8 +74,5 @@ namespace Demi
         static DiString             sDefaultVsProfile;
 
         static DiString             sDefaultPsProfile;
-
-        DiMap<DiString,DiString>    mVariableScripts;
-        
     };
 }

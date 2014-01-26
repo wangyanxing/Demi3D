@@ -5,125 +5,6 @@
 
 namespace Demi
 {
-    DiD3D9GpuVariable::DiD3D9GpuVariable(const DiString& name, Type type)
-        :DiGpuVariable(name,type)
-    {
-        mVertexRegister = 0;
-        mPixelRegisters = 0;
-        mVertexHandle = 0;
-        mPixelHandle = 0;
-    }
-
-    DiD3D9GpuVariable::~DiD3D9GpuVariable()
-    {
-    }
-
-    void DiD3D9GpuVariable::Bind() const
-    {
-        IDirect3DDevice9* sm = DiD3D9Driver::Device;
-
-        if (mData.isEmpty())
-            return;
-
-        switch(GetType())
-        {
-        case DiGpuVariable::VARIABLE_FLOAT:
-            {
-                float val = any_cast<float>(mData);
-                const float fdata[4] = {val, 0,0,0};
-                
-                if(mVertexHandle)               
-                    sm->SetVertexShaderConstantF(mVertexRegister,fdata, 1);
-                else if(mPixelHandle)
-                    sm->SetPixelShaderConstantF(mPixelRegisters,fdata, 1);
-
-                break;
-            }
-        case DiGpuVariable::VARIABLE_FLOAT2:
-            {
-                DiVec2 vec2 = any_cast<DiVec2>(mData);
-                const float fdata[4] = {vec2.x, vec2.y, 0, 0};
-
-                if(mVertexHandle)               
-                    sm->SetVertexShaderConstantF(mVertexRegister,fdata, 1);
-                else if(mPixelHandle) 
-                    sm->SetPixelShaderConstantF(mPixelRegisters, fdata, 1);
-
-                break;
-            }
-        case DiGpuVariable::VARIABLE_FLOAT3:
-            {
-                DiVec3 vec3 = any_cast<DiVec3>(mData);
-                const float fdata[4] = {vec3.x, vec3.y, vec3.z, 0};
-                
-                if(mVertexHandle)               
-                    sm->SetVertexShaderConstantF(mVertexRegister, fdata, 1);
-                else if(mPixelHandle) 
-                    sm->SetPixelShaderConstantF(mPixelRegisters, fdata, 1);
-
-                break;
-            }
-        case DiGpuVariable::VARIABLE_FLOAT4:
-            {
-                DiVec4 vec4 = any_cast<DiVec4>(mData);
-
-                if(mVertexHandle)
-                    sm->SetVertexShaderConstantF(mVertexRegister,vec4.ptr(), 1);
-                else if(mPixelHandle)
-                    sm->SetPixelShaderConstantF(mPixelRegisters, vec4.ptr(), 1);
-
-                break;
-            }
-        case DiGpuVariable::VARIABLE_COLOR:
-            {
-                DiColor c = any_cast<DiColor>(mData);
-                DiVec4 vec4(c.r,c.g,c.b,c.a);
-
-                if(mVertexHandle)
-                    sm->SetVertexShaderConstantF(mVertexRegister,vec4.ptr(), 1);
-                else if(mPixelHandle)
-                    sm->SetPixelShaderConstantF(mPixelRegisters, vec4.ptr(), 1);
-
-                break;
-            }
-        case DiGpuVariable::VARIABLE_FLOAT4_ARRAY:
-            {
-                DiPair<DiVec4*,uint32> v4Arr = any_cast<DiPair<DiVec4*,uint32>>(mData);
-                if(mVertexHandle)
-                    sm->SetVertexShaderConstantF(mVertexRegister,v4Arr.first->ptr(), v4Arr.second);
-                else if(mPixelHandle)
-                    sm->SetPixelShaderConstantF(mPixelRegisters, v4Arr.first->ptr(), v4Arr.second);
-
-                break;
-            }
-        case DiGpuVariable::VARIABLE_SAMPLER2D:
-        case DiGpuVariable::VARIABLE_SAMPLERCUBE:
-            {
-                DiTexture* tex = any_cast<DiTexture*>(mData);
-                tex->Bind(mPixelRegisters);
-            }
-            break;
-        }
-    }
-
-    void DiD3D9GpuVariable::AddVertexHandle(ID3DXConstantTable &table, D3DXHANDLE handle)
-    {
-        mVertexHandle = handle;
-        D3DXCONSTANT_DESC cdesc;
-        uint32 count = 1;
-        table.GetConstantDesc(handle, &cdesc, &count);
-        mVertexRegister = cdesc.RegisterIndex;
-    }
-
-    void DiD3D9GpuVariable::AddPixelHandle(ID3DXConstantTable &table, D3DXHANDLE handle)
-    {
-        mPixelHandle = handle;
-        D3DXCONSTANT_DESC cdesc;
-        uint32 count = 1;
-        table.GetConstantDesc(handle, &cdesc, &count);
-        mPixelRegisters = cdesc.RegisterIndex;
-    }
-
     DiShaderConstants::DiShaderConstants(DiShaderType tp)
     {
         type = tp;
@@ -335,7 +216,7 @@ namespace Demi
         strcpy_s(fullpath, 1024, DiAssetManager::GetInstance().GetBasePath().c_str());
         if (includeType == D3DXINC_SYSTEM)
         {
-            strcat_s(fullpath, 1024, "shaders/include/");
+            strcat_s(fullpath, 1024, "shaders/hlsl/include/");  // TODO
         }
         strcat_s(fullpath, 1024, fileName);
 

@@ -36,8 +36,6 @@ namespace Demi
 
         void                    ParseMatOpNode(DiXMLElement opNode, DiMaterial* target);
 
-        void                    ParseShaderNode(DiXMLElement shaderNode, DiMaterial* target);
-
         void                    ParseVarNode(DiXMLElement varNode, DiMaterial* target);
 
         void                    ParseVarSampler(DiXMLElement samplerNode, DiMaterial* target, bool cubemap = false);

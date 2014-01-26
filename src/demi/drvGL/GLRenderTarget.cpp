@@ -17,23 +17,35 @@ namespace Demi
         mDepthBuffer(nullptr),
         mStencilBuffer(nullptr)
     {
-        mFrameBuffer = DI_NEW DiGLFrameBuffer();
     }
 
     DiGLRenderTarget::~DiGLRenderTarget()
     {
-        DI_DELETE mFrameBuffer;
-        mFrameBuffer = nullptr;
+        if (mFrameBuffer)
+        {
+            DI_DELETE mFrameBuffer;
+            mFrameBuffer = nullptr;
+        }
     }
 
     bool DiGLRenderTarget::BindRenderTarget(uint8 mrtid)
     {
-        mFrameBuffer->Bind();
+        if (mFrameBuffer)
+            mFrameBuffer->Bind();
         return true;
     }
 
     bool DiGLRenderTarget::BindDepthStencil()
     {
+        DiGLDepthBuffer *depthBuffer = static_cast<DiGLDepthBuffer*>(GetDepthBuffer());
+
+        if (GetDepthBufferPool() != DiDepthBuffer::POOL_NO_DEPTH &&
+            (!depthBuffer || depthBuffer->GetGLContext() != static_cast<DiGLDriver*>(Driver)->GetCurrentContext()))
+        {
+            //Depth is automatically managed and there is no depth buffer attached to this RT
+            //or the Current context doesn't match the one this Depth buffer was created with
+            Driver->SetDepthBufferFor(this);
+        }
         return true;
     }
 
@@ -67,7 +79,8 @@ namespace Demi
             sb = DI_NEW DiGLRenderBuffer(stencilFormat, GetWidth(), GetHeight());
         }
 
-        ret = DI_NEW DiGLDepthBuffer(0, GetWidth(), GetHeight(), db, sb, 0, 0, false);
+        ret = DI_NEW DiGLDepthBuffer(0, GetWidth(), GetHeight(),
+            static_cast<DiGLDriver*>(Driver)->GetCurrentContext(), db, sb, 0, 0, false);
 
         return nullptr;
     }
@@ -92,35 +105,45 @@ namespace Demi
     {
         bool retVal = false;
 
-        if (mWidth != db->GetWidth() ||
-            mHeight != db->GetHeight() )
+        if (mWidth != db->GetWidth() || mHeight != db->GetHeight() )
             return retVal;
 
-        if (mDepthBuffer || mStencilBuffer)
+        if (!mFrameBuffer)
         {
-            GLenum internalFormat = DiGLTypeMappings::GLFormatMapping[mFrameBuffer->GetFormat()];
-            GLenum depthFormat, stencilFormat;
-
-            static_cast<DiGLDriver*>(Driver)->GetDepthStencilFormatFor(internalFormat, &depthFormat, &stencilFormat);
-
-            bool bSameDepth = false;
-
-            if (mDepthBuffer)
-                bSameDepth |= mDepthBuffer->GetGLFormat() == depthFormat;
-
-            bool bSameStencil = false;
-
-            if (!mStencilBuffer || mStencilBuffer == mDepthBuffer)
-                bSameStencil = stencilFormat == GL_NONE;
-            else
+            DiGLContext* dbContext = static_cast<DiGLDepthBuffer*>(db)->GetGLContext();
+            if (!mDepthBuffer && !mStencilBuffer && dbContext == GetContext())
             {
-                if (mStencilBuffer)
-                    bSameStencil = stencilFormat == mStencilBuffer->GetGLFormat();
+                retVal = true;
             }
-
-            retVal = bSameDepth && bSameStencil;
         }
+        else
+        {
+            if (mDepthBuffer || mStencilBuffer)
+            {
+                GLenum internalFormat = DiGLTypeMappings::GLFormatMapping[mFrameBuffer->GetFormat()];
+                GLenum depthFormat, stencilFormat;
 
+                static_cast<DiGLDriver*>(Driver)->GetDepthStencilFormatFor(internalFormat, &depthFormat, &stencilFormat);
+
+                bool bSameDepth = false;
+
+                if (mDepthBuffer)
+                    bSameDepth |= mDepthBuffer->GetGLFormat() == depthFormat;
+
+                bool bSameStencil = false;
+
+                if (!mStencilBuffer || mStencilBuffer == mDepthBuffer)
+                    bSameStencil = stencilFormat == GL_NONE;
+                else
+                {
+                    if (mStencilBuffer)
+                        bSameStencil = stencilFormat == mStencilBuffer->GetGLFormat();
+                }
+
+                retVal = bSameDepth && bSameStencil;
+            }
+        }
+        
         return retVal;
     }
 
@@ -129,32 +152,38 @@ namespace Demi
         bool result;
         if ((result = DiRenderTarget::AttachDepthBuffer(depthBuffer)))
         {
-            mFrameBuffer->AttachDepthBuffer(depthBuffer);
+            if (mFrameBuffer)
+                mFrameBuffer->AttachDepthBuffer(depthBuffer);
         }
 
         return result;
     }
 
+    void DiGLRenderTarget::Init()
+    {
+        mFrameBuffer = DI_NEW DiGLFrameBuffer();
+    }
 
     DiGLWindowTarget::DiGLWindowTarget()
-        :mWnd(NULL)
+        : mWnd(NULL)
+        , mContext(nullptr)
     {
-       
     }
 
     DiGLWindowTarget::~DiGLWindowTarget()
     {
-
     }
 
-    void DiGLWindowTarget::Create(DiWndHandle wnd)
+    void DiGLWindowTarget::Create(DiWndHandle wnd, DiGLContext* context)
     {
         mWnd = wnd;
+        mContext = context;
+
         Driver->GetWindowDimension(wnd, mWidth, mHeight);
 
         DiGLDepthBuffer *depthBuffer = DI_NEW DiGLDepthBuffer(DiDepthBuffer::POOL_DEFAULT, 
             mWidth, mHeight,
-            nullptr, nullptr,
+            static_cast<DiGLDriver*>(Driver)->GetCurrentContext(), nullptr, nullptr,
             0, 0, true);
 
         AttachDepthBuffer(depthBuffer);
@@ -167,4 +196,7 @@ namespace Demi
         return true;
     }
 
+    void DiGLWindowTarget::Init()
+    {
+    }
 }

@@ -46,7 +46,7 @@ namespace Demi
         mRenderTargets.push_back(rt);
 
         // create materials
-        mMaterial = DiMaterial::QuickCreate("gbuffer.vsh","gbuffer.psh");
+        mMaterial = DiMaterial::QuickCreate("gbuffer_v","gbuffer_p");
         mMaterial->SetDepthWrite(TRUE);
         mMaterial->SetDepthCheck(TRUE);
     }

@@ -52,6 +52,8 @@ namespace Demi
 
         void                    SetShaderConsts(DiShaderType type, int regID, const DiColor& col);
 
+        void                    BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env);
+
         void                    SetViewport(int x, int y, int w, int h, float minz = 0.0f, float maxz = 1.0f);
 
         void                    SetFillMode(DiFillMode mode);
@@ -78,6 +80,10 @@ namespace Demi
 
         DiRenderTarget*         CreateRenderTarget();
 
+        DiShaderParameter*      CreateShaderParams(DiMaterial& mat);
+
+        const DiString&         GetShaderFileExtension() const;
+
         void                    SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a);
 
         void                    GetDepthStencilFormatFor(GLenum internalColourFormat, GLenum *depthFormat,
@@ -91,13 +97,18 @@ namespace Demi
 
         void                    Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil = 0);
 
+        // Create a new one if not existed
+        DiGLShaderLinker*       GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps);
+
         DiGLContext*            GetContext(DiWndHandle wnd);
+
+        DiGLContext*            GetCurrentContext() { return mCurrentContext; }
 
         DiWindow*               CreateWnd();
 
-        static DiGLBufferManager*   BufferMgr;
+        static DiGLBufferManager* BufferMgr;
 
-        static DiGLFBOManager*      FBOManager;
+        static DiGLFBOManager*    FBOManager;
 
     private:
 
@@ -106,6 +117,8 @@ namespace Demi
         DiGLUtil*               _CreateGLUtil();
 
         bool                    _BindSourceData(DiRenderUnit* unit);
+
+        bool                    _BindVertexBuffer(DiRenderUnit* unit);
 
         void                    _InitMainContext(DiGLContext* context);
 
@@ -116,7 +129,7 @@ namespace Demi
         DiGLContext*            mMainContext;
 
         DiGLContext*            mCurrentContext;
-
+        
         typedef DiMap<DiWndHandle, DiGLContext*> ContextMap;
 
         ContextMap              mContextMap;
@@ -132,5 +145,11 @@ namespace Demi
         DiGLBufferManager*      mGLBufferManager;
 
         DiGLFBOManager*         mGLFBOManager;
+
+        typedef DiMap<DiPair<DiShaderInstance*, DiShaderInstance*>, DiGLShaderLinker*> ProgramMap;
+
+        ProgramMap              mProgramMaps;
+
+        DiGLShaderLinker*       mCurrentProgram;
     };
 }

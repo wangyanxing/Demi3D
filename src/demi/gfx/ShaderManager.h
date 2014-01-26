@@ -39,7 +39,7 @@ namespace Demi
 
     public:
 
-        DiShaderProgram*        LoadShader(const DiString& filename, uint64 flag);
+        DiShaderProgram*        LoadShader(const DiString& filename, DiShaderType type, uint64 flag);
 
         void                    UnloadAllShaders();
 

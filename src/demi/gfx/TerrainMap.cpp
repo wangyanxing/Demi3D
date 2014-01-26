@@ -278,7 +278,7 @@ namespace Demi
             }
             else
             {
-                DI_WARNING("找不到地形纹理ID0：%d",textureid.first);
+                DI_WARNING("Cannot find the texture ID0：%d",textureid.first);
             }
 
             if (texTable.contains(textureid.second))
@@ -287,7 +287,7 @@ namespace Demi
             }
             else
             {
-                DI_WARNING("找不到地形纹理ID1：%d",textureid.second);
+                DI_WARNING("Cannot find the texture ID1：%d",textureid.second);
             }
 
             DiMaterialPtr mat = GenerateMaterial(texlayer0,texlayer1);
@@ -359,13 +359,9 @@ namespace Demi
     {
         uint32 id = idx * mDesc->mSizeX + idy;
         if(id < mChunks.size())
-        {
             return mChunks[id];
-        }
         else
-        {
-            return NULL;
-        }
+            return nullptr;
     }
 
     DiTerrainChunk* DiTerrainMap::GetChunk( uint32 id )
@@ -399,27 +395,19 @@ namespace Demi
         
         p = DiVec3(pos.x - half + GetTerrainWidth()/2, pos.y, pos.z - half + GetTerrainHeight()/2);
         if (CoverTerrain(p))
-        {
             return true;
-        }
 
         p = DiVec3(pos.x - half + GetTerrainWidth()/2, pos.y, pos.z + half + GetTerrainHeight()/2);
         if (CoverTerrain(p))
-        {
             return true;
-        }
 
         p = DiVec3(pos.x + half + GetTerrainWidth()/2, pos.y, pos.z - half + GetTerrainHeight()/2);
         if (CoverTerrain(p))
-        {
             return true;
-        }
 
         p = DiVec3(pos.x + half + GetTerrainWidth()/2, pos.y, pos.z + half + GetTerrainHeight()/2);
         if (CoverTerrain(p))
-        {
             return true;
-        }
 
         return false;
     }
@@ -525,7 +513,7 @@ namespace Demi
 
         DiVec2 uv1,uv2;
 
-        // 计算切线
+        // calculate the tangents
         uv1 = DiVec2(Puv.x - hereUv.x, Puv.y - hereUv.y);
         uv2 = DiVec2(Quv.x - hereUv.x, Quv.y - hereUv.y);
 
@@ -599,15 +587,11 @@ namespace Demi
         for (it = mDesc->DemiureTable.begin(); it != itEnd; ++it)
         {
             if (it->second == texBaseName)
-            {
                 return it->first;
-            }
             else
             {
                 if (it->first > maxid)
-                {
                     maxid = it->first;
-                }
             }
         }
         
@@ -623,8 +607,8 @@ namespace Demi
 
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(matName);
 
-        mat->LoadVertexShader(DiMaterialDefine::TERRAIN_VERTEX_SHADER);
-        mat->LoadPixelShader(DiMaterialDefine::TERRAIN_PIXEL_SHADER);
+        mat->LoadShader(DiMaterialDefine::TERRAIN_VERTEX_SHADER,
+                        DiMaterialDefine::TERRAIN_PIXEL_SHADER);
 
         DiShaderParameter* params = mat->GetShaderParameter();
     
@@ -1010,45 +994,35 @@ namespace Demi
     {
         DiPair<DiString,DiString> marco;
         if (layerID == 0)
-        {
             marco.first = "_SHOW_LAYER_0";
-        }
         else
-        {
             marco.first = "_SHOW_LAYER_1";
-        }
+        
         marco.second = vis?"1":"0";
 
-        MaterialTable::iterator it;
-        MaterialTable::iterator itEnd = mMaterialTable.end();
-        for (it = mMaterialTable.begin(); it != itEnd; ++it)
+        for (auto it = mMaterialTable.begin(); it != mMaterialTable.end(); ++it)
         {
-            (it->second)->RecompileShaderWithMarco(SHADER_PIXEL,marco);
+            (it->second)->RecompileShader(SHADER_PIXEL,marco);
         }
     }
 
     int DiTerrainMap::GetTextureID( const DiString& names )
     {
-        DiTerrainDesc::TextureTable::iterator it;
-        DiTerrainDesc::TextureTable::iterator itEnd = mDesc->DemiureTable.end();
-        for (it = mDesc->DemiureTable.begin(); it != itEnd; ++it)
+        for (auto it = mDesc->DemiureTable.begin(); it != mDesc->DemiureTable.end(); ++it)
         {
             if (it->second == names)
-            {
                 return it->first;
-            }
         }
         return -1;
     }
 
     void DiTerrainMap::LoadWaterMap()
     {
-        // 水数据
+        // water data
         mWaterMap = DI_NEW DiWaterMap(this);
         mWaterMap->Load();
 
-
-        // 创建chunk
+        // create chunks
         for (uint16 x = 0; x < mDesc->mSizeX; ++x)
         {
             for (uint16 y = 0; y < mDesc->mSizeY; ++y)
@@ -1065,7 +1039,7 @@ namespace Demi
 
         mFoliageMap->CreateLayerFromDesc();
 
-        // 创建chunk
+        // create chunks
         for (uint16 x = 0; x < mDesc->mSizeX; ++x)
         {
             for (uint16 y = 0; y < mDesc->mSizeY; ++y)

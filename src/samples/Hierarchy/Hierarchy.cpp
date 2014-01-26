@@ -20,7 +20,7 @@ void InitScene()
 {
 	DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
-    mat = DiMaterial::QuickCreate("lambert.vsh", "lambert.psh");
+    mat = DiMaterial::QuickCreate("lambert_v", "lambert_p");
     mat->SetDiffuse(DiColor::White);
 
     sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));

@@ -52,6 +52,8 @@ namespace Demi
 
         void                    SetShaderConsts(DiShaderType type, int regID, const DiColor& col);
 
+        void                    BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env);
+
         void                    SetViewport(int x, int y, int w, int h, float minz = 0.0f, float maxz = 1.0f);
 
         DiWindow*               CreateWnd();
@@ -85,6 +87,10 @@ namespace Demi
         DiShaderInstance*       CreatePSInstance(DiShaderProgram* prog);
 
         DiRenderTarget*         CreateRenderTarget();
+
+        DiShaderParameter*      CreateShaderParams(DiMaterial& mat);
+
+        const DiString&         GetShaderFileExtension() const;
 
         void                    CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd);
 

@@ -31,8 +31,8 @@ namespace Demi
 
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>("_post_out");
 
-        mat->LoadVertexShader(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER);
-        mat->LoadPixelShader(DiMaterialDefine::SCREEN_QUAD_PIXEL_SHADER);
+        mat->LoadShader(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,
+                        DiMaterialDefine::SCREEN_QUAD_PIXEL_SHADER);
 
         mScreenQuad->SetBatchGroup(BATCH_POST_FILTER);
         mScreenQuad->SetMaterial(mat);
@@ -122,41 +122,42 @@ namespace Demi
         effectGray->SetEnable(true);
           DiPostEffectPass* passGray = effectGray->CreatePass("output");
          passGray->BuildTexture(1,D3DFMT_A8R8G8B8);
-          passGray->BuildMaterial("screen_quad.vsh","post_gray.psh");
+          passGray->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,"post_gray_p");
         passGray->SetInput("image",INPUT_PREV_EFFECT);
         passGray->SetInput("grayRate",1.0f);
         */
 
         //////////////////////////////////////////////////////////////////////////
+        /*
         DiPostEffect* effect = CreatePostEffect("Bloom");
         effect->SetEnable(false);
         DiPostEffectPass* bright = effect->CreatePass("bright");
         bright->BuildTexture(1,PF_A8R8G8B8);
-        bright->BuildMaterial("screen_quad.vsh","post_bright.psh");
+        bright->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER, "post_bright_p");
         bright->SetInput("image",INPUT_PREV_EFFECT);
         bright->GetShaderParam()->WriteFloat3("vLinearBright",DiVec3(1,-1,1));
 
         DiPostEffectPass* down4 = effect->CreatePass("down4");
         down4->BuildTexture(4, PF_A8R8G8B8);
-        down4->BuildMaterial("post_down4.vsh","post_down4.psh");
+        down4->BuildMaterial("post_down4_v","post_down4_p");
         down4->SetInput("image",INPUT_PREV_PASS);
 
         DiPostEffectPass* vertBlur = effect->CreatePass("vert");
         vertBlur->BuildTexture(4, PF_A8R8G8B8);
-        vertBlur->BuildMaterial("post_bloom_v.vsh","post_bloom.psh");
+        vertBlur->BuildMaterial("post_bloom_vert_v","post_bloom_p");
         vertBlur->SetInput("image",INPUT_PREV_PASS);
 
         DiPostEffectPass* horzBlur = effect->CreatePass("horz");
         horzBlur->BuildTexture(4, PF_A8R8G8B8);
-        horzBlur->BuildMaterial("post_bloom_h.vsh","post_bloom.psh");
+        horzBlur->BuildMaterial("post_bloom_horz_v","post_bloom_p");
         horzBlur->SetInput("image",INPUT_PREV_PASS);
 
         DiPostEffectPass* outscene = effect->CreatePass("output");
         outscene->BuildTexture(1, PF_A8R8G8B8);
-        outscene->BuildMaterial("post_bloom_final.vsh","post_bloom_final.psh");
+        outscene->BuildMaterial("post_bloom_final_v","post_bloom_final_p");
         outscene->SetInput("image",INPUT_PREV_EFFECT);
         outscene->SetInput("imageBloom",INPUT_PREV_PASS);
-
+        */
         RefreshEffectChain();
     }
 
