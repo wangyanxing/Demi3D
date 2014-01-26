@@ -67,10 +67,10 @@ namespace Demi
 
     public:
 
-        void                Bind(){}
+        void        Bind(){}
 
-        void                Release(){ mVertexElements.ClearElements(); }
+        void        Release(){ mVertexElements.ClearElements(); }
 
-        void                Create(){}
+        void        Create(){}
     };
 }

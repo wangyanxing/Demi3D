@@ -4,6 +4,7 @@
 #include "GLDriver.h"
 #include "GLTypeMappings.h"
 #include "ShaderProgram.h"
+#include "AssetManager.h"
 
 namespace Demi
 {
@@ -41,6 +42,12 @@ namespace Demi
 
     bool DiGLShaderInstance::Compile(const DiString& code)
     {
+        if (code.empty())
+            return false;
+
+        // check the includes firstly
+        PorcessShaders(code);
+
         GLenum shaderType = 0;
         switch (mType)
         {
@@ -53,11 +60,8 @@ namespace Demi
         }
         mShaderHandle = glCreateShaderObjectARB(shaderType);
 
-        if (!code.empty())
-        {
-            const char *source = code.c_str();
-            glShaderSourceARB(mShaderHandle, 1, &source, NULL);
-        }
+        const char *source = mProcessedShader.c_str();
+        glShaderSourceARB(mShaderHandle, 1, &source, NULL);
 
         glCompileShaderARB(mShaderHandle);
         glGetObjectParameterivARB(mShaderHandle, GL_OBJECT_COMPILE_STATUS_ARB, &mCompiled);
@@ -160,6 +164,51 @@ namespace Demi
             LogGLSLError(glErr, "UnlinkToProgramObject error: ", programObject);
     }
 
+    void DiGLShaderInstance::PorcessShaders(const DiString& code)
+    {
+        mProcessedShader.clear();
+
+        // defines
+        for (auto i = mCompileDesc.marcos.begin(); i != mCompileDesc.marcos.end(); ++i)
+        {
+            DiString line;
+            line.Format("#define %s %s\n", i->first.c_str(), i->second.c_str());
+            mProcessedShader += line;
+        }
+        mProcessedShader += "\n";
+        mProcessedShader += code;
+
+        // includes
+        DiString::size_type pos = mProcessedShader.find("#include");
+        if (pos != DiString::npos)
+        {
+            DiString::size_type first = 0, second = 0;
+            for (auto i = pos + 7; i < mProcessedShader.size() && mProcessedShader[i] != '\n'; ++i)
+            {
+                char c = mProcessedShader[i];
+                if (mProcessedShader[i] == '\"')
+                {
+                    if (first == 0)
+                        first = i;
+                    else
+                        second = i;
+                }
+                if (second != 0)
+                    break;
+            }
+            DiString filename = mProcessedShader.substr(first + 1, second - first - 1);
+            DiString fullinclude = mProcessedShader.substr(pos, second - pos + 1);
+
+            DiDataStreamPtr buf = DiAssetManager::GetInstance().OpenArchive(filename);
+            if (!buf)
+            {
+                DI_WARNING("Cannot locate the include glsl file : %s", filename.c_str());
+                return;
+            }
+            mProcessedShader.Replace(fullinclude.c_str(), buf->GetAsString().c_str());
+        }
+    }
+
     DiGLShaderLinker::DiGLShaderLinker(DiGLShaderInstance* vs, DiGLShaderInstance* ps)
         : mGLHandle(0)
         , mVS(vs)
@@ -230,6 +279,12 @@ namespace Demi
                         continue;
 
                     name = name.substr(0, index);
+                }
+
+                // built-in uniforms
+                if (!strncmp(uniformName, "g_", 2))
+                {
+                    continue;
                 }
 
                 DiGLShaderConstant p;
