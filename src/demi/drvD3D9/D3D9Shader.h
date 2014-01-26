@@ -181,7 +181,7 @@ namespace Demi
 
         DiShaderProgram*    mShaderProgram;
 
-        T*                    mD3DShader;
+        T*                  mD3DShader;
 
         DiShaderConstants   mConstants;
     };
