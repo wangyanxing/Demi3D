@@ -21,6 +21,7 @@ namespace Demi
     DiGLBufferManager::DiGLBufferManager()
         : mScratchBufferPool(nullptr), 
         mMapBufferThreshold(_GL_SCRATCH_THRESHOLD)
+        , mMaxScratchBufRequest(0)
     {
         DI_ASSERT(!DiGLDriver::BufferMgr);
         DiGLDriver::BufferMgr = this;
@@ -138,5 +139,72 @@ namespace Demi
 
         // Should never get here unless there's a corruption
         DI_WARNING("Scratch deallocation error");
+    }
+
+    void* DiGLBufferManager::AllocScratchBuffer(uint32 size)
+    {
+        if (!size)
+            return nullptr;
+
+        if (size > mMaxScratchBufRequest)
+            mMaxScratchBufRequest = size;
+
+        for (auto i = mScratchBuffers.begin(); i != mScratchBuffers.end(); ++i)
+        {
+            if (!i->reserved && i->size >= size)
+            {
+                i->reserved = true;
+                return i->data;
+            }
+        }
+
+        for (auto i = mScratchBuffers.begin(); i != mScratchBuffers.end(); ++i)
+        {
+            if (!i->reserved)
+            {
+                i->data = new uint8[size];
+                i->size = size;
+                i->reserved = true;
+                return i->data;
+            }
+        }
+
+        ScratchBuffer newBuffer;
+        newBuffer.data = new uint8[size];
+        newBuffer.size = size;
+        newBuffer.reserved = true;
+        mScratchBuffers.push_back(newBuffer);
+        return newBuffer.data;
+    }
+
+    void DiGLBufferManager::DeallocScratchBuffer(void* buffer)
+    {
+        if (!buffer)
+            return;
+
+        for (auto i = mScratchBuffers.begin(); i != mScratchBuffers.end(); ++i)
+        {
+            if (i->reserved && i->data == buffer)
+            {
+                i->reserved = false;
+                return;
+            }
+        }
+
+        DI_WARNING("Cannot locate the created scratch buffer.");
+    }
+
+    void DiGLBufferManager::ReleaseScratchBuffers()
+    {
+        for (auto i = mScratchBuffers.begin(); i != mScratchBuffers.end(); ++i)
+        {
+            if (!i->reserved && i->size > mMaxScratchBufRequest * 2)
+            {
+                i->data = mMaxScratchBufRequest > 0 ? new uint8[mMaxScratchBufRequest] : nullptr;
+                i->size = mMaxScratchBufRequest;
+            }
+        }
+
+        mMaxScratchBufRequest = 0;
     }
 }

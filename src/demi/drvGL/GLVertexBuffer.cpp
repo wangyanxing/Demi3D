@@ -8,6 +8,9 @@ namespace Demi
 {
     DiGLVertexBuffer::DiGLVertexBuffer()
         : mBufferId(0)
+        , mLockingScratch(nullptr)
+        , mLockingOffset(0)
+        , mLockingSize(0)
     {
     }
 
@@ -25,6 +28,7 @@ namespace Demi
         }
 
         mBufferSize = size;
+        mResUsage = (DiResUsage)usage;
 
         glGenBuffersARB(1, &mBufferId);
 
@@ -35,7 +39,7 @@ namespace Demi
         }
 
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, mBufferId);
-        glBufferDataARB(GL_ARRAY_BUFFER_ARB, size, NULL, DiGLTypeMappings::GetGLUsage(usage));
+        glBufferDataARB(GL_ARRAY_BUFFER_ARB, mBufferSize, NULL, DiGLTypeMappings::GetGLUsage(mResUsage));
     }
 
     void DiGLVertexBuffer::Bind()
@@ -56,6 +60,7 @@ namespace Demi
     {
     }
 
+#if 0
     void* DiGLVertexBuffer::Lock(uint32 offset, uint32 size, DiLockFlag flag)
     {
         void* lk = nullptr;
@@ -137,6 +142,8 @@ namespace Demi
         }
     }
 
+#endif
+
     void DiGLVertexBuffer::ReadData(uint32 offset, uint32 length, void* pDest)
     {
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, mBufferId);
@@ -164,4 +171,59 @@ namespace Demi
             glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, offset, length, pSource);
         }
     }
+
+    void* DiGLVertexBuffer::Lock(uint32 offset, uint32 size, DiLockFlag flag /*= LOCK_NORMAL*/)
+    {
+        mLockingOffset = offset;
+        mLockingSize = size;
+
+        mLockingScratch = DiGLDriver::BufferMgr->AllocScratchBuffer(size);
+        return mLockingScratch;
+    }
+
+    void DiGLVertexBuffer::Unlock()
+    {
+        SetDataRange(mLockingScratch, mLockingOffset, mLockingSize);
+        DiGLDriver::BufferMgr->DeallocScratchBuffer(mLockingScratch);
+        mLockingScratch = nullptr;
+        mLockingOffset = 0;
+        mLockingSize = 0;
+    }
+
+    bool DiGLVertexBuffer::SetData(const void* data)
+    {
+        if (!data)
+            return false;
+
+        glBindBufferARB(GL_ARRAY_BUFFER, mBufferId);
+        glBufferDataARB(GL_ARRAY_BUFFER, mBufferSize, data, DiGLTypeMappings::GetGLUsage(mResUsage));
+
+        return true;
+    }
+
+    bool DiGLVertexBuffer::SetDataRange(const void* data, uint32 start,
+        uint32 count, bool discard /*= false*/)
+    {
+        if (start == 0 && count == mLockingSize)
+            return SetData(data);
+
+        if (!data || !count)
+            return false;
+
+        if (start + count > mBufferSize)
+        {
+            DI_WARNING("Invalid vertex buffer data range");
+            return false;
+        }
+
+        glBindBufferARB(GL_ARRAY_BUFFER, mBufferId);
+
+        if (!discard || start != 0)
+            glBufferSubDataARB(GL_ARRAY_BUFFER, start, count, data);
+        else
+            glBufferDataARB(GL_ARRAY_BUFFER, count, data, DiGLTypeMappings::GetGLUsage(mResUsage));
+
+        return true;
+    }
+
 }

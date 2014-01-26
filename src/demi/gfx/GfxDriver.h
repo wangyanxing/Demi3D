@@ -84,6 +84,8 @@ namespace Demi
 
         virtual void                SetShaderConsts(DiShaderType type, int regID, const DiColor& col) = 0;
 
+        virtual void                BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env) = 0;
+
         virtual void                Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil = 0) = 0;
 
         virtual bool                IsDeviceLost() const = 0;
@@ -112,7 +114,11 @@ namespace Demi
 
         virtual DiRenderTarget*     CreateRenderTarget() = 0;
 
+        virtual DiShaderParameter*  CreateShaderParams(DiMaterial& mat) = 0;
+
         virtual void                CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd) = 0;
+
+        virtual const DiString&     GetShaderFileExtension() const = 0;
 
         virtual void                BindMaterialStates(const DiMaterial* mat) = 0;
 

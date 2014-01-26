@@ -8,10 +8,12 @@
 namespace Demi
 {
 
-    DiGLDepthBuffer::DiGLDepthBuffer(uint16 poolId, uint32 width, uint32 height, DiGLRenderBuffer* depth,
+    DiGLDepthBuffer::DiGLDepthBuffer(uint16 poolId, uint32 width, uint32 height, 
+        DiGLContext* context, DiGLRenderBuffer* depth,
         DiGLRenderBuffer* stencil, uint32 fsaa, uint32 multiSampleQuality, bool manual)
-        :mDepthBuffer(depth),
-        mStencilBuffer(stencil)
+        : mDepthBuffer(depth)
+        , mStencilBuffer(stencil)
+        , mContext(context)
     {
         mPoolId = poolId;
         mBitDepth = 0;

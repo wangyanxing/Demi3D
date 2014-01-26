@@ -2,6 +2,7 @@
 #include "GLTypeMappings.h"
 #include "VertexFormat.h"
 #include "Texture.h"
+#include "ShaderParam.h"
 
 namespace Demi
 {
@@ -73,6 +74,8 @@ namespace Demi
             return 2;
         case VERT_USAGE_COLOR:
             return 3;
+        case VERT_USAGE_SECONDARY_COLOR:
+            return 4;
         case VERT_USAGE_BLENDINDICES:
             return 7;
         case VERT_USAGE_TEXCOORD:
@@ -118,6 +121,51 @@ namespace Demi
             return GL_TEXTURE_CUBE_MAP;
         default:
             return GL_TEXTURE_2D;
+        }
+    }
+
+    bool DiGLTypeMappings::IsAttributeValid(uint8 semantic)
+    {
+        switch (semantic)
+        {
+        case VERT_USAGE_POSITION:
+        case VERT_USAGE_NORMAL:
+        case VERT_USAGE_COLOR:
+        case VERT_USAGE_SECONDARY_COLOR:
+        case VERT_USAGE_TEXCOORD:
+            return false;
+
+        case VERT_USAGE_BLENDINDICES:
+        case VERT_USAGE_BLENDWEIGHT:
+        case VERT_USAGE_TANGENT:
+        case VERT_USAGE_BINORMAL:
+            return true;
+        }
+
+        return false;
+    }
+
+    DiShaderParameter::ParamType DiGLTypeMappings::ConvertGLShaderConstType(GLenum gltype)
+    {
+        switch (gltype)
+        {
+        case GL_FLOAT:
+            return DiShaderParameter::VARIABLE_FLOAT;
+        case GL_FLOAT_VEC2:
+            return DiShaderParameter::VARIABLE_FLOAT2;
+        case GL_FLOAT_VEC3:
+            return DiShaderParameter::VARIABLE_FLOAT3;
+        case GL_FLOAT_VEC4:
+            return DiShaderParameter::VARIABLE_FLOAT4;
+        case GL_FLOAT_MAT4:
+            return DiShaderParameter::VARIABLE_MAT4;
+        case GL_SAMPLER_2D:
+        case GL_SAMPLER_2D_RECT_ARB:
+            return DiShaderParameter::VARIABLE_SAMPLER2D;
+        case GL_SAMPLER_CUBE:
+            return DiShaderParameter::VARIABLE_SAMPLERCUBE;
+        default:
+            return DiShaderParameter::NUM_VARIABLE_TYPES;
         }
     }
 

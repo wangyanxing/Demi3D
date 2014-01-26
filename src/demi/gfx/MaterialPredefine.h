@@ -1,6 +1,5 @@
 
 /********************************************************************
-    Date:        2012-3-31
     File:       MaterialPredefine.h
     Creator:    demiwangya
 *********************************************************************/
@@ -39,6 +38,7 @@ namespace Demi
         static DiString        WATER_VERTEX_SHADER;
 
         // for sky box
+        static DiString        SKY_VERTEX_SHADER;
         static DiString        SKY_PIXEL_SHADER;
 
         // hardware skinning shader

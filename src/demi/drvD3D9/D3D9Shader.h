@@ -7,63 +7,39 @@
 #pragma once
 
 #include "GpuProgram.h"
+#include "ShaderParam.h"
 #include "D3D9Driver.h"
+#include "D3D9ShaderParam.h"
 #include "D3D9StateCache.h"
 
 namespace Demi
 {
-    class DI_D3D9DRV_API DiD3D9GpuVariable : public DiGpuVariable
+    static DiShaderParameter::ParamType GetHlslVarType(const D3DXCONSTANT_DESC &desc)
     {
-    public:
-
-        DiD3D9GpuVariable(const DiString& name, Type type);
-
-        ~DiD3D9GpuVariable(void);
-
-    public:
-
-        void                    Bind() const;
-
-        void                    AddVertexHandle(ID3DXConstantTable &table, D3DXHANDLE handle);
-
-        void                    AddPixelHandle(ID3DXConstantTable &table, D3DXHANDLE handle);
-
-    private:
-
-        D3DXHANDLE              mVertexHandle;
-
-        uint32                  mVertexRegister;
-
-        D3DXHANDLE              mPixelHandle;
-
-        uint32                  mPixelRegisters;
-    };
-
-    static DiGpuVariable::Type GetHlslVarType(const D3DXCONSTANT_DESC &desc)
-    {
-        DiGpuVariable::Type vt = DiGpuVariable::NUM_VARIABLE_TYPES;
+        DiShaderParameter::ParamType vt = DiShaderParameter::NUM_VARIABLE_TYPES;
         switch (desc.Type)
         {
         case D3DXPT_FLOAT:
             if (desc.Rows == 1 && desc.Columns == 1)
-                vt = DiGpuVariable::VARIABLE_FLOAT;
+                vt = DiShaderParameter::VARIABLE_FLOAT;
             else if (desc.Rows == 1 && desc.Columns == 2)
-                vt = DiGpuVariable::VARIABLE_FLOAT2;
+                vt = DiShaderParameter::VARIABLE_FLOAT2;
             else if (desc.Rows == 1 && desc.Columns == 3)
-                vt = DiGpuVariable::VARIABLE_FLOAT3;
+                vt = DiShaderParameter::VARIABLE_FLOAT3;
             else if (desc.Rows == 1 && desc.Columns == 4)
-                vt = DiGpuVariable::VARIABLE_FLOAT4;
+                vt = DiShaderParameter::VARIABLE_FLOAT4;
+            else if (desc.Rows == 4 && desc.Columns == 4)
+                vt = DiShaderParameter::VARIABLE_MAT4;
             else if (desc.Rows > 1 && desc.Columns == 4)
-                vt = DiGpuVariable::VARIABLE_FLOAT4_ARRAY;
+                vt = DiShaderParameter::VARIABLE_FLOAT4_ARRAY;
             break;
         case D3DXPT_SAMPLER2D:
-            vt = DiGpuVariable::VARIABLE_SAMPLER2D;
+            vt = DiShaderParameter::VARIABLE_SAMPLER2D;
             break;
         case D3DXPT_SAMPLERCUBE:
-            vt = DiGpuVariable::VARIABLE_SAMPLERCUBE;
+            vt = DiShaderParameter::VARIABLE_SAMPLERCUBE;
             break;
         }
-        DI_ASSERT(vt < DiGpuVariable::NUM_VARIABLE_TYPES);
         return vt;
     }
 
@@ -72,9 +48,9 @@ namespace Demi
     class DI_D3D9DRV_API DiShaderConstants : DiBase
     {
     public:
-        ID3DXConstantTable*    table;
+        ID3DXConstantTable* table;
 
-        DiShaderType    type;
+        DiShaderType type;
 
         int modelMatrix;
         int viewMatrix;
@@ -152,14 +128,14 @@ namespace Demi
         {
         }
 
-        void                Compile(const DiString& code)
+        bool                Compile(const DiString& code)
         {
-            DiD3D9ShaderUtils<type, _Myt>::CompileShader(this, code);
+            return DiD3D9ShaderUtils<type, _Myt>::CompileShader(this, code);
         }
 
         void                Load(DWORD* data)
         {
-            DiD3D9ShaderUtils<type, _Myt*>::LoadShader(this, data);
+            return DiD3D9ShaderUtils<type, _Myt*>::LoadShader(this, data);
         }
 
         void                Bind(const DiShaderEnvironment& shaderEnv)
@@ -168,7 +144,7 @@ namespace Demi
             mConstants.BindEnvironment(shaderEnv);
         }
 
-        void                LoadVariables(std::function<void(DiGpuVariable*)> func)
+        void                LoadParameters(DiD3D9ShaderParam* sm)
         {
             ID3DXConstantTable &table = *mConstants.table;
 
@@ -186,21 +162,14 @@ namespace Demi
                     DI_ASSERT(count == 1);
                     if (count == 1 && strncmp(cdesc.Name, "g_", 2))
                     {
-                        DiGpuVariable::Type t = GetHlslVarType(cdesc);
-                        if (t < DiGpuVariable::NUM_VARIABLE_TYPES)
-                        {
-                            DiD3D9GpuVariable* var = DI_NEW DiD3D9GpuVariable(cdesc.Name, t);
-                            if (type == SHADER_PIXEL)
-                                var->AddPixelHandle(table, constant);
-                            else
-                                var->AddVertexHandle(table, constant);
-                            func(var);
-                        }
+                        DiShaderParameter::ParamType t = GetHlslVarType(cdesc);
+                        DiString parName = cdesc.Name;
+                        sm->AddParameter(t, parName);
+                        sm->AddD3DParameter(parName, type, cdesc.RegisterIndex);
                     }
                 }
             }
         }
-
 
         void                Release()
         {
@@ -214,7 +183,7 @@ namespace Demi
 
         DiShaderProgram*    mShaderProgram;
 
-        T*                    mD3DShader;
+        T*                  mD3DShader;
 
         DiShaderConstants   mConstants;
     };
@@ -227,7 +196,7 @@ namespace Demi
     {
     public:
 
-        static void CompileShader(T* shaderInstance, const DiString& code)
+        static bool CompileShader(T* shaderInstance, const DiString& code)
         {
             DiMarcoDefineList marcos;
             marcos = shaderInstance->mCompileDesc.marcos;
@@ -270,7 +239,7 @@ namespace Demi
                     errorLog = "Shader compile failed:" + errorLog.substr(i + 7);
                 }
 
-                DI_ERROR(errorLog.c_str());
+                DI_WARNING(errorLog.c_str());
             }
 
             SAFE_ARRAY_DELETE(defs);
@@ -279,6 +248,8 @@ namespace Demi
 
             SAFE_RELEASE(dXShaderBuffer);
             SAFE_RELEASE(dXErrorBuffer);
+
+            return hResult == S_OK;
         }
 
         template<DiShaderType shaderTp, typename T>

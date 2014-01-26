@@ -4,6 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
+#include "ShaderParam.h"
+
 namespace Demi
 {
     class DiGLTypeMappings
@@ -16,8 +18,12 @@ namespace Demi
 
         static GLuint   GetFixedAttributeIndex(uint8 semantic, uint8 index);
 
+        static bool     IsAttributeValid(uint8 semantic);
+
         static GLenum   GLFormatMapping[PIXEL_FORMAT_MAX];
 
         static GLenum   GetGLTextureType(uint16 type);
+
+        static DiShaderParameter::ParamType   ConvertGLShaderConstType(GLenum gltype);
     };
 }

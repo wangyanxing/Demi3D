@@ -8,6 +8,7 @@
 #include "VertexDeclaration.h"
 #include "GfxDriver.h"
 #include "RenderWindow.h"
+#include "ShaderProgram.h"
 #include "Win32Window.h"
 
 #include "D3D9TypeMappings.h"
@@ -19,6 +20,7 @@
 #include "D3D9Texture.h"
 #include "D3D9Shader.h"
 #include "D3D9DepthBuffer.h"
+#include "D3D9ShaderParam.h"
 
 namespace Demi
 {
@@ -838,5 +840,22 @@ namespace Demi
         if (a)
             val |= D3DCOLORWRITEENABLE_ALPHA;
         StateCache->SetRenderState(D3DRS_COLORWRITEENABLE, val);
+    }
+
+    void DiD3D9Driver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env)
+    {
+        vs->Bind(env);
+        ps->Bind(env);
+    }
+
+    DiShaderParameter* DiD3D9Driver::CreateShaderParams(DiMaterial& mat)
+    {
+        return DI_NEW DiD3D9ShaderParam(mat);
+    }
+
+    const DiString& DiD3D9Driver::GetShaderFileExtension() const
+    {
+        static DiString shaderext = ".hlsl";
+        return shaderext;
     }
 }

@@ -1,17 +1,20 @@
 
 #include "GLDriver.h"
-#include "RenderUnit.h"
 #include "GLVertexBuffer.h"
 #include "GLIndexBuffer.h"
 #include "GLVertexDeclaration.h"
 #include "GfxDriver.h"
 #include "GLTexture.h"
-#include "RenderWindow.h"
 #include "GLContext.h"
 #include "GLBufferManager.h"
 #include "GLTypeMappings.h"
 #include "GLFrameBuffer.h"
 #include "GLRenderTarget.h"
+#include "GLShader.h"
+#include "GLShaderParam.h"
+
+#include "RenderWindow.h"
+#include "RenderUnit.h"
 
 #ifdef WIN32
 #   include "Win32Window.h"
@@ -26,6 +29,9 @@ GLenum glewContextInit(DiGLUtil*);
 
 namespace Demi
 {
+    DiGLFBOManager*    DiGLDriver::FBOManager = nullptr;
+    DiGLBufferManager* DiGLDriver::BufferMgr  = nullptr;
+
     DiGLDriver::DiGLDriver()
         :mMainContext(nullptr),
         mGLUtil(nullptr),
@@ -33,7 +39,8 @@ namespace Demi
         mStencilMask(0xFFFFFFFF),
         mGLBufferManager(nullptr),
         mCurrentContext(nullptr),
-        mGLFBOManager(nullptr)
+        mGLFBOManager(nullptr),
+        mCurrentProgram(nullptr)
     {
         mColourWrite[0] = mColourWrite[1] = mColourWrite[2] = mColourWrite[3] = true;
         mGLBufferManager = DI_NEW DiGLBufferManager();
@@ -77,10 +84,15 @@ namespace Demi
     void DiGLDriver::EndFrame()
     {
         glDisable(GL_SCISSOR_TEST);
+        BufferMgr->ReleaseScratchBuffers();
     }
 
     void DiGLDriver::ReleaseGfx()
     {
+        for (auto i = mProgramMaps.begin(); i != mProgramMaps.end(); ++i)
+            DI_DELETE i->second;
+        mProgramMaps.clear();
+
         DI_DELETE mMainContext;
         mMainContext = nullptr;
 
@@ -187,7 +199,7 @@ namespace Demi
 
     bool DiGLDriver::RenderGeometry(DiRenderUnit* unit)
     {
-        if (!_BindSourceData(unit))
+        if (!_BindVertexBuffer(unit))
             return false;
 
         GLint primType;
@@ -215,7 +227,7 @@ namespace Demi
 
         if (!unit->mIndexBuffer)
         {
-            // TODO
+            glDrawArrays(primType, 0, unit->mVerticesNum);
         }
         else
         {
@@ -224,11 +236,16 @@ namespace Demi
             uint32 indexSize = unit->mIndexBuffer->GetType() == IB_16BITS ? sizeof(unsigned short) : sizeof(unsigned int);
 
             void* pBufferData = nullptr;
-            pBufferData = VBO_BUFFER_OFFSET(
-                unit->mIndexOffset * indexSize);
+            pBufferData = VBO_BUFFER_OFFSET(unit->mIndexOffset * indexSize);
 
             glDrawElements(primType, unit->mIndexBuffer->GetMaxIndices(), indexType, pBufferData);
         }
+
+#if 1
+        GLenum glErr = glGetError();
+        if (glErr != GL_NO_ERROR)
+            DiGLShaderInstance::LogGLSLError(glErr, "renderGeometry: ", 0);
+#endif
 
         return true;
     }
@@ -288,23 +305,25 @@ namespace Demi
 
     DiShaderInstance* DiGLDriver::CreateVSInstance(DiShaderProgram* prog)
     {
-        return nullptr;
+        return DI_NEW DiGLShaderInstance(SHADER_VERTEX, prog);
     }
 
     DiShaderInstance* DiGLDriver::CreatePSInstance(DiShaderProgram* prog)
     {
-        return nullptr;
+        return DI_NEW DiGLShaderInstance(SHADER_PIXEL, prog);
     }
 
     DiRenderTarget* DiGLDriver::CreateRenderTarget()
     {
-        return DI_NEW DiGLRenderTarget();
+        auto rt = DI_NEW DiGLRenderTarget();
+        rt->Init();
+        return rt;
     }
 
     void DiGLDriver::CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd)
     {
         auto wt = DI_NEW DiGLWindowTarget();
-        wt->Create(wnd);
+        wt->Create(wnd, mCurrentContext);
         outRT = wt;
     }
 
@@ -446,6 +465,12 @@ namespace Demi
 
         glClear(clearBuf);
 
+#if 1
+        GLenum glErr = glGetError();
+        if (glErr != GL_NO_ERROR)
+            DiGLShaderInstance::LogGLSLError(glErr, "glClear error: ", 0);
+#endif
+
         if (scissorBoxDifference)
             glScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
 
@@ -501,7 +526,7 @@ namespace Demi
         mColourWrite[3] = a;
     }
 
-    bool DiGLDriver::_BindSourceData(DiRenderUnit* unit)
+    bool DiGLDriver::_BindVertexBuffer(DiRenderUnit* unit)
     {
         if (unit->mSourceData.empty() || !unit->mVertexDecl)
             return false;
@@ -509,22 +534,31 @@ namespace Demi
         if (!unit->mPrimitiveCount)
             return false;
 
+        static bool attriIndex[16];
+        for (auto i = 0; i < 16; i++) attriIndex[i] = false;
+
         DiVertexElements& elements = unit->mVertexDecl->GetElements();
 
         for (auto it = unit->mSourceData.begin(); it != unit->mSourceData.end(); ++it)
         {
             DiGLVertexBuffer* vb = static_cast<DiGLVertexBuffer*>(*it);
+            vb->Bind();
+
             DiVertexElements::ElementsList e;
             elements.GetElementsAtStream(vb->GetStreamId(), e);
-            
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, vb->GetBufferId());
 
             for (auto i = e.begin(); i != e.end(); ++i)
             {
                 void* pBufferData = nullptr;
                 pBufferData = VBO_BUFFER_OFFSET(i->Offset);
 
+                auto elemNum = DiVertexElements::GetElementTypeCount((DiVertexType)i->Type);
+                auto gltype  = DiGLTypeMappings::GetGLType((DiVertexType)i->Type);
+                GLsizei buffersize = static_cast<GLsizei>(vb->GetBufferSize());
+
                 GLint attrib = DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
+                attriIndex[attrib] = true;
+
                 uint16 count = elements.GetElementTypeCount((DiVertexType)i->Type);
 
                 GLboolean normalised = GL_FALSE;
@@ -541,14 +575,102 @@ namespace Demi
                     break;
                 };
 
-                glVertexAttribPointerARB(
-                    attrib,
-                    count,
-                    DiGLTypeMappings::GetGLType((DiVertexType)i->Type),
-                    normalised,
-                    static_cast<GLsizei>(vb->GetBufferSize()),
-                    pBufferData);
+                glVertexAttribPointerARB(attrib, count, gltype, normalised, buffersize, pBufferData);
                 glEnableVertexAttribArrayARB(attrib);
+            }
+        }
+
+        for (auto i = 0; i < 16; i++)
+            if (!attriIndex[i]) glDisableVertexAttribArrayARB(i);
+
+        return true;
+    }
+
+    bool DiGLDriver::_BindSourceData(DiRenderUnit* unit)
+    {
+        if (unit->mSourceData.empty() || !unit->mVertexDecl)
+            return false;
+
+        if (!unit->mPrimitiveCount)
+            return false;
+
+        DiVertexElements& elements = unit->mVertexDecl->GetElements();
+
+        for (auto it = unit->mSourceData.begin(); it != unit->mSourceData.end(); ++it)
+        {
+            DiGLVertexBuffer* vb = static_cast<DiGLVertexBuffer*>(*it);
+            vb->Bind();
+
+            DiVertexElements::ElementsList e;
+            elements.GetElementsAtStream(vb->GetStreamId(), e);
+            
+            for (auto i = e.begin(); i != e.end(); ++i)
+            {
+                void* pBufferData = nullptr;
+                pBufferData = VBO_BUFFER_OFFSET(i->Offset);
+
+                bool isCustomAttr = DiGLTypeMappings::IsAttributeValid(i->Usage);
+                auto elemNum = DiVertexElements::GetElementTypeCount((DiVertexType)i->Type);
+                auto gltype = DiGLTypeMappings::GetGLType((DiVertexType)i->Type);
+                GLsizei buffersize = static_cast<GLsizei>(vb->GetBufferSize());
+
+                if (isCustomAttr)
+                {
+                    GLint attrib = DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
+                    uint16 count = elements.GetElementTypeCount((DiVertexType)i->Type);
+
+                    GLboolean normalised = GL_FALSE;
+                    switch (i->Type)
+                    {
+                    case VERT_TYPE_COLOR:
+                        // Because GL takes these as a sequence of single unsigned bytes, count needs to be 4
+                        // VertexElement::getTypeCount treats them as 1 (RGBA)
+                        // Also need to normalise the fixed-point data
+                        count = 4;
+                        normalised = GL_TRUE;
+                        break;
+                    default:
+                        break;
+                    };
+
+                    glVertexAttribPointerARB(
+                        attrib, count,
+                        gltype, normalised,
+                        buffersize, pBufferData);
+                    glEnableVertexAttribArrayARB(attrib);
+                }
+                else
+                {
+                    switch (i->Usage)
+                    {
+                    case VERT_USAGE_POSITION:
+                        glVertexPointer(elemNum, gltype, buffersize, pBufferData);
+                        glEnableClientState(GL_VERTEX_ARRAY);
+                        break;
+                    case VERT_USAGE_NORMAL:
+                        glNormalPointer(gltype, buffersize, pBufferData);
+                        glEnableClientState(GL_NORMAL_ARRAY);
+                        break;
+                    case VERT_USAGE_COLOR:
+                        glColorPointer(4, gltype, buffersize, pBufferData);
+                        glEnableClientState(GL_COLOR_ARRAY);
+                        break;
+                    case VERT_USAGE_SECONDARY_COLOR:
+                        if (GLEW_EXT_secondary_color)
+                        {
+                            glSecondaryColorPointerEXT(4, gltype, buffersize, pBufferData);
+                            glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
+                        }
+                        break;
+                    case VERT_USAGE_TEXCOORD:
+                        glClientActiveTextureARB(GL_TEXTURE0 + i->UsageIndex);
+                        glTexCoordPointer(elemNum, gltype, buffersize, pBufferData);
+                        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                        break;
+                    default:
+                        break;
+                    };
+                }
             }
         }
 
@@ -579,6 +701,35 @@ namespace Demi
         return mContextMap[wnd];
     }
 
-    DiGLFBOManager* DiGLDriver::FBOManager = nullptr;
-    DiGLBufferManager* DiGLDriver::BufferMgr = nullptr;
+    void DiGLDriver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env)
+    {
+        DiGLShaderLinker* prog = GetShaderLinker(vs->GetShader(), ps->GetShader());
+        prog->Bind();
+    }
+
+    DiGLShaderLinker* DiGLDriver::GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps)
+    {
+        auto p = DiPair<DiShaderInstance*, DiShaderInstance*>(vs, ps);
+        auto it = mProgramMaps.find(p);
+        if (it != mProgramMaps.end())
+            return it->second;
+
+        // create a new one
+        DiGLShaderLinker* ret = new DiGLShaderLinker(static_cast<DiGLShaderInstance*>(vs),
+            static_cast<DiGLShaderInstance*>(ps));
+
+        mProgramMaps[p] = ret;
+        return ret;
+    }
+
+    DiShaderParameter* DiGLDriver::CreateShaderParams(DiMaterial& mat)
+    {
+        return DI_NEW DiGLShaderParam(mat);
+    }
+
+    const DiString& DiGLDriver::GetShaderFileExtension() const
+    {
+        static DiString shaderext = ".glsl";
+        return shaderext;
+    }
 }

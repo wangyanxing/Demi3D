@@ -51,7 +51,7 @@ namespace Demi
         if (!mSkyMaterial)
         {
             mSkyMaterial = DiMaterial::QuickCreate("_sky_mat",
-                "skybox.vsh"/*DiMaterialDefine::STATIC_MESH_SHADER_NAME*/,
+                DiMaterialDefine::SKY_VERTEX_SHADER,
                 DiMaterialDefine::SKY_PIXEL_SHADER);
         }
         
@@ -127,12 +127,12 @@ namespace Demi
 
         float vertices[NUM_VERTEX_ENTRIES];
 
-        const int BP_FRONT    = 0;
-        const int BP_BACK    = 1;
-        const int BP_LEFT    = 2;
-        const int BP_RIGHT    = 3;
-        const int BP_UP        = 4;
-        const int BP_DOWN    = 5;
+        const int BP_FRONT  = 0;
+        const int BP_BACK   = 1;
+        const int BP_LEFT   = 2;
+        const int BP_RIGHT  = 3;
+        const int BP_UP     = 4;
+        const int BP_DOWN   = 5;
 
         for (int i = 0; i < 6; ++i)
         {

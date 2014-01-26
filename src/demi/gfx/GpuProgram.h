@@ -16,7 +16,8 @@ namespace Demi
     enum DiVsVersion
     {
         VS_INVALID = -1,
-        VS_NONE = 0,
+
+        VS_NONE    = 0,
         VS_1_1,
         VS_2_0,
         VS_2_a,
@@ -29,7 +30,8 @@ namespace Demi
     enum DiPsVersion
     {
         PS_INVALID = -1,
-        PS_NONE = 0,
+
+        PS_NONE    = 0,
         PS_1_1,
         PS_1_2,
         PS_1_3,
@@ -43,8 +45,8 @@ namespace Demi
         NUM_PIXEL_SHADER_VERSIONS
     };
 
-    typedef DiPair<DiString,DiString>    DiMarcoDefine;
-    typedef DiVector<DiMarcoDefine>        DiMarcoDefineList;
+    typedef DiPair<DiString,DiString>   DiMarcoDefine;
+    typedef DiVector<DiMarcoDefine>     DiMarcoDefineList;
 
     struct DiCompileDesc
     {
@@ -55,88 +57,10 @@ namespace Demi
 
         DiString            profile;
 
-        DiMarcoDefineList    marcos;
+        DiMarcoDefineList   marcos;
 
         DiString            entryName;
     };
-
-    //////////////////////////////////////////////////////////////////////////
-
-    class DI_GFX_API DiGpuVariable
-    {
-        friend class DiShaderParameter;
-    public:
-
-        enum Type
-        {
-            VARIABLE_FLOAT = 0,
-            VARIABLE_FLOAT2,
-            VARIABLE_FLOAT3,
-            VARIABLE_COLOR,    
-            VARIABLE_FLOAT4,
-            VARIABLE_FLOAT4_ARRAY,
-
-            VARIABLE_SAMPLER2D,
-            VARIABLE_SAMPLERCUBE,
-
-            NUM_VARIABLE_TYPES
-        };
-
-        struct HelperStruct
-        {
-            HelperStruct();
-
-            DiString    refName;
-            DiString    desc;
-            float        maxValue;
-            float        minValue;
-            float        stepValue;
-            bool        asColor;
-        };
-
-        DiGpuVariable(const DiString& name, Type type);
-
-        virtual                 ~DiGpuVariable(void);
-
-    public:
-
-        const DiString&         GetName(void) const;
-
-        Type                    GetType(void) const;
-
-        uint32                  GetDataSize(void) const;
-
-        virtual void            Bind() const = 0;
-
-        DiAny&                  GetData() {return mData;}
-
-        const DiAny&            GetData() const {return mData;}
-
-        void                    SetData(DiAny& a){ mData = a; }
-
-        bool                    IsPublicVariable() const { return mPublicVar; }
-
-        HelperStruct&           GetHelperData() { return mHelperData; }
-
-        const HelperStruct&     GetHelperData() const { return mHelperData; }
-
-        void                    ParsePublicHelperScript();
-
-    protected:
-
-        DiString                mName;
-
-        Type                    mType;
-
-        DiAny                   mData;
-
-        bool                    mPublicVar;
-        
-        DiString                mHelperScript;
-
-        HelperStruct            mHelperData;
-    };
-
 
     //////////////////////////////////////////////////////////////////////////
     class DiShaderEnvironment
@@ -203,9 +127,7 @@ namespace Demi
 
         virtual DiShaderType    GetType() = 0;
 
-        virtual void            LoadVariables(std::function<void(DiGpuVariable*)> func) = 0;
-
-        virtual void            Compile(const DiString& code) = 0;
+        virtual bool            Compile(const DiString& code) = 0;
 
         DiCompileDesc           mCompileDesc;
     };

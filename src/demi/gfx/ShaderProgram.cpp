@@ -8,12 +8,11 @@ namespace Demi
     DiString DiShaderProgram::sDefaultPsProfile = "ps_3_0";
     DiString DiShaderProgram::sDefaultVsProfile = "vs_3_0";
 
-    DiShaderProgram::DiShaderProgram( const DiString& name )
+    DiShaderProgram::DiShaderProgram(const DiString& name, DiShaderType shaderType)
         : mFileName(name),
-        mShaderType(SHADER_UNKNOW),
-        mShader(NULL)
+        mShaderType(shaderType),
+        mShader(nullptr)
     {
-
     }
 
     DiShaderProgram::~DiShaderProgram()
@@ -26,57 +25,47 @@ namespace Demi
         return ASSET_SHADER;
     }
 
-    BOOL DiShaderProgram::Load( DiDataStreamPtr data )
+    bool DiShaderProgram::Load(DiDataStreamPtr data)
     {
         mShaderFileName = data->GetName();
         mShaderFileName.ToLower();
-
-        if (mShaderFileName.CheckFileExtension("vsh"))
-        {
-            mShaderType = SHADER_VERTEX;
-        }
-        else if (mShaderFileName.CheckFileExtension("psh"))
-        {
-            mShaderType = SHADER_PIXEL;
-        }
-
-        mRowCodes = data->GetAsString();
-        return mRowCodes.empty()?FALSE:TRUE;
+        mRawCodes = data->GetAsString();
+        return mRawCodes.empty() ? false : true;
     }
 
-    BOOL DiShaderProgram::Load()
+    bool DiShaderProgram::Load()
     {
         return Load(mFileName);
     }
 
-    BOOL DiShaderProgram::Load( const DiString& filename )
+    bool DiShaderProgram::Load(const DiString& filename)
     {
         DiDataStreamPtr buf = DiAssetManager::GetInstance().OpenArchive(filename);
         if (!buf)
         {
-            return FALSE;
+            return false;
         }
 
         Load(buf);
 
-        return TRUE;
+        return true;
     }
 
-    BOOL DiShaderProgram::LoadingComplete() const
+    bool DiShaderProgram::LoadingComplete() const
     {
-        return mRowCodes.empty()?FALSE:TRUE;
+        return mRawCodes.empty() ? false : true;
     }
 
     void DiShaderProgram::SetCode( DiShaderType type, const DiString& str )
     {
         mShaderType = type;
-        mRowCodes = str;
+        mRawCodes = str;
     }
 
-    void DiShaderProgram::Compile( const DiCompileDesc& desc )
+    bool DiShaderProgram::Compile(const DiCompileDesc& desc)
     {
         if (!Driver)
-            return;
+            return false;
 
         SAFE_DELETE(mShader);
 
@@ -90,163 +79,50 @@ namespace Demi
         }
         else
         {
-            DI_WARNING("Unsupported shader type.");
-            return;
+            DI_WARNING("Unsupported shader type : %d", mShaderType);
+            return false;
         }
-
-        if (!mShader)
-            return;
 
         mShader->mCompileDesc = desc;
-        ParseHelperScript();
 
-        if (mCodes.empty())
+        if (mRawCodes.empty())
         {
-            DI_WARNING("Empty shader code.");
-            return;
+            DI_WARNING("Empty shader code : %s", mFileName.c_str());
+            return false;
         }
 
-        mShader->Compile(mCodes);
+        return mShader->Compile(mRawCodes);
     }
 
-    void DiShaderProgram::Compile( )
+    bool DiShaderProgram::Compile()
     {
         if (!Driver)
-        {
-            return;
-        }
+            return false;
 
         DiCompileDesc desc;
         
         if(mShaderType == SHADER_VERTEX)
         {
-            desc.entryName    = "vs_main";
+            desc.entryName  = "vs_main";
             desc.profile    = sDefaultVsProfile;
         }
         else
         {
-            desc.entryName = "ps_main";
+            desc.entryName  = "ps_main";
             desc.profile    = sDefaultPsProfile;
         }
 
-        Compile(desc);
+        return Compile(desc);
     }
 
     void DiShaderProgram::Bind( const DiShaderEnvironment& shaderEnv )
     {
         if (mShader)
-        {
             mShader->Bind(shaderEnv);
-        }
     }
 
     DiShaderInstance* DiShaderProgram::GetShader( )
     {
         return mShader;
     }
-
-    void DiShaderProgram::ParseHelperScript()
-    {
-        if(mRowCodes.length() < 2)
-        {
-            return;
-        }
-
-        if (!mShader)
-        {
-            return;
-        }
-
-        mVariableScripts.clear();
-        mCodes = mRowCodes;
-
-        const char* cd = mCodes.c_str();
-        int currentBlockBegin = -1;
-        int currentBlockEnd = -1;
-        DiVector<DiIntVec2> blocks;
-
-        int c = 0;
-        while (c < mCodes.length()-1)
-        {
-            if (currentBlockBegin != -1)
-            {
-                if(cd[c] == '-' && cd[c+1] == '>')
-                {
-                    currentBlockEnd = c+1;
-
-                    mCodes[c] = '*';
-                    mCodes[c+1] = '/';
-
-                    blocks.push_back(DiIntVec2(currentBlockBegin,currentBlockEnd));
-                    
-                    currentBlockBegin = -1;
-                    currentBlockEnd = -1;
-                    c+=2;
-                    continue;
-                }
-            }
-            else
-            {
-                if(cd[c] == '<' && cd[c+1] == '-')
-                {
-                    mCodes[c] = '/';
-                    mCodes[c+1] = '*';
-
-                    currentBlockBegin = c;
-                    c+=2;
-                    continue;
-                }
-            }
-            c++;
-        }
-
-        if (currentBlockBegin != -1 || currentBlockEnd != -1)
-        {
-            DI_ERROR("shader编译错误，参数脚本标记代码块不匹配");
-        }
-
-        if (blocks.empty())
-        {
-            return;
-        }
-
-        for (size_t i=0; i < blocks.size(); i++)
-        {
-            if (blocks[i].y - blocks[i].x < 3)
-            {
-                DI_ERROR("shader编译错误，参数脚本标记代码块错误");
-            }
-            DiString script = mCodes.SubString(blocks[i].x+2,blocks[i].y-blocks[i].x-3);
-            
-            int vnEnd = -1;
-            int vnStart = -1;
-            for (int cx = blocks[i].x-1;cx>=0;cx--)
-            {
-                char t = mCodes[cx];
-                if (t == ';')
-                {
-                    vnEnd = cx;
-                    continue;
-                }
-
-                if (vnEnd != -1 )
-                {
-                    if(t <= 32)
-                    {
-                        vnStart = cx;
-                        break;
-                    }
-                }
-            }
-
-            if (vnStart == -1 || vnEnd == -1)
-            {
-                DI_ERROR("shader编译错误，参数脚本标记代码块错误，找不到对应的变量名");
-            }
-            DiString varName = mCodes.SubString(vnStart+1,vnEnd-vnStart-1);
-            
-            mVariableScripts[varName] = script;
-        }
-    }
-
 }
