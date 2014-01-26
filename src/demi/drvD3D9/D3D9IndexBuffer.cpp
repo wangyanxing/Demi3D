@@ -35,7 +35,7 @@ namespace Demi
         }
 
         mBufferSize = size;
-        if (mFormat == D3DFMT_INDEX16)
+        if (mFormat == IB_16BITS)
             mMaxIndices = mBufferSize / sizeof(uint16);
         else
             mMaxIndices = mBufferSize / sizeof(uint32);

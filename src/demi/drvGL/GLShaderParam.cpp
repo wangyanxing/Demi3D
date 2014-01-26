@@ -94,6 +94,7 @@ namespace Demi
         if (!mMaterial.GetVertexShader() || !mMaterial.GetPixelShader())
         {
             DI_WARNING("Null vertex or pixle shader instance.");
+            return;
         }
 
         DiGLShaderInstance* vs = static_cast<DiGLShaderInstance*>(mMaterial.GetVertexShader()->GetShader());

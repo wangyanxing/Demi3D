@@ -8,10 +8,10 @@ _IMPLEMENT_SINGLETON(DiLogManager)
 
 const char* levelTag[MAX_LOG_LEVEL] =
 {        
-    "ERROR",
-    "WARNING",
-    "LOG",
-    "DEBUG"
+    "[ERROR]",
+    "[WARNING]",
+    "",
+    "[DEBUG]"
 };
 
 DiLogManager::DiLogManager(void)
@@ -52,8 +52,8 @@ void DiLogManager::Shutdown()
 void DiLogManager::Output(LogLevel level, const char* szFileName,
                         unsigned int uiLine, const char* pacFormat, ... )
 {
-    const int MAX_CHAR = 4096;
-    char szLog[MAX_CHAR + 1];
+    const int MAX_CHAR = 10 * 1024;
+    static char szLog[MAX_CHAR + 1];
     szLog[MAX_CHAR] = '\0';
 
     va_list args;
@@ -80,8 +80,8 @@ void Demi::DiLogManager::UnregisterLogger( DiLogger* lg )
 
 void Demi::DiLogManager::Error( const char* szFileName, unsigned int uiLine, const char* pacFormat, ... )
 {
-    const int MAX_CHAR = 10230;
-    char szLog[MAX_CHAR + 1];
+    const int MAX_CHAR = 10 * 1024;
+    static char szLog[MAX_CHAR + 1];
     szLog[MAX_CHAR] = '\0';
 
     va_list args;    
@@ -109,8 +109,7 @@ void Demi::DiLogManager::OutputUnformat(LogLevel level, const char* szFileName,
     if (!mLogLevel & (1<<level))
         return;
 
-    // std out
-    printf("%s\n", szLog);
+    printf("%s %s\n", levelTag[level], szLog);
 
     for (auto it = mLogger.begin(); it != mLogger.end(); ++it)
     {
