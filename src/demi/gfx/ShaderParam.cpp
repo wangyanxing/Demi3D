@@ -241,6 +241,8 @@ namespace Demi
             return DiAny(DiVec3::ZERO);
         case VARIABLE_FLOAT4:
             return DiAny(DiVec4::ZERO);
+        case VARIABLE_MAT4:
+            return DiAny(DiMat4::ZERO);
         case VARIABLE_COLOR:
             return DiAny(DiColor::Black);
         case VARIABLE_FLOAT4_ARRAY:
