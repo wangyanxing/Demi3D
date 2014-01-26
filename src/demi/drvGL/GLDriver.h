@@ -116,6 +116,8 @@ namespace Demi
 
         bool                    _BindSourceData(DiRenderUnit* unit);
 
+        bool                    _BindVertexBuffer(DiRenderUnit* unit);
+
         void                    _InitMainContext(DiGLContext* context);
 
     private:

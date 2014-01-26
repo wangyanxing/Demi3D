@@ -128,6 +128,7 @@ namespace Demi
         */
 
         //////////////////////////////////////////////////////////////////////////
+        /*
         DiPostEffect* effect = CreatePostEffect("Bloom");
         effect->SetEnable(false);
         DiPostEffectPass* bright = effect->CreatePass("bright");
@@ -156,7 +157,7 @@ namespace Demi
         outscene->BuildMaterial("post_bloom_final_v","post_bloom_final_p");
         outscene->SetInput("image",INPUT_PREV_EFFECT);
         outscene->SetInput("imageBloom",INPUT_PREV_PASS);
-
+        */
         RefreshEffectChain();
     }
 

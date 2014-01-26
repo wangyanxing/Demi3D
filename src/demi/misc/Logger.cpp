@@ -41,7 +41,7 @@ void DiFileLogger::OutputLog(const char* szMessage, const char* levelInfo,
     DiString log;
     log.Format(
         "%s %s(%d)\r\n"
-        "[%s] : %s\r\n\r\n", 
+        "%s : %s\r\n\r\n", 
         datetime.c_str(),
         file.c_str(), line,
         levelInfo, szMessage);

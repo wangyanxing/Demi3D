@@ -41,6 +41,10 @@ namespace Demi
         void        WriteData(uint32 offset, uint32 length,
                         const void* pSource, bool discardWholeBuffer = false);
 
+        bool        SetData(const void* data);
+        
+        bool        SetDataRange(const void* data, uint32 start, uint32 count, bool discard = false);
+
     private:
 
         GLuint      mBufferId;
@@ -54,5 +58,11 @@ namespace Demi
         void*       mScratchPtr;
 
         bool        mScratchUploadOnUnlock;
+
+        void*       mLockingScratch;
+
+        uint32      mLockingOffset;
+
+        uint32      mLockingSize;
     };
 }
