@@ -53,6 +53,8 @@ namespace Demi
 
     private:
 
+        void                PorcessShaders(const DiString& code);
+
         DiShaderProgram*    mShaderProgram;
 
         GLhandleARB         mShaderHandle;
@@ -60,6 +62,8 @@ namespace Demi
         DiShaderType        mType;
 
         GLint               mCompiled;
+
+        DiString            mProcessedShader;
     };
 
     //////////////////////////////////////////////////////////////////////////
