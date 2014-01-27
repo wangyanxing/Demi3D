@@ -63,7 +63,7 @@ namespace Demi
         shaderEnv.opacity        = mOpacity;
         shaderEnv.shininess      = mShininess;
 
-        Driver->BindShaders(mVertexShader, mPixelShader, shaderEnv);
+        Driver->BindShaders(mVertexShader, mPixelShader);
         mShaderParameter->Bind();
     }
 

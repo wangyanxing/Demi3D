@@ -3,6 +3,7 @@
 
 #include "Win32Window.h"
 #include "RenderWindow.h"
+#include "RenderTarget.h"
 #include "Command.h"
 #include "GfxDriver.h"
 
@@ -15,6 +16,7 @@ namespace Demi
     static INT_PTR CALLBACK windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
         DiWin32Window* window = (DiWin32Window*)LongToPtr(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+        DiRenderWindow* renderWnd = DiBase::Driver->FindRenderWindow(DiWndHandle(hwnd));
 
         if (window && window->DestroyingWindow())
             return 0;
@@ -26,7 +28,6 @@ namespace Demi
             break;
 
         case WM_CLOSE:
-
             DiBase::Driver->MarkClosing();
 
             window->Close();
@@ -35,7 +36,21 @@ namespace Demi
                 window->GetParentRenderWnd()->Closing();
 
             break;
-
+        case WM_ACTIVATE:
+	    {
+            bool active = (LOWORD(wParam) != WA_INACTIVE);
+            if( active )
+            {
+                if (renderWnd)
+                    renderWnd->GetRenderBuffer()->SetActive(true);
+            }
+            else
+            {
+                if (renderWnd)
+                    renderWnd->GetRenderBuffer()->SetActive(false);
+            }
+		    break;
+	    }
         //case WM_MOUSEMOVE:
         //    break;
 
@@ -103,7 +118,6 @@ namespace Demi
 
     DiWin32Window::~DiWin32Window()
     {
-        __asm int 3
     }
 
     bool DiWin32Window::Create(uint32& width, uint32& height,

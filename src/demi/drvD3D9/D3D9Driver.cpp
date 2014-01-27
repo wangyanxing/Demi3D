@@ -842,10 +842,10 @@ namespace Demi
         StateCache->SetRenderState(D3DRS_COLORWRITEENABLE, val);
     }
 
-    void DiD3D9Driver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps, DiShaderEnvironment& env)
+    void DiD3D9Driver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps)
     {
-        vs->Bind(env);
-        ps->Bind(env);
+        vs->Bind(*GetShaderEnvironment());
+        ps->Bind(*GetShaderEnvironment());
     }
 
     DiShaderParameter* DiD3D9Driver::CreateShaderParams(DiMaterial& mat)

@@ -7,6 +7,7 @@
 #pragma once
 
 #include "ShaderParam.h"
+#include "GLShader.h"
 
 namespace Demi
 {
@@ -24,6 +25,11 @@ namespace Demi
 
         void            LoadParameters();
 
+        void            AddBuiltinParam(const GLuint location, DiGLUniforms::BindingFunc& func)
+        {
+            mBuiltinFuncs[location] = func;
+        }
+
     private:
 
         void            SetConstant(GLuint location, GLenum type, const float* data, uint32 count);
@@ -31,5 +37,7 @@ namespace Demi
     private:
 
         DiGLShaderLinker*   mShaderLinker;
+        
+        DiMap<GLuint, DiGLUniforms::BindingFunc> mBuiltinFuncs;
     };
 }
