@@ -50,9 +50,7 @@ namespace Demi
     void* DiGLBufferManager::AllocateScratch(uint32 size)
     {
         if (size % 4 != 0)
-        {
             size += 4 - (size % 4);
-        }
 
         uint32 bufferPos = 0;
         while (bufferPos < SCRATCH_POOL_SIZE)
@@ -83,8 +81,7 @@ namespace Demi
 
             }
 
-            bufferPos += (uint32)sizeof(GLScratchBufferAlloc)+pNext->size;
-
+            bufferPos += (uint32)sizeof(GLScratchBufferAlloc) + pNext->size;
         }
 
         // no available alloc
@@ -196,6 +193,7 @@ namespace Demi
 
     void DiGLBufferManager::ReleaseScratchBuffers()
     {
+        return;
         for (auto i = mScratchBuffers.begin(); i != mScratchBuffers.end(); ++i)
         {
             if (!i->reserved && i->size > mMaxScratchBufRequest * 2)

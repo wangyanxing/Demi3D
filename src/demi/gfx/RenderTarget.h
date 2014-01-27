@@ -125,6 +125,10 @@ namespace Demi
 
         virtual bool            SwapBuffer() { return true; }
 
+        bool                    IsActive() const { return mIsActive; }
+
+        void                    SetActive(bool val) { mIsActive = val; }
+
     protected:
 
         DiRtListener*           mListener;
@@ -152,5 +156,7 @@ namespace Demi
         uint32                  mClearFlag;
 
         bool                    mViewportDirty;
+
+        bool                    mIsActive;
     };
 }

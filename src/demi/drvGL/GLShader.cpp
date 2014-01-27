@@ -360,7 +360,7 @@ namespace Demi
     void DiGLUniforms::InitUniformFuncs()
     {
         msUniformFuncs["g_modelMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->modelViewProjMatrix[0]);
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->modelMatrix[0]);
         };
 
         msUniformFuncs["g_viewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {

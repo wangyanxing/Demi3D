@@ -65,14 +65,14 @@ namespace Demi
         mLockingOffset = offset;
         mLockingSize = size;
 
-        mLockingScratch = DiGLDriver::BufferMgr->AllocScratchBuffer(size);
+        mLockingScratch = DiGLDriver::BufferMgr->AllocateScratch(size);
         return mLockingScratch;
     }
 
     void DiGLVertexBuffer::Unlock()
     {
-        SetDataRange(mLockingScratch, mLockingOffset, mLockingSize);
-        DiGLDriver::BufferMgr->DeallocScratchBuffer(mLockingScratch);
+        SetDataRange(mLockingScratch, mLockingOffset, mLockingSize, mLockingOffset == 0 && mLockingSize == mBufferSize);
+        DiGLDriver::BufferMgr->DeallocateScratch(mLockingScratch);
         mLockingScratch = nullptr;
         mLockingOffset = 0;
         mLockingSize = 0;

@@ -44,7 +44,9 @@ void CreateModels()
 
     DiMaterialPtr mat = DiMaterial::QuickCreate("basic_v", "basic_p");
     DiSimpleShapePtr model = make_shared<DiSimpleShape>();
-    model->CreateBox(50);
+    model->CreateSphere(10, 32, 32);
+    //model->CreateTorus(8, 2, 32, 32);
+
     model->SetMaterial(mat);
     DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
     cullnode->AttachObject(model);

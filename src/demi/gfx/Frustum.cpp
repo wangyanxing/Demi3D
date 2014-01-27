@@ -139,7 +139,7 @@ namespace Demi
         return mProjMatrix;
     }
 
-    void    DiFrustum::GetProjectionMatrixRs(DiMat4& out) const
+    void DiFrustum::GetProjectionMatrixRs(DiMat4& out) const
     {
         updateFrustum();
         Driver->ConvertProjectionMatrix(mProjMatrix,out);
