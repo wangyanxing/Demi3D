@@ -28,6 +28,61 @@ GLenum glewContextInit(DiGLUtil*);
 
 namespace Demi
 {
+    GLfloat testvbo::vertices[] = { 1, 1, 1, -1, 1, 1, -1, -1, 1,      // v0-v1-v2 (front)
+        -1, -1, 1, 1, -1, 1, 1, 1, 1,      // v2-v3-v0
+
+        1, 1, 1, 1, -1, 1, 1, -1, -1,      // v0-v3-v4 (right)
+        1, -1, -1, 1, 1, -1, 1, 1, 1,      // v4-v5-v0
+
+        1, 1, 1, 1, 1, -1, -1, 1, -1,      // v0-v5-v6 (top)
+        -1, 1, -1, -1, 1, 1, 1, 1, 1,      // v6-v1-v0
+
+        -1, 1, 1, -1, 1, -1, -1, -1, -1,      // v1-v6-v7 (left)
+        -1, -1, -1, -1, -1, 1, -1, 1, 1,      // v7-v2-v1
+
+        -1, -1, -1, 1, -1, -1, 1, -1, 1,      // v7-v4-v3 (bottom)
+        1, -1, 1, -1, -1, 1, -1, -1, -1,      // v3-v2-v7
+
+        1, -1, -1, -1, -1, -1, -1, 1, -1,      // v4-v7-v6 (back)
+        -1, 1, -1, 1, 1, -1, 1, -1, -1 };    // v6-v5-v4
+
+    GLfloat testvbo::normals[] = { 0, 0, 1, 0, 0, 1, 0, 0, 1,      // v0-v1-v2 (front)
+        0, 0, 1, 0, 0, 1, 0, 0, 1,      // v2-v3-v0
+
+        1, 0, 0, 1, 0, 0, 1, 0, 0,      // v0-v3-v4 (right)
+        1, 0, 0, 1, 0, 0, 1, 0, 0,      // v4-v5-v0
+
+        0, 1, 0, 0, 1, 0, 0, 1, 0,      // v0-v5-v6 (top)
+        0, 1, 0, 0, 1, 0, 0, 1, 0,      // v6-v1-v0
+
+        -1, 0, 0, -1, 0, 0, -1, 0, 0,      // v1-v6-v7 (left)
+        -1, 0, 0, -1, 0, 0, -1, 0, 0,      // v7-v2-v1
+
+        0, -1, 0, 0, -1, 0, 0, -1, 0,      // v7-v4-v3 (bottom)
+        0, -1, 0, 0, -1, 0, 0, -1, 0,      // v3-v2-v7
+
+        0, 0, -1, 0, 0, -1, 0, 0, -1,      // v4-v7-v6 (back)
+        0, 0, -1, 0, 0, -1, 0, 0, -1 };    // v6-v5-v4
+
+    GLfloat testvbo::colors[] = { 1, 1, 1, 1, 1, 0, 1, 0, 0,      // v0-v1-v2 (front)
+        1, 0, 0, 1, 0, 1, 1, 1, 1,      // v2-v3-v0
+
+        1, 1, 1, 1, 0, 1, 0, 0, 1,      // v0-v3-v4 (right)
+        0, 0, 1, 0, 1, 1, 1, 1, 1,      // v4-v5-v0
+
+        1, 1, 1, 0, 1, 1, 0, 1, 0,      // v0-v5-v6 (top)
+        0, 1, 0, 1, 1, 0, 1, 1, 1,      // v6-v1-v0
+
+        1, 1, 0, 0, 1, 0, 0, 0, 0,      // v1-v6-v7 (left)
+        0, 0, 0, 1, 0, 0, 1, 1, 0,      // v7-v2-v1
+
+        0, 0, 0, 0, 0, 1, 1, 0, 1,      // v7-v4-v3 (bottom)
+        1, 0, 1, 1, 0, 0, 0, 0, 0,      // v3-v2-v7
+
+        0, 0, 1, 0, 0, 0, 0, 1, 0,      // v4-v7-v6 (back)
+        0, 1, 0, 0, 1, 1, 0, 0, 1 };    // v6-v5-v4;
+
+
     DiGLFBOManager*    DiGLDriver::FBOManager = nullptr;
     DiGLBufferManager* DiGLDriver::BufferMgr  = nullptr;
 
@@ -57,6 +112,8 @@ namespace Demi
         _InitMainContext(_CreateContext(wnd));
 
         mGLFBOManager = DI_NEW DiGLFBOManager(true);    // TODO: Check atimode
+
+        testdat.init();
 
         return true;
     }
@@ -198,7 +255,8 @@ namespace Demi
 
     bool DiGLDriver::RenderGeometry(DiRenderUnit* unit)
     {
-        if (!_BindVertexBuffer(unit))
+#if 0
+        if (!_BindSourceData(unit))
             return false;
 
         GLint primType;
@@ -239,8 +297,11 @@ namespace Demi
 
             glDrawElements(primType, unit->mIndexBuffer->GetMaxIndices(), indexType, pBufferData);
         }
+#else
+        testdat.render();
+#endif
 
-#if 1
+#if 0
         GLenum glErr = glGetError();
         if (glErr != GL_NO_ERROR)
             DiGLShaderInstance::LogGLSLError(glErr, "renderGeometry: ", 0);
@@ -731,4 +792,5 @@ namespace Demi
         static DiString shaderext = ".glsl";
         return shaderext;
     }
+
 }
