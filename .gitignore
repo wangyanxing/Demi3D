@@ -7,3 +7,4 @@
 ![Bb]uild/scripts/cleanup.bat
 ![Bb]uild/scripts/gen_vs2010
 ![Bb]uild/scripts/gen_vs2013
+![Cc]make/*.cmake
