@@ -5,30 +5,6 @@
 
 #pragma once
 
-//#ifndef WINVER            
-//#define WINVER 0x0501    
-//#endif
-//
-//#ifndef _WIN32_WINNT        
-//#define _WIN32_WINNT 0x0501    
-//#endif                        
-//
-//#ifndef _WIN32_WINDOWS            
-//#define _WIN32_WINDOWS 0x0410   
-//#endif
-//
-//#ifndef _WIN32_IE   
-//#define _WIN32_IE 0x0600    
-//#endif
-//
-//#define WIN32_LEAN_AND_MEAN 
-
-//#include <windows.h>
-
-//#define _CRTDBG_MAP_ALLOC
-//#define _CRTDBG_MAP_ALLOC_NEW
-//#include <crtdbg.h>
-
 #include <tchar.h>
 #include <stdio.h>
 
@@ -75,5 +51,3 @@
 //#define ENABLE_PROFILE
 
 #include "Profiler.h"
-
-

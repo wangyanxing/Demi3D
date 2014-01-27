@@ -1,4 +1,5 @@
 
+#include "MiscPch.h"
 #include "quaternion.h"
 #include "vector3.h"
 #include "matrix3.h"

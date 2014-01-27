@@ -1,3 +1,4 @@
+#include "MiscPch.h"
 #include "Spline.h"
 
 namespace Demi

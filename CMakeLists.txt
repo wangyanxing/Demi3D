@@ -22,7 +22,6 @@ if (APPLE)
 endif ()
 
 if (WIN32)
-  find_package(DirectX REQUIRED)
   add_definitions(-DWINVER=0x0500)
 endif ()
 
@@ -48,6 +47,7 @@ if (NOT APPLE)
 endif ()
 
 include(CheckCXXCompilerFlag)
+include(AddTargets)
 
 # Set compiler specific build flags
 if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
@@ -173,5 +173,8 @@ elseif (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
   endif()
 
 endif ()
+
+# Building configuration
+include(BuildConfig)
 
 add_subdirectory(src)
