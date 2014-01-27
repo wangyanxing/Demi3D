@@ -16,39 +16,47 @@ namespace Demi
     {
         testvbo()
         {
-            vboId = 0;
+            VBO = 0;
+            IBO = 0;
         }
 
         void init()
         {
-            glGenBuffersARB(1, &vboId);
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboId);
-            glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices)+sizeof(normals)+sizeof(colors), 0, GL_STATIC_DRAW_ARB);
-            glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sizeof(vertices), vertices);                             // copy vertices starting from 0 offest
-            glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices), sizeof(normals), normals);                // copy normals after vertices
-            glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices)+sizeof(normals), sizeof(colors), colors);  // copy colours after normals
+            DiVec3 Vertices[4];
+            Vertices[0] = DiVec3(-1.0f, -1.0f, 0.0f);
+            Vertices[1] = DiVec3(0.0f, -1.0f, 1.0f);
+            Vertices[2] = DiVec3(1.0f, -1.0f, 0.0f);
+            Vertices[3] = DiVec3(0.0f, 1.0f, 0.0f);
+
+            glGenBuffersARB(1, &VBO);
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, VBO);
+            glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
+
+            unsigned int Indices[] = { 0, 3, 1,
+                1, 3, 2,
+                2, 3, 0,
+                0, 1, 2 };
+
+            glGenBuffersARB(1, &IBO);
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, IBO);
+            glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(Indices), Indices, GL_STATIC_DRAW);
         }
 
         void render()
         {
-            glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboId);
+            glEnableVertexAttribArrayARB(0);
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, VBO);
+            glVertexAttribPointerARB(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, IBO);
 
-            glEnableClientState(GL_NORMAL_ARRAY);
-            glEnableClientState(GL_COLOR_ARRAY);
-            glEnableClientState(GL_VERTEX_ARRAY);
+            glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 
-            glNormalPointer(GL_FLOAT, 0, (void*)sizeof(vertices));
-            glColorPointer(3, GL_FLOAT, 0, (void*)(sizeof(vertices)+sizeof(normals)));
-            glVertexPointer(3, GL_FLOAT, 0, 0);
-
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-
-            glDisableClientState(GL_VERTEX_ARRAY);
-            glDisableClientState(GL_COLOR_ARRAY);
-            glDisableClientState(GL_NORMAL_ARRAY);
+            glDisableVertexAttribArrayARB(0);
         }
 
-        GLuint vboId;
+        GLuint VBO;
+        GLuint IBO;
+
         static GLfloat vertices[9 * 12];
         static GLfloat normals[9 * 12];
         static GLfloat colors[9 * 12];
