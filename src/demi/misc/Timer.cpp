@@ -1,4 +1,5 @@
 
+#include "MiscPch.h"
 #include "Timer.h"
 
 namespace Demi 

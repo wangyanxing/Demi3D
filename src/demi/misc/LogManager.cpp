@@ -1,3 +1,5 @@
+
+#include "MiscPch.h"
 #include "LogManager.h"
 #include "PlatformFunction.h"
 #include "PathLib.h"
