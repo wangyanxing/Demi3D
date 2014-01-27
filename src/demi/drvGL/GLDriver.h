@@ -116,8 +116,6 @@ namespace Demi
 
         DiGLUtil*               _CreateGLUtil();
 
-        bool                    _BindSourceData(DiRenderUnit* unit);
-
         bool                    _BindVertexBuffer(DiRenderUnit* unit);
 
         void                    _InitMainContext(DiGLContext* context);
