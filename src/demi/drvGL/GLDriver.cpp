@@ -255,7 +255,7 @@ namespace Demi
 
     bool DiGLDriver::RenderGeometry(DiRenderUnit* unit)
     {
-#if 0
+#if 1
         if (!_BindSourceData(unit))
             return false;
 
@@ -672,7 +672,7 @@ namespace Demi
                 bool isCustomAttr = DiGLTypeMappings::IsAttributeValid(i->Usage);
                 auto elemNum = DiVertexElements::GetElementTypeCount((DiVertexType)i->Type);
                 auto gltype = DiGLTypeMappings::GetGLType((DiVertexType)i->Type);
-                GLsizei buffersize = static_cast<GLsizei>(vb->GetBufferSize());
+                GLsizei stride = static_cast<GLsizei>(vb->GetStride());
 
                 if (isCustomAttr)
                 {
@@ -696,7 +696,7 @@ namespace Demi
                     glVertexAttribPointerARB(
                         attrib, count,
                         gltype, normalised,
-                        buffersize, pBufferData);
+                        stride, pBufferData);
                     glEnableVertexAttribArrayARB(attrib);
                 }
                 else
@@ -704,27 +704,27 @@ namespace Demi
                     switch (i->Usage)
                     {
                     case VERT_USAGE_POSITION:
-                        glVertexPointer(elemNum, gltype, buffersize, pBufferData);
+                        glVertexPointer(elemNum, gltype, stride, pBufferData);
                         glEnableClientState(GL_VERTEX_ARRAY);
                         break;
                     case VERT_USAGE_NORMAL:
-                        glNormalPointer(gltype, buffersize, pBufferData);
+                        glNormalPointer(gltype, stride, pBufferData);
                         glEnableClientState(GL_NORMAL_ARRAY);
                         break;
                     case VERT_USAGE_COLOR:
-                        glColorPointer(4, gltype, buffersize, pBufferData);
+                        glColorPointer(4, gltype, stride, pBufferData);
                         glEnableClientState(GL_COLOR_ARRAY);
                         break;
                     case VERT_USAGE_SECONDARY_COLOR:
                         if (GLEW_EXT_secondary_color)
                         {
-                            glSecondaryColorPointerEXT(4, gltype, buffersize, pBufferData);
+                            glSecondaryColorPointerEXT(4, gltype, stride, pBufferData);
                             glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
                         }
                         break;
                     case VERT_USAGE_TEXCOORD:
                         glClientActiveTextureARB(GL_TEXTURE0 + i->UsageIndex);
-                        glTexCoordPointer(elemNum, gltype, buffersize, pBufferData);
+                        glTexCoordPointer(elemNum, gltype, stride, pBufferData);
                         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                         break;
                     default:

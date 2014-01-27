@@ -12,50 +12,168 @@
 
 namespace Demi
 {
+    struct MyVertex
+    {
+        float x, y, z;        //Vertex
+        float nx, ny, nz;     //Normal
+        float s0, t0;         //Texcoord0
+    };
+
     struct testvbo
     {
         testvbo()
         {
             VBO = 0;
             IBO = 0;
+            mVerticesNum = 0;
+            mPrimitiveCount = 0;
+            mVBSize = 0;
         }
 
         void init()
         {
-            DiVec3 Vertices[4];
-            Vertices[0] = DiVec3(-1.0f, -1.0f, 0.0f);
-            Vertices[1] = DiVec3(0.0f, -1.0f, 1.0f);
-            Vertices[2] = DiVec3(1.0f, -1.0f, 0.0f);
-            Vertices[3] = DiVec3(0.0f, 1.0f, 0.0f);
+            
+            float SPHERE_RADIUS = 30; 
+            int segments = 32, rings = 32;
+            int NUM_SEGMENTS = DiMath::Max(segments, 3);
+            int NUM_RINGS = DiMath::Max(rings, 2);
+            float phiStart = 0;
+            float phiLength = DiMath::PI * 2;
+            float thetaStart = 0;
+            float thetaLength = DiMath::PI;
+            mVerticesNum = (NUM_SEGMENTS + 1) * (NUM_RINGS + 1);
+            mPrimitiveCount = 2 * NUM_RINGS * (NUM_SEGMENTS + 1);
+            float fDeltaRingAngle = (DiMath::PI / NUM_RINGS);
+            float fDeltaSegAngle = (2 * DiMath::PI / NUM_SEGMENTS);
+
+            unsigned short wVerticeIndex = 0;
+            int vbsize = mVerticesNum * sizeof(float)* (3 + 3 + 2);
+            mVBSize = vbsize;
+            float* pVertex = (float*)malloc(vbsize);
+            int ibsize = mPrimitiveCount * 3 * sizeof(uint16);
+            uint16* pIndices = (uint16*)malloc(ibsize);
+            for (int ring = 0; ring <= NUM_RINGS; ring++) {
+                float r0 = SPHERE_RADIUS * sinf(ring * fDeltaRingAngle);
+                float y0 = SPHERE_RADIUS * cosf(ring * fDeltaRingAngle);
+                for (int seg = 0; seg <= NUM_SEGMENTS; seg++) {
+                    float x0 = r0 * sinf(seg * fDeltaSegAngle);
+                    float z0 = r0 * cosf(seg * fDeltaSegAngle);
+                    *pVertex++ = x0;
+                    *pVertex++ = y0;
+                    *pVertex++ = z0;
+                    DiVec3 vNormal = DiVec3(x0, y0, z0).normalisedCopy();
+                    *pVertex++ = vNormal.x;
+                    *pVertex++ = vNormal.y;
+                    *pVertex++ = vNormal.z;
+                    *pVertex++ = (float)seg / (float)NUM_SEGMENTS;
+                    *pVertex++ = (float)ring / (float)NUM_RINGS;
+                    if (ring != NUM_RINGS) {
+                        *pIndices++ = wVerticeIndex + NUM_SEGMENTS + 1;
+                        *pIndices++ = wVerticeIndex;
+                        *pIndices++ = wVerticeIndex + NUM_SEGMENTS;
+                        *pIndices++ = wVerticeIndex + NUM_SEGMENTS + 1;
+                        *pIndices++ = wVerticeIndex + 1;
+                        *pIndices++ = wVerticeIndex;
+                        wVerticeIndex++;
+                    }
+                }
+            }
+            
+
+            MyVertex pvertex[3];
+            //VERTEX 0
+            pvertex[0].x = 0.0;
+            pvertex[0].y = 0.0;
+            pvertex[0].z = 0.0;
+            pvertex[0].nx = 0.0;
+            pvertex[0].ny = 0.0;
+            pvertex[0].nz = 1.0;
+            pvertex[0].s0 = 0.0;
+            pvertex[0].t0 = 0.0;
+            //VERTEX 1
+            pvertex[1].x = 1.0;
+            pvertex[1].y = 0.0;
+            pvertex[1].z = 0.0;
+            pvertex[1].nx = 0.0;
+            pvertex[1].ny = 0.0;
+            pvertex[1].nz = 1.0;
+            pvertex[1].s0 = 1.0;
+            pvertex[1].t0 = 0.0;
+            //VERTEX 2
+            pvertex[2].x = 0.0;
+            pvertex[2].y = 1.0;
+            pvertex[2].z = 0.0;
+            pvertex[2].nx = 0.0;
+            pvertex[2].ny = 0.0;
+            pvertex[2].nz = 1.0;
+            pvertex[2].s0 = 0.0;
+            pvertex[2].t0 = 1.0;
+
+            unsigned short pindices[3];
+            pindices[0] = 0;
+            pindices[1] = 1;
+            pindices[2] = 2;
 
             glGenBuffersARB(1, &VBO);
             glBindBufferARB(GL_ARRAY_BUFFER_ARB, VBO);
-            glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-
-            unsigned int Indices[] = { 0, 3, 1,
-                1, 3, 2,
-                2, 3, 0,
-                0, 1, 2 };
+            //glBufferDataARB(GL_ARRAY_BUFFER_ARB, vbsize, pVertex, GL_STATIC_DRAW);
+            glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(MyVertex)* 3, &pvertex[0].x, GL_STATIC_DRAW);
 
             glGenBuffersARB(1, &IBO);
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, IBO);
-            glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(Indices), Indices, GL_STATIC_DRAW);
+            //glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, ibsize, pIndices, GL_STATIC_DRAW);
+            glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(unsigned short)* 3, pindices, GL_STATIC_DRAW);
+            mPrimitiveCount = 1;
         }
 
         void render()
         {
-            glEnableVertexAttribArrayARB(0);
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+            
             glBindBufferARB(GL_ARRAY_BUFFER_ARB, VBO);
-            glVertexAttribPointerARB(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, IBO);
+            
+            glEnableVertexAttribArrayARB(0);
+            glVertexAttribPointerARB(0, 3, GL_FLOAT, GL_FALSE, sizeof(MyVertex), BUFFER_OFFSET(0));
 
-            glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
+            glEnableVertexAttribArrayARB(1);
+            glVertexAttribPointerARB(1, 3, GL_FLOAT, GL_FALSE, sizeof(MyVertex), BUFFER_OFFSET(12));
+
+            glEnableVertexAttribArrayARB(2);
+            glVertexAttribPointerARB(2, 2, GL_FLOAT, GL_FALSE, sizeof(MyVertex), BUFFER_OFFSET(24));
+
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, IBO);
+            glDrawElements(GL_TRIANGLES, mPrimitiveCount * 3, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
 
             glDisableVertexAttribArrayARB(0);
+            glDisableVertexAttribArrayARB(1);
+            glDisableVertexAttribArrayARB(2);
+            
+
+//             glBindBufferARB(GL_ARRAY_BUFFER_ARB, VBO);
+// 
+//             glEnableVertexAttribArrayARB(0); 
+//             glVertexAttribPointerARB(0, 3, GL_FLOAT, GL_FALSE, sizeof(MyVertex), BUFFER_OFFSET(0)); 
+//             
+//             glEnableVertexAttribArrayARB(1); 
+//             glVertexAttribPointerARB(1, 3, GL_FLOAT, GL_FALSE, sizeof(MyVertex), BUFFER_OFFSET(12));
+//             
+//             glEnableVertexAttribArrayARB(2); 
+//             glVertexAttribPointerARB(2, 2, GL_FLOAT, GL_FALSE, sizeof(MyVertex), BUFFER_OFFSET(24));
+// 
+//             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, IBO);
+//             glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
+// 
+//             glDisableVertexAttribArrayARB(0);
+//             glDisableVertexAttribArrayARB(1);
+//             glDisableVertexAttribArrayARB(2);
+#undef VBO_BUFFER_OFFSET
         }
 
         GLuint VBO;
         GLuint IBO;
+        int mVerticesNum;
+        int mPrimitiveCount;
+        int mVBSize;
 
         static GLfloat vertices[9 * 12];
         static GLfloat normals[9 * 12];
