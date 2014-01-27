@@ -12,6 +12,48 @@
 
 namespace Demi
 {
+    struct testvbo
+    {
+        testvbo()
+        {
+            vboId = 0;
+        }
+
+        void init()
+        {
+            glGenBuffersARB(1, &vboId);
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboId);
+            glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices)+sizeof(normals)+sizeof(colors), 0, GL_STATIC_DRAW_ARB);
+            glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, 0, sizeof(vertices), vertices);                             // copy vertices starting from 0 offest
+            glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices), sizeof(normals), normals);                // copy normals after vertices
+            glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, sizeof(vertices)+sizeof(normals), sizeof(colors), colors);  // copy colours after normals
+        }
+
+        void render()
+        {
+            glBindBufferARB(GL_ARRAY_BUFFER_ARB, vboId);
+
+            glEnableClientState(GL_NORMAL_ARRAY);
+            glEnableClientState(GL_COLOR_ARRAY);
+            glEnableClientState(GL_VERTEX_ARRAY);
+
+            glNormalPointer(GL_FLOAT, 0, (void*)sizeof(vertices));
+            glColorPointer(3, GL_FLOAT, 0, (void*)(sizeof(vertices)+sizeof(normals)));
+            glVertexPointer(3, GL_FLOAT, 0, 0);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            glDisableClientState(GL_VERTEX_ARRAY);
+            glDisableClientState(GL_COLOR_ARRAY);
+            glDisableClientState(GL_NORMAL_ARRAY);
+        }
+
+        GLuint vboId;
+        static GLfloat vertices[9 * 12];
+        static GLfloat normals[9 * 12];
+        static GLfloat colors[9 * 12];
+    };
+
     class DI_GLDRV_API DiGLDriver : public DiGfxDriver
     {
     public:
@@ -19,6 +61,8 @@ namespace Demi
         DiGLDriver();
 
         virtual                 ~DiGLDriver();
+
+        testvbo                 testdat;
 
     public:
 

@@ -44,7 +44,7 @@ void CreateModels()
 
     DiMaterialPtr mat = DiMaterial::QuickCreate("basic_v", "basic_p");
     DiSimpleShapePtr model = make_shared<DiSimpleShape>();
-    model->CreateSphere(10, 32, 32);
+    model->CreateSphere(10, 25, 25);
     //model->CreateTorus(8, 2, 32, 32);
 
     model->SetMaterial(mat);
