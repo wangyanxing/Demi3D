@@ -2,6 +2,7 @@
 [Oo]bj/
 [Ll]ib/
 [Bb]uild/
+[Bb]uild*/
 
 ![Bb]uild/scripts/builder.py
 ![Bb]uild/scripts/cleanup.bat
