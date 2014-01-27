@@ -23,6 +23,14 @@ namespace Demi
         if (!mShaderLinker || !mShaderLinker->GetGLHandle())
             return;
 
+        // bind built-in (global) uniforms
+        auto env = Driver->GetShaderEnvironment();
+        for (auto it = mBuiltinFuncs.begin(); it != mBuiltinFuncs.end(); ++it)
+        {
+            it->second(env, it->first);
+        }
+
+        // bind custom uniforms
         for (uint32 i = 0; i < NUM_VARIABLE_TYPES; ++i)
         {
             for (auto it = mShaderParams[i].begin(); it != mShaderParams[i].end(); ++it)
@@ -112,5 +120,4 @@ namespace Demi
         mShaderLinker->Link();
         mShaderLinker->LoadConstants(this);
     }
-
 }

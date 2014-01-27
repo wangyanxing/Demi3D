@@ -21,7 +21,8 @@ namespace Demi
         mClearColor(DiColor::Black),
         mDepthBufferPoolId(DiDepthBuffer::POOL_DEFAULT),
         mClearFlag(CLEAR_COLOR|CLEAR_DEPTH|CLEAR_STENCIL),
-        mViewportDirty(true)
+        mViewportDirty(true),
+        mIsActive(true)
     {
         Driver->AddGpuResource(this);
     }
