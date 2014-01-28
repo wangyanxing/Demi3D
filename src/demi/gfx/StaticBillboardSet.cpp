@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "StaticBillboardSet.h"
 #include "AssetManager.h"
 #include "ShaderParam.h"

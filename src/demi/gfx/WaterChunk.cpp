@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "WaterChunk.h"
 #include "WaterMap.h"
 #include "VertexBuffer.h"

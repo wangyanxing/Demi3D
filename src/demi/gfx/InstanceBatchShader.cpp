@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "InstanceBatchShader.h"
 #include "InstancedModel.h"
 #include "VertexDeclaration.h"

@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "PostEffect.h"
 #include "RenderTarget.h"
 #include "AssetManager.h"

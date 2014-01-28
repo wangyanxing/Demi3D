@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "InstanceManager.h"
 #include "InstanceBatch.h"
 #include "InstancedModel.h"

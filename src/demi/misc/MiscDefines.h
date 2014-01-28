@@ -7,8 +7,9 @@
 
 #include "PlatformSpecific.h"
 
-#pragma warning(disable:4251)   // dll-interface
-#pragma warning(disable:4127)
+#pragma warning(disable : 4251)   // dll-interface
+#pragma warning(disable : 4127)
+#pragma warning(disable : 4996)   // _CRT_SECURE_NO_WARNINGS
 
 //-----------------------------------------------------------------------------
 #ifdef DEMI_STATIC_API

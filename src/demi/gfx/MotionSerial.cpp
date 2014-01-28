@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "MotionSerial.h"
 #include "MotionFormat.h"
 #include "Skeleton.h"

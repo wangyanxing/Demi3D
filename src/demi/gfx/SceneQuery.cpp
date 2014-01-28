@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "SceneQuery.h"
 
 namespace Demi

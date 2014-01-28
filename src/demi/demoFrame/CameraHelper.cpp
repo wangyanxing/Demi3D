@@ -1,4 +1,5 @@
 
+#include "DemoPch.h"
 #include "CameraHelper.h"
 #include "Camera.h"
 #include "GfxDriver.h"

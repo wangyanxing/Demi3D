@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "RenderBatchGroup.h"
 #include "RenderPipeline.h"
 #include "RenderUnit.h"

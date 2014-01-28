@@ -33,8 +33,6 @@ namespace Demi
         DiStringVecPtr      Find(const DiString& pattern, bool recursive = true,
                                 bool dirs = false);
 
-        bool                Exists(const DiString& filename);
-
         DiFileInfoListPtr   FindFileInfo(const DiString& pattern, 
                                 bool recursive = true, bool dirs = false) const;
 

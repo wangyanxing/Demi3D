@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       AttachSet.h
-    Creator:    demiwangya
-*********************************************************************/
+#include "GfxPch.h"
 
 #include "AttachSet.h"
 #include "Skeleton.h"

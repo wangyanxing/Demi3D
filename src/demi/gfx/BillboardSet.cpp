@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "BillboardSet.h"
 #include "Camera.h"
 #include "RenderBatchGroup.h"

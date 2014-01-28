@@ -18,7 +18,7 @@ namespace Demi
 {
     class DiWindowUtil;
 
-    class DEMI_EXT_API DiApp : public DiBase
+    class DEMI_DEMO_API DiApp : public DiBase
     {
     public:
         DiApp(const DiString& mediaPath = "../../Media/",const DiString& logName = "demiEngine.log");

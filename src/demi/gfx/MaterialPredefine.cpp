@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "MaterialPredefine.h"
 
 namespace Demi

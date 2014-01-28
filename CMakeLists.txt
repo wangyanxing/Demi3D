@@ -47,6 +47,8 @@ if (NOT APPLE)
 endif ()
 
 include(CheckCXXCompilerFlag)
+include(MacroLogFeature)
+include(Depends)
 include(AddTargets)
 
 # Set compiler specific build flags

@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "AssetManager.h"
 #include "ArchiveManager.h"
 #include "Archive.h"

@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Mesh.h"
 #include "MeshSerial.h"
 #include "SubMesh.h"

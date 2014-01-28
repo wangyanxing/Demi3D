@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Animation.h"
 #include "Skeleton.h"
 #include "Bone.h"
@@ -30,7 +31,7 @@ namespace Demi
 
         if (i == mNodeClips.end())
         {
-            DI_ERROR("不存在handle值=%d的节点动画组",handle);
+            DI_ERROR("Cannot find the node clips which handle is %d",handle);
             return NULL;
         }
 
@@ -46,7 +47,7 @@ namespace Demi
     {
         if (HasNodeClip(handle))
         {
-            DI_ERROR("已存在同样handle值的节点动画组");
+            DI_ERROR("The node clip which handle is has already existed%", handle);
             return NULL;
         }
 
@@ -94,7 +95,7 @@ namespace Demi
      {
          if (HasAttachClip(strAttachName))
          {
-             DI_ERROR("已存在同名的绑点动画组");
+             DI_ERROR("The asttach clip named %s has already existed", strAttachName.c_str());
              return NULL;
          }
  

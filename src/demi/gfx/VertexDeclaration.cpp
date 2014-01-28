@@ -1,3 +1,4 @@
+#include "GfxPch.h"
 #include "VertexDeclaration.h"
 #include "GfxDriver.h"
 

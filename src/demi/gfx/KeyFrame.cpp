@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "KeyFrame.h"
 #include "AnimationClip.h"
 

@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "FoliageChunk.h"
 #include "VertexBuffer.h"
 #include "TerrainMap.h"

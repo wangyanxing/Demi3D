@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Serializer.h"
 
 namespace Demi

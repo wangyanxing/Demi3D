@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "GpuProgram.h"
 #include "Memory.h"
 #include "Material.h"

@@ -1,3 +1,4 @@
+#include "GfxPch.h"
 #include "Asset.h"
 
 namespace Demi {

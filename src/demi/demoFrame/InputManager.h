@@ -6,9 +6,9 @@ Creator:    InputManager.h
 
 #pragma once
 
-#include "MyGUI_KeyCode.h"
-#include "MyGUI_MouseButton.h"
-#include "MyGUI_Types.h"
+//#include "MyGUI_KeyCode.h"
+//#include "MyGUI_MouseButton.h"
+//#include "MyGUI_Types.h"
 #include "OIS.h"
 
 namespace Demi
@@ -42,11 +42,13 @@ namespace Demi
         bool unregisterKeyPressEvent(const DiString& name);
         bool unregisterKeyReleaseEvent(const DiString& name);
 
+#if 0
         void injectMouseMove(int _absx, int _absy, int _absz);
         void injectMousePress(int _absx, int _absy, MyGUI::MouseButton _id);
         void injectMouseRelease(int _absx, int _absy, MyGUI::MouseButton _id);
         void injectKeyPress(MyGUI::KeyCode _key, MyGUI::Char _text);
         void injectKeyRelease(MyGUI::KeyCode _key);
+#endif
 
         void setMousePosition(int _x, int _y);
         void updateCursorPosition();

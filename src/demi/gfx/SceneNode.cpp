@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "SceneNode.h"
 #include "SceneManager.h"
 #include "TransformUnit.h"

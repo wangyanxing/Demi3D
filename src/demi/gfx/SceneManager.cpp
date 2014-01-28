@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "SceneManager.h"
 #include "GfxDriver.h"
 #include "RenderPipeline.h"

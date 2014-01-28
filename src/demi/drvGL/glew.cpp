@@ -29,6 +29,8 @@
 ** THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "DrvGLPch.h"
+
 // SJS
 #include "Win32GLUtil.h"
 // SJS

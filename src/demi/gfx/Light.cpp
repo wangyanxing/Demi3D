@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Light.h"
 #include "SceneManager.h"
 #include "Node.h"

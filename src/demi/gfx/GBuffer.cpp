@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "GBuffer.h"
 #include "RenderTarget.h"
 #include "AssetManager.h"

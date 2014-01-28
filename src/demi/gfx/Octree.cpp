@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Octree.h"
 #include "CullNode.h"
 #include "SceneManager.h"

@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "RotationSpline.h"
 
 namespace Demi

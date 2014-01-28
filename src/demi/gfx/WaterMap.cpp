@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "WaterMap.h"
 #include "TerrainMap.h"
 #include "WaterChunk.h"

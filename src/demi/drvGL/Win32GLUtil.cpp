@@ -1,7 +1,9 @@
 
+#include "DrvGLPch.h"
 #include "Win32GLUtil.h"
+#include "gl/wglew.h"
+
 #include <sstream>
-#include <gl/wglew.h>
 
 GLenum wglewContextInit(Demi::DiGLUtil *glSupport);
 

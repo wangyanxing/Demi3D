@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "ClipController.h"
 
 namespace Demi

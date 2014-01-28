@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Material.h"
 #include "Memory.h"
 #include "LogManager.h"

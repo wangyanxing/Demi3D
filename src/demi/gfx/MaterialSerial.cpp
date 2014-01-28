@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "MaterialSerial.h"
 #include "Material.h"
 #include "AssetManager.h"

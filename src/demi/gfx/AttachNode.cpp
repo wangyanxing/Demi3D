@@ -1,9 +1,5 @@
 
-/********************************************************************
-    File:       AttachNode.h
-    Creator:    demiwangya
-*********************************************************************/
-
+#include "GfxPch.h"
 #include "AttachNode.h"
 
 namespace Demi

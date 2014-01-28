@@ -15,6 +15,8 @@
  * platforms other than Windows.
  * -------------------------------------------------------------------------*/
 
+#include "GfxPch.h"
+
 #ifndef __CELLOS_LV2__
 /*@unused@*/ static const char rcsid[] =
     "$Id: targa.c,v 1.7 2003/06/21 09:30:53 emikulic Exp $";

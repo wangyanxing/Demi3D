@@ -49,8 +49,6 @@ namespace Demi
         virtual DiFileInfoListPtr      FindFileInfo(const DiString& pattern, 
                                             bool recursive = true, bool dirs = false) const = 0;
 
-        virtual bool                   Exists(const DiString& filename) = 0;
-
     protected:
 
         DiString                       mName; 

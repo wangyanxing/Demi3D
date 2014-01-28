@@ -1,3 +1,4 @@
+#include "GfxPch.h"
 #include "Command.h"
 #include "Console.h"
 #include "ConsoleVariable.h"

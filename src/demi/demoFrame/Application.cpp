@@ -1,3 +1,4 @@
+#include "DemoPch.h"
 #include "Application.h"
 #include "GfxDriver.h"
 #include "AssetManager.h"

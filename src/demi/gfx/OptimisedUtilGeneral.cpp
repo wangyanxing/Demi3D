@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "OptimisedUtil.h"
 
 namespace Demi
