@@ -1,12 +1,11 @@
 /**************************************************************************
-    File:        CommonPCH.h
+    File:       MiscPch.h
     Creator:    demiwangya
 ***************************************************************************/
 
 #ifndef MiscPch_h__
 #define MiscPch_h__
 
-#include <tchar.h>
 #include <stdio.h>
 
 #include <utility>
