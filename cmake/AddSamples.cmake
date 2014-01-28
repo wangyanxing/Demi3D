@@ -1,0 +1,18 @@
+
+MACRO(DI_ADD_SAMPLE TARGETNAME)
+
+project(${TARGETNAME})
+
+file(GLOB SAMPLE_HEADERS "*.h")
+file(GLOB SAMPLE_SRCS "*.cpp")
+
+DI_ADD_EXECUTABLE(${TARGETNAME} ${SAMPLE_HEADERS} ${SAMPLE_SRCS})
+include_directories(${OIS_INCLUDE_DIRS} ${DEMI_SOURCE_DIR}/src/demi ${DEMI_SOURCE_DIR}/src/demi/demoFrame)
+
+if (NOT APPLE)
+	set_property(TARGET ${TARGETNAME} APPEND PROPERTY DEBUG_POSTFIX "_d")
+endif ()
+
+target_link_libraries(${TARGETNAME} DemoFramework DiMisc DiGfx ${OIS_LIBRARIES})
+
+ENDMACRO(DI_ADD_SAMPLE)

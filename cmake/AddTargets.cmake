@@ -12,7 +12,7 @@ ENDMACRO(DI_ADD_LIBRARY)
 
 # add a new executable target
 # usage: demi_add_executable(TARGETNAME [WIN32] [MACOSX_BUNDLE] SOURCE_FILES [SEPARATE SOURCE_FILES])
-function(demi_add_executable TARGETNAME)
+MACRO(DI_ADD_EXECUTABLE TARGETNAME)
   # test if WIN32 or MACOSX_BUNDLE options were provided
   set(_WIN32 "")
   set(_OSX "")
@@ -26,5 +26,5 @@ function(demi_add_executable TARGETNAME)
     set(_OSX "MACOSX_BUNDLE")
     list(REMOVE_AT ARGN ${_OSX_IDX})
   endif ()
-  add_executable(${TARGETNAME} ${_WIN32} ${_OSX} ${_SOURCES})
-endfunction()
+  add_executable(${TARGETNAME} ${_WIN32} ${_OSX} ${ARGN})
+ENDMACRO(DI_ADD_EXECUTABLE)

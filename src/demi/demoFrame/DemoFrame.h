@@ -1,13 +1,16 @@
 
 /********************************************************************
-    File:       DemoPch.h
+    File:       DemoFrame.h
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef DemoFrame_h__
+#define DemoFrame_h__
 
-#include "GfxPch.h"
 #include "DemoDefines.h"
 #include "DemoPrerequisites.h"
+#include "Application.h"
+#include "CameraHelper.h"
+#include "InputManager.h"
 
-using namespace Demi;
+#endif // DemoFrame_h__

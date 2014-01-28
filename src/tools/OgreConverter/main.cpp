@@ -1,4 +1,5 @@
 
+#include "DiPch.h"
 #include "ConverterMgr.h"
 
 DiString		srcName;

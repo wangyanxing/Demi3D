@@ -14,7 +14,7 @@
 #include "GfxDriver.h"
 #include "Command.h"
 
-#define USE_OPEN_GL 1
+#define USE_OPEN_GL 0
 
 namespace Demi
 {

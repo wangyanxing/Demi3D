@@ -1,17 +1,6 @@
 
-#include "DiPch.h"
-#include "Application.h"
-#include "Skybox.h"
-#include "SimpleShape.h"
-#include "AnimModel.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
-#include "ShaderManager.h"
-#include "RenderWindow.h"
-#include "ClipController.h"
-#include "SimpleShape.h"
-#include "RenderThread.h"
-#include "GfxDriver.h"
+#include "Demi.h"
+#include "DemoFrame.h"
 
 void CreateModels()
 {
@@ -61,8 +50,8 @@ void InitScene()
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 
-    DiRenderThread* rt = new DiRenderThread();
-    rt->Start();
+    //DiRenderThread* rt = new DiRenderThread();
+    //rt->Start();
    
     CreateModels();
 }

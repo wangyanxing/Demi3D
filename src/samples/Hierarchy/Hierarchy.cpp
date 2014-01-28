@@ -1,14 +1,6 @@
 
-#include "DiPch.h"
-#include "Application.h"
-#include "Skybox.h"
-#include "SimpleShape.h"
-#include "Model.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
-#include "ShaderManager.h"
-#include "RenderWindow.h"
-#include "GfxDriver.h"
+#include "Demi.h"
+#include "DemoFrame.h"
 
 DiVector<DiCullNode*> nodes;
 DiVector<DiSceneNodePtr> scenenodes;
