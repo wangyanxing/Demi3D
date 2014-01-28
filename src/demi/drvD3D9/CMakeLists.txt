@@ -25,6 +25,8 @@ if (NOT DEMI_STATIC)
   )
 endif ()
 
+set_property(TARGET DiDrvD3D9 PROPERTY FOLDER "Core")
+
 # specify a precompiled header to use
 use_precompiled_header(DiDrvD3D9 
   "${CMAKE_CURRENT_SOURCE_DIR}/DrvD3D9Pch.h"
