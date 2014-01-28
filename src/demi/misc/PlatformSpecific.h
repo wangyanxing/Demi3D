@@ -65,23 +65,25 @@
 typedef signed char         int8;
 typedef signed short        int16;
 typedef signed int          int32;
-typedef signed __int64      int64;
 typedef unsigned char       uint8;
 typedef unsigned char       BYTE;
 typedef unsigned short      uint16;
 typedef unsigned int        uint32;
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
 typedef unsigned __int64    uint64;
+typedef __int64             int64;
+#else
+typedef unsigned long long  uint64;
+typedef long long           int64;
+#endif
 typedef float               f32;
 typedef double              f64;
 typedef double              real;
 typedef unsigned long       ulong;
 typedef int                 BOOL;
 
-typedef unsigned long *POINTER;
-
 typedef void *THREAD_HANDLE;
 typedef void *EVENT_HANDLE;
-
 
 #define _MS_ALIGN(num) __declspec(align(num))
 
