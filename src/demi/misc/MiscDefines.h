@@ -7,19 +7,29 @@
 
 #include "PlatformSpecific.h"
 
-#pragma warning(disable : 4251)   // dll-interface
-#pragma warning(disable : 4127)
-#pragma warning(disable : 4996)   // _CRT_SECURE_NO_WARNINGS
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning(disable : 4251)   // dll-interface
+#   pragma warning(disable : 4127)
+#   pragma warning(disable : 4996)   // _CRT_SECURE_NO_WARNINGS
+#endif
 
-//-----------------------------------------------------------------------------
-#ifdef DEMI_STATIC_API
-#    define DI_MISC_API
-#else
-#    ifdef DI_MISC_EXPORT
-#        define DI_MISC_API  __declspec(dllexport)
-#    else
-#        define DI_MISC_API __declspec(dllimport)
-#    endif
+#if (DEMI_PLATFORM == DEMI_PLATFORM_WIN32)
+#   ifdef DEMI_STATIC_API
+#       define DI_MISC_API
+#   else
+#       ifdef DI_MISC_EXPORT
+#           define DI_MISC_API  __declspec(dllexport)
+#       else
+#           define DI_MISC_API __declspec(dllimport)
+#       endif
+#   endif
+#elif (DEMI_PLATFORM == DEMI_PLATFORM_IOS || DEMI_PLATFORM == DEMI_PLATFORM_OSX)
+// Enable GCC symbol visibility
+#   if defined( DEMI_GCC_VISIBILITY )
+#       define DI_MISC_API  __attribute__ ((visibility("default")))
+#   else
+#       define DI_MISC_API
+#   endif
 #endif
 
 #include "DebugAssert.h"
@@ -41,7 +51,7 @@
 #else
 #    define DI_DEBUG(...)
 #endif
-    
+
 //-----------------------------------------------------------------------------
 #ifdef _DEMI_RELEASE
 #define DISABLE_MEMORY_TRACE

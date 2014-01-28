@@ -31,6 +31,13 @@ project (DEMI)
 # Include necessary submodules
 set(CMAKE_MODULE_PATH "${DEMI_SOURCE_DIR}/cmake")
 
+if (CMAKE_BUILD_TYPE STREQUAL "")
+  # CMake defaults to leaving CMAKE_BUILD_TYPE empty. This screws up
+  # differentiation between debug and release builds.
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif ()
+
+
 # determine if we are compiling for a 32 or 64bit plartform
 include(CheckTypeSize)
 CHECK_TYPE_SIZE("void*" DEMI_PTR_SIZE BUILTIN_TYPES_ONLY)
@@ -89,7 +96,14 @@ if (MINGW)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i686")
   # disable this optimisation because it breaks release builds (reason unknown)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-tree-slp-vectorize")
+  
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-keep-inline-dllexport")
+  
 endif ()
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions(-std=gnu++0x)
+endif()
 
 if ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
   # Test for GCC visibility

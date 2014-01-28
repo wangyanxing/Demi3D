@@ -14,15 +14,15 @@
 #include "quaternion.h"
 #include "matrix3.h"
 #include "matrix4.h"
-
 #include "color.h"
 
 #include "vec.h"
-
 #include <string>
 
-#pragma warning( push )
-#pragma warning( disable : 4267 )
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning( push )
+#   pragma warning( disable : 4267 )
+#endif
 
 namespace Demi
 {
@@ -79,11 +79,11 @@ namespace Demi
         DiString            ExtractToEnd(IndexT fromIndex) const;                                                    // extract substring to end of this string
         void                Strip(const DiString& charSet);                                                                    // terminate string at first occurence of character in set
 
-        IndexT                FindStringIndex(const DiString& s, IndexT startIndex = 0) const;                        // return start index of substring, or InvalidIndex if not found   Modified  by  Li
-        IndexT                FindStringIndex(const char* s, IndexT startIndex = 0) const;                        // return start index of substring of c-style, or InvalidIndex if not found   Added  by  Li
-        IndexT                FindCharIndex(char c, IndexT startIndex = 0) const;                                    // return index(first occurrence) of character in string, or InvalidIndex if not found
-        IndexT                FindCharIndexFromSet(const DiString& charSet) const;    // return index of the first occurrence in the string of any character from charSet searched for    Added  by  Li
-        IndexT                FindCharLastIndex(char c) const;                                                            // return index(last occurrence) of character in string, or InvalidIndex if not found     Added  by  Li
+        IndexT              FindStringIndex(const DiString& s, IndexT startIndex = 0) const;                        // return start index of substring, or InvalidIndex if not found   Modified  by  Li
+        IndexT              FindStringIndex(const char* s, IndexT startIndex = 0) const;                        // return start index of substring of c-style, or InvalidIndex if not found   Added  by  Li
+        IndexT              FindCharIndex(char c, IndexT startIndex = 0) const;                                    // return index(first occurrence) of character in string, or InvalidIndex if not found
+        IndexT              FindCharIndexFromSet(const DiString& charSet) const;    // return index of the first occurrence in the string of any character from charSet searched for    Added  by  Li
+        IndexT              FindCharLastIndex(char c) const;                                                            // return index(last occurrence) of character in string, or InvalidIndex if not found     Added  by  Li
 
         void                TerminateAtIndex(IndexT index);                                                                // terminate string at given index
         bool                ContainsCharFromSet(const DiString& charSet) const;                                    // returns true if string contains any character from set
@@ -98,48 +98,48 @@ namespace Demi
         
         void                ReplaceChars(const DiString& charSet, char replacement);
 
-        void                 Replace(char replaceThis, char replaceWith);
-        void                 Replace(const char* replaceThis, const char* replaceWith);
+        void                Replace(char replaceThis, char replaceWith);
+        void                Replace(const char* replaceThis, const char* replaceWith);
 
-        void                 SimplifyPath();
+        void                SimplifyPath();
 
-        SizeT                Tokenize(const DiString& whiteSpace, DiVector<DiString>& outTokens) const;                                                // tokenize string into a provided String array (faster if tokens array can be reused)   
-        DiVector<DiString>   Tokenize(const DiString& whiteSpace) const;                                                                                    // tokenize string into a provided String array, SLOW since new array will be constructed
-        SizeT                TokenizeEx(const DiString& whiteSpace, DiVector<DiString>& outTokens, unsigned int maxSplits = 0) const;        // tokenize string into a provided String array (faster if tokens array can be reused)   Added by Li
-        DiVector<DiString>   TokenizeEx(const DiString& whiteSpace, unsigned int maxSplits = 0) const;                                            // tokenize string into a provided String array, SLOW since new array will be constructed    Added by Li
-        SizeT                Tokenize(const DiString& whiteSpace, char fence, DiVector<DiString>& outTokens) const;                                // tokenize string, keep strings within fence characters intact (faster if tokens array can be reused)
-        DiVector<DiString>   Tokenize(const DiString& whiteSpace, char fence) const;                                                                    // tokenize string, keep strings within fence characters intact, SLOW since new array will be constructed
+        SizeT               Tokenize(const DiString& whiteSpace, DiVector<DiString>& outTokens) const;                                                // tokenize string into a provided String array (faster if tokens array can be reused)   
+        DiVector<DiString>  Tokenize(const DiString& whiteSpace) const;                                                                                    // tokenize string into a provided String array, SLOW since new array will be constructed
+        SizeT               TokenizeEx(const DiString& whiteSpace, DiVector<DiString>& outTokens, unsigned int maxSplits = 0) const;        // tokenize string into a provided String array (faster if tokens array can be reused)   Added by Li
+        DiVector<DiString>  TokenizeEx(const DiString& whiteSpace, unsigned int maxSplits = 0) const;                                            // tokenize string into a provided String array, SLOW since new array will be constructed    Added by Li
+        SizeT               Tokenize(const DiString& whiteSpace, char fence, DiVector<DiString>& outTokens) const;                                // tokenize string, keep strings within fence characters intact (faster if tokens array can be reused)
+        DiVector<DiString>  Tokenize(const DiString& whiteSpace, char fence) const;                                                                    // tokenize string, keep strings within fence characters intact, SLOW since new array will be constructed
 
-        void __cdecl         Format(const char* fmtString, ...);                                                                                                // format string printf-style
-        void __cdecl         FormatArgList(const char* fmtString, va_list argList);                                                                        // format string printf-style with varargs list
+        void __cdecl        Format(const char* fmtString, ...);                                                                                                // format string printf-style
+        void __cdecl        FormatArgList(const char* fmtString, va_list argList);                                                                        // format string printf-style with varargs list
 
-        static DiString      Concatenate(const DiVector<DiString>& strArray, const DiString& whiteSpace);                                // concatenate array of strings into new string
-        static bool          MatchPattern(const DiString& str, const DiString& pattern);                                                        // pattern matching, case sensitive true
-        static bool          MatchPatternEx(const DiString& str, const DiString& pattern, bool caseSensitive = true);                // pattern matching extended   Added by Li
-        static bool          StartsWith(const DiString& str, const DiString& pattern, bool caseSensitive = true);                        // returns whether the string begins with the pattern passed in    Added by Li
-        static bool          EndsWith(const DiString& str, const DiString& pattern, bool caseSensitive = true);                        // returns whether the string ends with the pattern passed in   Added by Li        
-        static DiString      BLANK;
-        static const char*   Stristr(const char* szString, const char* szSubstring);
+        static DiString     Concatenate(const DiVector<DiString>& strArray, const DiString& whiteSpace);                                // concatenate array of strings into new string
+        static bool         MatchPattern(const DiString& str, const DiString& pattern);                                                        // pattern matching, case sensitive true
+        static bool         MatchPatternEx(const DiString& str, const DiString& pattern, bool caseSensitive = true);                // pattern matching extended   Added by Li
+        static bool         StartsWith(const DiString& str, const DiString& pattern, bool caseSensitive = true);                        // returns whether the string begins with the pattern passed in    Added by Li
+        static bool         EndsWith(const DiString& str, const DiString& pattern, bool caseSensitive = true);                        // returns whether the string ends with the pattern passed in   Added by Li        
+        static DiString     BLANK;
+        static const char*  Stristr(const char* szString, const char* szSubstring);
 
-        size_t               ToHash() const;
+        size_t              ToHash() const;
 
-        void                 SetCharPtr(const char* s);                // set content to char ptr
-        void                 Set(const char* ptr, SizeT length);        // set as char ptr, with explicit length
-        const char*          AsCharPtr() const;                            // return contents as character pointer
-        
-        void                 SetInt64(int64 val);        // set as int value
-        void                 SetInt(int val);        // set as int value
-        void                 SetUint(int val);        // set as uint value
-        void                 SetFloat(float val);    // set as float value
-        void                 SetBool(bool val);        // set as bool value
+        void                SetCharPtr(const char* s);                // set content to char ptr
+        void                Set(const char* ptr, SizeT length);        // set as char ptr, with explicit length
+        const char*         AsCharPtr() const;                            // return contents as character pointer
 
-        void                 SetVector2(const DiVec2& v);
-        void                 SetVector3(const DiVec3& v);
-        void                 SetVector4(const DiVec4& v);
-        void                 SetQuaternion(const DiQuat& v);
-        void                 SetMatrix3(const DiMat3& v);
-        void                 SetMatrix4(const DiMat4& v);
-        void                 SetColourValue(const DiColor& v);
+        void                SetInt64(int64 val);        // set as int value
+        void                SetInt(int val);        // set as int value
+        void                SetUint(int val);        // set as uint value
+        void                SetFloat(float val);    // set as float value
+        void                SetBool(bool val);        // set as bool value
+
+        void                SetVector2(const DiVec2& v);
+        void                SetVector3(const DiVec3& v);
+        void                SetVector4(const DiVec4& v);
+        void                SetQuaternion(const DiQuat& v);
+        void                SetMatrix3(const DiMat3& v);
+        void                SetMatrix4(const DiMat4& v);
+        void                SetColourValue(const DiColor& v);
 
         /// generic setter
         template<typename T> void Set(const T& t);
@@ -1168,4 +1168,6 @@ namespace Demi
     typedef DiVector<DiString> StringVec;
 } 
 
-#pragma warning( pop ) 
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning( pop ) 
+#endif
