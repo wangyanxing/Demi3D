@@ -149,7 +149,7 @@ namespace Demi
 
         virtual ~DiProfiler();
 
-        _DECLARE_SINGLETON(DiProfiler);
+        _DECLARE_SINGLETON(DiProfiler)
 
         static void InitProfiler()
         {

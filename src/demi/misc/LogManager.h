@@ -29,7 +29,7 @@ namespace Demi
 
         ~DiLogManager(void);
 
-        _DECLARE_SINGLETON(DiLogManager);
+        _DECLARE_SINGLETON(DiLogManager)
 
         typedef DiVector<DiLogger*>    Loggers;
 

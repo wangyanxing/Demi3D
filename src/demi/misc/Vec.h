@@ -4,8 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
-
+#ifndef vec_h_
+#define vec_h_
 
 #include <vector>
 #include <algorithm>
@@ -16,32 +16,35 @@ namespace Demi
     class DiVector : public std::vector< T, std::allocator<T> >
     {
     public:
+        typedef typename std::vector< T, std::allocator<T> >::iterator _iterator;
+        typedef typename std::vector< T, std::allocator<T> >::const_iterator _const_iterator;
+        
         DiVector() : std::vector<T, std::allocator<T> >() {}
         DiVector(int size) : std::vector<T, std::allocator<T> >(size) {}
         DiVector(int size, const T& val) : std::vector<T, std::allocator<T> >(size, val) {}
 
-        iterator find(const T& value)
+        _iterator find(const T& value)
         {
-            iterator i = std::find(begin(),end(),value);
+            _iterator i = std::find(this->begin(),this->end(),value);
             return i;
         }
 
-        const_iterator find(const T& value) const
+        _const_iterator find(const T& value) const
         {
-            const_iterator i = std::find(begin(),end(),value);
+            _const_iterator i = std::find(this->begin(),this->end(),value);
             return i;
         }
 
         bool contains(const T& value)
         {
-            const_iterator i = std::find(begin(),end(),value);
-            return i != end();
+            _const_iterator i = std::find(this->begin(),this->end(),value);
+            return i != this->end();
         }
 
         bool remove(const T& value)
         {
-            iterator i = std::find(begin(), end(), value);
-            if (i == end())
+            _iterator i = std::find(this->begin(), this->end(), value);
+            if (i == this->end())
                 return false;
             else
             {
@@ -52,12 +55,14 @@ namespace Demi
 
         // note the order of the elements will be changed after this quickRemove method
         // sometimes we don't care about the order
-        iterator quickRemove(iterator& it)
+        _iterator quickRemove(_iterator& it)
         {
-            const size_t idx = it - begin();
-            *it = back();
-            pop_back();
-            return begin() + idx;
+            const size_t idx = it - this->begin();
+            *it = this->back();
+            this->pop_back();
+            return this->begin() + idx;
         }
     };
 }
+
+#endif

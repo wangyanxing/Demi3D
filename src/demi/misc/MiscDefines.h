@@ -3,9 +3,11 @@
     Creator: demiwangya
 ********************************************************************/
 
-#pragma once
+#ifndef MiscDefines_h__
+#define MiscDefines_h__
 
 #include "PlatformSpecific.h"
+#include "DebugAssert.h"
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable : 4251)   // dll-interface
@@ -31,8 +33,6 @@
 #       define DI_MISC_API
 #   endif
 #endif
-
-#include "DebugAssert.h"
 
 //-----------------------------------------------------------------------------
 #define DI_ERROR(...) \
@@ -85,3 +85,4 @@ typedef void *EVENT_HANDLE;
 
 #define BIT(index) (1 << (index))
 
+#endif

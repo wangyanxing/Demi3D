@@ -536,9 +536,8 @@ namespace Demi
         }
 
         /// Construct from coordinates.
-        DiIntVec2(int x, int y) :
-        x(x),
-            y(y)
+        DiIntVec2(int xx, int yy) :
+         x(xx), y(yy)
         {
         }
 

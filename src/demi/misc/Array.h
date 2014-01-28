@@ -9,19 +9,8 @@
 
 #include <exception>
 
-#pragma warning(disable:4275)
-
 namespace Demi 
 {
-    class DI_MISC_API ArrayIndexOutOfBoundsException : public std::exception
-    {
-    public:
-        const char* what() const
-        {
-            return "array index out of bounds exception";
-        }
-    };
-
 
     template<class T, int size>
     class DI_MISC_API Array
@@ -34,7 +23,7 @@ namespace Demi
             {
                 DI_ASSERT_FAIL;
 
-                throw ArrayIndexOutOfBoundsException();
+                throw std::runtime_error("array index out of bounds");
             }
 
             return mArray[nPos]; 
@@ -47,7 +36,7 @@ namespace Demi
             {
                 DI_ASSERT_FAIL;
 
-                throw ArrayIndexOutOfBoundsException();
+                throw std::runtime_error("array index out of bounds");
             }
 
             return mArray[nPos]; 

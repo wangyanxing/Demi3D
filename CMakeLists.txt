@@ -54,6 +54,7 @@ if (NOT APPLE)
 endif ()
 
 include(CheckCXXCompilerFlag)
+include(FindFrameworks)
 include(MacroLogFeature)
 include(Depends)
 include(AddTargets)
@@ -101,8 +102,10 @@ if (MINGW)
   
 endif ()
 
-if(CMAKE_COMPILER_IS_GNUCXX)
+if(CMAKE_COMPILER_IS_GNUCXX AND NOT APPLE)
     add_definitions(-std=gnu++0x)
+elseif (APPLE)
+    add_definitions("-std=c++11")
 endif()
 
 if ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)

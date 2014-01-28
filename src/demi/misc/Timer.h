@@ -20,16 +20,23 @@ namespace Demi
 
         double                  GetElapse();
 
-        double                  GetCurTime();
-
         static const DiString&  GetCurrentDateTime();
 
     private:
 
-        LARGE_INTEGER           mStartTime;        
-
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+        
+        LARGE_INTEGER           mStartTime;
         int64                   mTicksPerSec;
-
-        static LARGE_INTEGER    mFrequent;    
+        static LARGE_INTEGER    mFrequent;
+        
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        
+        struct timeval          mStart;
+		clock_t                 mZeroClock;
+        
+#else
+#   error "Unsupported platform, no implementation for DiTimer"
+#endif
     };
 }
