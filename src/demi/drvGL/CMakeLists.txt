@@ -23,6 +23,8 @@ if (NOT DEMI_STATIC)
   )
 endif ()
 
+set_property(TARGET DiDrvGL PROPERTY FOLDER "Core")
+
 # specify a precompiled header to use
 use_precompiled_header(DiDrvGL 
   "${CMAKE_CURRENT_SOURCE_DIR}/DrvGLPch.h"

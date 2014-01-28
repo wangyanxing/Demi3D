@@ -21,6 +21,8 @@ if (NOT DEMI_STATIC)
   )
 endif ()
 
+set_property(TARGET DemoFramework PROPERTY FOLDER "Core")
+
 # specify a precompiled header to use
 use_precompiled_header(DemoFramework 
   "${CMAKE_CURRENT_SOURCE_DIR}/DemoPch.h"

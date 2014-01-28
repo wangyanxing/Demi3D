@@ -19,6 +19,8 @@ endif ()
 string(REGEX REPLACE "/Zm[0-9]+ *" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm500" CACHE STRING "" FORCE)
 
+set_property(TARGET OgreConverter PROPERTY FOLDER "Tools")
+
 target_link_libraries(OgreConverter DiMisc DiGfx ${OGRE_LIBRARIES})
 
 # specify a precompiled header to use
