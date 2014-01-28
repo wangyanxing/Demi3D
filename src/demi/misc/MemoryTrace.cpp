@@ -79,7 +79,7 @@ namespace Demi
         mMemoryTraceFile.close();
     }
 
-    void DiMemoryTrace::WriteAllocInfo(UINT_PTR ptr, size_t stSize, const char* pszFileName, uint32 uiLine)
+    void DiMemoryTrace::WriteAllocInfo(POINTER ptr, size_t stSize, const char* pszFileName, uint32 uiLine)
     {
         DiString datetime = DiTimer::GetCurrentDateTime();
         DiString log;
@@ -89,7 +89,7 @@ namespace Demi
         mMemoryTraceFile << log.c_str();
     }
 
-    void DiMemoryTrace::WriteFreeInfo(UINT_PTR ptr, uint32 uiAllocIndex)
+    void DiMemoryTrace::WriteFreeInfo(POINTER ptr, uint32 uiAllocIndex)
     {
         DiString datetime = DiTimer::GetCurrentDateTime();
         DiString log;

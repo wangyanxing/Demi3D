@@ -17,14 +17,15 @@ if (NOT APPLE)
 endif ()
 
 string(REGEX REPLACE "/Zm[0-9]+ *" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm500" CACHE STRING "" FORCE)
+
+if (MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zm500" CACHE STRING "" FORCE)
+endif()
 
 set_property(TARGET OgreConverter PROPERTY FOLDER "Tools")
 
 target_link_libraries(OgreConverter DiMisc DiGfx ${OGRE_LIBRARIES})
 
 # specify a precompiled header to use
-use_precompiled_header(DiDrvD3D9 
-  "${CMAKE_CURRENT_SOURCE_DIR}/DiPch.h"
-  "${CMAKE_CURRENT_SOURCE_DIR}/DiPch.cpp"
-)
+use_precompiled_header(OgreConverter "DiPch.h")
+

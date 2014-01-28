@@ -26,7 +26,4 @@ endif ()
 set_property(TARGET DiDrvGL PROPERTY FOLDER "Core")
 
 # specify a precompiled header to use
-use_precompiled_header(DiDrvGL 
-  "${CMAKE_CURRENT_SOURCE_DIR}/DrvGLPch.h"
-  "${CMAKE_CURRENT_SOURCE_DIR}/DrvGLPch.cpp"
-)
+use_precompiled_header(DiDrvGL "DrvGLPch.h")

@@ -6,12 +6,60 @@
 
 #pragma once
 
-#if defined(_MSC_VER)
-#   if _MSC_VER <= 1500
+#define DEMI_PLATFORM_WIN32   1
+#define DEMI_PLATFORM_OSX     2
+#define DEMI_PLATFORM_IOS     3
+
+#define DEMI_BUILD_32         1
+#define DEMI_BUILD_64         2
+
+#define DEMI_COMPILER_MSVC    1
+#define DEMI_COMPILER_GNUC    2
+#define DEMI_COMPILER_CLANG   3
+
+#define DEMI_LITTLE_ENDIAN    1
+#define DEMI_BIG_ENDIAN       2
+
+
+#if defined( _MSC_VER )
+#   define DEMI_COMPILER        DEMI_COMPILER_MSVC
+#   define DEMI_COMPILER_VER    _MSC_VER
+#elif defined( __clang__ )
+#   define DEMI_COMPILER        DEMI_COMPILER_CLANG
+#   define DEMI_COMPILER_VER (((__clang_major__)*100) + \
+    (__clang_minor__ * 10) + \
+    __clang_patchlevel__)
+#elif defined( __GNUC__ )
+#   define DEMI_COMPILER        DEMI_COMPILER_GNUC
+#   define DEMI_COMPILER_VER (((__GNUC__)*100) + \
+    (__GNUC_MINOR__ * 10) + \
+    __GNUC_PATCHLEVEL__)
+#else
+#   pragma error "Demi3D doesn't support this compiler at this moment."
+#endif
+
+#if (DEMI_COMPILER == DEMI_COMPILER_MSVC)
+#   if DEMI_COMPILER_VER <= 1500
 #       error Demi Engine needs at least vc2010.
 #   endif
+#endif
+
+#if defined( __WIN32__ ) || defined( _WIN32 )
+#   define DEMI_PLATFORM DEMI_PLATFORM_WIN32
+#elif defined( __APPLE_CC__)
+#   if __ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__ >= 40000 || __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000
+#       define DEMI_PLATFORM DEMI_PLATFORM_IOS
+#   else
+#       define DEMI_PLATFORM DEMI_PLATFORM_OSX
+#   endif
 #else
-#   error Demi Engine doesn't support this compiler at this moment.
+#   pragma error "Demi3D doesn't support this platform at this moment."
+#endif
+
+#if defined(__x86_64__) || defined(_M_X64) || defined(__powerpc64__) || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__)
+#   define DEMI_ARCH_TYPE DEMI_BUILD_64
+#else
+#   define DEMI_ARCH_TYPE DEMI_BUILD_32
 #endif
 
 typedef signed char         int8;
@@ -29,23 +77,7 @@ typedef double              real;
 typedef unsigned long       ulong;
 typedef int                 BOOL;
 
-#if defined(_WIN64)
-typedef __int64 INT_PTR, *PINT_PTR;
-typedef unsigned __int64 UINT_PTR, *PUINT_PTR;
-
-typedef __int64 LONG_PTR, *PLONG_PTR;
-typedef unsigned __int64 ULONG_PTR, *PULONG_PTR;
-
-typedef ULONG_PTR DWORD_PTR, *PDWORD_PTR;
-#else
-typedef __w64 int INT_PTR, *PINT_PTR;
-typedef __w64 unsigned int UINT_PTR, *PUINT_PTR;
-
-typedef __w64 long LONG_PTR, *PLONG_PTR;
-typedef __w64 unsigned long ULONG_PTR, *PULONG_PTR;
-
-typedef ULONG_PTR DWORD_PTR, *PDWORD_PTR;
-#endif
+typedef unsigned long *POINTER;
 
 typedef void *THREAD_HANDLE;
 typedef void *EVENT_HANDLE;

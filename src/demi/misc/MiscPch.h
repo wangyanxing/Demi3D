@@ -3,7 +3,8 @@
     Creator:    demiwangya
 ***************************************************************************/
 
-#pragma once
+#ifndef MiscPch_h__
+#define MiscPch_h__
 
 #include <tchar.h>
 #include <stdio.h>
@@ -46,8 +47,10 @@
 
 #include "DynamicAttribute.h"
 #include "DynamicAttributeFactory.h"
-#include "StlUtil.h"
+ #include "StlUtil.h"
 
 //#define ENABLE_PROFILE
 
 #include "Profiler.h"
+
+#endif // MiscPch_h__

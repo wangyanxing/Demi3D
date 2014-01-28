@@ -1,64 +1,99 @@
-#-------------------------------------------------------------------
-# This file is part of the CMake build system for OGRE
-#     (Object-oriented Graphics Rendering Engine)
-# For the latest info, see http://www.ogre3d.org/
+# Macro for setting up precompiled headers. Usage:
 #
-# The contents of this file are placed in the public domain. Feel
-# free to make use of it in any way you like.
-#-------------------------------------------------------------------
-
-##################################################################
-# Support macro to use a precompiled header
-# Usage:
-#   use_precompiled_header(TARGET HEADER_FILE SRC_FILE)
-##################################################################
-
-macro(use_precompiled_header TARGET HEADER_FILE SRC_FILE)
-  get_filename_component(HEADER ${HEADER_FILE} NAME)
-
-  # Use MSVC_IDE to exclude NMake from using PCHs
-  if (MSVC AND NOT NMAKE AND NOT DEMI_UNITY_BUILD)
-	add_definitions(/Yu"${HEADER}")
-    set_source_files_properties(${SRC_FILE}
-      PPROPERTIES COMPILE_FLAGS /Yc"${HEADER}"
-	)
+#   add_precompiled_header(target header.h [FORCEINCLUDE])
+#
+# MSVC: A source file with the same name as the header must exist and
+# be included in the target (E.g. header.cpp).
+#
+# MSVC: Add FORCEINCLUDE to automatically include the precompiled
+# header file from every source file.
+#
+# GCC: The precompiled header is always automatically included from
+# every header file.
+#
+# Copyright (C) 2009-2013 Lars Christensen <larsch@belunktum.dk>
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the ‘Software’), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+# BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+# ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+ 
+MACRO(use_precompiled_header _targetName _input)
+  GET_FILENAME_COMPONENT(_inputWe ${_input} NAME_WE)
+  SET(pch_source ${_inputWe}.cpp)
+  FOREACH(arg ${ARGN})
+    IF(arg STREQUAL FORCEINCLUDE)
+      SET(FORCEINCLUDE ON)
+    ELSE(arg STREQUAL FORCEINCLUDE)
+      SET(FORCEINCLUDE OFF)
+    ENDIF(arg STREQUAL FORCEINCLUDE)
+  ENDFOREACH(arg)
+ 
+  IF(MSVC)
+    GET_TARGET_PROPERTY(sources ${_targetName} SOURCES)
+    SET(_sourceFound FALSE)
+    FOREACH(_source ${sources})
+      SET(PCH_COMPILE_FLAGS "")
+      IF(_source MATCHES \\.\(cc|cxx|cpp\)$)
+	GET_FILENAME_COMPONENT(_sourceWe ${_source} NAME_WE)
+	IF(_sourceWe STREQUAL ${_inputWe})
+	  SET(PCH_COMPILE_FLAGS "${PCH_COMPILE_FLAGS} /Yc${_input}")
+	  SET(_sourceFound TRUE)
+	ELSE(_sourceWe STREQUAL ${_inputWe})
+	  SET(PCH_COMPILE_FLAGS "${PCH_COMPILE_FLAGS} /Yu${_input}")
+	  IF(FORCEINCLUDE)
+	    SET(PCH_COMPILE_FLAGS "${PCH_COMPILE_FLAGS} /FI${_input}")
+	  ENDIF(FORCEINCLUDE)
+	ENDIF(_sourceWe STREQUAL ${_inputWe})
+	SET_SOURCE_FILES_PROPERTIES(${_source} PROPERTIES COMPILE_FLAGS "${PCH_COMPILE_FLAGS}")
+      ENDIF(_source MATCHES \\.\(cc|cxx|cpp\)$)
+    ENDFOREACH()
+    IF(NOT _sourceFound)
+      MESSAGE(FATAL_ERROR "A source file for ${_input} was not found. Required for MSVC builds.")
+    ENDIF(NOT _sourceFound)
+  ENDIF(MSVC)
+ 
+  IF(CMAKE_COMPILER_IS_GNUCXX)
+    GET_FILENAME_COMPONENT(_name ${_input} NAME)
+    SET(_source "${CMAKE_CURRENT_SOURCE_DIR}/${_input}")
+    SET(_outdir "${CMAKE_CURRENT_BINARY_DIR}/${_name}.gch")
+    MAKE_DIRECTORY(${_outdir})
+    SET(_output "${_outdir}/.c++")
     
-  elseif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
-    # disabled because it seems to increase compile time
-    ## this is some serious hack... we definitely need native 
-    ## support in CMake for this!
-    ## we will generate the precompiled header via a workaround
-    ## first give the header a new name with the proper extension
-    #set(PRECOMP_HEADER ${CMAKE_CURRENT_BINARY_DIR}/hacked/${HEADER}.gch)
-    #configure_file(${HEADER_FILE} ${PRECOMP_HEADER} COPYONLY)
-    ## retrieve some info about the target's build settings
-    #get_target_property(${TARGET} PRECOMP_TYPE TYPE)
-    #if (PRECOMP_TYPE STREQUAL "SHARED_LIBRARY")
-    #  set(PRECOMP_LIBTYPE "SHARED")
-    #else ()
-    #  set(PRECOMP_LIBTYPE "STATIC")
-    #endif ()
-    #get_target_property(${TARGET} PRECOMP_DEFINITIONS COMPILE_DEFINITIONS)
-    #get_target_property(${TARGET} PRECOMP_FLAGS COMPILE_FLAGS)
-    #
-    ## add a new target which compiles the header
-    #add_library(__precomp_header ${PRECOMP_LIBTYPE} ${PRECOMP_HEADER})
-    #add_dependencies(${TARGET} __precomp_header)
-    #set_target_properties(__precomp_header PROPERTIES
-    #  COMPILE_DEFINITIONS ${PRECOMP_DEFINITIONS}
-    #  COMPILE_FLAGS ${PRECOMP_FLAGS}
-    #  HAS_CXX TRUE
-    #)
-    #set_source_files_properties(${PRECOMP_HEADER} PROPERTIES
-    #  HEADER_FILE_ONLY FALSE
-    #  KEEP_EXTENSION TRUE
-    #  COMPILE_FLAGS "-x c++-header"
-    #  LANGUAGE CXX
-    #)
-    #
-    ## finally, we need to ensure that gcc can find the precompiled header
-    ## this is another dirty hack
-    #include_directories(BEFORE "${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/__precomp_header.dir/hacked")
-
-  endif ()
-endmacro(use_precompiled_header)
+    STRING(TOUPPER "CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}" _flags_var_name)
+    SET(_compiler_FLAGS ${${_flags_var_name}})
+    
+    GET_DIRECTORY_PROPERTY(_directory_flags INCLUDE_DIRECTORIES)
+    FOREACH(item ${_directory_flags})
+      LIST(APPEND _compiler_FLAGS "-I${item}")
+    ENDFOREACH(item)
+ 
+    GET_DIRECTORY_PROPERTY(_directory_flags DEFINITIONS)
+    LIST(APPEND _compiler_FLAGS ${_directory_flags})
+ 
+    SEPARATE_ARGUMENTS(_compiler_FLAGS)
+    MESSAGE("${CMAKE_CXX_COMPILER} -DPCHCOMPILE ${_compiler_FLAGS} -x c++-header -o {_output} ${_source}")
+    ADD_CUSTOM_COMMAND(
+      OUTPUT ${_output}
+      COMMAND ${CMAKE_CXX_COMPILER} ${_compiler_FLAGS} -x c++-header -o ${_output} ${_source}
+      DEPENDS ${_source} )
+    ADD_CUSTOM_TARGET(${_targetName}_gch DEPENDS ${_output})
+    ADD_DEPENDENCIES(${_targetName} ${_targetName}_gch)
+    SET_TARGET_PROPERTIES(${_targetName} PROPERTIES COMPILE_FLAGS "-include ${_name} -Winvalid-pch")
+  ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+ENDMACRO(use_precompiled_header)
