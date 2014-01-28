@@ -22,6 +22,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
+#include "DiPch.h"
 #include <ctype.h>
 #include <stddef.h>
 

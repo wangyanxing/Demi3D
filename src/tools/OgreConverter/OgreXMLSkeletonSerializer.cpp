@@ -26,6 +26,7 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
+#include "DiPch.h"
 #include "OgreXMLSkeletonSerializer.h"
 #include "OgreSkeleton.h"
 #include "OgreAnimation.h"

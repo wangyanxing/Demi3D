@@ -50,6 +50,7 @@ include(CheckCXXCompilerFlag)
 include(MacroLogFeature)
 include(Depends)
 include(AddTargets)
+include(AddSamples)
 
 # Set compiler specific build flags
 if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)

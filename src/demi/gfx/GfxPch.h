@@ -15,14 +15,6 @@ using namespace Demi;
 #include "Singleton.h"
 #include "Camera.h"
 
-#ifdef max
-#    undef max
-#endif
-
-#ifdef min
-#    undef min
-#endif
-
 #include "Iterator.h"
 #include "DataStream.h"
 #include "Archive.h"

@@ -27,6 +27,7 @@ THE SOFTWARE.
 */
 
 
+#include "DiPch.h"
 #include "OgreXMLMeshSerializer.h"
 #include "OgreSubMesh.h"
 #include "OgreLogManager.h"

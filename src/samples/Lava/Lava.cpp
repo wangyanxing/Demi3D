@@ -1,18 +1,6 @@
 
-#include "DiPch.h"
-#include "Application.h"
-#include "Skybox.h"
-#include "SimpleShape.h"
-#include "Model.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
-#include "ShaderManager.h"
-#include "RenderWindow.h"
-#include "CameraHelper.h"
-#include "PostEffectManager.h"
-#include "PostEffect.h"
-#include "PostEffectPass.h"
-#include "GfxDriver.h"
+#include "Demi.h"
+#include "DemoFrame.h"
 
 float timeElap = 0;
 DiShaderParameter* shaderParam = nullptr;

@@ -1,3 +1,4 @@
+#include "DiPch.h"
 #include "ModelConverter.h"
 #include "Mesh.h"
 #include "SubMesh.h"
@@ -19,38 +20,38 @@
 
 using namespace Ogre;
 
-static D3DDECLTYPE ConverteVertType(VertexElementType type)
+static DiVertexType ConverteVertType(VertexElementType type)
 {
 	switch(type)
 	{
 	case VET_FLOAT1:
-		return D3DDECLTYPE_FLOAT1;
+        return VERT_TYPE_FLOAT1;
 	case VET_FLOAT2:
-		return D3DDECLTYPE_FLOAT2;
+        return VERT_TYPE_FLOAT2;
 	case VET_FLOAT3:
-		return D3DDECLTYPE_FLOAT3;
+        return VERT_TYPE_FLOAT3;
 	case VET_FLOAT4:
-		return D3DDECLTYPE_FLOAT4;
+        return VERT_TYPE_FLOAT4;
 	case VET_COLOUR:
-		return D3DDECLTYPE_D3DCOLOR;
+        return VERT_TYPE_COLOR;
 	case VET_SHORT1:
-		DI_ERROR("Unsupported type");
-		return D3DDECLTYPE_UNUSED;
+		DI_WARNING("Unsupported type");
+        return VERT_TYPE_UNUSED;
 	case VET_SHORT2:
-		return D3DDECLTYPE_SHORT2;
+        return VERT_TYPE_SHORT2;
 	case VET_SHORT3:
-		DI_ERROR("Unsupported type");
-		return D3DDECLTYPE_UNUSED;
+        DI_WARNING("Unsupported type");
+        return VERT_TYPE_UNUSED;
 	case VET_SHORT4:
-		return D3DDECLTYPE_SHORT4;
+        return VERT_TYPE_SHORT4;
 	case VET_UBYTE4:
-		return D3DDECLTYPE_UBYTE4;
+        return VERT_TYPE_UBYTE4;
 	case VET_COLOUR_ARGB:
-		return D3DDECLTYPE_D3DCOLOR;
+        return VERT_TYPE_COLOR;
 	case VET_COLOUR_ABGR:
 	default:
 		DI_ERROR("Unsupported type");
-		return D3DDECLTYPE_UNUSED;
+        return VERT_TYPE_UNUSED;
 	}
 }
 
@@ -128,22 +129,22 @@ void ModelConverter::WriteSubMesh( DiSubMesh* subMod, const Ogre::SubMesh* s )
 	switch(s->operationType)
 	{
 	case RenderOperation::OT_LINE_LIST:
-		subMod->SetPrimitiveType(D3DPT_LINELIST);
+		subMod->SetPrimitiveType(PT_LINELIST);
 		break;
 	case RenderOperation::OT_LINE_STRIP:
-		subMod->SetPrimitiveType(D3DPT_LINESTRIP);
+		subMod->SetPrimitiveType(PT_LINESTRIP);
 		break;
 	case RenderOperation::OT_POINT_LIST:
-		subMod->SetPrimitiveType(D3DPT_POINTLIST);
+		subMod->SetPrimitiveType(PT_POINTLIST);
 		break;
 	case RenderOperation::OT_TRIANGLE_FAN:
-		subMod->SetPrimitiveType(D3DPT_TRIANGLEFAN);
+		subMod->SetPrimitiveType(PT_TRIANGLEFAN);
 		break;
 	case RenderOperation::OT_TRIANGLE_LIST:
 		subMod->SetPrimitiveType(PT_TRIANGLELIST);
 		break;
 	case RenderOperation::OT_TRIANGLE_STRIP:
-		subMod->SetPrimitiveType(D3DPT_TRIANGLESTRIP);
+		subMod->SetPrimitiveType(PT_TRIANGLESTRIP);
 		break;
 	}
 
@@ -243,34 +244,34 @@ void ModelConverter::WriteSubMesh( DiSubMesh* subMod, const Ogre::SubMesh* s )
 		{
 			VertexElement& elem = *i;
 
-			D3DDECLTYPE type = ConverteVertType(elem.getType());
-			D3DDECLUSAGE usage;
+			DiVertexType type = ConverteVertType(elem.getType());
+			DiVertexUsage usage;
 			bool texcoord = false;
 			switch(elem.getSemantic())
 			{
 			case VES_POSITION:
-				usage = D3DDECLUSAGE_POSITION;
+				usage = VERT_USAGE_POSITION;
 				break;
 			case VES_NORMAL:
-				usage = D3DDECLUSAGE_NORMAL;
+                usage = VERT_USAGE_NORMAL;
 				break;
 			case VES_TANGENT:
-				usage = D3DDECLUSAGE_TANGENT;
+                usage = VERT_USAGE_TANGENT;
 				break;
 			case VES_BINORMAL:
-				usage = D3DDECLUSAGE_BINORMAL;
+                usage = VERT_USAGE_BINORMAL;
 				break;
 			case VES_DIFFUSE:
 			case VES_SPECULAR:
-				usage = D3DDECLUSAGE_COLOR;
+                usage = VERT_USAGE_COLOR;
 				break;
 			case VES_TEXTURE_COORDINATES:
-				usage = D3DDECLUSAGE_TEXCOORD;
+                usage = VERT_USAGE_TEXCOORD;
 				++nuDemiureCoords;
 				texcoord = true;
 				break;
 			default:
-				DI_ERROR("Unsupported semantic");
+				DI_WARNING("Unsupported semantic: %d", elem.getSemantic());
 			}
 
 			subMod->GetVertexElements().AddElement(bindCount,type,usage,texcoord?nuDemiureCoords-1:0);
@@ -446,24 +447,7 @@ void ModelConverter::WriteSimpleMaterial( int boneWeightsNum, const DiString& fi
 	DiMaterialPtr mat = Demi::DiAssetManager::GetInstancePtr(
 		)->CreateOrReplaceAsset<DiMaterial>("_tempSimple");
 
-	if (boneWeightsNum == 0)
-	{
-		mat->LoadVertexShader(DiMaterialDefine::STATIC_MESH_SHADER_NAME);
-	}
-	else if (boneWeightsNum == 1)
-	{
-        mat->LoadVertexShader(DiMaterialDefine::SKINING_1_WEIGHT_SHADER);
-	}
-	else if (boneWeightsNum == 2)
-	{
-        mat->LoadVertexShader(DiMaterialDefine::SKINING_2_WEIGHTS_SHADER);
-	}
-	else
-	{
-        mat->LoadVertexShader(DiMaterialDefine::SKINING_4_WEIGHTS_SHADER);
-	}
-
-    mat->LoadPixelShader(DiMaterialDefine::DIFFUSE_PIXEL_SHADER);
+    mat->LoadShader("basic_v", "basic_p");  //todo
 
 	Demi::DiShaderParameter* materialIns = mat->GetShaderParameter();
 	materialIns->WriteTexture2D("diffuseTexture","_default.dds");

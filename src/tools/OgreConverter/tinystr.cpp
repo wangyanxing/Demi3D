@@ -27,6 +27,8 @@ distribution.
  */
 
 
+#include "DiPch.h"
+
 #ifndef TIXML_USE_STL
 
 #include "tinystr.h"
