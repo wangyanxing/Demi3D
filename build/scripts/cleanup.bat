@@ -1,2 +1,0 @@
-dist\builder -clean
-pause
