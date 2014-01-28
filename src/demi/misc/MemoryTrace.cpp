@@ -35,7 +35,7 @@ namespace Demi
 
             mAllocInfoList[ulHashIndex] = kAllocInfo;
 
-            WriteAllocInfo((LONG)pMemory,stSize, pszFileName, uiLine);
+            WriteAllocInfo((long)pMemory,stSize, pszFileName, uiLine);
         }
     }
 
@@ -49,7 +49,7 @@ namespace Demi
         if ( it != mAllocInfoList.end() )
         {
             AllocInfo& kAllocInfo = (it->second);
-            WriteFreeInfo((LONG)(pMemory), kAllocInfo.uiIndex);
+            WriteFreeInfo((long)(pMemory), kAllocInfo.uiIndex);
 
             mAllocInfoList.erase(it);
         }
@@ -79,7 +79,7 @@ namespace Demi
         mMemoryTraceFile.close();
     }
 
-    void DiMemoryTrace::WriteAllocInfo(POINTER ptr, size_t stSize, const char* pszFileName, uint32 uiLine)
+    void DiMemoryTrace::WriteAllocInfo(long ptr, size_t stSize, const char* pszFileName, uint32 uiLine)
     {
         DiString datetime = DiTimer::GetCurrentDateTime();
         DiString log;
@@ -89,7 +89,7 @@ namespace Demi
         mMemoryTraceFile << log.c_str();
     }
 
-    void DiMemoryTrace::WriteFreeInfo(POINTER ptr, uint32 uiAllocIndex)
+    void DiMemoryTrace::WriteFreeInfo(long ptr, uint32 uiAllocIndex)
     {
         DiString datetime = DiTimer::GetCurrentDateTime();
         DiString log;

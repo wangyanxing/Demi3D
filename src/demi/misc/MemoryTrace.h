@@ -46,9 +46,9 @@ namespace Demi
                          
         void             Close();
                          
-        void             WriteAllocInfo(POINTER ptr, size_t stSize, const char* pszFileName, uint32 uiLine);
+        void             WriteAllocInfo(long ptr, size_t stSize, const char* pszFileName, uint32 uiLine);
                          
-        void             WriteFreeInfo(POINTER ptr, uint32 uiAllocIndex);
+        void             WriteFreeInfo(long ptr, uint32 uiAllocIndex);
                          
         void             SaveMemoryLeak();
 
