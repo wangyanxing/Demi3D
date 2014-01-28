@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "SceneSerial.h"
 #include "AssetManager.h"
 #include "SceneManager.h"

@@ -11,7 +11,7 @@
 
 namespace Demi 
 {
-    class DEMI_EXT_API DiGridPlane : public Demi::DiTransformUnit, public Demi::DiRenderUnit
+    class DEMI_DEMO_API DiGridPlane : public Demi::DiTransformUnit, public Demi::DiRenderUnit
     {
     public:
 

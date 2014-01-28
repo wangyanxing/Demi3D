@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "GfxBase.h"
 #include "MemoryAllocator.h"
 #include "MemoryTrace.h"

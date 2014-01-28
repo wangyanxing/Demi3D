@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Sprite.h"
 #include "GfxDriver.h"
 #include "RenderTarget.h"

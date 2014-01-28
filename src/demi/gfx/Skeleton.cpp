@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Skeleton.h"
 #include "Bone.h"
 

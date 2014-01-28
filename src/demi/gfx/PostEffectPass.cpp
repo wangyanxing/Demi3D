@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "PostEffectPass.h"
 #include "AssetManager.h"
 #include "PostEffectManager.h"

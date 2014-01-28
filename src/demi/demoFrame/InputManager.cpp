@@ -1,9 +1,12 @@
 
+#include "DemoPch.h"
 #include "InputManager.h"
-#include "MyGUI.h"
+//#include "MyGUI.h"
 #include "Application.h"
 #include "RenderWindow.h"
 #include "GfxDriver.h"
+
+#include <sstream>
 
 namespace Demi
 {
@@ -254,9 +257,10 @@ namespace Demi
     void DiInputManager::updateCursorPosition()
     {
         const OIS::MouseState& ms = mMouse->getMouseState();
-        injectMouseMove(mCursorX, mCursorY, ms.Z.abs);
+        //injectMouseMove(mCursorX, mCursorY, ms.Z.abs);
     }
 
+#if 0
     void DiInputManager::injectMouseMove(int _absx, int _absy, int _absz)
     {
         //MyGUI::InputManager::getInstance().injectMouseMove(_absx, _absy, _absz);
@@ -281,6 +285,7 @@ namespace Demi
     {
         //MyGUI::InputManager::getInstance().injectKeyRelease(_key);
     }
+#endif
 
     bool DiInputManager::registerMouseMoveEvent(const DiString& name, MouseMoveCallback cb)
     {

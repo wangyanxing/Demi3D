@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "RenderTarget.h"
 #include "GfxDriver.h"
 #include "Texture.h"

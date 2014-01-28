@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Scene.h"
 #include "TerrainMap.h"
 #include "SceneSerial.h"

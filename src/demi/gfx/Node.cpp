@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Node.h"
 #include <sstream>
 

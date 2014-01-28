@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "FoliageMap.h"
 #include "FoliageLayer.h"
 #include "FoliageChunk.h"

@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "ShaderParam.h"
 #include "Memory.h"
 #include "Material.h"

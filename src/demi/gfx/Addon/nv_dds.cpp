@@ -192,12 +192,14 @@
 //         GL_UNSIGNED_BYTE, image[0].get_mipmap(i));
 // }
 
+#include "GfxPch.h"
+
 #include <stdio.h>
 #include "nv_dds.h"
 
 using namespace std;
 using namespace nv_dds;
-using namespace Demi ;
+using namespace Demi;
 
 ///////////////////////////////////////////////////////////////////////////////
 // CDDSImage public functions

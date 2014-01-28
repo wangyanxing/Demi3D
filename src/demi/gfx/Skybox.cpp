@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Skybox.h"
 #include "SceneManager.h"
 #include "CullNode.h"

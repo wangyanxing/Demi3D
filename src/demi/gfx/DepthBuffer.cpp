@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "DepthBuffer.h"
 #include "RenderTarget.h"
 

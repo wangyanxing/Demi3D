@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "InstanceBatchHardware.h"
 #include "InstanceManager.h"
 #include "VertexBuffer.h"

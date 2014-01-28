@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "RenderThread.h"
 
 namespace Demi

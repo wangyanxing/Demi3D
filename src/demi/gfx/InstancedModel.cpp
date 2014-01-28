@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "InstancedModel.h"
 #include "InstanceBatch.h"
 #include "ClipController.h"

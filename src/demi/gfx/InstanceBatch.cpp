@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "InstanceBatch.h"
 #include "CullNode.h"
 #include "RenderBatchGroup.h"

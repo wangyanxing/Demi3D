@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "CommandBuffer.h"
 
 namespace Demi

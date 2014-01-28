@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "PointLight.h"
 #include "GpuProgram.h"
 

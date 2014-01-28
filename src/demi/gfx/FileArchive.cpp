@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "FileArchive.h"
 #include "DataStream.h"
 #include <fstream>
@@ -98,13 +99,6 @@ namespace Demi
         DiStringVecPtr ret(DI_NEW StringVec);
         FindFiles(pattern, recursive, dirs, ret, DiFileInfoListPtr());
         return ret;
-    }
-
-    bool DiFileArchive::Exists( const DiString& filename )
-    {
-        DiString full_path = concatenate_path(mName, filename);
-
-        return PathFileExistsA(full_path.c_str()) == TRUE;
     }
 
     Demi::DiFileInfoListPtr DiFileArchive::FindFileInfo( const DiString& pattern, 

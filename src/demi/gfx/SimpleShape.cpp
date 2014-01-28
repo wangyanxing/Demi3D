@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "SimpleShape.h"
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"

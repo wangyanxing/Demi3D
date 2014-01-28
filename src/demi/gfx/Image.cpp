@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Image.h"
 #include "Texture.h"
 #include "AssetManager.h"

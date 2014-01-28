@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "Motion.h"
 #include "Skeleton.h"
 #include "AttachSet.h"

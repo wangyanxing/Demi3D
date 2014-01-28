@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "RenderPipeline.h"
 #include "GpuProgram.h"
 #include "PostEffectManager.h"

@@ -1,4 +1,6 @@
 
+#include "GfxPch.h"
+
 #ifdef WIN32
 
 #include "Win32Window.h"

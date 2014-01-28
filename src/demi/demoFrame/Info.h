@@ -12,7 +12,7 @@
 
 namespace Demi
 {
-    class DEMI_EXT_API DiInfo : public DiBase
+    class DEMI_DEMO_API DiInfo : public DiBase
     {
     public:
 

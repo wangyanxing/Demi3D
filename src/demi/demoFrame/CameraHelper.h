@@ -21,7 +21,7 @@ namespace Demi
 
     //////////////////////////////////////////////////////////////////////////
 
-    class DEMI_EXT_API DiCameraHelper : public DiBase
+    class DEMI_DEMO_API DiCameraHelper : public DiBase
     {
     public:
 

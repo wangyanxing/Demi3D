@@ -1,4 +1,5 @@
 
+#include "GfxPch.h"
 #include "TerrainDesc.h"
 
 bool Demi::DiTerrainDesc::CheckValid()
