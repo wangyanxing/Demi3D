@@ -6,19 +6,64 @@
 
 #pragma once
 
-#include <hash_map>
+// Note - not in the original STL, but exists in SGI STL and STLport
+// For gcc 4.3 see http://gcc.gnu.org/gcc-4.3/changes.html
+#if (DEMI_COMPILER == DEMI_COMPILER_GNUC) && !defined(STLPORT)
+#   if DEMI_COMPILER_VER >= 430
+#       include <tr1/unordered_map>
+#       include <tr1/unordered_set>
+#   else
+#       include <ext/hash_map>
+#       include <ext/hash_set>
+#   endif
+#elif (DEMI_COMPILER == DEMI_COMPILER_CLANG)
+#   if defined(_LIBCPP_VERSION)
+#       include <unordered_map>
+#       include <unordered_set>
+#   else
+#       include <tr1/unordered_map>
+#       include <tr1/unordered_set>
+#   endif
+#else
+#   if (DEMI_COMPILER == DEMI_COMPILER_MSVC) && !defined(STLPORT) && DEMI_COMPILER_VER >= 1600 // VC++ 10.0
+#    	include <unordered_map>
+#    	include <unordered_set>
+#	else
+#   	include <hash_set>
+#   	include <hash_map>
+#	endif
+#endif
 
-namespace Demi
-{
-    template <class KEY, class T> 
-    class DiHashMap : public stdext::hash_map<KEY, T, 
-        stdext::hash_compare<KEY, std::less<KEY> >, std::allocator<  std::pair<const KEY, T> >> 
-    {
-    public:
-
-        bool contains(const KEY& key) const
-        {
-            return find(key) != end();
-        }
-    };
-}
+#if DEMI_COMPILER == DEMI_COMPILER_GNUC && DEMI_COMPILER_VER >= 310 && !defined(STLPORT)
+#   if DEMI_COMPILER_VER >= 430
+#       define DiHashMap ::std::tr1::unordered_map
+#		define DiHashSet ::std::tr1::unordered_set
+#    else
+#       define DiHashMap ::__gnu_cxx::hash_map
+#       define DiHashSet ::__gnu_cxx::hash_set
+#    endif
+#elif DEMI_COMPILER == DEMI_COMPILER_CLANG
+#    if defined(_LIBCPP_VERSION)
+#       define DiHashMap ::std::unordered_map
+#       define DiHashSet ::std::unordered_set
+#    else
+#       define DiHashMap ::std::tr1::unordered_map
+#       define DiHashSet ::std::tr1::unordered_set
+#    endif
+#else
+#   if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#       if DEMI_COMPILER_VER >= 1600 // VC++ 10.0
+#			define DiHashMap ::std::tr1::unordered_map
+#           define DiHashSet ::std::tr1::unordered_set
+#		elif DEMI_COMPILER_VER > 1300 && !defined(_STLP_MSVC)
+#           define DiHashMap ::stdext::hash_map
+#           define DiHashSet ::stdext::hash_set
+#       else
+#           define DiHashMap ::std::hash_map
+#           define DiHashSet ::std::hash_set
+#       endif
+#   else
+#       define DiHashMap ::std::hash_map
+#       define DiHashSet ::std::hash_set
+#   endif
+#endif

@@ -3,7 +3,8 @@
     Creator:    demiwangya
 **************************************************************************/
 
-#pragma once
+#ifndef MiscPrerequisites_h_
+#define MiscPrerequisites_h_
 
 #include "MiscDefines.h"
 
@@ -30,15 +31,17 @@ namespace Demi
     class    DiDynamicAttributeFactory;
     class    DiDynamicAttribute;
 
-    class   DiXMLFile;
-    class   DiXMLElement;
-    class     DiXmlNodeInterface;
-    class     DiXmlNodeRef;
-    class     DiXmlNode;
-    class     DiXmlNodePool;
-    class     DiXmlNodeReuse;
-    class     DiXmlTemplateRegistry;
-    struct     DiXmlStringPoolInterface;
-    struct     DiXmlParserInterface;
-    struct     DiXmlUtilsInterface;
+    class    DiXMLFile;
+    class    DiXMLElement;
+    class    DiXmlNodeInterface;
+    class    DiXmlNodeRef;
+    class    DiXmlNode;
+    class    DiXmlNodePool;
+    class    DiXmlNodeReuse;
+    class    DiXmlTemplateRegistry;
+    struct   DiXmlStringPoolInterface;
+    struct   DiXmlParserInterface;
+    struct   DiXmlUtilsInterface;
 }
+
+#endif

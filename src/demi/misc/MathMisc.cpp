@@ -1040,7 +1040,7 @@ namespace Demi
         denom = d2121 * d4343 - d4321 * d4321;
         if (fabs(denom) < LINE_EPS)
         {
-            return(FALSE);
+            return false;
         }
         numer = d1343 * d4321 - d1321 * d4343;
 

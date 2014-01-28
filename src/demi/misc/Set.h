@@ -16,7 +16,7 @@ namespace Demi
     public:
         bool contains(const T& key)
         {
-            return find(key) != end();
+            return find(key) != this->end();
         }
     };
 }
