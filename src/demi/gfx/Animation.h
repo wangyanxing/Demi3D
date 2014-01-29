@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Animation_h__
+#define Animation_h__
 
 #include "AnimationClip.h"
 #include "ClipController.h"
@@ -137,3 +138,5 @@ namespace Demi
         mutable KeyFrameTimeList    mKeyFrameTimes;
     };
 }
+
+#endif // Animation_h__

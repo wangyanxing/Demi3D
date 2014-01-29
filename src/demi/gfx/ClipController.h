@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef ClipController_h__
+#define ClipController_h__
 
 #include "Callback.h"
 
@@ -198,3 +199,5 @@ namespace Demi
         EnabledClipsList      mEnabledClips;
     };
 }
+
+#endif // ClipController_h__

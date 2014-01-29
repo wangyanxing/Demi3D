@@ -4,8 +4,11 @@
 
 namespace Demi
 {
-#ifdef WIN32
-    const DiString& DiPathLib::GetApplicationFileName()
+    DiString DiPathLib::msAppFile;
+
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+
+    const DiString& _GetAppFileName()
     {
         static DiString appFile;
 
@@ -15,15 +18,34 @@ namespace Demi
 
         return appFile;
     }
+
+#define _SLASH "\\"
+
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+    const DiString& _GetAppFileName()
+    {
+        return DiString::BLANK;
+    }
+
+#define _SLASH "/"
+
 #endif
+
+    const DiString& DiPathLib::GetApplicationFileName()
+    {
+        if (msAppFile.empty())
+            msAppFile = _GetAppFileName();
+        return msAppFile;
+    }
 
     const DiString& DiPathLib::GetApplicationPath()
     {
         static DiString path;
 
         const DiString& appFile = GetApplicationFileName();
-        size_t pos = appFile.rfind("\\");
-        path = appFile.substr(0, pos) + "\\";
+        size_t pos = appFile.rfind(_SLASH);
+        path = appFile.substr(0, pos) + _SLASH;
         return path;
     }
+
 }

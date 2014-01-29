@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once 
+#ifndef AttachSet_h__
+#define AttachSet_h__
 
 #include "AttachNode.h"
 
@@ -87,3 +88,5 @@ namespace Demi
         DiSkeletonInstance *    mSkeleton;
     };
 }
+
+#endif // AttachSet_h__

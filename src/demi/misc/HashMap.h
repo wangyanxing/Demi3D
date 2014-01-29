@@ -4,8 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#ifndef HashMap_h__
-#define HashMap_h__
+#ifndef DiHashMap_h__
+#define DiHashMap_h__
 
 // hash map type
 #define DEMI_UNORDED    1

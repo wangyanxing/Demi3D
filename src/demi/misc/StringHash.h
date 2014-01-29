@@ -4,8 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#ifndef StringHash_h__
-#define StringHash_h__
+#ifndef DiStringHash_h__
+#define DiStringHash_h__
 
 #include "Str.h"
 #include "HashMap.h"

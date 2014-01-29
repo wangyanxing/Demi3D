@@ -6,7 +6,7 @@
 
 #pragma once
 
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #    define DYNLIB_HANDLE hInstance
 #    define DYNLIB_LOAD( a ) LoadLibraryEx( a, NULL, LOAD_WITH_ALTERED_SEARCH_PATH )
 #    define DYNLIB_GETSYM( a, b ) GetProcAddress( a, b )
@@ -16,8 +16,15 @@
 struct HINSTANCE__;
 typedef struct HINSTANCE__* hInstance;
 
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#    define DYNLIB_HANDLE void*
+#    define DYNLIB_LOAD( a ) mac_loadDylib( a )
+#    define DYNLIB_GETSYM( a, b ) dlsym( a, b )
+#    define DYNLIB_UNLOAD( a ) dlclose( a )
+#    define DYNLIB_EXTENSION ".dylib"
+
 #else
-#error "Win32 only now!"
+#   error "Unsupported platform, no implementation for DiDynLib!"
 #endif
 
 namespace Demi
