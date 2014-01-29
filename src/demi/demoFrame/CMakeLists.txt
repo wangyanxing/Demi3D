@@ -11,6 +11,7 @@ file(GLOB DI_DEMO_FRAME_SRCS "*.cpp")
 
 # source files
 DI_ADD_LIBRARY(DemoFramework ${DI_DEMO_FRAME_HEADERS} ${DI_DEMO_FRAME_SRCS} )
+DI_CONFIG_CORE_LIB(DemoFramework "${CMAKE_CURRENT_SOURCE_DIR}/DemoPch.h")
 
 include_directories(${OIS_INCLUDE_DIRS})
 target_link_libraries(DemoFramework DiMisc DiGfx ${OIS_LIBRARIES})

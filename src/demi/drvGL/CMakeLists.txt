@@ -14,6 +14,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/GL)
 
 # source files
 DI_ADD_LIBRARY(DiDrvGL ${DI_DRV_GL_HEADERS} ${DI_DRV_GL_SRCS} )
+DI_CONFIG_CORE_LIB(DiDrvGL "${CMAKE_CURRENT_SOURCE_DIR}/DrvGLPch.h")
 
 target_link_libraries(DiDrvGL DiMisc DiGfx ${OPENGL_LIBRARIES})
 

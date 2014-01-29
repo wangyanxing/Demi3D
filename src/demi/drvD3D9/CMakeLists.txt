@@ -14,6 +14,7 @@ link_directories(${DirectX_LIBRARY_DIR})
 
 # source files
 DI_ADD_LIBRARY(DiDrvD3D9 ${DI_DRV_D3D9_HEADERS} ${DI_DRV_D3D9_SRCS} )
+DI_CONFIG_CORE_LIB(DiDrvD3D9 "${CMAKE_CURRENT_SOURCE_DIR}/DrvD3D9Pch.h")
 
 target_link_libraries(DiDrvD3D9 
   DiMisc DiGfx

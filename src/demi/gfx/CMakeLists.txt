@@ -20,6 +20,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Addon)
   
 # source files
 DI_ADD_LIBRARY(DiGfx ${DI_GFX_HEADERS} ${DI_GFX_SRCS} ${DI_GFX_ADDON})
+DI_CONFIG_CORE_LIB(DiGfx "${CMAKE_CURRENT_SOURCE_DIR}/GfxPch.h")
 
 target_link_libraries(DiGfx DiMisc)
 

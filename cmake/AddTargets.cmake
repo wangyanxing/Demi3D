@@ -62,6 +62,7 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
       endif()
     endif(NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
   endif (APPLE)
+  
   if (NOT DEMI_STATIC)
     if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
       # add GCC visibility flags to shared library build
@@ -74,3 +75,38 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
     endif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
   endif()
 ENDMACRO(DI_ADD_EXECUTABLE)
+
+MACRO(DI_CONFIG_CORE_LIB TARGETNAME PREFIX_HEADER)
+	if(WIN32 AND MSVC10 AND CMAKE_CL_64)
+	  set_target_properties(${TARGETNAME} PROPERTIES 
+							LINK_FLAGS "/INCREMENTAL:NO"
+						  )
+	endif()
+
+	if (APPLE)
+	  if (DEMI_BUILD_PLATFORM_APPLE_IOS)
+		set_target_properties(${TARGETNAME} PROPERTIES INSTALL_NAME_DIR "DEMI")
+	  else ()
+		set_target_properties(${TARGETNAME} PROPERTIES FRAMEWORK TRUE)
+		# Set the INSTALL_PATH so that Frameworks can be local
+		set_target_properties(${TARGETNAME}
+		   PROPERTIES BUILD_WITH_INSTALL_RPATH 1
+		   INSTALL_NAME_DIR "@executable_path/../Frameworks"
+		)
+		set_target_properties(${TARGETNAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+		set_target_properties(${TARGETNAME} PROPERTIES RESOURCE "${RESOURCE_FILES}")
+		set_source_files_properties("${RESOURCE_FILES}" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+		set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
+		set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PREFIX_HEADER ${PREFIX_HEADER})
+		set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
+	  endif ()
+
+	  # Framework is called 'DEMI'
+	  set_target_properties(${TARGETNAME} PROPERTIES	OUTPUT_NAME DEMI)
+	endif ()
+	target_link_libraries(${TARGETNAME} ${LIBRARIES})
+	if (MINGW)
+	  # may need winsock htons functions for FreeImage
+	  target_link_libraries(${TARGETNAME} ws2_32)
+	endif ()	
+ENDMACRO(DI_CONFIG_CORE_LIB)
