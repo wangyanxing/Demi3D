@@ -16,7 +16,7 @@
 #   include <io.h>
 #   include <Shlwapi.h>
 #else
-#   include <sys/params.h>
+#   include <sys/param.h>
 #   include <dirent.h>
 #   include <unistd.h>
 #   include <fnmatch.h>
@@ -44,6 +44,8 @@ struct _find_search_t
 #define _A_ARCH   0x20  /* Archive file */
 #define _A_SUBDIR 0x10  /* Subdirectory */
 
+int _findclose(intptr_t id);
+int _findnext(intptr_t id, struct _finddata_t *data);
 
 intptr_t _findfirst(const char *pattern, struct _finddata_t *data)
 {
@@ -287,13 +289,15 @@ namespace Demi
             {
                 if (simpleList)
                 {
-                    simpleList->push_back(directory + tagData.name);
+                    simpleList->push_back(directory);
+                    simpleList->back() += tagData.name;
                 }
                 else if (detailList)
                 {
                     DiFileInfo fi;
                     fi.archive = this;
-                    fi.filename = directory + tagData.name;
+                    fi.filename = directory;
+                    fi.filename += tagData.name;
                     fi.basename = tagData.name;
                     detailList->push_back(fi);
                 }

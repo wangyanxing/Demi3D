@@ -15,7 +15,7 @@ public:
 
     bool contains(const KEY& key)
     {
-        return find(key) != this->end();
+        return this->find(key) != this->end();
     }
 
     // Find the key in the map, if no result return the default value

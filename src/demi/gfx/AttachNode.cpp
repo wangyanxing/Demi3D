@@ -19,17 +19,11 @@ namespace Demi
     {
         if(strName.empty())
         {
-            DI_WARNING("节点名不能为空");
+            DI_WARNING("Invalid name");
             return NULL;
         }
 
         DiAttachNode* ret = DI_NEW DiAttachNode(strName);
-        if(!ret)
-        {
-            DI_WARNING("创建绑定节点失败！");
-            return NULL;
-        }
-
         this->AddChild(ret);
         return ret;
     }

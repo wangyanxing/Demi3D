@@ -26,9 +26,9 @@ namespace Demi
 
     }
 
-    size_t DiInstanceBatchHardware::CalculateMaxNumInstances( const DiSubMesh *baseSubMesh ) const
+    uint32 DiInstanceBatchHardware::CalculateMaxNumInstances( const DiSubMesh *baseSubMesh ) const
     {
-        size_t retVal = 0;
+        uint32 retVal = 0;
         if (/*DiDx9Capability::CapGetValue(DX9CAP_HADWARE_INSTANCE) ==*/ true)
         {
             retVal = 65535;

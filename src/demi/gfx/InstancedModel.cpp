@@ -27,7 +27,7 @@ namespace Demi
         mSkeletonInstance( NULL ),
         mBoneMatrices( NULL ),
         mBoneWorldMatrices( NULL ),
-        mFrameAnimationLastUpdated(std::numeric_limits<ULONG>::max() - 1),
+        mFrameAnimationLastUpdated(std::numeric_limits<unsigned long>::max() - 1),
         mSharedTransformModel( NULL ),
         mTransformLookupNumber(instanceID),
         mPosition(DiVec3::ZERO),

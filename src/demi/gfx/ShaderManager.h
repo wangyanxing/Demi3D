@@ -1,6 +1,6 @@
 
 /********************************************************************
-    File:        ShaderManager.h
+    File:       ShaderManager.h
     Creator:    demiwangya
 *********************************************************************/
 
@@ -35,7 +35,7 @@ namespace Demi
 
         virtual                ~DiShaderManager(void);
 
-        _DECLARE_SINGLETON(DiShaderManager);
+        _DECLARE_SINGLETON(DiShaderManager)
 
     public:
 

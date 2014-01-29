@@ -42,7 +42,7 @@ namespace Demi
 
         void                        UpdateBounds(void);
 
-        virtual size_t              CalculateMaxNumInstances( const DiSubMesh *baseSubMesh ) const = 0;
+        virtual uint32              CalculateMaxNumInstances( const DiSubMesh *baseSubMesh ) const = 0;
 
         virtual void                Build( const DiSubMesh* baseSubMesh );
 

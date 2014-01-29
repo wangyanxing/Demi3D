@@ -6,6 +6,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "GfxDriver.h"
+#include "SubMesh.h"
 
 namespace Demi
 {
@@ -27,7 +28,7 @@ namespace Demi
         uint32 numBones = 1;
         if (HasSkeleton())
         {
-            numBones = DiMath::Max( 1, mMotionReference->GetSkeleton()->GetNumBones());
+            numBones = DiMath::Max( (uint32)1, mMotionReference->GetSkeleton()->GetNumBones());
         }
 
         return MAX_BONE_NUM / numBones;
