@@ -223,7 +223,7 @@ namespace Demi
 
         if (indexCount > 0)
         {
-            void* indexdata = sm->CreateIndexData(indexCount,idx32bit?TRUE:FALSE);
+            void* indexdata = sm->CreateIndexData(indexCount,idx32bit?true:false);
             int size = indexCount * (sm->GetIndexSize() / 8);
             stream->Read(indexdata, size);
             DI_SERIAL_LOG("%d bytes readed", size);

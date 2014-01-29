@@ -62,7 +62,7 @@ namespace Demi
         }
 
         shader = DI_NEW DiShaderProgram(file, type);
-        BOOL ret = shader->Load();
+        bool ret = shader->Load();
 
         if(!ret)
         {

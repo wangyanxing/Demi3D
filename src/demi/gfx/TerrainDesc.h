@@ -34,9 +34,9 @@ namespace Demi
 
         float           mDensity;
 
-        BOOL            mAnimate;
+        bool            mAnimate;
 
-        BOOL            mLighting;
+        bool            mLighting;
 
         float           mAnimMag;
 

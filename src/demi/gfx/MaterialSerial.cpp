@@ -19,23 +19,23 @@ namespace Demi
     {
     }
 
-    BOOL DiMaterialSerializer::ParseMaterial( DiDataStreamPtr data, DiMaterial* target )
+    bool DiMaterialSerializer::ParseMaterial( DiDataStreamPtr data, DiMaterial* target )
     {
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
         xmlfile->Load(data->GetAsString());
         DiXMLElement root = xmlfile->GetRoot();
         ParseXml(root,target);
 
-        return TRUE;
+        return true;
     }
 
-    BOOL DiMaterialSerializer::ParseMaterial( DiXMLElement data, DiMaterial* target )
+    bool DiMaterialSerializer::ParseMaterial( DiXMLElement data, DiMaterial* target )
     {
         ParseXml(data,target);
-        return TRUE;
+        return true;
     }
 
-    BOOL DiMaterialSerializer::SaveMaterial( const DiString& file, DiMaterial* source )
+    bool DiMaterialSerializer::SaveMaterial( const DiString& file, DiMaterial* source )
     {
         DI_LOG("Save material file to :%s",file.c_str());
 
@@ -46,13 +46,13 @@ namespace Demi
 
         xmlfile->Save(file);
 
-        return TRUE;
+        return true;
     }
 
-    BOOL DiMaterialSerializer::SaveMaterial( DiXMLElement node, DiMaterial* source )
+    bool DiMaterialSerializer::SaveMaterial( DiXMLElement node, DiMaterial* source )
     {
         SaveXml(node,source);
-        return TRUE;
+        return true;
     }
 
     void DiMaterialSerializer::SaveXml(DiXMLElement rootNode, DiMaterial* source)
@@ -629,7 +629,7 @@ namespace Demi
         target->SetBlendMode(DEFAULT_BLEND_MODE);
         target->SetDepthWrite(DEFAULT_DEPTH_WRITE);
         target->SetDepthCheck(DEFAULT_DEPTH_CHECK);
-        target->SetWireframe(FALSE);
+        target->SetWireframe(false);
     }
 
     DiMap<DiString, DiBlendMode>        DiMaterialSerializer::sBlendModeMap;
@@ -641,7 +641,7 @@ namespace Demi
     DiAddMode       DiMaterialSerializer::DEFAULT_ADDRESSING_MODE   = AM_WRAP;
     DiFilterType    DiMaterialSerializer::DEFAULT_FILTER            = FT_LINEAR;
     DiBlendMode     DiMaterialSerializer::DEFAULT_BLEND_MODE        = BLEND_REPLACE;
-    bool            DiMaterialSerializer::DEFAULT_DEPTH_WRITE       = TRUE;
-    bool            DiMaterialSerializer::DEFAULT_DEPTH_CHECK       = TRUE;
-    bool            DiMaterialSerializer::DEFAULT_USER_MATERIAL     = TRUE;
+    bool            DiMaterialSerializer::DEFAULT_DEPTH_WRITE       = true;
+    bool            DiMaterialSerializer::DEFAULT_DEPTH_CHECK       = true;
+    bool            DiMaterialSerializer::DEFAULT_USER_MATERIAL     = true;
 }

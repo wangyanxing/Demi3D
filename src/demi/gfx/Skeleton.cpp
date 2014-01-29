@@ -7,7 +7,7 @@ namespace Demi
 {
     DiSkeleton::DiSkeleton()
         :mNextAutoHandle(0),
-        mIsBlending(FALSE),
+        mIsBlending(false),
         mBlendMode(ANIMBLEND_AVERAGE)
     {
 

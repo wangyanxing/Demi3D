@@ -27,11 +27,11 @@ namespace Demi
 
         virtual DiAssetType     GetAssetType() const = 0;
 
-        virtual BOOL            LoadingComplete() const = 0;
+        virtual bool            LoadingComplete() const = 0;
 
-        virtual    BOOL         Load(DiDataStreamPtr data) = 0;
+        virtual    bool         Load(DiDataStreamPtr data) = 0;
 
-        virtual    BOOL         Load() = 0;
+        virtual    bool         Load() = 0;
 
     private:
 

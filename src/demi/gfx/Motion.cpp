@@ -32,21 +32,21 @@ namespace Demi
         mAnimationList.clear();
     }
 
-    BOOL DiMotion::LoadingComplete() const
+    bool DiMotion::LoadingComplete() const
     {
-        return TRUE;
+        return true;
     }
 
-    BOOL DiMotion::Load( DiDataStreamPtr data )
+    bool DiMotion::Load( DiDataStreamPtr data )
     {
         DiMotionSerializer ms;
         ms.ImportMotion(data,this);
-        return TRUE;
+        return true;
     }
 
-    BOOL DiMotion::Load()
+    bool DiMotion::Load()
     {
-        return TRUE;
+        return true;
     }
 
     DiSkeleton* DiMotion::CreateSkeleton()
@@ -128,7 +128,7 @@ namespace Demi
         if(strNewName.empty())
         {
             DI_WARNING("新名字不能为空！");
-            return FALSE;
+            return false;
         }
 
         AnimationList::iterator it = mAnimationList.find(name);
@@ -140,11 +140,11 @@ namespace Demi
             pkAnim->SetName(strNewName);
             mAnimationList[strNewName] = pkAnim;
 
-            return TRUE;
+            return true;
         }
 
         DI_WARNING("未找到名为\"%s\"的动画，重命名失败",name.c_str());
-        return FALSE;
+        return false;
     }
 
     void DiMotion::AssociateNodeAnimToSkeleton(DiSkeleton* skeleton)

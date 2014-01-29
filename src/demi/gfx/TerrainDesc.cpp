@@ -112,8 +112,8 @@ uint32 Demi::DiTerrainDesc::GetCliffGridYNum()
 DiFoliageLayerDesc::DiFoliageLayerDesc()
 {
     mRenderTechnique    = 0;
-    mAnimate            = TRUE;
-    mLighting            = FALSE;
+    mAnimate            = true;
+    mLighting            = false;
     mColor            = 0xffffffff;
 
     mMinWidth            = 20;

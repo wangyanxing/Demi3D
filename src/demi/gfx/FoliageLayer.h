@@ -49,11 +49,11 @@ namespace Demi
 
         void                SetDensity(float density);
 
-        void                SetRenderTechnique(GrassTechnique style, BOOL blendBase = false);
+        void                SetRenderTechnique(GrassTechnique style, bool blendBase = false);
 
-        void                SetAnimationEnabled(BOOL enabled);
+        void                SetAnimationEnabled(bool enabled);
 
-        void                SetLightingEnabled(BOOL enabled);
+        void                SetLightingEnabled(bool enabled);
 
         void                SetSwayLength(float mag);
 

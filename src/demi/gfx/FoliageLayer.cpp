@@ -122,7 +122,7 @@ namespace Demi
         }
     }
 
-    void DiFoliageLayer::SetRenderTechnique( GrassTechnique style, BOOL blendBase /*= false*/ )
+    void DiFoliageLayer::SetRenderTechnique( GrassTechnique style, bool blendBase /*= false*/ )
     {
         if (mDesc->mRenderTechnique != style)
         {
@@ -131,7 +131,7 @@ namespace Demi
         }
     }
 
-    void DiFoliageLayer::SetAnimationEnabled( BOOL enabled )
+    void DiFoliageLayer::SetAnimationEnabled( bool enabled )
     {
         if (mDesc->mAnimate != enabled)
         {
@@ -140,7 +140,7 @@ namespace Demi
         }
     }
 
-    void DiFoliageLayer::SetLightingEnabled( BOOL enabled )
+    void DiFoliageLayer::SetLightingEnabled( bool enabled )
     {
         if (mDesc->mLighting != enabled)
         {

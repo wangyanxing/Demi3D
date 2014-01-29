@@ -13,7 +13,7 @@ namespace Demi
         mVerticesNum(0),
         mIndexData(NULL),
         mIndicsNum(0),
-        m32BitIndex(FALSE),
+        m32BitIndex(false),
         mPrimitiveType(PT_TRIANGLELIST),
         mPrimitiveCount(0),
         mMaxWeights(0),
@@ -112,7 +112,7 @@ namespace Demi
         return SourceDataIterator(mVertexData.begin(),mVertexData.end());
     }
 
-    void* DiSubMesh::CreateIndexData( int indexNum,BOOL use32Bit )
+    void* DiSubMesh::CreateIndexData( int indexNum,bool use32Bit )
     {
         ReleaseIndexData();
 
@@ -151,7 +151,7 @@ namespace Demi
         }
 
         mIndicsNum = 0;
-        m32BitIndex = FALSE;
+        m32BitIndex = false;
         mPrimitiveType = PT_TRIANGLELIST;
     }
 

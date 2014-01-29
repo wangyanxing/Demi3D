@@ -129,13 +129,13 @@ namespace Demi
 
         void                    Bind(uint32 samplerIndex);
 
-        BOOL                    LoadingComplete() const;
+        bool                    LoadingComplete() const;
 
         DiAssetType             GetAssetType() const {return TYPE;}
 
-        BOOL                    Load(DiDataStreamPtr data);
+        bool                    Load(DiDataStreamPtr data);
 
-        BOOL                    Load();
+        bool                    Load();
 
         DiRenderTarget*         GetRenderTarget();
 

@@ -42,11 +42,11 @@ namespace Demi
 
     }
 
-    BOOL DiImage::LoadToTexture( DiTexture* texture )
+    bool DiImage::LoadToTexture( DiTexture* texture )
     {
         if (!mImageData)
         {
-            return FALSE;
+            return false;
         }
 
         DiString name = mImageData->GetName();
@@ -61,7 +61,7 @@ namespace Demi
             ParseDDS(texture);
         }
     
-        return FALSE;
+        return false;
     }
 
     void DiImage::ParseTga(DiTexture* texture)
@@ -272,7 +272,7 @@ namespace Demi
         return dimension;
     }
 
-    BOOL DiPixelBox::IsCompressedFormat( DiPixelFormat fmt )
+    bool DiPixelBox::IsCompressedFormat( DiPixelFormat fmt )
     {
         if (fmt == PF_DXT1 ||
             fmt == PF_DXT2 ||
@@ -281,9 +281,9 @@ namespace Demi
             fmt == PF_DXT5
             )
         {
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     uint32 DiPixelBox::GetFormatNumBlocks( uint32 dimension, DiPixelFormat fmt )

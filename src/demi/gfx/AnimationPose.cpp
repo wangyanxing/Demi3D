@@ -12,7 +12,7 @@ namespace Demi
     DiAnimationPose::DiAnimationPose( DiSkeleton * pkSkeleton,DiClipControllerSet * pkClipSet )
         : mSkeleton(pkSkeleton),
         mClipSet(pkClipSet),
-        mKeepLastAni(TRUE),
+        mKeepLastAni(true),
         mBaseLayerWeight(1.0f),
         mAdditLayerWeight(1.0f)
     {
@@ -24,50 +24,50 @@ namespace Demi
 
     }
 
-    bool DiAnimationPose::AddBasePoseBlender( DiAnimation * pkAnimation )
+    bool DiAnimationPose::AddBasePoseBlender( DiAnimation * animation )
     {
-        if(!pkAnimation)
+        if(!animation)
         {
-            return FALSE;
+            return false;
         }
 
-        AniBlenderMap::iterator itBaseBlender = mMapBaseBlenders.find(pkAnimation->GetName());
+        AniBlenderMap::iterator itBaseBlender = mMapBaseBlenders.find(animation->GetName());
         if(itBaseBlender != mMapBaseBlenders.end())
         {
-            DI_WARNING("已存在名为\"%s\"的动画集，添加基本层动画失败！",pkAnimation->GetName().c_str());
-            return FALSE;
+            DI_WARNING("The animation %s has already existed", animation->GetName().c_str());
+            return false;
         }
 
-        DiClipController * pkClip = mClipSet->GetClipController(pkAnimation->GetName());
-        pkClip->SetEnabled(TRUE);
+        DiClipController * pkClip = mClipSet->GetClipController(animation->GetName());
+        pkClip->SetEnabled(true);
         pkClip->SetTimePosition(0.0f);
 
-        mMapBaseBlenders[pkAnimation->GetName()] = pkAnimation;
+        mMapBaseBlenders[animation->GetName()] = animation;
 
-        return TRUE;
+        return true;
     }
 
-    bool DiAnimationPose::AddAdditPoseBlender( DiAnimation * pkAnimation )
+    bool DiAnimationPose::AddAdditPoseBlender( DiAnimation * animation )
     {
-        if(!pkAnimation)
+        if(!animation)
         {
-            return FALSE;
+            return false;
         }
 
-        AniBlenderMap::iterator itBaseBlender = mMapAdditBlenders.find(pkAnimation->GetName());
+        AniBlenderMap::iterator itBaseBlender = mMapAdditBlenders.find(animation->GetName());
         if(itBaseBlender != mMapAdditBlenders.end())
         {
-            DI_WARNING("已存在名为\"%s\"的动画集，添加混合层动画失败！",pkAnimation->GetName());
-            return FALSE;
+            DI_WARNING("The animation %s has already existed", animation->GetName().c_str());
+            return false;
         }
 
-        DiClipController * pkClip = mClipSet->GetClipController(pkAnimation->GetName());
-        pkClip->SetEnabled(TRUE);
+        DiClipController * pkClip = mClipSet->GetClipController(animation->GetName());
+        pkClip->SetEnabled(true);
         pkClip->SetTimePosition(0.0f);
 
-        mMapAdditBlenders[pkAnimation->GetName()] = pkAnimation;
+        mMapAdditBlenders[animation->GetName()] = animation;
 
-        return TRUE;
+        return true;
     }
 
     void DiAnimationPose::RemoveBasePoseBlender( const DiString& strBaseAni )
@@ -80,13 +80,13 @@ namespace Demi
         AniBlenderMap::iterator itBaseBlender = mMapBaseBlenders.find(strBaseAni);
         if(itBaseBlender == mMapBaseBlenders.end())
         {
-            DI_WARNING("不存在名为\"%s\"的动画集，删除基本层动画失败！",strBaseAni);
+            DI_WARNING("Cannot find and delete the animation %s", strBaseAni.c_str());
             return ;
         }
 
         DiClipController * pkClip = mClipSet->GetClipController(strBaseAni);
         pkClip->SetTimeRatio(1.0f);
-        pkClip->SetEnabled(FALSE);
+        pkClip->SetEnabled(false);
         mMapBaseBlenders.erase(itBaseBlender);
         pkClip->SetWeight(1.0f);
 
@@ -102,8 +102,8 @@ namespace Demi
         AniBlenderMap::iterator itAdditBlender = mMapAdditBlenders.find(strAdditAni);
         if(itAdditBlender == mMapAdditBlenders.end())
         {
-            DI_WARNING("不存在名为\"%s\"的动画集，删除混合层动画失败！",strAdditAni);
-            return ;
+            DI_WARNING("Cannot find and delete the animation %s", strAdditAni.c_str());
+            return;
         }
 
         DiClipController * pkClip = mClipSet->GetClipController(strAdditAni);
@@ -140,7 +140,6 @@ namespace Demi
             return;
         }
 
-        /// 计算基动画混合后的比重
         float fFactor = 1.0f;
         float fTotalWeight = 0.0f;
         AniBlenderMap::iterator itAniBlender = mMapBaseBlenders.begin();
@@ -154,7 +153,6 @@ namespace Demi
             fFactor /= fTotalWeight;
         }
 
-        /// 检查是否有加成混合
         bool bHasAdditive = (pkBoneWeightMask && !mMapAdditBlenders.empty() );
 
         DiAnimation * pkAnim = NULL;
@@ -191,7 +189,7 @@ namespace Demi
                             fFinalWeight *= (*pkBoneWeightMask)[unHandle];
                         }
                     }
-                    /// 层权重采用基动画的权重
+
                     pBone = mSkeleton->GetBone(unHandle);
 
                     pkNodeClip = pkAnim->GetNodeClip(unHandle);
@@ -241,7 +239,7 @@ namespace Demi
                         fFinalWeight = pkClipCtrl->GetWeight() * fFactor;
 
                         fFinalWeight *= (1.0f - (*pkBoneWeightMask)[unHandle]);
-                        /// 层权重采用基动画的权重
+
                         pBone = mSkeleton->GetBone(unHandle);
 
                         pkNodeClip = pkAnim->GetNodeClip(unHandle);
