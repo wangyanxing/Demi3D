@@ -9,7 +9,6 @@
 
 #include "PlatformFunction.h"
 
-
 #ifdef _DEMI_RELEASE
 #   define DI_ASSERT(condition)
 #   define DI_ASSERT_MESSAGE(condition,message)

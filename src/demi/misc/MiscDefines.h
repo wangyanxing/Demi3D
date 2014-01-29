@@ -6,11 +6,9 @@
 #ifndef MiscDefines_h__
 #define MiscDefines_h__
 
-#include "PlatformSpecific.h"
-#include "DebugAssert.h"
-
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable : 4251)   // dll-interface
+#   pragma warning(disable : 4275)
 #   pragma warning(disable : 4127)
 #   pragma warning(disable : 4996)   // _CRT_SECURE_NO_WARNINGS
 #endif
@@ -20,7 +18,7 @@
 #       define DI_MISC_API
 #   else
 #       ifdef DI_MISC_EXPORT
-#           define DI_MISC_API  __declspec(dllexport)
+#           define DI_MISC_API __declspec(dllexport)
 #       else
 #           define DI_MISC_API __declspec(dllimport)
 #       endif

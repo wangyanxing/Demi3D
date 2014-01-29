@@ -14,11 +14,11 @@ namespace Demi
     {
     public:
 
-        typedef DiHashMap<DiString,DiAttachNode * >        AttachNodeMap;
-        typedef DiMapIterator<AttachNodeMap>            AttachNodeMapIterator;
+        typedef DiStrHash<DiAttachNode*>            AttachNodeMap;
+        typedef DiMapIterator<AttachNodeMap>        AttachNodeMapIterator;
 
-        typedef DiVector<DiAttachNode *>                RootAttachList;
-        typedef DiVectorIterator<RootAttachList>        RootAttachListIterator;
+        typedef DiVector<DiAttachNode *>            RootAttachList;
+        typedef DiVectorIterator<RootAttachList>    RootAttachListIterator;
 
         friend class DiAttachSetInstance;
 

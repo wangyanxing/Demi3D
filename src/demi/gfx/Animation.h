@@ -34,11 +34,11 @@ namespace Demi
             RIM_SPHERICAL
         };
 
-        typedef DiMap<uint32, DiNodeClip*>            NodeClips;
-        typedef DiConstMapIterator<NodeClips>        NodeClipsIterator;
+        typedef DiMap<uint32, DiNodeClip*>        NodeClips;
+        typedef DiConstMapIterator<NodeClips>     NodeClipsIterator;
 
-        typedef DiHashMap<DiString,DiNodeClip*>        AttachClips;
-        typedef DiConstMapIterator<AttachClips>        AttachClipsIterator;
+        typedef DiStrHash<DiNodeClip*>            AttachClips;
+        typedef DiConstMapIterator<AttachClips>   AttachClipsIterator;
 
     public:
 
@@ -119,17 +119,17 @@ namespace Demi
 
     protected:
 
-        NodeClips                    mNodeClips;
+        NodeClips                   mNodeClips;
 
-        AttachClips                    mAttachClips;
+        AttachClips                 mAttachClips;
 
         DiString                    mName;
 
-        float                        mLength;
+        float                       mLength;
         
-        InterMode                    mInterMode;
+        InterMode                   mInterMode;
 
-        RotationInterMode            mRotationInterMode;
+        RotationInterMode           mRotationInterMode;
 
         mutable bool                mKeyFrameTimesDirty;
 

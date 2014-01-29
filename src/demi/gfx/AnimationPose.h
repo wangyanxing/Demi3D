@@ -14,7 +14,7 @@ namespace Demi
 
     class DiAnimationPose
     {
-        typedef DiHashMap<DiString , DiAnimation*>    AniBlenderMap;
+        typedef DiStrHash<DiAnimation*> AniBlenderMap;
 
     public:
 

@@ -4,7 +4,10 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Win32Function_h__
+#define Win32Function_h__
+
+#include "MiscPrerequisites.h"
 
 namespace Demi
 {
@@ -17,3 +20,5 @@ namespace Demi
         static bool AssertDlg(const char* msg, const char* file, int line, bool& ignore);
     };
 }
+
+#endif // !Win32Function_h__

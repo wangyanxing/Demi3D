@@ -25,9 +25,9 @@ namespace Demi
 
     public:
 
-        typedef DiHashMap<DiString, DiTransUnitPtr> ObjectMap;
-        typedef DiMapIterator<ObjectMap>            ObjectIterator;
-        typedef DiConstMapIterator<ObjectMap>       ConstObjectIterator;
+        typedef DiStrHash<DiTransUnitPtr>     ObjectMap;
+        typedef DiMapIterator<ObjectMap>      ObjectIterator;
+        typedef DiConstMapIterator<ObjectMap> ConstObjectIterator;
 
         friend class DiSceneManager;
 

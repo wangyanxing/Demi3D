@@ -288,6 +288,6 @@ namespace Demi
 
     bool DiAssetManager::HasArchive( const DiString& filename )
     {
-        return mArchives.contains(filename);
+        return mArchives.find(filename) != mArchives.end();
     }
 }
