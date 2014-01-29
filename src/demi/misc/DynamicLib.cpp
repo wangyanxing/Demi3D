@@ -10,7 +10,7 @@
 #  endif
 #  include <windows.h>
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS
-#   include "macUtils.h"
+#   include "MacUtils.h"
 #   include <dlfcn.h>
 #endif
 

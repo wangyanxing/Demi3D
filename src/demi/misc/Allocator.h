@@ -6,9 +6,11 @@
     Adapted from urho3d engine (free source code)
 *********************************************************************/
 
-#pragma once
+#ifndef DiAllocator_h__
+#define DiAllocator_h__
 
 #include <new>
+
 namespace Demi
 {
     struct DiAllocatorBlock;
@@ -19,7 +21,7 @@ namespace Demi
         unsigned            mNodeSize;
         unsigned            mCapacity;
         DiAllocatorNode*    mFree;
-        DiAllocatorBlock*    mNext;
+        DiAllocatorBlock*   mNext;
     };
 
     struct DiAllocatorNode
@@ -99,3 +101,4 @@ namespace Demi
         DiAllocatorBlock* mAllocator;
     };
 }
+#endif // Allocator_h__

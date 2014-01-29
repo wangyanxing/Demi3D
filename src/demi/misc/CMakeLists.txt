@@ -15,10 +15,29 @@ set (DI_MISC_PUGIXML
   pugixml/pugixml.cpp
   )
   
+if (WIN32)
+set (DI_MISC_PLATFORM_SPEC
+  win32/Win32Criticalsection.h
+  win32/Win32Interlocked.h
+  win32/Win32Event.h
+  win32/Win32Function.h
+  win32/Win32Function.cpp
+  win32/Win32Thread.h
+  win32/Win32Thread.cpp
+  )
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32)
+elseif (APPLE)
+set (DI_MISC_PLATFORM_SPEC
+  OSX/MacUtils.h
+  OSX/MacUtils.cpp
+  )
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/OSX)
+endif()
+  
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/pugixml)
   
 # source files
-DI_ADD_LIBRARY(DiMisc ${DI_MISC_HEADERS} ${DI_MISC_SRCS} ${DI_MISC_PUGIXML})
+DI_ADD_LIBRARY(DiMisc ${DI_MISC_HEADERS} ${DI_MISC_SRCS} ${DI_MISC_PUGIXML} ${DI_MISC_PLATFORM_SPEC})
 
 if(WIN32 AND MSVC10 AND CMAKE_CL_64)
   set_target_properties(DiMisc PROPERTIES 

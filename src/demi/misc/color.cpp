@@ -4,15 +4,15 @@
 
 namespace Demi 
 {
-    const DiColor DiColor::ZERO         = DiColor(0.0,0.0,0.0,0.0);
+    const DiColor DiColor::ZERO      = DiColor(0.0,0.0,0.0,0.0);
     const DiColor DiColor::Black     = DiColor(0.0,0.0,0.0);
     const DiColor DiColor::White     = DiColor(1.0,1.0,1.0);
-    const DiColor DiColor::Yellow     = DiColor(1.0,1.0,0.0);
-    const DiColor DiColor::Orange     = DiColor(1.0f,0.55f,0.1f);
-    const DiColor DiColor::Red         = DiColor(1.0,0.0,0.0);
+    const DiColor DiColor::Yellow    = DiColor(1.0,1.0,0.0);
+    const DiColor DiColor::Orange    = DiColor(1.0f,0.55f,0.1f);
+    const DiColor DiColor::Red       = DiColor(1.0,0.0,0.0);
     const DiColor DiColor::Green     = DiColor(0.0,1.0,0.0);
-    const DiColor DiColor::Blue         = DiColor(0.0,0.0,1.0);
-    const DiColor DiColor::Purple     = DiColor(1.0,0.0,1.0);
+    const DiColor DiColor::Blue      = DiColor(0.0,0.0,1.0);
+    const DiColor DiColor::Purple    = DiColor(1.0,0.0,1.0);
     const DiColor DiColor::LightBlue = DiColor(0.3f,1.0f,1.0f);
 
     RGBA DiColor::GetAsRGBA(void) const
@@ -65,7 +65,6 @@ namespace Demi
         // Blue
         val8 = static_cast<uint8>(b * 255);
         val32 += val8;
-
 
         return val32;
     }

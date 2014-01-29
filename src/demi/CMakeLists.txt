@@ -4,7 +4,11 @@
 
 add_subdirectory(misc)
 add_subdirectory(gfx)
+
+if (WIN32)
 add_subdirectory(drvD3D9)
+endif()
+
 add_subdirectory(drvGL)
 
 add_subdirectory(demoFrame)
