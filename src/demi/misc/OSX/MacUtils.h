@@ -9,6 +9,8 @@
 
 #include "MiscPrerequisites.h"
 
+#include <CoreFoundation/CoreFoundation.h>
+
 namespace Demi
 {
     CFBundleRef mac_loadExeBundle(const char *path);
