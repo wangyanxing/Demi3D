@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef PathLib_h__
+#define PathLib_h__
 
 namespace Demi
 {
@@ -21,3 +22,5 @@ namespace Demi
         static DiString        msAppFile;
     };
 }
+
+#endif // PathLib_h__

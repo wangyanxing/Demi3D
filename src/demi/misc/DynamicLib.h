@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef DynamicLib_h__
+#define DynamicLib_h__
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #    define DYNLIB_HANDLE hInstance
@@ -48,28 +49,29 @@ namespace Demi
 
     protected:
 
-        bool            Load();
+        bool             Load();
 
-        bool            Unload();
+        bool             Unload();
 
     public:
 
-        const DiString& GetName(void) const { return mName; }
-
-        void*           GetSymbol(const DiString& strName) const throw();
-
-    protected:
-
-        DiString        DynlibError(void);
-
-    protected:
-
-        DYNLIB_HANDLE   mInst;
-
-        DiString        mName;
-
-    protected:
+        const DiString&  GetName(void) const { return mName; }
+                         
+        void*            GetSymbol(const DiString& strName) const throw();
+                         
+    protected:           
+                         
+        DiString         DynlibError(void);
+                         
+    protected:           
+                         
+        DYNLIB_HANDLE    mInst;
+                         
+        DiString         mName;
+                         
+    protected:           
 
         static DiMap<DiString, DiDynLib*> Libs;
     };
 }
+#endif // DynamicLib_h__
