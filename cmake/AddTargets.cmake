@@ -85,7 +85,7 @@ MACRO(DI_CONFIG_CORE_LIB TARGETNAME PREFIX_HEADER)
 
 	if (APPLE)
 	  if (DEMI_BUILD_PLATFORM_APPLE_IOS)
-		set_target_properties(${TARGETNAME} PROPERTIES INSTALL_NAME_DIR "DEMI")
+		set_target_properties(${TARGETNAME} PROPERTIES INSTALL_NAME_DIR ${TARGETNAME})
 	  else ()
 		set_target_properties(${TARGETNAME} PROPERTIES FRAMEWORK TRUE)
 		# Set the INSTALL_PATH so that Frameworks can be local
@@ -93,18 +93,15 @@ MACRO(DI_CONFIG_CORE_LIB TARGETNAME PREFIX_HEADER)
 		   PROPERTIES BUILD_WITH_INSTALL_RPATH 1
 		   INSTALL_NAME_DIR "@executable_path/../Frameworks"
 		)
-		set_target_properties(${TARGETNAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
-		set_target_properties(${TARGETNAME} PROPERTIES RESOURCE "${RESOURCE_FILES}")
-		set_source_files_properties("${RESOURCE_FILES}" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 		set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
 		set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PREFIX_HEADER ${PREFIX_HEADER})
 		set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
 	  endif ()
 
 	  # Framework is called 'DEMI'
-	  set_target_properties(${TARGETNAME} PROPERTIES	OUTPUT_NAME DEMI)
+	  set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGETNAME})
 	endif ()
-	target_link_libraries(${TARGETNAME} ${LIBRARIES})
+
 	if (MINGW)
 	  # may need winsock htons functions for FreeImage
 	  target_link_libraries(${TARGETNAME} ws2_32)

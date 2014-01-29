@@ -15,9 +15,9 @@ namespace Demi
     {
     public:
 
-        DiGridPlane(UINT size, float cellSize);
+        DiGridPlane(uint32 size, float cellSize);
 
-        DiGridPlane(UINT size, float cellSize, const DiColor& color1, const DiColor& color2);
+        DiGridPlane(uint32 size, float cellSize, const DiColor& color1, const DiColor& color2);
 
         ~DiGridPlane(void);
 
@@ -25,9 +25,9 @@ namespace Demi
 
         virtual void            GetWorldTransform(Demi::DiMat4* xform) const;
 
-        const Demi::DiAABB&     GetBoundingBox(void) const;
+        const DiAABB&           GetBoundingBox(void) const;
 
-        virtual    void         CullingUpdate(Demi::DiRenderBatchGroup*, Demi::DiCamera*);
+        virtual void            CullingUpdate(Demi::DiRenderBatchGroup*, Demi::DiCamera*);
 
         void                    AddToBatchGroup(DiRenderBatchGroup* bg);
 
@@ -35,7 +35,7 @@ namespace Demi
 
     protected:
 
-        void                    BuildGrid(UINT size, float cellSize, const DiColor& color1, const DiColor& color2);
+        void                    BuildGrid(uint32 size, float cellSize, const DiColor& color1, const DiColor& color2);
     };
 
 }

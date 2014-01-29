@@ -35,7 +35,7 @@ public:
             return false;
         else
         {
-            erase(it);
+            this->erase(it);
             return true;
         }
     }
