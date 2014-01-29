@@ -547,7 +547,7 @@ namespace Demi
         }
     }
 
-    void DiBillboardSet::SetTextureStacksAndSlices( UCHAR stacks, UCHAR slices )
+    void DiBillboardSet::SetTextureStacksAndSlices( uint8 stacks, uint8 slices )
     {
         if( stacks == 0 ) stacks = 1;
         if( slices == 0 ) slices = 1;

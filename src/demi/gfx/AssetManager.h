@@ -73,9 +73,6 @@ namespace Demi
 
         void                          SetBasePath(const DiString& val);
                                       
-        static bool                   SearchForPath(const char* path, char* buffer, 
-                                        int bufferSize, int maxRecursion);
-
         DiDataStreamPtr               OpenArchive(const DiString& filename, bool ignoreError=false);
 
         bool                          HasArchive(const DiString& filename);

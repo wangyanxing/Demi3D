@@ -41,7 +41,7 @@ namespace Demi
         va_start(argList, fmtString);
         char buf[4096]; // an 4 kByte buffer
         // need to use non-CRT thread safe function under Win32
-        SAFE_SPRINTF(buf, sizeof(buf), fmtString, argList);
+        SAFE_VSPRINTF(buf, sizeof(buf), fmtString, argList);
 
         *this = buf;
         va_end(argList);
@@ -55,7 +55,7 @@ namespace Demi
     {
         char buf[4096]; // an 4 kByte buffer
         // need to use non-CRT thread safe function under Win32
-        SAFE_SPRINTF(buf, sizeof(buf), fmtString, argList);
+        SAFE_VSPRINTF(buf, sizeof(buf), fmtString, argList);
         //*this = buf;
         this->Set(buf, strlen(buf));
     }

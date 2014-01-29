@@ -85,6 +85,7 @@ namespace Demi
     class    DiShaderManager;
     class    DiGBuffer;
     class    DiBillboard;
+    class    DiBillboardSet;
     class    DiScene;
     class    DiMotion;
     class    DiEntity;
