@@ -39,12 +39,10 @@ namespace Demi
     DiFileArchive::DiFileArchive( const DiString& name)
         : DiArchive(name, ARCHIVE_FILE)
     {
-
     }
 
     DiFileArchive::~DiFileArchive()
     {
-
     }
 
     DiDataStreamPtr DiFileArchive::Open( const DiString& filename) const
@@ -60,8 +58,8 @@ namespace Demi
         }
 
         std::ios::openmode mode = std::ios::in | std::ios::binary;
-        std::istream*    baseStream = 0;
-        DiIfstream*    roStream = roStream = DI_NEW DiIfstream();
+        std::istream* baseStream = nullptr;
+        DiIfstream*   roStream = roStream = DI_NEW DiIfstream();
         roStream->open(full_path.c_str(), mode);
         baseStream = roStream;
 

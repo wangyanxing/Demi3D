@@ -3,16 +3,29 @@
     File:     EngineDefines.h
 *********************************************************************/
 
-#pragma once
+#ifndef GfxDefines_h__
+#define GfxDefines_h__
 
-#ifdef DEMI_STATIC_API
-#    define DI_GFX_API
-#else
-#    ifdef DI_GFX_EXPORT
-#        define DI_GFX_API  __declspec(dllexport)
-#    else
-#        define DI_GFX_API __declspec(dllimport)
-#    endif
+#if (DEMI_PLATFORM == DEMI_PLATFORM_WIN32)
+#   ifdef DEMI_STATIC_API
+#       define DI_GFX_API
+#   else
+#       ifdef DI_GFX_EXPORT
+#           define DI_GFX_API __declspec(dllexport)
+#       else
+#           define DI_GFX_API __declspec(dllimport)
+#       endif
+#   endif
+#elif (DEMI_PLATFORM == DEMI_PLATFORM_IOS || DEMI_PLATFORM == DEMI_PLATFORM_OSX)
+#   ifdef DEMI_STATIC_API
+#       define DI_GFX_API
+#   else
+#       if defined( DEMI_GCC_VISIBILITY )
+#           define DI_GFX_API  __attribute__ ((visibility("default")))
+#       else
+#           define DI_GFX_API
+#       endif
+#   endif
 #endif
 
 #ifndef MAKEFOURCC
@@ -35,3 +48,5 @@ typedef void*   DiWndHandle;
 #       undef min
 #   endif
 #endif
+
+#endif // GfxDefines_h__

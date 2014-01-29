@@ -18,7 +18,7 @@
 
 namespace Demi
 {
-#ifdef _DEBUG
+#if DEMI_DEBUG
     const DiString gfxD3D9DrvLib = "DiDrvD3D9_d";
     const DiString gfxGLDrvLib = "DiDrvGL_d";
 #else
