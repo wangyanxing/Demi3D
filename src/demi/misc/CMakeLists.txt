@@ -26,6 +26,7 @@ set (DI_MISC_PLATFORM_SPEC
   win32/Win32Thread.cpp
   )
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/win32)
+  set(DI_MISC_PLATFORM_LIBS "")
 elseif (APPLE)
 set (DI_MISC_PLATFORM_SPEC
   OSX/MacUtils.h
@@ -34,6 +35,7 @@ set (DI_MISC_PLATFORM_SPEC
   OSX/OSXFunction.cpp
   )
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/OSX)
+  set(DI_MISC_PLATFORM_LIBS ${Carbon_LIBRARY_FWK} ${Cocoa_LIBRARY_FWK})
 endif()
   
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/pugixml)
@@ -41,6 +43,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/pugixml)
 # source files
 DI_ADD_LIBRARY(DiMisc ${DI_MISC_HEADERS} ${DI_MISC_SRCS} ${DI_MISC_PUGIXML} ${DI_MISC_PLATFORM_SPEC})
 DI_CONFIG_CORE_LIB(DiMisc "${CMAKE_CURRENT_SOURCE_DIR}/MiscPch.h")
+
+target_link_libraries(DiMisc ${DI_MISC_PLATFORM_LIBS})
 
 set_property(TARGET DiMisc PROPERTY FOLDER "Core")
 
