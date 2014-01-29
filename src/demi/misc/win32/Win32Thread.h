@@ -4,10 +4,11 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Win32Thread_h__
+#define Win32Thread_h__
 
-#include "Win32Criticalsection.h"
-#include "Win32Event.h"
+#include "Win32/Win32Criticalsection.h"
+#include "Win32/Win32Event.h"
 
 namespace Demi
 {
@@ -140,3 +141,5 @@ namespace Demi
 
     };    
 }
+
+#endif // Win32Thread_h__

@@ -62,6 +62,13 @@
 #   define DEMI_ARCH_TYPE DEMI_BUILD_32
 #endif
 
+
+#if (DEMI_COMPILER == DEMI_COMPILER_MSVC)
+#   define SAFE_SPRINTF sprintf_s
+#else
+#   define SAFE_SPRINTF snprintf
+#endif
+
 typedef signed char         int8;
 typedef signed short        int16;
 typedef signed int          int32;

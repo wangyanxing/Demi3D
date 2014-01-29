@@ -1,6 +1,6 @@
 
 #include "MiscPch.h"
-#include "Win32Function.h"
+#include "Win32/Win32Function.h"
 #include <signal.h>
 #include <windows.h>
 

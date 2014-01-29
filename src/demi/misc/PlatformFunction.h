@@ -5,7 +5,7 @@
 *********************************************************************/
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-#   include "Win32Function.h"
+#   include "win32/Win32Function.h"
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS
-#   include "OSXFunction.h"
+#   include "OSX/OSXFunction.h"
 #endif

@@ -45,7 +45,7 @@ DI_CONFIG_CORE_LIB(DiMisc "${CMAKE_CURRENT_SOURCE_DIR}/MiscPch.h")
 set_property(TARGET DiMisc PROPERTY FOLDER "Core")
 
 if (NOT DEMI_STATIC)
-  set_target_properties(${TARGETNAME} PROPERTIES
+  set_target_properties(DiMisc PROPERTIES
 	COMPILE_DEFINITIONS DI_MISC_EXPORT
   )
 endif ()
