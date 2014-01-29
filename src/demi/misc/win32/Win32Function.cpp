@@ -181,7 +181,7 @@ namespace Demi
 
     bool DiPlatformFunc::AssertDlg(const char* msg, const char* file, int line, bool& ignore)
     {
-        static bool    ignoreAll = false;
+        static bool ignoreAll = false;
 
         if (!ignoreAll)
         {
