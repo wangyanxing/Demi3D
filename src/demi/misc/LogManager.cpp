@@ -60,7 +60,7 @@ void DiLogManager::Output(LogLevel level, const char* szFileName,
 
     va_list args;
     va_start(args, pacFormat);
-    SAFE_SPRINTF(szLog, MAX_CHAR, pacFormat, args);
+    SAFE_VSPRINTF(szLog, MAX_CHAR, pacFormat, args);
     va_end(args);
 
     OutputUnformat(level, szFileName, uiLine, szLog);
@@ -88,7 +88,7 @@ void Demi::DiLogManager::Error( const char* szFileName, unsigned int uiLine, con
 
     va_list args;    
     va_start(args, pacFormat);    
-    SAFE_SPRINTF(szLog, MAX_CHAR, pacFormat, args);
+    SAFE_VSPRINTF(szLog, MAX_CHAR, pacFormat, args);
     va_end(args);
 
     OutputUnformat(LOG_LEVEL_ERROR,szFileName,uiLine,szLog);
