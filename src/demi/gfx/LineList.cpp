@@ -66,7 +66,7 @@ namespace Demi
             mMaxVerts = maxVerts + (size_t)(maxVerts*0.2f);
 
             mSourceData[0]->Release();
-            mSourceData[0]->SetStride(sizeof(float) * 3 + sizeof(UINT8) * 4);
+            mSourceData[0]->SetStride(sizeof(float) * 3 + sizeof(uint8) * 4);
             mSourceData[0]->Create(mMaxVerts*mSourceData[0]->GetStride());
 
             mPrimitiveType = PT_LINELIST;

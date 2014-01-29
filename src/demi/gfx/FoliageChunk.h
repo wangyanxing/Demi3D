@@ -67,7 +67,7 @@ namespace Demi
 
     protected:
 
-        typedef DiMap<uint32,DiFoliageLayerBatch*> LayerBatches;
+        typedef DiMap<unsigned long,DiFoliageLayerBatch*> LayerBatches;
 
         LayerBatches        mLayerBatches;
 

@@ -24,7 +24,7 @@ namespace Demi
 
     public:
 
-        size_t          CalculateMaxNumInstances( const DiSubMesh *baseSubMesh ) const;
+        uint32          CalculateMaxNumInstances( const DiSubMesh *baseSubMesh ) const;
 
         void            BuildFrom( const DiSubMesh *baseSubMesh );
 

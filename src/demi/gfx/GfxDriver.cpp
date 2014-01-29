@@ -174,7 +174,7 @@ namespace Demi
     {
         if (mRenderWindows.contains(hwnd))
         {
-            DI_WARNING("The render window [%d] has already existed", (int)hwnd);
+            DI_WARNING("The render window [%d] has already existed", (long)hwnd);
             return mRenderWindows[hwnd];
         }
 
@@ -248,7 +248,7 @@ namespace Demi
 
         mCommandMgr = DI_NEW DiCommandManager();
 
-        mMainHwnd = (HWND)wnd;
+        mMainHwnd = wnd;
         InitGfx(mMainHwnd);
 
         mPipeline = DI_NEW DiRenderPipeline();

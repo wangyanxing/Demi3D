@@ -419,7 +419,7 @@ namespace Demi
         {
             DiFoliageLayer* layer = mParent->GetLayer(i);
             DiFoliageLayerBatch* lb = DI_NEW DiFoliageLayerBatch(this,layer);
-            mLayerBatches[(uint32)layer] = lb;
+            mLayerBatches[(unsigned long)layer] = lb;
         }
     }
 
@@ -465,13 +465,13 @@ namespace Demi
     {
         if( layer )
         {
-            DiFoliageLayerBatch* batch = mLayerBatches.find_def((uint32)layer,NULL);
+            DiFoliageLayerBatch* batch = mLayerBatches.find_def((unsigned long)layer,NULL);
             if (batch)
                 batch->Load();
             else
             {
                 DiFoliageLayerBatch* lb = DI_NEW DiFoliageLayerBatch(this,layer);
-                mLayerBatches[(uint32)layer] = lb;
+                mLayerBatches[(unsigned long)layer] = lb;
             }
         }
         else
@@ -488,7 +488,7 @@ namespace Demi
 
     void DiFoliageChunk::DeleteBatch( DiFoliageLayer* l )
     {
-        LayerBatches::iterator it = mLayerBatches.find((uint32)l);
+        LayerBatches::iterator it = mLayerBatches.find((unsigned long)l);
         if (it != mLayerBatches.end())
         {
             SAFE_DELETE(it->second);

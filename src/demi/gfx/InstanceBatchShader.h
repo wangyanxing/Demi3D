@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "GfxPrerequisites.h"
 #include "InstanceBatch.h"
 
 namespace Demi
@@ -22,9 +23,9 @@ namespace Demi
 
     public:
 
-        uint32  CalculateMaxNumInstances( const DiSubMesh *baseSubMesh ) const;
+        uint32  CalculateMaxNumInstances( const DiSubMesh* baseSubMesh ) const;
 
-        void    BuildFrom( const DiSubMesh *baseSubMesh );
+        void    BuildFrom( const DiSubMesh* baseSubMesh );
                 
         void    GetWorldTransform( DiMat4* xform ) const;
                 

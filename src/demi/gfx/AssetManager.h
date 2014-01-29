@@ -21,7 +21,7 @@ namespace Demi
 
         virtual ~DiAssetManager();
 
-        _DECLARE_SINGLETON(DiAssetManager);
+        _DECLARE_SINGLETON(DiAssetManager)
 
     public:
 

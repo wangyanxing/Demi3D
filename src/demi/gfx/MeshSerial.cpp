@@ -436,7 +436,7 @@ namespace Demi
         for (uint32 i=0; i<elementNums; i++)
         {
             DiVertexElements::Element ve = ele.GetElement(i);
-            UINT16 temp = ve.Stream;
+            uint16 temp = ve.Stream;
             WriteShorts(&temp,1);
             temp = ve.Type;
             WriteShorts(&temp,1);
