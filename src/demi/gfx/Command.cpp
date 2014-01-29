@@ -88,13 +88,18 @@ namespace Demi
     {
         CommandMgr = this;
         DiSystemCmd::BindAllSystemCmd(this);
+        
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         InitConsoleLogger(true);
+#endif
         return true;
     }
 
     void DiCommandManager::Shutdown()
     {
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         DestroyConsoleLogger();
+#endif
 
         for (auto it = mMapVariables.begin(); it != mMapVariables.end(); ++it)
         {
@@ -108,7 +113,7 @@ namespace Demi
     {
         DI_ASSERT(cmd);
         DI_ASSERT(pcHelp);
-        DI_ASSERT(pFunction)
+        DI_ASSERT(pFunction);
 
         if (!cmd || !pFunction || !pcHelp)
             return false;
@@ -325,6 +330,8 @@ namespace Demi
         return true;
     }
 
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+    
     void DiCommandManager::InitConsoleLogger(bool createWnd, const DiString& consoleFile)
     {
         if (!sConsoleLogger)
@@ -354,4 +361,6 @@ namespace Demi
             SAFE_DELETE(sConsoleLogger);
         }
     }
+    
+#endif
 }

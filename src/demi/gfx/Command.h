@@ -13,12 +13,12 @@ namespace Demi
     {
         bool operator()( const char *s1,const char *s2 ) const 
         {
-            return _stricmp(s1,s2) < 0;
+            return stricmp(s1,s2) < 0;
         }
 
         bool operator()( const DiString& s1,const DiString& s2 ) const 
         {
-            return _stricmp(s1.c_str(), s2.c_str()) < 0;
+            return stricmp(s1.c_str(), s2.c_str()) < 0;
         }
     };
 

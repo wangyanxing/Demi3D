@@ -55,7 +55,8 @@ namespace Demi
         
         if (ret != 0)
         {
-            DI_ERROR("无法打开文件:%s",filename.c_str());
+            DI_WARNING("Cannot open the file:%s",filename.c_str());
+            return DiDataStreamPtr(nullptr);
         }
 
         std::ios::openmode mode = std::ios::in | std::ios::binary;
@@ -67,7 +68,7 @@ namespace Demi
         if (baseStream->fail())
         {
             delete roStream;
-            DI_ERROR("无法打开文件:%s",filename.c_str());
+            DI_WARNING("Failed to open the file:%s",filename.c_str());
             return DiDataStreamPtr();
         }
 
