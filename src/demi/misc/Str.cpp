@@ -1301,19 +1301,6 @@ namespace Demi
         return basename;
     }
 
-    const char* DiString::Stristr( const char* szString, const char* szSubstring )
-    {
-        int nSuperstringLength = (int)strlen(szString);
-        int nSubstringLength = (int)strlen(szSubstring);
-
-        for (int nSubstringPos = 0; nSubstringPos <= nSuperstringLength - nSubstringLength; ++nSubstringPos)
-        {
-            if (strnicmp(szString+nSubstringPos, szSubstring, nSubstringLength) == 0)
-                return szString+nSubstringPos;
-        }
-        return NULL;
-    }
-
     int DiString::CompareNoCase( const char* o ) const
     {
         return stricmp( c_str(),o );

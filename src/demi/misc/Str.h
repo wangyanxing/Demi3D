@@ -120,7 +120,6 @@ namespace Demi
         static bool         StartsWith(const DiString& str, const DiString& pattern, bool caseSensitive = true);                        // returns whether the string begins with the pattern passed in    Added by Li
         static bool         EndsWith(const DiString& str, const DiString& pattern, bool caseSensitive = true);                        // returns whether the string ends with the pattern passed in   Added by Li        
         static DiString     BLANK;
-        static const char*  Stristr(const char* szString, const char* szSubstring);
 
         size_t              ToHash() const;
 
