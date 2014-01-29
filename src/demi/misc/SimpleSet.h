@@ -8,7 +8,9 @@
 
 #include "MemoryAllocator.h"
 
-#pragma warning(disable:4100)
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning(disable:4100)
+#endif
 
 namespace Demi
 {

@@ -16,7 +16,9 @@
 #include "GfxDriver.h"
 #include "RenderTarget.h"
 
-#pragma warning(disable:4701)
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning(disable:4701)
+#endif
 
 namespace Demi 
 {

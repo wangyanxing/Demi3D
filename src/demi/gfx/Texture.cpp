@@ -6,8 +6,6 @@
 #include "RenderTarget.h"
 #include "GfxDriver.h"
 
-#pragma warning(disable:4244)
-
 namespace Demi
 {
     DiAssetType DiTexture::TYPE = ASSET_TEXTURE;

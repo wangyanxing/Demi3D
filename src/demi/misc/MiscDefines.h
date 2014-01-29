@@ -8,6 +8,7 @@
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable : 4251)   // dll-interface
+#   pragma warning(disable : 4244)
 #   pragma warning(disable : 4275)
 #   pragma warning(disable : 4127)
 #   pragma warning(disable : 4996)   // _CRT_SECURE_NO_WARNINGS
@@ -23,6 +24,15 @@
 #           define DI_MISC_API __declspec(dllimport)
 #       endif
 #   endif
+
+#   if defined(_DEBUG) || defined(DEBUG)
+#       define DEMI_DEBUG 1
+#   else
+#       define DEMI_DEBUG 0
+#   endif
+
+#   define stricmp _stricmp
+
 #elif (DEMI_PLATFORM == DEMI_PLATFORM_IOS || DEMI_PLATFORM == DEMI_PLATFORM_OSX)
 // Enable GCC symbol visibility
 #   if defined( DEMI_GCC_VISIBILITY )
@@ -30,6 +40,33 @@
 #   else
 #       define DI_MISC_API
 #   endif
+#endif
+
+
+#if (DEMI_COMPILER == DEMI_COMPILER_MSVC)
+#   define SAFE_SPRINTF sprintf_s
+#else
+#   define SAFE_SPRINTF snprintf
+#endif
+
+
+#if DEMI_PLATFORM == DEMI_PLATFORM_LINUX || DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   define stricmp strcasecmp
+
+#   ifdef DEBUG
+#       define DEMI_DEBUG 1
+#   else
+#       define DEMI_DEBUG 0
+#   endif
+
+#   if DEMI_PLATFORM_OSX == DEMI_PLATFORM_OSX
+#      define DEMI_PLATFORM_LIB "DemiPlatform.bundle"
+#   elif DEMI_PLATFORM_OSX == DEMI_PLATFORM_IOS
+#      define DEMI_PLATFORM_LIB "DemiPlatform.a"
+#   else //Linux
+#      define DEMI_PLATFORM_LIB "libDemiPlatform.so"
+#   endif
+
 #endif
 
 //-----------------------------------------------------------------------------

@@ -226,7 +226,7 @@ namespace Demi
         DiString    ExtractToLastSlash() const;
         void        SplitFilename(DiString& outBasename, DiString& outPath);
         void        ReplaceIllegalFilenameChars(char replacement);
-        int            CompareNoCase(const char* o) const;
+        int         CompareNoCase(const char* o) const;
 
         static bool                IsDigit(char c);
         static bool                IsAlpha(char c);

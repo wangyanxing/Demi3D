@@ -4,9 +4,12 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Singleton_h__
+#define Singleton_h__
 
-#pragma warning(disable:4661)
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning(disable:4661)
+#endif
 
 namespace Demi
 {
@@ -54,3 +57,4 @@ namespace Demi
     cls& cls::GetInstance(void){return *s_pSingleton;}
 
 }
+#endif // Singleton_h__
