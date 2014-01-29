@@ -65,8 +65,10 @@
 
 #if (DEMI_COMPILER == DEMI_COMPILER_MSVC)
 #   define SAFE_SPRINTF sprintf_s
+#   define SAFE_VSPRINTF vsprintf_s
 #else
 #   define SAFE_SPRINTF snprintf
+#   define SAFE_VSPRINTF vsnprintf
 #endif
 
 typedef signed char         int8;
