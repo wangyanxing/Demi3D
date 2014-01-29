@@ -20,7 +20,7 @@ namespace Demi
     {
         ++mAllocIndex;
 
-        UINT64 ulHashIndex = AddresToHash(pMemory);
+        uint64 ulHashIndex = AddresToHash(pMemory);
 
         AllocInfoListIter it = mAllocInfoList.find(ulHashIndex);
 
@@ -40,7 +40,7 @@ namespace Demi
 
     void DiMemoryTrace::Free(void* pMemory)
     {
-        UINT64 ulHashIndex = AddresToHash(pMemory);
+        uint64 ulHashIndex = AddresToHash(pMemory);
         AllocInfoListIter it = mAllocInfoList.find(ulHashIndex);
     
         //DI_ASSERT( it != m_kAllocInfoList.end() );

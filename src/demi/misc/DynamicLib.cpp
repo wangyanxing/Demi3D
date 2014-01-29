@@ -19,8 +19,8 @@ namespace Demi
     DiMap<DiString, DiDynLib*> DiDynLib::Libs;
 
     DiDynLib::DiDynLib(const DiString& name)
-        :mName(name),
-        mInst(NULL)
+        :mInst(NULL),
+         mName(name)
     {
     }
 

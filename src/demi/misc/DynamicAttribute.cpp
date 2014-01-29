@@ -103,15 +103,17 @@ namespace Demi
     }
 
     DiAttributeCurved::DiAttributeCurved( void ):
-        mInterpolationType(IT_LINEAR), 
-        mRange(0)
+        mRange(0),
+        mInterpolationType(IT_LINEAR)
+    
     {
         mType = DiDynamicAttribute::DAT_CURVED;
     }
 
     DiAttributeCurved::DiAttributeCurved( InterpolationType interpolationType ):
-        mInterpolationType(interpolationType), 
-        mRange(0)
+        mRange(0),
+        mInterpolationType(interpolationType)
+
     {
         mType = DiDynamicAttribute::DAT_CURVED;
     }

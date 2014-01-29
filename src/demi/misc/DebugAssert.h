@@ -28,7 +28,7 @@
         }
 #   else
 #       define DI_ASSERT(condition) assert(condition)
-#       define DI_ASSERT_MESSAGE(condition,message) assert(condition ## "&&" ## message)
+#       define DI_ASSERT_MESSAGE(condition,message) assert(condition && message)
 #   endif
 #endif
 
