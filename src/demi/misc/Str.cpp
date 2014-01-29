@@ -5,12 +5,13 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
-#include <strsafe.h>
 #include <stack>
 
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #pragma warning(disable:4267)
 #pragma warning(disable:4996)
 #pragma warning(disable:4244)
+#endif
 
 namespace Demi
 {
@@ -25,14 +26,9 @@ namespace Demi
         DI_ASSERT(0 != buf);
         DI_ASSERT(bufSize > 1);
 
-        #ifdef WIN32
-            HRESULT hr = StringCchCopyA(buf, bufSize, this->AsCharPtr());
-            return SUCCEEDED(hr);    
-        #else
-            strncpy(buf, this->AsCharPtr(), bufSize - 1);
-            buf[bufSize - 1] = 0;
-            return this->mStrLen < bufSize;
-        #endif
+        strncpy(buf, this->AsCharPtr(), bufSize - 1);
+        buf[bufSize - 1] = 0;
+        return this->mStrLen < bufSize;
     }
 
     //------------------------------------------------------------------------------
@@ -45,7 +41,7 @@ namespace Demi
         va_start(argList, fmtString);
         char buf[4096]; // an 4 kByte buffer
         // need to use non-CRT thread safe function under Win32
-        StringCchVPrintfA(buf, sizeof(buf), fmtString, argList);
+        SAFE_SPRINTF(buf, sizeof(buf), fmtString, argList);
 
         *this = buf;
         va_end(argList);
@@ -59,7 +55,7 @@ namespace Demi
     {
         char buf[4096]; // an 4 kByte buffer
         // need to use non-CRT thread safe function under Win32
-        StringCchVPrintfA(buf, sizeof(buf), fmtString, argList);
+        SAFE_SPRINTF(buf, sizeof(buf), fmtString, argList);
         //*this = buf;
         this->Set(buf, strlen(buf));
     }

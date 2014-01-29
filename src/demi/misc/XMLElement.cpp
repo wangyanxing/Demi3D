@@ -308,9 +308,8 @@ namespace Demi
 
     bool DiXMLElement::SetValue(const DiString& val)
     {
-        pugi::xml_node& node = pugi::xml_node(mNode);
+        pugi::xml_node node(mNode);
         return node.text().set(val.c_str());
-        //return node.set_value(val.c_str());
     }
 
     DiString DiXMLElement::ChildValue(const DiString& name) const
