@@ -27,8 +27,8 @@ namespace Demi
         mNumBoneMatrices(0),
         mClipSet(NULL),
         mRefClipSet(false),
-        mLastUpdateBonesFrame(std::numeric_limits<UINT64>::max()),
-        mLastUpdateAnimFrame(std::numeric_limits<UINT64>::max()),
+        mLastUpdateBonesFrame(std::numeric_limits<uint64>::max()),
+        mLastUpdateAnimFrame(std::numeric_limits<uint64>::max()),
         mAutoUpdateAnims(true),
         mHardwareSkining(false),
         mSpeed(1.0f)
@@ -49,8 +49,8 @@ namespace Demi
         mNumBoneMatrices(0),
         mClipSet(NULL),
         mRefClipSet(false),
-        mLastUpdateBonesFrame(std::numeric_limits<UINT64>::max()),
-        mLastUpdateAnimFrame(std::numeric_limits<UINT64>::max()),
+        mLastUpdateBonesFrame(std::numeric_limits<uint64>::max()),
+        mLastUpdateAnimFrame(std::numeric_limits<uint64>::max()),
         mMotion(motion),
         mSpeed(1.0f)
     {
@@ -70,8 +70,8 @@ namespace Demi
         mNumBoneMatrices(0),
         mClipSet(pkClipSet),
         mRefClipSet(true),
-        mLastUpdateBonesFrame(std::numeric_limits<UINT64>::max()),
-        mLastUpdateAnimFrame(std::numeric_limits<UINT64>::max()),
+        mLastUpdateBonesFrame(std::numeric_limits<uint64>::max()),
+        mLastUpdateAnimFrame(std::numeric_limits<uint64>::max()),
         mAutoUpdateAnims(true),
         mHardwareSkining(false),
         mSpeed(1.0f)
@@ -94,8 +94,8 @@ namespace Demi
         mNumBoneMatrices(0),
         mClipSet(pkClipSet),
         mRefClipSet(true),
-        mLastUpdateBonesFrame(std::numeric_limits<UINT64>::max()),
-        mLastUpdateAnimFrame(std::numeric_limits<UINT64>::max()),
+        mLastUpdateBonesFrame(std::numeric_limits<uint64>::max()),
+        mLastUpdateAnimFrame(std::numeric_limits<uint64>::max()),
         mMotion(motion),
         mSpeed(1.0f)
     {

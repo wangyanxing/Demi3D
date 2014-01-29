@@ -5,7 +5,6 @@
 #include "Bone.h"
 #include "AttachSet.h"
 #include "AttachNode.h"
-#include "Algorithm.h"
 
 namespace Demi
 {
@@ -218,9 +217,9 @@ namespace Demi
         }
 
         KeyFrameTimeList::iterator it =
-            Demi::LowerBound(mKeyFrameTimes.begin(), mKeyFrameTimes.end(), timePos);
+            std::lower_bound(mKeyFrameTimes.begin(), mKeyFrameTimes.end(), timePos);
 
-        return DiTimeIndex(timePos, Demi::Distance(mKeyFrameTimes.begin(), it));
+        return DiTimeIndex(timePos, std::distance(mKeyFrameTimes.begin(), it));
 
 //         KeyFrameTimeList::iterator it;
 //         for (it = m_kKeyFrameTimes.begin(); it!=m_kKeyFrameTimes.end(); ++it)

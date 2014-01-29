@@ -4,7 +4,10 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Billboard_h__
+#define Billboard_h__
+
+#include "GfxPrerequisites.h"
 
 namespace Demi
 {
@@ -90,3 +93,4 @@ namespace Demi
 
     };
 }
+#endif // Billboard_h__

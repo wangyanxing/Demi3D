@@ -1,12 +1,13 @@
 
 /********************************************************************
-    Data:            2012-3-2
     File:           RenderBatchGroup.h
     Creator:        demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef RenderBatchGroup_h__
+#define RenderBatchGroup_h__
 
+#include "GfxPrerequisites.h"
 #include "Callback.h"
 
 namespace Demi 
@@ -42,7 +43,7 @@ namespace Demi
     {
     public:
 
-        DiRenderBatchGroup(DiBatchGroupType    type, DiRenderPipeline* pipeline);
+        DiRenderBatchGroup(DiBatchGroupType type, DiRenderPipeline* pipeline);
 
         virtual                     ~DiRenderBatchGroup();
 
@@ -121,3 +122,4 @@ namespace Demi
     };
 
 }
+#endif // RenderBatchGroup_h__

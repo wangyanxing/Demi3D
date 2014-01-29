@@ -221,7 +221,7 @@ namespace Demi
             *pointer++ = uv.z;
         }
 
-        UINT vbsize = NUM_VERTEX_ENTRIES*sizeof(float);
+        uint32 vbsize = NUM_VERTEX_ENTRIES*sizeof(float);
         mSourceData[0]->Create(vbsize);
         void* data = mSourceData[0]->Lock(0,vbsize);
         memcpy(data,vertices,vbsize);
@@ -244,7 +244,7 @@ namespace Demi
             22,    23,    20
         };
 
-        UINT ibsize = NUM_INDICES*sizeof(uint16);
+        uint32 ibsize = NUM_INDICES*sizeof(uint16);
         mIndexBuffer->Create(ibsize);
 
         void* dataib = mIndexBuffer->Lock(0,ibsize);

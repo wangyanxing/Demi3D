@@ -164,7 +164,7 @@ namespace Demi
         
         DiClipController*     GetClipController(const DiString& name) const;
                               
-        UINT                  GetClipNums() const {return mClipControllers.size();}
+        uint32                  GetClipNums() const {return mClipControllers.size();}
                               
         bool                  HasClipController(const DiString& name) const;
                               
@@ -182,7 +182,7 @@ namespace Demi
                               
         bool                  HasEnabledClipController(void) const { return !mEnabledClips.empty(); }
                               
-        UINT64                GetDirtyFrameNumber(void) const { return mDirtyFrameNumber; }
+        uint64                GetDirtyFrameNumber(void) const { return mDirtyFrameNumber; }
 
         ConstClipControllerIt GetClipControllerIterator(void) const;
 

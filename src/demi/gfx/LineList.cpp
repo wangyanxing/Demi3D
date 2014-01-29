@@ -33,11 +33,11 @@ namespace Demi
 
     void DiLineList::Init()
     {
-        m_uiMaxVerts         = 0;
-        m_pLockedPositions     = 0;
-        m_uiPositionStride     = 0;
-        m_pLockedColors         = 0;
-        m_uiColorStride         = 0;
+        mMaxVerts           = 0;
+        mLockedPositions    = 0;
+        mPositionStride     = 0;
+        mLockedColors       = 0;
+        mColorStride        = 0;
 
         mSourceData.push_back(Driver->CreateVertexBuffer());
 
@@ -61,13 +61,13 @@ namespace Demi
 
     void DiLineList::CheckResizeLine( size_t maxVerts )
     {
-        if (maxVerts > m_uiMaxVerts)
+        if (maxVerts > mMaxVerts)
         {
-            m_uiMaxVerts = maxVerts + (size_t)(maxVerts*0.2f);
+            mMaxVerts = maxVerts + (size_t)(maxVerts*0.2f);
 
             mSourceData[0]->Release();
             mSourceData[0]->SetStride(sizeof(float) * 3 + sizeof(UINT8) * 4);
-            mSourceData[0]->Create(m_uiMaxVerts*mSourceData[0]->GetStride());
+            mSourceData[0]->Create(mMaxVerts*mSourceData[0]->GetStride());
 
             mPrimitiveType = PT_LINELIST;
         }
@@ -80,24 +80,24 @@ namespace Demi
 
     void DiLineList::ClearLine( void )
     {
-        m_kVertices.clear();
+        mVertices.clear();
         mVerticesNum = 0;
         mPrimitiveCount = 0;
     }
 
     void DiLineList::AddLine( const DiVec3 &p0,const DiVec3 &p1,const DiColor& color,bool nolock )
     {
-        CheckResizeLine(m_kVertices.size() + 2);
+        CheckResizeLine(mVertices.size() + 2);
         AddPoint(p0,color);
         AddPoint(p1,color);
 
-        mVerticesNum    = m_kVertices.size();
-        mPrimitiveCount = m_kVertices.size() / 2;
+        mVerticesNum    = mVertices.size();
+        mPrimitiveCount = mVertices.size() / 2;
 
         if (!nolock)
         {
             void* data = mSourceData[0]->Lock(0,mVerticesNum*mSourceData[0]->GetStride());
-            ::memcpy(data,&m_kVertices[0],mVerticesNum*mSourceData[0]->GetStride());
+            ::memcpy(data,&mVertices[0],mVerticesNum*mSourceData[0]->GetStride());
             mSourceData[0]->Unlock();
         }
     }
@@ -108,7 +108,7 @@ namespace Demi
         v.pos = p;
         v.color = color.GetAsARGB();
 
-        m_kVertices.push_back(v);
+        mVertices.push_back(v);
     }
 
     void DiLineList::GetWorldTransform( DiMat4* xform ) const
@@ -118,7 +118,7 @@ namespace Demi
 
     void DiLineList::FlushSourceData()
     {
-        if (!m_kVertices.empty())
+        if (!mVertices.empty())
         {
             FlushSourceData(0,GetLineNums()-1);
         }
@@ -134,13 +134,13 @@ namespace Demi
         int verNum = (endLine-beginLine+1)*2;
 
         void* data = mSourceData[0]->Lock(beginLine*2*stride,verNum*stride);
-        ::memcpy(data,&m_kVertices[beginLine*2],verNum*stride);
+        ::memcpy(data,&mVertices[beginLine*2],verNum*stride);
         mSourceData[0]->Unlock();
     }
 
     int DiLineList::GetLineNums()
     {
-        return (int)m_kVertices.size()/2;
+        return (int)mVertices.size()/2;
     }
 
     void DiLineList::AlterLine( int id,const Demi::DiVec3 &p0,const Demi::DiVec3 &p1,const Demi::DiColor& color )
@@ -150,10 +150,10 @@ namespace Demi
             return;
         }
 
-        m_kVertices[id*2].color   = color.GetAsARGB();
-        m_kVertices[id*2].pos     = p0;
-        m_kVertices[id*2+1].color = color.GetAsARGB();
-        m_kVertices[id*2+1].pos   = p1;
+        mVertices[id*2].color   = color.GetAsARGB();
+        mVertices[id*2].pos     = p0;
+        mVertices[id*2+1].color = color.GetAsARGB();
+        mVertices[id*2+1].pos   = p1;
     }
 
     DiString& DiLineList::GetType()

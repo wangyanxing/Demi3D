@@ -16,7 +16,7 @@
 #include "RenderWindow.h"
 #include "RenderUnit.h"
 
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #   include "Win32Window.h"
 #   include "Win32GLContext.h"
 #   include "Win32GLUtil.h"
@@ -489,7 +489,7 @@ namespace Demi
 
     DiWindow* DiGLDriver::CreateWnd()
     {
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         return DI_NEW DiWin32Window();
 #else
         return nullptr;
@@ -499,7 +499,7 @@ namespace Demi
     DiGLContext* DiGLDriver::_CreateContext(DiWndHandle wnd)
     {
         DiGLContext* ret = nullptr;
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         ret = DI_NEW DiWin32GLContext(static_cast<DiWin32GLUtil*>(mGLUtil), wnd);
         DI_LOG("Win32 GL context created.");
 #endif
@@ -510,7 +510,7 @@ namespace Demi
     DiGLUtil* DiGLDriver::_CreateGLUtil()
     {
         DiGLUtil* ret = nullptr;
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         ret = DI_NEW DiWin32GLUtil();
 #endif
         return ret;

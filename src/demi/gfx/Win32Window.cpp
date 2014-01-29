@@ -1,7 +1,7 @@
 
 #include "GfxPch.h"
 
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 
 #include "Win32Window.h"
 #include "RenderWindow.h"
@@ -15,7 +15,7 @@ namespace Demi
     static const DWORD gWindowStyle = WS_OVERLAPPEDWINDOW;
     static const DWORD gFullscreenStyle = WS_POPUP;
 
-    static INT_PTR CALLBACK windowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+    static INT_PTR CALLBACK windowProc(HWND hwnd, uint32 msg, WPARAM wParam, LPARAM lParam)
     {
         DiWin32Window* window = (DiWin32Window*)LongToPtr(GetWindowLongPtr(hwnd, GWLP_USERDATA));
         DiRenderWindow* renderWnd = DiBase::Driver->FindRenderWindow(DiWndHandle(hwnd));
@@ -135,7 +135,7 @@ namespace Demi
         winRect.right = width;
         winRect.bottom = height;
         DWORD dwstyle = (fullscreen ? gFullscreenStyle : gWindowStyle);
-        UINT  offset = fullscreen ? 0 : 50;
+        uint32  offset = fullscreen ? 0 : 50;
         ::AdjustWindowRect(&winRect, dwstyle, 0);
         mWndHandle = ::CreateWindowA(gWindowClass, title, dwstyle,
             offset, offset,
@@ -235,8 +235,8 @@ namespace Demi
         {
             RECT rect;
             GetClientRect((HWND)mWndHandle, &rect);
-            width = (UINT32)(rect.right - rect.left);
-            height = (UINT32)(rect.bottom - rect.top);
+            width = (uint32)(rect.right - rect.left);
+            height = (uint32)(rect.bottom - rect.top);
         }
     }
 

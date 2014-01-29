@@ -21,7 +21,7 @@ inline bool less_CVar( const char* left,const char* right )
 {
     for(;;)
     {
-        UINT32 l=GetCharPrio(*left), r=GetCharPrio(*right);
+        uint32 l=GetCharPrio(*left), r=GetCharPrio(*right);
 
         if(l<r)
             return true;
@@ -319,7 +319,7 @@ namespace Demi
 
     bool DiSystemCmd::Quit(DiCmdArgs*)
     {
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         ::SendMessage((HWND)mMainHwnd, WM_CLOSE, 0, 0);
 #endif
         return true;

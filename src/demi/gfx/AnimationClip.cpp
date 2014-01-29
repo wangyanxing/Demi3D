@@ -4,7 +4,6 @@
 #include "Animation.h"
 #include "KeyFrame.h"
 #include "Node.h"
-#include "Algorithm.h"
 
 namespace Demi
 {
@@ -53,7 +52,7 @@ namespace Demi
             i = mKeyFrames.begin() + mKeyFrameIndexMap[timeIndex.GetKeyIndex()];
 #ifdef _DEBUG
             DiKeyFrame timeKey(0, timePos);
-            if (i != Demi::LowerBound(mKeyFrames.begin(), mKeyFrames.end(), 
+            if (i != std::lower_bound(mKeyFrames.begin(), mKeyFrames.end(), 
                 &timeKey, KeyFrameTimeLess()))
             {
                 DI_ERROR("≤È’“πÿº¸÷° ß∞‹");
@@ -69,7 +68,7 @@ namespace Demi
                 timePos = fmod( timePos, totalAnimationLength );
 
             DiKeyFrame timeKey(0, timePos);
-            i = Demi::LowerBound(mKeyFrames.begin(), mKeyFrames.end(),
+            i = std::lower_bound(mKeyFrames.begin(), mKeyFrames.end(),
                 &timeKey, KeyFrameTimeLess());
         }
 
@@ -93,7 +92,7 @@ namespace Demi
         if (firstKeyIndex)
         {
             *firstKeyIndex = static_cast<unsigned short>(
-                Demi::Distance(mKeyFrames.begin(), i));
+                std::distance(mKeyFrames.begin(), i));
         }
 
         *keyFrame1 = *i;
@@ -115,7 +114,7 @@ namespace Demi
         DiKeyFrame* kf = CreateKeyFrameImpl(timePos);
 
         KeyFrameList::iterator i =
-            Demi::UpperBound(mKeyFrames.begin(), mKeyFrames.end(), 
+            std::upper_bound(mKeyFrames.begin(), mKeyFrames.end(), 
             kf, KeyFrameTimeLess());
         mKeyFrames.insert(i, kf);
 
@@ -170,7 +169,7 @@ namespace Demi
             float timePos = (*i)->GetTime();
 
             DiVector<float>::iterator it =
-                Demi::LowerBound(keyFrameTimes.begin(), keyFrameTimes.end(), timePos);
+                std::lower_bound(keyFrameTimes.begin(), keyFrameTimes.end(), timePos);
             if (it == keyFrameTimes.end() || *it != timePos)
             {
                 keyFrameTimes.insert(it, timePos);

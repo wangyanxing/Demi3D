@@ -51,7 +51,7 @@ namespace Demi
         struct Vertex
         {
             Demi::DiVec3 pos;
-            UINT32       color;
+            uint32       color;
         };
 
         void                    Init();
@@ -60,17 +60,17 @@ namespace Demi
 
     private:
 
-        UINT                    m_uiMaxVerts;
+        uint32                  mMaxVerts;
 
-        void*                   m_pLockedPositions;
+        void*                   mLockedPositions;
 
-        UINT                    m_uiPositionStride;
+        uint32                  mPositionStride;
 
-        void*                   m_pLockedColors;
+        void*                   mLockedColors;
 
-        UINT                    m_uiColorStride;
+        uint32                  mColorStride;
 
-        std::vector<Vertex>     m_kVertices;
+        DiVector<Vertex>        mVertices;
     };
 
 }

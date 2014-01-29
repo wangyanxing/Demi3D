@@ -120,7 +120,7 @@ namespace Demi
         
         DiMat4*                 mBoneWorldMatrices;
 
-        UINT64                  mFrameAnimationLastUpdated;
+        uint64                  mFrameAnimationLastUpdated;
 
         DiInstancedModel*       mSharedTransformModel;
 
