@@ -72,6 +72,19 @@
 #   define SAFE_VSPRINTF vsnprintf
 #endif
 
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   if DEMI_COMPILER_VER >= 1200
+#       define FORCEINLINE __forceinline
+#   endif
+#elif defined(__MINGW32__)
+#   if !defined(FORCEINLINE)
+#       define FORCEINLINE __inline
+#   endif
+#else
+#   define FORCEINLINE __inline
+#endif
+
+
 typedef signed char         int8;
 typedef signed short        int16;
 typedef signed int          int32;
