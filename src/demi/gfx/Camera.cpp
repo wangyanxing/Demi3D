@@ -4,8 +4,6 @@
 #include "CullNode.h"
 #include "SceneManager.h"
 
-#pragma warning(disable:4244)
-
 namespace Demi 
 {
 

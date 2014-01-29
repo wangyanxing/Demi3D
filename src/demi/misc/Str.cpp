@@ -1016,7 +1016,7 @@ namespace Demi
         IndexT i = 0;
         while (bools[i] != 0)
         {
-            if (0 == _stricmp(bools[i], this->AsCharPtr()))
+            if (0 == stricmp(bools[i], this->AsCharPtr()))
             {
                 return true;
             }
@@ -1054,7 +1054,7 @@ namespace Demi
     float
     DiString::AsFloat() const
     {
-        return    float(atof(this->AsCharPtr()));
+        return float(atof(this->AsCharPtr()));
     }
 
     //------------------------------------------------------------------------------
@@ -1069,7 +1069,7 @@ namespace Demi
         IndexT i = 0;
         while (bools[i] != 0)
         {
-            if (0 == _stricmp(bools[i], this->AsCharPtr()))
+            if (0 == stricmp(bools[i], this->AsCharPtr()))
             {
                 return 1 == (i & 1);
             }
