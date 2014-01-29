@@ -774,8 +774,8 @@ namespace Demi
         {
         }
 
-        DiIntVec3(int x, int y, int z) :
-            x(x),y(y),z(z)
+        DiIntVec3(int xx, int yy, int zz) :
+            x(xx),y(yy),z(zz)
         {
         }
 
