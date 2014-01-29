@@ -26,7 +26,6 @@ namespace Demi
 
         DI_ASSERT( it == mAllocInfoList.end() );
     
-
         if ( it == mAllocInfoList.end() )
         {
             AllocInfo kAllocInfo;
@@ -62,14 +61,16 @@ namespace Demi
         mMemoryLeakFile.open(fileName.c_str());
         if (!mMemoryLeakFile)
         {
-            DI_ERROR("Cannot create memory leak report file");
+            DI_WARNING("Cannot create memory leak report file");
+            return;
         }
 
         fileName = DiPathLib::GetApplicationPath() + "DiMemoryTrace.log";
         mMemoryTraceFile.open(fileName.c_str());
         if (!mMemoryTraceFile)
         {
-            DI_ERROR("Cannot create memory trace report file");
+            DI_WARNING("Cannot create memory trace report file");
+            return;
         }
     }
 

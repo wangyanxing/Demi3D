@@ -3,10 +3,11 @@
     File:           String.h
     Creator:        demiwangya
 
-    Adapted from Nebula3 engine (free source code)
+    Adapted from Nebula3
 *********************************************************************/
 
-#pragma once
+#ifndef DiStr_h__
+#define DiStr_h__
 
 #include "vector2.h"
 #include "vector3.h"
@@ -1173,3 +1174,5 @@ namespace Demi
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning( pop ) 
 #endif
+
+#endif // Str_h__

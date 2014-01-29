@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once 
+#ifndef AnimationPose_h__
+#define AnimationPose_h__
 
 #include "KeyFrame.h"
 #include "ClipController.h"
@@ -64,3 +65,4 @@ namespace Demi
     };
 }
 
+#endif // AnimationPose_h__

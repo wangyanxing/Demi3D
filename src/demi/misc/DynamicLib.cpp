@@ -3,12 +3,15 @@
 #include "DynamicLib.h"
 #include "PathLib.h"
 
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #  define WIN32_LEAN_AND_MEAN
 #  if !defined(NOMINMAX) && defined(_MSC_VER)
 #    define NOMINMAX // required to stop windows.h messing up std::min
 #  endif
 #  include <windows.h>
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   include "macUtils.h"
+#   include <dlfcn.h>
 #endif
 
 namespace Demi
@@ -19,12 +22,10 @@ namespace Demi
         :mName(name),
         mInst(NULL)
     {
-
     }
 
     DiDynLib::~DiDynLib()
     {
-
     }
 
     bool DiDynLib::Load()
@@ -68,7 +69,7 @@ namespace Demi
 
     DiString DiDynLib::DynlibError(void)
     {
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         LPVOID lpMsgBuf;
         FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER |
@@ -84,6 +85,10 @@ namespace Demi
         DiString ret = (char*)lpMsgBuf;
         LocalFree(lpMsgBuf);
         return ret;
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        return DiString(dlerror());
+#else
+        return DiString("");
 #endif
     }
 

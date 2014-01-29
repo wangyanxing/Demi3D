@@ -24,7 +24,7 @@ namespace Demi
             uint32    uiSize;
         };
 
-        typedef DiMap<UINT64, AllocInfo> AllocInfoList;
+        typedef DiMap<uint64, AllocInfo> AllocInfoList;
         typedef AllocInfoList::iterator  AllocInfoListIter;
 
         static DiMemoryTrace& GetInstance()

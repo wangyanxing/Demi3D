@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef CullNode_h__
+#define CullNode_h__
 
 #include "Node.h"
 #include "DList.h"
@@ -126,3 +127,5 @@ namespace Demi
         DiOctreePtr             mOctant;
     };
 }
+
+#endif // CullNode_h__
