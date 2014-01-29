@@ -167,8 +167,8 @@ const char *tga_error(const tga_result errcode)
 tga_result tga_read(tga_image *dest, const char *filename)
 {
     tga_result result;
-    FILE *fp;
-    if (0 != fopen_s(&fp, filename, "rb")) return TGAERR_FOPEN;
+    FILE *fp = fopen(filename, "rb");
+    if (fp == NULL) return TGAERR_FOPEN;
     result = tga_read_from_FILE(dest, fp);
     fclose(fp);
     return result;
@@ -517,8 +517,8 @@ tga_result tga_read_rle_stream( tga_image *dest, Demi::DiDataStream *fp )
 tga_result tga_write(const char *filename, const tga_image *src)
 {
     tga_result result;
-    FILE *fp;
-    if (0 != fopen_s(&fp, filename, "wb")) return TGAERR_FOPEN;
+    FILE *fp = fopen(filename, "wb");
+    if (fp == NULL) return TGAERR_FOPEN;
     result = tga_write_to_FILE(fp, src);
     fclose(fp);
     return result;

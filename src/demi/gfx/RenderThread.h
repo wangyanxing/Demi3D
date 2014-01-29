@@ -34,7 +34,7 @@ namespace Demi
 
         void        DoQuit();
 
-        HWND        GetRenderWindowHandle();
+        DiWndHandle GetRenderWindowHandle();
 
     private:
 

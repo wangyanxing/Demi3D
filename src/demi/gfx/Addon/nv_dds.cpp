@@ -499,8 +499,7 @@ bool CDDSImage::save(DiString filename, bool flipImage)
     DI_ASSERT(m_type != TextureNone);
 
     // open file
-    FILE *fp = 0;
-    fopen_s(&fp, filename.c_str(), "wb");
+    FILE *fp = fopen(filename.c_str(), "wb");
     if (fp == NULL)
         return false;
 
