@@ -35,7 +35,7 @@ namespace Demi
     };
 
     template <class T>
-    static FORCEINLINE T*    RawOffsetPointer(T* ptr, ptrdiff_t offset)
+    static FORCEINLINE T* RawOffsetPointer(T* ptr, ptrdiff_t offset)
     {
         return (T*)((char*)(ptr) + offset);
     }
