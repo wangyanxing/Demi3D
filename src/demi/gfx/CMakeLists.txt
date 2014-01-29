@@ -32,4 +32,7 @@ endif ()
 set_property(TARGET DiGfx PROPERTY FOLDER "Core")
 
 # specify a precompiled header to use
-use_precompiled_header(DiGfx "GfxPch.h")
+use_precompiled_header(DiGfx 
+  "${CMAKE_CURRENT_SOURCE_DIR}/GfxPch.h"
+  "${CMAKE_CURRENT_SOURCE_DIR}/GfxPch.cpp"
+)

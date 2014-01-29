@@ -55,12 +55,13 @@ namespace Demi
     {
         if (obj->IsAttached())
         {
-            DI_ERROR("The object has been attached");
+            DI_WARNING("The object has been attached");
+            return;
         }
 
         obj->NotifyAttached(this);
 
-        DI_ASSERT(!mObjectsByName.contains(obj->GetName()));
+        DI_ASSERT(mObjectsByName.find(obj->GetName()) == mObjectsByName.end());
         mObjectsByName.insert(ObjectMap::value_type(obj->GetName(), obj));
 
         NeedUpdate();
@@ -68,7 +69,7 @@ namespace Demi
 
     void DiCullNode::AttachSilently(DiTransUnitPtr obj)
     {
-        DI_ASSERT(!mObjectsByName.contains(obj->GetName()));
+        DI_ASSERT(mObjectsByName.find(obj->GetName()) == mObjectsByName.end());
         mObjectsByName.insert(ObjectMap::value_type(obj->GetName(), obj));
 
         NeedUpdate();

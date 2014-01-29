@@ -1,15 +1,15 @@
 
 /********************************************************************
-    File:        AssetManager.h
+    File:       AssetManager.h
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef AssetManager_h__
+#define AssetManager_h__
 
 #include "GfxPrerequisites.h"
 #include "Singleton.h"
 #include "Asset.h"
-
 
 namespace Demi 
 {
@@ -91,24 +91,24 @@ namespace Demi
 
     protected:
 
-        DiAssetPtr                    LoadAsset(const DiString& path, bool ignoreError=false);
+        DiAssetPtr                   LoadAsset(const DiString& path, bool ignoreError = false);
 
-        DiAssetPtr                    LoadXMLAsset(DiDataStreamPtr data, const DiString& path);
+        DiAssetPtr                   LoadXMLAsset(DiDataStreamPtr data, const DiString& path);
 
-        DiAssetPtr                    LoadTextureAsset(DiDataStreamPtr data, const DiString& path);
+        DiAssetPtr                   LoadTextureAsset(DiDataStreamPtr data, const DiString& path);
 
-        DiAssetPtr                    LoadMeshAsset(DiDataStreamPtr data, const DiString& path);
+        DiAssetPtr                   LoadMeshAsset(DiDataStreamPtr data, const DiString& path);
 
-        DiAssetPtr                    LoadMotionAsset(DiDataStreamPtr data, const DiString& path);
+        DiAssetPtr                   LoadMotionAsset(DiDataStreamPtr data, const DiString& path);
 
-        DiAssetPtr                    LoadSceneAsset(DiDataStreamPtr data, const DiString& path);
+        DiAssetPtr                   LoadSceneAsset(DiDataStreamPtr data, const DiString& path);
 
     protected:
 
-        typedef DiHashMap<DiString,DiAssetPtr>    AssetsTable;
-        typedef DiHashMap<DiString,ArchivePtr>    ArchiveTable;
+        typedef DiStrHash<DiAssetPtr>    AssetsTable;
+        typedef DiStrHash<ArchivePtr>    ArchiveTable;
 
-        std::vector<DiString>        mSearchPaths;
+        DiVector<DiString>           mSearchPaths;
 
         AssetsTable                  mAssets;
 
@@ -119,3 +119,5 @@ namespace Demi
         DiArchiveManager*            mArchiveManager;
     };
 }
+
+#endif // AssetManager_h__

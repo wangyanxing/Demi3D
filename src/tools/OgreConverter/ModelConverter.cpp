@@ -397,7 +397,7 @@ void ModelConverter::WriteSkeleton( const Ogre::Skeleton* pSkel, DiSkeleton* ske
 	unsigned short numBones = pSkel->getNumBones();
 	if (numBones > MAX_BONE_NUM)
 	{
-		MessageBox(NULL,_T("Too many bones. sorry."),_T("Too many bones. sorry."),MB_ICONERROR | MB_OK );
+		MessageBoxA(NULL,"Too many bones. sorry.", "Too many bones. sorry.", MB_ICONERROR | MB_OK );
 		return;
 	}
 

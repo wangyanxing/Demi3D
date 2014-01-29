@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef D3D9ShaderParam_h__
+#define D3D9ShaderParam_h__
 
 #include "GpuProgram.h"
 #include "ShaderParam.h"
@@ -31,8 +32,10 @@ namespace Demi
 
     private:
 
-        typedef DiHashMap<DiString, DiPair<DiShaderType, uint32>> D3DConstMaps;
+        typedef DiStrHash<DiPair<DiShaderType, uint32>> D3DConstMaps;
 
         D3DConstMaps    mD3DConsts;
     };
 }
+
+#endif // D3D9ShaderParam_h__

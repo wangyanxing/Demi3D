@@ -27,5 +27,7 @@ set_property(TARGET OgreConverter PROPERTY FOLDER "Tools")
 target_link_libraries(OgreConverter DiMisc DiGfx ${OGRE_LIBRARIES})
 
 # specify a precompiled header to use
-use_precompiled_header(OgreConverter "DiPch.h")
-
+use_precompiled_header(OgreConverter 
+  "${CMAKE_CURRENT_SOURCE_DIR}/DiPch.h"
+  "${CMAKE_CURRENT_SOURCE_DIR}/DiPch.cpp"
+)

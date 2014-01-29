@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef ShaderParam_h__
+#define ShaderParam_h__
 
 #include "GfxPrerequisites.h"
 #include "Texture.h"
@@ -25,7 +26,7 @@ namespace Demi
 
         virtual ~DiShaderParameter();
 
-        typedef DiHashMap<DiString, DiAny>  ShaderParamMap;
+        typedef DiStrHash<DiAny>  ShaderParamMap;
 
         enum ParamType
         {
@@ -88,3 +89,5 @@ namespace Demi
         ShaderParamMap          mShaderParams[NUM_VARIABLE_TYPES];
     };
 }
+
+#endif // ShaderParam_h__

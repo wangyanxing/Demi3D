@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef PlatformSpecific_h__
+#define PlatformSpecific_h__
 
 #define DEMI_PLATFORM_WIN32   1
 #define DEMI_PLATFORM_OSX     2
@@ -20,7 +21,6 @@
 #define DEMI_LITTLE_ENDIAN    1
 #define DEMI_BIG_ENDIAN       2
 
-
 #if defined( _MSC_VER )
 #   define DEMI_COMPILER        DEMI_COMPILER_MSVC
 #   define DEMI_COMPILER_VER    _MSC_VER
@@ -35,7 +35,7 @@
     (__GNUC_MINOR__ * 10) + \
     __GNUC_PATCHLEVEL__)
 #else
-#   pragma error "Demi3D doesn't support this compiler at this moment."
+#error "Demi3D doesn't support this compiler at this moment."
 #endif
 
 #if (DEMI_COMPILER == DEMI_COMPILER_MSVC)
@@ -53,7 +53,7 @@
 #       define DEMI_PLATFORM DEMI_PLATFORM_OSX
 #   endif
 #else
-#   pragma error "Demi3D doesn't support this platform at this moment."
+#error "Demi3D doesn't support this platform at this moment."
 #endif
 
 #if defined(__x86_64__) || defined(_M_X64) || defined(__powerpc64__) || defined(__alpha__) || defined(__ia64__) || defined(__s390__) || defined(__s390x__)
@@ -90,3 +90,5 @@ typedef void *EVENT_HANDLE;
 #define DEFINE_ALIGNED_DATA( type, name, alignment ) _declspec(align(alignment)) type name;
 #define DEFINE_ALIGNED_DATA_STATIC( type, name, alignment ) static _declspec(align(alignment)) type name;
 #define DEFINE_ALIGNED_DATA_CONST( type, name, alignment ) const _declspec(align(alignment)) type name;
+
+#endif // PlatformSpecific_h__

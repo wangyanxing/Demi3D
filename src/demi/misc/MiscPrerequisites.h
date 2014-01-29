@@ -3,10 +3,12 @@
     Creator:    demiwangya
 **************************************************************************/
 
-#ifndef MiscPrerequisites_h_
-#define MiscPrerequisites_h_
+#ifndef MiscPrerequisites_h__
+#define MiscPrerequisites_h__
 
+#include "PlatformSpecific.h"
 #include "MiscDefines.h"
+#include "DebugAssert.h"
 
 namespace Demi
 {

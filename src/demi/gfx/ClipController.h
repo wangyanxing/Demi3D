@@ -10,11 +10,11 @@
 
 namespace Demi
 {
-    typedef DiMap<DiString, DiClipController*>        ClipControllerMap;
+    typedef DiMap<DiString, DiClipController*>      ClipControllerMap;
     typedef DiMapIterator<ClipControllerMap>        ClipControllerIt;
-    typedef DiConstMapIterator<ClipControllerMap>     ConstClipControllerIt;
-    typedef DiList<DiClipController*>                EnabledClipsList;
-    typedef DiConstVectorIterator<EnabledClipsList>    ConstEnabledClipsIt;
+    typedef DiConstMapIterator<ClipControllerMap>   ConstClipControllerIt;
+    typedef DiList<DiClipController*>               EnabledClipsList;
+    typedef DiConstVectorIterator<EnabledClipsList> ConstEnabledClipsIt;
 
     struct DiAniEvent
     {
@@ -25,16 +25,15 @@ namespace Demi
         bool                        isTriggerInLoop;    
     };
 
-    typedef DiHashMap<void *, DiAniEvent >           PlayEndCallbackMap;
+    typedef DiHashMap<void*, DiAniEvent >           PlayEndCallbackMap;
 
     class DI_GFX_API DiClipController
     {
     public:
         friend class DiClipControllerSet;
 
-        typedef DiVector<float>                      BoneBlendMask;
-        typedef DiHashMap<DiString,float>            AttachBlendMask;
-
+        typedef DiVector<float>                     BoneBlendMask;
+        typedef DiStrHash<float>                    AttachBlendMask;
 
     protected:
         
@@ -192,7 +191,7 @@ namespace Demi
 
     protected:
 
-        UINT64                mDirtyFrameNumber;
+        uint64                mDirtyFrameNumber;
 
         ClipControllerMap     mClipControllers;
 

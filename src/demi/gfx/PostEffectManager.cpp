@@ -44,9 +44,7 @@ namespace Demi
     void DiPostEffectManager::Shutdown()
     {
         {
-            PostChains::iterator it;
-            PostChains::iterator itEnd = mPostList.end();
-            for (it = mPostList.begin(); it != itEnd; ++it)
+            for (auto it = mPostList.begin(); it != mPostList.end(); ++it)
             {
                 DI_DELETE (*it);
             }
@@ -54,9 +52,7 @@ namespace Demi
             mPostMap.clear();
         }
         {
-            DiMap<int,DiSprite*>::iterator it;
-            DiMap<int,DiSprite*>::iterator itEnd = mQuads.end();
-            for (it = mQuads.begin(); it != itEnd; ++it)
+            for (auto it = mQuads.begin(); it != mQuads.end(); ++it)
             {
                 DI_DELETE (it->second);
             }
@@ -88,9 +84,9 @@ namespace Demi
 
     DiPostEffect* DiPostEffectManager::CreatePostEffect( const DiString& name )
     {
-        if (mPostMap.contains(name))
+        if (mPostMap.find(name) != mPostMap.end())
         {
-            DI_WARNING("出现同名postEffect : %s",name.c_str());
+            DI_WARNING("The postEffect : %s has already existed",name.c_str());
             return mPostMap[name];
         }
         DiPostEffect* neweffect = DI_NEW DiPostEffect(name,this);

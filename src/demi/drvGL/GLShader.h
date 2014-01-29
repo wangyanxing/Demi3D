@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef GLShader_h__
+#define GLShader_h__
 
 #include "GpuProgram.h"
 #include "VertexFormat.h"
@@ -75,7 +76,7 @@ namespace Demi
 
         typedef std::function<void(const DiShaderEnvironment*, GLuint)> BindingFunc;
 
-        typedef DiHashMap<DiString, BindingFunc> UniformFuncs;
+        typedef DiStrHash<BindingFunc> UniformFuncs;
 
         static void InitUniformFuncs();
 
@@ -134,8 +135,10 @@ namespace Demi
 
         DiSet<GLuint>       mValidAttributes;
 
-        typedef DiHashMap<DiString, DiGLShaderConstant> Consts;
+        typedef DiStrHash<DiGLShaderConstant> Consts;
 
         Consts              mConsts;
     };
 }
+
+#endif // GLShader_h__

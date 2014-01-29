@@ -13,10 +13,9 @@
 #include <limits>
 #include <math.h>
 
-#include "MiscDefines.h"
+#include "MiscPrerequisites.h"
 #include "SmartPtr.h"
 #include "FileStream.h"
-#include "MiscPrerequisites.h"
 #include "MemoryConfig.h"
 #include "Str.h"
 #include "LogManager.h"
@@ -27,9 +26,9 @@
 #include "List.h"
 #include "Map.h"
 #include "Set.h"
-#include "HashMap.h"
 #include "Pair.h"
 #include "Sort.h"
+#include "StringHash.h"
 
 #include "vector2.h"
 #include "vector3.h"
@@ -46,7 +45,7 @@
 
 #include "DynamicAttribute.h"
 #include "DynamicAttributeFactory.h"
- #include "StlUtil.h"
+#include "StlUtil.h"
 
 //#define ENABLE_PROFILE
 

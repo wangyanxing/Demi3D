@@ -1168,6 +1168,8 @@ namespace Demi
     typedef DiVector<DiString> StringVec;
 } 
 
+
+
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning( pop ) 
 #endif

@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef PostEffectManager_h__
+#define PostEffectManager_h__
 
 #include "Texture.h"
 
@@ -20,7 +21,7 @@ namespace Demi
 
         typedef DiVector<DiPostEffect*> PostChains;
 
-        typedef DiHashMap<DiString,DiPostEffect*> PostMap;
+        typedef DiStrHash<DiPostEffect*> PostMap;
 
     public:
 
@@ -71,3 +72,5 @@ namespace Demi
         DiRenderWindow*         mRenderWindow;
     };
 }
+
+#endif // PostEffectManager_h__
