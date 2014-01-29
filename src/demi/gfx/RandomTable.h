@@ -71,7 +71,7 @@ namespace Demi
 
     inline void DiRandomTable::GenerateRandomNumbers()
     {
-        DiRand mtrand(GetTickCount());
+        DiRand mtrand(time(NULL));
 
         for(unsigned long i = 0; i < mTableSize; i++)
         {
