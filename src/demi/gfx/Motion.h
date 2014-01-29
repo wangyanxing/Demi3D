@@ -30,11 +30,11 @@ namespace Demi
 
         DiAssetType                 GetAssetType() const {return TYPE;}
 
-        BOOL                        LoadingComplete() const;
+        bool                        LoadingComplete() const;
 
-        BOOL                        Load(DiDataStreamPtr data);
+        bool                        Load(DiDataStreamPtr data);
 
-        BOOL                        Load();
+        bool                        Load();
 
         DiSkeleton*                 GetSkeleton() {return mSkeleton;}
                                     

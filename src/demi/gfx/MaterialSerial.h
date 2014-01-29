@@ -22,13 +22,13 @@ namespace Demi
 
     public:
 
-        BOOL                    ParseMaterial(DiDataStreamPtr data, DiMaterial* target);
+        bool                    ParseMaterial(DiDataStreamPtr data, DiMaterial* target);
 
-        BOOL                    ParseMaterial(DiXMLElement data, DiMaterial* target);
+        bool                    ParseMaterial(DiXMLElement data, DiMaterial* target);
 
-        BOOL                    SaveMaterial(const DiString& file, DiMaterial* source);
+        bool                    SaveMaterial(const DiString& file, DiMaterial* source);
 
-        BOOL                    SaveMaterial(DiXMLElement node, DiMaterial* source);
+        bool                    SaveMaterial(DiXMLElement node, DiMaterial* source);
 
     protected:
 

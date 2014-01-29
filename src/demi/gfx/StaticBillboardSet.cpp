@@ -188,7 +188,7 @@ namespace Demi
         mBillboardBuffer.clear();
 
         {
-            uint16 *pIBuf = static_cast < uint16* > (pSubMesh->CreateIndexData(6 * billboardCount,FALSE));
+            uint16 *pIBuf = static_cast < uint16* > (pSubMesh->CreateIndexData(6 * billboardCount,false));
             for (uint16 i = 0; i < billboardCount; ++i)
             {
                 uint16 offset = i * 4;

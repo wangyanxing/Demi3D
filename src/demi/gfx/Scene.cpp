@@ -20,21 +20,21 @@ namespace Demi
 
     }
 
-    BOOL DiScene::LoadingComplete() const
+    bool DiScene::LoadingComplete() const
     {
-        return TRUE;
+        return true;
     }
 
-    BOOL DiScene::Load( DiDataStreamPtr data )
+    bool DiScene::Load( DiDataStreamPtr data )
     {
         DiSceneSerializer ss;
         ss.ImportScene(data,this);
-        return TRUE;
+        return true;
     }
 
-    BOOL DiScene::Load()
+    bool DiScene::Load()
     {
-        return TRUE;
+        return true;
     }
 
 }

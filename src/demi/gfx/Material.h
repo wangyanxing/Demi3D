@@ -62,11 +62,11 @@ namespace Demi
 
         DiShaderProgram*            GetPixelShader(){return mPixelShader;}
 
-        BOOL                        Load(DiDataStreamPtr data);
+        bool                        Load(DiDataStreamPtr data);
 
-        BOOL                        Load();
+        bool                        Load();
 
-        BOOL                        LoadingComplete() const;
+        bool                        LoadingComplete() const;
 
         bool                        IsWireframe() const { return mWireframe; }
 

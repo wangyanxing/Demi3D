@@ -68,20 +68,20 @@ namespace Demi
         mShaderParameter->Bind();
     }
 
-    BOOL DiMaterial::Load( DiDataStreamPtr data )
+    bool DiMaterial::Load( DiDataStreamPtr data )
     {
         DiMaterialSerializer ms;
-        if(ms.ParseMaterial(data,this) == FALSE)
+        if(ms.ParseMaterial(data,this) == false)
         {
             DI_WARNING("Failed to load the material : %s",data->GetName().c_str());
-            return FALSE;
+            return false;
         }
-        return TRUE;
+        return true;
     }
 
-    BOOL DiMaterial::Load()
+    bool DiMaterial::Load()
     {
-        return TRUE;    
+        return true;    
     }
 
     void DiMaterial::LoadShader(const DiString& vsname, const DiString& psname)
@@ -95,9 +95,9 @@ namespace Demi
         mShaderParameter->LoadParameters();
     }
 
-    BOOL DiMaterial::LoadingComplete() const
+    bool DiMaterial::LoadingComplete() const
     {
-        return (mVertexShader && mPixelShader) ? TRUE : FALSE;
+        return (mVertexShader && mPixelShader) ? true : false;
     }
 
     DiString DiMaterial::GetVertexShaderName() const

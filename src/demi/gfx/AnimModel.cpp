@@ -128,7 +128,7 @@ namespace Demi
 
     bool DiAnimModel::CacheBoneMatrices()
     {
-        ULONG lfm = Driver->GetFrameNum();
+        unsigned long lfm = Driver->GetFrameNum();
         if(lfm != mLastUpdateBonesFrame && mSkeleton)
         {
             mMotion->ApplySkeletonAnimation(mSkeleton,mClipSet);

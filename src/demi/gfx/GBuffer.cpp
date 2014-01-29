@@ -48,8 +48,8 @@ namespace Demi
 
         // create materials
         mMaterial = DiMaterial::QuickCreate("gbuffer_v","gbuffer_p");
-        mMaterial->SetDepthWrite(TRUE);
-        mMaterial->SetDepthCheck(TRUE);
+        mMaterial->SetDepthWrite(true);
+        mMaterial->SetDepthCheck(true);
     }
 
     void DiGBuffer::Bind()

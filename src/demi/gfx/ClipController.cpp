@@ -291,7 +291,7 @@ namespace Demi
         if(strNewName.empty())
         {
             DI_WARNING("Clip name cannot be empty!");
-            return FALSE;
+            return false;
         }
 
         auto it = mClipControllers.find(name);
@@ -305,11 +305,11 @@ namespace Demi
 
             NotifyDirty();
 
-            return TRUE;
+            return true;
         }
 
         DI_WARNING("Cannot find the animation clip : %s, rename failed.",name.c_str());
-        return FALSE;
+        return false;
     }
 
     void DiClipControllerSet::RemoveClipController( const DiString& name )

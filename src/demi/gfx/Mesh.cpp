@@ -28,21 +28,21 @@ namespace Demi
         mSubMeshList.clear();
     }
 
-    BOOL DiMesh::LoadingComplete() const
+    bool DiMesh::LoadingComplete() const
     {
-        return mSubMeshList.empty() ? FALSE : TRUE;
+        return mSubMeshList.empty() ? false : true;
     }
 
-    BOOL DiMesh::Load( DiDataStreamPtr data )
+    bool DiMesh::Load( DiDataStreamPtr data )
     {
         DiMeshSerializer ms;
         ms.ImportMesh(data,this);
-        return TRUE;
+        return true;
     }
 
-    BOOL DiMesh::Load()
+    bool DiMesh::Load()
     {
-        return TRUE;
+        return true;
     }
 
     DiSubMesh* DiMesh::CreateSubMesh()

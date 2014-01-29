@@ -92,11 +92,11 @@ namespace Demi
 
         SourceData              GetSourceData(size_t ID);
 
-        void*                   CreateIndexData(int indexNum,BOOL use32Bit);
+        void*                   CreateIndexData(int indexNum,bool use32Bit);
 
         uint32                  GetIndexSize() const;
 
-        BOOL                    GetUse32BitIndex() const { return m32BitIndex; }
+        bool                    GetUse32BitIndex() const { return m32BitIndex; }
 
         uint32                  GetIndexNum()const{return mIndicsNum;}
 
@@ -151,7 +151,7 @@ namespace Demi
 
         uint32                    mIndicsNum;
         
-        BOOL                      m32BitIndex;
+        bool                      m32BitIndex;
         
         DiPrimitiveType           mPrimitiveType;
 

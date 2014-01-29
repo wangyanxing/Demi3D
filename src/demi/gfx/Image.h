@@ -20,7 +20,7 @@ namespace Demi
 
     public:
 
-        BOOL            LoadToTexture(DiTexture* texture);
+        bool            LoadToTexture(DiTexture* texture);
 
         int             GetHeight() const { return mHeight; }
 
@@ -101,7 +101,7 @@ namespace Demi
 
         static uint32    GetLevelDimension(uint32 dimension, uint32 level);
 
-        static BOOL      IsCompressedFormat(DiPixelFormat DiPixelFormat);
+        static bool      IsCompressedFormat(DiPixelFormat DiPixelFormat);
                          
         static uint32    GetFormatNumBlocks(uint32 dimension, DiPixelFormat DiPixelFormat);
 

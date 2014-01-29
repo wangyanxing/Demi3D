@@ -26,11 +26,11 @@ namespace Demi
 
     public:
 
-        BOOL                    LoadingComplete() const;
+        bool                    LoadingComplete() const;
 
-        BOOL                    Load(DiDataStreamPtr data);
+        bool                    Load(DiDataStreamPtr data);
 
-        BOOL                    Load();
+        bool                    Load();
 
         DiAssetType             GetAssetType() const{return TYPE;}
 

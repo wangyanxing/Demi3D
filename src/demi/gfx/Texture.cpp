@@ -116,12 +116,12 @@ namespace Demi
         mHeight = height;
     }
 
-    BOOL DiTexture::LoadingComplete() const
+    bool DiTexture::LoadingComplete() const
     {
-        return TRUE;
+        return true;
     }
 
-    BOOL DiTexture::Load(DiDataStreamPtr data)
+    bool DiTexture::Load(DiDataStreamPtr data)
     {
         if (Driver)
         {
@@ -129,12 +129,12 @@ namespace Demi
             return image.LoadToTexture(this);
         }
         else
-            return TRUE;
+            return true;
     }
 
-    BOOL DiTexture::Load()
+    bool DiTexture::Load()
     {
-        return TRUE;
+        return true;
     }
 
     DiRenderTarget* DiTexture::GetRenderTarget()
