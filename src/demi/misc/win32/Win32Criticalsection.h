@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Win32Criticalsection_h__
+#define Win32Criticalsection_h__
 
 namespace Demi
 {
@@ -36,3 +37,5 @@ namespace Demi
         CRITICAL_SECTION mCriticalSection;
     };
 }
+
+#endif // Win32Criticalsection_h__

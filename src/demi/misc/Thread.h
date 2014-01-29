@@ -8,10 +8,10 @@
 
 #if (DEMI_PLATFORM == DEMI_PLATFORM_WIN32)
 #   include <Windows.h>
-#   include "Win32Thread.h"
-#   include "Win32Event.h"
-#   include "Win32Criticalsection.h"
-#   include "Win32Interlocked.h"
+#   include "Win32/Win32Thread.h"
+#   include "Win32/Win32Event.h"
+#   include "Win32/Win32Criticalsection.h"
+#   include "Win32/Win32Interlocked.h"
 
 namespace Demi
 {

@@ -1,6 +1,6 @@
 
 #include "MiscPch.h"
-#include "Win32Thread.h"
+#include "Win32/Win32Thread.h"
 #include <windows.h>
 
 namespace Demi

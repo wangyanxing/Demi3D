@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Win32Interlocked_h__
+#define Win32Interlocked_h__
 
 namespace Demi
 {
@@ -28,3 +29,4 @@ namespace Demi
         }
     };
 }
+#endif // Win32Interlocked_h__

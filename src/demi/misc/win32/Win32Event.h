@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Win32Event_h__
+#define Win32Event_h__
 
 namespace Demi
 {
@@ -58,3 +59,5 @@ namespace Demi
         HANDLE mEvent;
     };
 }
+
+#endif // Win32Event_h__
