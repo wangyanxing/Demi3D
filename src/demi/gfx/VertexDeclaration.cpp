@@ -132,7 +132,7 @@ namespace Demi
         AddElement(ele.Stream, (DiVertexType)ele.Type, (DiVertexUsage)ele.Usage, ele.UsageIndex);
     }
 
-    uint16 DiVertexElements::GetStreamElementsSize(WORD stream)
+    uint16 DiVertexElements::GetStreamElementsSize(uint16 stream)
     {
         if (mStreamElementSize.find(stream)==mStreamElementSize.end())
         {

@@ -50,21 +50,24 @@ namespace Demi
 
     void DiRenderThread::WaitForFlushing()
     {
+#if 0
         while (!*(volatile int*)&mFlush)
         {
             if (mQuit)
                 break;
             ::Sleep(0);
         }
+#endif
     }
 
-    HWND DiRenderThread::GetRenderWindowHandle()
+    DiWndHandle DiRenderThread::GetRenderWindowHandle()
     {
         return NULL;
     }
 
     void DiRenderThread::WaitForFlushOver()
     {
+#if 0
         while (*(volatile int*)&mFlush)
         {
             if (GetRenderWindowHandle())
@@ -77,6 +80,7 @@ namespace Demi
                 }
             }
         }
+#endif
     }
 
     void DiRenderThread::DoFlush()
