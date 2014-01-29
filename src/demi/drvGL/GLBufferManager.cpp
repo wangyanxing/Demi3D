@@ -31,7 +31,7 @@ namespace Demi
         ptrAlloc->size = SCRATCH_POOL_SIZE - sizeof(GLScratchBufferAlloc);
         ptrAlloc->free = 1;
 
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         // Win32 machines with ATI GPU are having issues glMapBuffer, looks like buffer corruption
         if (true)   //ATI vendor
         {

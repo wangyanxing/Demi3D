@@ -1,7 +1,7 @@
 
 #include "GfxPch.h"
 
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 
 #include "Console.h"
 #include "GfxDriver.h"

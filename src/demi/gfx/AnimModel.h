@@ -105,9 +105,9 @@ namespace Demi
 
         uint32                  mNumBoneMatrices;
 
-        UINT64                  mLastUpdateBonesFrame;
+        uint64                  mLastUpdateBonesFrame;
 
-        UINT64                  mLastUpdateAnimFrame;
+        uint64                  mLastUpdateAnimFrame;
         
         bool                    mAutoUpdateAnims;
         

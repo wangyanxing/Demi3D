@@ -16,7 +16,8 @@
 #endif
 
 #ifndef MAKEFOURCC
-#   define MAKEFOURCC(ch0, ch1, ch2, ch3)    ((DWORD)(BYTE)(ch0) | ((DWORD)(BYTE)(ch1) << 8) | ((DWORD)(BYTE)(ch2) << 16) | ((DWORD)(BYTE)(ch3) << 24 ))
+#   define MAKEFOURCC(ch0, ch1, ch2, ch3)    ((unsigned long)(uint8)(ch0) | ((unsigned long)(uint8)(ch1) << 8) \
+    | ((unsigned long)(uint8)(ch2) << 16) | ((unsigned long)(uint8)(ch3) << 24 ))
 #endif
 
 #ifndef MAKEFOURCCSTR
@@ -25,7 +26,7 @@
 
 typedef void*   DiWndHandle;
 
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #   ifdef max
 #       undef max
 #   endif

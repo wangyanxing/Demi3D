@@ -225,13 +225,13 @@ namespace Demi
     //////////////////////////////////////////////////////////////////////////
 
     DiClipControllerSet::DiClipControllerSet()
-        :mDirtyFrameNumber(std::numeric_limits<UINT64>::max())
+        :mDirtyFrameNumber(std::numeric_limits<uint64>::max())
     {
 
     }
 
     DiClipControllerSet::DiClipControllerSet( const DiClipControllerSet& rhs )
-        :mDirtyFrameNumber(std::numeric_limits<UINT64>::max())
+        :mDirtyFrameNumber(std::numeric_limits<uint64>::max())
     {
         for (auto i = rhs.mClipControllers.begin();
             i != rhs.mClipControllers.end(); ++i)

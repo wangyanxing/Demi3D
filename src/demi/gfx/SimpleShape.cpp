@@ -89,11 +89,11 @@ namespace Demi
         float fDeltaSegAngle = (2 * DiMath::PI / NUM_SEGMENTS);
         unsigned short wVerticeIndex = 0 ;
 
-        UINT vbsize = mVerticesNum * sizeof(float) * (3 + 3 + 2);
+        uint32 vbsize = mVerticesNum * sizeof(float) * (3 + 3 + 2);
         mSourceData[0]->Create(vbsize);
         float* pVertex = (float*)mSourceData[0]->Lock(0,vbsize);
 
-        UINT ibsize = mPrimitiveCount * 3 * sizeof(uint16);
+        uint32 ibsize = mPrimitiveCount * 3 * sizeof(uint16);
         mIndexBuffer->Create(ibsize);
         uint16* pIndices = (uint16*)mIndexBuffer->Lock(0,ibsize);
 
@@ -171,7 +171,7 @@ namespace Demi
 
         // data
 
-        UINT vbsize = mVerticesNum * sizeof(float) * (3 + 3 + 2);
+        uint32 vbsize = mVerticesNum * sizeof(float) * (3 + 3 + 2);
         mSourceData[0]->Create(vbsize);
         float* pVertex = (float*)mSourceData[0]->Lock(0,vbsize);
 
@@ -211,7 +211,7 @@ namespace Demi
         mSourceData[0]->Unlock();
         mSourceData[0]->SetStride((3 + 3 + 2) * sizeof(float));
         
-        UINT ibsize = mPrimitiveCount * 3 * sizeof(uint16);
+        uint32 ibsize = mPrimitiveCount * 3 * sizeof(uint16);
         mIndexBuffer->Create(ibsize);
         uint16* pIndices = (uint16*)mIndexBuffer->Lock(0,ibsize);
 
@@ -283,14 +283,14 @@ namespace Demi
         mVerticesNum = 4;
         mPrimitiveCount = 2;
 
-        UINT vbsize = 32*sizeof(float);
+        uint32 vbsize = 32*sizeof(float);
         mSourceData[0]->Create(vbsize);
         void* data = mSourceData[0]->Lock(0,vbsize);
         memcpy(data,vertices,vbsize);
         mSourceData[0]->Unlock();
         mSourceData[0]->SetStride(8 * sizeof(float));
 
-        UINT ibsize = 6*sizeof(uint16);
+        uint32 ibsize = 6*sizeof(uint16);
         mIndexBuffer->Create(ibsize);
         data = mIndexBuffer->Lock(0,ibsize);
         memcpy(data,faces,ibsize);
@@ -408,7 +408,7 @@ namespace Demi
             0,0 
         };
 
-        UINT vbsize = NUM_VERTEX_ENTRIES*sizeof(float);
+        uint32 vbsize = NUM_VERTEX_ENTRIES*sizeof(float);
         mSourceData[0]->Create(vbsize);
         void* data = mSourceData[0]->Lock(0,vbsize);
         memcpy(data,vertices,vbsize);
@@ -431,7 +431,7 @@ namespace Demi
             20,22,23
         };
 
-        UINT ibsize = NUM_INDICES*sizeof(uint16);
+        uint32 ibsize = NUM_INDICES*sizeof(uint16);
         mIndexBuffer->Create(ibsize);
         void* dataib = mIndexBuffer->Lock(0,ibsize);
         memcpy(dataib,faces,ibsize);
@@ -480,7 +480,7 @@ namespace Demi
         float zdiff = (vmax.z - vmin.z) / 4.0f;
 
 
-        UINT vertSize = 3*sizeof(float) ;
+        uint32 vertSize = 3*sizeof(float) ;
         mSourceData[0]->Create(vertSize*48);
         void* data = mSourceData[0]->Lock(0,vertSize*48);
         float* pPos = (float*)(data);
@@ -786,7 +786,7 @@ namespace Demi
             col} 
         };
 
-        UINT vbsize = STRIDE*NUM_VERTICES;
+        uint32 vbsize = STRIDE*NUM_VERTICES;
         mSourceData[0]->Create(vbsize);
         void* data = mSourceData[0]->Lock(0,vbsize);
         memcpy(data,vertices,vbsize);
@@ -809,7 +809,7 @@ namespace Demi
             20,22,23
         };
 
-        UINT ibsize = NUM_INDICES*sizeof(uint16);
+        uint32 ibsize = NUM_INDICES*sizeof(uint16);
         mIndexBuffer->Create(ibsize);
         void* dataib = mIndexBuffer->Lock(0,ibsize);
         memcpy(dataib,faces,ibsize);

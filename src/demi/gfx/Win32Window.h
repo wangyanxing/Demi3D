@@ -6,7 +6,7 @@
 
 #pragma once
 
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 
 #include "Window.h"
 

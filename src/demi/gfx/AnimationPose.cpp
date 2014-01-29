@@ -175,8 +175,8 @@ namespace Demi
             {
                 kTimeIndex = pkAnim->GetTimeIndex(pkClipCtrl->GetTimePosition());
 
-                UINT unBonesNum = mSkeleton->GetNumBones();
-                for(UINT unHandle = 0 ; unHandle < unBonesNum ; ++ unHandle)
+                uint32 unBonesNum = mSkeleton->GetNumBones();
+                for(uint32 unHandle = 0 ; unHandle < unBonesNum ; ++ unHandle)
                 {
                     fFinalWeight = pkClipCtrl->GetWeight() * fFactor;
                     if(bHasAdditive && mAdditLayerWeight > 0.0f)
@@ -235,8 +235,8 @@ namespace Demi
                 {
                     kTimeIndex = pkAnim->GetTimeIndex(pkClipCtrl->GetTimePosition());
 
-                    UINT unBonesNum = mSkeleton->GetNumBones();
-                    for(UINT unHandle = 0 ; unHandle < unBonesNum ; ++ unHandle)
+                    uint32 unBonesNum = mSkeleton->GetNumBones();
+                    for(uint32 unHandle = 0 ; unHandle < unBonesNum ; ++ unHandle)
                     {
                         fFinalWeight = pkClipCtrl->GetWeight() * fFactor;
 

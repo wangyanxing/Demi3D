@@ -4,8 +4,10 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef BillboardSet_h__
+#define BillboardSet_h__
 
+#include "GfxPrerequisites.h"
 #include "RenderUnit.h"
 #include "TransformUnit.h"
 
@@ -252,3 +254,5 @@ namespace Demi
         void                            DestroyBuffers(void);
     };
 }
+
+#endif // BillboardSet_h__

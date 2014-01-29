@@ -23,7 +23,7 @@ namespace Demi
     class DiGLShaderLinker;
     class DiGLShaderParam;
 
-#ifdef WIN32
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
     class DiWin32GLUtil;
     class DiWin32GLContext;
 #endif
