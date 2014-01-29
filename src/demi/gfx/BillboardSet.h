@@ -146,7 +146,7 @@ namespace Demi
 
         void                    SetTextureCoords( DiFloatRect const * coords, uint16 numCoords );
 
-        void                    SetTextureStacksAndSlices( UCHAR stacks, UCHAR slices );
+        void                    SetTextureStacksAndSlices( uint8 stacks, uint8 slices );
 
         DiFloatRect const*      GetTextureCoords( uint16 * oNumCoords );
 

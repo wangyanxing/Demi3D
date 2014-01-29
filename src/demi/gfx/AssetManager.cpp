@@ -41,44 +41,21 @@ namespace Demi
 
     void DiAssetManager::AddSearchPath( const DiString& path )
     {
-        const uint32 len = path.length();
-        if(len)
+        if(!path.empty())
         {
-            const uint32 len2 = len+2;
-            char *searchPath = DI_NEW char[len2];
-            strncpy_s(searchPath, len2, path.c_str(), len2);
-            if(path[len-1] != '/' && path[len-1] != '\\')
+            DiString searchPath = path;
+            if (!DiString::EndsWith(searchPath, "\\") &&
+                !DiString::EndsWith(searchPath, "/"))
             {
-                strncat_s(searchPath, len2, "/", len2);
+                searchPath += "/";
             }
             mSearchPaths.push_back(searchPath);
-            delete[] searchPath;
         }
     }
 
     void DiAssetManager::ClearSearchPaths( void )
     {
         mSearchPaths.clear();
-    }
-
-    bool DiAssetManager::SearchForPath( const char* path, char* buffer, 
-        int bufferSize, int maxRecursion )
-    {
-        char* tmpBuffer = (char*)alloca(bufferSize);
-        strcpy_s(buffer, bufferSize, path);
-        for(int i = 0; i < maxRecursion; i++)
-        {
-            if(GetFileAttributesA(buffer) == INVALID_FILE_ATTRIBUTES)
-            {
-                sprintf_s(tmpBuffer, bufferSize, "../%s", buffer);
-                strcpy_s(buffer, bufferSize, tmpBuffer);
-            }
-            else 
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     DiAssetPtr DiAssetManager::FindAsset( const DiString& name )
@@ -175,7 +152,7 @@ namespace Demi
             }
             else 
             {
-                DI_ERROR("Cannot recognize the asset type : %d", (int)type);
+                DI_WARNING("Cannot recognize the asset type : %d", (int)type);
             }
         }
 

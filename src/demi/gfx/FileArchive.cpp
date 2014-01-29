@@ -16,7 +16,7 @@ namespace Demi
 {
     static bool is_absolute_path(const char* path)
     {
-        if (isalpha(UCHAR(path[0])) && path[1] == ':')
+        if (isalpha(uint8(path[0])) && path[1] == ':')
             return true;
         return path[0] == '/' || path[0] == '\\';
     }

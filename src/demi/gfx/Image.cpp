@@ -225,7 +225,7 @@ namespace Demi
     DiColor DiPixelBox::GetColourAt( size_t x, size_t y, size_t z )
     {
         DiColor cv;
-        unsigned char pixelSize = (UCHAR)GetNumElemBytes(format);
+        unsigned char pixelSize = (uint8)GetNumElemBytes(format);
         size_t pixelOffset = pixelSize * (z * slicePitch + y * rowPitch + x);
         UnpackColour(&cv, format, (unsigned char *)data + pixelOffset);
         return cv;
@@ -233,7 +233,7 @@ namespace Demi
 
     void DiPixelBox::SetColourAt( DiColor const &cv, size_t x, size_t y, size_t z )
     {
-        unsigned char pixelSize = (UCHAR)GetNumElemBytes(format);
+        unsigned char pixelSize = (uint8)GetNumElemBytes(format);
         size_t pixelOffset = pixelSize * (z * slicePitch + y * rowPitch + x);
         PackColour(cv, format, (unsigned char *)data + pixelOffset);
     }

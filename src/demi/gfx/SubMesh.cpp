@@ -258,9 +258,9 @@ namespace Demi
             mVertexElems.AddElement(stream, DiVertexType(numBlendWeightsPerVertex - 1), VERT_USAGE_BLENDWEIGHT, 0);
         }
 
-        uint16 vertSize = sizeof(UCHAR)*4 + sizeof(float)*numBlendWeightsPerVertex;
-        UCHAR* pBase = (UCHAR*)CreateSourceData(stream,mVerticesNum,vertSize);
-        UCHAR* base = pBase;
+        uint16 vertSize = sizeof(uint8)*4 + sizeof(float)*numBlendWeightsPerVertex;
+        uint8* pBase = (uint8*)CreateSourceData(stream,mVerticesNum,vertSize);
+        uint8* base = pBase;
         base;
         memset(pBase,0,mVerticesNum*vertSize);
 
@@ -268,17 +268,17 @@ namespace Demi
         i = mBoneWeights.begin();
         iend = mBoneWeights.end();
         float* pWeight;
-        UCHAR* pIndex;
+        uint8* pIndex;
         for (size_t v = 0; v < mVerticesNum; ++v)
         {
-            pIndex = (UCHAR*)pBase;
-            pWeight = (float*)(pBase + sizeof(UCHAR)*4);
+            pIndex = (uint8*)pBase;
+            pWeight = (float*)(pBase + sizeof(uint8)*4);
             for (uint16 bone = 0; bone < numBlendWeightsPerVertex; ++bone)
             {
                 if (i != iend && i->second.vertexIndex == v)
                 {
                     *pWeight++ = i->second.weight;
-                    *pIndex++ = static_cast<UCHAR>(/*boneToBlendIndex[*/i->second.boneIndex/*]*/);
+                    *pIndex++ = static_cast<uint8>(/*boneToBlendIndex[*/i->second.boneIndex/*]*/);
                     ++i;
                 }
                 else
