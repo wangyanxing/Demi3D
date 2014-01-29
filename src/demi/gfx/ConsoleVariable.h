@@ -4,12 +4,15 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef ConsoleVariable_h__
+#define ConsoleVariable_h__
 
 #include "Callback.h"
 #include <functional>
 
-#pragma warning(disable:4512)
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning(disable:4512)
+#endif
 
 namespace Demi
 {
@@ -190,3 +193,4 @@ namespace Demi
         float                  mValue;
     };
 }
+#endif // ConsoleVariable_h__

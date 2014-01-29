@@ -7,8 +7,6 @@
 #include "IndexBuffer.h"
 #include "GfxDriver.h"
 
-#pragma warning(disable:4244)
-
 namespace Demi
 {
     DiInstanceBatchShader::DiInstanceBatchShader( DiInstanceManager *creator, DiMeshPtr &meshReference,

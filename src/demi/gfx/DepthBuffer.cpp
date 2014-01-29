@@ -3,7 +3,9 @@
 #include "DepthBuffer.h"
 #include "RenderTarget.h"
 
-#pragma warning(disable:4389)
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning(disable:4389)
+#endif
 
 namespace Demi
 {
