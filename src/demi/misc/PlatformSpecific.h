@@ -10,6 +10,7 @@
 #define DEMI_PLATFORM_WIN32   1
 #define DEMI_PLATFORM_OSX     2
 #define DEMI_PLATFORM_IOS     3
+#define DEMI_PLATFORM_LINUX   4
 
 #define DEMI_BUILD_32         1
 #define DEMI_BUILD_64         2
