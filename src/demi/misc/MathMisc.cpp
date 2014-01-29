@@ -11,9 +11,11 @@
 #include "plane.h"
 #include "matrix4.h"
 
-#pragma warning(push)
-#pragma warning(disable : 4305)
-#pragma warning(disable : 4127)
+#if (DEMI_COMPILER == DEMI_COMPILER_MSVC)
+#   pragma warning(push)
+#   pragma warning(disable : 4305)
+#   pragma warning(disable : 4127)
+#endif
 
 namespace Demi 
 {
@@ -1111,5 +1113,7 @@ namespace Demi
     }
 }
 
-#pragma warning(pop)
+#if (DEMI_COMPILER == DEMI_COMPILER_MSVC)
+#   pragma warning(pop)
+#endif
 
