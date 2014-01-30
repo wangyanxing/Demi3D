@@ -27,7 +27,7 @@ namespace Demi
         mTextureType   = TEXTURE_2D;
         mUsage         = TU_TEXURE;
                        
-        mTextureDrv    = Driver->CreateTextureDriver(this);
+        mTextureDrv    = Driver ? Driver->CreateTextureDriver(this) : nullptr;
         mRenderTarget  = nullptr;
                        
         mWidth         = 0;
