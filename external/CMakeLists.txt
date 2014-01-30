@@ -35,6 +35,16 @@ else ()
   set(DI_EXTERNAL_PLATFORM_X64 FALSE)
 endif ()
 
+if (APPLE)
+  include(CMakeForceCompiler)
+  CMAKE_FORCE_C_COMPILER(clang GNU)
+  CMAKE_FORCE_CXX_COMPILER(clang++ GNU)
+  SET(CMAKE_SIZEOF_VOID_P 4)
+  set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvm.clang.1_0")
+  set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+  set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+endif ()
+
 # Add -fPIC flag to x64 GCC builds
 if (CMAKE_COMPILER_IS_GNUCXX AND NOT MINGW)
   if (DI_EXTERNAL_PLATFORM_X64 AND NOT APPLE)
@@ -45,6 +55,7 @@ endif ()
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build, options are: Debug, Release" FORCE)
 endif ()
+
 
 # Specify build paths
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/lib")

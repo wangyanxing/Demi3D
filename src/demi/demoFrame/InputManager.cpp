@@ -256,7 +256,7 @@ namespace Demi
 
     void DiInputManager::updateCursorPosition()
     {
-        const OIS::MouseState& ms = mMouse->getMouseState();
+        //const OIS::MouseState& ms = mMouse->getMouseState();
         //injectMouseMove(mCursorX, mCursorY, ms.Z.abs);
     }
 

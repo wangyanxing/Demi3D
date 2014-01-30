@@ -17,16 +17,7 @@ set (DI_DEMO_PLATFORM_SPEC ""
 elseif (APPLE)
 set (DI_DEMO_PLATFORM_SPEC ""
   )
-  set(DI_DEMO_PLATFORM_LIBS ${Carbon_LIBRARY_FWK} ${Cocoa_LIBRARY_FWK})
-  
-  if(DEMI_BUILD_PLATFORM_APPLE_IOS)
-	set(DI_DEMO_PLATFORM_LIBS ${DI_DEMO_PLATFORM_LIBS})
-  else()
-	if(NOT IOKit_FOUND)
-		  message(STATUS "Could not find IOKit!")
-	endif()
-  	set(DI_DEMO_PLATFORM_LIBS ${DI_DEMO_PLATFORM_LIBS} IOKit)    
-  endif()
+  set(DI_DEMO_PLATFORM_LIBS ${Carbon_LIBRARY_FWK} ${Cocoa_LIBRARY_FWK} ${IOKit_LIBRARY_FWK})
 endif()
 
 # source files

@@ -157,5 +157,7 @@ MACRO(findpkg_framework fwk)
         endif ()
       ENDIF(EXISTS ${fwkpath})
     ENDFOREACH(dir)
+	
+	message(STATUS "!!!!!!Framework1!!!:  " ${${fwk}_FRAMEWORK_INCLUDES} )
   ENDIF(APPLE)
 ENDMACRO(findpkg_framework)
