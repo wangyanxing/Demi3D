@@ -58,28 +58,8 @@ endif ()
 include(CheckCXXCompilerFlag)
 include(FindFrameworks)
 include(MacroLogFeature)
-include(Depends)
 include(AddTargets)
 include(AddSamples)
-
-if (APPLE)
-  find_package(iOSSDK)
-  macro_log_feature(iOSSDK_FOUND "iOS SDK" "iOS SDK" "http://developer.apple.com/ios" FALSE "" "")
-  
-  if (NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
-    find_package(Carbon)
-    macro_log_feature(Carbon_FOUND "Carbon" "Carbon" "http://developer.apple.com/mac" TRUE "" "")
-
-    find_package(Cocoa)
-    macro_log_feature(Cocoa_FOUND "Cocoa" "Cocoa" "http://developer.apple.com/mac" TRUE "" "")
-
-    find_package(IOKit)
-    macro_log_feature(IOKit_FOUND "IOKit" "IOKit HID framework needed by the samples" "http://developer.apple.com/mac" FALSE "" "")
-
-    find_package(CoreVideo)
-    macro_log_feature(CoreVideo_FOUND "CoreVideo" "CoreVideo" "http://developer.apple.com/mac" TRUE "" "")
-  endif (NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
-endif(APPLE)
 
 # Set compiler specific build flags
 if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
@@ -172,6 +152,9 @@ else()
   include(TestBigEndian)
   test_big_endian(DEMI_TEST_BIG_ENDIAN)
 endif()
+
+# Dependencies
+include(Depends)
 
 # Add core lib include path
 include_directories("${DEMI_SOURCE_DIR}/src/demi/misc")

@@ -87,12 +87,12 @@ MACRO(DI_CONFIG_CORE_LIB TARGETNAME PREFIX_HEADER)
 	  if (DEMI_BUILD_PLATFORM_APPLE_IOS)
 		set_target_properties(${TARGETNAME} PROPERTIES INSTALL_NAME_DIR ${TARGETNAME})
 	  else ()
-		set_target_properties(${TARGETNAME} PROPERTIES FRAMEWORK TRUE)
-		# Set the INSTALL_PATH so that Frameworks can be local
-		set_target_properties(${TARGETNAME}
-		   PROPERTIES BUILD_WITH_INSTALL_RPATH 1
-		   INSTALL_NAME_DIR "@executable_path/../Frameworks"
-		)
+		#set_target_properties(${TARGETNAME} PROPERTIES FRAMEWORK TRUE)
+		## Set the INSTALL_PATH so that Frameworks can be local
+		#et_target_properties(${TARGETNAME}
+		#   PROPERTIES BUILD_WITH_INSTALL_RPATH 1
+		#   INSTALL_NAME_DIR "@executable_path/../Frameworks"
+		#)
 		set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
 		set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PREFIX_HEADER ${PREFIX_HEADER})
 		set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")

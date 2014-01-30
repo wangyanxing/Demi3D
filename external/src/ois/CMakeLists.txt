@@ -150,7 +150,7 @@ endif ()
 target_link_libraries(OIS ${OIS_PLATFORM_LIBS})
 
 if (APPLE)
-  if(OGRE_BUILD_PLATFORM_APPLE_IOS)
+  if(DEMI_BUILD_PLATFORM_APPLE_IOS)
     set_target_properties(OIS PROPERTIES
       LINK_FLAGS "-framework UIKit"
     )

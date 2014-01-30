@@ -20,6 +20,7 @@ findpkg_begin(IOKit)
 # construct search paths
 set(IOKit_PREFIX_PATH ${IOKit_HOME} $ENV{IOKit_HOME}
   ${DEMI_HOME} $ENV{DEMI_HOME})
+
 create_search_paths(IOKit)
 # redo search if prefix path changed
 clear_if_changed(IOKit_PREFIX_PATH
@@ -39,6 +40,7 @@ findpkg_framework(IOKit)
 find_path(IOKit_INCLUDE_DIR NAMES IOKitLib.h HINTS ${IOKit_INC_SEARCH_PATH} ${IOKit_PKGC_INCLUDE_DIRS} PATH_SUFFIXES IOKit)
 find_library(IOKit_LIBRARY_REL NAMES ${IOKit_LIBRARY_NAMES} HINTS ${IOKit_LIB_SEARCH_PATH} ${IOKit_PKGC_LIBRARY_DIRS})
 find_library(IOKit_LIBRARY_DBG NAMES ${IOKit_LIBRARY_NAMES_DBG} HINTS ${IOKit_LIB_SEARCH_PATH} ${IOKit_PKGC_LIBRARY_DIRS})
+
 make_library_set(IOKit_LIBRARY)
 findpkg_finish(IOKit)
 add_parent_dir(IOKit_INCLUDE_DIRS IOKit_INCLUDE_DIR)
