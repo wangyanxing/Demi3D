@@ -3,8 +3,8 @@ IF(NOT DEMI_FIND_FRAMEWORKS_INCLUDED)
   MACRO(DEMI_FIND_FRAMEWORKS fwk)
     IF(APPLE)
       SET(${fwk}_FRAMEWORKS)
+	  
       SET(DEMI_FRAMEWORK_PATH
-		${DEMI_DEPENDENCIES_DIR}
     	~/Library/Frameworks
     	/Library/Frameworks
     	/System/Library/Frameworks
