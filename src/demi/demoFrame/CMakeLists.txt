@@ -36,6 +36,13 @@ DI_CONFIG_CORE_LIB(DemoFramework "${CMAKE_CURRENT_SOURCE_DIR}/DemoPch.h")
 include_directories(${OIS_INCLUDE_DIRS})
 target_link_libraries(DemoFramework DiMisc DiGfx ${OIS_LIBRARIES} ${DI_DEMO_PLATFORM_LIBS})
 
+if(NOT ${DEMI_FRAMEWORK_PATH} STREQUAL "")
+  set_target_properties(DemoFramework PROPERTIES
+    COMPILE_FLAGS "-F${DEMI_FRAMEWORK_PATH}"
+    LINK_FLAGS "-F${DEMI_FRAMEWORK_PATH} -framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo"
+  )
+endif()
+
 if (NOT DEMI_STATIC)
   set_target_properties(DemoFramework PROPERTIES
     COMPILE_DEFINITIONS DI_DEMO_EXPORT

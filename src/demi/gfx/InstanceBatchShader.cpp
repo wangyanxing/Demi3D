@@ -28,7 +28,8 @@ namespace Demi
         uint32 numBones = 1;
         if (HasSkeleton())
         {
-            numBones = DiMath::Max( (uint32)1, mMotionReference->GetSkeleton()->GetNumBones());
+            numBones = mMotionReference->GetSkeleton()->GetNumBones() > 1 ? 
+                mMotionReference->GetSkeleton()->GetNumBones() : 0;
         }
 
         return MAX_BONE_NUM / numBones;
