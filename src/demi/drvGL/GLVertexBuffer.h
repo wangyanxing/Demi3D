@@ -48,8 +48,6 @@ namespace Demi
 
         GLuint      mBufferId;
 
-        bool        mScratchUploadOnUnlock;
-
         void*       mLockingScratch;
 
         uint32      mLockingOffset;

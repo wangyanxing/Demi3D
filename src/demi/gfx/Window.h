@@ -47,6 +47,8 @@ namespace Demi
         virtual void        GetTitle(char *title, uint32 maxLength) const = 0;
 
         virtual void        SetTitle(const char *title) = 0;
+        
+        virtual void        OnMoveOrResize() {}
 
     protected:
 

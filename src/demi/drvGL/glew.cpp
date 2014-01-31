@@ -31,9 +31,11 @@
 
 #include "DrvGLPch.h"
 
-// SJS
-#include "Win32GLUtil.h"
-// SJS
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+#   include "Win32/Win32GLUtil.h"
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+#   include "OSX/OSXGLUtil.h"
+#endif
 
 #include <GL/glew.h>
 #if defined(_WIN32)

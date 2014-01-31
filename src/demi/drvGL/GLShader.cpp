@@ -58,6 +58,8 @@ namespace Demi
         case SHADER_PIXEL:
             shaderType = GL_FRAGMENT_SHADER_ARB;
             break;
+        default:
+            DI_WARNING("Invalid shader type");
         }
         mShaderHandle = glCreateShaderObjectARB(shaderType);
 
@@ -186,7 +188,6 @@ namespace Demi
             DiString::size_type first = 0, second = 0;
             for (auto i = pos + 7; i < mProcessedShader.size() && mProcessedShader[i] != '\n'; ++i)
             {
-                char c = mProcessedShader[i];
                 if (mProcessedShader[i] == '\"')
                 {
                     if (first == 0)
@@ -275,7 +276,7 @@ namespace Demi
             {
                 // Check for array index included in the name and strip it
                 DiString name(uniformName);
-                unsigned index = name.find('[');
+                int index = name.find('[');
                 if (index != DiString::npos)
                 {
                     // If not the first index, skip

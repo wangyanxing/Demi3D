@@ -17,9 +17,13 @@
 #include "RenderUnit.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-#   include "Win32Window.h"
-#   include "Win32GLContext.h"
-#   include "Win32GLUtil.h"
+#   include "Win32/Win32Window.h"
+#   include "Win32/Win32GLContext.h"
+#   include "Win32/Win32GLUtil.h"
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+//#   include "OSX/OSXWindow.h"
+#   include "OSX/OSXGLContext.h"
+#   include "OSX/OSXGLUtil.h"
 #endif
 
 // Convenience macro from ARB_vertex_buffer_object spec
@@ -222,6 +226,9 @@ namespace Demi
         case PT_TRIANGLEFAN:
             primType = GL_TRIANGLE_FAN;
             break;
+        default:
+            primType = GL_TRIANGLES;
+            DI_WARNING("Invalid primitive type");
         }
 
         if (!unit->mIndexBuffer)
@@ -328,10 +335,13 @@ namespace Demi
 
     void DiGLDriver::GetWindowDimension(DiWndHandle wnd, uint32& w, uint32& h)
     {
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         RECT rect;
         GetClientRect((HWND)wnd, &rect);
         w = rect.right - rect.left;
         h = rect.bottom - rect.top;
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+#endif
     }
 
     void DiGLDriver::BindMaterialStates(const DiMaterial* mat)
@@ -350,7 +360,7 @@ namespace Demi
         glPolygonMode(GL_FRONT_AND_BACK, finalwireframe ? GL_LINE : GL_FILL);
 
         // culling mode
-        GLenum cullMode;
+        GLenum cullMode = 0;
         switch (mat->GetCullMode())
         {
         case CULL_NONE:
@@ -363,6 +373,8 @@ namespace Demi
         case CULL_CCW:
             cullMode = GL_FRONT;
             break;
+        default:
+            DI_WARNING("Invalid culling mode.");
         }
         glEnable(GL_CULL_FACE);
         glCullFace(cullMode);
@@ -491,6 +503,9 @@ namespace Demi
     {
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         return DI_NEW DiWin32Window();
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        //return DI_NEW DiOSXWindow();
+        return nullptr;
 #else
         return nullptr;
 #endif
@@ -502,6 +517,9 @@ namespace Demi
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         ret = DI_NEW DiWin32GLContext(static_cast<DiWin32GLUtil*>(mGLUtil), wnd);
         DI_LOG("Win32 GL context created.");
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        ret = DI_NEW DiOSXGLContext(static_cast<DiOSXGLUtil*>(mGLUtil), wnd);
+        DI_LOG("OSX GL context created.");
 #endif
         mContextMap[wnd] = ret;
         return ret;
@@ -512,6 +530,8 @@ namespace Demi
         DiGLUtil* ret = nullptr;
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         ret = DI_NEW DiWin32GLUtil();
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        ret = DI_NEW DiOSXGLUtil();
 #endif
         return ret;
     }
@@ -552,7 +572,6 @@ namespace Demi
                 void* pBufferData = nullptr;
                 pBufferData = VBO_BUFFER_OFFSET(i->Offset);
 
-                auto elemNum = DiVertexElements::GetElementTypeCount((DiVertexType)i->Type);
                 auto gltype  = DiGLTypeMappings::GetGLType((DiVertexType)i->Type);
 
                 GLint attrib = DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
