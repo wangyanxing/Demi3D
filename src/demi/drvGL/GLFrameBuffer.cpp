@@ -78,7 +78,6 @@ namespace Demi
         size_t width = mColorBuffer[0]->GetWidth();
         size_t height = mColorBuffer[0]->GetHeight();
         DiPixelFormat origFmt = mColorBuffer[0]->GetFormat();
-        GLuint format = DiGLTypeMappings::GLFormatMapping[origFmt];
         uint32 maxSupportedMRTs = MAX_MRT;  //TODO
 
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mFBOId);

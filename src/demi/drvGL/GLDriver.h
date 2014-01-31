@@ -4,9 +4,9 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef GLDriver_h__
+#define GLDriver_h__
 
-#include "DrvGLDefines.h"
 #include "GLPrerequisites.h"
 #include "GfxDriver.h"
 
@@ -151,3 +151,5 @@ namespace Demi
         DiGLShaderLinker*       mCurrentProgram;
     };
 }
+
+#endif

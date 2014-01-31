@@ -43,8 +43,6 @@ namespace Demi
     private:
 
         GLuint      mBufferId;
-        
-        bool        mScratchUploadOnUnlock;
 
         void*       mLockingScratch;
 

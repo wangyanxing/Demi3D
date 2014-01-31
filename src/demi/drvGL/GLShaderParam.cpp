@@ -94,7 +94,7 @@ namespace Demi
                 case DiShaderParameter::VARIABLE_SAMPLER2D:
                 case DiShaderParameter::VARIABLE_SAMPLERCUBE:
                     {
-                        DiTexture* tex = any_cast<DiTexture*>(data);
+                        //DiTexture* tex = any_cast<DiTexture*>(data);
                         //tex->Bind(regID);
                         // TODO
                     }

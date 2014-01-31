@@ -103,7 +103,6 @@ typedef float               f32;
 typedef double              f64;
 typedef double              real;
 typedef unsigned long       ulong;
-typedef int                 BOOL;
 
 typedef void *THREAD_HANDLE;
 typedef void *EVENT_HANDLE;

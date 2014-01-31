@@ -91,7 +91,7 @@ namespace Demi
 
         // TODO: Auto generate mipmap
 
-        BOOL isCompressed = DiPixelBox::IsCompressedFormat(fmt);
+        bool isCompressed = DiPixelBox::IsCompressedFormat(fmt);
         if (isCompressed)
         {
             uint32 imageSize = mImageSize;
@@ -219,7 +219,7 @@ namespace Demi
         glBindTexture(mGLTextureType, mTextureID);
         
         DiPixelFormat fmt = mParent->GetFormat();
-        BOOL isCompressed = DiPixelBox::IsCompressedFormat(fmt);
+        bool isCompressed = DiPixelBox::IsCompressedFormat(fmt);
 
         GLenum faceType = GL_TEXTURE_2D;
         if (mGLTextureType == GL_TEXTURE_CUBE_MAP)
@@ -297,7 +297,7 @@ namespace Demi
         glBindTexture(mGLTextureType, mTextureID);
 
         DiPixelFormat fmt = mParent->GetFormat();
-        BOOL isCompressed = DiPixelBox::IsCompressedFormat(fmt);
+        bool isCompressed = DiPixelBox::IsCompressedFormat(fmt);
 
         GLenum faceType = GL_TEXTURE_2D;
         if (mGLTextureType == GL_TEXTURE_CUBE_MAP)
