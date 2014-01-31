@@ -17,7 +17,7 @@
 #include "OSXWindowView.h"
 #include "OSXWindowDelegate.h"
 
-@class OSXCocoaWindowDelegate;
+@class OSXWindowDelegate;
 
 @interface DemiWindow : NSWindow
 
@@ -66,6 +66,12 @@ namespace Demi
         
     private:
         
+        void                _CreateWindow(unsigned int width, unsigned int height, const char* title);
+        
+        void                _SetWindowParams();
+        
+    private:
+        
         bool                    mActive;
         
         bool                    mClosed;
@@ -94,7 +100,7 @@ namespace Demi
         
         NSPoint                 mWindowOrigin;
         
-        OSXCocoaWindowDelegate* mWindowDelegate;
+        OSXWindowDelegate*      mWindowDelegate;
 
         DiOSXCocoaContext*      mContext;
         

@@ -14,18 +14,21 @@
 #include "GfxDriver.h"
 #include "Command.h"
 
-#define USE_OPEN_GL 0
-
 namespace Demi
 {
-#if DEMI_DEBUG
-    const DiString gfxD3D9DrvLib = "DiDrvD3D9_d";
-    const DiString gfxGLDrvLib = "DiDrvGL_d";
+#if DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        const DiString gfxGLDrvLib = "DiDrvGL";
+#       define USE_OPEN_GL 1
 #else
-    const DiString gfxD3D9DrvLib = "DiDrvD3D9";
-    const DiString gfxGLDrvLib = "DiDrvGL";
+#   define USE_OPEN_GL 0
+#   if DEMI_DEBUG
+        const DiString gfxD3D9DrvLib = "DiDrvD3D9_d";
+        const DiString gfxGLDrvLib = "DiDrvGL_d";
+#   else
+        const DiString gfxD3D9DrvLib = "DiDrvD3D9";
+        const DiString gfxGLDrvLib = "DiDrvGL";
+#   endif
 #endif
-
     DiApp::DiApp(const DiString& mediaPath,const DiString& logName) :
           mAssetManager(nullptr)
         //, mGUIWrapper(nullptr)

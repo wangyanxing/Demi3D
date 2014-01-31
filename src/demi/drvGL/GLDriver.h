@@ -103,6 +103,8 @@ namespace Demi
         DiGLContext*            GetContext(DiWndHandle wnd);
 
         DiGLContext*            GetCurrentContext() { return mCurrentContext; }
+        
+        DiGLContext*            GetMainContext() { return mMainContext; }
 
         DiWindow*               CreateWnd();
 
