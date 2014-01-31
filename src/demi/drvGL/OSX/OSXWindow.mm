@@ -133,11 +133,12 @@ namespace Demi
         
         if(true)
         {
+            // create a new window
             _CreateWindow(width, height, [windowTitle cStringUsingEncoding:NSUTF8StringEncoding]);
         }
         else
         {
-            // TODO: external window
+            // TODO: use an external window
         }
         
         mContext = DI_NEW DiOSXCocoaContext(mGLContext, mGLPixelFormat);
@@ -182,6 +183,8 @@ namespace Demi
 
     void DiOSXWindow::GetWindowSize(uint32& width, uint32& height)
     {
+        width = mRect.Width();
+        height = mRect.Height();
     }
 
     void DiOSXWindow::GetTitle(char *title, uint32 maxLength) const

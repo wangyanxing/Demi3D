@@ -9,15 +9,19 @@
 
 #include "GLContext.h"
 
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/CGLTypes.h>
+
 namespace Demi
 {
     class DI_GLDRV_API DiOSXCGLContext : public DiGLContext
     {
     public:
 
-        DiOSXCGLContext(DiOSXGLUtil* util, DiWndHandle wnd);
+        DiOSXCGLContext(CGLContextObj cglContext,
+                        CGLPixelFormatObj pixelFormat);
 
-        DiOSXCGLContext();
+        ~DiOSXCGLContext();
 
     public:
 
@@ -29,11 +33,15 @@ namespace Demi
 
         DiGLContext*    Clone() const;
 
-        void            SwapBuffer();
+        void            SwapBuffer(){}
+        
+        CGLContextObj   GetContext() { return mCGLContext; }
 
     private:
-
-        DiOSXGLUtil*    mGLUtil;
+        
+        CGLContextObj       mCGLContext;
+        
+        CGLPixelFormatObj   mPixelFormat;
     };
 }
 
