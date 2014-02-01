@@ -21,8 +21,6 @@
 #   include "Win32/Win32GLContext.h"
 #   include "Win32/Win32GLUtil.h"
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
-//#   include "OSX/OSXWindow.h"
-#   include "OSX/OSXGLContext.h"
 #   include "OSX/OSXGLUtil.h"
 #endif
 
@@ -48,6 +46,7 @@ namespace Demi
     {
         mColourWrite[0] = mColourWrite[1] = mColourWrite[2] = mColourWrite[3] = true;
         mGLBufferManager = DI_NEW DiGLBufferManager();
+        mGLUtil = _CreateGLUtil();
     }
     
     DiGLDriver::~DiGLDriver()
@@ -58,7 +57,6 @@ namespace Demi
     {
         DI_LOG("OpenGL driver is intializing.");
 
-        mGLUtil = _CreateGLUtil();
         _InitMainContext(_CreateContext(wnd));
 
         mGLFBOManager = DI_NEW DiGLFBOManager(true);    // TODO: Check atimode
@@ -511,7 +509,7 @@ namespace Demi
         ret = DI_NEW DiWin32GLContext(static_cast<DiWin32GLUtil*>(mGLUtil), wnd);
         DI_LOG("Win32 GL context created.");
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
-        ret = DI_NEW DiOSXGLContext(static_cast<DiOSXGLUtil*>(mGLUtil), wnd);
+        //ret = DI_NEW DiOSXCocoaContext(static_cast<DiOSXGLUtil*>(mGLUtil), wnd);
         DI_LOG("OSX GL context created.");
 #endif
         mContextMap[wnd] = ret;

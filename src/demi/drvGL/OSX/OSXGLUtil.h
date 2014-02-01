@@ -21,8 +21,6 @@ namespace Demi
 
     public:
 
-        void            InitExtensions();
-
         void*           GetProcAddress(const DiString& procname);
 
         DiWindow*       CreateNewWindow();

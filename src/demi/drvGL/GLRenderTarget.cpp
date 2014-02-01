@@ -166,7 +166,7 @@ namespace Demi
     }
 
     DiGLWindowTarget::DiGLWindowTarget()
-        : mWnd(NULL)
+        : mWnd(nullptr)
         , mContext(nullptr)
     {
     }
