@@ -49,6 +49,8 @@ namespace Demi
         virtual void        SetTitle(const char *title) = 0;
         
         virtual void        OnMoveOrResize() {}
+        
+        virtual void        SwapBuffers() = 0;
 
     protected:
 

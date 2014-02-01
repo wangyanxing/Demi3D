@@ -64,6 +64,8 @@ namespace Demi
         
         void                OnMoveOrResize();
         
+        void                SwapBuffers();
+        
     private:
         
         void                _CreateWindow(unsigned int width, unsigned int height, const char* title);

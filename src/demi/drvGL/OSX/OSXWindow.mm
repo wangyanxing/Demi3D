@@ -132,6 +132,7 @@ namespace Demi
         //mHeight = height;
         //mColourDepth = depth;
         //mFSAA = fsaa_samples;
+        mRect = DiRect(0,0,width,height);
         
         if(true)
         {
@@ -202,6 +203,18 @@ namespace Demi
     void DiOSXWindow::SetActive(bool act)
     {
         mActive = act;
+    }
+    
+    void DiOSXWindow::SwapBuffers()
+    {
+        CGLLockContext((CGLContextObj)[mGLContext CGLContextObj]);
+        [mGLContext makeCurrentContext];
+        
+        if([mGLContext view] != mView)
+            [mGLContext setView:mView];
+        
+        [mGLContext flushBuffer];
+        CGLUnlockContext((CGLContextObj)[mGLContext CGLContextObj]);
     }
     
     void DiOSXWindow::OnMoveOrResize()
