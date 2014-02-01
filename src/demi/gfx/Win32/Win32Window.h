@@ -39,9 +39,13 @@ namespace Demi
 
         void        SetTitle(const char *title);
 
+        void        SwapBuffers();
+
     private:
 
         bool        mHandlingmsg;
+
+        HDC         mHDC;
     };
 }
 

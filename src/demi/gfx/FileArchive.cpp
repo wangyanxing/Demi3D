@@ -274,11 +274,13 @@ namespace Demi
         DiString directory;
         if (pos1 != pattern.npos)
         {
-            directory = pattern.substr (0, pos1 + 1);
+            directory = pattern.substr(0, pos1 + 1);
         }
 
         DiString full_pattern = concatenate_path(mName, pattern);
-
+         
+        DI_LOG("Searching path: %s", full_pattern.c_str());
+         
         lHandle = _findfirst(full_pattern.c_str(), &tagData);
         res = 0;
         while (lHandle != -1 && res != -1)
@@ -319,9 +321,9 @@ namespace Demi
 
             DiString mask ("/");
             if (pos1 != pattern.npos)
-                mask.append (pattern.substr (pos1 + 1));
+                mask.append(pattern.substr(pos1 + 1));
             else
-                mask.append (pattern);
+                mask.append(pattern);
 
             lHandle = _findfirst(base_dir.c_str (), &tagData);
             res = 0;

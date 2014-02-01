@@ -127,9 +127,4 @@ namespace Demi
         }
     }
 
-    void DiWin32GLContext::SwapBuffer()
-    {
-        SwapBuffers(mHDC);
-    }
-
 }

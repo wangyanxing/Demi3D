@@ -68,9 +68,8 @@ namespace Demi
         {
         case ARCHIVE_FILE:
             return ArchivePtr(DI_NEW DiFileArchive(filename));
-            break;
         default:
-            DI_ERROR("没有合适的文件系统可用");
+            DI_ERROR("No valid file system!");
             return ArchivePtr();
         }
     }
