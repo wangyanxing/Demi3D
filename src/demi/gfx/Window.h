@@ -60,4 +60,25 @@ namespace Demi
 
         bool	            mVSync;
     };
+
+    class DI_GFX_API DiWindowManager
+    {
+    public:
+
+        DiWindowManager(){}
+
+        ~DiWindowManager(){}
+
+    public:
+
+        void                RegisterWindow(DiWindow* wnd);
+
+        void                UnregisterWindow(DiWindow* wnd);
+
+        DiWindow*           GetWindow(DiWndHandle handle);
+
+    private:
+
+        DiMap<DiWndHandle, DiWindow*> mWnds;
+    };
 }

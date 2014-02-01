@@ -22,15 +22,18 @@ namespace Demi
         mDeltaTime(0),
         mElapsedTime(0),
         mFrameNum(0),
-        mClosing(false)
+        mClosing(false),
+        mWndManager(nullptr)
     {
         Driver = this;
+        mWndManager = DI_NEW DiWindowManager();
     }
 
     DiGfxDriver::~DiGfxDriver()
     {
         Driver = nullptr;
         SAFE_DELETE(mMainWindow);
+        SAFE_DELETE(mWndManager);
     }
 
     void DiGfxDriver::SwapBuffer(DiRenderTarget* renderwnd)
@@ -51,7 +54,7 @@ namespace Demi
 
         uint32 w = 0;
         uint32 h = 0;
-        GetWindowDimension(mMainHwnd, w, h);
+        GetWindowSize(mMainHwnd, w, h);
 
         if (w == 0 || h == 0)
             return;
@@ -268,6 +271,7 @@ namespace Demi
     {
         mMainWindow = Driver->CreateWnd();
         mMainWindow->Create(w, h, title, fullscreen);
+        mWndManager->RegisterWindow(mMainWindow);
         return Init(mMainWindow->GetWndHandle());
     }
 
@@ -322,4 +326,19 @@ namespace Demi
     {
         return mPipeline->GetShaderEnvironment();
     }
+
+    void DiGfxDriver::GetWindowSize(DiWndHandle wnd, uint32& w, uint32& h)
+    {
+        DiWindow* window = mWndManager->GetWindow(wnd);
+        if (window)
+        {
+            window->GetWindowSize(w, h);
+        }
+        else
+        {
+            w = h = 0;
+            DI_WARNING("Cannot find the window, failed to get the window size");
+        }
+    }
+
 }

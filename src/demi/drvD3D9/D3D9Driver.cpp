@@ -10,7 +10,7 @@
 #include "GfxDriver.h"
 #include "RenderWindow.h"
 #include "ShaderProgram.h"
-#include "Win32Window.h"
+#include "Win32/Win32Window.h"
 
 #include "D3D9TypeMappings.h"
 #include "D3D9VertexBuffer.h"
@@ -622,14 +622,6 @@ namespace Demi
         rb->Create((HWND)wnd);
     }
 
-    void DiD3D9Driver::GetWindowDimension(DiWndHandle wnd, uint32& w, uint32& h)
-    {
-        RECT rect;
-        GetClientRect((HWND)wnd, &rect);
-        w = rect.right - rect.left;
-        h = rect.bottom - rect.top;
-    }
-
     IDirect3DSwapChain9* DiD3D9Driver::GetSwapChain(uint32 iSwapChain)
     {
         IDirect3DSwapChain9* chain = NULL;
@@ -643,7 +635,7 @@ namespace Demi
     {
         HRESULT hRlt;
         D3DPRESENT_PARAMETERS param = mMainParameters;
-        GetWindowDimension(hwnd, param.BackBufferWidth, param.BackBufferHeight);
+        GetWindowSize(hwnd, param.BackBufferWidth, param.BackBufferHeight);
         IDirect3DSwapChain9* chain = 0;
         hRlt = mDevice->CreateAdditionalSwapChain(&param, &chain);
         DX9_CHKERR(hRlt);

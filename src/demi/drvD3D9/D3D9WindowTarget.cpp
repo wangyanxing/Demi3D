@@ -66,7 +66,7 @@ namespace Demi
 
     void DiD3D9WindowTarget::OnDeviceReset()
     {
-        Driver->GetWindowDimension(mWndHandle, mWidth, mHeight);
+        Driver->GetWindowSize(mWndHandle, mWidth, mHeight);
 
         DiD3D9Driver* d3d9Drv = static_cast<DiD3D9Driver*>(Driver);
 
