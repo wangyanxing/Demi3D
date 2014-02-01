@@ -59,6 +59,7 @@ namespace Demi
         DI_LOG("OpenGL driver is intializing.");
 
         mGLUtil = _CreateGLUtil();
+
         _InitMainContext(_CreateContext(wnd));
 
         mGLFBOManager = DI_NEW DiGLFBOManager(true);    // TODO: Check atimode
