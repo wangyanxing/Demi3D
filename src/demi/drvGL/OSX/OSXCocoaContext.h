@@ -29,8 +29,6 @@ namespace Demi
         void                    Release();
 
         DiGLContext*            Clone() const;
-
-        void                    SwapBuffer() {}
         
         NSOpenGLContext*        GetContext();
 		

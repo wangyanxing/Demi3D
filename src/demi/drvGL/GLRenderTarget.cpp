@@ -9,6 +9,7 @@
 #include "GLContext.h"
 
 #include "Texture.h"
+#include "Window.h"
 
 namespace Demi
 {
@@ -192,9 +193,14 @@ namespace Demi
 
     bool DiGLWindowTarget::SwapBuffer()
     {
-        DiGLContext* context = static_cast<DiGLDriver*>(Driver)->GetContext(mWnd);
-        context->SwapBuffer();
-        return true;
+        DiWindow* wnd = Driver->GetWindowManager()->GetWindow(mWnd);
+        if(wnd)
+        {
+            wnd->SwapBuffers();
+            return true;
+        }
+        else
+            return false;
     }
 
     void DiGLWindowTarget::Init()

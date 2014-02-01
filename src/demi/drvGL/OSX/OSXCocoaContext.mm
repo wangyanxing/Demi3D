@@ -31,7 +31,6 @@ namespace Demi
     
     void DiOSXCocoaContext::Release()
     {
-        
     }
     
     DiGLContext* DiOSXCocoaContext::Clone() const
