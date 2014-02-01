@@ -86,5 +86,4 @@ namespace Demi
             mExtensionList.insert(str.c_str());
         }
     }
-
 }

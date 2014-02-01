@@ -1,6 +1,7 @@
 
 #include "DrvGLPch.h"
 #include "Win32GLUtil.h"
+#include "Win32/Win32Window.h"
 #include "gl/wglew.h"
 
 #include <sstream>
@@ -269,4 +270,8 @@ namespace Demi
         return (format && SetPixelFormat(hdc, format, &pfd));
     }
 
+    DiWindow* DiWin32GLUtil::CreateNewWindow()
+    {
+        return DI_NEW DiWin32Window();
+    }
 }

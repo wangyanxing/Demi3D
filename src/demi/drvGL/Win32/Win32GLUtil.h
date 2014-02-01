@@ -33,6 +33,8 @@ namespace Demi
 
         HDC             GetMainHDC() const { return mHDC; }
 
+        DiWindow*       CreateNewWindow();
+
     private:
 
         void            InitWGL();
