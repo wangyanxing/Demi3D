@@ -22,9 +22,30 @@ namespace Demi
 #define _SLASH "\\"
 
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+#   include <mach-o/dyld.h>
+    
     const DiString& _GetAppFileName()
     {
-        return DiString::BLANK;
+        static DiString ret;
+        uint32_t pathNameSize = 1024;
+        char pathName[1024];
+        
+        if (!_NSGetExecutablePath(pathName, &pathNameSize))
+        {
+            char real[PATH_MAX];
+            
+            if (realpath(pathName, real) != NULL)
+            {
+                pathNameSize = strlen(real);
+                strncpy(pathName, real, pathNameSize);
+            }
+            
+            ret = pathName;
+        }
+        
+        
+        
+        return ret;
     }
 
 #define _SLASH "/"
