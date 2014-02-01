@@ -122,7 +122,7 @@ namespace Demi
 
         virtual void                BindMaterialStates(const DiMaterial* mat) = 0;
 
-        virtual void                GetWindowDimension(DiWndHandle wnd, uint32& w, uint32& h) = 0;
+        virtual void                GetWindowSize(DiWndHandle wnd, uint32& w, uint32& h);
 
         virtual DiWindow*           CreateWnd() = 0;
 
@@ -162,6 +162,8 @@ namespace Demi
 
         void                        MarkClosing() { mClosing = true; }
 
+        DiWindowManager*            GetWindowManager() const { return mWndManager; }
+
         virtual void                SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a) = 0;
 
     public:
@@ -184,7 +186,7 @@ namespace Demi
         // Init the graphics driver with a existed window handle
         virtual bool                InitGfx(DiWndHandle wnd) = 0;
 
-        // Init the graphcis driver and create a new window
+        // Init the graphics driver and create a new window
         virtual bool                InitGfx(uint16 width, uint16 height, bool fullscreen) = 0;
 
         virtual void                ReleaseGfx() = 0;
@@ -207,6 +209,8 @@ namespace Demi
 
         DiWindow*                   mMainWindow;
 
+        DiWindowManager*            mWndManager;
+        
         DiCommandManager*           mCommandMgr;
 
         DiTimer                     mTimer;

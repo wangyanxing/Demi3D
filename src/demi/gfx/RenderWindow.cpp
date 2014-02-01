@@ -107,7 +107,7 @@ namespace Demi
     {
         DI_LOG("Intializing render window : %s", mName.c_str());
 
-        Driver->GetWindowDimension(mWndHandle, mWidth, mHeight);
+        Driver->GetWindowSize(mWndHandle, mWidth, mHeight);
 
         mSceneManager = DI_NEW DiSceneManager(this);
         Driver->CreateWindowTarget(mRenderBuffer, mWndHandle);
@@ -143,7 +143,7 @@ namespace Demi
 
     void DiRenderWindow::OnDeviceLost()
     {
-        Driver->GetWindowDimension(mWndHandle, mWidth, mHeight);
+        Driver->GetWindowSize(mWndHandle, mWidth, mHeight);
     }
 
     void DiRenderWindow::OnDeviceReset()

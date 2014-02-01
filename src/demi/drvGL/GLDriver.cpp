@@ -331,17 +331,6 @@ namespace Demi
         outRT = wt;
     }
 
-    void DiGLDriver::GetWindowDimension(DiWndHandle wnd, uint32& w, uint32& h)
-    {
-#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-        RECT rect;
-        GetClientRect((HWND)wnd, &rect);
-        w = rect.right - rect.left;
-        h = rect.bottom - rect.top;
-#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
-#endif
-    }
-
     void DiGLDriver::BindMaterialStates(const DiMaterial* mat)
     {
         // filling mode

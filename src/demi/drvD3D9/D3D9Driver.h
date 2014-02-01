@@ -96,8 +96,6 @@ namespace Demi
 
         void                    BindMaterialStates(const DiMaterial* mat);
 
-        void                    GetWindowDimension(DiWndHandle wnd, uint32& w, uint32& h);
-
         void                    Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil = 0);
 
         IDirect3DSwapChain9*    CreateSwapChain(DiWndHandle hwnd);

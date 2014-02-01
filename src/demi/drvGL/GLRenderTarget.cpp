@@ -180,7 +180,7 @@ namespace Demi
         mWnd = wnd;
         mContext = context;
 
-        Driver->GetWindowDimension(wnd, mWidth, mHeight);
+        Driver->GetWindowSize(wnd, mWidth, mHeight);
 
         DiGLDepthBuffer *depthBuffer = DI_NEW DiGLDepthBuffer(DiDepthBuffer::POOL_DEFAULT, 
             mWidth, mHeight,

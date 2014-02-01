@@ -96,6 +96,7 @@ namespace Demi
     class    DiShaderInstance;
     class    DiTextureDrv;
     class    DiWindow;
+    class    DiWindowManager;
     class    DiCommandManager;
     class    DiConsoleVar;
     class    DiConsoleVarListener;
