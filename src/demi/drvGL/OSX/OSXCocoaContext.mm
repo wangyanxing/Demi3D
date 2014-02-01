@@ -1,6 +1,5 @@
 
 #include "DrvGLPch.h"
-#include "OSX/OSXGLContext.h"
 #include "OSX/OSXCocoaContext.h"
 #include "OSX/OSXGLUtil.h"
 

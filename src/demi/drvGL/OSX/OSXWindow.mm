@@ -112,12 +112,14 @@ namespace Demi
         }
         
         attribs[i++] = (NSOpenGLPixelFormatAttribute) 0;
+        mGLPixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes: attribs];
 
         DiGLDriver* drv = static_cast<DiGLDriver*>(Driver);
+        
         DiOSXCocoaContext *mainContext = (DiOSXCocoaContext*)drv->GetMainContext();
         NSOpenGLContext *shareContext = mainContext == 0 ? nil : mainContext->GetContext();
+        
         mGLContext = [[NSOpenGLContext alloc] initWithFormat:mGLPixelFormat shareContext:shareContext];
-        mGLPixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes: attribs];
         
         GLint swapInterval = 1;
         [mGLContext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
@@ -140,6 +142,8 @@ namespace Demi
         {
             // TODO: use an external window
         }
+        
+        mWndHandle = (void*)mWindow;
         
         mContext = DI_NEW DiOSXCocoaContext(mGLContext, mGLPixelFormat);
         mWindowDelegate = [[OSXWindowDelegate alloc] initWithNSWindow:mWindow demiWindow:this];
@@ -362,8 +366,8 @@ namespace Demi
         
         _SetWindowParams();
 
-        DiGLDriver* drv = static_cast<DiGLDriver*>(Driver);
-        drv->Clear(CLEAR_COLOR, DiColor::Black, 1.0f);
+        //DiGLDriver* drv = static_cast<DiGLDriver*>(Driver);
+        //drv->Clear(CLEAR_COLOR, DiColor::Black, 1.0f);
         
         // Show window
         if(mWindow)
