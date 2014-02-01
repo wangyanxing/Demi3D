@@ -113,6 +113,7 @@ namespace Demi
     }
 
     DiWin32Window::DiWin32Window()
+        :mHDC(NULL)
     {
         mHandlingmsg = false;
         mDestroyWindow = false;
@@ -149,6 +150,8 @@ namespace Demi
             ShowWindow((HWND)mWndHandle, SW_SHOWNORMAL);
             ::SetFocus((HWND)mWndHandle);
             SetWindowLongPtr((HWND)mWndHandle, GWLP_USERDATA, PtrToLong(this));
+
+            mHDC = ::GetDC((HWND)mWndHandle);
         }
 
         RAWINPUTDEVICE rawInputDevice;
@@ -252,6 +255,11 @@ namespace Demi
         DI_ASSERT(mWndHandle);
         if (mWndHandle)
             ::SetWindowTextA((HWND)mWndHandle, title);
+    }
+
+    void DiWin32Window::SwapBuffers()
+    {
+        ::SwapBuffers(mHDC);
     }
 }
 

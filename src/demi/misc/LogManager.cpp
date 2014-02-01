@@ -40,6 +40,10 @@ void DiLogManager::Init(const DiString& logFileName)
               | (1 << LOG_LEVEL_WARNING) 
               | (1 << LOG_LEVEL_LOG)
               | (1 << LOG_LEVEL_DEBUG);
+
+    DI_LOG("********************************");
+    DI_LOG("***  Demi3D is initializing  ***");
+    DI_LOG("********************************");
 }
 
 void DiLogManager::Shutdown()
