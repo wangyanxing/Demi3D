@@ -501,14 +501,7 @@ namespace Demi
 
     DiWindow* DiGLDriver::CreateWnd()
     {
-#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-        return DI_NEW DiWin32Window();
-#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
-        //return DI_NEW DiOSXWindow();
-        return nullptr;
-#else
-        return nullptr;
-#endif
+        return mGLUtil->CreateNewWindow();
     }
 
     DiGLContext* DiGLDriver::_CreateContext(DiWndHandle wnd)

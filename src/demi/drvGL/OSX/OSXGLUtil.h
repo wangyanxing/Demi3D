@@ -23,13 +23,11 @@ namespace Demi
 
         void            InitExtensions();
 
-        static DiString TranslateWGLError();
-
         void*           GetProcAddress(const DiString& procname);
 
-    private:
+        DiWindow*       CreateNewWindow();
 
-        void            InitWGL();
+    private:
 
         DiVector<int>   mFSAALevels;
 

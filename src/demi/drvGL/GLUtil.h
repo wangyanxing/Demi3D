@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef GLUtil_h__
+#define GLUtil_h__
 
 namespace Demi
 {
@@ -30,7 +31,7 @@ namespace Demi
 
         bool                CheckMinGLVersion(const DiString& v) const;
 
-        virtual bool        CheckExtension(const DiString& ext) const;
+        bool                CheckExtension(const DiString& ext) const;
 
         virtual void*       GetProcAddress(const DiString& procname) = 0;
 
@@ -38,8 +39,11 @@ namespace Demi
 
         virtual uint8       GetDisplayMonitorCount() const
         {
+            //TODO
             return 1;
         }
+
+        virtual DiWindow*   CreateNewWindow() = 0;
 
     protected:
 
@@ -50,3 +54,5 @@ namespace Demi
         DiSet<DiString>     mExtensionList;
     };
 }
+
+#endif // GLUtil_h__

@@ -1,6 +1,7 @@
 
 #include "DrvGLPch.h"
 #include "OSX/OSXGLUtil.h"
+#include "OSX/OSXWindow.h"
 
 #include <dlfcn.h>
 #include <OpenGL/OpenGL.h>
@@ -15,16 +16,6 @@ namespace Demi
     DiOSXGLUtil::~DiOSXGLUtil()
     {
         
-    }
-    
-    void DiOSXGLUtil::InitExtensions()
-    {
-        
-    }
-    
-    DiString DiOSXGLUtil::TranslateWGLError()
-    {
-        return "";
     }
     
     void* DiOSXGLUtil::GetProcAddress(const DiString& procname)
@@ -46,4 +37,8 @@ namespace Demi
         return symbol;
     }
 
+	DiWindow* DiOSXGLUtil::CreateNewWindow()
+	{
+		return DI_NEW DiOSXWindow();
+	}
 }
