@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef DiImage_h__
+#define DiImage_h__
 
 namespace Demi 
 {
@@ -162,3 +163,5 @@ namespace Demi
     };
 
 }
+
+#endif

@@ -24,16 +24,17 @@ namespace Demi
     //////////////////////////////////////////////////////////////////////////
 
     DiImage::DiImage( const DiString& name ):
-        mHeight(0),
         mWidth(0)
+        , mHeight(0)
+
     {
         mImageData = DiAssetManager::GetInstance().OpenArchive(name);
     }
 
     DiImage::DiImage( DiDataStreamPtr stream ):
-        mHeight(0),
-        mWidth(0),
-        mImageData(stream)
+        mWidth(0)
+        , mHeight(0)
+        , mImageData(stream)
     {
     }
 
