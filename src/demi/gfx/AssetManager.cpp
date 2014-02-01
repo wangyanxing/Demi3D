@@ -172,14 +172,13 @@ namespace Demi
 
     void DiAssetManager::SetBasePath( const DiString& val )
     {
-        DI_LOG("Set media path to: %s", val.c_str());
-
         DiString appPath = DiPathLib::GetApplicationPath();
 
         mBasePath = appPath + val;
         mBasePath.SimplifyPath();
         mBasePath += "/";
 
+        DI_LOG("Set media path to: %s", mBasePath.c_str());
         DI_LOG("Searching for sub paths");
 
         ArchivePtr baseDir = mArchiveManager->Load(mBasePath, ARCHIVE_FILE);
