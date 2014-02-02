@@ -24,8 +24,6 @@ elseif (APPLE)
     OSX/OSXGLUtil.mm
 	OSX/OSXCocoaContext.h
 	OSX/OSXCocoaContext.mm
-    OSX/OSXGLContext.h
-    OSX/OSXGLContext.cpp
     OSX/OSXCGLContext.h
     OSX/OSXCGLContext.cpp
     OSX/OSXWindow.h

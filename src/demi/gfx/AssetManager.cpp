@@ -188,9 +188,9 @@ namespace Demi
             ArchivePtr ar = mArchiveManager->Load(mBasePath+it->filename,ARCHIVE_FILE);
 
             DiStringVecPtr vec = ar->Find("*",false);
-            for( auto it = vec->begin(); it != vec->end(); ++it )
+            for( auto i = vec->begin(); i != vec->end(); ++i )
             {
-                mArchives[*it] = ar;
+                mArchives[*i] = ar;
             }
         }
         AddSearchPath(mBasePath);
