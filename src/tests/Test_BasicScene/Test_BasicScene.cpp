@@ -57,12 +57,12 @@ void UpdateScene()
 {
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	DiApp app;
+	DemiDemo app(DemoConfig("Demi test: basic scene"));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
-	app.Open(800, 600, "basic test");
+    app.Open();
 
 	return 0;
 }

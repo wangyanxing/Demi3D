@@ -267,7 +267,7 @@ namespace Demi
         return true;
     }
 
-    bool DiGfxDriver::Init(uint32 w, uint32 h, const char* title, bool fullscreen)
+    bool DiGfxDriver::Init(uint32 w, uint32 h, const DiString& title, bool fullscreen)
     {
         mMainWindow = Driver->CreateWnd();
         mMainWindow->Create(w, h, title, fullscreen);

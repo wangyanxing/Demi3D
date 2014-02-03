@@ -49,7 +49,7 @@ void InitScene()
 
 	sm->GetSkybox()->Enable(10000,"park.dds");
 
-    DiApp::GetApp()->GetCameraHelper()->SetStyle(CS_SMOOTH);
+    DemiDemo::GetApp()->GetCameraHelper()->SetStyle(CS_SMOOTH);
     sm->GetCamera()->SetPosition(0, 0, 300);
 	sm->GetCamera()->LookAt(0,0,0);
 
@@ -68,13 +68,11 @@ void UpdateScene()
 	}
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-
-	DiApp app;
+    DemiDemo app(DemoConfig("Demi3D Sample - Fresnel Material", 1500, 800));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
-	app.Open(1700, 1000, "Demi3D Sample - Fresnel Material");
 
 	return 0;
 }

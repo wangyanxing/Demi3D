@@ -67,7 +67,7 @@ void InitScene()
 
     sm->GetSkybox()->Enable(1000, "SwedishRoyalCastle.dds");
 
-    DiApp::GetApp()->GetCameraHelper()->SetStyle(CS_SMOOTH);
+    DemiDemo::GetApp()->GetCameraHelper()->SetStyle(CS_SMOOTH);
     sm->GetCamera()->SetPosition(0, 0, 200);
     sm->GetCamera()->LookAt(0, 0, 0);
 
@@ -82,12 +82,12 @@ void UpdateScene()
 	pointlight->SetPosition(lightSphereNode->GetPosition());
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	DiApp app;
+    DemiDemo app(DemoConfig("Demi3D Sample - Environment Map", 1500, 800));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
-	app.Open(1700, 1000, "Demi3D Sample - Environment Map");
+	app.Open();
 
 	return 0;
 }

@@ -124,7 +124,7 @@ namespace Demi
     }
 
     bool DiWin32Window::Create(uint32& width, uint32& height,
-        const char* title, bool fullscreen)
+        const DiString& title, bool fullscreen)
     {
         bool ok = false;
         DI_ASSERT(!mWndHandle);
@@ -138,7 +138,7 @@ namespace Demi
         DWORD dwstyle = (fullscreen ? gFullscreenStyle : gWindowStyle);
         uint32  offset = fullscreen ? 0 : 50;
         ::AdjustWindowRect(&winRect, dwstyle, 0);
-        mWndHandle = ::CreateWindowA(gWindowClass, title, dwstyle,
+        mWndHandle = ::CreateWindowA(gWindowClass, title.c_str(), dwstyle,
             offset, offset,
             winRect.right - winRect.left, winRect.bottom - winRect.top,
             0, 0, 0, 0);

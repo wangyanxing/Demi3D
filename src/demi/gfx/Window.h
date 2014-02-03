@@ -20,7 +20,7 @@ namespace Demi
     public:
 
         virtual bool        Create(uint32& width, uint32& height,
-                                const char* title, bool fullscreen) = 0;
+                                const DiString& title, bool fullscreen) = 0;
 
         virtual void        Update() = 0;
 

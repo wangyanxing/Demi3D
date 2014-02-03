@@ -51,7 +51,7 @@ void InitScene()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
-	DiApp::GetApp()->GetCameraHelper()->Enable(false);
+	DemiDemo::GetApp()->GetCameraHelper()->Enable(false);
 	sm->GetCamera()->SetPosition(0,0,80);
 	sm->GetCamera()->LookAt(0,0,0);
 
@@ -71,12 +71,12 @@ void UpdateScene()
 	node->Pitch(DiRadian(0.25f * delta));
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	DiApp app;
+    DemiDemo app(DemoConfig("Demi3D Sample - Lava", 1500, 800));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
-	app.Open(1500, 800, "Demi3D Sample - Lava Material");
+	app.Open();
 
 	return 0;
 }

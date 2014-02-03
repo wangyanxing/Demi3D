@@ -29,17 +29,13 @@ namespace Demi
         const DiString gfxGLDrvLib = "DiDrvGL";
 #   endif
 #endif
-    DiApp::DiApp(const DiString& mediaPath,const DiString& logName) :
+    DemiDemo::DemiDemo(DemoConfig config) :
           mAssetManager(nullptr)
-        //, mGUIWrapper(nullptr)
         , mInputMgr(nullptr)
         //, mInfo(nullptr)
-        , mMediaPath(mediaPath)
-        , mLogName(logName)
+        //, mGUIWrapper(nullptr)
+        , mConfig(config)
     {
-        //_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
-        //_CrtSetBreakAlloc(225);
-
         DI_INIT_PROFILER;
 
         srand((unsigned int)time(NULL));
@@ -48,14 +44,12 @@ namespace Demi
         sTheApp = this;
     }
 
-    DiApp::~DiApp(void)
+    DemiDemo::~DemiDemo(void)
     {
         DI_CLOSE_PROFILER;
-
-        //_CrtDumpMemoryLeaks();
     }
 
-    void DiApp::Update()
+    void DemiDemo::Update()
     {
         DI_PROFILE_BEGIN_FRAME
         
@@ -72,20 +66,20 @@ namespace Demi
         DI_PROFILE_END_FRAME
     }
 
-    void DiApp::Close()
+    void DemiDemo::Close()
     {
         CloseEngine();
     }
 
-    bool DiApp::IsOpen()
+    bool DemiDemo::IsOpen()
     {
         return mMainHwnd ? true : false;
     }
 
-    void DiApp::Open(uint32 w, uint32 h, const char* title, bool fullscreen)
+    void DemiDemo::Open()
     {
         DiLogManager* logmgr = new DiLogManager;
-        logmgr->Init(mLogName);
+        logmgr->Init(mConfig.logFile);
 
 #if USE_OPEN_GL
         DiPlugin::LoadPlugin(gfxGLDrvLib);
@@ -94,19 +88,19 @@ namespace Demi
 #endif
 
         mAssetManager = new DiAssetManager;
-        mAssetManager->SetBasePath(mMediaPath);
+        mAssetManager->SetBasePath(mConfig.mediaPath);
 
-        bool ret = Driver->Init(w,h,title,fullscreen);
+        bool ret = Driver->Init(mConfig.windowWidth, mConfig.windowHeight, mConfig.windowTitle, mConfig.fullScreen);
         DI_ASSERT(ret);
 
         mInputMgr = new DiInputManager();
         mInputMgr->createInput((size_t)(mMainHwnd));
 
-        mInputMgr->registerKeyPressEvent("App::KeyDown", Demi::functor(*this, &DiApp::keyPressed));
-        mInputMgr->registerKeyReleaseEvent("App::KeyUp", Demi::functor(*this, &DiApp::keyReleased));
-        mInputMgr->registerMouseMoveEvent("App::MsMove", Demi::functor(*this, &DiApp::mouseMoved));
-        mInputMgr->registerMousePressEvent("App::MsDown", Demi::functor(*this, &DiApp::mousePressed));
-        mInputMgr->registerMouseReleaseEvent("App::MsUp", Demi::functor(*this, &DiApp::mouseReleased));
+        mInputMgr->registerKeyPressEvent("App::KeyDown", Demi::functor(*this, &DemiDemo::keyPressed));
+        mInputMgr->registerKeyReleaseEvent("App::KeyUp", Demi::functor(*this, &DemiDemo::keyReleased));
+        mInputMgr->registerMouseMoveEvent("App::MsMove", Demi::functor(*this, &DemiDemo::mouseMoved));
+        mInputMgr->registerMousePressEvent("App::MsDown", Demi::functor(*this, &DemiDemo::mousePressed));
+        mInputMgr->registerMouseReleaseEvent("App::MsUp", Demi::functor(*this, &DemiDemo::mouseReleased));
 
         //mGUIWrapper = new MyGUI::DemiWrapper();
         //mGUIWrapper->init("MyGUI_Core.xml");
@@ -123,7 +117,7 @@ namespace Demi
         Run();
     }
 
-    void DiApp::keyPressed(const OIS::KeyEvent& evt)
+    void DemiDemo::keyPressed(const OIS::KeyEvent& evt)
     {
         if (evt.key == OIS::KC_ESCAPE)
         {
@@ -133,27 +127,27 @@ namespace Demi
         mCameraHelper->OnKeyDown(evt);
     }
 
-    void DiApp::keyReleased(const OIS::KeyEvent& evt)
+    void DemiDemo::keyReleased(const OIS::KeyEvent& evt)
     {
         mCameraHelper->OnKeyUp(evt);
     }
 
-    void DiApp::mouseMoved(const OIS::MouseEvent& evt)
+    void DemiDemo::mouseMoved(const OIS::MouseEvent& evt)
     {
         mCameraHelper->OnMouseMove(evt);
     }
 
-    void DiApp::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+    void DemiDemo::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
         mCameraHelper->OnMouseDown(evt, id);
     }
 
-    void DiApp::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+    void DemiDemo::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
         mCameraHelper->OnMouseUp(evt, id);
     }
 
-    void DiApp::CloseEngine()
+    void DemiDemo::CloseEngine()
     {
         if (mShutdownCallback)
             mShutdownCallback();
@@ -183,11 +177,11 @@ namespace Demi
             DI_DELETE DiLogManager::GetInstancePtr();
     }
 
-    void DiApp::Run()
+    void DemiDemo::Run()
     {
         while (IsOpen())
             Update();
     }
 
-    DiApp* DiApp::sTheApp = NULL;
+    DemiDemo* DemiDemo::sTheApp = NULL;
 }

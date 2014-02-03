@@ -57,7 +57,7 @@ namespace Demi
     }
 
     bool DiOSXWindow::Create(uint32& width, uint32& height,
-        const char* title, bool fullscreen)
+        const DiString& title, bool fullscreen)
     {
         bool ok = false;
         
@@ -67,7 +67,7 @@ namespace Demi
         BOOL hasDepthBuffer = YES;
 		int fsaa_samples = 0;
         bool hidden = false;
-        NSString *windowTitle = [NSString stringWithCString:title encoding:NSUTF8StringEncoding];
+        NSString *windowTitle = [NSString stringWithCString:title.c_str() encoding:NSUTF8StringEncoding];
 		int winx = 0, winy = 0;
 		int depth = 32;
         
