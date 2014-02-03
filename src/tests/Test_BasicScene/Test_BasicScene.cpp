@@ -50,9 +50,6 @@ void InitScene()
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 
-    //DiRenderThread* rt = new DiRenderThread();
-    //rt->Start();
-   
     CreateModels();
 }
 
@@ -66,11 +63,6 @@ int main()
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open(800, 600, "basic test");
-
-	while (app.IsOpen())
-	{
-		app.Update();
-	}
 
 	return 0;
 }

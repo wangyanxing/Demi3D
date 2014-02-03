@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef DiApplication_h__
+#define DiApplication_h__
 
 #include "Callback.h"
 #include "OIS.h"
@@ -64,6 +65,8 @@ namespace Demi
 
         void                        mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
 
+        void                        Run();
+
     protected:
 
         DiAssetManager*             mAssetManager;
@@ -90,3 +93,4 @@ namespace Demi
     };
 
 }
+#endif // Application_h__

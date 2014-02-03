@@ -78,10 +78,5 @@ int main()
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open(1500, 800, "Demi3D Sample - Lava Material");
 
-	while (app.IsOpen())
-	{
-		app.Update();
-	}
-
 	return 0;
 }

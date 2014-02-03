@@ -100,10 +100,11 @@ namespace Demi
     void DiShaderConstants::BindEnvironment(const DiShaderEnvironment& shaderEnv) const
     {
         IDirect3DDevice9* sm = DiD3D9Driver::Device;
+        DiD3D9Driver* d9drv = static_cast<DiD3D9Driver*>(Driver);
 
         if (table)
         {
-#define SET_CONST(_name) Driver->SetShaderConsts(type,_name,shaderEnv._name)
+#define SET_CONST(_name) d9drv->SetShaderConsts(type,_name,shaderEnv._name)
 
             if (shaderEnv.numModelMatrices > 1 && modelMatrices != -1)
             {

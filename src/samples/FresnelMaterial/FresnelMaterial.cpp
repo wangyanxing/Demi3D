@@ -76,10 +76,5 @@ int main()
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open(1700, 1000, "Demi3D Sample - Fresnel Material");
 
-	while (app.IsOpen())
-	{
-		app.Update();
-	}
-
 	return 0;
 }

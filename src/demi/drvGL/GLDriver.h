@@ -38,20 +38,6 @@ namespace Demi
 
         void                    ConvertProjectionMatrix(const DiMat4& matrix, DiMat4& dest);
 
-        void                    SetShaderConsts(DiShaderType type, int regID, const DiMat4& mat);
-
-        void                    SetShaderConsts(DiShaderType type, int regID, const DiVec2& vec);
-
-        void                    SetShaderConsts(DiShaderType type, int regID, const DiVec3& vec);
-
-        void                    SetShaderConsts(DiShaderType type, int regID, const DiVec4& vec);
-
-        void                    SetShaderConsts(DiShaderType type, int regID, float val);
-
-        void                    SetShaderConsts(DiShaderType type, int regID, int val);
-
-        void                    SetShaderConsts(DiShaderType type, int regID, const DiColor& col);
-
         void                    BindShaders(DiShaderProgram* vs, DiShaderProgram* ps);
 
         void                    SetViewport(int x, int y, int w, int h, float minz = 0.0f, float maxz = 1.0f);
