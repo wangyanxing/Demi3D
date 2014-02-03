@@ -104,9 +104,11 @@ namespace Demi
 
         mAppDelegate = [[AppDelegate alloc] init];
         [[NSApplication sharedApplication] setDelegate:mAppDelegate];
-        NSApplicationMain(mArgNums, mArgs);
 
-        [pool release];
+        [NSApp run];
+
+        [pool drain];
+        [mAppDelegate release];
 
 #elif DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         OpenImpl();
@@ -209,5 +211,5 @@ namespace Demi
             mInitCallback();
     }
 
-    DemiDemo* DemiDemo::sTheApp = NULL;
+    DemiDemo* DemiDemo::sTheApp = nullptr;
 }

@@ -9,6 +9,8 @@
 
 #ifdef __OBJC__
 
+#include "Application.h"
+
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CVDisplayLink.h>
 
@@ -34,14 +36,16 @@
     CVDisplayLinkRef    mDisplayLink; //display link for managing rendering thread
 }
 
--(void)init;
--(void)update:(id)sender;
+-(void)go;
+-(void)renderOneFrame:(id)sender;
 -(void)shutdown;
 
 @property(retain) NSTimer *mTimer;
 @property(nonatomic) NSTimeInterval mLastFrameTime;
 
 @end
+
+static id mAppDelegate;
 
 @implementation AppDelegate
 
@@ -61,19 +65,19 @@
     }
 }
 
--(void)init
+-(void)go
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     mLastFrameTime = 1;
     mTimer = nil;
 
     // init the engine
-
+    Demi::DemiDemo::GetApp()->OpenImpl();
     
     // rendering timer
     mTimer = [NSTimer scheduledTimerWithTimeInterval : (NSTimeInterval)(1.0f / 60.0f) * mLastFrameTime
                                                         target : self
-                                                        selector : @selector(update:)
+                                                        selector : @selector(renderOneFrame:)
                                                         userInfo:nil
                                                         repeats : YES];
     [pool release];
@@ -84,7 +88,7 @@
     mLastFrameTime = 1;
     mTimer = nil;
 
-    [self init];
+    [self go];
 }
 
 -(void)shutdown
@@ -99,11 +103,11 @@
     [NSApp terminate : nil];
 }
 
--(void)update:(id)sender
+-(void)renderOneFrame:(id)sender
 {
-    if (DiApp::GetApp() && DiApp::GetApp()->IsOpen())
+    if (Demi::DemiDemo::GetApp() && Demi::DemiDemo::GetApp()->IsOpen())
     {
-        DiApp::GetApp()->Update();
+        Demi::DemiDemo::GetApp()->Update();
     }
     else
     {

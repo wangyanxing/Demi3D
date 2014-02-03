@@ -14,7 +14,7 @@ namespace Demi
     {
     public:
 
-        typedef enum Type
+        enum Type
         {
             TYPE_DIRECTIONAL = 0,
             TYPE_POINT,
