@@ -10,23 +10,45 @@
 #include "Callback.h"
 #include "OIS.h"
 
-namespace MyGUI
-{
-    class DemiWrapper;
-}
+// namespace MyGUI
+// {
+//     class DemiWrapper;
+// }
 
 namespace Demi
 {
-    class DiWindowUtil;
+    struct DemoConfig
+    {
+        DemoConfig(const DiString& windowTitle, uint32 width = 1024, uint32 height = 768)
+        : windowWidth(width)
+        , windowHeight(height)
+        , fullScreen(false)
+        , windowTitle(windowTitle)
+        , mediaPath("../../Media")
+        , logFile("Demi.log")
+        {
+        }
 
-    class DEMI_DEMO_API DiApp : public DiBase
+        uint32      windowWidth;
+        uint32      windowHeight;
+        DiString    windowTitle;
+
+        bool        fullScreen;
+
+        DiString    mediaPath;
+        DiString    logFile;
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+
+    class DEMI_DEMO_API DemiDemo : public DiBase
     {
     public:
-        DiApp(const DiString& mediaPath = "../../Media/",const DiString& logName = "demiEngine.log");
+        DemiDemo(DemoConfig config);
 
-        ~DiApp(void);
+        ~DemiDemo(void);
 
-        static DiApp*                GetApp(){return sTheApp;}
+        static DemiDemo*            GetApp(){return sTheApp;}
 
     public:
 
@@ -43,7 +65,7 @@ namespace Demi
 
         bool                        IsOpen();
 
-        void                        Open(uint32 w, uint32 h, const char* title, bool fullscreen = false);
+        void                        Open();
 
         void                        CloseEngine();
 
@@ -73,11 +95,7 @@ namespace Demi
                                     
         DiCameraHelper*             mCameraHelper;
                                     
-        static DiApp*               sTheApp;
-
-        DiString                    mMediaPath;
-        
-        DiString                    mLogName;
+        static DemiDemo*            sTheApp;
 
         UpdateCallback              mUpdateCallback;
 
@@ -90,6 +108,8 @@ namespace Demi
         DiInputManager*             mInputMgr;
 
         DiInfo*                     mInfo;
+
+        DemoConfig                  mConfig;
     };
 
 }

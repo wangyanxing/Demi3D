@@ -32,17 +32,11 @@ void InitScene()
 	AddMeshes();
 }
 
-void UpdateScene()
+int main(int argc, char *argv[])
 {
-
-}
-
-int main()
-{
-	DiApp app;
+    DemiDemo app(DemoConfig("Demi3D Sample - Car", 1500, 800));
 	app.SetInitCallback(functor(InitScene));
-	app.SetUpdateCallback(functor(UpdateScene));
-	app.Open(1700, 1000, "Demi3D Sample - Car");
+	app.Open();
 
 	return 0;
 }

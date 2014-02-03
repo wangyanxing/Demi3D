@@ -36,7 +36,7 @@ namespace Demi
     public:
 
         bool                Create(uint32& width, uint32& height,
-                                   const char* title, bool fullscreen);
+                                   const DiString& title, bool fullscreen);
 
         void                Update();
 

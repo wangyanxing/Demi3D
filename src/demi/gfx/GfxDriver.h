@@ -17,14 +17,6 @@ namespace Demi
         DRV_NULL
     };
 
-    struct DiGfxMode
-    {
-        bool            mFullscreen;
-        uint16          mWidth;
-        uint16          mHeight;
-        DiGfxDriverType mDriverType;
-    };
-
     struct DiGfxAdapter
     {
     public:
@@ -63,7 +55,7 @@ namespace Demi
 
         virtual bool                Init(DiWndHandle wnd);
 
-        virtual bool                Init(uint32 w, uint32 h, const char* title, bool fullscreen = false);
+        virtual bool                Init(uint32 w, uint32 h, const DiString& title, bool fullscreen = false);
 
         virtual void                Shutdown(bool destroyWindows = true);
 

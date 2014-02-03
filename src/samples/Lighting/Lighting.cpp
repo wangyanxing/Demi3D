@@ -93,12 +93,12 @@ void UpdateScene()
 	pointlight->SetPosition(lightSphereNode->GetPosition());
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-	DiApp app;
+    DemiDemo app(DemoConfig("Demi3D Sample - Basic Lighting"));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
-	app.Open(1024, 768, "Demi3D Sample - Basic Lighting");
+	app.Open();
 
 	return 0;
 }
