@@ -36,6 +36,7 @@ void CreateModels()
     model->CreateSphere(10, 16, 16);
     //model->CreateTorus(8, 2, 32, 32);
 
+    mat->SetDiffuse(DiColor::Red);
     model->SetMaterial(mat);
     DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
     cullnode->AttachObject(model);
@@ -59,7 +60,7 @@ void UpdateScene()
 
 int main(int argc, char *argv[])
 {
-	DemiDemo app(argc, argv, DemoConfig("Demi test: basic scene"));
+	DemiDemo app(DemoConfig("Demi test: basic scene"));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
     app.Open();
