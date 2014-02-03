@@ -11,22 +11,22 @@ namespace Demi
 {
     DiGLShaderLinker::CustomAttribute DiGLShaderLinker::msCustomAttributes[] = 
     {
-        CustomAttribute("vertex",           DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_POSITION,        0)),
-        CustomAttribute("blendWeights",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BLENDWEIGHT,     0)),
-        CustomAttribute("normal",           DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_NORMAL,          0)),
-        CustomAttribute("colour",           DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_COLOR,           0)),
-        CustomAttribute("secondary_colour", DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_SECONDARY_COLOR, 0)),
-        CustomAttribute("blendIndices",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BLENDINDICES,    0)),
-        CustomAttribute("uv0",              DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        0)),
-        CustomAttribute("uv1",              DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        1)),
-        CustomAttribute("uv2",              DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        2)),
-        CustomAttribute("uv3",              DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        3)),
-        CustomAttribute("uv4",              DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        4)),
-        CustomAttribute("uv5",              DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        5)),
-        CustomAttribute("uv6",              DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        6)),
-        CustomAttribute("uv7",              DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        7)),
-        CustomAttribute("tangent",          DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TANGENT,         0)),
-        CustomAttribute("binormal",         DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BINORMAL,        0)),
+        CustomAttribute("Position",         DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_POSITION,        0)),
+        CustomAttribute("BlendWeights",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BLENDWEIGHT,     0)),
+        CustomAttribute("Normal",           DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_NORMAL,          0)),
+        CustomAttribute("Color",            DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_COLOR,           0)),
+        CustomAttribute("SecondColor",      DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_SECONDARY_COLOR, 0)),
+        CustomAttribute("BlendIndices",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BLENDINDICES,    0)),
+        CustomAttribute("Texcoord0",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        0)),
+        CustomAttribute("Texcoord1",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        1)),
+        CustomAttribute("Texcoord2",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        2)),
+        CustomAttribute("Texcoord3",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        3)),
+        CustomAttribute("Texcoord4",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        4)),
+        CustomAttribute("Texcoord5",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        5)),
+        CustomAttribute("Texcoord6",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        6)),
+        CustomAttribute("Texcoord7",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        7)),
+        CustomAttribute("Tangent",          DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TANGENT,         0)),
+        CustomAttribute("Binormal",         DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BINORMAL,        0)),
     };
 
     DiGLShaderInstance::DiGLShaderInstance(DiShaderType type, DiShaderProgram* prog) : DiShaderInstance(type)
@@ -72,7 +72,7 @@ namespace Demi
         if (!mCompiled)
         {
             DiString msg;
-            msg.Format("GLSL compile info: %s", mShaderProgram->GetShaderFileName().c_str());
+            msg.Format("GLSL compile info: %s\n", mShaderProgram->GetShaderFileName().c_str());
             LogObjectInfo(msg, mShaderHandle);
             return false;
         }
@@ -134,7 +134,8 @@ namespace Demi
 
                 glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
                 logMessage += DiString(infoLog);
-                DI_INFO("%s", logMessage.c_str());
+
+                DiLogManager::GetInstancePtr()->Output(LOG_LEVEL_WARNING, logMessage.c_str());
 
                 delete[] infoLog;
             }
@@ -353,7 +354,8 @@ namespace Demi
             glLinkProgramARB(mGLHandle);
             glGetObjectParameterivARB(mGLHandle, GL_OBJECT_LINK_STATUS_ARB, &mLinked);
 
-            if (mLinked)
+            glErr = glGetError();
+            if (glErr != GL_NO_ERROR)
                 DiGLShaderInstance::LogObjectInfo(DiString("GLSL linking result : "), mGLHandle);
 
             LoadAttributes();
