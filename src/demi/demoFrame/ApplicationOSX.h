@@ -36,8 +36,8 @@
     CVDisplayLinkRef    mDisplayLink; //display link for managing rendering thread
 }
 
--(void)go;
--(void)renderOneFrame:(id)sender;
+-(void)open;
+-(void)render:(id)sender;
 -(void)shutdown;
 
 @property(retain) NSTimer *mTimer;
@@ -65,7 +65,7 @@ static id mAppDelegate;
     }
 }
 
--(void)go
+-(void)open
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     mLastFrameTime = 1;
@@ -77,7 +77,7 @@ static id mAppDelegate;
     // rendering timer
     mTimer = [NSTimer scheduledTimerWithTimeInterval : (NSTimeInterval)(1.0f / 60.0f) * mLastFrameTime
                                                         target : self
-                                                        selector : @selector(renderOneFrame:)
+                                                        selector : @selector(render:)
                                                         userInfo:nil
                                                         repeats : YES];
     [pool release];
@@ -88,7 +88,7 @@ static id mAppDelegate;
     mLastFrameTime = 1;
     mTimer = nil;
 
-    [self go];
+    [self open];
 }
 
 -(void)shutdown
@@ -103,7 +103,7 @@ static id mAppDelegate;
     [NSApp terminate : nil];
 }
 
--(void)renderOneFrame:(id)sender
+-(void)render:(id)sender
 {
     if (Demi::DemiDemo::GetApp() && Demi::DemiDemo::GetApp()->IsOpen())
     {
