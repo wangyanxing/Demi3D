@@ -244,25 +244,6 @@ namespace Demi
         }
     }
 
-    void DiGLShaderLinker::LoadAttributes()
-    {
-        size_t numAttribs = sizeof(msCustomAttributes) / sizeof(CustomAttribute);
-
-        for (size_t i = 0; i < numAttribs; ++i)
-        {
-            const CustomAttribute& a = msCustomAttributes[i];
-            GLint attrib = glGetAttribLocationARB(mGLHandle, a.name.c_str());
-
-            if (attrib != -1)
-                mValidAttributes.insert(a.attrib);
-        }
-    }
-
-    bool DiGLShaderLinker::IsAttributeValid(DiVertexUsage semantic, uint8 index)
-    {
-        return mValidAttributes.find(DiGLTypeMappings::GetFixedAttributeIndex(semantic, index)) != mValidAttributes.end();
-    }
-
     void DiGLShaderLinker::LoadConstants(DiGLShaderParam* params)
     {
         if (DiGLUniforms::msUniformFuncs.empty())
@@ -340,6 +321,11 @@ namespace Demi
             glGetError();
             mGLHandle = glCreateProgramObjectARB();
 
+            // bind attribute
+            size_t numAttribs = sizeof(msCustomAttributes) / sizeof(CustomAttribute);
+            for (size_t i = 0; i < numAttribs; ++i)
+                glBindAttribLocationARB(mGLHandle, msCustomAttributes[i].attrib, msCustomAttributes[i].name.c_str());
+
             GLenum glErr = glGetError();
             if (glErr != GL_NO_ERROR)
                 DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", 0);
@@ -353,17 +339,10 @@ namespace Demi
 
             glLinkProgramARB(mGLHandle);
             glGetObjectParameterivARB(mGLHandle, GL_OBJECT_LINK_STATUS_ARB, &mLinked);
-            
-            // bind attribute
-            glBindAttribLocationARB(mGLHandle, 0, "Position");
-            glBindAttribLocationARB(mGLHandle, 2, "Normal");
-            glBindAttribLocationARB(mGLHandle, 8, "Texcoord0");
-
+           
             glErr = glGetError();
             if (glErr != GL_NO_ERROR)
                 DiGLShaderInstance::LogGLSLError(glErr, "GLSL linking result: ", mGLHandle);
-
-            LoadAttributes();
 
             glErr = glGetError();
             if (glErr != GL_NO_ERROR)

@@ -18,7 +18,9 @@ void AddMesh(float x, float y, const DiColor& col, const DiString& shader)
 		model->CreateSphere(10,20,20);
 
 	DiMaterialPtr mat = DiMaterial::QuickCreate(shader + "_v", shader + "_p");
+    
 	mat->SetDiffuse(col);
+    mat->SetCullMode(CULL_NONE);
 
 	if(shader == "phong")
     {
@@ -35,7 +37,7 @@ void InitScene()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
-	sm->SetAmbientColor(DiColor(0.1f,0.1f,0.1f,0.1f));
+    sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));
 
 	DiDirLight* dirlight = sm->CreateDirLight();
 	dirlight->SetColor(DiColor());
@@ -57,33 +59,33 @@ void InitScene()
 
 	float y1 = 0, y2 = -20, y3 = 20;      
                              
-	AddMesh( -60, y1, DiColor(0.1f,0.1f,0.1f),"phong");
-	AddMesh( -60, y2, DiColor(0.1f,0.1f,0.1f),"lambert");
-	AddMesh( -60, y3, DiColor(0.1f,0.1f,0.1f),"phong");
-	                
-	AddMesh( -40, y1, DiColor(1.0f,1.0f,1.0f),"phong");
-	AddMesh( -40, y2, DiColor(1.0f,1.0f,1.0f),"lambert");
-	AddMesh( -40, y3, DiColor(1.0f,1.0f,1.0f),"phong");
-	                
-	AddMesh( -20, y1, DiColor(1.0f,0.33f,0.0f),"phong");
-	AddMesh( -20, y2, DiColor(1.0f,0.33f,0.0f),"lambert");
-	AddMesh( -20, y3, DiColor(1.0f,0.33f,0.0f),"phong");
-	                
-	AddMesh(   0, y1, DiColor(1.0f,0.67f,0.0f),"phong");
-	AddMesh(   0, y2, DiColor(1.0f,0.67f,0.0f),"lambert");
-	AddMesh(   0, y3, DiColor(1.0f,0.67f,0.0f),"phong");
-	                 
-	AddMesh(  20, y1, DiColor(0.33f,1.0f,0.0f),"phong");
-	AddMesh(  20, y2, DiColor(0.33f,1.0f,0.0f),"lambert");
-	AddMesh(  20, y3, DiColor(0.33f,1.0f,0.0f),"phong");
-	                
-	AddMesh(  40, y1, DiColor(0.0f,0.33f,1.0f),"phong");
-	AddMesh(  40, y2, DiColor(0.0f,0.33f,1.0f),"lambert");
-	AddMesh(  40, y3, DiColor(0.0f,0.33f,1.0f),"phong");
-	                
-	AddMesh(  60, y1, DiColor(0.33f,0.0f,1.0f),"phong");
-	AddMesh(  60, y2, DiColor(0.33f,0.0f,1.0f),"lambert"); 
-	AddMesh(  60, y3, DiColor(0.33f,0.0f,1.0f),"phong");
+ 	AddMesh( -60, y1, DiColor(0.1f,0.1f,0.1f),"phong");
+ 	AddMesh( -60, y2, DiColor(0.1f,0.1f,0.1f),"lambert");
+ 	AddMesh( -60, y3, DiColor(0.1f,0.1f,0.1f),"phong");
+ 	                
+ 	AddMesh( -40, y1, DiColor(1.0f,1.0f,1.0f),"phong");
+ 	AddMesh( -40, y2, DiColor(1.0f,1.0f,1.0f),"lambert");
+ 	AddMesh( -40, y3, DiColor(1.0f,1.0f,1.0f),"phong");
+ 	                
+ 	AddMesh( -20, y1, DiColor(1.0f,0.33f,0.0f),"phong");
+ 	AddMesh( -20, y2, DiColor(1.0f,0.33f,0.0f),"lambert");
+ 	AddMesh( -20, y3, DiColor(1.0f,0.33f,0.0f),"phong");
+                
+    AddMesh(   0, y1, DiColor(1.0f,0.67f,0.0f),"phong");
+ 	AddMesh(   0, y2, DiColor(1.0f,0.67f,0.0f),"lambert");
+ 	AddMesh(   0, y3, DiColor(1.0f,0.67f,0.0f),"phong");
+ 	                 
+ 	AddMesh(  20, y1, DiColor(0.33f,1.0f,0.0f),"phong");
+ 	AddMesh(  20, y2, DiColor(0.33f,1.0f,0.0f),"lambert");
+ 	AddMesh(  20, y3, DiColor(0.33f,1.0f,0.0f),"phong");
+ 	                
+ 	AddMesh(  40, y1, DiColor(0.0f,0.33f,1.0f),"phong");
+ 	AddMesh(  40, y2, DiColor(0.0f,0.33f,1.0f),"lambert");
+ 	AddMesh(  40, y3, DiColor(0.0f,0.33f,1.0f),"phong");
+ 	                
+ 	AddMesh(  60, y1, DiColor(0.33f,0.0f,1.0f),"phong");
+ 	AddMesh(  60, y2, DiColor(0.33f,0.0f,1.0f),"lambert"); 
+ 	AddMesh(  60, y3, DiColor(0.33f,0.0f,1.0f),"phong");
 }
 
 void UpdateScene()
