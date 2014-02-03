@@ -34,7 +34,7 @@ void InitScene()
 
 int main(int argc, char *argv[])
 {
-    DemiDemo app(argc, argv, DemoConfig("Demi3D Sample - Car", 1500, 800));
+    DemiDemo app( DemoConfig("Demi3D Sample - Car", 1500, 800));
 	app.SetInitCallback(functor(InitScene));
 	app.Open();
 

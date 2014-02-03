@@ -185,7 +185,7 @@ void UpdateScene()
 
 int main(int argc, char *argv[])
 {
-    DemiDemo app(argc, argv, DemoConfig("Demi3D Sample - Hierarchy"));
+    DemiDemo app( DemoConfig("Demi3D Sample - Hierarchy"));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open();

@@ -36,14 +36,12 @@ namespace Demi
 #   endif
 #endif
 
-    DemiDemo::DemiDemo(int argc, char *argv[], DemoConfig config) :
+    DemiDemo::DemiDemo(DemoConfig config) :
         mAssetManager(nullptr)
         , mInputMgr(nullptr)
         //, mInfo(nullptr)
         //, mGUIWrapper(nullptr)
         , mConfig(config)
-        , mArgNums(argc)
-        , mArgs((const char**)argv)
     {
         DI_INIT_PROFILER;
 

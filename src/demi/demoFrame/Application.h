@@ -44,7 +44,7 @@ namespace Demi
     class DEMI_DEMO_API DemiDemo : public DiBase
     {
     public:
-        DemiDemo(int argc, char *argv[], DemoConfig config);
+        DemiDemo(DemoConfig config);
 
         ~DemiDemo(void);
 
@@ -111,10 +111,6 @@ namespace Demi
         DiInfo*                     mInfo;
 
         DemoConfig                  mConfig;
-
-        int                         mArgNums;
-
-        const char**                mArgs;
     };
 
 }

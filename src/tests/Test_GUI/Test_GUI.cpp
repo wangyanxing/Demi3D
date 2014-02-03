@@ -13,7 +13,7 @@ void UpdateScene()
 
 int main(int argc, char *argv[])
 {
-    DemiDemo app(argc, argv, DemoConfig("Demi test: Gui"));
+    DemiDemo app( DemoConfig("Demi test: Gui"));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open();
