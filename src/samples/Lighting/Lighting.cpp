@@ -95,14 +95,10 @@ void UpdateScene()
 
 int main()
 {
-
 	DiApp app;
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open(1024, 768, "Demi3D Sample - Basic Lighting");
-
-	while (app.IsOpen())
-		app.Update();
 
 	return 0;
 }

@@ -190,10 +190,5 @@ int main()
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open(1024, 768, "Demi3D Sample - Hierarchy");
 
-	while (app.IsOpen())
-	{
-		app.Update();
-	}
-
 	return 0;
 }

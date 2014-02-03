@@ -7,11 +7,7 @@ void AddMeshes()
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 	
 	DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
-	DiModelPtr model = make_shared<DiModel>("test","F50N_H.model");
-
-	//DiSimpleShape* model = DI_NEW DiSimpleShape();
-	//model->CreateBox();
-	//model->SetMaterial("F50N_H_F50ROJO.mtl");
+	DiModelPtr model = make_shared<DiModel>("car","F50N_H.model");
 
 	cullnode->AttachObject(model);
 	cullnode->SetScale(0.02f,0.02f,0.02f);
@@ -41,17 +37,12 @@ void UpdateScene()
 
 }
 
-int main(){
-
+int main()
+{
 	DiApp app;
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open(1700, 1000, "Demi3D Sample - Car");
-
-	while (app.IsOpen())
-	{
-		app.Update();
-	}
 
 	return 0;
 }

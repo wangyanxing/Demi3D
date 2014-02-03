@@ -18,10 +18,5 @@ int main()
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open(800, 600, "Demi3D Test - GUI");
 
-	while (app.IsOpen())
-	{
-		app.Update();
-	}
-
 	return 0;
 }

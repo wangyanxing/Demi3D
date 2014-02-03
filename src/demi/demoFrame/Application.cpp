@@ -118,6 +118,9 @@ namespace Demi
 
         if (mInitCallback)
             mInitCallback();
+
+        // go!
+        Run();
     }
 
     void DiApp::keyPressed(const OIS::KeyEvent& evt)
@@ -178,6 +181,12 @@ namespace Demi
 
         if (DiLogManager::GetInstancePtr())
             DI_DELETE DiLogManager::GetInstancePtr();
+    }
+
+    void DiApp::Run()
+    {
+        while (IsOpen())
+            Update();
     }
 
     DiApp* DiApp::sTheApp = NULL;

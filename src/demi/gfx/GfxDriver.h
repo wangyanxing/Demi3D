@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef GfxDriver_h__
+#define GfxDriver_h__
 
 namespace Demi
 {
@@ -69,20 +70,6 @@ namespace Demi
         virtual void                Render(DiRenderWindow* render = nullptr);
 
         virtual void                ConvertProjectionMatrix(const DiMat4& matrix, DiMat4& dest) = 0;
-
-        virtual void                SetShaderConsts(DiShaderType type, int regID, const DiMat4& mat) = 0;
-
-        virtual void                SetShaderConsts(DiShaderType type, int regID, const DiVec2& vec) = 0;
-
-        virtual void                SetShaderConsts(DiShaderType type, int regID, const DiVec3& vec) = 0;
-
-        virtual void                SetShaderConsts(DiShaderType type, int regID, const DiVec4& vec) = 0;
-
-        virtual void                SetShaderConsts(DiShaderType type, int regID, float val) = 0;
-
-        virtual void                SetShaderConsts(DiShaderType type, int regID, int val) = 0;
-
-        virtual void                SetShaderConsts(DiShaderType type, int regID, const DiColor& col) = 0;
 
         virtual void                BindShaders(DiShaderProgram* vs, DiShaderProgram* ps) = 0;
 
@@ -224,3 +211,4 @@ namespace Demi
         bool                        mClosing;
     };
 }
+#endif // GfxDriver_h__
