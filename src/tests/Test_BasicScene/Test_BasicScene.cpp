@@ -31,10 +31,16 @@ void CreateModels()
     }
 #endif
 
-    DiMaterialPtr mat = DiMaterial::QuickCreate("basic_v", "basic_p");
+    sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));
+
+    DiDirLight* dirlight = sm->CreateDirLight();
+    dirlight->SetColor(DiColor());
+    dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
+
+    DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p");
     DiSimpleShapePtr model = make_shared<DiSimpleShape>();
-    model->CreateSphere(10, 16, 16);
-    //model->CreateTorus(8, 2, 32, 32);
+    //model->CreateSphere(10, 16, 16);
+    model->CreateTorus(8, 2, 32, 32);
 
     mat->SetDiffuse(DiColor::Red);
     model->SetMaterial(mat);
