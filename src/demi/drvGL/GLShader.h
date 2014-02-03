@@ -101,10 +101,6 @@ namespace Demi
 
         void                LoadConstants(DiGLShaderParam* params);
 
-        void                LoadAttributes();
-
-        bool                IsAttributeValid(DiVertexUsage semantic, uint8 index);
-
         DiGLShaderConstant* GetConstant(const DiString& constname);
 
         bool                HasConstant(const DiString& constname);
@@ -132,8 +128,6 @@ namespace Demi
         DiGLShaderInstance* mPS;
 
         GLint               mLinked;
-
-        DiSet<GLuint>       mValidAttributes;
 
         typedef DiStrHash<DiGLShaderConstant> Consts;
 

@@ -125,27 +125,6 @@ namespace Demi
         }
     }
 
-    bool DiGLTypeMappings::IsAttributeValid(uint8 semantic)
-    {
-        switch (semantic)
-        {
-        case VERT_USAGE_POSITION:
-        case VERT_USAGE_NORMAL:
-        case VERT_USAGE_COLOR:
-        case VERT_USAGE_SECONDARY_COLOR:
-        case VERT_USAGE_TEXCOORD:
-            return false;
-
-        case VERT_USAGE_BLENDINDICES:
-        case VERT_USAGE_BLENDWEIGHT:
-        case VERT_USAGE_TANGENT:
-        case VERT_USAGE_BINORMAL:
-            return true;
-        }
-
-        return false;
-    }
-
     DiShaderParameter::ParamType DiGLTypeMappings::ConvertGLShaderConstType(GLenum gltype)
     {
         switch (gltype)

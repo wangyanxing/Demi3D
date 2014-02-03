@@ -37,7 +37,7 @@ void CreateModels()
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 
-    DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p");
+    DiMaterialPtr mat = DiMaterial::QuickCreate("phong_v", "phong_p");
     DiSimpleShapePtr model = make_shared<DiSimpleShape>();
     //model->CreateSphere(10, 16, 16);
     model->CreateTorus(8, 2, 32, 32);
