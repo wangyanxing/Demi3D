@@ -353,10 +353,15 @@ namespace Demi
 
             glLinkProgramARB(mGLHandle);
             glGetObjectParameterivARB(mGLHandle, GL_OBJECT_LINK_STATUS_ARB, &mLinked);
+            
+            // bind attribute
+            glBindAttribLocationARB(mGLHandle, 0, "Position");
+            glBindAttribLocationARB(mGLHandle, 2, "Normal");
+            glBindAttribLocationARB(mGLHandle, 8, "Texcoord0");
 
             glErr = glGetError();
             if (glErr != GL_NO_ERROR)
-                DiGLShaderInstance::LogObjectInfo(DiString("GLSL linking result : "), mGLHandle);
+                DiGLShaderInstance::LogGLSLError(glErr, "GLSL linking result: ", mGLHandle);
 
             LoadAttributes();
 
