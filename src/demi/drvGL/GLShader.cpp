@@ -182,32 +182,39 @@ namespace Demi
         mProcessedShader += code;
 
         // includes
-        DiString::size_type pos = mProcessedShader.find("#include");
-        if (pos != DiString::npos)
+        for (;;)
         {
-            DiString::size_type first = 0, second = 0;
-            for (auto i = pos + 7; i < mProcessedShader.size() && mProcessedShader[i] != '\n'; ++i)
+            DiString::size_type pos = mProcessedShader.find("#include");
+            if (pos != DiString::npos)
             {
-                if (mProcessedShader[i] == '\"')
+                DiString::size_type first = 0, second = 0;
+                for (auto i = pos + 7; i < mProcessedShader.size() && mProcessedShader[i] != '\n'; ++i)
                 {
-                    if (first == 0)
-                        first = i;
-                    else
-                        second = i;
+                    if (mProcessedShader[i] == '\"')
+                    {
+                        if (first == 0)
+                            first = i;
+                        else
+                            second = i;
+                    }
+                    if (second != 0)
+                        break;
                 }
-                if (second != 0)
-                    break;
-            }
-            DiString filename = mProcessedShader.substr(first + 1, second - first - 1);
-            DiString fullinclude = mProcessedShader.substr(pos, second - pos + 1);
+                DiString filename = mProcessedShader.substr(first + 1, second - first - 1);
+                DiString fullinclude = mProcessedShader.substr(pos, second - pos + 1);
 
-            DiDataStreamPtr buf = DiAssetManager::GetInstance().OpenArchive(filename);
-            if (!buf)
-            {
-                DI_WARNING("Cannot locate the include glsl file : %s", filename.c_str());
-                return;
+                DiDataStreamPtr buf = DiAssetManager::GetInstance().OpenArchive(filename);
+                if (!buf)
+                {
+                    DI_WARNING("Cannot locate the include glsl file : %s", filename.c_str());
+                    return;
+                }
+                mProcessedShader.Replace(fullinclude.c_str(), buf->GetAsString().c_str());
             }
-            mProcessedShader.Replace(fullinclude.c_str(), buf->GetAsString().c_str());
+            else
+            {
+                break;
+            }
         }
     }
 
