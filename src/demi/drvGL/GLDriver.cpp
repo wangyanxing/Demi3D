@@ -454,6 +454,7 @@ namespace Demi
         if (!unit->mPrimitiveCount)
             return false;
 
+        // yes it's ugly now, should be fixed later
         static bool attriIndex[16];
         for (auto i = 0; i < 16; i++) attriIndex[i] = false;
 
@@ -481,18 +482,8 @@ namespace Demi
                 uint16 count = elements.GetElementTypeCount((DiVertexType)i->Type);
 
                 GLboolean normalised = GL_FALSE;
-                switch (i->Type)
-                {
-                case VERT_TYPE_COLOR:
-                    // Because GL takes these as a sequence of single unsigned bytes, count needs to be 4
-                    // VertexElement::getTypeCount treats them as 1 (RGBA)
-                    // Also need to normalise the fixed-point data
-                    count = 4;
+                if(i->Type == VERT_TYPE_COLOR)
                     normalised = GL_TRUE;
-                    break;
-                default:
-                    break;
-                };
 
                 glVertexAttribPointerARB(attrib, count, gltype, normalised, stride, pBufferData);
                 glEnableVertexAttribArrayARB(attrib);
