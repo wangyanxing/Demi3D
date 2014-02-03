@@ -32,6 +32,11 @@ namespace Demi
 
     void DiConsoleLogger::OutputLog( const char* szMessage, const char* levelInfo, const char*, long )
     {
+        OutputLog(szMessage, levelInfo);
+    }
+
+    void DiConsoleLogger::OutputLog(const char* szMessage, const char* levelInfo)
+    {
         static DiLogInfo logInfo;
         if (::IsWindow(mWnd))
         {
@@ -53,13 +58,13 @@ namespace Demi
             if (Driver)
                 logInfo.hwnd = mMainHwnd;
 
-             ZeroMemory(logInfo.message, sizeof(logInfo.message));
-             strcpy_s(logInfo.message, 4096, msg.c_str());
-             COPYDATASTRUCT cpd;
-             cpd.dwData = 0;
-             cpd.cbData = sizeof(logInfo);
-             cpd.lpData = &logInfo;
-             ::SendMessage(mWnd, WM_COPYDATA, 0, (LPARAM)(LPVOID)&cpd);
+            ZeroMemory(logInfo.message, sizeof(logInfo.message));
+            strcpy_s(logInfo.message, 4096, msg.c_str());
+            COPYDATASTRUCT cpd;
+            cpd.dwData = 0;
+            cpd.cbData = sizeof(logInfo);
+            cpd.lpData = &logInfo;
+            ::SendMessage(mWnd, WM_COPYDATA, 0, (LPARAM)(LPVOID)&cpd);
         }
     }
 

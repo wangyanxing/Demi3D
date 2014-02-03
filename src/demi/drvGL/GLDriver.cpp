@@ -55,7 +55,7 @@ namespace Demi
 
     bool DiGLDriver::InitGfx(DiWndHandle wnd)
     {
-        DI_LOG("OpenGL driver is intializing.");
+        DI_INFO("OpenGL driver is intializing.");
 
         _InitMainContext(_CreateContext(wnd));
 
@@ -66,7 +66,7 @@ namespace Demi
 
     bool DiGLDriver::InitGfx(uint16 width, uint16 height, bool fullscreen)
     {
-        DI_LOG("Creating window: %d x %d, %s mode.", width, height, fullscreen?"full screen":"window");
+        DI_INFO("Creating window: %d x %d, %s mode.", width, height, fullscreen?"full screen":"window");
         mWidth = width;
         mHeight = height;
 
@@ -106,7 +106,7 @@ namespace Demi
         DI_DELETE mGLFBOManager;
         mGLFBOManager = nullptr;
 
-        DI_LOG("OpenGL stuff successfully released.");
+        DI_INFO("OpenGL stuff successfully released.");
     }
 
     void DiGLDriver::ConvertProjectionMatrix(const DiMat4& matrix, DiMat4& dest)
@@ -417,10 +417,10 @@ namespace Demi
         DiGLContext* ret = nullptr;
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         ret = DI_NEW DiWin32GLContext(static_cast<DiWin32GLUtil*>(mGLUtil), wnd);
-        DI_LOG("Win32 GL context created.");
+        DI_INFO("Win32 GL context created.");
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
         //ret = DI_NEW DiOSXCocoaContext(static_cast<DiOSXGLUtil*>(mGLUtil), wnd);
-        DI_LOG("OSX GL context created.");
+        DI_INFO("OSX GL context created.");
 #endif
         mContextMap[wnd] = ret;
         return ret;

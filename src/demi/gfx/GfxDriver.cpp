@@ -26,6 +26,7 @@ namespace Demi
         mWndManager(nullptr)
     {
         Driver = this;
+        mCommandMgr = DI_NEW DiCommandManager();
         mWndManager = DI_NEW DiWindowManager();
     }
 
@@ -248,8 +249,6 @@ namespace Demi
             Shutdown();
             return false;
         }
-
-        mCommandMgr = DI_NEW DiCommandManager();
 
         mMainHwnd = wnd;
         InitGfx(mMainHwnd);

@@ -19,7 +19,9 @@ namespace Demi
 
         virtual         ~DiLogger(){}
 
-        virtual void    OutputLog(const char* szMessage, const char* levelInfo, const char* fileName, long line) = 0;
+        virtual void    OutputLog(const char* msg, const char* levelInfo, const char* fileName, long line) = 0;
+
+        virtual void    OutputLog(const char* msg, const char* levelInfo) = 0;
     };
 
     class DI_MISC_API DiFileLogger : public DiLogger
@@ -36,8 +38,10 @@ namespace Demi
         
         void            Shutdown();
 
-        void            OutputLog(const char* szMessage, const char* levelInfo,
+        void            OutputLog(const char* msg, const char* levelInfo,
                            const char* fileName, long line);
+
+        void            OutputLog(const char* msg, const char* levelInfo);
 
     private:
 

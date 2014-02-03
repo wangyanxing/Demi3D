@@ -4,8 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#ifndef vec_h_
-#define vec_h_
+#ifndef Vec_h__
+#define Vec_h__
 
 #include <vector>
 #include <algorithm>
@@ -35,7 +35,7 @@ namespace Demi
             return i;
         }
 
-        bool contains(const T& value)
+        bool contains(const T& value) const
         {
             _const_iterator i = std::find(this->begin(),this->end(),value);
             return i != this->end();

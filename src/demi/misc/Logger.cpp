@@ -34,21 +34,23 @@ void DiFileLogger::Shutdown()
 void DiFileLogger::OutputLog(const char* szMessage, const char* levelInfo,
                            const char* fileName, long line)
 {
-    DiString datetime = DiTimer::GetCurrentDateTime();
+    DiString datetime = DiTimer::GetCurrentTime();
 
-    DiString logPre;
-
-    DiString file = fileName;
-    file = file.ExtractFileName();
     DiString log;
-    log.Format(
-        "%s %s(%d)\r\n"
-        "%s : %s\r\n\r\n", 
-        datetime.c_str(),
-        file.c_str(), line,
-        levelInfo, szMessage);
-
-    log = logPre + log;
-
+    log.Format( "[%s] %s%s", datetime.c_str(), levelInfo, szMessage);
     mFile << log.c_str();
+
+    if (fileName)
+    {
+        DiString file = fileName;
+        file = file.ExtractFileName();
+        mFile << ", " << file.c_str() << "(" << line << ")";
+    }
+
+    mFile << std::endl;
+}
+
+void Demi::DiFileLogger::OutputLog(const char* msg, const char* levelInfo)
+{
+    mFile << levelInfo << msg << std::endl;
 }

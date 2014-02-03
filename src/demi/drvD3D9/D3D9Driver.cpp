@@ -69,7 +69,7 @@ namespace Demi
 
     bool DiD3D9Driver::InitGfx(DiWndHandle wnd)
     {
-        DI_LOG("Direct3D9 driver is intializing.");
+        DI_INFO("Direct3D9 driver is intializing.");
 
         DI_ASSERT(wnd);
 
@@ -79,7 +79,7 @@ namespace Demi
             return false;
         }
         
-        DI_LOG("Direct3D9 object successfully initialized.");
+        DI_INFO("Direct3D9 object successfully initialized.");
         DI_ASSERT(!mDevice);
 
         UINT adapter = (mAdapter == 0xffffffff) ? D3DADAPTER_DEFAULT : (UINT)mAdapter;
@@ -202,7 +202,7 @@ namespace Demi
             return false;
         }
 
-        DI_LOG("Backbuffer format : %d", parameters.BackBufferFormat);
+        DI_INFO("Backbuffer format : %d", parameters.BackBufferFormat);
 
        /* D3DFORMAT zbufferFormats[] =
         {
@@ -226,14 +226,14 @@ namespace Demi
         }*/
         parameters.AutoDepthStencilFormat = GetDepthStencilFormatFor(adapterFormat, parameters.BackBufferFormat);// zbufferFormats[zbID];
 
-        DI_LOG("Depth stencil format : %d", parameters.AutoDepthStencilFormat);
+        DI_INFO("Depth stencil format : %d", parameters.AutoDepthStencilFormat);
 
         return true;
     }
 
     bool DiD3D9Driver::InitGfx(uint16 width, uint16 height, bool fullscreen)
     {
-        DI_LOG("Creating window: %d x %d, %s mode.", width, height, fullscreen?"full screen":"window");
+        DI_INFO("Creating window: %d x %d, %s mode.", width, height, fullscreen?"full screen":"window");
         mWidth = width;
         mHeight = height;
 
@@ -291,7 +291,7 @@ namespace Demi
             Device = nullptr;
         }
 
-        DI_LOG("Direct3D9 stuff successfully released.");
+        DI_INFO("Direct3D9 stuff successfully released.");
     }
 
     bool DiD3D9Driver::CreateDirect3D()
@@ -459,7 +459,7 @@ namespace Demi
         mMainParameters.BackBufferWidth = (uint32)w;
         mMainParameters.BackBufferHeight = (uint32)h;
 
-        DI_LOG("Reset D3D9 device.");
+        DI_INFO("Reset D3D9 device.");
         HRESULT res = mDevice->Reset(&mMainParameters);
         DiD3D9Driver::StateCache->DirtyAll();
 

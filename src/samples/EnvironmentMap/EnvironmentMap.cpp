@@ -84,7 +84,7 @@ void UpdateScene()
 
 int main(int argc, char *argv[])
 {
-    DemiDemo app(DemoConfig("Demi3D Sample - Environment Map", 1500, 800));
+    DemiDemo app(argc, argv, DemoConfig("Demi3D Sample - Environment Map", 1500, 800));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open();

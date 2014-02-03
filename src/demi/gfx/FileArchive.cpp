@@ -279,7 +279,7 @@ namespace Demi
 
         DiString full_pattern = concatenate_path(mName, pattern);
          
-        DI_LOG("Searching path: %s", full_pattern.c_str());
+        DI_INFO("Searching path: %s", full_pattern.c_str());
          
         lHandle = _findfirst(full_pattern.c_str(), &tagData);
         res = 0;

@@ -41,10 +41,10 @@ namespace Demi
 #ifdef DEMI_STATIC_API
         HINSTANCE hinst = GetModuleHandle(NULL);
 #else
-#   ifdef NDEBUG
-        HINSTANCE hinst = GetModuleHandle("DiDrvGL.dll");
-#   else
+#   if DEMI_DEBUG
         HINSTANCE hinst = GetModuleHandle("DiDrvGL_d.dll");
+#   else
+        HINSTANCE hinst = GetModuleHandle("DiDrvGL.dll");
 #   endif
 #endif
 
@@ -175,10 +175,11 @@ namespace Demi
         std::string instr;
         ext << wgl_extensions;
 
-        DI_LOG("Supported WGL extensions: ");
+        DI_INFO("Supported WGL extensions:");
+        DiLogManager::GetInstancePtr()->Output(LOG_LEVEL_LOG, wgl_extensions);
+
         while (ext >> instr)
         {
-            DI_LOG(instr.c_str());
             mExtensionList.insert(instr.c_str());
         }
     }

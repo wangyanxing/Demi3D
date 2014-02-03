@@ -43,6 +43,8 @@ namespace Demi
 
         void            Shutdown();
 
+        void            Output(LogLevel level, const char* log);
+
         void            Output(LogLevel level,
                             const char* szFileName, unsigned int uiLine, 
                             const char* pacFormat, ... );

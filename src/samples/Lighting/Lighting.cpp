@@ -95,7 +95,7 @@ void UpdateScene()
 
 int main(int argc, char *argv[])
 {
-    DemiDemo app(DemoConfig("Demi3D Sample - Basic Lighting"));
+    DemiDemo app(argc, argv, DemoConfig("Demi3D Sample - Basic Lighting"));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
 	app.Open();

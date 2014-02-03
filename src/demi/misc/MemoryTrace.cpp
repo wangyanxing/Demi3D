@@ -82,7 +82,7 @@ namespace Demi
 
     void DiMemoryTrace::WriteAllocInfo(long ptr, size_t stSize, const char* pszFileName, uint32 uiLine)
     {
-        DiString datetime = DiTimer::GetCurrentDateTime();
+        DiString datetime = DiTimer::GetCurrentTime();
         DiString log;
         log.Format(
             "%s, Addr [%x], Alloc:(%d), file : %s(line:%d) size = %d Byte.\n",
@@ -92,7 +92,7 @@ namespace Demi
 
     void DiMemoryTrace::WriteFreeInfo(long ptr, uint32 uiAllocIndex)
     {
-        DiString datetime = DiTimer::GetCurrentDateTime();
+        DiString datetime = DiTimer::GetCurrentTime();
         DiString log;
         log.Format(
             "%s, Addr [%x], Free(%d).\n",

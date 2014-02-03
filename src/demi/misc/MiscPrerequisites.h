@@ -26,7 +26,7 @@ namespace Demi
     class    DiRay;
     class    DiSphere;
     class    DiColor;
-
+    class    DiCmdArgs;
     class    DiDataStream;
     class    DiTimer;
     class    DiAutoCrashHandler;

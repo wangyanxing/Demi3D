@@ -119,6 +119,8 @@
 
 @end
 
+#else
+#   error "Please set the compiler as objective c++ mode!"
 #endif
 
 #endif // ApplicationOSX_h__
