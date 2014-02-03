@@ -178,8 +178,8 @@ namespace Demi
         mBasePath.SimplifyPath();
         mBasePath += "/";
 
-        DI_LOG("Set media path to: %s", mBasePath.c_str());
-        DI_LOG("Searching for sub paths");
+        DI_INFO("Set media path to: %s", mBasePath.c_str());
+        DI_INFO("Searching for sub paths");
 
         ArchivePtr baseDir = mArchiveManager->Load(mBasePath, ARCHIVE_FILE);
         DiFileInfoListPtr fl = baseDir->ListFileInfo(true,true);

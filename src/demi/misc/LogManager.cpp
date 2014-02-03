@@ -4,16 +4,37 @@
 #include "PlatformFunction.h"
 #include "PathLib.h"
 
+#include <stdlib.h>
+
 using namespace Demi;
+
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+
+void _SetConsoleColor(LogLevel level)
+{
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    WORD wColor = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+    SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE);
+
+    if (level == LOG_LEVEL_ERROR)
+        wColor = FOREGROUND_INTENSITY | FOREGROUND_RED;
+    else if (level == LOG_LEVEL_WARNING)
+        wColor = FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN;
+
+    SetConsoleTextAttribute(hConsole, wColor);
+}
+#else
+void _SetConsoleColor(LogLevel){}
+#endif
 
 _IMPLEMENT_SINGLETON(DiLogManager)
 
 const char* levelTag[MAX_LOG_LEVEL] =
 {        
-    "[ERROR]",
-    "[WARNING]",
+    "[Error] ",
+    "[Warning] ",
     "",
-    "[DEBUG]"
+    "[Debug] "
 };
 
 DiLogManager::DiLogManager(void)
@@ -41,9 +62,9 @@ void DiLogManager::Init(const DiString& logFileName)
               | (1 << LOG_LEVEL_LOG)
               | (1 << LOG_LEVEL_DEBUG);
 
-    DI_LOG("********************************");
-    DI_LOG("***  Demi3D is initializing  ***");
-    DI_LOG("********************************");
+    DI_INFO("********************************");
+    DI_INFO("***  Demi3D is initializing  ***");
+    DI_INFO("********************************");
 }
 
 void DiLogManager::Shutdown()
@@ -107,6 +128,10 @@ void Demi::DiLogManager::Error( const char* szFileName, unsigned int uiLine, con
     outstr += "\n\nDescription:";
     outstr += szLog;
     DiPlatformFunc::ErrorDlg(outstr.c_str());
+
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+    __asm int 3
+#endif
 }
 
 void Demi::DiLogManager::OutputUnformat(LogLevel level, const char* szFileName,
@@ -115,11 +140,25 @@ void Demi::DiLogManager::OutputUnformat(LogLevel level, const char* szFileName,
     if (!mLogLevel & (1<<level))
         return;
 
-    printf("%s %s\n", levelTag[level], szLog);
+    _SetConsoleColor(level);
+
+    printf("%s%s\n", levelTag[level], szLog);
 
     for (auto it = mLogger.begin(); it != mLogger.end(); ++it)
     {
         DiLogger* lg = *it;
         lg->OutputLog(szLog, levelTag[level], szFileName, uiLine);
+    }
+}
+
+void Demi::DiLogManager::Output(LogLevel level, const char* log)
+{
+    _SetConsoleColor(level);
+
+    printf("%s%s\n", levelTag[level], log);
+
+    for (auto it = mLogger.begin(); it != mLogger.end(); ++it)
+    {
+        (*it)->OutputLog(levelTag[level], log);
     }
 }

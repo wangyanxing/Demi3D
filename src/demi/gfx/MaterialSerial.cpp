@@ -37,7 +37,7 @@ namespace Demi
 
     bool DiMaterialSerializer::SaveMaterial( const DiString& file, DiMaterial* source )
     {
-        DI_LOG("Save material file to :%s",file.c_str());
+        DI_INFO("Save material file to :%s",file.c_str());
 
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
         DiXMLElement root = xmlfile->CreateRoot("material");

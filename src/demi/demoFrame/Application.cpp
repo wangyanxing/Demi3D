@@ -5,14 +5,20 @@
 #include "CameraHelper.h"
 #include "SceneManager.h"
 #include "RenderWindow.h"
-//#include "MyGUI_DemiWrapper.h"
-//#include "MyGUI_MouseButton.h"
-//#include "MyGUI_InputManager.h"
 #include "InputManager.h"
 #include "Info.h"
 #include "EnginePlugin.h"
 #include "GfxDriver.h"
 #include "Command.h"
+#include "LogManager.h"
+
+//#include "MyGUI_DemiWrapper.h"
+//#include "MyGUI_MouseButton.h"
+//#include "MyGUI_InputManager.h"
+
+#if DEMI_PLATFORM == DEMI_PLATFORM_OSX
+#   include "ApplicationOSX.h"
+#endif
 
 namespace Demi
 {
@@ -23,18 +29,21 @@ namespace Demi
 #   define USE_OPEN_GL 1
 #   if DEMI_DEBUG
         const DiString gfxD3D9DrvLib = "DiDrvD3D9_d";
-        const DiString gfxGLDrvLib = "DiDrvGL_d";
+        const DiString gfxGLDrvLib   = "DiDrvGL_d";
 #   else
         const DiString gfxD3D9DrvLib = "DiDrvD3D9";
-        const DiString gfxGLDrvLib = "DiDrvGL";
+        const DiString gfxGLDrvLib   = "DiDrvGL";
 #   endif
 #endif
-    DemiDemo::DemiDemo(DemoConfig config) :
-          mAssetManager(nullptr)
+
+    DemiDemo::DemiDemo(int argc, char *argv[], DemoConfig config) :
+        mAssetManager(nullptr)
         , mInputMgr(nullptr)
         //, mInfo(nullptr)
         //, mGUIWrapper(nullptr)
         , mConfig(config)
+        , mArgNums(argc)
+        , mArgs((const char**)argv)
     {
         DI_INIT_PROFILER;
 
@@ -42,6 +51,18 @@ namespace Demi
 
         DI_ASSERT(!sTheApp);
         sTheApp = this;
+
+        DiLogManager* logmgr = DI_NEW DiLogManager();
+        logmgr->Init(mConfig.logFile);
+
+#if USE_OPEN_GL
+        DiPlugin::LoadPlugin(gfxGLDrvLib);
+#else
+        DiPlugin::LoadPlugin(gfxD3D9DrvLib);
+#endif
+
+        mAssetManager = new DiAssetManager;
+        mAssetManager->SetBasePath(mConfig.mediaPath);
     }
 
     DemiDemo::~DemiDemo(void)
@@ -78,43 +99,22 @@ namespace Demi
 
     void DemiDemo::Open()
     {
-        DiLogManager* logmgr = new DiLogManager;
-        logmgr->Init(mConfig.logFile);
+#if DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
 
-#if USE_OPEN_GL
-        DiPlugin::LoadPlugin(gfxGLDrvLib);
-#else
-        DiPlugin::LoadPlugin(gfxD3D9DrvLib);
-#endif
+        mAppDelegate = [[AppDelegate alloc] init];
+        [[NSApplication sharedApplication] setDelegate:mAppDelegate];
+        NSApplicationMain(mArgNums, mArgs);
 
-        mAssetManager = new DiAssetManager;
-        mAssetManager->SetBasePath(mConfig.mediaPath);
+        [pool release];
 
-        bool ret = Driver->Init(mConfig.windowWidth, mConfig.windowHeight, mConfig.windowTitle, mConfig.fullScreen);
-        DI_ASSERT(ret);
-
-        mInputMgr = new DiInputManager();
-        mInputMgr->createInput((size_t)(mMainHwnd));
-
-        mInputMgr->registerKeyPressEvent("App::KeyDown", Demi::functor(*this, &DemiDemo::keyPressed));
-        mInputMgr->registerKeyReleaseEvent("App::KeyUp", Demi::functor(*this, &DemiDemo::keyReleased));
-        mInputMgr->registerMouseMoveEvent("App::MsMove", Demi::functor(*this, &DemiDemo::mouseMoved));
-        mInputMgr->registerMousePressEvent("App::MsDown", Demi::functor(*this, &DemiDemo::mousePressed));
-        mInputMgr->registerMouseReleaseEvent("App::MsUp", Demi::functor(*this, &DemiDemo::mouseReleased));
-
-        //mGUIWrapper = new MyGUI::DemiWrapper();
-        //mGUIWrapper->init("MyGUI_Core.xml");
-
-        //mInfo = new DiInfo();
-
-        DiCamera* cam = Driver->GetSceneManager()->GetCamera();
-        mCameraHelper = new DiCameraHelper(cam);
-
-        if (mInitCallback)
-            mInitCallback();
-
-        // go!
+#elif DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+        OpenImpl();
         Run();
+
+#else
+        DI_WARNING("Unsupported platform, quiting");
+#endif
     }
 
     void DemiDemo::keyPressed(const OIS::KeyEvent& evt)
@@ -181,6 +181,32 @@ namespace Demi
     {
         while (IsOpen())
             Update();
+    }
+
+    void DemiDemo::OpenImpl()
+    {
+        bool ret = Driver->Init(mConfig.windowWidth, mConfig.windowHeight, mConfig.windowTitle, mConfig.fullScreen);
+        DI_ASSERT(ret);
+
+        mInputMgr = new DiInputManager();
+        mInputMgr->createInput((size_t)(mMainHwnd));
+
+        mInputMgr->registerKeyPressEvent("App::KeyDown", Demi::functor(*this, &DemiDemo::keyPressed));
+        mInputMgr->registerKeyReleaseEvent("App::KeyUp", Demi::functor(*this, &DemiDemo::keyReleased));
+        mInputMgr->registerMouseMoveEvent("App::MsMove", Demi::functor(*this, &DemiDemo::mouseMoved));
+        mInputMgr->registerMousePressEvent("App::MsDown", Demi::functor(*this, &DemiDemo::mousePressed));
+        mInputMgr->registerMouseReleaseEvent("App::MsUp", Demi::functor(*this, &DemiDemo::mouseReleased));
+
+        //mGUIWrapper = new MyGUI::DemiWrapper();
+        //mGUIWrapper->init("MyGUI_Core.xml");
+
+        //mInfo = new DiInfo();
+
+        DiCamera* cam = Driver->GetSceneManager()->GetCamera();
+        mCameraHelper = new DiCameraHelper(cam);
+
+        if (mInitCallback)
+            mInitCallback();
     }
 
     DemiDemo* DemiDemo::sTheApp = NULL;

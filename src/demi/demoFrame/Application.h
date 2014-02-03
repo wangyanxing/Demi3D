@@ -44,7 +44,7 @@ namespace Demi
     class DEMI_DEMO_API DemiDemo : public DiBase
     {
     public:
-        DemiDemo(DemoConfig config);
+        DemiDemo(int argc, char *argv[], DemoConfig config);
 
         ~DemiDemo(void);
 
@@ -58,7 +58,6 @@ namespace Demi
 
     public:
 
-        // Open a window
         void                        Update();
 
         void                        Close();
@@ -91,6 +90,10 @@ namespace Demi
 
     protected:
 
+        void                        OpenImpl();
+
+    protected:
+
         DiAssetManager*             mAssetManager;
                                     
         DiCameraHelper*             mCameraHelper;
@@ -110,6 +113,10 @@ namespace Demi
         DiInfo*                     mInfo;
 
         DemoConfig                  mConfig;
+
+        int                         mArgNums;
+
+        const char**                mArgs;
     };
 
 }

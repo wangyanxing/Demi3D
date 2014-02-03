@@ -47,21 +47,19 @@ namespace Demi
         return iArgCount;
     }
 
-    const char* DiCmdArgs::GetArg(int iIndex) const
+    const DiString& DiCmdArgs::GetArg(uint32 index) const
     {
-        const char* pcArg = nullptr;
+        static DiString unfound;
 
-        if ((size_t)iIndex >= 0 && (size_t)iIndex < mKeyList.size())
-        {
-            pcArg = mKeyList.at(iIndex).c_str();
-        }
-
-        return pcArg;
+        if (index >= 0 && index < mKeyList.size())
+            return mKeyList[index];
+        else
+            return unfound;
     }
 
-    const char* DiCmdArgs::GetCommandLine() const
+    const DiString& DiCmdArgs::GetCommandLine() const
     {
-        return mStrCommand.c_str();
+        return mCommand;
     }
 
     DiKeyList& DiCmdArgs::GetKeyList()
@@ -71,7 +69,18 @@ namespace Demi
 
     DiString& DiCmdArgs::GetCommand()
     {
-        return mStrCommand;
+        return mCommand;
+    }
+
+    DiCmdArgs::DiCmdArgs(int argc, const char** argv)
+    {
+        if (argc <= 0)
+            return;
+
+        mCommand = argv[0];
+
+        for (int i = 1; i < argc; i++)
+            mKeyList.push_back(argv[i]);
     }
 
     DiCommandManager::DiCommandManager(void)
@@ -86,6 +95,8 @@ namespace Demi
 
     bool DiCommandManager::Init()
     {
+        DI_INFO("Command manager is initializing...");
+
         CommandMgr = this;
         DiSystemCmd::BindAllSystemCmd(this);
         
@@ -105,6 +116,7 @@ namespace Demi
         {
             DI_DELETE it->second;
         }
+
         mMapVariables.clear();
         CommandMgr = nullptr;
     }
@@ -148,20 +160,20 @@ namespace Demi
         if (pcCmd[0] == '#')
             return true;
 
-        DiCmdArgs kArgs;
+        DiCmdArgs argus;
 
-        DiString& kCommand = kArgs.GetCommand();
-        DiKeyList& kSplitList = kArgs.GetKeyList();
+        DiString& command = argus.GetCommand();
+        DiKeyList& splitList = argus.GetKeyList();
 
         DiString cmds = pcCmd;
-        cmds.Tokenize(" ", kSplitList);
+        cmds.Tokenize(" ", splitList);
 
-        if (kSplitList.empty())
+        if (splitList.empty())
             return true;
 
-        kCommand = pcCmd;
+        command = pcCmd;
 
-        DiString& kName = kSplitList.at(0);
+        DiString& kName = splitList.at(0);
 
         kName.ToLower();
 
@@ -174,10 +186,10 @@ namespace Demi
 
         DiCmdInfo kCmdInfo = it->second;
 
-        bool iRlt = kCmdInfo.mFunc(&kArgs);
+        bool iRlt = kCmdInfo.mFunc(&argus);
         if (!iRlt)
         {
-            DI_WARNING( "execute failed. [%s]", kCommand.c_str());
+            DI_WARNING( "execute failed. [%s]", command.c_str());
             return false;
         }
 
@@ -320,6 +332,8 @@ namespace Demi
     void DiSystemCmd::BindAllSystemCmd(DiCommandManager* cm)
     {
         cm->AddCommand("quit", functor_ret(&DiSystemCmd::Quit), "close application");
+
+        DI_INFO("All built-in commands binded");
     }
 
     bool DiSystemCmd::Quit(DiCmdArgs*)
@@ -343,11 +357,15 @@ namespace Demi
 
             sConsoleLogger->OutputLog("Init console window", "", "", 0);
             DiLogManager::GetInstance().RegisterLogger(sConsoleLogger);
+
+            DI_INFO("New external console window created");
         }
         else
         {
             if (createWnd)
+            {
                 sConsoleLogger->CreateConsoleWindow();
+            }
         }
     }
 

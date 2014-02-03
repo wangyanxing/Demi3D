@@ -91,7 +91,7 @@ namespace Demi
         mGLRc = wglCreateContext(mHDC);
         if (!mGLRc)
         {
-            DI_LOG(DiWin32GLUtil::TranslateWGLError().c_str());
+            DI_INFO(DiWin32GLUtil::TranslateWGLError().c_str());
             DI_ERROR("Cannot create wgl context.");
             return;
         }

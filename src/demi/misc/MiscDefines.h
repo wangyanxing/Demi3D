@@ -59,28 +59,21 @@
 #       define DEMI_DEBUG 0
 #   endif
 
-#   if DEMI_PLATFORM_OSX == DEMI_PLATFORM_OSX
-#      define DEMI_PLATFORM_LIB "DemiPlatform.bundle"
-#   elif DEMI_PLATFORM_OSX == DEMI_PLATFORM_IOS
-#      define DEMI_PLATFORM_LIB "DemiPlatform.a"
-#   else //Linux
-#      define DEMI_PLATFORM_LIB "libDemiPlatform.so"
-#   endif
-
 #endif
 
 //-----------------------------------------------------------------------------
 #define DI_ERROR(...) \
     Demi::DiLogManager::GetInstancePtr()->Output(Demi::LOG_LEVEL_ERROR, __FILE__, __LINE__, __VA_ARGS__); \
-    Demi::DiLogManager::GetInstancePtr()->Error( __FILE__ , __LINE__ , __VA_ARGS__); __asm int 3
+    Demi::DiLogManager::GetInstancePtr()->Error( __FILE__ , __LINE__ , __VA_ARGS__);
 
 #define DI_WARNING(...) Demi::DiLogManager::GetInstancePtr()->Output( Demi::LOG_LEVEL_WARNING,\
     __FILE__ , __LINE__ , __VA_ARGS__)
 
-#define DI_LOG(...) Demi::DiLogManager::GetInstancePtr()->Output( Demi::LOG_LEVEL_LOG,\
-    __FILE__ , __LINE__ , __VA_ARGS__)
+#define DI_LOG(...) Demi::DiLogManager::GetInstancePtr()->Output( Demi::LOG_LEVEL_LOG, __FILE__ , __LINE__ , __VA_ARGS__)
 
-#ifdef _DEBUG
+#define DI_INFO(...) Demi::DiLogManager::GetInstancePtr()->Output( Demi::LOG_LEVEL_LOG, nullptr, 0, __VA_ARGS__)
+
+#if DEMI_DEBUG == 1
 #    define DI_DEBUG(...) Demi::DiLogManager::GetInstancePtr()->Output( Demi::LOG_LEVEL_DEBUG,\
         __FILE__ , __LINE__ , __VA_ARGS__)
 #else
@@ -88,20 +81,20 @@
 #endif
 
 //-----------------------------------------------------------------------------
-#ifdef _DEMI_RELEASE
-#define DISABLE_MEMORY_TRACE
+#if DEMI_DEBUG == 0
+#   define DISABLE_MEMORY_TRACE
 #endif
 
 #ifndef SAFE_DELETE
-#    define SAFE_DELETE(P)       if(P) { delete (P);         (P) = NULL; }
+#    define SAFE_DELETE(P)       if(P) { delete (P); (P) = NULL; }
 #endif
 
 #ifndef SAFE_ARRAY_DELETE
-#    define SAFE_ARRAY_DELETE(P) if(P) { delete[] (P);       (P) = NULL; }
+#    define SAFE_ARRAY_DELETE(P) if(P) { delete[] (P); (P) = NULL; }
 #endif
 
 #ifndef SAFE_RELEASE
-#    define SAFE_RELEASE(P)      if(P) { (P)->Release();     (P) = NULL; }
+#    define SAFE_RELEASE(P)      if(P) { (P)->Release(); (P) = NULL; }
 #endif
 
 #define PROFILE(name) Demi::DiProfileSample kSample(name)

@@ -479,7 +479,7 @@ namespace Demi
 
     void DiSceneManager::ClearNodes()
     {
-        DI_LOG("Cleanning scene nodes..");
+        DI_INFO("Cleanning scene nodes..");
 
         mRootNode->RemoveAllChildren();
         mRootNode->DetachAllObjects();
@@ -538,14 +538,14 @@ namespace Demi
 
     void DiSceneManager::ClearLights()
     {
-        DI_LOG("Cleaning %d dir lights..", mDirLights.size());
+        DI_INFO("Cleaning %d dir lights..", mDirLights.size());
         for (auto it = mDirLights.begin(); it!=mDirLights.end(); ++it)
         {
             DI_DELETE (*it);
         }
         mDirLights.clear();
 
-        DI_LOG("Cleaning %d point lights..", mPointLights.size());
+        DI_INFO("Cleaning %d point lights..", mPointLights.size());
         for (auto pit = mPointLights.begin(); pit!=mPointLights.end(); ++pit)
         {
             DI_DELETE (*pit);
@@ -556,7 +556,7 @@ namespace Demi
 
     bool DiSceneManager::LoadScene(const DiString& scene)
     {
-        DI_LOG("Loading scene %s..", scene.c_str());
+        DI_INFO("Loading scene %s..", scene.c_str());
 
         DestroyTerrain();
         mCurrentScene = scene;
@@ -568,7 +568,7 @@ namespace Demi
         if (!mTerrain)
             return;
         
-        DI_LOG("Releasing terrain..");
+        DI_INFO("Releasing terrain..");
 
         mRootNode->DetachObject(mTerrain);
         mTerrain->Unload();
@@ -1038,7 +1038,7 @@ namespace Demi
 
     void DiSceneManager::DestroyCamera( const DiString& name )
     {
-        DI_LOG("Destroying camera : %s", name.c_str());
+        DI_INFO("Destroying camera : %s", name.c_str());
 
         auto i = mCameras.find(name);
         if (i != mCameras.end())

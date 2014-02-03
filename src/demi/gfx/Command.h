@@ -3,7 +3,8 @@
     Creator:    demiwangya
 **************************************************************************/
 
-#pragma once
+#ifndef Command_h__
+#define Command_h__
 
 #include <functional>
 
@@ -28,16 +29,27 @@ namespace Demi
     class DI_GFX_API DiCmdArgs
     {
     public:
+
+        DiCmdArgs(){}
+
+        DiCmdArgs(int argc, const char** argv);
+
+    public:
+
         int                GetArgCount() const;
-        const char*        GetArg(int iIndex) const;
-        const char*        GetCommandLine() const;
+
+        const DiString&    GetArg(uint32 index) const;
+        
+        const DiString&    GetCommandLine() const;
 
         DiKeyList&         GetKeyList();
+        
         DiString&          GetCommand();
 
     protected:
         DiKeyList          mKeyList;
-        DiString           mStrCommand;
+
+        DiString           mCommand;
     };
     
     typedef Functor1wRet<Demi::DiCmdArgs*,bool> DiCmdFuntion;
@@ -55,6 +67,7 @@ namespace Demi
 
     typedef std::map<DiString, DiConsoleVar*, string_nocase_lt>  ConsoleVariablesMap;
     typedef ConsoleVariablesMap::iterator                        ConsoleVariablesMapItor;
+
     typedef std::map<DiString, DiString, string_nocase_lt>       ConfigVars;
     typedef DiList<DiConsoleVarListener*>                        ConsoleVarSinks;
 
@@ -131,4 +144,4 @@ namespace Demi
     };
 }
 
-
+#endif // Command_h__

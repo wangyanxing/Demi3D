@@ -4,16 +4,16 @@
 
 namespace Demi 
 {
-    const DiString&  DiTimer::GetCurrentDateTime()
+    const DiString&  DiTimer::GetCurrentTime()
     {
         static DiString dt;
         
-        char datetime[128];
+        char datetime[32];
         struct tm *curtime;
         time_t t;
         t = time(NULL);
         curtime = localtime(&t);
-        strftime(datetime, 128, "%Y-%m-%d %X", curtime);
+        strftime(datetime, 128, "%H:%M:%S", curtime);
         dt = datetime;
         return dt;
     }

@@ -134,7 +134,7 @@ namespace Demi
 
                 glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
                 logMessage += DiString(infoLog);
-                DI_LOG("%s", logMessage.c_str());
+                DI_INFO("%s", logMessage.c_str());
 
                 delete[] infoLog;
             }

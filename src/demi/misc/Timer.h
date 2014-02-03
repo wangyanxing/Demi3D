@@ -20,7 +20,7 @@ namespace Demi
 
         double                  GetElapse();
 
-        static const DiString&  GetCurrentDateTime();
+        static const DiString&  GetCurrentTime();
 
     private:
 

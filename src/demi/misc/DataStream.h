@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef DataStream_h__
+#define DataStream_h__
 
 #include "MiscPrerequisites.h"
 #include <istream>
@@ -209,25 +210,25 @@ namespace Demi
 
         BYTE*         GetCurrentPtr(void) { return mPos; }
 
-        size_t         Read(void* buf, size_t count);
+        size_t        Read(void* buf, size_t count);
 
-        size_t         Write(const void* buf, size_t count);
+        size_t        Write(const void* buf, size_t count);
 
-        size_t         ReadLine(char* buf, size_t maxCount, const DiString& delim = "\n");
+        size_t        ReadLine(char* buf, size_t maxCount, const DiString& delim = "\n");
 
-        size_t         SkipLine(const DiString& delim = "\n");
+        size_t        SkipLine(const DiString& delim = "\n");
 
-        void         Skip(long count);
+        void          Skip(long count);
 
-        void         Seek( size_t pos );
+        void          Seek(size_t pos);
 
         size_t        Tell(void) const;
 
-        bool         Eof(void) const;
+        bool          Eof(void) const;
 
-        void         Close(void);
+        void          Close(void);
 
-        void         setFreeOnClose(bool free) { mFreeOnClose = free; }
+        void          setFreeOnClose(bool free) { mFreeOnClose = free; }
     };
 
     class DI_MISC_API DiFileStreamDataStream : public DiDataStream
@@ -266,27 +267,27 @@ namespace Demi
 
         size_t            ReadLine(char* buf, size_t maxCount, const DiString& delim = "\n");
 
-        void             Skip(long count);
+        void              Skip(long count);
 
-        void             Seek( size_t pos );
+        void              Seek( size_t pos );
 
         size_t            Tell(void) const;
 
-        bool             Eof(void) const;
+        bool              Eof(void) const;
 
-        void             Close(void);
+        void              Close(void);
 
     protected:
 
-        std::istream*    mInStream;
+        std::istream*     mInStream;
 
-        DiIfstream*        mFStreamRO;
+        DiIfstream*       mFStreamRO;
 
-        std::fstream*    mFStream;
+        std::fstream*     mFStream;
 
-        bool            mFreeOnClose;    
+        bool              mFreeOnClose;    
 
-        void            DetermineAccess();
+        void              DetermineAccess();
 
     };
 
@@ -306,18 +307,19 @@ namespace Demi
 
         size_t         Write(const void* buf, size_t count);
 
-        void        Skip(long count);
+        void           Skip(long count);
 
-        void        Seek( size_t pos );
+        void           Seek( size_t pos );
 
-        size_t        Tell(void) const;
+        size_t         Tell(void) const;
 
-        bool         Eof(void) const;
+        bool           Eof(void) const;
 
-        void         Close(void);
+        void           Close(void);
 
     };
 
     typedef shared_ptr<DiDataStream> DiDataStreamPtr;
 
 }
+#endif // DataStream_h__

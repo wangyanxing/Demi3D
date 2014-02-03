@@ -105,7 +105,7 @@ namespace Demi
 
     void DiRenderWindow::Init()
     {
-        DI_LOG("Intializing render window : %s", mName.c_str());
+        DI_INFO("Intializing render window : %s", mName.c_str());
 
         Driver->GetWindowSize(mWndHandle, mWidth, mHeight);
 
@@ -130,7 +130,7 @@ namespace Demi
 
     void DiRenderWindow::Shutdown()
     {
-        DI_LOG("Closing render window : %s", mName.c_str());
+        DI_INFO("Closing render window : %s", mName.c_str());
 
         DiAssetManager::GetInstance().DestroyAsset(mCanvasTexture->GetName());
 

@@ -30,7 +30,7 @@ namespace Demi
 
     bool DiDynLib::Load()
     {
-        DI_LOG("Loading dynamic plugin : %s", mName.c_str());
+        DI_INFO("Loading dynamic plugin : %s", mName.c_str());
         DiString file = mName;
 
         if (!DiString::EndsWith(file, DYNLIB_EXTENSION, false))
@@ -53,7 +53,7 @@ namespace Demi
 
     bool DiDynLib::Unload()
     {
-        DI_LOG("Unloading dynamic plugin : %s", mName.c_str());
+        DI_INFO("Unloading dynamic plugin : %s", mName.c_str());
         if (DYNLIB_UNLOAD(mInst))
         {
             DI_WARNING("Cannot unload dynamic library: %s", mName.c_str());

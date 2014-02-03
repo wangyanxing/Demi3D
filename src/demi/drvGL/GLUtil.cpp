@@ -57,32 +57,32 @@ namespace Demi
 
         // Version
         DiString tmpStr((const char*)pcVer);
-        DI_LOG("GL_VERSION = %s", (const char*)pcVer);
+        DI_INFO("GL_VERSION = %s", (const char*)pcVer);
         mVersion = tmpStr.substr(0, tmpStr.find(" "));
 
         // Vendor
         const GLubyte* pcVendor = glGetString(GL_VENDOR);
         tmpStr = (const char*)pcVendor;
-        DI_LOG("GL_VENDOR = %s", (const char*)pcVendor);
+        DI_INFO("GL_VENDOR = %s", (const char*)pcVendor);
         mVendor = tmpStr.substr(0, tmpStr.find(" "));
 
         // Renderer
         const GLubyte* pcRenderer = glGetString(GL_RENDERER);
         tmpStr = (const char*)pcRenderer;
-        DI_LOG("GL_RENDERER = %s", (const char*)pcRenderer);
+        DI_INFO("GL_RENDERER = %s", (const char*)pcRenderer);
 
         // Extension list
         std::stringstream ext;
         std::string str;
 
         const GLubyte* pcExt = glGetString(GL_EXTENSIONS);
-        DI_LOG("Supported GL extensions:");
+        DI_INFO("Supported GL extensions:");
+        DiLogManager::GetInstancePtr()->Output(LOG_LEVEL_LOG, (const char*)pcExt);
 
         ext << pcExt;
 
         while (ext >> str)
         {
-            DI_LOG(str.c_str());
             mExtensionList.insert(str.c_str());
         }
     }
