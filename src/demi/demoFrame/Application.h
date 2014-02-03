@@ -88,8 +88,6 @@ namespace Demi
 
         void                        Run();
 
-    protected:
-
         void                        OpenImpl();
 
     protected:
