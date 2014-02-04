@@ -53,7 +53,7 @@ namespace Demi
 
     void DiGLRenderTarget::AttachSurface()
     {
-        mGLFormat = DiGLTypeMappings::GLFormatMapping[mParentTex->GetFormat()];
+        mGLFormat = DiGLTypeMappings::GetClosestGLInternalFormat(mParentTex->GetFormat());
 
         mFrameBuffer->AttachSurface(0, mParentTex);
     }
@@ -69,7 +69,7 @@ namespace Demi
 
         if (!mFrameBuffer) return ret;
 
-        GLenum glfmt = DiGLTypeMappings::GLFormatMapping[mFrameBuffer->GetFormat()];
+        GLenum glfmt = DiGLTypeMappings::GetClosestGLInternalFormat(mFrameBuffer->GetFormat());
         GLuint depthFormat, stencilFormat;
         DiGLDriver::FBOManager->GetBestDepthStencil(glfmt, &depthFormat, &stencilFormat);
 
@@ -122,7 +122,7 @@ namespace Demi
         {
             if (mDepthBuffer || mStencilBuffer)
             {
-                GLenum internalFormat = DiGLTypeMappings::GLFormatMapping[mFrameBuffer->GetFormat()];
+                GLenum internalFormat = DiGLTypeMappings::GetClosestGLInternalFormat(mFrameBuffer->GetFormat());
                 GLenum depthFormat, stencilFormat;
 
                 static_cast<DiGLDriver*>(Driver)->GetDepthStencilFormatFor(internalFormat, &depthFormat, &stencilFormat);

@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Texture_h__
+#define Texture_h__
 
 #include "Asset.h"
 #include "DeviceLostListener.h"
@@ -65,17 +66,9 @@ namespace Demi
 
         inline DiTextureType    GetTextureType(){ return mTextureType; }
 
-        void                    SetMinFilter(DiFilterType ft);
+        inline DiFilterType     GetFilter(void) const { return mFilter; }
 
-        inline DiFilterType     GetMinFilter(void) const { return mMinFilter; }
-
-        void                    SetMagFilter(DiFilterType ft);
-
-        inline DiFilterType     GetMagFilter(void) const { return mMagFilter; }
-
-        void                    SetMipFilter(DiFilterType ft);
-
-        inline DiFilterType     GetMipFilter(void) const { return mMipFilter; }
+        void                    SetFilter(DiFilterType ft);
 
         void                    SetAddressingU(DiAddMode ad);
 
@@ -165,11 +158,7 @@ namespace Demi
 
     protected:
 
-        DiFilterType            mMinFilter;
-                                
-        DiFilterType            mMagFilter;
-                                
-        DiFilterType            mMipFilter;
+        DiFilterType            mFilter;
                                 
         DiAddMode               mAddressingU;
                                 
@@ -202,3 +191,4 @@ namespace Demi
         DiTextureDrv*           mTextureDrv;
     };
 }
+#endif // Texture_h__

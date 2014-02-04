@@ -229,7 +229,7 @@ namespace Demi
         {
             mProps[x].valid = false;
 
-            GLenum fmt = DiGLTypeMappings::GLFormatMapping[(DiPixelFormat)x];
+            GLenum fmt = DiGLTypeMappings::GLInternalFormatMapping[(DiPixelFormat)x];
             if (fmt == GL_NONE && x != 0)
                 continue;
 

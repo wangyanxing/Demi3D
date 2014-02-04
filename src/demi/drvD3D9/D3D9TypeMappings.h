@@ -12,7 +12,9 @@ namespace Demi
     {
     public:
 
-        static D3DTEXTUREFILTERTYPE D3D9FilterMapping[FT_MAX];
+        static D3DTEXTUREFILTERTYPE D3D9MinMagFilter[FILTER_MAX-1];
+
+        static D3DTEXTUREFILTERTYPE D3D9MipFilter[FILTER_MAX-1];
 
         static D3DTEXTUREADDRESS    D3D9AddModeMapping[AM_MAX];
 

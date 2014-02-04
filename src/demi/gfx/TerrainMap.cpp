@@ -646,27 +646,19 @@ namespace Demi
             texl1Norm = layer1 + "_n.dds";
         }
 
-         DiTexturePtr texture;
- 
-         texture = params->WriteTexture2D("diffuseMap_0",texl0Dif);
-         texture->SetMagFilter(FT_LINEAR);
-         texture->SetMinFilter(FT_LINEAR);
-         texture->SetMipFilter(FT_LINEAR);
- 
-         texture = params->WriteTexture2D("diffuseMap_1",texl1Dif);
-        texture->SetMagFilter(FT_LINEAR);
-        texture->SetMinFilter(FT_LINEAR);
-        texture->SetMipFilter(FT_LINEAR);
+        DiTexturePtr texture;
 
-         texture = params->WriteTexture2D("normalMap_0",texl0Norm);
-        texture->SetMagFilter(FT_LINEAR);
-        texture->SetMinFilter(FT_LINEAR);
-        texture->SetMipFilter(FT_LINEAR);
- 
-         texture = params->WriteTexture2D("normalMap_1",texl1Norm);
-        texture->SetMagFilter(FT_LINEAR);
-        texture->SetMinFilter(FT_LINEAR);
-        texture->SetMipFilter(FT_LINEAR);
+        texture = params->WriteTexture2D("diffuseMap_0", texl0Dif);
+        texture->SetFilter(FILTER_BILINEAR);
+
+        texture = params->WriteTexture2D("diffuseMap_1", texl1Dif);
+        texture->SetFilter(FILTER_BILINEAR);
+
+        texture = params->WriteTexture2D("normalMap_0", texl0Norm);
+        texture->SetFilter(FILTER_BILINEAR);
+
+        texture = params->WriteTexture2D("normalMap_1", texl1Norm);
+        texture->SetFilter(FILTER_BILINEAR);
 
         mat->SetCullMode(CULL_CCW);
 

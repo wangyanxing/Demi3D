@@ -174,6 +174,8 @@ namespace Demi
 
         void                        OnDeviceReset();
 
+        void                        InitCommandVars();
+
     protected:
 
         DepthBufferMap              mDepthBufferPool;

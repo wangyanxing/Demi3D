@@ -12,13 +12,10 @@ namespace Demi
 
     DiTexture::DiTexture(const DiString& name)
         :DiAsset(name)
-        ,mTextureDrv(nullptr)
+        , mTextureDrv(nullptr)
+        , mFilter(FILTER_DEFAULT)
+        , mResUsage(RU_NONE)
     {
-        mMinFilter     = FT_LINEAR;
-        mMagFilter     = FT_LINEAR;
-        mMipFilter     = FT_LINEAR;
-        mResUsage      = RU_NONE;
-                       
         mAddressingU   = AM_WRAP;
         mAddressingV   = AM_WRAP;
         mBorderColor   = DiColor(0, 0, 0, 0);
@@ -54,19 +51,9 @@ namespace Demi
             Driver->RemoveGpuResource(this);
     }
 
-    void DiTexture::SetMinFilter(DiFilterType ft)
+    void DiTexture::SetFilter(DiFilterType ft)
     {
-        mMinFilter = ft;
-    }
-
-    void DiTexture::SetMagFilter(DiFilterType ft)
-    {
-        mMagFilter = ft;
-    }
-
-    void DiTexture::SetMipFilter(DiFilterType ft)
-    {
-        mMipFilter = ft;
+        mFilter = ft;
     }
 
     void DiTexture::SetAddressingU(DiAddMode ad)
