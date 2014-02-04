@@ -1,7 +1,8 @@
 Demi3D
 ======
 
-An open source 3D game engine
+An cross platform open source 3D game engine.
 
-Win32 / D3D9 platform only currently.
-New platforms coming soon.
+Currently working on Mac OSX & Windows.
+
+Mobile platforms are coming soon.
