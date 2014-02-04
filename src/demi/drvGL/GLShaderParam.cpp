@@ -40,11 +40,24 @@ namespace Demi
                 if (data.isEmpty())
                     continue;
 
-                auto constant = mShaderLinker->GetConstant(it->first);
-                if (!constant)
-                    continue;
+                GLuint location = 0;
+                uint32 samplerUnit = 0;
 
-                GLuint location = constant->location;
+                if (i == VARIABLE_SAMPLER2D || i == VARIABLE_SAMPLERCUBE)
+                {
+                    auto sampler = mShaderLinker->GetSampler(it->first);
+                    if (!sampler)
+                        continue;
+                    location = sampler->location;
+                    samplerUnit = sampler->unit;
+                }
+                else
+                {
+                    auto constant = mShaderLinker->GetConstant(it->first);
+                    if (!constant)
+                        continue;
+                    location = constant->location;
+                }
 
                 switch (i)
                 {
@@ -94,9 +107,8 @@ namespace Demi
                 case DiShaderParameter::VARIABLE_SAMPLER2D:
                 case DiShaderParameter::VARIABLE_SAMPLERCUBE:
                     {
-                        //DiTexture* tex = any_cast<DiTexture*>(data);
-                        //tex->Bind(regID);
-                        // TODO
+                        DiTexture* tex = any_cast<DiTexture*>(data);
+                        tex->Bind(samplerUnit);
                     }
                     break;
                 }
