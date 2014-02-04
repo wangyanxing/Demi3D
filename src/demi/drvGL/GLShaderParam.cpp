@@ -41,7 +41,7 @@ namespace Demi
                     continue;
 
                 GLuint location = 0;
-                uint32 samplerUnit = 0;
+                int samplerUnit = 0;
 
                 if (i == VARIABLE_SAMPLER2D || i == VARIABLE_SAMPLERCUBE)
                 {
@@ -49,7 +49,7 @@ namespace Demi
                     if (!sampler)
                         continue;
                     location = sampler->location;
-                    samplerUnit = sampler->unit;
+                    samplerUnit = (int)sampler->unit;
                 }
                 else
                 {
@@ -107,8 +107,9 @@ namespace Demi
                 case DiShaderParameter::VARIABLE_SAMPLER2D:
                 case DiShaderParameter::VARIABLE_SAMPLERCUBE:
                     {
+                        glUniform1ivARB(location, 1, &samplerUnit);
                         DiTexture* tex = any_cast<DiTexture*>(data);
-                        tex->Bind(samplerUnit);
+                        tex->Bind((uint32)samplerUnit);
                     }
                     break;
                 }

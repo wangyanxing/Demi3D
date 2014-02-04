@@ -57,7 +57,7 @@ void InitScene()
 
 	AddMeshes();
 
-	SetupPostEffects();
+	//SetupPostEffects();
 }
 
 void UpdateScene()
