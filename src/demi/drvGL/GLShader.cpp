@@ -250,6 +250,7 @@ namespace Demi
             DiGLUniforms::InitUniformFuncs();
 
         GLint uniformCount = 0;
+        glUseProgramObjectARB(mGLHandle);
         glGetObjectParameterivARB(mGLHandle, GL_OBJECT_ACTIVE_UNIFORMS_ARB, &uniformCount);
         
         char uniformName[256] = "";
@@ -281,11 +282,26 @@ namespace Demi
                     params->AddBuiltinParam(location, DiGLUniforms::msUniformFuncs[name]);
                     continue;
                 }
+                
+                if (glType == GL_SAMPLER_1D || glType == GL_SAMPLER_2D || glType == GL_SAMPLER_3D || 
+                    glType == GL_SAMPLER_CUBE || glType == GL_SAMPLER_1D_SHADOW || glType == GL_SAMPLER_2D_SHADOW)
+                {
+                    DiGLShaderSampler s;
+                    s.location = location;
+                    s.type = glType;
+                    s.unit = (uint32)mSamplers.size();
+                    mSamplers[name] = s;
 
-                DiGLShaderConstant p;
-                p.location = location;
-                p.type = glType;
-                mConsts[name] = p;
+                    GLint unit = s.unit;
+                    glUniform1ivARB(location, 1, &unit);
+                }
+                else
+                {
+                    DiGLShaderConstant p;
+                    p.location = location;
+                    p.type = glType;
+                    mConsts[name] = p;
+                }
 
                 auto demitype = DiGLTypeMappings::ConvertGLShaderConstType(glType);
                 if (demitype != DiShaderParameter::NUM_VARIABLE_TYPES)
@@ -309,9 +325,23 @@ namespace Demi
             return nullptr;
     }
 
+    DiGLShaderSampler*  DiGLShaderLinker::GetSampler(const DiString& constname)
+    {
+        auto i = mSamplers.find(constname);
+        if (i != mSamplers.end())
+            return &(i->second);
+        else
+            return nullptr;
+    }
+
     bool DiGLShaderLinker::HasConstant(const DiString& constname)
     {
         return mConsts.find(constname) != mConsts.end();
+    }
+
+    bool DiGLShaderLinker::HasSampler(const DiString& samplername)
+    {
+        return mSamplers.find(samplername) != mSamplers.end();
     }
 
     void DiGLShaderLinker::Link()

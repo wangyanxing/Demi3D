@@ -138,7 +138,6 @@ namespace Demi
             glBindTexture(mGLTextureType, mTextureID);
             glActiveTextureARB(GL_TEXTURE0 + samplerIndex);
 
-
             glTexParameteri(mGLTextureType, GL_TEXTURE_WRAP_S, DiGLTypeMappings::GLAddressMode[mParent->GetAddressingU()]);
             glTexParameteri(mGLTextureType, GL_TEXTURE_WRAP_T, DiGLTypeMappings::GLAddressMode[mParent->GetAddressingV()]);
 

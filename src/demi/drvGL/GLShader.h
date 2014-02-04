@@ -19,6 +19,13 @@ namespace Demi
         GLenum type;
     };
 
+    struct DiGLShaderSampler
+    {
+        GLint  location;
+        GLenum type;
+        uint32 unit;
+    };
+
     //////////////////////////////////////////////////////////////////////////
 
     class DiGLShaderInstance : public DiShaderInstance
@@ -103,7 +110,11 @@ namespace Demi
 
         DiGLShaderConstant* GetConstant(const DiString& constname);
 
+        DiGLShaderSampler*  GetSampler(const DiString& constname);
+
         bool                HasConstant(const DiString& constname);
+
+        bool                HasSampler(const DiString& samplername);
 
         GLhandleARB         GetGLHandle() const { return mGLHandle; }
 
@@ -130,8 +141,11 @@ namespace Demi
         GLint               mLinked;
 
         typedef DiStrHash<DiGLShaderConstant> Consts;
+        typedef DiStrHash<DiGLShaderSampler> Samplers;
 
         Consts              mConsts;
+
+        Samplers            mSamplers;
     };
 }
 
