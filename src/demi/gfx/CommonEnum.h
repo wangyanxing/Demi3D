@@ -92,12 +92,13 @@ namespace Demi
 
     enum DiFilterType
     {
-        FT_NONE = 0,
-        FT_POINT,
-        FT_LINEAR,
-        FT_ANISOTROPIC,
+        FILTER_NEAREST = 0,
+        FILTER_BILINEAR,
+        FILTER_TRILINEAR,
+        FILTER_ANISOTROPIC,
+        FILTER_DEFAULT,
 
-        FT_MAX
+        FILTER_MAX
     };
 
     enum DiFillMode

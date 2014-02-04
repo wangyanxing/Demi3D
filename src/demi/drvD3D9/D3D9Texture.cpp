@@ -5,6 +5,8 @@
 #include "D3D9Driver.h"
 #include "D3D9StateCache.h"
 #include "D3D9TypeMappings.h"
+#include "Command.h"
+#include "ConsoleVariable.h"
 
 namespace Demi
 {
@@ -156,14 +158,27 @@ namespace Demi
         DiD3D9Driver::StateCache->SetTexture(samplerIndex, mTexture);
         if (mTexture)
         {
-            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_MINFILTER, DiD3D9Mappings::D3D9FilterMapping[mParent->GetMinFilter()]);
-            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_MAGFILTER, DiD3D9Mappings::D3D9FilterMapping[mParent->GetMagFilter()]);
-            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_MIPFILTER, DiD3D9Mappings::D3D9FilterMapping[mParent->GetMipFilter()]);
+            DiFilterType filter = mParent->GetFilter();
+            if (filter == FILTER_DEFAULT)
+            {
+                auto filterVar = CommandMgr->GetConsoleVar("def_filter");
+                if (filterVar)
+                    filter = (DiFilterType)filterVar->GetAsInt();
+                else
+                    filter = FILTER_BILINEAR;
+            }
+
+            D3DTEXTUREFILTERTYPE minMag = DiD3D9Mappings::D3D9MinMagFilter[filter];
+            D3DTEXTUREFILTERTYPE mip = DiD3D9Mappings::D3D9MipFilter[filter];
+            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_MINFILTER, minMag);
+            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_MAGFILTER, minMag);
+            DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_MIPFILTER, mip);
+
             DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_ADDRESSU,  DiD3D9Mappings::D3D9AddModeMapping[mParent->GetAddressingU()]);
             DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_ADDRESSV,  DiD3D9Mappings::D3D9AddModeMapping[mParent->GetAddressingV()]);
 
-            if (mParent->GetAddressingU() == D3DTADDRESS_BORDER ||
-                mParent->GetAddressingV() == D3DTADDRESS_BORDER)
+            if (mParent->GetAddressingU() == AM_BORDER ||
+                mParent->GetAddressingV() == AM_BORDER)
             {
                 DiD3D9Driver::StateCache->SetSamplerState((DWORD)samplerIndex, D3DSAMP_BORDERCOLOR,
                     mParent->GetBorderColor().GetAsARGB());

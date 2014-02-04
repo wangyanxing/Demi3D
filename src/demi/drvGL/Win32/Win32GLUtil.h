@@ -5,7 +5,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef Win32GLUtil_h__
+#define Win32GLUtil_h__
 
 #include "GLUtil.h"
 
@@ -50,3 +51,4 @@ namespace Demi
         HDC             mHDC;
     };
 }
+#endif // Win32GLUtil_h__

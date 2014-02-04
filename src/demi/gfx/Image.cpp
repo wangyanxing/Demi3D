@@ -67,6 +67,8 @@ namespace Demi
 
     void DiImage::ParseTga(DiTexture* texture)
     {
+        DI_INFO("Loading tga image : %s", mImageData->GetName().c_str());
+
         tga_image* image = new tga_image();
         bool ok = (TGA_NOERR == tga_read_from_stream( image, mImageData.get() ));
 
@@ -128,6 +130,8 @@ namespace Demi
 
     void DiImage::ParseDDS(DiTexture* texture)
     {
+        DI_INFO("Loading dds image : %s", mImageData->GetName().c_str());
+
         nv_dds::CDDSImage ddsimage;
         bool ok = ddsimage.load(mImageData.get(), false);
         DI_ASSERT(ok);
@@ -145,7 +149,7 @@ namespace Demi
             case nv_dds::TextureDXT5:         format = PF_DXT5;        break;
             case nv_dds::TextureLuminance:    format = PF_L8;          break;
             default:
-                DI_ERROR("Unsupported texture pixel format");
+                DI_WARNING("Unsupported texture pixel format");
             }
 
             if(texture)
@@ -203,11 +207,11 @@ namespace Demi
             {
                 return *this;
             }
-            DI_ERROR("DiPixelBox::SubVolume() error");
+            DI_WARNING("DiPixelBox::SubVolume() error");
         }
         if(!Contains(def))
         {
-            DI_ERROR("DiPixelBox::SubVolume() error");
+            DI_WARNING("DiPixelBox::SubVolume() error");
         }
 
         const size_t elemSize = GetNumElemBytes(format);

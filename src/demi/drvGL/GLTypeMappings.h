@@ -20,7 +20,17 @@ namespace Demi
 
         static GLenum   GLFormatMapping[PIXEL_FORMAT_MAX];
 
+        static GLenum   GLInternalFormatMapping[PIXEL_FORMAT_MAX];
+
+        static GLenum   GLAddressMode[AM_MAX];
+
+        static GLenum   GetClosestGLInternalFormat(DiPixelFormat fmt, bool hwGamma = false);
+
         static GLenum   GetGLTextureType(uint16 type);
+
+        static GLenum   GetExternalFormat(GLenum format);
+
+        static GLenum   GetDataType(GLenum format);
 
         static DiShaderParameter::ParamType   ConvertGLShaderConstType(GLenum gltype);
     };

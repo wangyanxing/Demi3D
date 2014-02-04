@@ -84,6 +84,24 @@
 #   define FORCEINLINE __inline
 #endif
 
+#ifdef __linux__
+#   include <endian.h>
+#   if __BYTE_ORDER == 1234
+#      define DEMI_ENDIAN DEMI_LITTLE_ENDIAN
+#   else
+#      define DEMI_ENDIAN DEMI_BIG_ENDIAN
+#   endif
+#else
+#   if defined(__hppa__) || \
+       defined(__m68k__) || defined(mc68000) || defined(_M_M68K) || \
+       (defined(__MIPS__) && defined(__MISPEB__)) || \
+       defined(__ppc__) || defined(__POWERPC__) || defined(_M_PPC) || \
+       defined(__sparc__)
+#      define DEMI_ENDIAN DEMI_BIG_ENDIAN
+#   else
+#      define DEMI_ENDIAN DEMI_LITTLE_ENDIAN
+#   endif
+#endif
 
 typedef signed char         int8;
 typedef signed short        int16;

@@ -15,9 +15,17 @@ namespace Demi
         D3DPT_TRIANGLEFAN
     };
 
-    D3DTEXTUREFILTERTYPE DiD3D9Mappings::D3D9FilterMapping[FT_MAX] =
+    D3DTEXTUREFILTERTYPE DiD3D9Mappings::D3D9MinMagFilter[] =
     {
-        D3DTEXF_NONE,
+        D3DTEXF_POINT,
+        D3DTEXF_LINEAR,
+        D3DTEXF_LINEAR,
+        D3DTEXF_ANISOTROPIC
+    };
+
+    D3DTEXTUREFILTERTYPE DiD3D9Mappings::D3D9MipFilter[] =
+    {
+        D3DTEXF_POINT,
         D3DTEXF_POINT,
         D3DTEXF_LINEAR,
         D3DTEXF_ANISOTROPIC

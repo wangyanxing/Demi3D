@@ -28,6 +28,8 @@ namespace Demi
         Driver = this;
         mCommandMgr = DI_NEW DiCommandManager();
         mWndManager = DI_NEW DiWindowManager();
+
+        InitCommandVars();
     }
 
     DiGfxDriver::~DiGfxDriver()
@@ -340,4 +342,9 @@ namespace Demi
         }
     }
 
+    void DiGfxDriver::InitCommandVars()
+    {
+        CommandMgr->RegisterInt("def_filter", FILTER_BILINEAR, 0, "Default texture filter");
+        CommandMgr->RegisterFloat("tex_anisotropy", 4.0f, 0, "Default texture anisotropy level");
+    }
 }

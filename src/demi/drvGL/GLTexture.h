@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef GLTexture_h__
+#define GLTexture_h__
 
 #include "Texture.h"
 
@@ -56,6 +57,8 @@ namespace Demi
 
         GLenum                  mGLFormat;
 
+        GLenum                  mGLOriginFormat;
+
         GLenum                  mGLTextureType;
 
         GLuint                  mTextureID;
@@ -63,3 +66,4 @@ namespace Demi
         uint32                  mImageSize;
     };
 }
+#endif // GLTexture_h__

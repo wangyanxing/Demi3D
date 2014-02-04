@@ -70,9 +70,10 @@ void UpdateScene()
 
 int main(int argc, char *argv[])
 {
-    DemiDemo app( DemoConfig("Demi3D Sample - Fresnel Material", 1500, 800));
+    DemiDemo app( DemoConfig("Demi3D Sample - Fresnel Material", 800, 600));
 	app.SetInitCallback(functor(InitScene));
 	app.SetUpdateCallback(functor(UpdateScene));
+    app.Open();
 
 	return 0;
 }

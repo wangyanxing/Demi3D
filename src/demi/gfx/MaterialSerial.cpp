@@ -250,24 +250,12 @@ namespace Demi
         texNode.SetAttribute("name",varname);
         texNode.SetValue(tex->GetName());
 
-        if (tex->GetMinFilter() != DEFAULT_FILTER)
+        if (tex->GetFilter() != DEFAULT_FILTER)
         {
             DiXMLElement nd = rootNode.CreateChild("filter");
-            nd.SetAttribute("name","min");
-            nd.SetValue(FilterToString(tex->GetMinFilter()).c_str());
+            nd.SetValue(FilterToString(tex->GetFilter()).c_str());
         }
-        if (tex->GetMagFilter() != DEFAULT_FILTER)
-        {
-            DiXMLElement nd = rootNode.CreateChild("filter");
-            nd.SetAttribute("name","mag");
-            nd.SetValue(FilterToString(tex->GetMagFilter()).c_str());
-        }
-        if (tex->GetMipFilter() != DEFAULT_FILTER)
-        {
-            DiXMLElement nd = rootNode.CreateChild("filter");
-            nd.SetAttribute("name","mig");
-            nd.SetValue(FilterToString(tex->GetMinFilter()).c_str());
-        }
+        
         if (tex->GetAddressingU() != DEFAULT_ADDRESSING_MODE)
         {
             DiXMLElement nd = rootNode.CreateChild("addressing");
@@ -435,9 +423,7 @@ namespace Demi
 
         DiString texName,texFileName;
 
-        DiFilterType filtMin = FT_LINEAR;
-        DiFilterType filtMag = FT_LINEAR;
-        DiFilterType filtMip = FT_LINEAR;
+        DiFilterType filter = FILTER_DEFAULT;
 
         DiAddMode addrU = AM_WRAP;
         DiAddMode addrV = AM_WRAP;
@@ -460,13 +446,7 @@ namespace Demi
             }
             else if (tag == "filter")
             {
-                DiFilterType ft = StringToFilter(val);
-                if (name == "min")
-                    filtMin = ft;
-                else if (name == "mag")
-                    filtMag = ft;
-                else if (name == "mip")
-                    filtMip = ft;
+                filter = StringToFilter(val);
             }
             else if (tag == "addressing")
             {
@@ -501,9 +481,7 @@ namespace Demi
         {
             tex->SetAddressingU(addrU);
             tex->SetAddressingV(addrV);
-            tex->SetMinFilter(filtMin);
-            tex->SetMagFilter(filtMag);
-            tex->SetMipFilter(filtMip);
+            tex->SetFilter(filter);
         }
         else
         {
@@ -580,27 +558,28 @@ namespace Demi
         if (!sCullModeMap.empty())
             return;
 
-        sCullModeMap["CW"]                = CULL_CW;
-        sCullModeMap["CCW"]                = CULL_CCW;
+        sCullModeMap["CW"]              = CULL_CW;
+        sCullModeMap["CCW"]             = CULL_CCW;
         sCullModeMap["NONE"]            = CULL_NONE;
 
-        sFilterTypeMap["NONE"]            = FT_NONE;
-        sFilterTypeMap["POINT"]            = FT_POINT;
-        sFilterTypeMap["LINEAR"]        = FT_LINEAR;
-        sFilterTypeMap["ANISOTROPIC"]   = FT_ANISOTROPIC;
+        sFilterTypeMap["NEAREST"]       = FILTER_NEAREST;
+        sFilterTypeMap["BILINEAR"]      = FILTER_BILINEAR;
+        sFilterTypeMap["TRILINEAR"]     = FILTER_TRILINEAR;
+        sFilterTypeMap["ANISOTROPIC"]   = FILTER_ANISOTROPIC;
+        sFilterTypeMap["DEFAULT"]       = FILTER_DEFAULT;
 
         sAddrModeMap["WRAP"]            = AM_WRAP;
-        sAddrModeMap["MIRROR"]            = AM_MIRROR;
+        sAddrModeMap["MIRROR"]          = AM_MIRROR;
         sAddrModeMap["CLAMP"]           = AM_CLAMP;
-        sAddrModeMap["BORDER"]            = AM_BORDER;
-        sAddrModeMap["MIRRORONCE"]        = AM_MIRRORONCE;
+        sAddrModeMap["BORDER"]          = AM_BORDER;
+        sAddrModeMap["MIRRORONCE"]      = AM_MIRRORONCE;
 
         sBlendModeMap["REPLACE"]        = BLEND_REPLACE;
         sBlendModeMap["ADD"]            = BLEND_ADD;
         sBlendModeMap["MULTIPLY"]       = BLEND_MULTIPLY;
-        sBlendModeMap["ALPHA"]            = BLEND_ALPHA;
+        sBlendModeMap["ALPHA"]          = BLEND_ALPHA;
         sBlendModeMap["TRANS_COLOR"]    = BLEND_TRANS_COLOR;
-        sBlendModeMap["ONE_INV_ALPHA"]    = BLEND_ONE_INV_ALPHA;
+        sBlendModeMap["ONE_INV_ALPHA"]  = BLEND_ONE_INV_ALPHA;
     }
 
     DiFilterType DiMaterialSerializer::StringToFilter( const DiString& str )
@@ -639,7 +618,7 @@ namespace Demi
 
     DiCullMode      DiMaterialSerializer::DEFAULT_CULL_MODE         = CULL_CW;
     DiAddMode       DiMaterialSerializer::DEFAULT_ADDRESSING_MODE   = AM_WRAP;
-    DiFilterType    DiMaterialSerializer::DEFAULT_FILTER            = FT_LINEAR;
+    DiFilterType    DiMaterialSerializer::DEFAULT_FILTER            = FILTER_DEFAULT;
     DiBlendMode     DiMaterialSerializer::DEFAULT_BLEND_MODE        = BLEND_REPLACE;
     bool            DiMaterialSerializer::DEFAULT_DEPTH_WRITE       = true;
     bool            DiMaterialSerializer::DEFAULT_DEPTH_CHECK       = true;
