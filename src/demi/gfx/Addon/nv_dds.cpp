@@ -823,8 +823,8 @@ void CDDSImage::flip_dxt5_alpha(DXT5AlphaBlock *block)
 {
     unsigned char gBits[4][4];
     
-    const unsigned long mask = 0x00000007;          // bits = 00 00 01 11
-    unsigned long bits = 0;
+    const unsigned mask = 0x00000007;          // bits = 00 00 01 11
+    unsigned bits = 0;
     memcpy(&bits, &block->row[0], sizeof(unsigned char) * 3);
 
     gBits[0][0] = (unsigned char)(bits & mask);
@@ -862,7 +862,7 @@ void CDDSImage::flip_dxt5_alpha(DXT5AlphaBlock *block)
     bits >>= 3;
     gBits[3][3] = (unsigned char)(bits & mask);
 
-    unsigned long *pBits = ((unsigned long*) &(block->row[0]));
+    unsigned *pBits = ((unsigned*) &(block->row[0]));
 
     *pBits = *pBits | (gBits[3][0] << 0);
     *pBits = *pBits | (gBits[3][1] << 3);
@@ -874,7 +874,7 @@ void CDDSImage::flip_dxt5_alpha(DXT5AlphaBlock *block)
     *pBits = *pBits | (gBits[2][2] << 18);
     *pBits = *pBits | (gBits[2][3] << 21);
 
-    pBits = ((unsigned long*) &(block->row[3]));
+    pBits = ((unsigned*) &(block->row[3]));
 
 #if defined(NV_DDS_BIG_ENDIAN)
     *pBits &= 0x000000ff;
