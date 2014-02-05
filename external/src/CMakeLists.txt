@@ -4,3 +4,4 @@
 
 add_subdirectory(freetype)
 add_subdirectory(ois)
+add_subdirectory(STB)
