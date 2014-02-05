@@ -552,4 +552,10 @@ namespace Demi
         return shaderext;
     }
 
+    DiString& DiGLDriver::GetGlslVersion()
+    {
+        static DiString version = "120";
+        return version;
+    }
+
 }

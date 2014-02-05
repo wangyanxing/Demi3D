@@ -92,6 +92,8 @@ namespace Demi
 
         DiWindow*               CreateWnd();
 
+        static DiString&        GetGlslVersion();
+
         static DiGLBufferManager* BufferMgr;
 
         static DiGLFBOManager*    FBOManager;

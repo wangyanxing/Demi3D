@@ -172,6 +172,11 @@ namespace Demi
     {
         mProcessedShader.clear();
 
+        // version
+        // the #version should be the first statement on some platform
+        mProcessedShader += "#version ";
+        mProcessedShader += DiGLDriver::GetGlslVersion();
+
         // defines
         for (auto i = mCompileDesc.marcos.begin(); i != mCompileDesc.marcos.end(); ++i)
         {
