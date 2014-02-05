@@ -53,6 +53,34 @@ mark_as_advanced(OIS_BINARY_REL OIS_BINARY_DBG)
 findpkg_finish(OIS)
 
 #-------------------------------------------------------------------
+# Find STB
+# - Try to find STB
+# Once done, this will define
+#
+#  STB_FOUND - system has STB
+#  STB_INCLUDE_DIRS - the STB include directories 
+#  STB_LIBRARIES - link these to use STB
+
+findpkg_begin(STB)
+set(STB_HOME "${EXTERNAL_HOME}/src/STB")
+
+set(STB_LIBRARY_NAMES STB)
+get_debug_names(STB_LIBRARY_NAMES)
+
+if (STB_HOME)
+  set(STB_INC_SEARCH_PATH ${STB_INC_SEARCH_PATH} ${STB_HOME})
+  set(STB_LIB_SEARCH_PATH ${STB_LIB_SEARCH_PATH} ${EXTERNAL_HOME}/lib)
+endif()
+
+find_path(STB_INCLUDE_DIR NAMES stb_image.h HINTS ${STB_INC_SEARCH_PATH} ${STB_PKGC_INCLUDE_DIRS} PATH_SUFFIXES STB)
+find_library(STB_LIBRARY_REL NAMES ${STB_LIBRARY_NAMES} HINTS ${STB_LIB_SEARCH_PATH} ${STB_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" release relwithdebinfo minsizerel)
+find_library(STB_LIBRARY_DBG NAMES ${STB_LIBRARY_NAMES_DBG} HINTS ${STB_LIB_SEARCH_PATH} ${STB_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" debug)
+
+make_library_set(STB_LIBRARY)
+
+findpkg_finish(STB)
+
+#-------------------------------------------------------------------
 # Find Ogre
 # - Try to find Ogre
 # Once done, this will define

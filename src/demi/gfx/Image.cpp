@@ -7,6 +7,9 @@
 #include "nv_dds.h"
 #include "targa.h"
 
+#include "stb_image.h"
+#include "stb_image_write.h"
+
 namespace Demi 
 {
     static uint32 ComputeCompressedDimension(uint32 dimension)
@@ -46,23 +49,22 @@ namespace Demi
     bool DiImage::LoadToTexture( DiTexture* texture )
     {
         if (!mImageData)
-        {
             return false;
-        }
 
-        DiString name = mImageData->GetName();
-        name.ToLower();
-        
-        if (name.CheckFileExtension("tga"))
-        {
-            ParseTga(texture);
-        }
-        else if (name.CheckFileExtension("dds"))
+        DiString head = "head";
+        mImageData->Read(&head[0], 4);
+        mImageData->Seek(0);
+
+        if (head == "DDS ")
         {
             ParseDDS(texture);
         }
-    
-        return false;
+        else
+        {
+            ParseOthers(texture);
+        }
+
+        return true;
     }
 
     void DiImage::ParseTga(DiTexture* texture)
@@ -191,6 +193,59 @@ namespace Demi
                 }
             }
         }
+    }
+
+    uint8* DiImage::_LoadImage(int& width, int& height, uint32& components)
+    {
+        size_t size = mImageData->Size();
+        shared_ptr<uint8> buffer(DI_NEW uint8[size], [](uint8 *p) { DI_DELETE[] p; });
+        mImageData->Read(buffer.get(), size);
+        return stbi_load_from_memory(buffer.get(), size, &width, &height, (int *)&components, 0);
+    }
+
+    void DiImage::_FreeImage(uint8* data)
+    {
+        if (data)
+            stbi_image_free(data);
+    }
+
+    void DiImage::ParseOthers(DiTexture* texture)
+    {
+        int width = 0, height = 0;
+        uint32 components = 0;
+        uint8* data = _LoadImage(width, height, components);
+        if (!data)
+        {
+            DI_WARNING("Could not load image %s: %s", mImageData->GetName().c_str(), stbi_failure_reason());
+            return;
+        }
+
+        DI_INFO("Loading texture: %s", mImageData->GetName().c_str());
+
+        if (components == 3 || components == 4)
+        {
+            mWidth = width;
+            mHeight = height;
+            if (texture)
+            {
+                texture->Release();
+                texture->SetDimensions(width, height);
+                texture->SetFormat(components == 3 ? PF_R8G8B8 : PF_A8R8G8B8);
+                texture->SetNumLevels(1);
+                texture->SetResourceUsage(RU_WRITE_ONLY);
+                texture->CreateTexture();
+                DiTextureDrv* texDrv = texture->GetTextureDriver();
+
+                DiPixelBox pixbox(width, height, texture->GetFormat(), data);
+                texDrv->CopyFromMemory(pixbox, 0, 0);
+            }
+        }
+        else
+        {
+            DI_WARNING("Component number of %d currently isn't supported yet, failed to load the texture");
+        }
+
+        _FreeImage(data);
     }
 
     size_t DiPixelBox::GetConsecutiveSize() const

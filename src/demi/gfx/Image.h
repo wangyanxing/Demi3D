@@ -33,6 +33,12 @@ namespace Demi
 
         void            ParseDDS(DiTexture* texture);
 
+        void            ParseOthers(DiTexture* texture);
+
+        uint8*          _LoadImage(int& width, int& height, uint32& components);
+
+        void            _FreeImage(uint8* data);
+
     protected:
 
         int             mWidth;
