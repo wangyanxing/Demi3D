@@ -13,41 +13,41 @@
 namespace nv_dds
 {
     // surface description flags
-    const unsigned long DDSF_CAPS           = 0x00000001l;
-    const unsigned long DDSF_HEIGHT         = 0x00000002l;
-    const unsigned long DDSF_WIDTH          = 0x00000004l;
-    const unsigned long DDSF_PITCH          = 0x00000008l;
-    const unsigned long DDSF_PIXELFORMAT    = 0x00001000l;
-    const unsigned long DDSF_MIPMAPCOUNT    = 0x00020000l;
-    const unsigned long DDSF_LINEARSIZE     = 0x00080000l;
-    const unsigned long DDSF_DEPTH          = 0x00800000l;
+    const unsigned DDSF_CAPS   = 0x00000001l;
+    const unsigned DDSF_HEIGHT = 0x00000002l;
+    const unsigned DDSF_WIDTH  = 0x00000004l;
+    const unsigned DDSF_PITCH  = 0x00000008l;
+    const unsigned DDSF_PIXELFORMAT = 0x00001000l;
+    const unsigned DDSF_MIPMAPCOUNT = 0x00020000l;
+    const unsigned DDSF_LINEARSIZE  = 0x00080000l;
+    const unsigned DDSF_DEPTH       = 0x00800000l;
 
     // pixel format flags
-    const unsigned long DDSF_ALPHAPIXELS    = 0x00000001l;
-    const unsigned long DDSF_FOURCC         = 0x00000004l;
-    const unsigned long DDSF_RGB            = 0x00000040l;
-    const unsigned long DDSF_RGBA           = 0x00000041l;
+    const unsigned DDSF_ALPHAPIXELS    = 0x00000001l;
+    const unsigned DDSF_FOURCC         = 0x00000004l;
+    const unsigned DDSF_RGB            = 0x00000040l;
+    const unsigned DDSF_RGBA           = 0x00000041l;
 
     // dwCaps1 flags
-    const unsigned long DDSF_COMPLEX         = 0x00000008l;
-    const unsigned long DDSF_TEXTURE         = 0x00001000l;
-    const unsigned long DDSF_MIPMAP          = 0x00400000l;
+    const unsigned DDSF_COMPLEX = 0x00000008l;
+    const unsigned DDSF_TEXTURE = 0x00001000l;
+    const unsigned DDSF_MIPMAP  = 0x00400000l;
 
     // dwCaps2 flags
-    const unsigned long DDSF_CUBEMAP         = 0x00000200l;
-    const unsigned long DDSF_CUBEMAP_POSITIVEX  = 0x00000400l;
-    const unsigned long DDSF_CUBEMAP_NEGATIVEX  = 0x00000800l;
-    const unsigned long DDSF_CUBEMAP_POSITIVEY  = 0x00001000l;
-    const unsigned long DDSF_CUBEMAP_NEGATIVEY  = 0x00002000l;
-    const unsigned long DDSF_CUBEMAP_POSITIVEZ  = 0x00004000l;
-    const unsigned long DDSF_CUBEMAP_NEGATIVEZ  = 0x00008000l;
-    const unsigned long DDSF_CUBEMAP_ALL_FACES  = 0x0000FC00l;
-    const unsigned long DDSF_VOLUME          = 0x00200000l;
+    const unsigned DDSF_CUBEMAP            = 0x00000200l;
+    const unsigned DDSF_CUBEMAP_POSITIVEX  = 0x00000400l;
+    const unsigned DDSF_CUBEMAP_NEGATIVEX  = 0x00000800l;
+    const unsigned DDSF_CUBEMAP_POSITIVEY  = 0x00001000l;
+    const unsigned DDSF_CUBEMAP_NEGATIVEY  = 0x00002000l;
+    const unsigned DDSF_CUBEMAP_POSITIVEZ  = 0x00004000l;
+    const unsigned DDSF_CUBEMAP_NEGATIVEZ  = 0x00008000l;
+    const unsigned DDSF_CUBEMAP_ALL_FACES  = 0x0000FC00l;
+    const unsigned DDSF_VOLUME             = 0x00200000l;
 
     // compressed texture types
-    const unsigned long FOURCC_DXT1 = 0x31545844l; //(MAKEFOURCC('D','X','T','1'))
-    const unsigned long FOURCC_DXT3 = 0x33545844l; //(MAKEFOURCC('D','X','T','3'))
-    const unsigned long FOURCC_DXT5 = 0x35545844l; //(MAKEFOURCC('D','X','T','5'))
+    const unsigned FOURCC_DXT1 = 0x31545844l; //(MAKEFOURCC('D','X','T','1'))
+    const unsigned FOURCC_DXT3 = 0x33545844l; //(MAKEFOURCC('D','X','T','3'))
+    const unsigned FOURCC_DXT5 = 0x35545844l; //(MAKEFOURCC('D','X','T','5'))
 
     struct DXTColBlock
     {
@@ -72,30 +72,30 @@ namespace nv_dds
 
     struct DDS_PIXELFORMAT
     {
-        unsigned long dwSize;
-        unsigned long dwFlags;
-        unsigned long dwFourCC;
-        unsigned long dwRGBBitCount;
-        unsigned long dwRBitMask;
-        unsigned long dwGBitMask;
-        unsigned long dwBBitMask;
-        unsigned long dwABitMask;
+        unsigned dwSize;
+        unsigned dwFlags;
+        unsigned dwFourCC;
+        unsigned dwRGBBitCount;
+        unsigned dwRBitMask;
+        unsigned dwGBitMask;
+        unsigned dwBBitMask;
+        unsigned dwABitMask;
     };
 
     struct DDS_HEADER
     {
-        unsigned long dwSize;
-        unsigned long dwFlags;
-        unsigned long dwHeight;
-        unsigned long dwWidth;
-        unsigned long dwPitchOrLinearSize;
-        unsigned long dwDepth;
-        unsigned long dwMipMapCount;
-        unsigned long dwReserved1[11];
+        unsigned dwSize;
+        unsigned dwFlags;
+        unsigned dwHeight;
+        unsigned dwWidth;
+        unsigned dwPitchOrLinearSize;
+        unsigned dwDepth;
+        unsigned dwMipMapCount;
+        unsigned dwReserved1[11];
         DDS_PIXELFORMAT ddspf;
-        unsigned long dwCaps1;
-        unsigned long dwCaps2;
-        unsigned long dwReserved2[3];
+        unsigned dwCaps1;
+        unsigned dwCaps2;
+        unsigned dwReserved2[3];
     };
 
     typedef enum TextureType
