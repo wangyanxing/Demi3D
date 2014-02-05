@@ -61,6 +61,7 @@ namespace Demi
         }
         else
         {
+            //tga/bmp/jpg/png/hdr..
             ParseOthers(texture);
         }
 
@@ -200,7 +201,35 @@ namespace Demi
         size_t size = mImageData->Size();
         shared_ptr<uint8> buffer(DI_NEW uint8[size], [](uint8 *p) { DI_DELETE[] p; });
         mImageData->Read(buffer.get(), size);
-        return stbi_load_from_memory(buffer.get(), size, &width, &height, (int *)&components, 0);
+        uint8* data = buffer.get();
+        
+        //return stbi_load_from_memory(buffer.get(), size, &width, &height, (int *)&components, 0);
+        
+        
+        bool hdr = false;
+        if( stbi_is_hdr_from_memory( (unsigned char *)data, size ) > 0 ) hdr = true;
+        
+        int comps;
+        void *pixels = 0x0;
+        if( hdr )
+            pixels = stbi_loadf_from_memory( (unsigned char *)data, size, &width, &height, &comps, 4 );
+        else
+            pixels = stbi_load_from_memory( (unsigned char *)data, size, &width, &height, &comps, 4 );
+        
+        if( pixels == 0x0 )
+        {
+            DI_WARNING( "Invalid image format %s", stbi_failure_reason());
+            return nullptr;
+        }
+        
+        // Swizzle RGBA -> BGRA
+        uint32 *ptr = (uint32 *)pixels;
+        for( uint32 i = 0, si = width * height; i < si; ++i )
+        {
+            uint32 col = *ptr;
+            *ptr++ = (col & 0xFF00FF00) | ((col & 0x000000FF) << 16) | ((col & 0x00FF0000) >> 16);
+        }
+        return (uint8*)pixels;
     }
 
     void DiImage::_FreeImage(uint8* data)
@@ -221,28 +250,33 @@ namespace Demi
         }
 
         DI_INFO("Loading texture: %s", mImageData->GetName().c_str());
-
-        if (components == 3 || components == 4)
-        {
-            mWidth = width;
-            mHeight = height;
-            if (texture)
-            {
-                texture->Release();
-                texture->SetDimensions(width, height);
-                texture->SetFormat(components == 3 ? PF_R8G8B8 : PF_A8R8G8B8);
-                texture->SetNumLevels(1);
-                texture->SetResourceUsage(RU_WRITE_ONLY);
-                texture->CreateTexture();
-                DiTextureDrv* texDrv = texture->GetTextureDriver();
-
-                DiPixelBox pixbox(width, height, texture->GetFormat(), data);
-                texDrv->CopyFromMemory(pixbox, 0, 0);
-            }
-        }
+        
+        DiPixelFormat fmt = PF_A8R8G8B8;
+        if(components == 1)
+            fmt = PF_A8;
+        else if(components == 3)
+            fmt = PF_R8G8B8;
+        else if(components == 4)
+            fmt = PF_A8R8G8B8;
         else
         {
             DI_WARNING("Component number of %d currently isn't supported yet, failed to load the texture");
+        }
+
+        mWidth  = width;
+        mHeight = height;
+        if (texture)
+        {
+            texture->Release();
+            texture->SetDimensions(width, height);
+            texture->SetFormat(fmt);
+            texture->SetNumLevels(1);
+            texture->SetResourceUsage(RU_WRITE_ONLY);
+            texture->CreateTexture();
+            DiTextureDrv* texDrv = texture->GetTextureDriver();
+
+            DiPixelBox pixbox(width, height, fmt, data);
+            texDrv->CopyFromMemory(pixbox, 0, 0);
         }
 
         _FreeImage(data);
