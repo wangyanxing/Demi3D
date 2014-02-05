@@ -124,7 +124,7 @@ namespace Demi
 
     uint32 DiSubMesh::GetIndexSize() const
     {
-        return m32BitIndex?32:16;
+        return m32BitIndex ? 4 : 2;
     }
 
     void DiSubMesh::ReleaseVertexData()

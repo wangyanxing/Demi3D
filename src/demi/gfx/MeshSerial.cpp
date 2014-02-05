@@ -224,7 +224,7 @@ namespace Demi
         if (indexCount > 0)
         {
             void* indexdata = sm->CreateIndexData(indexCount,idx32bit?true:false);
-            int size = indexCount * (sm->GetIndexSize() / 8);
+            int size = indexCount * sm->GetIndexSize();
             stream->Read(indexdata, size);
             DI_SERIAL_LOG("%d bytes readed", size);
         }
@@ -373,14 +373,14 @@ namespace Demi
         unsigned int indexCount = pMesh->GetIndexNum();
         WriteInts(&indexCount,1);
 
-        bool u32 = pMesh->GetIndexSize() == 32;
+        bool u32 = pMesh->GetIndexSize() == 4;
         WriteBools(&u32,1);
 
         uint16 primitive = (uint16)pMesh->GetPrimitiveType();
         WriteShorts(&primitive,1);
 
         WriteData(pMesh->GetIndexData(),
-            (pMesh->GetIndexSize() / 8) * pMesh->GetIndexNum(), 1);
+            pMesh->GetIndexSize() * pMesh->GetIndexNum(), 1);
 
         WriteGeometry(pMesh);
 
@@ -473,7 +473,7 @@ namespace Demi
         size += pSub->GetMaterialName().length() + 1;
         size += sizeof(bool);
         size += sizeof(unsigned int);
-        size += (pSub->GetIndexSize() / 8) * pSub->GetIndexNum();
+        size += pSub->GetIndexSize() * pSub->GetIndexNum();
         size += sizeof(uint16);
         size += CalcGeometrySize(pSub);
 
