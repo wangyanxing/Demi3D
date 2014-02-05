@@ -156,6 +156,8 @@ endif()
 # Dependencies
 include(Depends)
 
+set(DEMI_EXTERNAL_SRC_PATH "${DEMI_SOURCE_DIR}/external/src")
+
 # Add core lib include path
 include_directories("${DEMI_SOURCE_DIR}/src/demi/misc")
 include_directories("${DEMI_SOURCE_DIR}/src/demi/gfx")

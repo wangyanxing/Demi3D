@@ -317,7 +317,7 @@ namespace Demi
         const ValueType * result = any_cast<ValueType>(&operand);
         if(!result)
         {
-            DI_ERROR("any_cast failed");
+            DI_WARNING("any_cast failed");
         }
         return *result;
     }
@@ -328,11 +328,11 @@ namespace Demi
     {
     public:
 
-        DiAny&        GetUserData() { return m_kAnyData; }
+        DiAny&          GetUserData() { return mAnyData; }
 
-        void        SetUserData(const DiAny& val) { m_kAnyData = val; }
+        void            SetUserData(const DiAny& val) { mAnyData = val; }
 
     protected:
-        DiAny            m_kAnyData;
+        DiAny           mAnyData;
     };
 }

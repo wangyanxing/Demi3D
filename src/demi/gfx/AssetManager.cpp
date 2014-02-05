@@ -81,14 +81,14 @@ namespace Demi
             {
                 if(extension == "mtl")      
                     asset = LoadXMLAsset(buf, path);
-                else if(extension == "dds" || extension == "tga") 
-                    asset = LoadTextureAsset(buf, path);
                 else if (extension == "model")
                     asset = LoadMeshAsset(buf,path);
                 else if (extension == "motion")
                     asset = LoadMotionAsset(buf,path);
                 else if (extension == "scene")
                     asset = LoadSceneAsset(buf,path);
+                else
+                    asset = LoadTextureAsset(buf, path);
             }
         }
 

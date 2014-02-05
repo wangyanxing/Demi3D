@@ -103,9 +103,9 @@ namespace Demi
 
         char    mBuffer[cacheSize];
 
-        size_t    mValidBytes;
+        size_t  mValidBytes;
 
-        size_t    mPos;
+        size_t  mPos;
 
     };
 
@@ -122,9 +122,9 @@ namespace Demi
 
         DiString        mName;        
 
-        size_t            mSize;
+        size_t          mSize;
 
-        uint16            mAccess;
+        uint16          mAccess;
 
 #define STREAM_TEMP_SIZE 128
     public:
@@ -134,21 +134,21 @@ namespace Demi
         DiDataStream(const DiString& name, uint16 accessMode = READ) 
             : mName(name), mSize(0), mAccess(accessMode) {}
 
-        virtual                    ~DiDataStream() {}
-
-    public:
-
-        const DiString&            GetName(void) { return mName; }
-
-        uint16                    GetAccessMode() const { return mAccess; }
-
+        virtual                  ~DiDataStream() {}
+                                 
+    public:                      
+                                 
+        const DiString&          GetName(void) { return mName; }
+                                 
+        uint16                   GetAccessMode() const { return mAccess; }
+                                 
         virtual bool             IsReadable() const { return (mAccess & READ) != 0; }
 
         virtual bool             IsWriteable() const { return (mAccess & WRITE) != 0; }
 
-        virtual size_t            Read(void* buf, size_t count) = 0;
+        virtual size_t           Read(void* buf, size_t count) = 0;
 
-        virtual size_t            Write(const void* buf, size_t count)
+        virtual size_t           Write(const void* buf, size_t count)
         {
             (void)buf;
             (void)count;
@@ -158,23 +158,23 @@ namespace Demi
         template<typename T> DiDataStream& operator>>(T& val);
 
 
-        virtual size_t            ReadLine(char* buf, size_t maxCount, const DiString& delim = "\n");
+        virtual size_t          ReadLine(char* buf, size_t maxCount, const DiString& delim = "\n");
 
-        virtual DiString        GetLine( );
+        virtual DiString        GetLine();
 
         virtual DiString        GetAsString(void);
 
-        virtual size_t            SkipLine(const DiString& delim = "\n");
+        virtual size_t          SkipLine(const DiString& delim = "\n");
 
         virtual void            Skip(long count) = 0;
 
-        virtual void            Seek( size_t pos ) = 0;
+        virtual void            Seek(size_t pos) = 0;
 
-        virtual size_t            Tell(void) const = 0;
+        virtual size_t          Tell(void) const = 0;
 
         virtual bool            Eof(void) const = 0;
 
-        size_t                    Size(void) const { return mSize; }
+        size_t                  Size(void) const { return mSize; }
 
         virtual void            Close(void) = 0;
     };

@@ -26,7 +26,7 @@ namespace Demi
         const DiString gfxGLDrvLib = "DiDrvGL";
 #       define USE_OPEN_GL 1
 #else
-#   define USE_OPEN_GL 1
+#   define USE_OPEN_GL 0
 #   if DEMI_DEBUG
         const DiString gfxD3D9DrvLib = "DiDrvD3D9_d";
         const DiString gfxGLDrvLib   = "DiDrvGL_d";
