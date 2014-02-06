@@ -142,7 +142,7 @@ namespace Demi
 
         float fFactor = 1.0f;
         float fTotalWeight = 0.0f;
-        AniBlenderMap::iterator itAniBlender = mMapBaseBlenders.begin();
+        auto itAniBlender = mMapBaseBlenders.begin();
         for( ; itAniBlender != mMapBaseBlenders.end() ; ++ itAniBlender )
         {
             fTotalWeight += mClipSet->GetClipController(itAniBlender->first)->GetWeight();
@@ -205,13 +205,13 @@ namespace Demi
         {
             fFactor = 1.0f;
             fTotalWeight = 0.0f;
-            AniBlenderMap::iterator itAniBlender = mMapAdditBlenders.begin();
-            while( itAniBlender != mMapAdditBlenders.end() )
+            AniBlenderMap::iterator itBlender = mMapAdditBlenders.begin();
+            while( itBlender != mMapAdditBlenders.end() )
             {
-                pkClipCtrl = mClipSet->GetClipController(itAniBlender->first);
+                pkClipCtrl = mClipSet->GetClipController(itBlender->first);
                 {
                     fTotalWeight += pkClipCtrl->GetWeight();
-                    ++ itAniBlender;
+                    ++itBlender;
                 }
             }
 
@@ -219,15 +219,15 @@ namespace Demi
                 fFactor /= fTotalWeight;
 
             pkAnim = NULL;
-            itAniBlender = mMapAdditBlenders.begin();
+            itBlender = mMapAdditBlenders.begin();
             pkClipCtrl = NULL;
             fFinalWeight = 0.0f;
             pBone = NULL;
             pkNodeClip = NULL;
-            for( ; itAniBlender != mMapAdditBlenders.end() ; ++ itAniBlender )
+            for( ; itBlender != mMapAdditBlenders.end() ; ++ itBlender )
             {
-                pkAnim = itAniBlender->second;
-                pkClipCtrl = mClipSet->GetClipController(itAniBlender->first);
+                pkAnim = itBlender->second;
+                pkClipCtrl = mClipSet->GetClipController(itBlender->first);
                 pkClipCtrl->AddTime(fDeltaTime);
                 if(pkAnim && pkClipCtrl)
                 {
@@ -237,15 +237,12 @@ namespace Demi
                     for(uint32 unHandle = 0 ; unHandle < unBonesNum ; ++ unHandle)
                     {
                         fFinalWeight = pkClipCtrl->GetWeight() * fFactor;
-
                         fFinalWeight *= (1.0f - (*pkBoneWeightMask)[unHandle]);
 
                         pBone = mSkeleton->GetBone(unHandle);
-
                         pkNodeClip = pkAnim->GetNodeClip(unHandle);
 
                         fFinalWeight *= mAdditLayerWeight;
-
                         pkNodeClip->ApplyToNode( pBone, kTimeIndex, fFinalWeight );
                     }
                 }

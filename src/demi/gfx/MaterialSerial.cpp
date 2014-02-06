@@ -455,7 +455,7 @@ namespace Demi
                     addrU = addr;
                 else if (name == "v")
                     addrV = addr;
-                else if (name, "uv")
+                else if (name == "uv")
                 {
                     addrV = addr;
                     addrV = addr;

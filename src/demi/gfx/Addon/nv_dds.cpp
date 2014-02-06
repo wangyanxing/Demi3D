@@ -450,12 +450,12 @@ bool CDDSImage::load(DiDataStream* fp, bool flipImage)
             // calculate mipmap size
             size = (this->*sizefunc)(w, h)*d;
 
-            unsigned char *pixels = DI_NEW unsigned char[size];
-            fp->Read(pixels,size);
+            unsigned char *p = DI_NEW unsigned char[size];
+            fp->Read(p,size);
 
-            mipmap.create(w, h, d, size, pixels);
+            mipmap.create(w, h, d, size, p);
             
-            delete [] pixels;
+            delete[] p;
 
             if (flipImage) flip(mipmap);
 

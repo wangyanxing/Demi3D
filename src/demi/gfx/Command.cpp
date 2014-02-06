@@ -51,7 +51,7 @@ namespace Demi
     {
         static DiString unfound;
 
-        if (index >= 0 && index < mKeyList.size())
+        if (index < mKeyList.size())
             return mKeyList[index];
         else
             return unfound;

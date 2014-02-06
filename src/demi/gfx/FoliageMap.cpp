@@ -7,7 +7,9 @@
 #include "ShaderParam.h"
 #include "TerrainMap.h"
 
-#pragma warning(disable : 4244)
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning(disable : 4244)
+#endif
 
 namespace Demi
 {

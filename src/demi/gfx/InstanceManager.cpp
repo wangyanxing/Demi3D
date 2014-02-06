@@ -103,7 +103,7 @@ namespace Demi
                   mName + "_TempBatch" );
             break;
         default:
-            DI_ERROR("指定的实例材质不支持");
+            DI_WARNING("Unsupported instancing technique: %d", mInstancingTechnique);
             break;
         }
 

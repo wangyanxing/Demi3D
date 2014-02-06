@@ -509,10 +509,10 @@ namespace Demi
         glewContextInit(mGLUtil);
     }
 
-    void DiGLDriver::GetDepthStencilFormatFor(GLenum internalColourFormat, 
+    void DiGLDriver::GetDepthStencilFormatFor(DiPixelFormat format,
         GLenum *depthFormat, GLenum *stencilFormat)
     {
-        mGLFBOManager->GetBestDepthStencil(internalColourFormat, depthFormat, stencilFormat);
+        mGLFBOManager->GetBestDepthStencil(format, depthFormat, stencilFormat);
     }
 
     DiGLContext* DiGLDriver::GetContext(DiWndHandle wnd)

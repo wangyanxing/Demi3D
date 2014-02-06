@@ -4,7 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef GfxPch_h__
+#define GfxPch_h__
 
 #include "MiscPch.h"
 
@@ -19,3 +20,5 @@ using namespace Demi;
 #include "DataStream.h"
 #include "Archive.h"
 #include "Timer.h"
+
+#endif

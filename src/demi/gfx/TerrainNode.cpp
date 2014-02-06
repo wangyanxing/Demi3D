@@ -8,19 +8,17 @@
 namespace Demi
 {
     DiQuadNode::DiQuadNode(DiTerrainMap* terrain,DiQuadNode* parent,uint16 size,uint16 xoff, uint16 yoff)
-        : mChunk(NULL),
+        : mChunk(nullptr),
         mTerrain(terrain),
         mParent(parent),
         mChunkOffset(xoff,yoff)
     {
-        // 叶子节点
         if (size == 1)
         {
             memset(mChildren, 0, sizeof(DiQuadNode*) * 4);
 
-            // 是否有对应chunk
-            DiIntVec2 size = terrain->GetChunkSize();
-            if (xoff < size.x && yoff < size.y)
+            DiIntVec2 sz = terrain->GetChunkSize();
+            if (xoff < sz.x && yoff < sz.y)
             {
                 mChunk = terrain->GetChunk(xoff,yoff);
                 mChunk->SetQuadNode(this);
@@ -31,10 +29,10 @@ namespace Demi
             uint16 childSize = size / 2;
             uint16 childOff     = childSize;
 
-            mChildren[0] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff,            yoff             );
-            mChildren[1] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff + childOff,    yoff             );
-            mChildren[2] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff,            yoff + childOff );
-            mChildren[3] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff + childOff,    yoff + childOff );
+            mChildren[0] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff, yoff);
+            mChildren[1] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff + childOff, yoff);
+            mChildren[2] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff, yoff + childOff );
+            mChildren[3] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff + childOff, yoff + childOff );
         }
 
         mPosition = DiVec3::ZERO;

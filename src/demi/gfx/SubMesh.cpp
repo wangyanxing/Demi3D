@@ -260,8 +260,6 @@ namespace Demi
 
         uint16 vertSize = sizeof(uint8)*4 + sizeof(float)*numBlendWeightsPerVertex;
         uint8* pBase = (uint8*)CreateSourceData(stream,mVerticesNum,vertSize);
-        uint8* base = pBase;
-        base;
         memset(pBase,0,mVerticesNum*vertSize);
 
         BoneWeightList::const_iterator i, iend;

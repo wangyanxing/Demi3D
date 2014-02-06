@@ -169,10 +169,10 @@ void UpdateScene()
     float ry = DiMath::Sin(time * 0.3f) * 0.1f;
     float rz = DiMath::Sin(time * 0.2f) * 0.1f;
 
-    DiMat3 mat;
+    DiMat3 m;
     DiQuat rot;
-    mat.FromEulerAnglesXYZ(DiRadian(rx), DiRadian(ry), DiRadian(rz));
-    rot.FromRotationMatrix(mat);
+    m.FromEulerAnglesXYZ(DiRadian(rx), DiRadian(ry), DiRadian(rz));
+    rot.FromRotationMatrix(m);
 
 #ifdef USE_OLD_SCENE_MANAGER
     for (size_t i = 0; i < nodes.size(); i++)

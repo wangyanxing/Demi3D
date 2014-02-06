@@ -72,7 +72,7 @@ namespace Demi
 
         void                    SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a);
 
-        void                    GetDepthStencilFormatFor(GLenum internalColourFormat, GLenum *depthFormat,
+        void                    GetDepthStencilFormatFor(DiPixelFormat format, GLenum *depthFormat,
                                     GLenum *stencilFormat);
         
         void                    CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd);

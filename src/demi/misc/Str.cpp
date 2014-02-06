@@ -1289,7 +1289,7 @@ namespace Demi
     DiString DiString::ExtractBaseName() const
     {
         DiString basename;
-        size_t i = rfind(".");
+        int i = rfind(".");
         if (i == npos)
         {
             basename = *this;

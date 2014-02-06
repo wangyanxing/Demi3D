@@ -59,12 +59,6 @@ namespace Demi
         mSourceData.push_back(vb);
         mIndexBuffer = Driver->CreateIndexBuffer();
 
-        float phiStart = 0;
-        float phiLength = DiMath::PI * 2;
-
-        float thetaStart = 0;
-        float thetaLength = DiMath::PI;
-
         mVertexDecl = Driver->CreateVertexDeclaration();
         if (mVertexDecl)
         {

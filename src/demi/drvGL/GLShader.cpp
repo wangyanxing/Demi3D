@@ -274,14 +274,14 @@ namespace Demi
             {
                 // Check for array index included in the name and strip it
                 DiString name(uniformName);
-                int index = name.find('[');
-                if (index != DiString::npos)
+                int pos = name.find('[');
+                if (pos != DiString::npos)
                 {
                     // If not the first index, skip
-                    if (name.find("[0]", index) == DiString::npos)
+                    if (name.find("[0]", pos) == DiString::npos)
                         continue;
 
-                    name = name.substr(0, index);
+                    name = name.substr(0, pos);
                 }
 
                 // built-in uniforms

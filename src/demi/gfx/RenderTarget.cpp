@@ -6,7 +6,9 @@
 #include "DepthBuffer.h"
 #include "GfxDriver.h"
 
-#pragma warning(disable : 4706)
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning(disable : 4706)
+#endif
 
 namespace Demi 
 {

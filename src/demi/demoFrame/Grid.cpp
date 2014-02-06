@@ -81,19 +81,19 @@ namespace Demi
         for(uint32 c = 0; c<numColLines; c++)
         {
             float *p0    = (float*)positions;
-            uint8  *c0    = (uint8*)colors;
+            uint8  *cc0  = (uint8*)colors;
             positions    = (float*)(((uint8*)positions)+vertSize);
-            colors        = ((uint8*)colors)+vertSize;
+            colors       = ((uint8*)colors)+vertSize;
             float *p1    = (float*)positions;
-            uint8  *c1    = (uint8*)colors;
+            uint8  *cc1  = (uint8*)colors;
             positions    = (float*)(((uint8*)positions)+vertSize);
-            colors        = ((uint8*)colors)+vertSize;
+            colors       = ((uint8*)colors)+vertSize;
 
             const float t = c / (float)(numColLines-1);
             const float d = diameter*t - radius;
 
-            uint32 *col1 = (uint32 *)c0;
-            uint32 *col2 = (uint32 *)c1;
+            uint32 *col1 = (uint32 *)cc0;
+            uint32 *col2 = (uint32 *)cc1;
             if(d==0.0f) 
             {
                 *col1 = color1;
@@ -109,19 +109,19 @@ namespace Demi
         }
         for(uint32 r=0; r<numColLines; r++)
         {
-            float *p0 = (float*)positions;
-            uint8  *c0 = (uint8*)colors;
-            positions = (float*)(((uint8*)positions)+vertSize);
-            colors    = ((uint8*)colors)+vertSize;
-            float *p1 = (float*)positions;
-            uint8  *c1 = (uint8*)colors;
-            positions = (float*)(((uint8*)positions)+vertSize);
-            colors    = ((uint8*)colors)+vertSize;
+            float *p0  = (float*)positions;
+            uint8 *cc0 = (uint8*)colors;
+            positions  = (float*)(((uint8*)positions)+vertSize);
+            colors     = ((uint8*)colors)+vertSize;
+            float *p1  = (float*)positions;
+            uint8 *cc1 = (uint8*)colors;
+            positions  = (float*)(((uint8*)positions)+vertSize);
+            colors     = ((uint8*)colors)+vertSize;
 
             const float t = r / (float)(numColLines-1);
             const float d = diameter*t - radius;
-            uint32 *col1 = (uint32 *)c0;
-            uint32 *col2 = (uint32 *)c1;
+            uint32 *col1 = (uint32 *)cc0;
+            uint32 *col2 = (uint32 *)cc1;
             if(d==0.0f) 
             {
                 *col1 = color1;

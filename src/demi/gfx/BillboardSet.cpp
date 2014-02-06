@@ -239,9 +239,7 @@ namespace Demi
 
     DiBillboard* DiBillboardSet::GetBillboard( unsigned int index ) const
     {
-        DI_ASSERT_MESSAGE(
-            index < mActiveBillboards.size(),
-            "BillboardË÷ÒýÔ½½ç." );
+        DI_ASSERT_MESSAGE(index < mActiveBillboards.size(), "invalid billboard index" );
 
         ActiveBillboardList::const_iterator it;
         if( index >= ( mActiveBillboards.size() >> 1 ) )
@@ -259,9 +257,7 @@ namespace Demi
 
     void DiBillboardSet::RemoveBillboard( unsigned int index )
     {
-        DI_ASSERT_MESSAGE(
-            index < mActiveBillboards.size(),
-            "Billboard id error." );
+        DI_ASSERT_MESSAGE(index < mActiveBillboards.size(), "Billboard id error." );
 
         ActiveBillboardList::iterator it;
         if( index >= ( mActiveBillboards.size() >> 1 ) )
@@ -660,6 +656,8 @@ namespace Demi
             *pX = mCommonUpVector.crossProduct(bb->mDirection);
             pX->normalise();
             *pY = bb->mDirection.crossProduct(*pX);
+            break;
+        default:
             break;
         }
     }

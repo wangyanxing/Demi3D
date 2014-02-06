@@ -103,8 +103,8 @@ namespace Demi
     {
         if (HasAnimation(name))
         {
-            DI_ERROR("已存在名为%s的动画组",name.c_str());
-            return NULL;
+            DI_WARNING("The animatin %s has already existed",name.c_str());
+            return nullptr;
         }
 
         DiAnimation* am = DI_NEW DiAnimation(name,length);
@@ -127,7 +127,7 @@ namespace Demi
     {
         if(strNewName.empty())
         {
-            DI_WARNING("新名字不能为空！");
+            DI_WARNING("Empty name will not be accepted");
             return false;
         }
 
@@ -143,7 +143,7 @@ namespace Demi
             return true;
         }
 
-        DI_WARNING("未找到名为\"%s\"的动画，重命名失败",name.c_str());
+        DI_WARNING("Cannot locate the animation: %s",name.c_str());
         return false;
     }
 
