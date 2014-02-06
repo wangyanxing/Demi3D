@@ -298,8 +298,7 @@ namespace Demi
                     s.unit = (uint32)mSamplers.size();
                     mSamplers[name] = s;
 
-                    GLint unit = s.unit;
-                    glUniform1ivARB(location, 1, &unit);
+                    glUniform1iARB(location, s.unit);
                 }
                 else
                 {
