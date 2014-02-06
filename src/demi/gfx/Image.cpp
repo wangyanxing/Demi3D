@@ -221,7 +221,7 @@ namespace Demi
         
         // Swizzle RGBA -> BGRA
         uint32 *ptr = (uint32*)pixels;
-        for( uint32 i = 0, si = width * height; i < si; ++i )
+        for (uint32 i = 0, si = width * height; i < si; ++i)
         {
             uint32 col = *ptr;
             *ptr++ = (col & 0xFF00FF00) | ((col & 0x000000FF) << 16) | ((col & 0x00FF0000) >> 16);

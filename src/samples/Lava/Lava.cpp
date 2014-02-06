@@ -18,8 +18,8 @@ void AddMeshes()
 	shaderParam->WriteFloat("fogDensity",0.45f);
 	shaderParam->WriteFloat2("uvScale",DiVec2(3,1));
 	shaderParam->WriteFloat3("fogColor",DiVec3(0,0,0));
-	shaderParam->WriteTexture2D("texture2","cloud.png");
-	shaderParam->WriteTexture2D("texture1","lavatile.jpg");
+	shaderParam->WriteTexture2D("texture1","cloud.png");
+	shaderParam->WriteTexture2D("texture2","lavatile.jpg");
 
 	DiSimpleShapePtr model = make_shared<DiSimpleShape>();
 	model->CreateTorus(16,8,32,32);
