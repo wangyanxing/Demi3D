@@ -304,8 +304,4 @@ namespace Demi
         }
     }
 
-    void DiD3D9TextureDrv::GenerateMipmap()
-    {
-
-    }
 }

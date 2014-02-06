@@ -32,8 +32,6 @@ namespace Demi
 
         virtual void    Bind(uint32 samplerIndex) = 0;
         
-        virtual void    GenerateMipmap() = 0;
-
         virtual void    CopyToMemory(const DiBox &srcBox, const DiPixelBox &dst) = 0;
 
         void            CopyFromMemory(const DiPixelBox &srcBox, uint32 level, uint32 surface = 0);

@@ -58,17 +58,6 @@ namespace Demi
         }
     }
     
-    void DiGLTextureDrv::GenerateMipmap()
-    {
-        if( mParent->GetNumLevels() == 1 && mParent->IsAutoMipmap())
-        {
-            glEnable( mGLTextureType );  // Workaround for ATI driver bug
-            glBindTexture(mGLTextureType, mTextureID);
-            glGenerateMipmapEXT( mGLTextureType );
-            glDisable( mGLTextureType );
-        }
-    }
-
     void DiGLTextureDrv::CreateTexture()
     {
         uint32 width = mParent->GetWidth();
@@ -103,6 +92,11 @@ namespace Demi
         {
             glTexParameteri(mGLTextureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(mGLTextureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        }
+
+        if (mParent->IsAutoMipmap())
+        {
+            glTexParameteri(mGLTextureType, GL_GENERATE_MIPMAP, GL_TRUE);
         }
 
         GLenum glErr = GL_NO_ERROR;
