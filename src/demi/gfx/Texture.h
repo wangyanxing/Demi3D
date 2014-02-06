@@ -4,8 +4,8 @@
     Creator:    demiwangya
 *********************************************************************/
 
-#ifndef Texture_h__
-#define Texture_h__
+#ifndef DiTexture_h__
+#define DiTexture_h__
 
 #include "Asset.h"
 #include "DeviceLostListener.h"
@@ -31,6 +31,8 @@ namespace Demi
         virtual void    UnlockLevel(uint32 level, uint32 surface = 0) = 0;
 
         virtual void    Bind(uint32 samplerIndex) = 0;
+        
+        virtual void    GenerateMipmap() = 0;
 
         virtual void    CopyToMemory(const DiBox &srcBox, const DiPixelBox &dst) = 0;
 
@@ -80,21 +82,25 @@ namespace Demi
 
         inline DiAddMode        GetAddressingV(void) const { return mAddressingV; }
 
-        inline DiColor          GetBorderColor() const { return mBorderColor; }
+        inline DiColor          GetBorderColor(void) const { return mBorderColor; }
 
         void                    SetBorderColor(DiColor val) { mBorderColor = val; }
 
         void                    SetFormat(DiPixelFormat fmt);
 
-        DiPixelFormat           GetFormat(void)    const { return mPixelFormat; }
+        DiPixelFormat           GetFormat(void) const { return mPixelFormat; }
+        
+        bool                    IsAutoMipmap(void) const { return mAutoGenerateMipmap; }
+        
+        void                    SetAutoMipmap( bool automip ) { mAutoGenerateMipmap = automip; }
 
-        uint32                  GetWidth(void)    const { return mWidth; }
+        uint32                  GetWidth(void) const { return mWidth; }
 
-        uint32                  GetHeight(void)    const { return mHeight; }
+        uint32                  GetHeight(void) const { return mHeight; }
 
         void                    SetDimensions(uint32 width, uint32 height);
 
-        uint32                  GetNumLevels(void)   const { return mNumLevels; }
+        uint32                  GetNumLevels(void) const { return mNumLevels; }
 
         void                    SetNumLevels(uint32 numlevel);
 
@@ -104,11 +110,11 @@ namespace Demi
 
         uint32                  GetBlockSize(void) const;
 
-        DiTextureUsage          GetUsage() const { return mUsage; }
+        DiTextureUsage          GetUsage(void) const { return mUsage; }
 
         void                    SetUsage(DiTextureUsage val) { mUsage = val; }
 
-        DiResUsage              GetResourceUsage() const { return mResUsage; }
+        DiResUsage              GetResourceUsage(void) const { return mResUsage; }
 
         void                    SetResourceUsage(DiResUsage val) { mResUsage = val; }
 
@@ -122,25 +128,25 @@ namespace Demi
 
         void                    Bind(uint32 samplerIndex);
 
-        bool                    LoadingComplete() const;
+        bool                    LoadingComplete(void) const;
 
-        DiAssetType             GetAssetType() const {return TYPE;}
+        DiAssetType             GetAssetType(void) const {return TYPE;}
 
         bool                    Load(DiDataStreamPtr data);
 
-        bool                    Load();
+        bool                    Load(void);
 
-        DiRenderTarget*         GetRenderTarget();
+        DiRenderTarget*         GetRenderTarget(void);
 
-        uint16                  GetUvSet() const { return mUvSet; }
+        uint16                  GetUvSet(void) const { return mUvSet; }
 
         void                    SetUvSet(uint16 val) { mUvSet = val; }
 
-        bool                    IsAdaptedRT() const { return mAdaptedRT != nullptr; }
+        bool                    IsAdaptedRT(void) const { return mAdaptedRT != nullptr; }
 
         void                    SetAdaptedRT(DiRenderTarget* val) { mAdaptedRT = val; }
 
-        DiVec2                  GetViewportScale() const { return mViewportScale; }
+        DiVec2                  GetViewportScale(void) const { return mViewportScale; }
 
         void                    SetViewportScale(DiVec2 val) { mViewportScale = val; }
 
@@ -148,9 +154,9 @@ namespace Demi
 
         void                    CopyToMemory(const DiBox &srcBox, const DiPixelBox &dst);
 
-        void*                   GetSurfaceHandle();
+        void*                   GetSurfaceHandle(void);
 
-        DiTextureDrv*           GetTextureDriver() { return mTextureDrv; }
+        DiTextureDrv*           GetTextureDriver(void) { return mTextureDrv; }
 
     public:
 
@@ -189,6 +195,8 @@ namespace Demi
         DiTextureType           mTextureType;
                                 
         DiTextureDrv*           mTextureDrv;
+        
+        bool                    mAutoGenerateMipmap;
     };
 }
 #endif // Texture_h__

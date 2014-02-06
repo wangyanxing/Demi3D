@@ -196,34 +196,31 @@ namespace Demi
         }
     }
 
-    uint8* DiImage::_LoadImage(int& width, int& height, uint32& components)
+    uint8* DiImage::_LoadImage(int& width, int& height, int& components)
     {
         size_t size = mImageData->Size();
         shared_ptr<uint8> buffer(DI_NEW uint8[size], [](uint8 *p) { DI_DELETE[] p; });
         mImageData->Read(buffer.get(), size);
         uint8* data = buffer.get();
         
-        //return stbi_load_from_memory(buffer.get(), size, &width, &height, (int *)&components, 0);
-        
-        
         bool hdr = false;
-        if( stbi_is_hdr_from_memory( (unsigned char *)data, size ) > 0 ) hdr = true;
+        if( stbi_is_hdr_from_memory( (unsigned char *)data, size ) > 0 )
+            hdr = true;
         
-        int comps;
-        void *pixels = 0x0;
-        if( hdr )
-            pixels = stbi_loadf_from_memory( (unsigned char *)data, size, &width, &height, &comps, 4 );
+        void *pixels = nullptr;
+        if(hdr)
+            pixels = stbi_loadf_from_memory( data, size, &width, &height, &components, 4 );
         else
-            pixels = stbi_load_from_memory( (unsigned char *)data, size, &width, &height, &comps, 4 );
+            pixels = stbi_load_from_memory( data, size, &width, &height, &components, 4 );
         
-        if( pixels == 0x0 )
+        if(!pixels)
         {
             DI_WARNING( "Invalid image format %s", stbi_failure_reason());
             return nullptr;
         }
         
         // Swizzle RGBA -> BGRA
-        uint32 *ptr = (uint32 *)pixels;
+        uint32 *ptr = (uint32*)pixels;
         for( uint32 i = 0, si = width * height; i < si; ++i )
         {
             uint32 col = *ptr;
@@ -241,7 +238,7 @@ namespace Demi
     void DiImage::ParseOthers(DiTexture* texture)
     {
         int width = 0, height = 0;
-        uint32 components = 0;
+        int components = 0;
         uint8* data = _LoadImage(width, height, components);
         if (!data)
         {
@@ -251,6 +248,7 @@ namespace Demi
 
         DI_INFO("Loading texture: %s", mImageData->GetName().c_str());
         
+        components = 4;
         DiPixelFormat fmt = PF_A8R8G8B8;
         if(components == 1)
             fmt = PF_A8;
@@ -265,20 +263,23 @@ namespace Demi
 
         mWidth  = width;
         mHeight = height;
+        uint32 maxmipmap = DiPixelBox::GetMaxMipmaps(width, height);
+        
         if (texture)
         {
             texture->Release();
             texture->SetDimensions(width, height);
             texture->SetFormat(fmt);
-            texture->SetNumLevels(1);
+            texture->SetNumLevels(maxmipmap);
             texture->SetResourceUsage(RU_WRITE_ONLY);
             texture->CreateTexture();
             DiTextureDrv* texDrv = texture->GetTextureDriver();
 
             DiPixelBox pixbox(width, height, fmt, data);
             texDrv->CopyFromMemory(pixbox, 0, 0);
+            texDrv->GenerateMipmap();
         }
-
+        
         _FreeImage(data);
     }
 
@@ -654,6 +655,44 @@ namespace Demi
         }
         srcptr += srcSliceSkipBytes;
         dstptr += dstSliceSkipBytes;
+    }
+    
+    uint32 DiPixelBox::GetMaxMipmaps(uint32 width, uint32 height)
+    {
+        uint32 count = 0;
+        if((width > 0) && (height > 0))
+        {
+            do
+            {
+                if(width>1)
+                    width = width/2;
+                if(height>1)
+                    height = height/2;
+                
+                count ++;
+            } while(!(width == 1 && height == 1));
+        }
+        return count;
+    }
+    
+    uint32 DiPixelBox::GetMaxMipmaps(uint32 width, uint32 height, uint32 depth)
+    {
+        uint32 count = 0;
+        if((width > 0) && (height > 0) && (depth > 0))
+        {
+            do
+            {
+                if(width>1)
+                    width = width/2;
+                if(height>1)
+                    height = height/2;
+                if(depth>1)
+                    depth = depth/2;
+                
+                count ++;
+            } while(!(width == 1 && height == 1 && depth == 1));
+        }
+        return count;
     }
 
     void DiPixelBox::FormatGetDisplayStr( DiPixelFormat eFormat, char * pszStr, int nBufLen )
