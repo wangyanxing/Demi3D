@@ -12,8 +12,6 @@ file(GLOB DI_GFX_SRCS "*.cpp")
 set (DI_GFX_ADDON
   Addon/nv_dds.h
   Addon/nv_dds.cpp
-  Addon/targa.h
-  Addon/targa.cpp
   )
   
 if (WIN32)
