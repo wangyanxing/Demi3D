@@ -114,6 +114,8 @@ namespace Demi
 
         void                    SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a);
 
+        bool                    CanAutoGenMipmaps(DWORD srcUsage, D3DRESOURCETYPE srcType, D3DFORMAT srcFormat);
+
     public:
 
         static IDirect3DVertexShader9*         CreateVertexShader(const DWORD* pFunction);
@@ -160,6 +162,8 @@ namespace Demi
         uint32                  mAdapter;
 
         D3DPRESENT_PARAMETERS   mMainParameters;
+
+        D3DCAPS9                mDeviceCaps;
 
     public:
 

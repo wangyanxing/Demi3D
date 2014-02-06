@@ -36,6 +36,7 @@ namespace Demi
         mAdapter(0xFFFFFFFF),
         mAdapterFormat(D3DFMT_UNKNOWN)
     {
+        memset(&mDeviceCaps, 0, sizeof(mDeviceCaps));
     }
     
     DiD3D9Driver::~DiD3D9Driver()
@@ -122,6 +123,12 @@ namespace Demi
                     return false;
                 }
             }
+        }
+
+        HRESULT hr = mDevice->GetDeviceCaps(&mDeviceCaps);
+        if (FAILED(hr))
+        {
+            DI_WARNING("Cannot create d3d9 device caps");
         }
 
         DI_ASSERT(!StateCache);
@@ -851,4 +858,29 @@ namespace Demi
         static DiString shaderext = ".hlsl";
         return shaderext;
     }
+
+    bool DiD3D9Driver::CanAutoGenMipmaps(DWORD srcUsage, D3DRESOURCETYPE srcType, D3DFORMAT srcFormat)
+    {
+        if (mDeviceCaps.Caps2 & D3DCAPS2_CANAUTOGENMIPMAP)
+        {
+            HRESULT hr;
+            // check for auto gen. mip maps support
+            hr = mD3D->CheckDeviceFormat(
+                mDeviceCaps.AdapterOrdinal,
+                mDeviceCaps.DeviceType,
+                mMainParameters.BackBufferFormat,
+                srcUsage | D3DUSAGE_AUTOGENMIPMAP,
+                srcType,
+                srcFormat);
+            // this HR could a SUCCES
+            // but mip maps will not be generated
+            if (hr == D3D_OK)
+                return true;
+            else
+                return false;
+        }
+        else
+            return false;
+    }
+
 }

@@ -117,6 +117,16 @@ namespace Demi
 
         D3DFORMAT d3dfmt = DiD3D9Mappings::D3D9FormatMapping[fmt];
 
+        D3DRESOURCETYPE resType = D3DRTYPE_TEXTURE;
+        if (mParent->GetTextureType() == TEXTURE_CUBE)
+            resType = D3DRTYPE_CUBETEXTURE;
+        
+        if (mParent->IsAutoMipmap() && static_cast<DiD3D9Driver*>(Driver)->CanAutoGenMipmaps(mD3DUsage, resType, d3dfmt))
+        {
+            mD3DUsage |= D3DUSAGE_AUTOGENMIPMAP;
+            numLevels = 0;
+        }
+
         if (mD3DUsage & D3DUSAGE_DEPTHSTENCIL)
         {
             mTexture = nullptr;
@@ -292,5 +302,10 @@ namespace Demi
         {
             DI_WARNING("D3DXLoadSurfaceFromMemory failed, cannot copy row stuff from memory.");
         }
+    }
+
+    void DiD3D9TextureDrv::GenerateMipmap()
+    {
+
     }
 }

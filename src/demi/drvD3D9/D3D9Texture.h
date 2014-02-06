@@ -24,6 +24,8 @@ namespace Demi
 
         void                    Release();
 
+        void                    GenerateMipmap();
+
         void*                   LockLevel(uint32 level, uint32 surface = 0, DiLockFlag lockflag = LOCK_NORMAL);
 
         void                    UnlockLevel(uint32 level, uint32 surface = 0);
