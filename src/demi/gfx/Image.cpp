@@ -5,8 +5,6 @@
 #include "AssetManager.h"
 
 #include "nv_dds.h"
-#include "targa.h"
-
 #include "stb_image.h"
 #include "stb_image_write.h"
 
@@ -66,69 +64,6 @@ namespace Demi
         }
 
         return true;
-    }
-
-    void DiImage::ParseTga(DiTexture* texture)
-    {
-        DI_INFO("Loading tga image : %s", mImageData->GetName().c_str());
-
-        tga_image* image = new tga_image();
-        bool ok = (TGA_NOERR == tga_read_from_stream( image, mImageData.get() ));
-
-        tga_flip_vert( image );
-
-        DI_ASSERT(ok);
-        if( ok )
-        {
-            int componentCount = image->pixel_depth/8;
-            if( componentCount == 3 || componentCount == 4 )
-            {
-                mWidth = image->width;
-                mHeight = image->height;
-                if(texture)
-                {
-                    texture->Release();
-                    texture->SetDimensions(image->width, image->height);
-                    texture->SetFormat(PF_A8R8G8B8);
-                    texture->SetNumLevels(1);
-                    texture->SetResourceUsage(RU_WRITE_ONLY);
-                    texture->CreateTexture();
-
-                    void *buffer = texture->LockLevel(0);
-                    DI_ASSERT(buffer);
-                    if(buffer)
-                    {
-                        uint8       *levelDst    = (uint8*)buffer;
-                        const uint8 *levelSrc    = (uint8*)image->image_data;
-                        const uint32 levelWidth  = texture->GetWidthInBlocks();
-                        const uint32 levelHeight = texture->GetHeightInBlocks();
-                        const uint32 rowSrcSize  = levelWidth * texture->GetBlockSize();
-                        for(uint32 row=0; row<levelHeight; row++)
-                        { 
-                            if( componentCount == 3 )
-                            {
-                                for(uint32 col=0; col<levelWidth; col++)
-                                {
-                                    *levelDst++ = levelSrc[0];
-                                    *levelDst++ = levelSrc[1];
-                                    *levelDst++ = levelSrc[2];
-                                    *levelDst++ = 0xFF; //alpha
-                                    levelSrc += componentCount;
-                                }
-                            }
-                            else
-                            {
-                                memcpy(levelDst, levelSrc, rowSrcSize);
-                                levelDst += rowSrcSize;
-                                levelSrc += rowSrcSize;
-                            }
-                        }
-                    }
-                    texture->UnlockLevel(0);
-                }
-            }
-        }
-        delete image;
     }
 
     void DiImage::ParseDDS(DiTexture* texture)

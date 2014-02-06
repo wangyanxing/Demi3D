@@ -29,8 +29,6 @@ namespace Demi
 
     protected:
 
-        void            ParseTga(DiTexture* texture);
-
         void            ParseDDS(DiTexture* texture);
 
         void            ParseOthers(DiTexture* texture);
