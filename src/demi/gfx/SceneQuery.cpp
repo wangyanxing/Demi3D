@@ -41,7 +41,7 @@ namespace Demi
     {
         if (mSupportedWorldFragments.find(wft) == mSupportedWorldFragments.end())
         {
-            DI_ERROR("查询不支持");
+            DI_WARNING("The world fragment type is not supported: %d", wft);
         }
         mWorldFragmentType = wft;
     }

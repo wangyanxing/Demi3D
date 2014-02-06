@@ -88,7 +88,7 @@ namespace Demi
 
         SkeletonBlendMode   mBlendMode;
         
-        bool                mIsBlending;
+        //bool                mIsBlending;
     };
 
     class DiSkeletonInstance : public DiSkeleton

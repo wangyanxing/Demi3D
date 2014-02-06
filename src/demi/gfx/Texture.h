@@ -21,6 +21,10 @@ namespace Demi
     class DiTextureDrv : public DiBase
     {
     public:
+        
+        DiTextureDrv(){}
+        
+        virtual         ~DiTextureDrv(){}
 
         virtual void    CreateTexture() = 0;
 

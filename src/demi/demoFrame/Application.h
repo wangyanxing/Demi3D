@@ -19,11 +19,11 @@ namespace Demi
 {
     struct DemoConfig
     {
-        DemoConfig(const DiString& windowTitle, uint32 width = 1024, uint32 height = 768)
+        DemoConfig(const DiString& title, uint32 width = 1024, uint32 height = 768)
         : windowWidth(width)
         , windowHeight(height)
         , fullScreen(false)
-        , windowTitle(windowTitle)
+        , windowTitle(title)
         , mediaPath("../../Media")
         , logFile("Demi.log")
         {

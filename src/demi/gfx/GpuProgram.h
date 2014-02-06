@@ -120,6 +120,8 @@ namespace Demi
 
         DiShaderInstance(DiShaderType type){}
         
+        virtual                 ~DiShaderInstance(){}
+        
 
         virtual void            Bind(const DiShaderEnvironment& shaderEnv) = 0;
 

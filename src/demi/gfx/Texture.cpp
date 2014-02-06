@@ -223,7 +223,7 @@ namespace Demi
         return mTextureDrv->LockLevel(level,surface);
     }
 
-    void DiTextureDrv::CopyFromMemory(const DiPixelBox &srcBox, uint32 level, uint32 surface /*= 0*/)
+    void DiTextureDrv::CopyFromMemory(const DiPixelBox& srcBox, uint32 level, uint32 surface /*= 0*/)
     {
         DiBox dest(0, 0, srcBox.GetWidth(), srcBox.GetHeight());
         CopyFromMemory(srcBox, dest, level, surface);

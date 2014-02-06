@@ -132,7 +132,7 @@ namespace Demi
 
     void DiMaterial::RecompileShader( DiShaderType type, const DiPair<DiString,DiString>& marco )
     {
-        DiShaderProgram* shader;
+        DiShaderProgram* shader = nullptr;
 
         if (type == SHADER_VERTEX)
             shader = mVertexShader;

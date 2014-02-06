@@ -193,13 +193,12 @@ namespace Demi
             sign[2] == 'T' &&
             sign[3] == 'R')
         {
-            // 查看版本,2字节
             uint16 version;
             stream->Read(&version,sizeof(uint16));
 
             if (version >= SCENE_SERIAL_VERSION_NUM)
             {
-                DI_ERROR("非法的场景文件");
+                DI_WARNING("Unsupported scene file version: %d", version);
                 return;
             }
 
@@ -213,7 +212,7 @@ namespace Demi
             return;
         }
 
-        DI_ERROR("非法的场景文件");
+        
         return;
     }
 
@@ -259,8 +258,6 @@ namespace Demi
         if (envNode && sm)
         {
             DiColor ambient = envNode.GetColor("Ambient");
-            DiColor suncolor = envNode.GetColor("SunColor");
-            DiVec3 sundir = envNode.GetVector3("SunDir");
 
             sm->SetAmbientColor(ambient);
         }

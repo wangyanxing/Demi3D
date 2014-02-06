@@ -74,14 +74,13 @@ namespace Demi
 
         if( this->mSharedTransformModel  )
         {
-            DI_ERROR("已经共享了其他的实例模型");
+            DI_WARNING("The shared transform model has already existed");
             return false;
         }
 
-        if( this->mBatchOwner->GetSkeleton() !=
-            slave->mBatchOwner->GetSkeleton() )
+        if( this->mBatchOwner->GetSkeleton() != slave->mBatchOwner->GetSkeleton() )
         {
-            DI_ERROR("骨骼无法匹配");
+            DI_WARNING("Skeleton is unmatched");
             return false;
         }
 

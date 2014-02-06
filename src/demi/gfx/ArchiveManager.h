@@ -26,7 +26,7 @@ namespace Demi
 
         ~DiArchiveManager();
 
-        _DECLARE_SINGLETON(DiArchiveManager);
+        _DECLARE_SINGLETON(DiArchiveManager)
 
     public:
 

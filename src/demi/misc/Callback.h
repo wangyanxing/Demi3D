@@ -640,9 +640,9 @@ namespace Demi
         typedef RT (CallType::*MemFunc)(P1)const;
         return CBMemberOf1stArgTranslator2wRet<P1,P2,RT,MemFunc>(f);
     }
+    */
 
-
-    /************************* three args - no return *******************/
+    // ************************* three args - no return *******************
     template <class P1,class P2,class P3>
     class Functor3:public FunctorBase{
     public:
@@ -844,9 +844,9 @@ namespace Demi
         typedef RT (CallType::*MemFunc)(P1,P2)const;
         return CBMemberOf1stArgTranslator3wRet<P1,P2,P3,RT,MemFunc>(f);
     }
+    */
 
-
-    /************************* four args - no return *******************/
+    // ************************* four args - no return *******************
     template <class P1,class P2,class P3,class P4>
     class Functor4:public FunctorBase{
     public:

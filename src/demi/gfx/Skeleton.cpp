@@ -7,7 +7,7 @@ namespace Demi
 {
     DiSkeleton::DiSkeleton()
         :mNextAutoHandle(0),
-        mIsBlending(false),
+        //mIsBlending(false),
         mBlendMode(ANIMBLEND_AVERAGE)
     {
 
@@ -47,8 +47,7 @@ namespace Demi
         }
         else
         {
-            // 说明这个skeleton没有BONE
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -60,13 +59,11 @@ namespace Demi
 
     DiBone* DiSkeleton::GetBone( const DiString& boneName )
     {
-        BoneNameMap::const_iterator i = mBoneListByName.find(boneName);
-
+        auto i = mBoneListByName.find(boneName);
         if (i == mBoneListByName.end())
         {
-            DI_ERROR("名为%s的骨骼不存在，无法获取",boneName.c_str());
-            DI_ASSERT_FAIL;
-            return NULL;
+            DI_WARNING("Cannot locate the bone: %s",boneName.c_str());
+            return nullptr;
         }
 
         return i->second;
@@ -92,17 +89,14 @@ namespace Demi
     {
         if (handle > MAX_BONE_NUM)
         {
-            DI_ERROR("骨骼数量已经达到上限");
-            DI_ASSERT_FAIL;
-            return NULL;
+            DI_WARNING("Too many bones: %d", handle);
+            return nullptr;
         }
 
-        if (handle < mBoneList.size() && 
-            mBoneList[handle] != NULL)
+        if (handle < mBoneList.size() && mBoneList[handle])
         {
-            DI_ERROR("编号为%d的骨骼已经存在，创建失败",handle);
-            DI_ASSERT_FAIL;
-            return NULL;
+            DI_ERROR("The bone: %d has already existed",handle);
+            return nullptr;
         }
 
         DiBone* ret = DI_NEW DiBone(this,handle);
@@ -125,24 +119,20 @@ namespace Demi
     {
         if (handle > MAX_BONE_NUM)
         {
-            DI_ERROR("骨骼数量已经达到上限");
-            DI_ASSERT_FAIL;
-            return NULL;
+            DI_WARNING("Too many bones: %d", handle);
+            return nullptr;
         }
-
-        if (handle < mBoneList.size() && 
-            mBoneList[handle] != NULL)
+        
+        if (handle < mBoneList.size() && mBoneList[handle])
         {
-            DI_ERROR("编号为%d的骨骼已经存在，创建失败",handle);
-            DI_ASSERT_FAIL;
-            return NULL;
+            DI_ERROR("The bone: %d has already existed",handle);
+            return nullptr;
         }
 
         if (mBoneListByName.find(name) != mBoneListByName.end())
         {
-            DI_ERROR("名为%s的骨骼已经存在，创建失败",name.c_str());
-            DI_ASSERT_FAIL;
-            return NULL;
+            DI_WARNING("Cannot locate the bone: %s",name.c_str());
+            return nullptr;
         }
 
         DiBone* ret = DI_NEW DiBone(this, handle, name);
@@ -159,7 +149,7 @@ namespace Demi
     {
         if (mBoneList.empty())
         {
-            DI_ERROR("本骨架无骨骼");
+            DI_WARNING("The bone list is empty!");
             return;
         }
 
@@ -206,9 +196,7 @@ namespace Demi
             UpdateTransforms();
         }
 
-        BoneList::const_iterator i, boneend;
-        boneend = mBoneList.end();
-        for (i = mBoneList.begin();i != boneend; ++i)
+        for (auto i = mBoneList.begin();i != mBoneList.end(); ++i)
         {
             DiBone* pBone = *i;
             pBone->GetOffsetTransform(*pMatrices);

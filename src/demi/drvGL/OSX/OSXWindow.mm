@@ -68,7 +68,7 @@ namespace Demi
 		int fsaa_samples = 0;
         bool hidden = false;
         NSString *windowTitle = [NSString stringWithCString:title.c_str() encoding:NSUTF8StringEncoding];
-		int winx = 0, winy = 0;
+		//int winx = 0, winy = 0;
 		int depth = 32;
         
         mIsFullScreen = false;

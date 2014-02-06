@@ -13,6 +13,8 @@ namespace Demi
     public:
 
         DiSerializer();
+        
+        virtual                 ~DiSerializer(){}
 
     public:
 

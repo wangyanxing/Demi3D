@@ -124,7 +124,6 @@ namespace Demi
     void DiOctreeNode::InsertSceneNode(DiSceneNode* node, const DiAABB& aabb, float objRadiusSqr, const DiVec3& objCenter)
     {
         DiOctreeNode* currentOct = this;
-        const float fWSMaxViewDist = 10e8;
         DiVec3 objCt = objCenter;
         int depth = 0;
 

@@ -69,9 +69,8 @@ namespace Demi
 
         if (!mFrameBuffer) return ret;
 
-        GLenum glfmt = DiGLTypeMappings::GetClosestGLInternalFormat(mFrameBuffer->GetFormat());
         GLuint depthFormat, stencilFormat;
-        DiGLDriver::FBOManager->GetBestDepthStencil(glfmt, &depthFormat, &stencilFormat);
+        DiGLDriver::FBOManager->GetBestDepthStencil(mFrameBuffer->GetFormat(), &depthFormat, &stencilFormat);
 
         DiGLRenderBuffer* db = DI_NEW DiGLRenderBuffer(depthFormat, GetWidth(), GetHeight());
         DiGLRenderBuffer* sb = db;
@@ -122,10 +121,10 @@ namespace Demi
         {
             if (mDepthBuffer || mStencilBuffer)
             {
-                GLenum internalFormat = DiGLTypeMappings::GetClosestGLInternalFormat(mFrameBuffer->GetFormat());
                 GLenum depthFormat, stencilFormat;
 
-                static_cast<DiGLDriver*>(Driver)->GetDepthStencilFormatFor(internalFormat, &depthFormat, &stencilFormat);
+                static_cast<DiGLDriver*>(Driver)->GetDepthStencilFormatFor(mFrameBuffer->GetFormat(),
+                                                                           &depthFormat, &stencilFormat);
 
                 bool bSameDepth = false;
 

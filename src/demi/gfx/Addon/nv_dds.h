@@ -98,7 +98,7 @@ namespace nv_dds
         unsigned dwReserved2[3];
     };
 
-    typedef enum TextureType
+    enum TextureType
     {
         TextureNone,
         TextureFlat,    // 1D, 2D, and rectangle textures
@@ -106,7 +106,7 @@ namespace nv_dds
         TextureCubemap
     };
     
-    typedef enum TextureFormat
+    enum TextureFormat
     {
         TextureUnknown=0,
         TextureBGRA,

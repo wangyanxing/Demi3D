@@ -36,13 +36,13 @@ namespace Demi
             tmpPixels.data = new uint8[tmpPixels.GetConsecutiveSize()];
             map->CopyToMemory(tmpPixels);
 
-            size_t channelOffset;
+            size_t channelOffset = 0;
             switch (channel)
             {
-            case CHANNEL_ALPHA: channelOffset = 3; break;
+            case CHANNEL_ALPHA:  channelOffset = 3; break;
             case CHANNEL_RED:    channelOffset = 2; break;
-            case CHANNEL_GREEN: channelOffset = 1; break;
-            case CHANNEL_BLUE:    channelOffset = 0; break;
+            case CHANNEL_GREEN:  channelOffset = 1; break;
+            case CHANNEL_BLUE:   channelOffset = 0; break;
             default:
                 DI_WARNING("Undefined channel!");
                 break;
@@ -105,10 +105,11 @@ namespace Demi
         float xIndexFloat = (mapWidth * (x - mapBounds.left) / mapBounds.Width()) - 0.5f;
         float zIndexFloat = (mapHeight * (z - mapBounds.top) / mapBounds.Height()) - 0.5f;
 
+        if (xIndexFloat < 0 || zIndexFloat < 0 || xIndexFloat >= mapWidth-1 || zIndexFloat >= mapHeight-1)
+            return 0.0f;
+        
         uint32 xIndex = (uint32)xIndexFloat;
         uint32 zIndex = (uint32)zIndexFloat;
-        if (xIndex < 0 || zIndex < 0 || xIndex >= mapWidth-1 || zIndex >= mapHeight-1)
-            return 0.0f;
 
         float xRatio = xIndexFloat - xIndex;
         float xRatioInv = 1.f - xRatio;
@@ -210,7 +211,7 @@ namespace Demi
             tmpPixels.data = new uint8[tmpPixels.GetConsecutiveSize()];
             map->CopyToMemory(tmpPixels);
 
-            size_t channelOffset;
+            size_t channelOffset = 0;
             switch (channel)
             {
             case CHANNEL_ALPHA: channelOffset = 3; break;
@@ -290,11 +291,12 @@ namespace Demi
         uint32 mapHeight = (uint32)mPixels->GetHeight();
         float xIndexFloat = (mapWidth * (x - mapBounds.left) / mapBounds.Width()) - 0.5f;
         float zIndexFloat = (mapHeight * (z - mapBounds.top) / mapBounds.Height()) - 0.5f;
-
+        
+        if (xIndexFloat < 0 || zIndexFloat < 0 || xIndexFloat > mapWidth-1 || zIndexFloat > mapHeight-1)
+            return 0xFFFFFFFF;
+        
         uint32 xIndex = (uint32)xIndexFloat;
         uint32 zIndex = (uint32)zIndexFloat;
-        if (xIndex < 0 || zIndex < 0 || xIndex > mapWidth-1 || zIndex > mapHeight-1)
-            return 0xFFFFFFFF;
 
         float xRatio = xIndexFloat - xIndex;
         float xRatioInv = 1.f - xRatio;

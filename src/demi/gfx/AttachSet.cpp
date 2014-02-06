@@ -38,45 +38,27 @@ namespace Demi
 
     DiAttachNode* DiAttachSet::CreateAttachNode(const DiString& strAttach)
     {
-        if(strAttach.empty())
-        {
-            DI_WARNING("绑点名不能为空！");
-            return NULL;
-        }
-
         if(HasAttachNode(strAttach))
         {
-            DI_WARNING("已存在名为\"%s\"的绑点，添加失败！");
-            return NULL;
+            DI_WARNING("Cannot locate the attach node: %s", strAttach.c_str());
+            return nullptr;
         }
 
-        DiAttachNode * pkNewNode = new DiAttachNode(strAttach);
+        DiAttachNode * newnode = new DiAttachNode(strAttach);
+        DI_ASSERT(newnode);
 
-        if(!pkNewNode)
-        {
-            DI_WARNING("绑点添加失败！");
-            return NULL;
-        }
+        mMapAttachNodes[strAttach] = newnode;
 
-        mMapAttachNodes[strAttach] = pkNewNode;
-
-        return pkNewNode;
+        return newnode;
     }
 
     DiAttachNode* DiAttachSet::GetAttachNode(const DiString& strAttach)
     {
-        if(strAttach.empty())
-        {
-            DI_WARNING("挂点名不能为空！");
-            return NULL;
-        }
-
-        AttachNodeMap::iterator itAttach = mMapAttachNodes.find(strAttach);
-
+        auto itAttach = mMapAttachNodes.find(strAttach);
         if(itAttach == mMapAttachNodes.end())
         {
-            DI_WARNING("名为\"%s\"的挂点不存在！",strAttach.c_str());
-            return NULL;
+            DI_WARNING("Cannot locate the attach node: %s",strAttach.c_str());
+            return nullptr;
         }
 
         return itAttach->second;
@@ -84,18 +66,11 @@ namespace Demi
 
     const DiAttachNode* DiAttachSet::GetAttachNode(const DiString& strAttach) const
     {
-        if(strAttach.empty())
-        {
-            DI_WARNING("挂点名不能为空！");
-            return NULL;
-        }
-
-        AttachNodeMap::const_iterator itAttach = mMapAttachNodes.find(strAttach);
-
+        auto itAttach = mMapAttachNodes.find(strAttach);
         if(itAttach == mMapAttachNodes.end())
         {
-            DI_WARNING("名为\"%s\"的挂点不存在！",strAttach.c_str());
-            return NULL;
+            DI_WARNING("Cannot locate the attach node: %s",strAttach.c_str());
+            return nullptr;
         }
 
         return itAttach->second;
@@ -136,16 +111,15 @@ namespace Demi
     void DiAttachSet::GetAttachMatrices(Demi::DiMat4 * pMatrices,size_t unArrayLen)
     {
         UpdateTransforms();
-
-        AttachNodeMap::const_iterator itAttach, itEnd;
-        itEnd = mMapAttachNodes.end();
+        
         size_t unCount = 0;
-        for (itAttach = mMapAttachNodes.begin(); itAttach != itEnd && unCount < unArrayLen; ++ itAttach)
+        for (auto itAttach = mMapAttachNodes.begin(); itAttach != mMapAttachNodes.end()
+             && unCount < unArrayLen; ++ itAttach)
         {
             DiAttachNode * pkAttach = itAttach->second;
             pkAttach->GetOffsetTransform(* pMatrices);
-            ++ pMatrices;
-            ++ unCount;
+            ++pMatrices;
+            ++unCount;
         }
     }
 
@@ -156,22 +130,14 @@ namespace Demi
 
     void DiAttachSet::DeriveRootAttaches() const
     {
-        if (mMapAttachNodes.empty())
-        {
-            DI_ERROR("绑点集为空！");
-            return;
-        }
-
         mVecRootAttaches.clear();
-
-        AttachNodeMap::const_iterator itAttach;
-        AttachNodeMap::const_iterator itEnd = mMapAttachNodes.end();
-        for (itAttach = mMapAttachNodes.begin(); itAttach != itEnd; ++ itAttach)
+        for (auto itAttach = mMapAttachNodes.begin(); itAttach != mMapAttachNodes.end(); ++ itAttach)
         {
-            DiAttachNode * pkCurNode = itAttach->second;
-            if (pkCurNode && (!pkCurNode->GetParent() || pkCurNode->GetParent() && DiNode::NT_ATTACHNODE != pkCurNode->GetParent()->GetNodeType()))
+            DiAttachNode * nd = itAttach->second;
+            if (nd && (!nd->GetParent() ||
+                       (nd->GetParent() && DiNode::NT_ATTACHNODE != nd->GetParent()->GetNodeType())))
             {
-                mVecRootAttaches.push_back(pkCurNode);
+                mVecRootAttaches.push_back(nd);
             }
         }
     }
@@ -198,23 +164,23 @@ namespace Demi
         RootAttachListIterator itRootAttach = mTemplet->GetRootAttechesIterator();
         while (itRootAttach.HasMoreElements())
         {
-            DiAttachNode * pkNode = itRootAttach.GetNext();
+            DiAttachNode * nd = itRootAttach.GetNext();
             if(mSkeleton)
             {
                 DiString strParent;
-                DiNode * pkParent = NULL;
-                if(pkNode->GetParent())
+                DiNode * parent = nullptr;
+                if(nd->GetParent())
                 {
-                    strParent = pkNode->GetParent()->GetName();
-                    pkParent = mSkeleton->GetBone(strParent);
+                    strParent = nd->GetParent()->GetName();
+                    parent = mSkeleton->GetBone(strParent);
                 }
-                CloneAttachNodes( pkNode , pkParent);
+                CloneAttachNodes( nd , parent);
             }
             else
             {
-                CloneAttachNodes( pkNode , NULL);
+                CloneAttachNodes(nd , nullptr);
             }
-            pkNode->_Update(true,false);
+            nd->_Update(true,false);
         }
 
         SetBindingPose();
@@ -222,38 +188,32 @@ namespace Demi
 
     void DiAttachSetInstance::CloneAttachNodes(DiAttachNode * pkSource, DiNode * pkParentNode)
     {
-        DiAttachNode* pkNewAttach = NULL;
+        DiAttachNode* newAttach = nullptr;
 
-        if (pkSource->GetName().empty())
-        {
-            DI_WARNING("不合法的绑点，不支持无名绑点");
-            return;
-        }
-
-        pkNewAttach = CreateAttachNode(pkSource->GetName());
+        newAttach = CreateAttachNode(pkSource->GetName());
 
         if(!pkParentNode)
         {
-            mVecRootAttaches.push_back(pkNewAttach);
+            mVecRootAttaches.push_back(newAttach);
         }
         else if(DiNode::NT_ATTACHNODE != pkParentNode->GetNodeType())
         {
-            pkParentNode->AddChild(pkNewAttach);
-            mVecRootAttaches.push_back(pkNewAttach);
+            pkParentNode->AddChild(newAttach);
+            mVecRootAttaches.push_back(newAttach);
         }
         else
         {
-            pkParentNode->AddChild(pkNewAttach);
+            pkParentNode->AddChild(newAttach);
         }
 
-        pkNewAttach->SetOrientation(pkSource->GetOrientation());
-        pkNewAttach->SetPosition(pkSource->GetPosition());
-        pkNewAttach->SetScale(pkSource->GetScale());
+        newAttach->SetOrientation(pkSource->GetOrientation());
+        newAttach->SetPosition(pkSource->GetPosition());
+        newAttach->SetScale(pkSource->GetScale());
 
         size_t childrenSize = pkSource->GetChildrenNum();
         for (size_t i = 0; i < childrenSize; ++i)
         {
-            CloneAttachNodes(static_cast<DiAttachNode*>(pkSource->GetChild(i)), pkNewAttach);
+            CloneAttachNodes(static_cast<DiAttachNode*>(pkSource->GetChild(i)), newAttach);
         }
     }
 }

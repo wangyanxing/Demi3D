@@ -173,10 +173,8 @@ namespace Demi
             mBatchGroups[i]->EnableStatis(needStatics);
         }
 
-#if 0
         if (mPostEnable)
             DiRenderWindow::ActiveWindow->GetPostEffectManager()->Process(this);
-#endif
 
         for (uint32 i = BATCH_POST_FILTER; i<mBatchGroups.size(); i++)
         {

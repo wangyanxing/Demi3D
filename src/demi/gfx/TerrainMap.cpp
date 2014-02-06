@@ -281,7 +281,7 @@ namespace Demi
             }
             else
             {
-                DI_WARNING("Cannot find the texture ID0£º%d",textureid.first);
+                DI_WARNING("Cannot find the texture ID0: %d",textureid.first);
             }
 
             if (texTable.contains(textureid.second))
@@ -290,7 +290,7 @@ namespace Demi
             }
             else
             {
-                DI_WARNING("Cannot find the texture ID1£º%d",textureid.second);
+                DI_WARNING("Cannot find the texture ID1: %d",textureid.second);
             }
 
             DiMaterialPtr mat = GenerateMaterial(texlayer0,texlayer1);

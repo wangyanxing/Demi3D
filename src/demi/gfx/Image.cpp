@@ -127,8 +127,8 @@ namespace Demi
                         void* curLevelSrc = (void*)surface;
                         const uint32 curLevelWidth = surface.get_width();
                         const uint32 curLevelHeight = surface.get_height();
-                        DiPixelBox pixbox(curLevelWidth, curLevelHeight, format, curLevelSrc);
-                        texDrv->CopyFromMemory(pixbox, i, f);
+                        DiPixelBox pb(curLevelWidth, curLevelHeight, format, curLevelSrc);
+                        texDrv->CopyFromMemory(pb, i, f);
                     }
                 }
             }
@@ -635,11 +635,6 @@ namespace Demi
 
     void DiPixelBox::FormatGetDisplayStr( DiPixelFormat eFormat, char * pszStr, int nBufLen )
     {
-        if (eFormat == MAKEFOURCC('N','U','L','L'))
-        {
-            strncpy( pszStr, "PF_NULL", nBufLen ); 
-            return;
-        }
         switch( eFormat )
         {
         case PF_R8G8B8         : strncpy( pszStr, "PF_R8G8B8",         nBufLen ); return;
