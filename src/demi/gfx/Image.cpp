@@ -163,6 +163,10 @@ namespace Demi
                 texture->SetFormat(format);
                 texture->SetResourceUsage(RU_WRITE_ONLY);
                 texture->SetNumLevels(ddsimage.get_num_mipmaps()+1);
+
+                if (texture->GetNumLevels() > 1)
+                    texture->SetAutoMipmap(false);
+
                 texture->CreateTexture();
                 DiTextureDrv* texDrv = texture->GetTextureDriver();
 
@@ -277,7 +281,6 @@ namespace Demi
 
             DiPixelBox pixbox(width, height, fmt, data);
             texDrv->CopyFromMemory(pixbox, 0, 0);
-            texDrv->GenerateMipmap();
         }
         
         _FreeImage(data);
