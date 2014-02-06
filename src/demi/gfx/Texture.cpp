@@ -12,9 +12,10 @@ namespace Demi
 
     DiTexture::DiTexture(const DiString& name)
         :DiAsset(name)
-        , mTextureDrv(nullptr)
         , mFilter(FILTER_DEFAULT)
+        , mTextureDrv(nullptr)
         , mResUsage(RU_NONE)
+        , mAutoGenerateMipmap(true)
     {
         mAddressingU   = AM_WRAP;
         mAddressingV   = AM_WRAP;

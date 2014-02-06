@@ -57,6 +57,17 @@ namespace Demi
             mBuffer = nullptr;
         }
     }
+    
+    void DiGLTextureDrv::GenerateMipmap()
+    {
+        if( mParent->GetNumLevels() == 1 && mParent->IsAutoMipmap())
+        {
+            glEnable( mGLTextureType );  // Workaround for ATI driver bug
+            glBindTexture(mGLTextureType, mTextureID);
+            glGenerateMipmapEXT( mGLTextureType );
+            glDisable( mGLTextureType );
+        }
+    }
 
     void DiGLTextureDrv::CreateTexture()
     {

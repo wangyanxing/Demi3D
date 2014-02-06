@@ -35,7 +35,7 @@ namespace Demi
 
         void            ParseOthers(DiTexture* texture);
 
-        uint8*          _LoadImage(int& width, int& height, uint32& components);
+        uint8*          _LoadImage(int& width, int& height, int& components);
 
         void            _FreeImage(uint8* data);
 
@@ -135,6 +135,10 @@ namespace Demi
         static void      BulkPixelConversion(const DiPixelBox &src, const DiPixelBox &dst);
 
         static void      FormatGetDisplayStr( DiPixelFormat eFormat, char * pszStr, int nBufLen );
+        
+        static uint32    GetMaxMipmaps(uint32 width, uint32 height, uint32 depth);
+        
+        static uint32    GetMaxMipmaps(uint32 width, uint32 height);
         
         void*            data;
 
