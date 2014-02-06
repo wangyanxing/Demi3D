@@ -46,6 +46,8 @@ namespace Demi
         if (code.empty())
             return false;
 
+        DI_INFO("Compiling shader: %s...", mShaderProgram->GetShaderFileName().c_str());
+
         // check the includes firstly
         PorcessShaders(code);
 
@@ -351,7 +353,7 @@ namespace Demi
 
     void DiGLShaderLinker::Link()
     {
-        //if (!mLinked)
+        if (!mLinked)
         {
             glGetError();
             mGLHandle = glCreateProgramObjectARB();
@@ -395,6 +397,10 @@ namespace Demi
 
         msUniformFuncs["g_viewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
             glUniformMatrix4fvARB(location, 1, GL_TRUE, env->viewMatrix[0]);
+        };
+
+        msUniformFuncs["g_projMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->projMatrix[0]);
         };
 
         msUniformFuncs["g_modelViewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
