@@ -83,7 +83,7 @@ namespace Demi
         ret = DI_NEW DiGLDepthBuffer(0, GetWidth(), GetHeight(),
             static_cast<DiGLDriver*>(Driver)->GetCurrentContext(), db, sb, 0, 0, false);
 
-        return nullptr;
+        return ret;
     }
 
     void DiGLRenderTarget::PreBind()
