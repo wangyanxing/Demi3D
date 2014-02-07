@@ -19,8 +19,8 @@ namespace Demi
 
     //
 
-    DiString DiMaterialDefine::SCREEN_QUAD_VERT_SHADER  = "screen_quad_v"; 
-    DiString DiMaterialDefine::SCREEN_QUAD_PIXEL_SHADER = "screen_quad_p";
+    DiString DiMaterialDefine::SCREEN_QUAD_VERT_SHADER  = "screenquad_v";
+    DiString DiMaterialDefine::SCREEN_QUAD_PIXEL_SHADER = "screenquad_p";
 
     DiString DiMaterialDefine::WATER_PIXEL_SHADER = "water_p";
     DiString DiMaterialDefine::WATER_VERTEX_SHADER = "water_v";
