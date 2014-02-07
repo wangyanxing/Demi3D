@@ -15,9 +15,7 @@ namespace Demi
 {
     DiGLRenderTarget::DiGLRenderTarget()
         :mGLFormat(0),
-        mFrameBuffer(nullptr),
-        mDepthBuffer(nullptr),
-        mStencilBuffer(nullptr)
+        mFrameBuffer(nullptr)
     {
     }
 
@@ -34,6 +32,8 @@ namespace Demi
     {
         if (mFrameBuffer)
             mFrameBuffer->Bind();
+        else
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
         return true;
     }
 
@@ -67,7 +67,8 @@ namespace Demi
     {
         DiDepthBuffer *ret = nullptr;
 
-        if (!mFrameBuffer) return ret;
+        if (!mFrameBuffer) 
+            return ret;
 
         GLuint depthFormat, stencilFormat;
         DiGLDriver::FBOManager->GetBestDepthStencil(mFrameBuffer->GetFormat(), &depthFormat, &stencilFormat);
@@ -93,7 +94,7 @@ namespace Demi
             uint32 width  = uint32(mViewport.mWidth  * mWidth);
             uint32 height = uint32(mViewport.mHeight * mHeight);
 
-            DI_DEBUG("Viewport updated : %d,%d,%d,%d", left, top, width, height);
+            DI_DEBUG("Viewport updated: %d,%d,%d,%d", left, top, width, height);
             Driver->SetViewport(left, top, width, height);
 
             mViewportDirty = false;
@@ -107,36 +108,39 @@ namespace Demi
         if (mWidth != db->GetWidth() || mHeight != db->GetHeight() )
             return retVal;
 
+        DiGLDepthBuffer* gldb = static_cast<DiGLDepthBuffer*>(db);
+        DiGLRenderBuffer* glDepth = gldb->GetDepthBuffer();
+        DiGLRenderBuffer* glStencil = gldb->GetStencilBuffer();
+
         if (!mFrameBuffer)
         {
-            DiGLContext* dbContext = static_cast<DiGLDepthBuffer*>(db)->GetGLContext();
-            if (!mDepthBuffer && !mStencilBuffer && dbContext == GetContext())
+            DiGLContext* dbContext = gldb->GetGLContext();
+            if (!glDepth && !glStencil && dbContext == GetContext())
             {
                 retVal = true;
             }
         }
         else
         {
-            if (mDepthBuffer || mStencilBuffer)
+            if (glDepth || glStencil)
             {
                 GLenum depthFormat, stencilFormat;
-
                 static_cast<DiGLDriver*>(Driver)->GetDepthStencilFormatFor(mFrameBuffer->GetFormat(),
                                                                            &depthFormat, &stencilFormat);
 
                 bool bSameDepth = false;
 
-                if (mDepthBuffer)
-                    bSameDepth |= mDepthBuffer->GetGLFormat() == depthFormat;
+                if (glDepth)
+                    bSameDepth |= glDepth->GetGLFormat() == depthFormat;
 
                 bool bSameStencil = false;
 
-                if (!mStencilBuffer || mStencilBuffer == mDepthBuffer)
+                if (!glStencil || glStencil == glDepth)
                     bSameStencil = stencilFormat == GL_NONE;
                 else
                 {
-                    if (mStencilBuffer)
-                        bSameStencil = stencilFormat == mStencilBuffer->GetGLFormat();
+                    if (glStencil)
+                        bSameStencil = stencilFormat == glStencil->GetGLFormat();
                 }
 
                 retVal = bSameDepth && bSameStencil;
@@ -161,6 +165,13 @@ namespace Demi
     void DiGLRenderTarget::Init()
     {
         mFrameBuffer = DI_NEW DiGLFrameBuffer();
+    }
+
+    void DiGLRenderTarget::DetachDepthBuffer()
+    {
+        if (mFrameBuffer)
+            mFrameBuffer->DetachDepthBuffer();
+        DiRenderTarget::DetachDepthBuffer();
     }
 
     DiGLWindowTarget::DiGLWindowTarget()
