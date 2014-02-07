@@ -13,6 +13,7 @@ namespace Demi
     {
         glGenRenderbuffersEXT(1, &mRenderbufferID);
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mRenderbufferID);
+        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, format, width, height);
     }
 
     DiGLRenderBuffer::~DiGLRenderBuffer()

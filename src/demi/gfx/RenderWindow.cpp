@@ -125,7 +125,7 @@ namespace Demi
         mCanvasTexture->SetViewportScale(DiVec2::UNIT_SCALE);
 
         mPostEffectMgr = DI_NEW DiPostEffectManager(this);
-        mGBuffer = DI_NEW DiGBuffer(this);
+        //mGBuffer = DI_NEW DiGBuffer(this);
     }
 
     void DiRenderWindow::Shutdown()

@@ -21,12 +21,11 @@ namespace Demi
         dxMat[2][1] = (dxMat[2][1] + dxMat[3][1]) / 2;
         dxMat[2][2] = (dxMat[2][2] + dxMat[3][2]) / 2;
         dxMat[2][3] = (dxMat[2][3] + dxMat[3][3]) / 2;
+
         viewMatrix = DiMat4::IDENTITY;
         projMatrix = dxMat;
         viewProjMatrix = dxMat * viewMatrix;
     }
-
-    
 
     void DiCompileDesc::AddMarco( const DiString& name, const DiString& def )
     {

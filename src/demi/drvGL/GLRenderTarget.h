@@ -28,6 +28,8 @@ namespace Demi
 
         bool                    BindRenderTarget(uint8 mrtid);
 
+        void                    DetachDepthBuffer();
+
         bool                    AttachDepthBuffer(DiDepthBuffer *depthBuffer);
 
         bool                    BindDepthStencil();
@@ -47,10 +49,6 @@ namespace Demi
         GLenum                  mGLFormat;
 
         DiGLFrameBuffer*        mFrameBuffer;
-
-        DiGLRenderBuffer*       mDepthBuffer;
-
-        DiGLRenderBuffer*       mStencilBuffer;
     };
 
 

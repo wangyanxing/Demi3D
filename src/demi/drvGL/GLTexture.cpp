@@ -109,7 +109,7 @@ namespace Demi
             switch (mGLTextureType)
             {
             case GL_TEXTURE_2D:
-                glTexImage2D(GL_TEXTURE_2D, 0, mGLFormat, width, width, 0,
+                glTexImage2D(GL_TEXTURE_2D, 0, mGLFormat, width, height, 0,
                     externalFormat, dataType, 0);
 
                 glErr = glGetError();
@@ -120,7 +120,7 @@ namespace Demi
                 for (unsigned i = 0; i < 6; ++i)
                 {
                     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, mGLFormat, 
-                        width, width, 0, externalFormat, dataType, 0);
+                        width, height, 0, externalFormat, dataType, 0);
 
                     glErr = glGetError();
                     if (glErr != GL_NO_ERROR)
