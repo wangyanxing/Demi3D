@@ -37,7 +37,7 @@ void InitScene()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
-    sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));
+    sm->SetAmbientColor(DiColor(0.05f, 0.05f, 0.05f, 0.05f));
 
 	DiDirLight* dirlight = sm->CreateDirLight();
 	dirlight->SetColor(DiColor());
