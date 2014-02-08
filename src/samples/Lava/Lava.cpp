@@ -35,16 +35,18 @@ void SetupPostEffects()
 	if (bloom)
 		bloom->SetEnable(true);
 
+    /*
 	DiPostEffect* effectFilm = peMgr->CreatePostEffect("Film");
 	effectFilm->SetEnable(true);
 
   	DiPostEffectPass* passFilm = effectFilm->CreatePass("output");
  	passFilm->SetQuadScale(1);
-  	passFilm->BuildMaterial("screen_quad_v","post_film_p");
+  	passFilm->BuildMaterial("screenquad_v","post_film_p");
 	passFilm->SetInput("image",INPUT_PREV_EFFECT);
 	passFilm->SetInput("nIntensity",0.35f);
 	passFilm->SetInput("sIntensity",0.95f);
 	passFilm->SetInput("sCount",2048);
+     */
 }
 
 void InitScene()
@@ -57,7 +59,7 @@ void InitScene()
 
 	AddMeshes();
 
-	//SetupPostEffects();
+	SetupPostEffects();
 }
 
 void UpdateScene()

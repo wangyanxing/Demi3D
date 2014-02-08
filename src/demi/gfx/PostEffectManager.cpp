@@ -125,7 +125,7 @@ namespace Demi
         */
 
         //////////////////////////////////////////////////////////////////////////
-        /*
+        
         DiPostEffect* effect = CreatePostEffect("Bloom");
         effect->SetEnable(false);
         DiPostEffectPass* bright = effect->CreatePass("bright");
@@ -133,28 +133,31 @@ namespace Demi
         bright->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER, "post_bright_p");
         bright->SetInput("image",INPUT_PREV_EFFECT);
         bright->GetShaderParam()->WriteFloat3("vLinearBright",DiVec3(1,-1,1));
-
+        
         DiPostEffectPass* down4 = effect->CreatePass("down4");
         down4->BuildTexture(4, PF_A8R8G8B8);
         down4->BuildMaterial("post_down4_v","post_down4_p");
         down4->SetInput("image",INPUT_PREV_PASS);
-
+        
+        
         DiPostEffectPass* vertBlur = effect->CreatePass("vert");
         vertBlur->BuildTexture(4, PF_A8R8G8B8);
         vertBlur->BuildMaterial("post_bloom_vert_v","post_bloom_p");
         vertBlur->SetInput("image",INPUT_PREV_PASS);
 
+        /*
         DiPostEffectPass* horzBlur = effect->CreatePass("horz");
         horzBlur->BuildTexture(4, PF_A8R8G8B8);
         horzBlur->BuildMaterial("post_bloom_horz_v","post_bloom_p");
         horzBlur->SetInput("image",INPUT_PREV_PASS);
+         */
 
         DiPostEffectPass* outscene = effect->CreatePass("output");
         outscene->BuildTexture(1, PF_A8R8G8B8);
-        outscene->BuildMaterial("post_bloom_final_v","post_bloom_final_p");
+        outscene->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,"post_bloom_final_p");
         outscene->SetInput("image",INPUT_PREV_EFFECT);
         outscene->SetInput("imageBloom",INPUT_PREV_PASS);
-        */
+        
         RefreshEffectChain();
     }
 
@@ -204,14 +207,19 @@ namespace Demi
         quad.top = 0;
         quad.bottom = 1.0f / (float)scale;
 
-        quad.rightUv = 1.0f / (float)scale;
-        quad.bottomUv= 1.0f / (float)scale;
+        //quad.rightUv = 1.0f / (float)scale;
+        //quad.bottomUv= 1.0f / (float)scale;
+        
+        if(true)
+        {
+          //  quad.topUv = 1.0f;
+          //  quad.bottomUv = 1.0f - 1.0f / scale;
+        }
 
         sp->AddQuad(quad);
         sp->UpdateGeometry(mRenderWindow->GetRenderBuffer());
 
         mQuads[scale] = sp;
-
         return sp;
     }
 

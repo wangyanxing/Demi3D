@@ -81,10 +81,8 @@ namespace Demi
             sb = DI_NEW DiGLRenderBuffer(stencilFormat, GetWidth(), GetHeight());
         }
 
-        ret = DI_NEW DiGLDepthBuffer(0, GetWidth(), GetHeight(),
-            static_cast<DiGLDriver*>(Driver)->GetCurrentContext(), db, sb, 0, 0, false);
-
-        return nullptr;
+        auto context = static_cast<DiGLDriver*>(Driver)->GetCurrentContext();
+        return DI_NEW DiGLDepthBuffer(0, GetWidth(), GetHeight(), context, db, sb, 0, 0, false);
     }
 
     void DiGLRenderTarget::PreBind()
