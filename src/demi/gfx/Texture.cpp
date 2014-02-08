@@ -161,7 +161,7 @@ namespace Demi
 
         mTextureDrv->CreateTexture();
 
-        if (mUsage & (TU_RENDER_TARGET))
+        if (mUsage & TU_RENDER_TARGET)
         {
             if (!mRenderTarget)
                 mRenderTarget = Driver->CreateRenderTarget();

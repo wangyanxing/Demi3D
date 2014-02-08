@@ -42,14 +42,9 @@ namespace Demi
     void DiPostEffect::Process()
     {
         if (!mEnable)
-        {
             return;
-        }
 
-        PassChain::iterator it;
-        PassChain::iterator itend = mPasses.end();
-
-        for (it = mPasses.begin(); it != itend; ++it)
+        for (auto it = mPasses.begin(); it != mPasses.end(); ++it)
         {
             (*it)->Process();
         }

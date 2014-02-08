@@ -287,7 +287,15 @@ namespace Demi
                 // built-in uniforms
                 if (!strncmp(uniformName, "g_", 2))
                 {
-                    params->AddBuiltinParam(location, DiGLUniforms::msUniformFuncs[name]);
+                    // check if we already have this global uniform
+                    if (DiGLUniforms::msUniformFuncs.find(name) != DiGLUniforms::msUniformFuncs.end())
+                    {
+                        params->AddBuiltinParam(location, DiGLUniforms::msUniformFuncs[name]);
+                    }
+                    else
+                    {
+                        DI_WARNING("The global uniform: %s cannot be located", uniformName);
+                    }
                     continue;
                 }
                 
@@ -449,6 +457,10 @@ namespace Demi
 
         msUniformFuncs["g_time"] = [](const DiShaderEnvironment* env, GLuint location) {
             glUniform1fvARB(location, 1, &env->time);
+        };
+        
+        msUniformFuncs["g_viewportSize"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, 1, env->viewportSize.ptr());
         };
 
         msUniformFuncs["g_globalAmbient"] = [](const DiShaderEnvironment* env, GLuint location) {
