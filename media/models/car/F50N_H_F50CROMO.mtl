@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material>
+ <shader name="vertex">lambert_v</shader>
+ <shader name="pixel">lambert_p</shader>
+ <diffuse>1 1 1 1</diffuse>
+ <flag>ENV_MAP_MUL,USE_ENV_MAP</flag>
+ <variables>
+  <samplerCUBE>
+   <texture name="envMap">bridge.dds</texture>
+  </samplerCUBE>
+  <float name="reflectivity">1.000000</float>
+ </variables>
+</material>
