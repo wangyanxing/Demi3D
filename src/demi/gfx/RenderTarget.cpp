@@ -25,7 +25,8 @@ namespace Demi
         mDepthBufferPoolId(DiDepthBuffer::POOL_DEFAULT),
         mClearFlag(CLEAR_COLOR|CLEAR_DEPTH|CLEAR_STENCIL),
         mViewportDirty(true),
-        mIsActive(true)
+        mIsActive(true),
+        mFlippingUV(false)
     {
         Driver->AddGpuResource(this);
     }
@@ -103,6 +104,8 @@ namespace Demi
     {
         PreBind();
 
+        Driver->SetTextureFlipping(mFlippingUV);
+
         if (!BindRenderTarget(mrtID))
         {
             DI_WARNING("Cannot bind render target with mrtID %d", mrtID);
@@ -111,7 +114,7 @@ namespace Demi
 
         if (!BindDepthStencil())
         {
-            DI_WARNING("Cannot bind render target with mrtID %d", mrtID);
+            DI_WARNING("Cannot bind depth/stencil buffer");
         }
 
         if (!mClearPerFrame)

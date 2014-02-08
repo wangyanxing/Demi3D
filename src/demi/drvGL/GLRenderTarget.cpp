@@ -17,6 +17,7 @@ namespace Demi
         :mGLFormat(0),
         mFrameBuffer(nullptr)
     {
+        mFlippingUV = true;
     }
 
     DiGLRenderTarget::~DiGLRenderTarget()
@@ -178,6 +179,7 @@ namespace Demi
         : mWnd(nullptr)
         , mContext(nullptr)
     {
+        mFlippingUV = false;
     }
 
     DiGLWindowTarget::~DiGLWindowTarget()

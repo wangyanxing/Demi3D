@@ -46,8 +46,9 @@ namespace Demi
     {
         mMaterial = DiAssetManager::GetInstance().GetAsset<DiMaterial>(name,true);
         if (!mMaterial)
+        {
             mMaterial = DiAssetManager::GetInstance().GetAsset<DiMaterial>(DiMaterialDefine::DEFAULT_MATERIAL,true);
-        
+        }
         return mMaterial;
     }
 

@@ -109,7 +109,7 @@ namespace Demi
         DiVec4      pointLightsPosition[MAX_LIGHTS];
         DiVec4      pointLightsAttenuation[MAX_LIGHTS];
 
-        void        SetIdentity();
+        void        SetIdentity(bool rtFliping = false);
     };
 
     //////////////////////////////////////////////////////////////////////////

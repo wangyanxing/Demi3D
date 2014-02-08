@@ -20,7 +20,6 @@ void AddMesh(float x, float y, const DiColor& col, const DiString& shader)
 	DiMaterialPtr mat = DiMaterial::QuickCreate(shader + "_v", shader + "_p");
     
 	mat->SetDiffuse(col);
-    mat->SetCullMode(CULL_NONE);
 
 	if(shader == "phong")
     {

@@ -78,7 +78,6 @@ namespace Demi
         rp->ClearGroup();
         mSceneManager->GetVisibleObjects().AddToBatch(rp);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
-        //rp->Render(mSceneManager, mainCam, mRenderBuffer);
 
         Driver->EndFrame();
         

@@ -90,6 +90,8 @@ namespace Demi
         
         DiGLContext*            GetMainContext() { return mMainContext; }
 
+        bool                    ReversePostpassCullmode() const { return true; }
+
         DiWindow*               CreateWnd();
 
         static DiString&        GetGlslVersion();

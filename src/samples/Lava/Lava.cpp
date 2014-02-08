@@ -35,9 +35,8 @@ void SetupPostEffects()
 	if (bloom)
 		bloom->SetEnable(true);
 
-    /*
 	DiPostEffect* effectFilm = peMgr->CreatePostEffect("Film");
-	effectFilm->SetEnable(true);
+    effectFilm->SetEnable(true);
 
   	DiPostEffectPass* passFilm = effectFilm->CreatePass("output");
  	passFilm->SetQuadScale(1);
@@ -46,7 +45,6 @@ void SetupPostEffects()
 	passFilm->SetInput("nIntensity",0.35f);
 	passFilm->SetInput("sIntensity",0.95f);
 	passFilm->SetInput("sCount",2048);
-     */
 }
 
 void InitScene()

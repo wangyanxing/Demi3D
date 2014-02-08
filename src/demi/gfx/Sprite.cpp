@@ -147,13 +147,10 @@ namespace Demi
     
         DiVec2 posAdjust(1, -1);
 
-        DiVector<DiQuadElement>::iterator it;
-        DiVector<DiQuadElement>::iterator itEnd = mQuads.end();
-
         float* dest = (float*)lockedData;
         if (!mMaterial || mMaterial->HasTexture())
         {
-            for (it = mQuads.begin(); it != itEnd; ++it)
+            for (auto it = mQuads.begin(); it != mQuads.end(); ++it)
             {
                 DiQuadElement quad = *it;
 
@@ -206,7 +203,7 @@ namespace Demi
         }
         else
         {
-            for (it = mQuads.begin(); it != itEnd; ++it)
+            for (auto it = mQuads.begin(); it != mQuads.end(); ++it)
             {
                 DiQuadElement quad = *it;
                   quad.top *= -1;

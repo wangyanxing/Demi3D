@@ -23,7 +23,8 @@ namespace Demi
         mElapsedTime(0),
         mFrameNum(0),
         mClosing(false),
-        mWndManager(nullptr)
+        mWndManager(nullptr),
+        mNeedTextureFlipping(false)
     {
         Driver = this;
         mCommandMgr = DI_NEW DiCommandManager();

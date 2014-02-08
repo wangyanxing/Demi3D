@@ -23,7 +23,7 @@ namespace Demi
 
     DiPostEffectManager::~DiPostEffectManager()
     {
-        Shutdown();
+        Release();
     }
 
     void DiPostEffectManager::Init()
@@ -34,6 +34,8 @@ namespace Demi
 
         mat->LoadShader(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,
                         DiMaterialDefine::SCREEN_QUAD_PIXEL_SHADER);
+        if (Driver->ReversePostpassCullmode())
+            mat->SetCullMode(CULL_CCW);
 
         mScreenQuad->SetBatchGroup(BATCH_POST_FILTER);
         mScreenQuad->SetMaterial(mat);
@@ -41,36 +43,29 @@ namespace Demi
         CreateDefaultEffects();
     }
 
-    void DiPostEffectManager::Shutdown()
+    void DiPostEffectManager::Release()
     {
+        for (auto it = mPostList.begin(); it != mPostList.end(); ++it)
         {
-            for (auto it = mPostList.begin(); it != mPostList.end(); ++it)
-            {
-                DI_DELETE (*it);
-            }
-            mPostList.clear();
-            mPostMap.clear();
+            DI_DELETE(*it);
         }
+        mPostList.clear();
+        mPostMap.clear();
+
+        for (auto it = mQuads.begin(); it != mQuads.end(); ++it)
         {
-            for (auto it = mQuads.begin(); it != mQuads.end(); ++it)
-            {
-                DI_DELETE (it->second);
-            }
-            mQuads.clear();
-            mScreenQuad = NULL;
+            DI_DELETE(it->second);
         }
+        mQuads.clear();
+        mScreenQuad = nullptr;
     }
 
     void DiPostEffectManager::Process(DiRenderPipeline* pipe)
     {
         PreProcess(pipe);
 
-        PostChains::iterator it;
-        PostChains::iterator itEnd = mPostList.end();
-        for (it = mPostList.begin(); it != itEnd; ++it)
-        {
+        for (auto it = mPostList.begin(); it != mPostList.end(); ++it)
             (*it)->Process();
-        }
 
         RenderOutput(pipe);
     }
@@ -89,6 +84,7 @@ namespace Demi
             DI_WARNING("The postEffect : %s has already existed",name.c_str());
             return mPostMap[name];
         }
+
         DiPostEffect* neweffect = DI_NEW DiPostEffect(name,this);
         mPostList.push_back(neweffect);
         mPostMap[name] = neweffect;
@@ -97,7 +93,7 @@ namespace Demi
 
     void DiPostEffectManager::PreProcess(DiRenderPipeline* pipe)
     {
-        pipe->GetShaderEnvironment()->SetIdentity();
+        pipe->GetShaderEnvironment()->SetIdentity(Driver->NeedTextureFlipping());
     }
 
     void DiPostEffectManager::DrawQuad( DiMaterial* mat , int quadscale)
@@ -116,42 +112,40 @@ namespace Demi
         //////////////////////////////////////////////////////////////////////////
         /*
           DiPostEffect* effectGray = CreatePostEffect("Gray");
-        effectGray->SetEnable(true);
+          effectGray->SetEnable(true);
           DiPostEffectPass* passGray = effectGray->CreatePass("output");
-         passGray->BuildTexture(1,D3DFMT_A8R8G8B8);
+          passGray->BuildTexture(1,D3DFMT_A8R8G8B8);
           passGray->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,"post_gray_p");
-        passGray->SetInput("image",INPUT_PREV_EFFECT);
-        passGray->SetInput("grayRate",1.0f);
-        */
+          passGray->SetInput("image",INPUT_PREV_EFFECT);
+          passGray->SetInput("grayRate",1.0f);
+          */
 
         //////////////////////////////////////////////////////////////////////////
         
         DiPostEffect* effect = CreatePostEffect("Bloom");
         effect->SetEnable(false);
         DiPostEffectPass* bright = effect->CreatePass("bright");
-        bright->BuildTexture(1,PF_A8R8G8B8);
+        bright->BuildTexture(1, PF_A8R8G8B8);
         bright->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER, "post_bright_p");
         bright->SetInput("image",INPUT_PREV_EFFECT);
         bright->GetShaderParam()->WriteFloat3("vLinearBright",DiVec3(1,-1,1));
+        //bright->GetShaderParam()->WriteFloat2("hdrParam", DiVec2(0.5f, 0.08f));
         
         DiPostEffectPass* down4 = effect->CreatePass("down4");
         down4->BuildTexture(4, PF_A8R8G8B8);
         down4->BuildMaterial("post_down4_v","post_down4_p");
         down4->SetInput("image",INPUT_PREV_PASS);
-        
-        
+
         DiPostEffectPass* vertBlur = effect->CreatePass("vert");
         vertBlur->BuildTexture(4, PF_A8R8G8B8);
         vertBlur->BuildMaterial("post_bloom_vert_v","post_bloom_p");
         vertBlur->SetInput("image",INPUT_PREV_PASS);
-
-        /*
+        
         DiPostEffectPass* horzBlur = effect->CreatePass("horz");
         horzBlur->BuildTexture(4, PF_A8R8G8B8);
         horzBlur->BuildMaterial("post_bloom_horz_v","post_bloom_p");
         horzBlur->SetInput("image",INPUT_PREV_PASS);
-         */
-
+        
         DiPostEffectPass* outscene = effect->CreatePass("output");
         outscene->BuildTexture(1, PF_A8R8G8B8);
         outscene->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,"post_bloom_final_p");
@@ -163,12 +157,8 @@ namespace Demi
 
     void DiPostEffectManager::RefreshEffectChain()
     {
-        PostChains::iterator it;
-        PostChains::iterator itEnd = mPostList.end();
-        for (it = mPostList.begin(); it != itEnd; ++it)
-        {
+        for (auto it = mPostList.begin(); it != mPostList.end(); ++it)
             (*it)->RefereshPasses();
-        }
 
         if (GetLastEnabledEffect())
         {
@@ -185,9 +175,7 @@ namespace Demi
     DiTexturePtr DiPostEffectManager::GetLastOutTexture()
     {
         if (mPostList.empty())
-        {
             return mRenderWindow->GetCanvasTexture();
-        }
 
         return mPostList.back()->GetLastOutTexture();
     }
@@ -195,26 +183,15 @@ namespace Demi
     DiSprite* DiPostEffectManager::CheckScreenQuad( int scale )
     {
         if(mQuads.contains(scale))
-        {
             return mQuads[scale];
-        }
 
         DiSprite* sp = DI_NEW DiSprite();
         DiQuadElement quad;
         quad.absCoord = false;
         quad.left = 0;
-        quad.right = 1.0f / (float)scale;
+        quad.right = 1.0f / scale;
         quad.top = 0;
-        quad.bottom = 1.0f / (float)scale;
-
-        //quad.rightUv = 1.0f / (float)scale;
-        //quad.bottomUv= 1.0f / (float)scale;
-        
-        if(true)
-        {
-          //  quad.topUv = 1.0f;
-          //  quad.bottomUv = 1.0f - 1.0f / scale;
-        }
+        quad.bottom = 1.0f / scale;
 
         sp->AddQuad(quad);
         sp->UpdateGeometry(mRenderWindow->GetRenderBuffer());
@@ -225,24 +202,14 @@ namespace Demi
 
     DiPostEffect* DiPostEffectManager::GetPrevEnabledEffect( DiPostEffect* pe )
     {
-        PostChains::iterator it;
-        PostChains::iterator itend = mPostList.end();
-        int count = 0;
-        DiPostEffect* lastValid = NULL;
+        DiPostEffect* lastValid = nullptr;
 
-        for (it = mPostList.begin(); it != itend; ++it, ++count)
+        for (auto it = mPostList.begin(); it != mPostList.end(); ++it)
         {
             if ((*it) == pe)
-            {
                 return lastValid;
-            }
-            else
-            {
-                if ((*it)->GetEnable())
-                {
-                    lastValid = *it;
-                }
-            }
+            else if ((*it)->GetEnable())
+                lastValid = *it;
         }
 
         return lastValid;
@@ -251,26 +218,23 @@ namespace Demi
     DiPostEffect* DiPostEffectManager::GetLastEnabledEffect()
     {
         if (mPostList.empty())
-        {
-            return NULL;
-        }
+            return nullptr;
+
         for (int i = (int)mPostList.size()-1; i >=0; --i)
         {
             if (mPostList[i]->GetEnable())
-            {
                 return mPostList[i];
-            }
         }
-        return NULL;
+
+        return nullptr;
     }
 
     DiPostEffect* DiPostEffectManager::GetEffect( const DiString& name )
     {
-        PostMap::iterator it = mPostMap.find(name);
+        auto it = mPostMap.find(name);
         if ( it != mPostMap.end() )
-        {
             return it->second;
-        }
-        return NULL;
+
+        return nullptr;
     }
 }

@@ -129,6 +129,10 @@ namespace Demi
 
         void                    SetActive(bool val) { mIsActive = val; }
 
+        bool                    IsFlippingUV() const { return mFlippingUV; }
+
+        void                    SetFlippingUV(bool val) { mFlippingUV = val; }
+
     protected:
 
         DiRtListener*           mListener;
@@ -158,5 +162,7 @@ namespace Demi
         bool                    mViewportDirty;
 
         bool                    mIsActive;
+
+        bool                    mFlippingUV;
     };
 }

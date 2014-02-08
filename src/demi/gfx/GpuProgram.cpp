@@ -13,25 +13,28 @@ namespace Demi
         memset(this, 0, sizeof(*this));
     }
 
-    void DiShaderEnvironment::SetIdentity()
+    void DiShaderEnvironment::SetIdentity(bool rtFliping)
     {
-        DiMat4 dxMat;
-        dxMat.setIdentity();
-        dxMat[2][0] = (dxMat[2][0] + dxMat[3][0]) / 2;
-        dxMat[2][1] = (dxMat[2][1] + dxMat[3][1]) / 2;
-        dxMat[2][2] = (dxMat[2][2] + dxMat[3][2]) / 2;
-        dxMat[2][3] = (dxMat[2][3] + dxMat[3][3]) / 2;
+        DiMat4 projMat = DiMat4::IDENTITY;
+        DiBase::Driver->ConvertProjectionMatrix(projMat, projMat);
 
+        // actually texture flipping only for openGL
+        if (rtFliping)
+        {
+            projMat[1][0] = -projMat[1][0];
+            projMat[1][1] = -projMat[1][1];
+            projMat[1][2] = -projMat[1][2];
+            projMat[1][3] = -projMat[1][3];
+        }
+       
         viewMatrix = DiMat4::IDENTITY;
-        projMatrix = dxMat;
-        viewProjMatrix = dxMat * viewMatrix;
+        projMatrix = projMat;
+        viewProjMatrix = projMat * viewMatrix;
     }
 
     void DiCompileDesc::AddMarco( const DiString& name, const DiString& def )
     {
-        DiMarcoDefineList::iterator it;
-        DiMarcoDefineList::iterator itEnd = marcos.end();
-        for (it = marcos.begin(); it != itEnd; ++it)
+        for (auto it = marcos.begin(); it != marcos.end(); ++it)
         {
             if (it->first == name)
             {
@@ -45,9 +48,7 @@ namespace Demi
 
     void DiCompileDesc::RemoveMarco( const DiString& name )
     {
-        DiMarcoDefineList::iterator it;
-        DiMarcoDefineList::iterator itEnd = marcos.end();
-        for (it = marcos.begin(); it != itEnd; ++it)
+        for (auto it = marcos.begin(); it != marcos.end(); ++it)
         {
             if (it->first == name)
             {

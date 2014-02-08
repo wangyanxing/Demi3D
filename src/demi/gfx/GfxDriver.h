@@ -145,6 +145,13 @@ namespace Demi
 
         virtual void                SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a) = 0;
 
+        bool                        NeedTextureFlipping() const { return mNeedTextureFlipping; }
+
+        void                        SetTextureFlipping(bool val) { mNeedTextureFlipping = val; }
+
+        // opengl mode it needs a reversed culling mode
+        virtual bool                ReversePostpassCullmode() const { return false; }
+
     public:
 
         typedef DiVector<DiDepthBuffer*>            DepthBufferVec;
@@ -203,6 +210,8 @@ namespace Demi
         unsigned long               mFrameNum;
 
         bool                        mClosing;
+
+        bool                        mNeedTextureFlipping;
     };
 }
 #endif // GfxDriver_h__

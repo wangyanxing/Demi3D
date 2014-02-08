@@ -41,7 +41,7 @@ namespace Demi
         mTexture->SetDimensions(0,0);
         mTexture->SetAdaptedRT(mParent->GetPostEffectManager(
             )->GetRenderWindow()->GetRenderBuffer());
-        mTexture->SetViewportScale(DiVec2(1.0,1.0));
+        mTexture->SetViewportScale(DiVec2(1.0, 1.0));
         mTexture->SetFormat(format);
         mTexture->SetResourceUsage(RU_NONE);
         mTexture->SetUsage(TU_RENDER_TARGET);
@@ -59,6 +59,8 @@ namespace Demi
     {
         DiString matname = mPassName + "_m";
         mMaterial = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(matname);
+        if (Driver->ReversePostpassCullmode())
+            mMaterial->SetCullMode(CULL_CCW);
 
         mMaterial->LoadShader(vpshader,fpshader);
     }
@@ -68,13 +70,13 @@ namespace Demi
         if (!mMaterial)
             return;
 
-        if (mRenderTarget) 
+        if (mRenderTarget)
         {
             mRenderTarget->SetClearPerFrame(mAutoClear);
             mRenderTarget->Bind();
         }
 
-        mParent->GetPostEffectManager()->DrawQuad(mMaterial.get(),mQuadScale);
+        mParent->GetPostEffectManager()->DrawQuad(mMaterial.get(), mQuadScale);
     }
 
     void DiPostEffectPass::SetInput( const DiString& paramName, DiTexturePtr tex )

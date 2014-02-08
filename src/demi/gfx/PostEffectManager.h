@@ -45,7 +45,7 @@ namespace Demi
 
         void                    Init();
 
-        void                    Shutdown();
+        void                    Release();
 
     protected:
 

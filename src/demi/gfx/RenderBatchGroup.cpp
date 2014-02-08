@@ -41,12 +41,10 @@ namespace Demi
         :mType(type),mPipeline(pipeline),mUseIdentityProj(false),
         mBatchesNum(0),mPrimitivesNum(0),mEnableStatis(false),mEnableShadow(false)
     {
-
     }
 
     DiRenderBatchGroup::~DiRenderBatchGroup()
     {
-
     }
 
     void DiRenderBatchGroup::Process()
@@ -114,7 +112,7 @@ namespace Demi
     void DiRenderBatchGroup::BindIdentityViewProj()
     {
         DiShaderEnvironment* se = mPipeline->GetShaderEnvironment();
-        se->SetIdentity();
+        se->SetIdentity(Driver->NeedTextureFlipping());
     }
 
     bool DiRenderBatchGroup::IsInterfaceGroup()
