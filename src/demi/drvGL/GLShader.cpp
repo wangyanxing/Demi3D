@@ -518,5 +518,17 @@ namespace Demi
         msUniformFuncs["g_pointLightsAttenuation"] = [](const DiShaderEnvironment* env, GLuint location) {
             glUniform4fvARB(location, env->numPointLights, env->pointLightsAttenuation[0].ptr());
         };
+
+        msUniformFuncs["g_hasSkyLight"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform1i(location, env->hasSkyLight ? 1 : 0);
+        };
+
+        msUniformFuncs["g_skyLightColor"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, env->numPointLights, env->skyLightColor.Ptr());
+        };
+
+        msUniformFuncs["g_skyLightPosition"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, env->numPointLights, env->skyLightPosition.ptr());
+        };
     }
 }

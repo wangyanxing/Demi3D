@@ -9,7 +9,7 @@ namespace Demi
     DiShaderConstants::DiShaderConstants(DiShaderType tp)
     {
         type = tp;
-        table = NULL;
+        table = nullptr;
 
         modelMatrix = -1;
         viewMatrix = -1;
@@ -47,6 +47,10 @@ namespace Demi
         pointLightsColor = -1;
         pointLightsPosition = -1;
         pointLightsAttenuation = -1;
+
+        hasSkyLight = -1;
+        skyLightColor = -1;
+        skyLightPosition = -1;
     }
 
     DiShaderConstants::~DiShaderConstants(void)
@@ -94,6 +98,10 @@ namespace Demi
             pointLightsColor = GetRegisterID("g_pointLightsColor");
             pointLightsPosition = GetRegisterID("g_pointLightsPosition");
             pointLightsAttenuation = GetRegisterID("g_pointLightsAttenuation");
+
+            hasSkyLight = GetRegisterID("g_hasSkyLight");
+            skyLightPosition = GetRegisterID("g_skyLightPosition");
+            skyLightColor = GetRegisterID("g_skyLightColor");
         }
     }
 
@@ -137,43 +145,30 @@ namespace Demi
             SET_CONST(numDirLights);
             if (shaderEnv.numDirLights > 0 && dirLightsColor != -1)
             {
-                if (type == SHADER_VERTEX)
-                {
-                    sm->SetVertexShaderConstantF(dirLightsColor,
-                        (float*)(&shaderEnv.dirLightsColor[0].r), shaderEnv.numDirLights);
-                    sm->SetVertexShaderConstantF(dirLightsDir,
-                        (float*)(&shaderEnv.dirLightsDir[0].x), shaderEnv.numDirLights);
-                }
-                else
-                {
-                    sm->SetPixelShaderConstantF(dirLightsColor,
-                        (float*)(&shaderEnv.dirLightsColor[0].r), shaderEnv.numDirLights);
-                    sm->SetPixelShaderConstantF(dirLightsDir,
-                        (float*)(&shaderEnv.dirLightsDir[0].x), shaderEnv.numDirLights);
-                }
+                sm->SetPixelShaderConstantF(dirLightsColor,
+                    (float*)(&shaderEnv.dirLightsColor[0].r), shaderEnv.numDirLights);
+                sm->SetPixelShaderConstantF(dirLightsDir,
+                    (float*)(&shaderEnv.dirLightsDir[0].x), shaderEnv.numDirLights);
             }
 
             SET_CONST(numPointLights);
             if (shaderEnv.numPointLights > 0 && pointLightsColor != -1)
             {
-                if (type == SHADER_VERTEX)
-                {
-                    sm->SetVertexShaderConstantF(pointLightsColor,
-                        (float*)(&shaderEnv.pointLightsColor[0].r), shaderEnv.numPointLights);
-                    sm->SetVertexShaderConstantF(pointLightsPosition,
-                        (float*)(&shaderEnv.pointLightsPosition[0].x), shaderEnv.numPointLights);
-                    sm->SetVertexShaderConstantF(pointLightsAttenuation,
-                        (float*)(&shaderEnv.pointLightsAttenuation[0].x), shaderEnv.numPointLights);
-                }
-                else
-                {
-                    sm->SetPixelShaderConstantF(pointLightsColor,
-                        (float*)(&shaderEnv.pointLightsColor[0].r), shaderEnv.numPointLights);
-                    sm->SetPixelShaderConstantF(pointLightsPosition,
-                        (float*)(&shaderEnv.pointLightsPosition[0].x), shaderEnv.numPointLights);
-                    sm->SetPixelShaderConstantF(pointLightsAttenuation,
-                        (float*)(&shaderEnv.pointLightsAttenuation[0].x), shaderEnv.numPointLights);
-                }
+                sm->SetPixelShaderConstantF(pointLightsColor,
+                    (float*)(&shaderEnv.pointLightsColor[0].r), shaderEnv.numPointLights);
+                sm->SetPixelShaderConstantF(pointLightsPosition,
+                    (float*)(&shaderEnv.pointLightsPosition[0].x), shaderEnv.numPointLights);
+                sm->SetPixelShaderConstantF(pointLightsAttenuation,
+                    (float*)(&shaderEnv.pointLightsAttenuation[0].x), shaderEnv.numPointLights);
+            }
+
+            SET_CONST(hasSkyLight);
+            if (shaderEnv.hasSkyLight)
+            {
+                sm->SetPixelShaderConstantF(skyLightColor,
+                    (float*)(&shaderEnv.skyLightColor.r), 1);
+                sm->SetPixelShaderConstantF(skyLightPosition,
+                    (float*)(&shaderEnv.skyLightPosition.x), 1);
             }
 
             SET_CONST(globalAmbient);

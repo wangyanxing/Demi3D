@@ -40,6 +40,7 @@ namespace Demi
     class    DiLight;
     class    DiDirLight;
     class    DiPointLight;
+    class    DiSkyLight;
     class    DiDeviceLostListener;
     class    DiRenderTarget;
     class    DiVertexBuffer;

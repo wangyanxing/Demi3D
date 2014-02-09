@@ -19,7 +19,9 @@ namespace Demi
 
     const DiAABB& DiPointLight::GetBoundingBox( void ) const
     {
-        return DiAABB::BOX_INFINITE;
+        DiVec3 temp(mAttenuationEnd, mAttenuationEnd, mAttenuationEnd);
+        mAABB.SetExtents(mPosition - temp, mPosition + temp);
+        return mAABB;
     }
 
     DiString& DiPointLight::GetType()

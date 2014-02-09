@@ -12,6 +12,7 @@
 #include "RenderWindow.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SkyLight.h"
 #include "GBuffer.h"
 #include "GfxDriver.h"
 #include "RenderTarget.h"
@@ -126,6 +127,13 @@ namespace Demi
             mShaderEnv->pointLightsPosition[i] = pos;
             mShaderEnv->pointLightsAttenuation[i].x = sm->GetPointLight(i)->GetAttenuationBegin();
             mShaderEnv->pointLightsAttenuation[i].y = sm->GetPointLight(i)->GetAttenuationEnd();
+        }
+
+        mShaderEnv->hasSkyLight = sm->GetSkyLight() != nullptr;
+        if (sm->GetSkyLight())
+        {
+            mShaderEnv->skyLightColor = sm->GetSkyLight()->GetColor();
+            mShaderEnv->skyLightPosition = sm->GetSkyLight()->GetPosition();
         }
     }
 

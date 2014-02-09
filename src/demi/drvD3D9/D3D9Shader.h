@@ -89,6 +89,10 @@ namespace Demi
         int pointLightsPosition;
         int pointLightsAttenuation;
 
+        int hasSkyLight;
+        int skyLightColor;
+        int skyLightPosition;
+
     public:
 
         DiShaderConstants(DiShaderType tp);

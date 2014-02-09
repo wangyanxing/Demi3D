@@ -25,7 +25,7 @@ namespace Demi
 
     DiString& DiDirLight::GetType()
     {
-        static DiString type = "SunLight";
+        static DiString type = "DirectionalLight";
         return type;
     }
 }

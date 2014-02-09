@@ -132,6 +132,12 @@ namespace Demi
 
         void                    DestroyPointLight(DiPointLight* light);
 
+        DiSkyLight*             GetSkyLight() { return mSkyLight; }
+
+        void                    DestroySkyLight();
+
+        DiSkyLight*             CreateSkyLight();
+
         void                    Cull(DiCamera* camera,
                                     DiVisibleObjectsBoundsInfo* visibleBounds);
 
@@ -224,6 +230,8 @@ namespace Demi
         DirLightList            mDirLights;
 
         PointLightList          mPointLights;
+
+        DiSkyLight*             mSkyLight;
 
         DiTerrainPtr            mTerrain;
 

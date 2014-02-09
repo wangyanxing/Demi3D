@@ -1,11 +1,11 @@
 
 /********************************************************************
-    Date:        2013-7-31
     File:       PointLight.h
     Creator:    demiwangya
 *********************************************************************/
 
-#pragma once
+#ifndef PointLight_h__
+#define PointLight_h__
 
 #include "light.h"
 
@@ -21,11 +21,12 @@ namespace Demi
 
         DiPointLight(DiSceneManager* mgr);
 
-        virtual ~DiPointLight();
+        virtual                 ~DiPointLight();
 
     public:
 
-        void                     SetPosition(const DiVec3& vec){
+        void                     SetPosition(const DiVec3& vec)
+        {
             mPosition = vec;
         }
 
@@ -35,7 +36,8 @@ namespace Demi
 
         virtual DiString&        GetType();
 
-        void                     SetAttenuation(float end, float begin = 0){
+        void                     SetAttenuation(float end, float begin = 0)
+        {
             mAttenuationBegin = begin;
             mAttenuationEnd = end;
         }
@@ -51,6 +53,10 @@ namespace Demi
         float                    mAttenuationBegin;
 
         float                    mAttenuationEnd;
+
+        mutable DiAABB           mAABB;
     };
 
 }
+
+#endif // PointLight_h__

@@ -109,6 +109,11 @@ namespace Demi
         DiVec4      pointLightsPosition[MAX_LIGHTS];
         DiVec4      pointLightsAttenuation[MAX_LIGHTS];
 
+        bool        hasSkyLight;
+        DiColor     skyLightColor;
+        DiVec4      skyLightPosition;
+        
+
         void        SetIdentity(bool rtFliping = false);
     };
 

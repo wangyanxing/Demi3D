@@ -7,6 +7,7 @@
 #include "CullNode.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SkyLight.h"
 #include "AssetManager.h"
 #include "CullNode.h"
 #include "InstanceManager.h"
@@ -253,7 +254,8 @@ namespace Demi
         mLastFrameNumber(0),
         mSkybox(nullptr),
         mAmbientColor(0.3f,0.3f,0.3f),
-        mOctreeNode(nullptr)
+        mOctreeNode(nullptr),
+        mSkyLight(nullptr)
     {
         mPipeline = Driver->GetPipeline();
         mRootNode = DI_NEW DiCullNode(this,"_root");
@@ -1071,21 +1073,38 @@ namespace Demi
         CamVisibleObjectsMap::const_iterator camVisObjIt = mCamVisibleObjectsMap.find( cam );
 
         if ( camVisObjIt == mCamVisibleObjectsMap.end() )
-        {
             return nullBox;
-        }
         else
-        {
             return camVisObjIt->second;
+    }
+
+    void DiSceneManager::DestroySkyLight()
+    {
+        if (mSkyLight)
+        {
+            DI_DELETE mSkyLight;
+            mSkyLight = nullptr;
         }
     }
 
-    int        DiSceneManager::intersect_call            = 0;
-    uint32     DiSceneManager::ENTITY_TYPE_MASK         = 0x80000000;
-    uint32     DiSceneManager::FX_TYPE_MASK             = 0x40000000;
-    uint32     DiSceneManager::LIGHT_TYPE_MASK            = 0x20000000;
-    uint32     DiSceneManager::FRUSTUM_TYPE_MASK        = 0x10000000;
-    uint32     DiSceneManager::USER_TYPE_MASK_LIMIT    = 0x10000000;
+    DiSkyLight* DiSceneManager::CreateSkyLight()
+    {
+        if (mSkyLight)
+        {
+            DI_WARNING("Currently we can only have one skylight");
+            return mSkyLight;
+        }
+
+        mSkyLight = DI_NEW DiSkyLight(this);
+        return mSkyLight;
+    }
+
+    int     DiSceneManager::intersect_call         = 0;
+    uint32  DiSceneManager::ENTITY_TYPE_MASK       = 0x80000000;
+    uint32  DiSceneManager::FX_TYPE_MASK           = 0x40000000;
+    uint32  DiSceneManager::LIGHT_TYPE_MASK        = 0x20000000;
+    uint32  DiSceneManager::FRUSTUM_TYPE_MASK      = 0x10000000;
+    uint32  DiSceneManager::USER_TYPE_MASK_LIMIT   = 0x10000000;
 
     DiVisibleObjectsBoundsInfo::DiVisibleObjectsBoundsInfo()
     {

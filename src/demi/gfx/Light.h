@@ -19,6 +19,7 @@ namespace Demi
             TYPE_DIRECTIONAL = 0,
             TYPE_POINT,
             TYPE_SPOT,
+            TYPE_SKY,
 
             NUM_TYPES
         };
