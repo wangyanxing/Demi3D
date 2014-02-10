@@ -111,7 +111,8 @@ namespace Demi
 
         bool        hasSkyLight;
         DiColor     skyLightColor;
-        DiVec4      skyLightPosition;
+        DiColor     groundColor;
+        DiVec3      skyLightDir;
         
 
         void        SetIdentity(bool rtFliping = false);

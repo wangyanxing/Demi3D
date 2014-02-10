@@ -47,5 +47,5 @@ void main()
 	// world space normal
     vNormal    = (g_modelMatrix * vec4(objNormal,0.0)).xyz;
 	vPosWorld  = (g_modelMatrix * objPos).xyz;
-	vViewDir   = vPosWorld - g_eyePosition;
+	vViewDir   = g_eyePosition - vPosWorld;
 }

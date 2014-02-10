@@ -50,7 +50,8 @@ namespace Demi
 
         hasSkyLight = -1;
         skyLightColor = -1;
-        skyLightPosition = -1;
+        groundColor = -1;
+        skyLightDir = -1;
     }
 
     DiShaderConstants::~DiShaderConstants(void)
@@ -100,8 +101,9 @@ namespace Demi
             pointLightsAttenuation = GetRegisterID("g_pointLightsAttenuation");
 
             hasSkyLight = GetRegisterID("g_hasSkyLight");
-            skyLightPosition = GetRegisterID("g_skyLightPosition");
             skyLightColor = GetRegisterID("g_skyLightColor");
+            groundColor = GetRegisterID("g_groundColor");
+            skyLightDir = GetRegisterID("g_skyLightDir");
         }
     }
 
@@ -167,8 +169,10 @@ namespace Demi
             {
                 sm->SetPixelShaderConstantF(skyLightColor,
                     (float*)(&shaderEnv.skyLightColor.r), 1);
-                sm->SetPixelShaderConstantF(skyLightPosition,
-                    (float*)(&shaderEnv.skyLightPosition.x), 1);
+                sm->SetPixelShaderConstantF(groundColor,
+                    (float*)(&shaderEnv.groundColor.r), 1);
+                sm->SetPixelShaderConstantF(skyLightDir,
+                    (float*)(&shaderEnv.skyLightDir.x), 1);
             }
 
             SET_CONST(globalAmbient);

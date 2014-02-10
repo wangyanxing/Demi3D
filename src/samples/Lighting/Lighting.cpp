@@ -3,8 +3,8 @@
 #include "DemoFrame.h"
 
 
-DiCullNode* lightSphereNode = NULL;
-DiPointLight* pointlight = NULL;
+DiCullNode*   lightSphereNode = nullptr;
+DiPointLight* pointlight      = nullptr;
 
 void AddMesh(float x, float y, const DiColor& col, const DiString& shader)
 {
@@ -13,7 +13,7 @@ void AddMesh(float x, float y, const DiColor& col, const DiString& shader)
 
 	DiSimpleShapePtr model = make_shared<DiSimpleShape>();
 	if(y > 10)
-		model->CreateTorus(8,2,32,32);
+		model->CreateTorus(8,1.6f,32,32);
 	else
 		model->CreateSphere(10,20,20);
 
@@ -23,7 +23,7 @@ void AddMesh(float x, float y, const DiColor& col, const DiString& shader)
 
 	if(shader == "phong")
     {
-		mat->SetSpecular(DiColor(0.8f,0.8f,0.8f));
+		mat->SetSpecular(DiColor(0.6f,0.6f,0.6f));
 		mat->SetShininess(y > 10 ? 10.0f : 30.0f);
 	}
 
@@ -36,7 +36,7 @@ void InitScene()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
-    sm->SetAmbientColor(DiColor(0.05f, 0.05f, 0.05f, 0.05f));
+    sm->SetAmbientColor(DiColor::Black);
 
 	DiDirLight* dirlight = sm->CreateDirLight();
 	dirlight->SetColor(DiColor());

@@ -7,7 +7,8 @@ namespace Demi
 {
     DiSkyLight::DiSkyLight(DiSceneManager* mgr)
         :DiLight(DiLight::TYPE_SKY,mgr),
-        mPosition(DiVec3::ZERO)
+        mDirection(DiVec3::ZERO),
+        mGroundColor(DiColor::White)
     {
     }
 

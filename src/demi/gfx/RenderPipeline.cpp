@@ -133,7 +133,8 @@ namespace Demi
         if (sm->GetSkyLight())
         {
             mShaderEnv->skyLightColor = sm->GetSkyLight()->GetColor();
-            mShaderEnv->skyLightPosition = sm->GetSkyLight()->GetPosition();
+            mShaderEnv->groundColor = sm->GetSkyLight()->GetGroundColor();
+            mShaderEnv->skyLightDir = sm->GetSkyLight()->GetDirection();
         }
     }
 

@@ -74,9 +74,9 @@ VS_OUTPUT vs_main( VS_INPUT In )
 
     // world space normal
 	float4x4 model;
-    Out.Normal       	= mul(g_modelMatrix, objNormal).xyz;
-	Out.PosWorld		= mul(g_modelMatrix, objPos);
-	Out.ViewDir			= Out.PosWorld - g_eyePosition;
+    Out.Normal    = mul(g_modelMatrix, objNormal).xyz;
+	Out.PosWorld  = mul(g_modelMatrix, objPos);
+    Out.ViewDir   = g_eyePosition - Out.PosWorld;
 	
 	return Out;
 }

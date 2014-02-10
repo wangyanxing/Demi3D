@@ -4,6 +4,9 @@ varying vec3 vNormal;
 varying vec3 vViewDir;
 varying vec3 vPosWorld;
 
+// options
+#define USE_SCHLICK_FRESNEL
+
 #if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )
 varying vec3 Tangent;
 varying vec3 Binormal;
@@ -76,46 +79,81 @@ void AccumulatePhong(vec3 normal,
                          vec3 viewDir,
                          vec3 lightContrib,
                          inout vec3 litDiffuse,
-                         inout vec3 litSpecular)
-{
-    float NdotL = dot(normal, lightDir);
-    if (NdotL > 0.0f) {
-        vec3 r = reflect(lightDir, normal);
-        float RdotV = max(0.0f, dot(r, viewDir));
-        float specular = pow(RdotV, g_shininess);
-
-        litDiffuse += lightContrib * NdotL;
-        litSpecular += lightContrib * specular;
-    }
+                         inout vec3 litSpecular) {
+    float NdotL = max(dot(normal, lightDir), 0.0);
+	
+	vec3 halfVec = normalize(lightDir + viewDir);
+	float dotHalf = max(dot(normal, halfVec), 0.0);
+	float specWeight = max(pow(dotHalf, g_shininess), 0.0);
+		
+#ifdef USE_SCHLICK_FRESNEL
+	float specularNormalization = ( g_shininess + 2.0001 ) / 8.0;
+	vec3 schlick = gSurface.specularAmount + vec3( 1.0 - gSurface.specularAmount ) 
+					* pow( 1.0 - dot( lightDir, halfVec ), 5.0 );
+					
+	vec3 specular = schlick * specWeight * NdotL * specularNormalization;
+#else
+	vec3 specular = gSurface.specularAmount * specWeight;
+#endif
+		
+	litDiffuse += lightContrib * NdotL * gSurface.albedo.rgb;
+    litSpecular += lightContrib * specular;
 }
 
-void AccumulateDirLight(vec3 dir, vec4 color, inout vec3 lit)
-{
-	vec3 litDiffuse = vec3(0.0f, 0.0f, 0.0f);
-    vec3 litSpecular = vec3(0.0f, 0.0f, 0.0f);
+void AccumulateDirLight(vec3 dir, vec4 color, inout vec3 lit){
+	vec3 litDiffuse = vec3(0.0);
+    vec3 litSpecular = vec3(0.0);
 	
     AccumulatePhong(gSurface.normal, normalize(dir), normalize(gSurface.viewDirWorld),
         color.rgb * color.a, litDiffuse, litSpecular);
 	
-    lit += gSurface.albedo.rgb * litDiffuse + gSurface.specularAmount * litSpecular;
+    lit += litDiffuse + litSpecular;
 }
 
-void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd, vec4 color,
-                    inout vec3 lit)
-{
+void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd, vec4 color, inout vec3 lit) {
 	vec3 directionToLight = position - gSurface.positionWorld;
     float distanceToLight = length(directionToLight);
 	
-    vec3 litDiffuse = vec3(0.0f, 0.0f, 0.0f);
-    vec3 litSpecular = vec3(0.0f, 0.0f, 0.0f);
+    vec3 litDiffuse = vec3(0.0);
+    vec3 litSpecular = vec3(0.0);
 	
-	if (distanceToLight < attenEnd) {	
+	if (distanceToLight < attenEnd) {
 		float attenuation = linstep(attenEnd, attenBegin, distanceToLight);
         directionToLight /= distanceToLight;
 		
 		AccumulatePhong(gSurface.normal, directionToLight, normalize(gSurface.viewDirWorld),
 			attenuation * color.rgb * color.a, litDiffuse, litSpecular);
 		
+		lit += litDiffuse + litSpecular;
+	}
+}
+
+void AccumulateSkyLight(vec3 dir, vec4 skycolor, vec4 groundcolor, inout vec3 lit){
+	vec3 litDiffuse = vec3(0.0);
+	vec3 litSpecular = vec3(0.0);
+	
+	float NdotL = dot(gSurface.normal, normalize(dir));
+
+	if (NdotL > 0.0f) {
+		float skyDiffuseWeight = 0.5 * NdotL + 0.5;
+		litDiffuse = mix( groundcolor, skycolor, skyDiffuseWeight );
+		
+		vec3 r = reflect(dir, gSurface.normal);
+        float RdotV = 0.5 * dot(r, normalize(gSurface.viewDirWorld)) + 0.5;
+        float specularSky = max(pow(RdotV, g_shininess), 0.0);
+		
+		vec3 groundDir = -dir;
+		r = reflect(groundDir, gSurface.normal);
+        float RdotVGround = 0.5 * dot(r, normalize(gSurface.viewDirWorld)) + 0.5;
+        float specularGround = max(pow(RdotVGround, g_shininess), 0.0);
+		
+		float dotGround = dot( gSurface.normal, groundDir );
+		float specularNormalization = ( g_shininess + 2.0001 ) / 8.0;
+		
+		vec3 schlickSky = gSurface.specularAmount + vec3( 1.0 - gSurface.specularAmount ) * pow( 1.0 - RdotV, 5.0 );
+		vec3 schlickGround = gSurface.specularAmount + vec3( 1.0 - gSurface.specularAmount ) * pow( 1.0 - RdotVGround, 5.0 );
+		litSpecular += litDiffuse * specularNormalization * ( schlickSky * specularSky * max( NdotL, 0.0 ) + schlickGround * specularGround * max( dotGround, 0.0 ) );
+	
 		lit += gSurface.albedo.rgb * litDiffuse + gSurface.specularAmount * litSpecular;
 	}
 }

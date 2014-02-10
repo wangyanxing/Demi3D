@@ -46,6 +46,11 @@ uniform vec4    g_pointLightsColor[MAX_LIGHTS];
 uniform vec4    g_pointLightsPosition[MAX_LIGHTS];
 uniform vec4    g_pointLightsAttenuation[MAX_LIGHTS];
 
+uniform bool    g_hasSkyLight;
+uniform vec4    g_skyLightColor;
+uniform vec4    g_groundColor;
+uniform vec3    g_skyLightDir;
+
 // global functions
 float linstep(float min, float max, float v)
 {

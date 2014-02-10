@@ -22,8 +22,7 @@ uniform float       reflectivity;
 
 
 // Data that we can read or derive from the surface shader outputs
-struct SurfaceData
-{
+struct SurfaceData{
 	vec3 positionWorld;   // world space position
 	vec3 viewDirWorld;
     vec3 normal;          // world space normal
@@ -32,8 +31,7 @@ struct SurfaceData
 
 SurfaceData gSurface;
 
-void ComputeSurfaceDataFromGeometry()
-{
+void ComputeSurfaceDataFromGeometry() {
     gSurface.normal = normalize(vNormal);
 	gSurface.viewDirWorld = vViewDir;
 	gSurface.positionWorld = vPosWorld;
@@ -56,19 +54,20 @@ void ComputeSurfaceDataFromGeometry()
 	#endif
 }
 
-void AccumulateDirLight(vec3 dir, vec4 color, inout vec3 lit)
-{
+void AccumulateDirLight(vec3 dir, vec4 color, inout vec3 lit){
+
 	float NdotL = dot(gSurface.normal, normalize(dir));
 	
-	if (NdotL > 0.0f) {
+	//if (NdotL > 0.0f) 
+	{
 		vec3 litDiffuse = color.rgb * color.a * NdotL;
 		lit += gSurface.albedo.rgb * litDiffuse;
 	}
 }
 
 void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd, 
-					vec4 color, inout vec3 lit)
-{
+					vec4 color, inout vec3 lit){
+					
 	vec3 directionToLight = position - gSurface.positionWorld;
     float distanceToLight = length(directionToLight);
 	
@@ -84,8 +83,19 @@ void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd,
 	}
 }
 
-void main()
-{
+void AccumulateSkyLight(vec3 dir, vec4 skycolor, vec4 groundcolor, inout vec3 lit){
+	float NdotL = dot(gSurface.normal, normalize(dir));
+
+	//if (NdotL > 0.0f) 
+	{
+		float skyDiffuseWeight = 0.5 * NdotL + 0.5;
+		vec3 color = mix( groundcolor, skycolor, skyDiffuseWeight );
+		lit += gSurface.albedo.rgb * color;
+	}
+}
+
+void main(){
+
 	ComputeSurfaceDataFromGeometry();
 	
 	vec3 lit = vec3(0.0,0.0,0.0);
@@ -97,6 +107,10 @@ void main()
 	for(int i = 0; i < g_numPointLights; i++){
 		AccumulatePointLight(g_pointLightsPosition[i].xyz,
 			g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
+	}
+	
+	if (g_hasSkyLight){
+		AccumulateSkyLight(g_skyLightDir, g_skyLightColor, g_groundColor, lit);
 	}
 	
 	gl_FragColor.rgb = lit * g_diffuseColor.rgb;

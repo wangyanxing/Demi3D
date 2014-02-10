@@ -21,26 +21,28 @@ namespace Demi
 
         DiSkyLight(DiSceneManager* mgr);
 
-        virtual                 ~DiSkyLight();
+        virtual         ~DiSkyLight();
 
     public:
 
-        void                     SetPosition(const DiVec3& vec)
-        {
-            mPosition = vec;
-        }
+        void            SetDirection(const DiVec3& vec) { mDirection = vec; }
 
-        DiVec3                   GetPosition() const {return mPosition;}
+        DiVec3          GetDirection() const { return mDirection; }
 
-        virtual const DiAABB&    GetBoundingBox(void) const;
+        void            SetGrondColor(const DiVec3& vec) { mDirection = vec; }
 
-        virtual DiString&        GetType();
+        DiColor         GetGroundColor() const { return mGroundColor; }
+
+        const DiAABB&   GetBoundingBox(void) const;
+
+        DiString&       GetType();
 
     protected:
 
-        DiVec3                   mPosition;
-    };
+        DiVec3          mDirection;
 
+        DiColor         mGroundColor;
+    };
 }
 
 #endif // SkyLight_h__

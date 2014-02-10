@@ -527,8 +527,12 @@ namespace Demi
             glUniform4fvARB(location, env->numPointLights, env->skyLightColor.Ptr());
         };
 
-        msUniformFuncs["g_skyLightPosition"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, env->numPointLights, env->skyLightPosition.ptr());
+        msUniformFuncs["g_groundColor"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, env->numPointLights, env->groundColor.Ptr());
+        };
+
+        msUniformFuncs["g_skyLightDir"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform3fvARB(location, env->numPointLights, env->skyLightDir.ptr());
         };
     }
 }

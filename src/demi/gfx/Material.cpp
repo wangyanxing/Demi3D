@@ -18,7 +18,8 @@ namespace Demi
     DiAssetType DiMaterial::TYPE = ASSET_MATERIAL;
 
     DiMaterial::DiMaterial(const DiString& name) :
-        DiAsset(name),mShaderParameter(NULL)
+        DiAsset(name),mShaderParameter(NULL),
+        mAmbient(DiColor::Black)
     {
         mOpacity         = 1.0f;
         mDepthWrite      = true;

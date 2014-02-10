@@ -1,6 +1,9 @@
 
 #include <common.hlsl>
 
+// options
+#define USE_SCHLICK_FRESNEL
+
 #ifdef USE_MAP
 	uniform sampler2D map;
 #endif
@@ -47,37 +50,36 @@ struct SurfaceData
     float3 specularAmount;        // Treated as a multiplier on albedo
 };
 
-SurfaceData ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
+static SurfaceData gSurface;
+
+void ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
 {
-    SurfaceData surface;
-    surface.positionWorld = input.PosWorld;
-    surface.normal = normalize(input.Normal);
-	surface.viewDirWorld = input.ViewDir;
+    gSurface.positionWorld = input.PosWorld;
+    gSurface.normal = normalize(input.Normal);
+    gSurface.viewDirWorld = input.ViewDir;
 	
 	#ifdef USE_MAP
-		surface.albedo = tex2D( map, input.Texcoord0 );
+        gSurface.albedo = tex2D(map, input.Texcoord0);
 		#ifdef GAMMA_INPUT
-			surface.albedo.rgb *= surface.albedo.rgb;
+        gSurface.albedo.rgb *= gSurface.albedo.rgb;
 		#endif
 	#else
-		surface.albedo = float4(1.0,1.0,1.0,1.0);
+        gSurface.albedo = float4(1.0, 1.0, 1.0, 1.0);
 	#endif
 	
 	#ifdef USE_COLOR
-		surface.albedo = surface.albedo * float4( n.Color, 1.0 );
+        gSurface.albedo = gSurface.albedo * float4(n.Color, 1.0);
 	#endif	
 	
 	#ifdef ALPHATEST
-		if ( surface.albedo.a * g_opacity < ALPHATEST ) discard;
+        if (gSurface.albedo.a * g_opacity < ALPHATEST) discard;
 	#endif
 	
 	#ifdef USE_SPECULARMAP
-		surface.specularAmount = tex2D( specularMap, In.Texcoord0 ).rgb * g_specularColor.rgb;
+        gSurface.specularAmount = tex2D(specularMap, In.Texcoord0).rgb * g_specularColor.rgb;
 	#else
-		surface.specularAmount = g_specularColor.rgb;
+        gSurface.specularAmount = g_specularColor.rgb;
 	#endif
-
-    return surface;
 }
 
 void AccumulatePhong(float3 normal,
@@ -87,6 +89,7 @@ void AccumulatePhong(float3 normal,
                          inout float3 litDiffuse,
                          inout float3 litSpecular)
 {
+#if 0
     float NdotL = dot(normal, lightDir);
     [flatten] if (NdotL > 0.0f) {
         float3 r = reflect(lightDir, normal);
@@ -96,24 +99,43 @@ void AccumulatePhong(float3 normal,
         litDiffuse += lightContrib * NdotL;
         litSpecular += lightContrib * specular;
     }
+#endif
+
+    float NdotL = max(dot(normal, lightDir), 0.0);
+    float3 halfVec = normalize(lightDir + viewDir);
+    float dotHalf = max(dot(normal, halfVec), 0.0);
+    float specWeight = max(pow(dotHalf, g_shininess), 0.0);
+
+#ifdef USE_SCHLICK_FRESNEL
+    float specularNormalization = (g_shininess + 2.0001) / 8.0;
+    float3 schlick = gSurface.specularAmount + float3(1.0 - gSurface.specularAmount)
+        * pow(1.0 - dot(lightDir, halfVec), 5.0);
+
+    float3 specular = schlick * specWeight * NdotL * specularNormalization;
+#else
+    float3 specular = gSurface.specularAmount * specWeight;
+#endif
+
+    litDiffuse += lightContrib * NdotL * gSurface.albedo.rgb;
+    litSpecular += lightContrib * specular;
 }
 
-void AccumulateDirLight(SurfaceData surface, float3 dir, float4 color,
+void AccumulateDirLight(float3 dir, float4 color,
                     inout float3 lit)
 {
     float3 litDiffuse = float3(0.0f, 0.0f, 0.0f);
     float3 litSpecular = float3(0.0f, 0.0f, 0.0f);
 	
-    AccumulatePhong(surface.normal, normalize(dir), normalize(surface.viewDirWorld),
+    AccumulatePhong(gSurface.normal, normalize(dir), normalize(gSurface.viewDirWorld),
         color.rgb * color.a, litDiffuse, litSpecular);
 	
-    lit += surface.albedo.rgb * litDiffuse + surface.specularAmount * litSpecular;
+    lit += litDiffuse + litSpecular;
 }
 
-void AccumulatePointLight(SurfaceData surface, float3 position, float attenBegin,  float attenEnd, float4 color,
+void AccumulatePointLight(float3 position, float attenBegin,  float attenEnd, float4 color,
                     inout float3 lit)
 {
-	float3 directionToLight = position - surface.positionWorld;
+    float3 directionToLight = position - gSurface.positionWorld;
     float distanceToLight = length(directionToLight);
 	
     float3 litDiffuse = float3(0.0f, 0.0f, 0.0f);
@@ -123,10 +145,10 @@ void AccumulatePointLight(SurfaceData surface, float3 position, float attenBegin
 		float attenuation = linstep(attenEnd, attenBegin, distanceToLight);
         directionToLight *= rcp(distanceToLight);
 		
-		AccumulatePhong(surface.normal, directionToLight, normalize(surface.viewDirWorld),
+        AccumulatePhong(gSurface.normal, directionToLight, normalize(gSurface.viewDirWorld),
 			attenuation * color.rgb * color.a, litDiffuse, litSpecular);
 		
-		lit += surface.albedo.rgb * litDiffuse + surface.specularAmount * litSpecular;
+        lit += litDiffuse + litSpecular;
 	}
 }
 
@@ -134,22 +156,22 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 {			
 	PS_OUTPUT Out;
 	
-	SurfaceData surface = ComputeSurfaceDataFromGeometry(In);
+	ComputeSurfaceDataFromGeometry(In);
 	
 	float3 lit = float3(0,0,0);
 	
 	for(int i = 0; i < g_numDirLights; i++){
-		AccumulateDirLight(surface, g_dirLightsDir[i], g_dirLightsColor[i], lit);
+		AccumulateDirLight(g_dirLightsDir[i], g_dirLightsColor[i], lit);
 	}
 	
 	for(int i = 0; i < g_numPointLights; i++){
-		AccumulatePointLight(surface, g_pointLightsPosition[i], 
+		AccumulatePointLight(g_pointLightsPosition[i], 
 		g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
 	}
 	
 	Out.Color.rgb = lit * g_diffuseColor.rgb;
 	Out.Color.rgb += g_globalAmbient.rgb * g_ambientColor.rgb;	
-	Out.Color.a = surface.albedo.a * g_opacity;
+    Out.Color.a = gSurface.albedo.a * g_opacity;
 
 #ifdef GAMMA_OUTPUT
 	Out.Color.rgb = sqrt( Out.Color.xyz );

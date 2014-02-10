@@ -91,7 +91,8 @@ namespace Demi
 
         int hasSkyLight;
         int skyLightColor;
-        int skyLightPosition;
+        int groundColor;
+        int skyLightDir;
 
     public:
 
