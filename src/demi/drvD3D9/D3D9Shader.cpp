@@ -197,9 +197,8 @@ namespace Demi
         DI_ASSERT(table);
         D3DXHANDLE handle = table->GetConstantByName(0, name);
         if (!handle)
-        {
             return -1;
-        }
+        
         D3DXCONSTANT_DESC desc;
         unsigned int numParams = 1;
         HRESULT hr = table->GetConstantDesc(handle, &desc, &numParams);

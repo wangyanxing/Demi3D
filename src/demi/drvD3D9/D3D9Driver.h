@@ -48,6 +48,8 @@ namespace Demi
 
         void                    SetShaderConsts(DiShaderType type, int regID, float val);
 
+        void                    SetShaderConsts(DiShaderType type, int regID, bool val);
+
         void                    SetShaderConsts(DiShaderType type, int regID, int val);
 
         void                    SetShaderConsts(DiShaderType type, int regID, const DiColor& col);

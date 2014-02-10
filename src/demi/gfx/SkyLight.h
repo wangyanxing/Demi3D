@@ -29,7 +29,7 @@ namespace Demi
 
         DiVec3          GetDirection() const { return mDirection; }
 
-        void            SetGrondColor(const DiVec3& vec) { mDirection = vec; }
+        void            SetGrondColor(const DiColor& vec) { mGroundColor = vec; }
 
         DiColor         GetGroundColor() const { return mGroundColor; }
 

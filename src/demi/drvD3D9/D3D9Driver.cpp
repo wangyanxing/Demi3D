@@ -382,10 +382,13 @@ namespace Demi
         if (regID < 0)
             return;
 
+        static int t;
+        t = val;
+
         if (shaderType == SHADER_VERTEX)
-            mDevice->SetVertexShaderConstantI(regID, &val, 1);
+            mDevice->SetVertexShaderConstantI(regID, &t, 1);
         else
-            mDevice->SetPixelShaderConstantI(regID, &val, 1);
+            mDevice->SetPixelShaderConstantI(regID, &t, 1);
     }
 
     void DiD3D9Driver::SetShaderConsts(DiShaderType shaderType, int regID, const DiColor& col)
@@ -400,6 +403,20 @@ namespace Demi
         t.w = col.a;
 
         SetShaderConsts(shaderType, regID, t);
+    }
+
+    void DiD3D9Driver::SetShaderConsts(DiShaderType type, int regID, bool val)
+    {
+        if (regID < 0)
+            return;
+
+        static BOOL t;
+        t = val ? TRUE : FALSE;
+
+        if (type == SHADER_VERTEX)
+            mDevice->SetVertexShaderConstantB(regID, &t, 1);
+        else
+            mDevice->SetPixelShaderConstantB(regID, &t, 1);
     }
 
     void DiD3D9Driver::ConvertProjectionMatrix(const DiMat4& matrix, DiMat4& dest)

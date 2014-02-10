@@ -89,18 +89,6 @@ void AccumulatePhong(float3 normal,
                          inout float3 litDiffuse,
                          inout float3 litSpecular)
 {
-#if 0
-    float NdotL = dot(normal, lightDir);
-    [flatten] if (NdotL > 0.0f) {
-        float3 r = reflect(lightDir, normal);
-        float RdotV = max(0.0f, dot(r, viewDir));
-        float specular = pow(RdotV, g_shininess);
-
-        litDiffuse += lightContrib * NdotL;
-        litSpecular += lightContrib * specular;
-    }
-#endif
-
     float NdotL = max(dot(normal, lightDir), 0.0);
     float3 halfVec = normalize(lightDir + viewDir);
     float dotHalf = max(dot(normal, halfVec), 0.0);
@@ -120,9 +108,7 @@ void AccumulatePhong(float3 normal,
     litSpecular += lightContrib * specular;
 }
 
-void AccumulateDirLight(float3 dir, float4 color,
-                    inout float3 lit)
-{
+void AccumulateDirLight(float3 dir, float4 color, inout float3 lit) {
     float3 litDiffuse = float3(0.0f, 0.0f, 0.0f);
     float3 litSpecular = float3(0.0f, 0.0f, 0.0f);
 	
@@ -132,9 +118,7 @@ void AccumulateDirLight(float3 dir, float4 color,
     lit += litDiffuse + litSpecular;
 }
 
-void AccumulatePointLight(float3 position, float attenBegin,  float attenEnd, float4 color,
-                    inout float3 lit)
-{
+void AccumulatePointLight(float3 position, float attenBegin,  float attenEnd, float4 color, inout float3 lit) {
     float3 directionToLight = position - gSurface.positionWorld;
     float distanceToLight = length(directionToLight);
 	
@@ -152,6 +136,48 @@ void AccumulatePointLight(float3 position, float attenBegin,  float attenEnd, fl
 	}
 }
 
+void AccumulateSkyLight(float3 dir, float4 skycolor, float4 groundcolor, inout float3 lit){
+
+    float3 lightDir = normalize(dir);
+    float3 viewDir = normalize(gSurface.viewDirWorld);
+
+    // diffuse
+    float NdotL = max(dot(gSurface.normal, lightDir), 0.0);
+    float skyDiffuseWeight = 0.5 * NdotL + 0.5;
+    float3 skyLightColor = lerp(groundcolor, skycolor, skyDiffuseWeight);
+    float3 litDiffuse = gSurface.albedo.rgb * skyLightColor;
+
+    // specular (sky light)
+    float3 hemiHalfVectorSky = normalize(lightDir + viewDir);
+    float hemiDotNormalHalfSky = 0.5 * dot(gSurface.normal, hemiHalfVectorSky) + 0.5;
+    float hemiSpecularWeightSky = max(pow(hemiDotNormalHalfSky, g_shininess), 0.0);
+
+    // specular (ground light)
+    float3 dirGround = -lightDir;
+    float3 hemiHalfVectorGround = normalize(dirGround + viewDir);
+    float hemiDotNormalHalfGround = 0.5 * dot(gSurface.normal, hemiHalfVectorGround) + 0.5;
+    float hemiSpecularWeightGround = max(pow(hemiDotNormalHalfGround, g_shininess), 0.0);
+
+#ifdef USE_SCHLICK_FRESNEL
+    float dotGround = dot(gSurface.normal, dirGround);
+    float specularNormalization = (g_shininess + 2.0001) / 8.0;
+
+    float3 schlickSky = gSurface.specularAmount + float3(1.0 - gSurface.specularAmount)
+        * pow(1.0 - dot(lightDir, hemiHalfVectorSky), 5.0);
+
+    float3 schlickGround = gSurface.specularAmount + float3(1.0 - gSurface.specularAmount)
+        * pow(1.0 - dot(dirGround, hemiHalfVectorGround), 5.0);
+
+    float3 litSpecular = skyLightColor * specularNormalization * (schlickSky * hemiSpecularWeightSky
+        * max(NdotL, 0.0) + schlickGround * hemiSpecularWeightGround * max(dotGround, 0.0));
+
+#else
+    float3 litSpecular = gSurface.specularAmount * skyLightColor * (hemiSpecularWeightSky + hemiSpecularWeightGround) * skyDiffuseWeight;
+#endif
+
+    lit += litDiffuse + litSpecular;
+}
+
 PS_OUTPUT ps_main( VS_OUTPUT In )
 {			
 	PS_OUTPUT Out;
@@ -166,8 +192,12 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 	
 	for(int i = 0; i < g_numPointLights; i++){
 		AccumulatePointLight(g_pointLightsPosition[i], 
-		g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
+		    g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
 	}
+
+    [flatten] if (g_hasSkyLight){
+        AccumulateSkyLight(g_skyLightDir, g_skyLightColor, g_groundColor, lit);
+    }
 	
 	Out.Color.rgb = lit * g_diffuseColor.rgb;
 	Out.Color.rgb += g_globalAmbient.rgb * g_ambientColor.rgb;	
@@ -179,4 +209,3 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 	
 	return Out;
 }
-

@@ -20,6 +20,8 @@
 #include "SimpleShape.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SkyLight.h"
+
 #include "ShaderManager.h"
 #include "RenderWindow.h"
 #include "RenderPipeline.h"

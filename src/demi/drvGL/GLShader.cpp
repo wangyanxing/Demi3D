@@ -46,8 +46,6 @@ namespace Demi
         if (code.empty())
             return false;
 
-        DI_INFO("Compiling shader: %s...", mShaderProgram->GetShaderFileName().c_str());
-
         // check the includes firstly
         PorcessShaders(code);
 
@@ -524,15 +522,15 @@ namespace Demi
         };
 
         msUniformFuncs["g_skyLightColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, env->numPointLights, env->skyLightColor.Ptr());
+            glUniform4fvARB(location, 1, env->skyLightColor.Ptr());
         };
 
         msUniformFuncs["g_groundColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, env->numPointLights, env->groundColor.Ptr());
+            glUniform4fvARB(location, 1, env->groundColor.Ptr());
         };
 
         msUniformFuncs["g_skyLightDir"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fvARB(location, env->numPointLights, env->skyLightDir.ptr());
+            glUniform3fvARB(location, 1, env->skyLightDir.ptr());
         };
     }
 }

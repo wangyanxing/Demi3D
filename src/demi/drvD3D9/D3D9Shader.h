@@ -151,6 +151,9 @@ namespace Demi
 
         void                LoadParameters(DiD3D9ShaderParam* sm)
         {
+            if (!mConstants.table)
+                return;
+
             ID3DXConstantTable &table = *mConstants.table;
 
             D3DXCONSTANTTABLE_DESC desc;
@@ -245,6 +248,13 @@ namespace Demi
                 }
 
                 DI_WARNING(errorLog.c_str());
+
+                shaderInstance->mConstants.table = nullptr;
+
+                SAFE_ARRAY_DELETE(defs);
+                SAFE_RELEASE(dXShaderBuffer);
+                SAFE_RELEASE(dXErrorBuffer);
+                return false;
             }
 
             SAFE_ARRAY_DELETE(defs);

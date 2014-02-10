@@ -71,13 +71,9 @@ namespace Demi
         SAFE_DELETE(mShader);
 
         if(mShaderType == SHADER_VERTEX)
-        {
             mShader = Driver->CreateVSInstance(this);
-        }
         else if (mShaderType == SHADER_PIXEL)
-        {
             mShader = Driver->CreatePSInstance(this);
-        }
         else
         {
             DI_WARNING("Unsupported shader type : %d", mShaderType);
@@ -91,6 +87,8 @@ namespace Demi
             DI_WARNING("Empty shader code : %s", mFileName.c_str());
             return false;
         }
+
+        DI_INFO("Compiling shader: %s", mFileName.c_str());
 
         return mShader->Compile(mRawCodes);
     }

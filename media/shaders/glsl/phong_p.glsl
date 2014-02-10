@@ -129,40 +129,51 @@ void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd, vec4
 }
 
 void AccumulateSkyLight(vec3 dir, vec4 skycolor, vec4 groundcolor, inout vec3 lit){
-	vec3 litDiffuse = vec3(0.0);
-	vec3 litSpecular = vec3(0.0);
 	
-	float NdotL = dot(gSurface.normal, normalize(dir));
-
-	if (NdotL > 0.0f) {
-		float skyDiffuseWeight = 0.5 * NdotL + 0.5;
-		litDiffuse = mix( groundcolor, skycolor, skyDiffuseWeight );
-		
-		vec3 r = reflect(dir, gSurface.normal);
-        float RdotV = 0.5 * dot(r, normalize(gSurface.viewDirWorld)) + 0.5;
-        float specularSky = max(pow(RdotV, g_shininess), 0.0);
-		
-		vec3 groundDir = -dir;
-		r = reflect(groundDir, gSurface.normal);
-        float RdotVGround = 0.5 * dot(r, normalize(gSurface.viewDirWorld)) + 0.5;
-        float specularGround = max(pow(RdotVGround, g_shininess), 0.0);
-		
-		float dotGround = dot( gSurface.normal, groundDir );
-		float specularNormalization = ( g_shininess + 2.0001 ) / 8.0;
-		
-		vec3 schlickSky = gSurface.specularAmount + vec3( 1.0 - gSurface.specularAmount ) * pow( 1.0 - RdotV, 5.0 );
-		vec3 schlickGround = gSurface.specularAmount + vec3( 1.0 - gSurface.specularAmount ) * pow( 1.0 - RdotVGround, 5.0 );
-		litSpecular += litDiffuse * specularNormalization * ( schlickSky * specularSky * max( NdotL, 0.0 ) + schlickGround * specularGround * max( dotGround, 0.0 ) );
+	vec3 lightDir = normalize(dir);
+	vec3 viewDir = normalize(gSurface.viewDirWorld);
 	
-		lit += gSurface.albedo.rgb * litDiffuse + gSurface.specularAmount * litSpecular;
-	}
+	// diffuse
+	float NdotL = max(dot(gSurface.normal, lightDir), 0.0);
+	float skyDiffuseWeight = 0.5 * NdotL + 0.5;
+	vec3 skyLightColor = mix( groundcolor, skycolor, skyDiffuseWeight );
+	vec3 litDiffuse = gSurface.albedo.rgb * skyLightColor;
+	
+	// specular (sky light)
+	vec3 hemiHalfVectorSky = normalize( lightDir + viewDir );
+	float hemiDotNormalHalfSky = 0.5 * dot( gSurface.normal, hemiHalfVectorSky ) + 0.5;
+	float hemiSpecularWeightSky = max( pow( hemiDotNormalHalfSky, g_shininess ), 0.0 );
+	
+	// specular (ground light)
+	vec3 dirGround = -lightDir;
+	vec3 hemiHalfVectorGround = normalize( dirGround + viewDir );
+	float hemiDotNormalHalfGround = 0.5 * dot( gSurface.normal, hemiHalfVectorGround ) + 0.5;
+	float hemiSpecularWeightGround = max( pow( hemiDotNormalHalfGround, g_shininess ), 0.0 );
+	
+#ifdef USE_SCHLICK_FRESNEL
+	float dotGround = dot( gSurface.normal, dirGround );
+	float specularNormalization = ( g_shininess + 2.0001 ) / 8.0;
+	
+	vec3 schlickSky = gSurface.specularAmount + vec3( 1.0 - gSurface.specularAmount ) 
+						* pow( 1.0 - dot( lightDir, hemiHalfVectorSky ), 5.0 );
+						
+	vec3 schlickGround = gSurface.specularAmount + vec3( 1.0 - gSurface.specularAmount )
+						* pow( 1.0 - dot( dirGround, hemiHalfVectorGround ), 5.0 );
+						
+	vec3 litSpecular = skyLightColor * specularNormalization * ( schlickSky * hemiSpecularWeightSky
+						* max( NdotL, 0.0 ) + schlickGround * hemiSpecularWeightGround * max( dotGround, 0.0 ) );
+#else
+	vec3 litSpecular = gSurface.specularAmount * skyLightColor * ( hemiSpecularWeightSky + hemiSpecularWeightGround ) * skyDiffuseWeight;
+#endif
+	
+	lit += litDiffuse + litSpecular;
 }
 
-void main()
-{
+void main(){
+
 	ComputeSurfaceDataFromGeometry();
 	
-	vec3 lit = vec3(0.0,0.0,0.0);
+	vec3 lit = vec3(0.0);
 	
 	for(int i = 0; i < g_numDirLights; i++){
 		AccumulateDirLight(g_dirLightsDir[i].xyz, g_dirLightsColor[i], lit);
@@ -171,6 +182,10 @@ void main()
 	for(int i = 0; i < g_numPointLights; i++){
 		AccumulatePointLight(g_pointLightsPosition[i].xyz,
 			g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
+	}
+	
+	if (g_hasSkyLight){
+		AccumulateSkyLight(g_skyLightDir, g_skyLightColor, g_groundColor, lit);
 	}
 	
 	gl_FragColor.rgb = lit * g_diffuseColor.rgb;

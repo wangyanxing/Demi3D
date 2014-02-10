@@ -60,4 +60,9 @@ uniform const float4		g_pointLightsColor[MAX_LIGHTS];
 uniform const float4		g_pointLightsPosition[MAX_LIGHTS];
 uniform const float4		g_pointLightsAttenuation[MAX_LIGHTS];
 
+uniform const bool          g_hasSkyLight;
+uniform const float4        g_skyLightColor;
+uniform const float4        g_groundColor;
+uniform const float3        g_skyLightDir;
+
 #endif

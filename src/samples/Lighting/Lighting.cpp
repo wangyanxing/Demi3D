@@ -38,13 +38,21 @@ void InitScene()
 
     sm->SetAmbientColor(DiColor::Black);
 
-	DiDirLight* dirlight = sm->CreateDirLight();
-	dirlight->SetColor(DiColor());
-	dirlight->SetDirection(DiVec3(1,1,2).normalisedCopy());
+    DiDirLight* dirlight = sm->CreateDirLight();
+    dirlight->SetColor(DiColor());
+    dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 
-	pointlight = sm->CreatePointLight();
-	pointlight->SetColor(DiColor());
-	pointlight->SetAttenuation(100);
+#if 0
+    // sky light testing
+    DiSkyLight* skyLight = sm->CreateSkyLight();
+    skyLight->SetColor(DiColor(0.3f,0.3f,0.3f));
+    skyLight->SetGrondColor(DiColor(0.1f, 0.1f, 0.1f));
+    skyLight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
+#endif
+
+    pointlight = sm->CreatePointLight();
+    pointlight->SetColor(DiColor());
+ 	pointlight->SetAttenuation(100);
 
 	// visbile mesh for the point light
 	DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>();
