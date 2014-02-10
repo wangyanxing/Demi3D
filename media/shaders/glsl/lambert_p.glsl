@@ -54,7 +54,7 @@ void ComputeSurfaceDataFromGeometry() {
 	#endif
 }
 
-void AccumulateDirLight(vec3 dir, vec4 color, inout vec3 lit){
+void AccumulateDirLight(vec3 dir,vec4 color, inout vec3 lit){
 
 	float NdotL = max(dot(gSurface.normal, normalize(dir)), 0.0);
 	
@@ -84,7 +84,7 @@ void AccumulateSkyLight(vec3 dir, vec4 skycolor, vec4 groundcolor, inout vec3 li
 	float NdotL = max(dot(gSurface.normal, normalize(dir)), 0.0);
 
 	float skyDiffuseWeight = 0.5 * NdotL + 0.5;
-	vec3 color = mix( groundcolor, skycolor, skyDiffuseWeight );
+	vec3 color = mix( groundcolor.rgb, skycolor.rgb, skyDiffuseWeight );
 	lit += gSurface.albedo.rgb * color;
 }
 
@@ -103,7 +103,7 @@ void main(){
 			g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
 	}
 	
-	if (g_hasSkyLight){
+	if (g_hasSkyLight == 1){
 		AccumulateSkyLight(g_skyLightDir, g_skyLightColor, g_groundColor, lit);
 	}
 	

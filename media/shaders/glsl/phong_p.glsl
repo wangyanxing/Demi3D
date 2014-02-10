@@ -136,7 +136,7 @@ void AccumulateSkyLight(vec3 dir, vec4 skycolor, vec4 groundcolor, inout vec3 li
 	// diffuse
 	float NdotL = max(dot(gSurface.normal, lightDir), 0.0);
 	float skyDiffuseWeight = 0.5 * NdotL + 0.5;
-	vec3 skyLightColor = mix( groundcolor, skycolor, skyDiffuseWeight );
+	vec3 skyLightColor = mix( groundcolor.rgb, skycolor.rgb, skyDiffuseWeight );
 	vec3 litDiffuse = gSurface.albedo.rgb * skyLightColor;
 	
 	// specular (sky light)
@@ -184,7 +184,7 @@ void main(){
 			g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
 	}
 	
-	if (g_hasSkyLight){
+	if (g_hasSkyLight == 1){
 		AccumulateSkyLight(g_skyLightDir, g_skyLightColor, g_groundColor, lit);
 	}
 	
