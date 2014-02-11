@@ -153,7 +153,7 @@ namespace Demi
                     mRefSkeleton = false;
                 }
 
-                // 关联motion和skeleton
+                // link the motion and skeleton
                 mMotion->AssociateNodeAnimToSkeleton(mSkeleton);
 
                 mNumBoneMatrices = (uint32)mSkeleton->GetNumBones();
@@ -164,9 +164,7 @@ namespace Demi
                     mRefBoneMatrics = false;
                 }
 
-                SubModelList::iterator it;
-                SubModelList::iterator itEnd = mSubModels.end();
-                for (it = mSubModels.begin(); it != itEnd; ++it)
+                for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
                 {
                     (*it)->mBoneNum = mNumBoneMatrices;
                     (*it)->mBoneMatrices = mBoneMatrices;
@@ -181,11 +179,9 @@ namespace Demi
                     mRefAttachSet = false;
                 }
 
-                // 关联motion和skeleton
                 mMotion->AssociateNodeAnimToAttachSet(mAttachSet);
             }
 
-            // 初始化动画状态
             if(!mClipSet)
             {
                 InitClipSet();

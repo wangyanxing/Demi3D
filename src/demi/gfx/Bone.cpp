@@ -56,9 +56,9 @@ namespace Demi
     {
         SetInitialState();
 
-        mBindDerivedInversePosition        = - GetDerivedPosition();
-        mBindDerivedInverseScale            = DiVec3::UNIT_SCALE / GetDerivedScale();
-        mBindDerivedInverseOrientation    = GetDerivedOrientation().Inverse();
+        mBindDerivedInversePosition    = -GetDerivedPosition();
+        mBindDerivedInverseScale       = DiVec3::UNIT_SCALE / GetDerivedScale();
+        mBindDerivedInverseOrientation = GetDerivedOrientation().Inverse();
     }
 
     void DiBone::Reset()
@@ -79,7 +79,5 @@ namespace Demi
     void DiBone::NeedUpdate( bool forceParentUpdate /*= false*/ )
     {
         DiNode::NeedUpdate(forceParentUpdate);
-
-        // 如果有手动控制 这里处理逻辑
     }
 }

@@ -5,7 +5,7 @@ attribute vec3  Position;
 
 #if defined( SKINNED )
 attribute vec4  BlendWeights;
-attribute ivec4 BlendIndices;
+attribute vec4  BlendIndices;
 #endif
 
 #if defined( USE_COLOR )

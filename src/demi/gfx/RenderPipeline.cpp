@@ -304,7 +304,7 @@ namespace Demi
             && batch->mBoneNum < MAX_BONE_NUM) 
         {
             for (uint32 i=0; i<batch->mBoneNum; i++)
-                memcpy(&mShaderEnv->boneMatrices[i*3],&batch->mBoneMatrices[i],sizeof(float)*12);
+                memcpy(&mShaderEnv->boneMatrices[i*3], &batch->mBoneMatrices[i],sizeof(float)*12);
             mShaderEnv->numBones = batch->mBoneNum;
         }
     }

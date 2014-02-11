@@ -1,16 +1,17 @@
 
 #ifdef SKINNED
-#   define GET_SPACE_POS_NORMAL \
-       for (int i = 0; i<4; i++){ \
-           objPos.xyz += (Position * g_boneMatrices[In.BlendIndices[i]]) * BlendWeights[i]; \
-           objNormal += ((vec4(Normal, 0) * g_boneMatrices[BlendIndices[i]]) * BlendWeights[i]).xyz; \
-       }\
-       objPos.w = 1.0; \
-       objNormal = normalize(objNormal);
 
-#   define GET_SPACE_POS \
-       for (int i = 0; i<4; i++)\
-           objPos.xyz += (Position * g_boneMatrices[BlendIndices[i]]) * BlendWeights[i]; \
+#   define GET_SPACE_POS_NORMAL(p, n) \
+	   mat3x4 _blend = mat3x4(0.0);   \
+	   for (int i = 0; i < 4; i++)    \
+	       _blend += g_boneMatrices[int(BlendIndices[i])] * BlendWeights[i]; \
+	   vec4 objPos = vec4((vec4(Position,1.0) * _blend).xyz, 1.0); \
+	   vec3 objNormal = normalize((vec4(Normal, 0.0) * _blend).xyz);
+ 
+#   define GET_SPACE_POS(p) \
+	   vec4 objPos = vec4(0.0);\
+       for (int i = 0; i<1; i++)\
+           objPos.xyz += (vec4(Position,1.0)*g_boneMatrices[int(BlendIndices[i])]).xyz; \
        objPos.w = 1.0; 
 #else
 #   define GET_SPACE_POS_NORMAL(p, n) \
@@ -19,6 +20,7 @@
 
 #   define GET_SPACE_POS(p) \
        vec4 objPos = vec4(Position.xyz,1.0);
+	   
 
 #endif
 

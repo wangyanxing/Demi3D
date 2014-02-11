@@ -30,6 +30,7 @@ namespace Demi
 
         mBufferSize = size;
         mResUsage = (DiResUsage)usage;
+        mStreamId = streamID;
 
         glGenBuffersARB(1, &mBufferId);
 

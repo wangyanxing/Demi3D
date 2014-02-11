@@ -36,7 +36,10 @@ namespace Demi
         mPixelShader     = NULL;
         mShininess       = 32.0f;
 
-        mShaderParameter = Driver->CreateShaderParams(*this);
+        if (Driver)
+            mShaderParameter = Driver->CreateShaderParams(*this);
+        else
+            mShaderParameter = nullptr;
     }
 
     DiMaterial::~DiMaterial(void)

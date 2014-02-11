@@ -11,22 +11,22 @@ namespace Demi
 {
     DiGLShaderLinker::CustomAttribute DiGLShaderLinker::msCustomAttributes[] = 
     {
-        CustomAttribute("Position",         DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_POSITION,        0)),
-        CustomAttribute("BlendWeights",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BLENDWEIGHT,     0)),
-        CustomAttribute("Normal",           DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_NORMAL,          0)),
-        CustomAttribute("Color",            DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_COLOR,           0)),
-        CustomAttribute("SecondColor",      DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_SECONDARY_COLOR, 0)),
-        CustomAttribute("BlendIndices",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BLENDINDICES,    0)),
-        CustomAttribute("Texcoord0",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        0)),
-        CustomAttribute("Texcoord1",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        1)),
-        CustomAttribute("Texcoord2",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        2)),
-        CustomAttribute("Texcoord3",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        3)),
-        CustomAttribute("Texcoord4",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        4)),
-        CustomAttribute("Texcoord5",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        5)),
-        CustomAttribute("Texcoord6",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        6)),
-        CustomAttribute("Texcoord7",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        7)),
-        CustomAttribute("Tangent",          DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TANGENT,         0)),
-        CustomAttribute("Binormal",         DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BINORMAL,        0)),
+        CustomAttribute("Position",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_POSITION,        0)),
+        CustomAttribute("BlendWeights", DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BLENDWEIGHT,     0)),
+        CustomAttribute("Normal",       DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_NORMAL,          0)),
+        CustomAttribute("Color",        DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_COLOR,           0)),
+        CustomAttribute("SecondColor",  DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_SECONDARY_COLOR, 0)),
+        CustomAttribute("BlendIndices", DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BLENDINDICES,    0)),
+        CustomAttribute("Texcoord0",    DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        0)),
+        CustomAttribute("Texcoord1",    DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        1)),
+        CustomAttribute("Texcoord2",    DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        2)),
+        CustomAttribute("Texcoord3",    DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        3)),
+        CustomAttribute("Texcoord4",    DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        4)),
+        CustomAttribute("Texcoord5",    DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        5)),
+        CustomAttribute("Texcoord6",    DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        6)),
+        CustomAttribute("Texcoord7",    DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TEXCOORD,        7)),
+        CustomAttribute("Tangent",      DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_TANGENT,         0)),
+        CustomAttribute("Binormal",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BINORMAL,        0)),
     };
 
     DiGLShaderInstance::DiGLShaderInstance(DiShaderType type, DiShaderProgram* prog) : DiShaderInstance(type)
@@ -426,11 +426,11 @@ namespace Demi
         };
 
         msUniformFuncs["g_boneMatrices"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix3x4fv(location, env->numBones, GL_TRUE, (float*)(&env->boneMatrices));
+            glUniformMatrix3x4fv(location, env->numBones, GL_FALSE, (float*)(&env->boneMatrices));
         };
 
         msUniformFuncs["g_modelMatrices"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix3x4fv(location, env->numModelMatrices, GL_TRUE, (float*)(&env->modelMatrices));
+            glUniformMatrix3x4fv(location, env->numModelMatrices, GL_FALSE, (float*)(&env->modelMatrices));
         };
 
         msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, GLuint location) {

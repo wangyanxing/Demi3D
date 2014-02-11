@@ -450,7 +450,8 @@ void ModelConverter::WriteSimpleMaterial( int boneWeightsNum, const DiString& fi
     mat->LoadShader("basic_v", "basic_p");  //todo
 
 	Demi::DiShaderParameter* materialIns = mat->GetShaderParameter();
-	materialIns->WriteTexture2D("diffuseTexture","_default.dds");
+    if (materialIns)
+	    materialIns->WriteTexture2D("diffuseTexture","_default.dds");
 
 	DiMaterialSerializer mas;
 	mas.SaveMaterial(filename,mat.get());

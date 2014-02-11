@@ -5,8 +5,8 @@
 void CreateModels()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-#if 0
-    const int size = 10;
+#if 1
+    const int size = 3;
     for (int i = 0; i < size; i++)
     {
         for (int j = 0; j < size; j++)
@@ -20,6 +20,7 @@ void CreateModels()
                 name.Format("md_%d_%d", i, j);
                 DiAnimModelPtr model = make_shared<DiAnimModel>(name, "robot.model", "robot.motion");
                 model->SetMaterial(mat);
+
                 model->SetAutoUpdateAnims(true);
                 model->GetClipSet()->GetClipController("Walk")->SetEnabled(true);
 
@@ -29,8 +30,7 @@ void CreateModels()
             }
         }
     }
-#endif
-
+#else
     sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));
 
     DiDirLight* dirlight = sm->CreateDirLight();
@@ -46,6 +46,7 @@ void CreateModels()
     model->SetMaterial(mat);
     DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
     cullnode->AttachObject(model);
+#endif
 }
 
 void InitScene()
