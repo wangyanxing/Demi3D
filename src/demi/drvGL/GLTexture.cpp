@@ -34,7 +34,7 @@ namespace Demi
 
     DiGLTextureDrv::~DiGLTextureDrv()
     {
-        if (mBuffer->data)
+        if (mBuffer && mBuffer->data)
         {
             delete[] (uint8*)mBuffer->data;
             mBuffer->data = nullptr;
