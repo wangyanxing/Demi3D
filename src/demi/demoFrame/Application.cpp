@@ -42,6 +42,7 @@ namespace Demi
         //, mInfo(nullptr)
         //, mGUIWrapper(nullptr)
         , mConfig(config)
+        , mQuit(false)
     {
         DI_INIT_PROFILER;
 
@@ -81,6 +82,9 @@ namespace Demi
         //mInfo->Update(mDriver->GetMainRenderWindow()->GetDeltaSecond());
         if (mMainHwnd)
             Driver->Render();
+        
+        if (mQuit)
+        CloseEngine();
 
         DI_PROFILE_END_FRAME
     }
@@ -121,7 +125,8 @@ namespace Demi
     {
         if (evt.key == OIS::KC_ESCAPE)
         {
-            CommandMgr->ExecuteCommand("quit");
+            //CommandMgr->ExecuteCommand("quit");
+            mQuit = true;
         }
 
         mCameraHelper->OnKeyDown(evt);

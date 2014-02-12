@@ -111,6 +111,8 @@ namespace Demi
         DiInfo*                     mInfo;
 
         DemoConfig                  mConfig;
+        
+        bool                        mQuit;
     };
 
 }

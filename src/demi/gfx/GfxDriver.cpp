@@ -36,6 +36,7 @@ namespace Demi
     DiGfxDriver::~DiGfxDriver()
     {
         Driver = nullptr;
+        mMainHwnd = nullptr;
         SAFE_DELETE(mMainWindow);
         SAFE_DELETE(mWndManager);
     }
