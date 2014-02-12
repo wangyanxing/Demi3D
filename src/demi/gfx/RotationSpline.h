@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       RotationSpline.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiRotationSpline_h__
+#define DiRotationSpline_h__
+
 
 namespace Demi
 {
@@ -45,3 +44,5 @@ namespace Demi
 
     };
 }
+
+#endif

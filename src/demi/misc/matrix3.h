@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       matrix3.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Dimatrix3_h__
+#define Dimatrix3_h__
+
 
 #include "MiscPrerequisites.h"
 #include <float.h>
@@ -259,3 +258,5 @@ namespace Demi
     };
 
 }
+
+#endif

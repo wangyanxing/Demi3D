@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       TerrainMap.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiTerrainMap_h__
+#define DiTerrainMap_h__
+
 
 #include "TerrainDesc.h"
 #include "Material.h"
@@ -195,3 +194,5 @@ namespace Demi
         DiSceneManager*             mCreator;
     };
 }
+
+#endif

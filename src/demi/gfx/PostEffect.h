@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       PostEffect.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiPostEffect_h__
+#define DiPostEffect_h__
+
 
 #include "Texture.h"
 #include "Material.h"
@@ -56,3 +55,5 @@ namespace Demi
         DiPostEffectManager*    mMgr;
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       EnginePrerequisites.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGfxPrerequisites_h__
+#define DiGfxPrerequisites_h__
+
 
 #include "CommonEnum.h"
 
@@ -130,3 +129,6 @@ namespace Demi
 }
 
 #include "GfxBase.h"
+
+
+#endif

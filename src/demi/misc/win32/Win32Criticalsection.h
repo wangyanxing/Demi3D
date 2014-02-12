@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       Win32Criticalsection.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef Win32Criticalsection_h__
 #define Win32Criticalsection_h__

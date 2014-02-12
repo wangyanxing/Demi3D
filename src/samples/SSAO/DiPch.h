@@ -1,5 +1,7 @@
 
-#pragma once
+#ifndef DiDiPch_h__
+#define DiDiPch_h__
+
 
 //#include <SDKDDKVer.h>
 
@@ -23,3 +25,6 @@ using namespace Demi;
 #include "AssetManager.h"
 #include "Material.h"
 #include "ShaderParam.h"
+
+
+#endif

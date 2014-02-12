@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       AnimModel.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiAnimModel_h__
+#define DiAnimModel_h__
+
 
 #include "Model.h"
 #include "Motion.h"
@@ -120,3 +119,6 @@ namespace Demi
         PostControllers         mPostControllers;
     };
 }
+
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Mesh.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMesh_h__
+#define DiMesh_h__
+
 
 #include "Asset.h"
 
@@ -59,3 +58,5 @@ namespace Demi
         DiSkeleton*             mSkeleton;
     };
 }
+
+#endif

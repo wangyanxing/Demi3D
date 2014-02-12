@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Console.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiConsole_h__
+#define DiConsole_h__
+
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 
@@ -53,5 +52,7 @@ namespace Demi
         HWND        mWnd;
     };
 }
+
+#endif
 
 #endif

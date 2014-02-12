@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       RenderPipeline.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiRenderPipeline_h__
+#define DiRenderPipeline_h__
+
 
 #include "GfxPrerequisites.h"
 #include "RenderBatchGroup.h"
@@ -107,3 +106,5 @@ namespace Demi
         bool                        mEnableGbuffer;
     };
 }
+
+#endif

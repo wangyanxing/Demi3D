@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       RenderUnit.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiRenderUnit_h__
+#define DiRenderUnit_h__
+
 
 #include "GfxPrerequisites.h"
 #include "Material.h"
@@ -79,3 +78,5 @@ namespace Demi
     };
 
 }
+
+#endif

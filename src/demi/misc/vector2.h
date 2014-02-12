@@ -1,10 +1,9 @@
 
-/********************************************************************
-File:       vector2.h
-Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Divector2_h__
+#define Divector2_h__
+
 
 #include "MiscPrerequisites.h"
 #include "float.h"
@@ -631,3 +630,5 @@ namespace Demi
         static const DiIntVec2 ZERO;
     };
 }
+
+#endif

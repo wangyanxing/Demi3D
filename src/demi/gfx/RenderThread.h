@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       RenderThread.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiRenderThread_h__
+#define DiRenderThread_h__
+
 
 #include "Thread.h"
 
@@ -47,3 +46,5 @@ namespace Demi
         int         mFlush;
     };
 }
+
+#endif

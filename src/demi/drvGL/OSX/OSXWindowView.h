@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       OSXWindowView.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef OSXWindowView_h__
 #define OSXWindowView_h__

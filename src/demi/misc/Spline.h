@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Spline.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSpline_h__
+#define DiSpline_h__
+
 
 namespace Demi
 {
@@ -47,3 +46,5 @@ namespace Demi
     };
 
 }
+
+#endif

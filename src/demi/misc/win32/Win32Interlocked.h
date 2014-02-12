@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       Win32Interlocked.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef Win32Interlocked_h__
 #define Win32Interlocked_h__

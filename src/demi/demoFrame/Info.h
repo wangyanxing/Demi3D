@@ -1,10 +1,9 @@
 
-/**************************************************************************
-    File:       Info.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiInfo_h__
+#define DiInfo_h__
+
 
 #if 0
 
@@ -74,5 +73,7 @@ namespace Demi
         MyGUI::IntPoint             mOffset;
     };
 }
+
+#endif
 
 #endif

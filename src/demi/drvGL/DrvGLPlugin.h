@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       DrvGLPlugin.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiDrvGLPlugin_h__
+#define DiDrvGLPlugin_h__
+
 
 #include "EnginePlugin.h"
 
@@ -31,3 +30,5 @@ namespace Demi
         DiGLDriver*     mDriver;
     };
 }
+
+#endif

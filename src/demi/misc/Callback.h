@@ -1,12 +1,9 @@
 
-/********************************************************************
-    File:       Callback.h
-    Creator:    demiwangya
 
-    From: http://www.tutok.sk/fastgl/callback.html
-*********************************************************************/
 
-#pragma once
+#ifndef DiCallback_h__
+#define DiCallback_h__
+
 
 #include <list>
 
@@ -1287,3 +1284,6 @@ namespace Demi
     };
 
 }
+
+
+#endif

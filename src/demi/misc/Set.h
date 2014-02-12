@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Set.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSet_h__
+#define DiSet_h__
+
 
 #include <set>
 
@@ -20,3 +19,5 @@ namespace Demi
         }
     };
 }
+
+#endif

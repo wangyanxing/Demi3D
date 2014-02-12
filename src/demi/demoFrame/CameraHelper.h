@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       CameraManager.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiCameraHelper_h__
+#define DiCameraHelper_h__
+
 
 #include "Camera.h"
 #include "OIS.h"
@@ -106,3 +105,5 @@ namespace Demi
         bool                    mMoving;
     };
 }
+
+#endif

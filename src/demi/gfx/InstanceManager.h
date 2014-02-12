@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       InstanceManager.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiInstanceManager_h__
+#define DiInstanceManager_h__
+
 
 #include "Mesh.h"
 #include "Motion.h"
@@ -136,3 +135,5 @@ namespace Demi
         size_t                  mMaxLookupTableInstances;
     };
 }
+
+#endif

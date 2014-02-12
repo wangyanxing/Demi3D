@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       RadixSort.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiRadixSort_h__
+#define DiRadixSort_h__
+
 
 namespace Demi
 {
@@ -244,3 +243,5 @@ namespace Demi
 
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       AnimationClip.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiAnimationClip_h__
+#define DiAnimationClip_h__
+
 
 #include "Spline.h"
 #include "RotationSpline.h"
@@ -179,3 +178,5 @@ namespace Demi
         mutable bool           mUseShortestRotationPath ;
     };
 }
+
+#endif

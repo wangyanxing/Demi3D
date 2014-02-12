@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       EnginePlugin.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiEnginePlugin_h__
+#define DiEnginePlugin_h__
+
 
 namespace Demi
 {
@@ -29,3 +28,5 @@ namespace Demi
         static void             UnloadPlugin(const DiString& pgName);
     };
 }
+
+#endif

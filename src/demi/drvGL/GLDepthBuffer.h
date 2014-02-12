@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       GLDepthBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGLDepthBuffer_h__
+#define DiGLDepthBuffer_h__
+
 #include "DepthBuffer.h"
 
 namespace Demi
@@ -35,3 +34,5 @@ namespace Demi
         DiGLContext*        mContext;
     };
 }
+
+#endif

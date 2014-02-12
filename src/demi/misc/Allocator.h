@@ -1,10 +1,5 @@
 
-/********************************************************************
-    File:       Allocator.h
-    Creator:    demiwangya
 
-    Adapted from urho3d engine (free source code)
-*********************************************************************/
 
 #ifndef DiAllocator_h__
 #define DiAllocator_h__

@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       ConsoleVariable.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef ConsoleVariable_h__
 #define ConsoleVariable_h__

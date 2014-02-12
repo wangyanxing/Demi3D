@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       FileArchive.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiFileArchive_h__
+#define DiFileArchive_h__
+
 
 #include "Archive.h"
 
@@ -42,3 +41,5 @@ namespace Demi
                                 DiStringVecPtr simpleList, DiFileInfoListPtr detailList) const;
     };
 }
+
+#endif

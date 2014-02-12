@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SceneSerial.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSceneSerial_h__
+#define DiSceneSerial_h__
+
 
 #include "Scene.h"
 #include "Serializer.h"
@@ -104,3 +103,5 @@ namespace Demi
 
     };
 }
+
+#endif

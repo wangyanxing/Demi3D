@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Light.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiLight_h__
+#define DiLight_h__
+
 
 #include "TransformUnit.h"
 
@@ -69,3 +68,5 @@ namespace Demi
     };
 
 }
+
+#endif

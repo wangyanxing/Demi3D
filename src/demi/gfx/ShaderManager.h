@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       ShaderManager.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiShaderManager_h__
+#define DiShaderManager_h__
+
 
 #include "Singleton.h"
 #include "GpuProgram.h"
@@ -67,3 +66,5 @@ namespace Demi
     };
 
 }
+
+#endif

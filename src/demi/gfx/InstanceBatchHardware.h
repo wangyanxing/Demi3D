@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       InstanceBatchHardware.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiInstanceBatchHardware_h__
+#define DiInstanceBatchHardware_h__
+
 
 #include "InstanceBatch.h"
 
@@ -61,3 +60,5 @@ namespace Demi
         bool            mAddToBatch;
     };
 }
+
+#endif

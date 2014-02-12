@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       EngineBase.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGfxBase_h__
+#define DiGfxBase_h__
+
 
 namespace Demi
 {
@@ -45,3 +44,5 @@ namespace Demi
 #    endif
     };
 }
+
+#endif

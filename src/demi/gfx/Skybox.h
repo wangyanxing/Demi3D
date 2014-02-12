@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Skybox.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSkybox_h__
+#define DiSkybox_h__
+
 
 #include "RenderUnit.h"
 #include "TransformUnit.h"
@@ -69,3 +68,5 @@ namespace Demi
         DiMaterialPtr               mSkyMaterial;
     };
 }
+
+#endif

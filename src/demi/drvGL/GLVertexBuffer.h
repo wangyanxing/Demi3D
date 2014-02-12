@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       GLVertexBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGLVertexBuffer_h__
+#define DiGLVertexBuffer_h__
+
 
 #include "VertexBuffer.h"
 #include "VertexDeclaration.h"
@@ -72,3 +71,5 @@ namespace Demi
         void        Create(){}
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Bone.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiBone_h__
+#define DiBone_h__
+
 
 #include "Node.h"
 
@@ -60,3 +59,5 @@ namespace Demi
         DiVec3              mBindDerivedInversePosition;
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       RenderTarget.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiRenderTarget_h__
+#define DiRenderTarget_h__
+
 
 #include "DeviceLostListener.h"
 #include "Texture.h"
@@ -166,3 +165,5 @@ namespace Demi
         bool                    mFlippingUV;
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SceneManager.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSceneManager_h__
+#define DiSceneManager_h__
+
 
 #include "Light.h"
 #include "Scene.h"
@@ -280,3 +279,5 @@ namespace Demi
     };
 
 }
+
+#endif

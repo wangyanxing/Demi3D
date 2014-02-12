@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Win32Window.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiWin32Window_h__
+#define DiWin32Window_h__
+
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 
@@ -48,5 +47,7 @@ namespace Demi
         HDC         mHDC;
     };
 }
+
+#endif
 
 #endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       WaterMap.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiWaterMap_h__
+#define DiWaterMap_h__
+
 
 #include "Texture.h"
 #include "Material.h"
@@ -62,3 +61,6 @@ namespace Demi
         DiVector<DiWaterChunk*> mChunks;
     };
 }
+
+
+#endif

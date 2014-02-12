@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       DList.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiDList_h__
+#define DiDList_h__
+
 
 namespace Demi
 {
@@ -112,3 +111,5 @@ namespace Demi
         }
     };
 }
+
+#endif

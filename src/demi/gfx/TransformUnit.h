@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       TransformUnit.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiTransformUnit_h__
+#define DiTransformUnit_h__
+
 
 #include "RenderBatchGroup.h"
 #include "XMLElement.h"
@@ -133,3 +132,5 @@ namespace Demi
     };
 
 }
+
+#endif

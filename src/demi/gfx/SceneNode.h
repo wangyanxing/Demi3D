@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SceneNode.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSceneNode_h__
+#define DiSceneNode_h__
+
 
 #include "DList.h"
 
@@ -220,3 +219,5 @@ namespace Demi
         mutable DiVec3    mWorldScale;
     };
 }
+
+#endif

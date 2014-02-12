@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       MotionSerial.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMotionSerial_h__
+#define DiMotionSerial_h__
+
 
 #include "Serializer.h"
 #include "Motion.h"
@@ -114,3 +113,5 @@ namespace Demi
         virtual size_t          CalcAttachClipSize(const DiNodeClip* pClip);
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       WaterChunk.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiWaterChunk_h__
+#define DiWaterChunk_h__
+
 
 #include "BatchBase.h"
 
@@ -41,3 +40,5 @@ namespace Demi
         float           mHeight;
     };
 }
+
+#endif

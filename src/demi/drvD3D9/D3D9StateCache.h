@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9StateCache.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9StateCache_h__
+#define DiD3D9StateCache_h__
+
 
 #include "StateCache.h"
 
@@ -84,3 +83,5 @@ namespace Demi
         IDirect3DIndexBuffer9*          mIndexBuffer;
     };
 }
+
+#endif

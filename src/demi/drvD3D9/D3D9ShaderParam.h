@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       D3D9ShaderParam.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef D3D9ShaderParam_h__
 #define D3D9ShaderParam_h__

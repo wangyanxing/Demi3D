@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9WindowTarget.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9WindowTarget_h__
+#define DiD3D9WindowTarget_h__
+
 
 #include "D3D9RenderTarget.h"
 
@@ -55,3 +54,5 @@ namespace Demi
         IDirect3DSurface9*      mD3D9DepthBuffer;
     };
 }
+
+#endif

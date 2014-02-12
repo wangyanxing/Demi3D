@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       GLRenderTarget.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGLRenderTarget_h__
+#define DiGLRenderTarget_h__
+
 
 #include "RenderTarget.h"
 
@@ -77,3 +76,5 @@ namespace Demi
         DiGLContext*            mContext;
     };
 }
+
+#endif

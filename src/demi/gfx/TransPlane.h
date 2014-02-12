@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       TransPlane.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiTransPlane_h__
+#define DiTransPlane_h__
+
 
 #include "plane.h"
 #include "TransformUnit.h"
@@ -45,3 +44,5 @@ namespace Demi
         mutable bool            mDirty;
     };
 }
+
+#endif

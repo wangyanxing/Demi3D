@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       quaternion.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Diquaternion_h__
+#define Diquaternion_h__
+
 
 #include "MiscPrerequisites.h"
 #include "mathmisc.h"
@@ -187,3 +186,5 @@ namespace Demi
     };
 
 }
+
+#endif

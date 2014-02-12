@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Win32GLContext.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiWin32GLContext_h__
+#define DiWin32GLContext_h__
+
 
 #include "GLContext.h"
 
@@ -43,3 +42,5 @@ namespace Demi
         HGLRC           mGLRc;
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       VertexFormat.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiVertexFormat_h__
+#define DiVertexFormat_h__
+
 
 namespace Demi
 {
@@ -68,3 +67,5 @@ namespace Demi
         VF_BONEID4B_WEIGHTS4F           = 1 << (SKINNING_DECLAR_START + 0) // for skinning
     };
 }
+
+#endif

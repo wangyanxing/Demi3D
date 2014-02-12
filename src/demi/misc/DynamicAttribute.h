@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       DynamicAttribute.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiDynamicAttribute_h__
+#define DiDynamicAttribute_h__
+
 
 #include "Spline.h"
 
@@ -202,3 +201,5 @@ namespace Demi
     };
 
 }
+
+#endif

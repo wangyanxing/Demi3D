@@ -1,10 +1,9 @@
 
-/**************************************************************************
-    File:       DemoPrerequisites.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiDemoPrerequisites_h__
+#define DiDemoPrerequisites_h__
+
 
 namespace Demi
 {
@@ -24,3 +23,5 @@ namespace Demi
     class DiConsoleVarListener;
     class DiInputManager;
 }
+
+#endif

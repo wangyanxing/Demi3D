@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       ApplicationOSX.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef DiApplicationOSX_h__
 #define DiApplicationOSX_h__

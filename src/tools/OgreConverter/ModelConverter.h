@@ -1,4 +1,6 @@
-#pragma once
+#ifndef DiModelConverter_h__
+#define DiModelConverter_h__
+
 
 #include "Mesh.h"
 
@@ -32,3 +34,6 @@ protected:
 	Ogre::VertexElementType	mColourElementType;
 };
 
+
+
+#endif

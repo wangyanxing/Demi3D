@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       GpuProgram.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGpuProgram_h__
+#define DiGpuProgram_h__
+
 
 #include "Skeleton.h"
 #include "GfxDriver.h"
@@ -140,3 +139,5 @@ namespace Demi
         DiCompileDesc           mCompileDesc;
     };
 }
+
+#endif

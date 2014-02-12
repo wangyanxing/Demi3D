@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       OSXCGLContext.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef OSXCGLContext_h__
 #define OSXCGLContext_h__

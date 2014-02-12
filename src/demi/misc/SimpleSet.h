@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SimpleSet.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSimpleSet_h__
+#define DiSimpleSet_h__
+
 
 #include "MemoryAllocator.h"
 
@@ -223,3 +222,5 @@ namespace Demi
     typedef DiSimplePodSet<float>            DiSpFloatSet;
 
 }
+
+#endif

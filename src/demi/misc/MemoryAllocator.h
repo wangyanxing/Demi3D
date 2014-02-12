@@ -1,9 +1,8 @@
-/**************************************************************************
-    File:     MemoryAllocator.h
-    Creator:  demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiMemoryAllocator_h__
+#define DiMemoryAllocator_h__
+
 
 #include "MemoryConfig.h"
 
@@ -39,3 +38,5 @@ public:
         DI_DELETE[] pArray;
     }
 };
+
+#endif

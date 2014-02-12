@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       KeyFrame.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiKeyFrame_h__
+#define DiKeyFrame_h__
+
 
 namespace Demi
 {
@@ -60,3 +59,5 @@ namespace Demi
         DiQuat              mRotate;
     };
 }
+
+#endif

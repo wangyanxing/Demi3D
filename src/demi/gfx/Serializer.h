@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Serializer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSerializer_h__
+#define DiSerializer_h__
+
 
 namespace Demi
 {
@@ -65,3 +64,5 @@ namespace Demi
         DiDataStreamPtr          mStream;
     };
 }
+
+#endif

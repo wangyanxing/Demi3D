@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       FileStream.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiFileStream_h__
+#define DiFileStream_h__
+
 #include <iosfwd>
 #include <fstream>
 
@@ -52,3 +51,5 @@ namespace Demi
 
 typedef Demi::DiFileStream<std::ifstream> DiIfstream;
 typedef Demi::DiFileStream<std::ofstream> DiOfstream;
+
+#endif

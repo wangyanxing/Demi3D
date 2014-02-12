@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       IndexBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiIndexBuffer_h__
+#define DiIndexBuffer_h__
+
 
 #include "GpuBuffer.h"
 
@@ -45,3 +44,5 @@ namespace Demi
         uint32                  mMaxIndices;
     };
 }
+
+#endif

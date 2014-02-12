@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Motion.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMotion_h__
+#define DiMotion_h__
+
 
 #include "Asset.h"
 
@@ -87,3 +86,5 @@ namespace Demi
         AnimationList               mAnimationList;
     };
 }
+
+#endif

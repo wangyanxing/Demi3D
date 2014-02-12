@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9VertexDeclaration.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9VertexDeclaration_h__
+#define DiD3D9VertexDeclaration_h__
+
 
 #include "VertexDeclaration.h"
 
@@ -31,3 +30,5 @@ namespace Demi
         IDirect3DVertexDeclaration9*    mVertexDecl;
     };
 }
+
+#endif

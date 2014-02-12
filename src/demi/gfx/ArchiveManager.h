@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       ArchiveManager.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiArchiveManager_h__
+#define DiArchiveManager_h__
+
 
 #include "GfxPrerequisites.h" 
 #include "Singleton.h"
@@ -45,3 +44,5 @@ namespace Demi
         ArchiveMap            mArchives;
     };
 }
+
+#endif

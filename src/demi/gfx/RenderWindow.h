@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       RenderWindow.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiRenderWindow_h__
+#define DiRenderWindow_h__
+
 
 #include "Texture.h"
 
@@ -111,3 +110,6 @@ namespace Demi
         DiWindow*               mWindow;
     };
 }
+
+
+#endif

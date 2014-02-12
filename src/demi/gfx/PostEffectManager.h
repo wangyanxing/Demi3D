@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       PostEffectManager.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef PostEffectManager_h__
 #define PostEffectManager_h__

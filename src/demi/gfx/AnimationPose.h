@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       AnimationPose.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef AnimationPose_h__
 #define AnimationPose_h__

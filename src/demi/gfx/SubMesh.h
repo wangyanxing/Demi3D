@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SubMesh.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSubMesh_h__
+#define DiSubMesh_h__
+
 
 #include "VertexDeclaration.h"
 
@@ -168,3 +167,5 @@ namespace Demi
         uint32                    mMaxWeights;
     };
 }
+
+#endif

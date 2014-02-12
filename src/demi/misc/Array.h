@@ -1,9 +1,8 @@
-/**************************************************************************
-    File:       Array.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiArray_h__
+#define DiArray_h__
+
 
 #include "MiscPrerequisites.h"
 
@@ -56,3 +55,6 @@ namespace Demi
     };
 
 }
+
+
+#endif

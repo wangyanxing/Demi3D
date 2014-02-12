@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       MaterialSerial.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMaterialSerial_h__
+#define DiMaterialSerial_h__
+
 
 #include "GfxPrerequisites.h"
 #include "XMLElement.h"
@@ -95,3 +94,5 @@ namespace Demi
         static bool             DEFAULT_DEPTH_WRITE;
     };
 }
+
+#endif

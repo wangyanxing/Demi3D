@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:           PostController.h
-    Creator:        demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiPostController_h__
+#define DiPostController_h__
+
 
 namespace Demi
 {
@@ -31,3 +30,5 @@ namespace Demi
         DiAnimModel*            mParent;
     };
 }
+
+#endif

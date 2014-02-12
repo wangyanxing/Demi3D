@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       GLShaderVariable.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGLShaderParam_h__
+#define DiGLShaderParam_h__
+
 
 #include "ShaderParam.h"
 #include "GLShader.h"
@@ -41,3 +40,5 @@ namespace Demi
         DiMap<GLuint, DiGLUniforms::BindingFunc> mBuiltinFuncs;
     };
 }
+
+#endif

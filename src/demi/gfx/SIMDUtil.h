@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SIMDUtil.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSIMDUtil_h__
+#define DiSIMDUtil_h__
+
 
 #include <xmmintrin.h>
 
@@ -30,7 +29,7 @@
         r3 = _mm_movehl_ps(tmp3, tmp2);                         /* r03 r13 r23 r33 */   \
     }
 
-// 4x3¾ØÕóµÄ×ªÖÃ
+// 4x3ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
 #define __MM_TRANSPOSE4x3_PS(v0, v1, v2)                                                \
     {                                                                                   \
         __m128 tmp0, tmp1, tmp2;                                                        \
@@ -48,7 +47,7 @@
         v2 = _mm_shuffle_ps(tmp1, tmp0, _MM_SHUFFLE(3,2,3,1));  /* r02 r12 r22 r32 */   \
     }
 
-// 3x4¾ØÕóµÄ×ªÖÃ
+// 3x4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
 #define __MM_TRANSPOSE3x4_PS(v0, v1, v2)                                                \
     {                                                                                   \
         __m128 tmp0, tmp1, tmp2;                                                        \
@@ -152,3 +151,5 @@ namespace Demi
 #    define __MT_CHECK_STACK_ALIGNED_FOR_SSE()
 #endif 
 }
+
+#endif

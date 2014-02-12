@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       polygen.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Dipolygen_h__
+#define Dipolygen_h__
+
 
 namespace Demi
 {
@@ -67,3 +66,5 @@ namespace Demi
         mutable bool     mIsNormalSet;
     };
 }
+
+#endif

@@ -1,9 +1,8 @@
-/**************************************************************************
-    File:       StdAllocator.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiStdAllocator_h__
+#define DiStdAllocator_h__
+
 
 #include "StdMemory.h"
 #include <limits>
@@ -105,3 +104,5 @@ namespace Engine
     };
 
 }
+
+#endif

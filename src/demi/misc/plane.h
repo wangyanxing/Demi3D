@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       plane.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Diplane_h__
+#define Diplane_h__
+
 
 #include "MiscPrerequisites.h"
 #include "vector3.h"
@@ -92,3 +91,5 @@ namespace Demi
         }
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Node.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiNode_h__
+#define DiNode_h__
+
 
 namespace Demi
 {
@@ -233,3 +232,5 @@ namespace Demi
     };
 
 }
+
+#endif

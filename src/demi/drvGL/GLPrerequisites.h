@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       GLPrerequisites.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef GLPrerequisites_h__
 #define GLPrerequisites_h__

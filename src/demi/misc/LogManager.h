@@ -1,9 +1,8 @@
-/**************************************************************************
-    File:       LogManager.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiLogManager_h__
+#define DiLogManager_h__
+
 
 #include "Array.h"
 #include "Singleton.h"
@@ -67,3 +66,6 @@ namespace Demi
 }
 
 
+
+
+#endif

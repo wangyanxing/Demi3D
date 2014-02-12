@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       planeBoundedVolume.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiplaneBoundedVolume_h__
+#define DiplaneBoundedVolume_h__
+
 
 #include "MiscPrerequisites.h"
 #include "AxisAlignedBox.h"
@@ -94,3 +93,5 @@ namespace Demi
     typedef DiVector<DiPlaneBoundedVol> PlaneBoundedVolumeList;
 
 }
+
+#endif

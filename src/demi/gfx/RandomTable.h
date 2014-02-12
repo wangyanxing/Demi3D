@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       RandomTable.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiRandomTable_h__
+#define DiRandomTable_h__
+
 
 #include <time.h>
 #include "MersenneTwister.h"
@@ -80,3 +79,6 @@ namespace Demi
     }
 
 }
+
+
+#endif

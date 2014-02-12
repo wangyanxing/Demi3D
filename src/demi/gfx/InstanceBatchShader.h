@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       InstanceBatchShader.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiInstanceBatchShader_h__
+#define DiInstanceBatchShader_h__
+
 
 #include "GfxPrerequisites.h"
 #include "InstanceBatch.h"
@@ -45,3 +44,5 @@ namespace Demi
 
     };
 }
+
+#endif

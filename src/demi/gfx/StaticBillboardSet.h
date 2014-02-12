@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       StaticBillboardSet.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiStaticBillboardSet_h__
+#define DiStaticBillboardSet_h__
+
 
 #include "Mesh.h"
 #include "Model.h"
@@ -144,3 +143,6 @@ namespace Demi
         BillboardOrigin                     mOrigin;
     };
 }
+
+
+#endif

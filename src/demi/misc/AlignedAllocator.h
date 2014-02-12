@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       AlignedAllocator.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiAlignedAllocator_h__
+#define DiAlignedAllocator_h__
+
 
 namespace Demi
 {
@@ -19,3 +18,5 @@ namespace Demi
         static void     Deallocate(void* p);
     };
 }
+
+#endif

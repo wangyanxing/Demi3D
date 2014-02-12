@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:        GBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGBuffer_h__
+#define DiGBuffer_h__
+
 
 #include "Texture.h"
 #include "Material.h"
@@ -44,3 +43,5 @@ namespace Demi
     };
 
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       PoolMap.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiPoolMap_h__
+#define DiPoolMap_h__
+
 
 namespace Demi
 {
@@ -153,3 +152,5 @@ namespace Demi
         PoolMapMap    mLocked;
     };
 }
+
+#endif

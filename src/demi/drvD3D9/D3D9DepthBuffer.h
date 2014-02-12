@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9DepthBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9DepthBuffer_h__
+#define DiD3D9DepthBuffer_h__
+
 
 #include "DepthBuffer.h"
 
@@ -41,3 +40,5 @@ namespace Demi
         D3DFORMAT           mD3DFormat;
     };
 }
+
+#endif

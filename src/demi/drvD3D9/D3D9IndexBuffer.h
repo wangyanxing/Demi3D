@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9IndexBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9IndexBuffer_h__
+#define DiD3D9IndexBuffer_h__
+
 
 #include "IndexBuffer.h"
 
@@ -43,3 +42,5 @@ namespace Demi
         D3DPOOL     mPool;
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Archive.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiArchive_h__
+#define DiArchive_h__
+
 
 namespace Demi 
 {
@@ -58,3 +57,5 @@ namespace Demi
 
     typedef shared_ptr<DiArchive>      ArchivePtr;
 }
+
+#endif

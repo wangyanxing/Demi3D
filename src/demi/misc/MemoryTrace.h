@@ -1,9 +1,8 @@
-/**************************************************************************
-    File:       MemoryTrace.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiMemoryTrace_h__
+#define DiMemoryTrace_h__
+
 
 #include "MiscDefines.h"
 
@@ -68,3 +67,5 @@ namespace Demi
     }
 
 }
+
+#endif

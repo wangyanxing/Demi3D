@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SceneFormat.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSceneFormat_h__
+#define DiSceneFormat_h__
+
 
 namespace Demi
 {
@@ -18,3 +17,5 @@ namespace Demi
         S_CLIFF_DATA                        = 0x1500,
     };
 }
+
+#endif

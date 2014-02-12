@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       OctreeQuery.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiOctreeQuery_h__
+#define DiOctreeQuery_h__
+
 
 #include "SceneQuery.h"
 
@@ -47,3 +46,5 @@ namespace Demi
         void Execute(SceneQueryListener* listener);
     };
 }
+
+#endif

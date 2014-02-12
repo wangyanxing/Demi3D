@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Sort.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSort_h__
+#define DiSort_h__
+
 
 namespace Demi
 {
@@ -21,3 +20,6 @@ namespace Demi
         std::sort(_First,_Last);
     }
 }
+
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SimpleShape.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSimpleShape_h__
+#define DiSimpleShape_h__
+
 
 #include "RenderUnit.h"
 #include "TransformUnit.h"
@@ -52,3 +51,6 @@ namespace Demi
     };
 
 }
+
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       BatchBase.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiBatchBase_h__
+#define DiBatchBase_h__
+
 
 #include "RenderUnit.h"
 
@@ -17,3 +16,5 @@ namespace Demi
         virtual void UpdateMaterialParams(){}
     };
 }
+
+#endif

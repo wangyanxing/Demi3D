@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       LineList.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiLineList_h__
+#define DiLineList_h__
+
 
 #include "TransformUnit.h"
 #include "RenderUnit.h"
@@ -74,3 +73,5 @@ namespace Demi
     };
 
 }
+
+#endif

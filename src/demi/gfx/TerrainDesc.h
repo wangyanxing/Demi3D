@@ -1,10 +1,9 @@
 
-/**************************************************************************
-    File:       TerrainDesc.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiTerrainDesc_h__
+#define DiTerrainDesc_h__
+
 
 namespace Demi
 {
@@ -119,3 +118,5 @@ namespace Demi
         FoliageLayers       mFoliageLayers;
     };
 }
+
+#endif

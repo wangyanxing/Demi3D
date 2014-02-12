@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       DrvD3D9Plugin.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiDrvD3D9Plugin_h__
+#define DiDrvD3D9Plugin_h__
+
 
 #include "EnginePlugin.h"
 
@@ -31,3 +30,5 @@ namespace Demi
         DiD3D9Driver*   mDriver;
     };
 }
+
+#endif

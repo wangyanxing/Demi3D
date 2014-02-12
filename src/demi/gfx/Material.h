@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Material.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMaterial_h__
+#define DiMaterial_h__
+
 
 #include "GfxPrerequisites.h"
 #include "GpuProgram.h"
@@ -182,3 +181,5 @@ namespace Demi
     };
 
 }
+
+#endif

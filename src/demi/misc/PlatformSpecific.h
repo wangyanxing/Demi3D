@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       PlatformSpecific.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef PlatformSpecific_h__
 #define PlatformSpecific_h__

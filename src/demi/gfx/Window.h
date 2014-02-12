@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Window.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiWindow_h__
+#define DiWindow_h__
+
 
 namespace Demi
 {
@@ -84,3 +83,5 @@ namespace Demi
         DiMap<DiWndHandle, DiWindow*> mWnds;
     };
 }
+
+#endif

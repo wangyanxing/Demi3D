@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       TerrainQuadNode.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiTerrainNode_h__
+#define DiTerrainNode_h__
+
 
 namespace Demi
 {
@@ -45,3 +44,5 @@ namespace Demi
         DiIntVec2       mChunkOffset;
     };
 }
+
+#endif

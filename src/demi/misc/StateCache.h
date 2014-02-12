@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       StateCache.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiStateCache_h__
+#define DiStateCache_h__
+
 
 namespace Demi
 {
@@ -86,3 +85,5 @@ namespace Demi
         }
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Asset.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiAsset_h__
+#define DiAsset_h__
+
 
 #include "GfxPrerequisites.h"
 
@@ -46,3 +45,5 @@ namespace Demi
 
     typedef shared_ptr<DiAsset> DiAssetPtr;
 }
+
+#endif

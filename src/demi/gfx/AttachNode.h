@@ -1,9 +1,8 @@
 
-/********************************************************************
-    File:       AttachNode.h
-    Creator:    demiwangya
-*********************************************************************/
-#pragma once
+
+#ifndef DiAttachNode_h__
+#define DiAttachNode_h__
+
 
 #include "Node.h"
 #include "Bone.h"
@@ -56,3 +55,6 @@ namespace Demi
         DiVec3                     mBindDerivedInversePosition;
     };
 }
+
+
+#endif

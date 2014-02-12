@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SceneQuery.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSceneQuery_h__
+#define DiSceneQuery_h__
+
 
 #include "SceneManager.h"
 #include "TransformUnit.h"
@@ -267,3 +266,5 @@ namespace Demi
         bool                                     QueryResult(DiTransUnitPtr movable, DiSceneQuery::WorldFragment* fragment);
     };
 }
+
+#endif

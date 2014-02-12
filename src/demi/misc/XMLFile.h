@@ -1,12 +1,10 @@
 
-/********************************************************************
-    File:        AffineParts.h
-    Creator:     demiwangya
-    Description: This file is based on XMLFile.h from Urho3D project
-*********************************************************************/
 
 
-#pragma once
+
+#ifndef DiXMLFile_h__
+#define DiXMLFile_h__
+
 #include "DataStream.h"
 #include "XMLElement.h"
 
@@ -48,3 +46,6 @@ namespace Demi
     };
 
 }
+
+
+#endif

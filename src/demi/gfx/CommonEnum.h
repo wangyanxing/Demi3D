@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       CommonEnum.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiCommonEnum_h__
+#define DiCommonEnum_h__
+
 
 namespace Demi 
 {
@@ -233,3 +232,6 @@ namespace Demi
         CVT_MAX_MATS
     };
 }
+
+
+#endif

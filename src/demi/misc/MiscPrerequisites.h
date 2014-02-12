@@ -1,7 +1,4 @@
-/**************************************************************************
-    File:       CommonPrerequisites.h
-    Creator:    demiwangya
-**************************************************************************/
+
 
 #ifndef MiscPrerequisites_h__
 #define MiscPrerequisites_h__

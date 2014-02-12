@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       ray.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Diray_h__
+#define Diray_h__
+
 
 #include "MiscPrerequisites.h"
 #include "mathmisc.h"
@@ -87,3 +86,5 @@ namespace Demi
     };
 
 }
+
+#endif

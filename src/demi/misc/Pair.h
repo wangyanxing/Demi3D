@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Pair.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiPair_h__
+#define DiPair_h__
+
 
 #include <utility>
 
@@ -24,3 +23,6 @@ namespace Demi
         }
     };
 }
+
+
+#endif

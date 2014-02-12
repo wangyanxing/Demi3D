@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       VertexDeclarationh
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiVertexDeclaration_h__
+#define DiVertexDeclaration_h__
+
 
 #include "VertexFormat.h"
 
@@ -117,3 +116,6 @@ namespace Demi
     };
 }
 
+
+
+#endif

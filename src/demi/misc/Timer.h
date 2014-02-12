@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Timer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiTimer_h__
+#define DiTimer_h__
+
 
 #include <time.h>
 
@@ -40,3 +39,5 @@ namespace Demi
 #endif
     };
 }
+
+#endif

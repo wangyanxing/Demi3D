@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Octree.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiOctree_h__
+#define DiOctree_h__
+
 #include "DList.h"
 
 namespace Demi
@@ -81,3 +80,5 @@ namespace Demi
         DiOctreePtr mRoot;
     };
 }
+
+#endif

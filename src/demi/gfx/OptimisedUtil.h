@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       OptimisedUtil.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiOptimisedUtil_h__
+#define DiOptimisedUtil_h__
+
 
 namespace Demi
 {
@@ -46,3 +45,5 @@ namespace Demi
         ptr = RawOffsetPointer(ptr, offset);
     }
 }
+
+#endif

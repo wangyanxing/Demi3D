@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       sphere.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Disphere_h__
+#define Disphere_h__
+
 
 #include "MiscPrerequisites.h"
 #include "vector3.h"
@@ -60,3 +59,5 @@ namespace Demi
     };
 
 }
+
+#endif

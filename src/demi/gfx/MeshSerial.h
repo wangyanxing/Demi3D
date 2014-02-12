@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       MeshSerial.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMeshSerial_h__
+#define DiMeshSerial_h__
+
 
 #include "Mesh.h"
 #include "Serializer.h"
@@ -102,3 +101,5 @@ namespace Demi
         virtual size_t          CalcStreamDataSize(const DiSubMesh* pSub);
     };
 }
+
+#endif

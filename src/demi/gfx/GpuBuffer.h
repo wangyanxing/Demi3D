@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       GpuBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGpuBuffer_h__
+#define DiGpuBuffer_h__
+
 
 #include "DeviceLostListener.h"
 
@@ -40,3 +39,5 @@ namespace Demi
         uint32        mBufferSize;
     };
 }
+
+#endif

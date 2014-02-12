@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       InstanceBatch.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiInstanceBatch_h__
+#define DiInstanceBatch_h__
+
 
 #include "RenderUnit.h"
 #include "TransformUnit.h"
@@ -159,3 +158,5 @@ namespace Demi
         bool                        mAddToBatch;
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9Driver.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9Driver_h__
+#define DiD3D9Driver_h__
+
 
 #include "DrvD3D9Defines.h"
 #include "D3D9Prerequisites.h"
@@ -174,3 +173,5 @@ namespace Demi
         static IDirect3DDevice9* Device;
     };
 }
+
+#endif

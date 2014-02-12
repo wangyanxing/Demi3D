@@ -1,12 +1,9 @@
 
-/********************************************************************
-    File:       XMLElement.h
-    Creator:    demiwangya
 
-    Adapted from urho3d engine (free source code)
-*********************************************************************/
 
-#pragma once
+#ifndef DiXMLElement_h__
+#define DiXMLElement_h__
+
 
 namespace pugi
 {
@@ -212,3 +209,6 @@ namespace Demi
         pugi::xml_node_struct* mNode;
     };
 }
+
+
+#endif

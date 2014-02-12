@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       ClipController.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef ClipController_h__
 #define ClipController_h__

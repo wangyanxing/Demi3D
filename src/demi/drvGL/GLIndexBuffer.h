@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       GLIndexBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGLIndexBuffer_h__
+#define DiGLIndexBuffer_h__
+
 
 #include "IndexBuffer.h"
 
@@ -51,3 +50,5 @@ namespace Demi
         uint32      mLockingSize;
     };
 }
+
+#endif

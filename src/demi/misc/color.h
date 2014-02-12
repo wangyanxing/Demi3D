@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       color.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Dicolor_h__
+#define Dicolor_h__
+
 
 #include "MiscPrerequisites.h"
 
@@ -243,3 +242,5 @@ namespace Demi
     };
 
 }
+
+#endif

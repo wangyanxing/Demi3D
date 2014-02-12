@@ -4,7 +4,9 @@ File:       Mouse.h
 Creator:    InputManager.h
 *********************************************************************/
 
-#pragma once
+#ifndef DiInputManager_h__
+#define DiInputManager_h__
+
 
 //#include "MyGUI_KeyCode.h"
 //#include "MyGUI_MouseButton.h"
@@ -81,3 +83,5 @@ namespace Demi
     };
 
 } 
+
+#endif

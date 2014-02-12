@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       GLContext.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGLContext_h__
+#define DiGLContext_h__
+
 
 namespace Demi
 {
@@ -27,3 +26,5 @@ namespace Demi
         virtual DiGLContext*    Clone() const = 0;
     };
 }
+
+#endif

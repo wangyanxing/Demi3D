@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Sprite.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSprite_h__
+#define DiSprite_h__
+
 
 #include "RenderUnit.h"
 #include "TransformUnit.h"
@@ -70,3 +69,5 @@ namespace Demi
         DiVector<DiQuadElement>    mQuads;
     };
 }
+
+#endif

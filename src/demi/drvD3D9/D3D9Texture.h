@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9Texture.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9Texture_h__
+#define DiD3D9Texture_h__
+
 
 #include "Texture.h"
 
@@ -49,3 +48,5 @@ namespace Demi
         IDirect3DBaseTexture9*  mTexture;
     };
 }
+
+#endif

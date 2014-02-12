@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       FoliageChunk.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiFoliageChunk_h__
+#define DiFoliageChunk_h__
+
 
 #include "BatchBase.h"
 
@@ -76,3 +75,5 @@ namespace Demi
         DiIntVec2           mChunkID;
     };
 }
+
+#endif

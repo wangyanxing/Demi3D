@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       MeshFormat.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMeshFormat_h__
+#define DiMeshFormat_h__
+
 
 namespace Demi 
 {
@@ -23,3 +22,5 @@ namespace Demi
         DI_MESH_WEIGHTS                           = 0x3000,
     };
 }
+
+#endif

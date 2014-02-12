@@ -1,10 +1,9 @@
 
-#pragma once
+#ifndef Divector3_h__
+#define Divector3_h__
 
-/********************************************************************
-    File:       vector3.h
-    Creator:    demiwangya
-*********************************************************************/
+
+
 
 #include "MiscPrerequisites.h"
 #include "float.h"
@@ -840,3 +839,5 @@ namespace Demi
         static const DiIntVec3 ZERO;
     };
 }
+
+#endif

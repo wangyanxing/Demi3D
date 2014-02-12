@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       MersenneTwister.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMersenneTwister_h__
+#define DiMersenneTwister_h__
+
 
 #include <iostream>
 #include <climits>
@@ -368,3 +367,6 @@ namespace Demi
     }
 }
 
+
+
+#endif

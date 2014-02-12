@@ -1,8 +1,7 @@
-/********************************************************************
-    File:       Camera.h
-    Creator:    demiwangya
-*********************************************************************/
-#pragma once
+
+#ifndef DiCamera_h__
+#define DiCamera_h__
+
 
 #include "Frustum.h"
 
@@ -240,3 +239,5 @@ namespace Demi
     };
 
 }
+
+#endif

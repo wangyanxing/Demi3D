@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       InstancedModel.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiInstancedModel_h__
+#define DiInstancedModel_h__
+
 
 #include "TransformUnit.h"
 
@@ -153,3 +152,5 @@ namespace Demi
         
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/**************************************************************************
-    File:       TerrainChunk.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiTerrainChunk_h__
+#define DiTerrainChunk_h__
+
 
 #include "TerrainDesc.h"
 #include "BatchBase.h"
@@ -106,3 +105,5 @@ namespace Demi
         DiMat4              mChunkTransform;
     };
 }
+
+#endif

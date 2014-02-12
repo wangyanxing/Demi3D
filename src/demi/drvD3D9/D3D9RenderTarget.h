@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9RenderTarget.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9RenderTarget_h__
+#define DiD3D9RenderTarget_h__
+
 
 #include "RenderTarget.h"
 
@@ -41,3 +40,5 @@ namespace Demi
         IDirect3DSurface9*      mSurface;
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9ErrorCheck.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9ErrorCheck_h__
+#define DiD3D9ErrorCheck_h__
+
 
 namespace Demi 
 {
@@ -24,3 +23,5 @@ namespace Demi
 
 #define DX9_CHKERR(hr) DiD3D9ErrorCheck::CheckError(hr)
 }
+
+#endif

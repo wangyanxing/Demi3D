@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Thread.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiThread_h__
+#define DiThread_h__
+
 
 #if (DEMI_PLATFORM == DEMI_PLATFORM_WIN32)
 #   include <Windows.h>
@@ -28,5 +27,8 @@ namespace Demi
 #else
 
 #   error "The thread lib is not supported on this platform yet."
+
+#endif
+
 
 #endif

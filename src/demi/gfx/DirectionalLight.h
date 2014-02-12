@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       DirectionalLight.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiDirectionalLight_h__
+#define DiDirectionalLight_h__
+
 
 #include "light.h"
 
@@ -43,3 +42,5 @@ namespace Demi
     };
 
 }
+
+#endif

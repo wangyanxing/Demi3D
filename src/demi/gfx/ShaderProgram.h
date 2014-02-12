@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:        ShaderProgram.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiShaderProgram_h__
+#define DiShaderProgram_h__
+
 
 #include "GpuProgram.h"
 
@@ -76,3 +75,5 @@ namespace Demi
         static DiString             sDefaultPsProfile;
     };
 }
+
+#endif

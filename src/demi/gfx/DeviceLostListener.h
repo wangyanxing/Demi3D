@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       DeviceLostListener.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiDeviceLostListener_h__
+#define DiDeviceLostListener_h__
+
 
 namespace Demi 
 {
@@ -26,3 +25,5 @@ namespace Demi
         bool            mDeviceLost;
     };
 }
+
+#endif

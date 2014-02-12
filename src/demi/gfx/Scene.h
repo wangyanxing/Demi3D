@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Scene.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiScene_h__
+#define DiScene_h__
+
 
 #include "Asset.h"
 #include "TerrainDesc.h"
@@ -51,3 +50,5 @@ namespace Demi
     };
 
 }
+
+#endif

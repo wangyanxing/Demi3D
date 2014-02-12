@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:           RenderBatchGroup.h
-    Creator:        demiwangya
-*********************************************************************/
+
 
 #ifndef RenderBatchGroup_h__
 #define RenderBatchGroup_h__

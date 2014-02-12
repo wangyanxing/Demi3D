@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Iterator.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiIterator_h__
+#define DiIterator_h__
+
 
 namespace Demi 
 {
@@ -191,3 +190,5 @@ namespace Demi
         }
     };
 }
+
+#endif

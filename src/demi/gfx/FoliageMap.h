@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       FoliageMap.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiFoliageMap_h__
+#define DiFoliageMap_h__
+
 
 namespace Demi
 {
@@ -69,3 +68,5 @@ namespace Demi
 
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       FoliageLayer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiFoliageLayer_h__
+#define DiFoliageLayer_h__
+
 
 #include "Material.h"
 #include "TerrainDesc.h"
@@ -90,3 +89,5 @@ namespace Demi
         DiByteMap*          mDensityMap;
     };
 }
+
+#endif

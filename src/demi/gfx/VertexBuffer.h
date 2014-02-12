@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       VertexBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiVertexBuffer_h__
+#define DiVertexBuffer_h__
+
 
 #include "GpuBuffer.h"
 
@@ -66,3 +65,5 @@ namespace Demi
         uint32                  mInstanceNum;
     };
 }
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       DepthBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiDepthBuffer_h__
+#define DiDepthBuffer_h__
+
 
 namespace Demi
 {
@@ -61,3 +60,5 @@ namespace Demi
         uint32              mMultiSampleQuality;
     };
 }
+
+#endif

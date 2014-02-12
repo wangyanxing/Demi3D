@@ -1,9 +1,8 @@
-/**************************************************************************
-    File:       Logger.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiLogger_h__
+#define DiLogger_h__
+
 
 #include <fstream>
 #include <iostream>
@@ -50,3 +49,6 @@ namespace Demi
 
 }
 
+
+
+#endif

@@ -1,5 +1,7 @@
 
-#pragma once
+#ifndef DiDiPch_h__
+#define DiDiPch_h__
+
 
 #pragma warning(disable:4275)
 #pragma warning(disable:4251)
@@ -20,3 +22,5 @@ using namespace std;
 
 #include "MiscPch.h"
 #include "GfxPch.h"
+
+#endif

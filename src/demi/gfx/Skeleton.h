@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Skeleton.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSkeleton_h__
+#define DiSkeleton_h__
+
 
 namespace Demi
 {
@@ -110,3 +109,5 @@ namespace Demi
         DiSkeleton*         mParent;
     };
 }
+
+#endif

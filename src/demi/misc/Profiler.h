@@ -1,10 +1,9 @@
 
-/**************************************************************************
-    File:       OperationNew.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiProfiler_h__
+#define DiProfiler_h__
+
 
 #include "Singleton.h"
 #include "Timer.h"
@@ -235,3 +234,5 @@ namespace Demi
 #   define DI_PROFILE_BEGIN_INTERVAL
 #endif
 }
+
+#endif

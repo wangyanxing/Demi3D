@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       Application.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef DiApplication_h__
 #define DiApplication_h__

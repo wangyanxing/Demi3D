@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9Shader.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9Shader_h__
+#define DiD3D9Shader_h__
+
 
 #include "GpuProgram.h"
 #include "ShaderParam.h"
@@ -322,3 +321,5 @@ namespace Demi
         }
     };
 }
+
+#endif

@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       OSXWindowDelegate.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef OSXWindowDelegate_h__
 #define OSXWindowDelegate_h__

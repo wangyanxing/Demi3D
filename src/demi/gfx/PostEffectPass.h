@@ -1,11 +1,9 @@
 
-/********************************************************************
-    Date:        2012-5-14
-    File:       PostEffectPass.h
-    Creator:    demiwangya
-********************************************************************/
 
-#pragma once
+
+#ifndef DiPostEffectPass_h__
+#define DiPostEffectPass_h__
+
 
 #include "Texture.h"
 #include "Material.h"
@@ -89,3 +87,5 @@ namespace Demi
         InputParam          mInput;
     };
 }
+
+#endif

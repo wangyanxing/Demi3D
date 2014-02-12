@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9TypeMappings.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9TypeMappings_h__
+#define DiD3D9TypeMappings_h__
+
 
 namespace Demi
 {
@@ -27,3 +26,5 @@ namespace Demi
         static DWORD                GetLockOption(DiLockFlag lock, DiResUsage usage);
     };
 }
+
+#endif

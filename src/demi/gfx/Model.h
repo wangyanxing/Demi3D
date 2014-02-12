@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Model.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiModel_h__
+#define DiModel_h__
+
 
 #include "TransformUnit.h"
 #include "Mesh.h"
@@ -75,3 +74,5 @@ namespace Demi
         SubModelList      mSubModels;
     };
 }
+
+#endif

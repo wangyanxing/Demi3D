@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Any.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiAny_h__
+#define DiAny_h__
+
 
 #include <algorithm>
 #include <typeinfo>
@@ -336,3 +335,5 @@ namespace Demi
         DiAny           mAnyData;
     };
 }
+
+#endif

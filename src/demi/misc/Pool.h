@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Pool.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiPool_h__
+#define DiPool_h__
+
 
 #include "SimpleSet.h"
 
@@ -199,3 +198,5 @@ namespace Demi
     {
     }
 }
+
+#endif

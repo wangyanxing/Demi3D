@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       D3D9VertexBuffer.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiD3D9VertexBuffer_h__
+#define DiD3D9VertexBuffer_h__
+
 
 #include "VertexBuffer.h"
 
@@ -43,3 +42,5 @@ namespace Demi
         D3DPOOL     mPool;
     };
 }
+
+#endif

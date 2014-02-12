@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       matrix4.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Dimatrix4_h__
+#define Dimatrix4_h__
+
 
 #include "MiscPrerequisites.h"
 #include <float.h>
@@ -643,7 +642,7 @@ namespace Demi
                 v.w);
         }
 
-        // ²»°üº¬Æ½ÒÆ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ½ï¿½ï¿½
         inline DiVec3 transformVector(const DiVec3& v) const
         {
             return DiVec3(m[0][0]*v.x+m[0][1]*v.y+m[0][2]*v.z, 
@@ -666,3 +665,5 @@ namespace Demi
         );
     }
 }
+
+#endif

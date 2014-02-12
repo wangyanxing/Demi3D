@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Grid.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiGrid_h__
+#define DiGrid_h__
+
 
 #include "TransformUnit.h"
 #include "RenderUnit.h"
@@ -39,3 +38,5 @@ namespace Demi
     };
 
 }
+
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef DiConverterMgr_h__
+#define DiConverterMgr_h__
+
 
 #include "ModelConverter.h"
 
@@ -79,3 +81,6 @@ protected:
 	ModelConverter						modelConverter;
 };
 
+
+
+#endif

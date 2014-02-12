@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       PropertyMaps.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiPropertyMaps_h__
+#define DiPropertyMaps_h__
+
 
 #include "Texture.h"
 
@@ -116,3 +115,5 @@ namespace Demi
     };
 
 }
+
+#endif

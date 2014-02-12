@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       MaterialPredefine.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMaterialPredefine_h__
+#define DiMaterialPredefine_h__
+
 
 namespace Demi
 {
@@ -60,3 +59,5 @@ namespace Demi
         static DiString        SCREEN_QUAD_PIXEL_SHADER;
     };
 }
+
+#endif

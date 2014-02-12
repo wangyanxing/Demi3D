@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       vector4.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef Divector4_h__
+#define Divector4_h__
+
 
 #include "MiscPrerequisites.h"
 #include "vector3.h"
@@ -372,3 +371,5 @@ namespace Demi
     };
 
 }
+
+#endif

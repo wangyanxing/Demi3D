@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:     OctreeCuller.h
-    Creator: demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiOctreeCuller_h__
+#define DiOctreeCuller_h__
+
 
 #include "SceneNode.h"
 #include "Pool.h"
@@ -87,3 +86,5 @@ namespace Demi
         static DiObjectPool<DiOctreeNode> sOcNodePool;
     };
 }
+
+#endif

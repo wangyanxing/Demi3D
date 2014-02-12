@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       DrvD3D9Pch.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiDrvD3D9Pch_h__
+#define DiDrvD3D9Pch_h__
+
 
 #include "GfxPch.h"
 
@@ -15,3 +14,5 @@
 #include "D3D9Prerequisites.h"
 #include "DrvD3D9Defines.h"
 #include "D3D9ErrorCheck.h"
+
+#endif

@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       StlUtil.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiStlUtil_h__
+#define DiStlUtil_h__
+
 
 namespace Demi
 {
@@ -21,3 +20,5 @@ namespace Demi
         }
     }
 }
+
+#endif

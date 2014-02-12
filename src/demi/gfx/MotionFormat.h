@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       MotionFormat.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiMotionFormat_h__
+#define DiMotionFormat_h__
+
 
 namespace Demi
 {
@@ -26,3 +25,5 @@ namespace Demi
         DI_POSE                             = 0x4000,
     };
 }
+
+#endif

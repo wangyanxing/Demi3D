@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       DynamicAttributeFactory.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiDynamicAttributeFactory_h__
+#define DiDynamicAttributeFactory_h__
+
 
 #include "DynamicAttribute.h"
 
@@ -100,3 +99,5 @@ namespace Demi
         }
     };
 }
+
+#endif

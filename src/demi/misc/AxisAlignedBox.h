@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       AxisAlignedBox.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiAxisAlignedBox_h__
+#define DiAxisAlignedBox_h__
+
 
 #include "MiscPrerequisites.h"
 
@@ -653,3 +652,5 @@ namespace Demi
     };
 
 }
+
+#endif

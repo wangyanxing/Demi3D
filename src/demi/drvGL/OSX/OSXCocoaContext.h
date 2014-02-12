@@ -1,8 +1,5 @@
 
-/********************************************************************
-    File:       OSXCocoaContext.h
-    Creator:    demiwangya
-*********************************************************************/
+
 
 #ifndef OSXCocoaContext_h__
 #define OSXCocoaContext_h__

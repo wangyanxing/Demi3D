@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       Frustum.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiFrustum_h__
+#define DiFrustum_h__
+
 
 #include "GfxPrerequisites.h"
 #include "TransformUnit.h"
@@ -233,3 +232,5 @@ namespace Demi
     };
 
 }
+
+#endif

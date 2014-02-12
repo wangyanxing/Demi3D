@@ -1,10 +1,9 @@
 
-/********************************************************************
-    File:       SubModel.h
-    Creator:    demiwangya
-*********************************************************************/
 
-#pragma once
+
+#ifndef DiSubModel_h__
+#define DiSubModel_h__
+
 
 #include "RenderUnit.h"
 #include "Any.h"
@@ -36,3 +35,5 @@ namespace Demi
         DiSubMesh*      mMesh;
     };
 }
+
+#endif

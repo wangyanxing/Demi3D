@@ -1,9 +1,8 @@
-/**************************************************************************
-    File:       MemoryConfig.h
-    Creator:    demiwangya
-**************************************************************************/
 
-#pragma once
+
+#ifndef DiMemoryConfig_h__
+#define DiMemoryConfig_h__
+
 
 //#define ENABLE_MEMORY_TRACE
 #ifdef ENABLE_MEMORY_TRACE
@@ -40,3 +39,6 @@
 #define DI_NEW new
 #define DI_DELETE delete
 
+
+
+#endif
