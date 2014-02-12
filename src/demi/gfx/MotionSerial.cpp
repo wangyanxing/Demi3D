@@ -1,4 +1,15 @@
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
+
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 #include "GfxPch.h"
 #include "MotionSerial.h"
 #include "MotionFormat.h"
@@ -237,7 +248,7 @@ namespace Demi
             // orientation
             WriteObject(pBone->GetOrientation());
 
-            // ÊÇ·ñÓÐscale
+            // ï¿½Ç·ï¿½ï¿½ï¿½scale
             bool hasscale = pBone->GetScale() != DiVec3::UNIT_SCALE;
             WriteBools(&hasscale,1);
 
@@ -262,7 +273,7 @@ namespace Demi
     {
         size_t size = MSTREAM_OVERHEAD_SIZE;
 
-        // ¹Ç÷ÀÊý
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         size += sizeof(uint16);
 
         size_t numBones = pSkeleton->GetNumBones();

@@ -1,5 +1,16 @@
-/*
- * Copyright 2009-2011 NVIDIA Corporation.  All rights reserved.
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
+
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
+
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
+/* * Copyright 2009-2011 NVIDIA Corporation.  All rights reserved.
  *
  * NOTICE TO USER:
  *

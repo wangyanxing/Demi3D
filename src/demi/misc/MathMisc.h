@@ -1,8 +1,18 @@
-﻿
+/**********************************************************************
+This source file is a part of Demi3D
+  __  ___  __  __  __
+  |  \|_ |\/||   _)|  \
+  |__/|__|  ||  __)|__/
 
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
 
-#ifndef Math_Miac_h
-#define Math_Miac_h
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+**********************************************************************/
+
+#ifndef DiMath_Misc_h
+#define DiMath_Misc_h
 
 #include "MiscPrerequisites.h"
 #include "Vec.h"

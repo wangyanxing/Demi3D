@@ -1,4 +1,15 @@
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
+
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 #include "MiscPch.h"
 #include "str.h"
 #include <string.h>
@@ -918,7 +929,7 @@ namespace Demi
             return;
         }
 
-        // ×îºóÒ»¸öÐ±¸ÜÖ®ºóÈç¹ûÃ»ÓÐ.£¬ÔòÃ»ÓÐÎÄ¼þÀ©Õ¹
+        // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ð±ï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½.ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Õ¹
         DiString temp = *this;
         temp.Replace("/","\\");
         int pos = temp.rfind("\\");

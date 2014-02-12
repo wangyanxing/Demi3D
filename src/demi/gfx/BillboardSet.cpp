@@ -1,4 +1,15 @@
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
+
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 #include "GfxPch.h"
 #include "BillboardSet.h"
 #include "Camera.h"
@@ -372,7 +383,7 @@ namespace Demi
             numBillboards = DiMath::Min(mPoolSize, numBillboards);
 
             size_t billboardSize;
-            // ËÄ¸öµãÃ¿¸öbb
+            // ï¿½Ä¸ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½bb
             billboardSize = mSourceData[0]->GetStride() * 4;
             
             DI_ASSERT (numBillboards * billboardSize <= mSourceData[0]->GetBufferSize());
@@ -736,7 +747,7 @@ namespace Demi
         RGBA colour = bb.mColour.GetAsARGB();
         RGBA* pCol;
 
-        // ÎÆÀí×ø±ê
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         DI_ASSERT( bb.mUseTexcoordRect || bb.mTexcoordIndex < mTextureCoords.size() );
 
         const DiFloatRect & r =
@@ -744,12 +755,12 @@ namespace Demi
 
         if (mAllDefaultRotation || bb.mRotation == DiRadian(0))
         {
-            /// ×óÉÏ
+            /// ï¿½ï¿½ï¿½ï¿½
             // pos
             *mLockPtr++ = offsets[0].x + bb.mPosition.x;
             *mLockPtr++ = offsets[0].y + bb.mPosition.y;
             *mLockPtr++ = offsets[0].z + bb.mPosition.z;
-            // ÑÕÉ«
+            // ï¿½ï¿½É«
             pCol = static_cast<RGBA*>(static_cast<void*>(mLockPtr));
             *pCol++ = colour;
             mLockPtr = static_cast<float*>(static_cast<void*>(pCol));
@@ -757,12 +768,12 @@ namespace Demi
             *mLockPtr++ = r.left;
             *mLockPtr++ = r.top;
 
-            /// ÓÒÉÏ
-            // Î»ÖÃ
+            /// ï¿½ï¿½ï¿½ï¿½
+            // Î»ï¿½ï¿½
             *mLockPtr++ = offsets[1].x + bb.mPosition.x;
             *mLockPtr++ = offsets[1].y + bb.mPosition.y;
             *mLockPtr++ = offsets[1].z + bb.mPosition.z;
-            // ÑÕÉ«
+            // ï¿½ï¿½É«
             pCol = static_cast<RGBA*>(static_cast<void*>(mLockPtr));
             *pCol++ = colour;
             mLockPtr = static_cast<float*>(static_cast<void*>(pCol));
@@ -770,12 +781,12 @@ namespace Demi
             *mLockPtr++ = r.right;
             *mLockPtr++ = r.top;
 
-            // ×óÏÂ
+            // ï¿½ï¿½ï¿½ï¿½
             // POS
             *mLockPtr++ = offsets[2].x + bb.mPosition.x;
             *mLockPtr++ = offsets[2].y + bb.mPosition.y;
             *mLockPtr++ = offsets[2].z + bb.mPosition.z;
-            // ÑÕÉ«
+            // ï¿½ï¿½É«
             pCol = static_cast<RGBA*>(static_cast<void*>(mLockPtr));
             *pCol++ = colour;
             mLockPtr = static_cast<float*>(static_cast<void*>(pCol));
@@ -783,12 +794,12 @@ namespace Demi
             *mLockPtr++ = r.left;
             *mLockPtr++ = r.bottom;
 
-            // ÓÒÏÂ
+            // ï¿½ï¿½ï¿½ï¿½
             // POS
             *mLockPtr++ = offsets[3].x + bb.mPosition.x;
             *mLockPtr++ = offsets[3].y + bb.mPosition.y;
             *mLockPtr++ = offsets[3].z + bb.mPosition.z;
-            // ÑÕÉ«
+            // ï¿½ï¿½É«
             pCol = static_cast<RGBA*>(static_cast<void*>(mLockPtr));
             *pCol++ = colour;
             mLockPtr = static_cast<float*>(static_cast<void*>(pCol));

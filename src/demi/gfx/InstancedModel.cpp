@@ -1,4 +1,15 @@
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
+
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 #include "GfxPch.h"
 #include "InstancedModel.h"
 #include "InstanceBatch.h"
@@ -330,7 +341,7 @@ namespace Demi
         {
             mSkeletonInstance = DI_NEW DiSkeletonInstance( mBatchOwner->GetSkeleton() );
 
-            // 注意，要用到SSE指令集优化时，骨骼矩阵和世界骨骼矩阵必须是要16字节对齐的
+            // 注锟解，要锟矫碉拷SSE指锟筋集锟脚伙拷时锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷要16锟街节讹拷锟斤拷锟斤拷
             mBoneMatrices = static_cast<DiMat4*>(DiAlignedMemory::Allocate( sizeof(DiMat4) *mSkeletonInstance->GetNumBones()));
 
             if (mBatchOwner->UseBoneWorldMatrices())

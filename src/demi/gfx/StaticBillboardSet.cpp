@@ -1,4 +1,15 @@
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
+
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 #include "GfxPch.h"
 #include "StaticBillboardSet.h"
 #include "AssetManager.h"
@@ -173,7 +184,7 @@ namespace Demi
             *pReal++ = ((bb->texcoordIndexU + 1) * mUFactor);
             *pReal++ = ((bb->texcoordIndexV + 1) * mVFactor);
 
-            // ¸üÐÂAABB
+            // ï¿½ï¿½ï¿½ï¿½AABB
             if (bb->xPos - bb->xScaleHalf < minX) minX = bb->xPos - bb->xScaleHalf;
             if (bb->xPos + bb->xScaleHalf > maxX) maxX = bb->xPos + bb->xScaleHalf;
             if (bb->yPos - bb->yScaleHalf < minY) minY = bb->yPos - bb->yScaleHalf;

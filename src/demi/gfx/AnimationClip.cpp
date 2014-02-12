@@ -1,4 +1,15 @@
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
+
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 #include "GfxPch.h"
 #include "AnimationClip.h"
 #include "Animation.h"
@@ -55,7 +66,7 @@ namespace Demi
             if (i != std::lower_bound(mKeyFrames.begin(), mKeyFrames.end(), 
                 &timeKey, KeyFrameTimeLess()))
             {
-                DI_ERROR("²éÕÒ¹Ø¼üÖ¡Ê§°Ü");
+                DI_ERROR("ï¿½ï¿½ï¿½Ò¹Ø¼ï¿½Ö¡Ê§ï¿½ï¿½");
             }
 #endif
         }
@@ -165,7 +176,7 @@ namespace Demi
         for (KeyFrameList::const_iterator i = mKeyFrames.begin(); 
             i != mKeyFrames.end(); ++i)
         {
-            /// »ñÈ¡¸ÃÖ¡µÄÊ±¼ä´Á
+            /// ï¿½ï¿½È¡ï¿½ï¿½Ö¡ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
             float timePos = (*i)->GetTime();
 
             DiVector<float>::iterator it =

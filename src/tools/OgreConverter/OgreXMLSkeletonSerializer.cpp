@@ -1,5 +1,5 @@
-/*
------------------------------------------------------------------------------
+
+/*-----------------------------------------------------------------------------
 This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
@@ -526,7 +526,7 @@ namespace Ogre {
     }
     //---------------------------------------------------------------------
 	// 
-	// Modifications effectuées:
+	// Modifications effectuï¿½es:
 	//
 	// on stoque les noms et pas les Id. c'est plus lisibles.
 

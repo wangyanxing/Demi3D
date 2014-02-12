@@ -1,4 +1,15 @@
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
+
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 #include "GfxPch.h"
 #include "SceneSerial.h"
 #include "AssetManager.h"
@@ -345,7 +356,7 @@ namespace Demi
         else
         {
             int vertNum = desc->GetVertNum();
-            // 文件头
+            // 锟侥硷拷头
             WriteChunkHeader(S_HEIGHT_MAP, vertNum * sizeof(float));
             WriteData(heights,sizeof(float) * vertNum,1);
         }
@@ -356,12 +367,12 @@ namespace Demi
         uint32* colors = desc->mColorData;
         if (!colors)
         {
-            // 文件头
+            // 锟侥硷拷头
             WriteChunkHeader(S_VERT_COLOR, 0);
         }
         else
         {
-            // 文件头
+            // 锟侥硷拷头
             int vertNum = desc->GetVertNum();
             WriteChunkHeader(S_VERT_COLOR, vertNum * sizeof(uint32));
             WriteData(colors,vertNum * sizeof(uint32),1);
@@ -426,7 +437,7 @@ namespace Demi
 
     void DiSceneBinSerializerImpl::ExportFoliageData( DiTerrainDesc* desc )
     {
-        // 植被
+        // 植锟斤拷
         WriteChunkHeader(S_FOLIAGE_DATA, 0);
 
         int layerNum = (int)desc->mFoliageLayers.size();

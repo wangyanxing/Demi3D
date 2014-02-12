@@ -1,4 +1,15 @@
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
+
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 #include "GfxPch.h"
 #include "AttachNode.h"
 
@@ -77,7 +88,7 @@ namespace Demi
     {
         DiNode::NeedUpdate(forceParentUpdate);
 
-        // Èç¹ûÓÐÊÖ¶¯¿ØÖÆ ÕâÀï´¦ÀíÂß¼­
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï´¦ï¿½ï¿½ï¿½ß¼ï¿½
     }
 
 }
