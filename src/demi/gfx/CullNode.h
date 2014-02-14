@@ -82,6 +82,8 @@ namespace Demi
 
         void                    DetachAllObjects(void);
 
+        /** Get an external iterator wrapper
+         */
         ObjectIterator          GetAttachedObjectIterator();
 
         ConstObjectIterator     GetAttachedObjectIterator() const;
@@ -91,43 +93,39 @@ namespace Demi
 
         void                    ProcessVisibleObjects(std::function<void(DiTransUnitPtr)> func);
 
+        /** Set the visibility for all attached objects
+         */
         void                    SetVisible(bool vis, bool cascade = true);
 
         void                    FlipVisibility(bool cascade = true);
 
         DiSceneManager*         GetCreator() const { return mCreator; }
 
+        /** Update the node tree
+         */
         void                    _Update(bool updateChildren, bool parentHasChanged);
 
-        DiOctreePtr             GetOctant()
-        {
-            return mOctant;
-        }
+        DiOctreePtr             GetOctant() { return mOctant; }
 
-        void                    SetOctant( DiOctreePtr o )
-        {
-            mOctant = o;
-        }
+        void                    SetOctant( DiOctreePtr o ) { mOctant = o; }
 
-        DiAABB&                 GetLocalAABB()
-        {
-            return mLocalAABB;
-        }
+        DiAABB&                 GetLocalAABB() { return mLocalAABB; }
 
         const DiAABB&           GetWorldAABB(void) const;
 
-
+        /** Test if this node is in a bounding box
+         */
         bool                    IsIn( DiAABB &box );
 
     protected:
 
         void                    UpdateBounds();
 
-        void                    RemoveNodeAndChildren( );
+        void                    RemoveNodeAndChildren();
 
     protected:
 
-        ObjectMap               mObjectsByName;
+        ObjectMap               mObjects;
 
         DiSceneManager*         mCreator;
         

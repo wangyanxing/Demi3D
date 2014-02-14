@@ -236,7 +236,7 @@ namespace Demi
 
         mutable bool            mCachedTransformOutOfDate;
 
-        typedef DiVector<DiNode*>    QueuedUpdates;
+        typedef DiVector<DiNode*> QueuedUpdates;
 
         static QueuedUpdates    sQueuedUpdates;
     };

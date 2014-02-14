@@ -34,11 +34,11 @@ namespace Demi
 
     DiCullNode::~DiCullNode(void)
     {
-        for ( auto itr = mObjectsByName.begin(); itr != mObjectsByName.end(); ++itr )
+        for ( auto itr = mObjects.begin(); itr != mObjects.end(); ++itr )
         {
             (*itr)->NotifyAttached((DiCullNode*)NULL);
         }
-        mObjectsByName.clear();
+        mObjects.clear();
     }
 
     void DiCullNode::UpdateBounds()
@@ -46,7 +46,7 @@ namespace Demi
         mWorldAABB.SetNull();
         mLocalAABB.SetNull();
 
-        for ( auto itr = mObjectsByName.begin(); itr != mObjectsByName.end(); ++itr )
+        for ( auto itr = mObjects.begin(); itr != mObjects.end(); ++itr )
         {
             mWorldAABB.Merge((*itr)->GetWorldBoundingBox(true));
             mLocalAABB.Merge((*itr)->GetBoundingBox());
@@ -66,28 +66,28 @@ namespace Demi
 
         obj->NotifyAttached(this);
 
-        mObjectsByName.push_back(obj);
+        mObjects.push_back(obj);
 
         NeedUpdate();
     }
 
     void DiCullNode::AttachSilently(DiTransUnitPtr obj)
     {
-        mObjectsByName.push_back(obj);
+        mObjects.push_back(obj);
         
         NeedUpdate();
     }
 
     uint32 DiCullNode::NumAttachedObjects( void ) const
     {
-        return mObjectsByName.size();
+        return mObjects.size();
     }
 
     DiTransUnitPtr DiCullNode::GetAttachedObject( uint32 index )
     {
-        if (index < mObjectsByName.size())
+        if (index < mObjects.size())
         {
-            return mObjectsByName[index];
+            return mObjects[index];
         }
         else
         {
@@ -98,16 +98,16 @@ namespace Demi
 
     DiTransUnitPtr DiCullNode::DetachObject( uint32 index )
     {
-        if (index < mObjectsByName.size())
+        if (index < mObjects.size())
         {
-            DiTransUnitPtr ret = mObjectsByName[index];
+            DiTransUnitPtr ret = mObjects[index];
             if (ret->GetParentNode() == this)
             {
                 ret->NotifyAttached((DiCullNode*)0);
             }
             
-            ObjectMap::iterator i = mObjectsByName.begin() + index;
-            mObjectsByName.erase(i);
+            ObjectMap::iterator i = mObjects.begin() + index;
+            mObjects.erase(i);
 
             NeedUpdate();
 
@@ -123,11 +123,11 @@ namespace Demi
 
     void DiCullNode::DetachObject(DiTransUnitPtr obj)
     {
-        for (auto i = mObjectsByName.begin(); i != mObjectsByName.end(); ++i)
+        for (auto i = mObjects.begin(); i != mObjects.end(); ++i)
         {
             if (*i == obj)
             {
-                mObjectsByName.erase(i);
+                mObjects.erase(i);
                 break;
             }
         }
@@ -142,23 +142,23 @@ namespace Demi
     
     void DiCullNode::DetachAllObjects( void )
     {
-        for ( auto itr = mObjectsByName.begin();
-            itr != mObjectsByName.end(); ++itr )
+        for ( auto itr = mObjects.begin();
+            itr != mObjects.end(); ++itr )
         {
             if ((*itr)->GetParentNode() == this)
             {
                 (*itr)->NotifyAttached(nullptr);
             }
         }
-        mObjectsByName.clear();
+        mObjects.clear();
 
         NeedUpdate();
     }
 
     void DiCullNode::ProcessVisibleObjects(std::function<void(DiTransUnitPtr)> func)
     {
-        auto mit = mObjectsByName.begin();
-        while (mit != mObjectsByName.end())
+        auto mit = mObjects.begin();
+        while (mit != mObjects.end())
         {
             if ((*mit)->GetVisible())
                 func((*mit));
@@ -169,8 +169,8 @@ namespace Demi
     void DiCullNode::ProcessBatchGroup( DiCamera* camera,DiRenderPipeline* pipeline, 
         bool onlyShadowCaster, DiVisibleObjectsBoundsInfo* visbleBounds)
     {
-        auto mit = mObjectsByName.begin();
-        while ( mit != mObjectsByName.end() )
+        auto mit = mObjects.begin();
+        while ( mit != mObjects.end() )
         {
             DiTransUnitPtr mo = (*mit);
 
@@ -203,7 +203,7 @@ namespace Demi
 
     void DiCullNode::SetVisible( bool vis, bool cascade /*= true*/ )
     {
-        for (auto oi = mObjectsByName.begin(); oi != mObjectsByName.end(); ++oi)
+        for (auto oi = mObjects.begin(); oi != mObjects.end(); ++oi)
         {
             (*oi)->SetVisible(vis);
         }
@@ -220,7 +220,7 @@ namespace Demi
 
     void DiCullNode::FlipVisibility( bool cascade /*= true*/ )
     {
-        for (auto oi = mObjectsByName.begin(); oi != mObjectsByName.end(); ++oi)
+        for (auto oi = mObjects.begin(); oi != mObjects.end(); ++oi)
         {
             (*oi)->SetVisible(!(*oi)->GetVisible());
         }
@@ -354,11 +354,11 @@ namespace Demi
 
     DiCullNode::ObjectIterator DiCullNode::GetAttachedObjectIterator()
     {
-        return ObjectIterator(mObjectsByName.begin(), mObjectsByName.end());
+        return ObjectIterator(mObjects.begin(), mObjects.end());
     }
 
     DiCullNode::ConstObjectIterator DiCullNode::GetAttachedObjectIterator() const
     {
-        return ConstObjectIterator(mObjectsByName.begin(), mObjectsByName.end());
+        return ConstObjectIterator(mObjects.begin(), mObjects.end());
     }
 }
