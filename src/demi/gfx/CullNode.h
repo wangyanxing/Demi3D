@@ -33,9 +33,9 @@ namespace Demi
 
     public:
 
-        typedef DiStrHash<DiTransUnitPtr>     ObjectMap;
-        typedef DiMapIterator<ObjectMap>      ObjectIterator;
-        typedef DiConstMapIterator<ObjectMap> ConstObjectIterator;
+        typedef DiVector<DiTransUnitPtr>         ObjectMap;
+        typedef DiVectorIterator<ObjectMap>      ObjectIterator;
+        typedef DiConstVectorIterator<ObjectMap> ConstObjectIterator;
 
         friend class DiSceneManager;
 
@@ -52,7 +52,7 @@ namespace Demi
         DiNode*                 CreateChild(const DiString& name,
                                      const DiVec3& inTranslate, const DiQuat& inRotate);
 
-        DiNode*                 RemoveChild( unsigned short index );
+        DiNode*                 RemoveChild( uint32 index );
 
         DiNode*                 RemoveChild( const DiString & name );
 
@@ -60,21 +60,25 @@ namespace Demi
 
         void                    RemoveAllChildren(void);
 
+        /** Attach the object and notify
+         */
         void                    AttachObject(DiTransUnitPtr obj);
 
+        /** Attach the object without sending notification
+         */
         void                    AttachSilently(DiTransUnitPtr obj);
 
-        unsigned short          NumAttachedObjects(void) const;
+        uint32                  NumAttachedObjects(void) const;
 
-        DiTransUnitPtr          GetAttachedObject(unsigned short index);
+        DiTransUnitPtr          GetAttachedObject(uint32 index);
 
-        DiTransUnitPtr          GetAttachedObject(const DiString& name);
+        /** Shoud not be called frequently
+         */
+        DiTransUnitPtr          DetachObject(uint32 index);
 
-        DiTransUnitPtr          DetachObject(unsigned short index);
-
+        /** Shoud not be called frequently
+         */
         void                    DetachObject(DiTransUnitPtr obj);
-
-        DiTransUnitPtr          DetachObject(const DiString& name);
 
         void                    DetachAllObjects(void);
 

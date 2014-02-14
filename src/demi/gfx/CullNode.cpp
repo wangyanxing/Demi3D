@@ -34,12 +34,9 @@ namespace Demi
 
     DiCullNode::~DiCullNode(void)
     {
-        ObjectMap::iterator itr;
-        DiTransUnitPtr ret;
-        for ( itr = mObjectsByName.begin(); itr != mObjectsByName.end(); ++itr )
+        for ( auto itr = mObjectsByName.begin(); itr != mObjectsByName.end(); ++itr )
         {
-            ret = itr->second;
-            ret->NotifyAttached((DiCullNode*)NULL);
+            (*itr)->NotifyAttached((DiCullNode*)NULL);
         }
         mObjectsByName.clear();
     }
@@ -49,13 +46,10 @@ namespace Demi
         mWorldAABB.SetNull();
         mLocalAABB.SetNull();
 
-        ObjectMap::iterator itr;
-        DiTransUnitPtr ret;
-        for ( itr = mObjectsByName.begin(); itr != mObjectsByName.end(); ++itr )
+        for ( auto itr = mObjectsByName.begin(); itr != mObjectsByName.end(); ++itr )
         {
-            ret = itr->second;
-            mWorldAABB.Merge(ret->GetWorldBoundingBox(true));
-            mLocalAABB.Merge( ret->GetBoundingBox() );
+            mWorldAABB.Merge((*itr)->GetWorldBoundingBox(true));
+            mLocalAABB.Merge((*itr)->GetBoundingBox());
         }
 
         if (!mWorldAABB.IsNull())
@@ -72,68 +66,48 @@ namespace Demi
 
         obj->NotifyAttached(this);
 
-        DI_ASSERT(mObjectsByName.find(obj->GetName()) == mObjectsByName.end());
-        mObjectsByName.insert(ObjectMap::value_type(obj->GetName(), obj));
+        mObjectsByName.push_back(obj);
 
         NeedUpdate();
     }
 
     void DiCullNode::AttachSilently(DiTransUnitPtr obj)
     {
-        DI_ASSERT(mObjectsByName.find(obj->GetName()) == mObjectsByName.end());
-        mObjectsByName.insert(ObjectMap::value_type(obj->GetName(), obj));
-
+        mObjectsByName.push_back(obj);
+        
         NeedUpdate();
     }
 
-    unsigned short DiCullNode::NumAttachedObjects( void ) const
+    uint32 DiCullNode::NumAttachedObjects( void ) const
     {
-        return static_cast< unsigned short >( mObjectsByName.size() );
+        return mObjectsByName.size();
     }
 
-    DiTransUnitPtr DiCullNode::GetAttachedObject( unsigned short index )
+    DiTransUnitPtr DiCullNode::GetAttachedObject( uint32 index )
     {
         if (index < mObjectsByName.size())
         {
-            ObjectMap::iterator i = mObjectsByName.begin();
-            while (index--)++i;
-            return i->second;
+            return mObjectsByName[index];
         }
         else
         {
-            DI_ERROR("Cannot find the attachment object by id : %d",index);
-            return NULL;
+            DI_WARNING("Cannot find the attachment object by id : %d",index);
+            return nullptr;
         }
     }
 
-    DiTransUnitPtr DiCullNode::GetAttachedObject( const DiString& name )
+    DiTransUnitPtr DiCullNode::DetachObject( uint32 index )
     {
-        ObjectMap::iterator i = mObjectsByName.find(name);
-
-        if (i == mObjectsByName.end())
-        {
-            DI_ERROR("Cannot find the attachment object by name : %s",name.c_str());
-        }
-
-        return i->second;
-    }
-
-    DiTransUnitPtr DiCullNode::DetachObject( unsigned short index )
-    {
-        DiTransUnitPtr ret;
         if (index < mObjectsByName.size())
         {
-
-            ObjectMap::iterator i = mObjectsByName.begin();
-            while (index--)++i;
-
-            ret = i->second;
-            mObjectsByName.erase(i);
-
+            DiTransUnitPtr ret = mObjectsByName[index];
             if (ret->GetParentNode() == this)
             {
                 ret->NotifyAttached((DiCullNode*)0);
             }
+            
+            ObjectMap::iterator i = mObjectsByName.begin() + index;
+            mObjectsByName.erase(i);
 
             NeedUpdate();
 
@@ -142,18 +116,16 @@ namespace Demi
         }
         else
         {
-            DI_ERROR("Cannot detach object, invalid index");
-            return NULL;
+            DI_WARNING("Cannot detach object, invalid index");
+            return nullptr;
         }
     }
 
     void DiCullNode::DetachObject(DiTransUnitPtr obj)
     {
-        ObjectMap::iterator i, iend;
-        iend = mObjectsByName.end();
-        for (i = mObjectsByName.begin(); i != iend; ++i)
+        for (auto i = mObjectsByName.begin(); i != mObjectsByName.end(); ++i)
         {
-            if (i->second == obj)
+            if (*i == obj)
             {
                 mObjectsByName.erase(i);
                 break;
@@ -162,41 +134,20 @@ namespace Demi
 
         if (obj->GetParentNode() == this)
         {
-            obj->NotifyAttached((DiCullNode*)0);
+            obj->NotifyAttached(nullptr);
         }
 
         NeedUpdate();
     }
-
-    DiTransUnitPtr DiCullNode::DetachObject( const DiString& name )
-    {
-        ObjectMap::iterator it = mObjectsByName.find(name);
-        if (it == mObjectsByName.end())
-        {
-            DI_ERROR("Cannot find the object : %s", name.c_str());
-        }
-        DiTransUnitPtr ret = it->second;
-        mObjectsByName.erase(it);
-        if (ret->GetParentNode() == this)
-        {
-            ret->NotifyAttached((DiCullNode*)0);
-        }
-        NeedUpdate();
-
-        return ret;
-    }
-
+    
     void DiCullNode::DetachAllObjects( void )
     {
-        ObjectMap::iterator itr;
-        DiTransUnitPtr ret;
-        for ( itr = mObjectsByName.begin(); 
+        for ( auto itr = mObjectsByName.begin();
             itr != mObjectsByName.end(); ++itr )
         {
-            ret = itr->second;
-            if (ret->GetParentNode() == this)
+            if ((*itr)->GetParentNode() == this)
             {
-                ret->NotifyAttached((DiCullNode*)0);
+                (*itr)->NotifyAttached(nullptr);
             }
         }
         mObjectsByName.clear();
@@ -209,9 +160,8 @@ namespace Demi
         auto mit = mObjectsByName.begin();
         while (mit != mObjectsByName.end())
         {
-            DiTransUnitPtr mo = mit->second;
-            if (mo->GetVisible())
-                func(mo);
+            if ((*mit)->GetVisible())
+                func((*mit));
             ++mit;
         }
     }
@@ -222,7 +172,7 @@ namespace Demi
         auto mit = mObjectsByName.begin();
         while ( mit != mObjectsByName.end() )
         {
-            DiTransUnitPtr mo = mit->second;
+            DiTransUnitPtr mo = (*mit);
 
             if (mo->GetVisible())
             {
@@ -253,11 +203,9 @@ namespace Demi
 
     void DiCullNode::SetVisible( bool vis, bool cascade /*= true*/ )
     {
-        ObjectMap::iterator oi, oiend;
-        oiend = mObjectsByName.end();
-        for (oi = mObjectsByName.begin(); oi != oiend; ++oi)
+        for (auto oi = mObjectsByName.begin(); oi != mObjectsByName.end(); ++oi)
         {
-            oi->second->SetVisible(vis);
+            (*oi)->SetVisible(vis);
         }
 
         if (cascade)
@@ -272,11 +220,9 @@ namespace Demi
 
     void DiCullNode::FlipVisibility( bool cascade /*= true*/ )
     {
-        ObjectMap::iterator oi, oiend;
-        oiend = mObjectsByName.end();
-        for (oi = mObjectsByName.begin(); oi != oiend; ++oi)
+        for (auto oi = mObjectsByName.begin(); oi != mObjectsByName.end(); ++oi)
         {
-            oi->second->SetVisible(!oi->second->GetVisible());
+            (*oi)->SetVisible(!(*oi)->GetVisible());
         }
 
         if (cascade)
@@ -367,7 +313,7 @@ namespace Demi
         }
     }
 
-    DiNode* DiCullNode::RemoveChild( unsigned short index )
+    DiNode* DiCullNode::RemoveChild( uint32 index )
     {
         DiCullNode *on = static_cast<DiCullNode* >( DiNode::RemoveChild( index ) );
         on->RemoveNodeAndChildren(); 
