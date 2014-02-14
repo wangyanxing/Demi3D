@@ -14,14 +14,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiSceneManager_h__
 #define DiSceneManager_h__
 
-
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SkyLight.h"
 #include "Scene.h"
 #include "TerrainMap.h"
 #include "Octree.h"
-#include "SceneNode.h"
 
 namespace Demi 
 {
@@ -62,8 +60,6 @@ namespace Demi
 
     //////////////////////////////////////////////////////////////////////////
 
-    class DiOctreeNode;
-
     class DI_GFX_API DiSceneManager : public DiBase
     {
     public:
@@ -93,8 +89,6 @@ namespace Demi
         };
 
     public:
-
-        DiSceneNodePtr          GetRootSceneNode() { return mRootSceneNode; }
 
         // create a child node of root node
         DiCullNode*             CreateNode();
@@ -151,8 +145,6 @@ namespace Demi
 
         void                    Cull(DiCamera* camera,
                                     DiVisibleObjectsBoundsInfo* visibleBounds);
-
-        void                    Cull(DiCamera* camera, DiRenderPipeline* pipeline);
 
         void                    ClearNodes();
 
@@ -216,8 +208,6 @@ namespace Demi
 
         DiSkybox*               GetSkybox(){return mSkybox;}
 
-        DiOctreeNode*           GetOctreeNode() { return mOctreeNode; }
-
         DiVisibleObjs&          GetVisibleObjects() { return mVisibleObjects; }
 
     protected:
@@ -226,11 +216,7 @@ namespace Demi
 
         void                    WalkTree(DiCamera* camera, DiVisibleObjectsBoundsInfo* visibleBounds, DiOctreePtr octree, bool foundvisible);
 
-        void                    WalkTree(DiCamera* camera, DiRenderPipeline* pipeline, DiOctreeNode* octree, bool foundvisible);
-
     protected:
-
-        DiSceneNodePtr          mRootSceneNode;
 
         DiCullNode*             mRootNode;
 
@@ -262,8 +248,6 @@ namespace Demi
         typedef DiVector<DiCullNode*> ReentryNodes;
 
         DiOctreePtr             mOctree;
-
-        DiOctreeNode*           mOctreeNode;
 
         ReentryNodes            mReentryNodes;
 

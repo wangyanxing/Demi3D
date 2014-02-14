@@ -23,10 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RenderWindow.h"
 #include "RenderTarget.h"
 #include "Skybox.h"
-#include "OctreeCuller.h"
 #include "GfxDriver.h"
-
-#define USE_OLD_SCENE_MANAGER
 
 namespace Demi 
 {
@@ -262,7 +259,6 @@ namespace Demi
         mLastFrameNumber(0),
         mSkybox(nullptr),
         mAmbientColor(0.3f,0.3f,0.3f),
-        mOctreeNode(nullptr),
         mSkyLight(nullptr)
     {
         mPipeline = Driver->GetPipeline();
@@ -278,10 +274,6 @@ namespace Demi
         DiVec3 max = mBox.GetMaximum();
         mOctree->mHalfSize = ( max - min ) / 2;
         
-        mOctreeNode = DiOctreeNode::GetOctreeNode();
-        mOctreeNode->Init(mBox, nullptr);
-        mRootSceneNode = make_shared<DiSceneNode>(this,"_root_sn_");
-
         mSkybox = DI_NEW DiSkybox(this);
     }
 
@@ -293,9 +285,7 @@ namespace Demi
         ClearNodes();
         DestroyCamera("_sm_camera");
 
-        DiOctreeNode::ReleaseAll();
         SAFE_DELETE(mSkybox);
-        SAFE_DELETE(mRootNode);
     }
 
     DiCullNode* DiSceneManager::CreateNode()
@@ -309,7 +299,8 @@ namespace Demi
     {
         if (mSceneNodes.find(name) != mSceneNodes.end())
         {
-            DI_ERROR("Cannot create node : %s, it is in the list already.",name.c_str());
+            DI_WARNING("Cannot create node : %s, it is in the list already.",name.c_str());
+            return nullptr;
         }
 
         DiCullNode* node = DI_NEW DiCullNode(this,name);
@@ -363,61 +354,6 @@ namespace Demi
         mReentryNodes.clear();
 
         WalkTree(camera,visibleBounds,mOctree,false);
-    }
-
-    int SceneNodeNum = 0;
-    int OctreeNodeNum = 0;
-
-    void DiSceneManager::Cull(DiCamera* camera, DiRenderPipeline* pipeline)
-    {
-        DI_PROFILE(SceneManager_Cull);
-
-        SceneNodeNum = 0;
-        OctreeNodeNum = 0;
-
-        pipeline->ClearGroup();
-        //mOctreeNode->RenderNodes(camera, pipeline);
-        WalkTree(camera, pipeline, mOctreeNode, false);
-
-        //printf("%d,%d\n", SceneNodeNum, OctreeNodeNum);
-    }
-
-    void DiSceneManager::WalkTree(DiCamera* camera, DiRenderPipeline* pipeline, DiOctreeNode* octant, bool foundvisible)
-    {
-        DiCamera::Visibility v = DiCamera::NONE;
-
-        //SceneNodeNum += octant->mSceneNodeNum;
-        OctreeNodeNum++;
-
-        if (foundvisible)
-            v = DiCamera::FULL;
-        else if (octant == mOctreeNode)
-            v = DiCamera::PARTIAL;
-        else
-            v = camera->GetVisibility(octant->mObjectsBox);
-
-        if (v != DiCamera::NONE)
-        {
-            bool vis = true;
-            for (DiSceneNode* nd = octant->mSceneNodes.mHead; nd; nd = nd->mNext)
-            {
-                if (v == DiCamera::PARTIAL)
-                    vis = camera->IsVisible(nd->GetWorldAABB());
-                if (vis)
-                {
-                    nd->ProcessBatchGroup(camera, pipeline);
-                    SceneNodeNum++;
-                }
-            }
-        }
-
-        bool childfoundvisible = (v == DiCamera::FULL);
-
-        for (uint16 i = 0; i < 8; i++)
-        {
-            if (octant->mChildren[i])
-                WalkTree(camera, pipeline, octant->mChildren[i], childfoundvisible);
-        }
     }
 
     void DiSceneManager::WalkTree(DiCamera* camera,

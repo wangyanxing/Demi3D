@@ -32,11 +32,7 @@ namespace Demi
 
         virtual                 ~DiTransformUnit();
 
-        friend class DiSceneNode;
-
     public:
-
-        virtual void            SetSceneNode(DiSceneNode* node);
 
         virtual const DiMat4&   GetTransform(void) const;
 
@@ -119,8 +115,6 @@ namespace Demi
         DiString                mName;
 
         DiNode*                 mParentNode;
-
-        DiSceneNode*            mSceneNode;
 
         mutable DiAABB          mWorldAABB;
 

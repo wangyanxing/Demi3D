@@ -13,7 +13,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxPch.h"
 #include "TransformUnit.h"
 #include "CullNode.h"
-#include "SceneNode.h"
 
 namespace Demi 
 {
@@ -21,7 +20,6 @@ namespace Demi
         : mQueryFlags(sDefaultQueryFlags)
         , mVisibilityFlags(sDefaultVisibilityFlags)
         , mShadowCastEnable(true)
-        , mSceneNode(nullptr)
     {
         mParentNode = NULL;
         mGroupType = BATCH_MODEL;
@@ -30,7 +28,6 @@ namespace Demi
     }
 
     DiTransformUnit::DiTransformUnit( const DiString& name )
-        : mSceneNode(nullptr)
     {
         mParentNode = NULL;
         mName = name;
@@ -49,17 +46,9 @@ namespace Demi
         }
     }
 
-    void DiTransformUnit::SetSceneNode(DiSceneNode* node)
-    {
-        mSceneNode = node;
-        OnNodeSet(mSceneNode);
-    }
-
     const DiMat4& DiTransformUnit::GetTransform( void ) const
     {
-        if (mSceneNode)
-            return mSceneNode->GetWorldTransform();
-        else if (mParentNode)
+        if (mParentNode)
             return mParentNode->GetFullTransform();
         else
             return DiMat4::IDENTITY;
