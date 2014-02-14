@@ -13,12 +13,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxPch.h"
 #include "PointLight.h"
 #include "GpuProgram.h"
+#include "CullNode.h"
 
 namespace Demi 
 {
     DiPointLight::DiPointLight(DiSceneManager* mgr)
-        :DiLight(DiLight::TYPE_POINT,mgr),
-        mPosition(DiVec3::ZERO),
+        :DiLight(LIGHT_POINT,mgr),
         mAttenuationBegin(0),
         mAttenuationEnd(50)
     {
@@ -30,14 +30,16 @@ namespace Demi
 
     const DiAABB& DiPointLight::GetBoundingBox( void ) const
     {
-        DiVec3 temp(mAttenuationEnd, mAttenuationEnd, mAttenuationEnd);
-        mAABB.SetExtents(mPosition - temp, mPosition + temp);
+        if (!mParentNode)
+        {
+            mAABB.SetInfinite();
+        }
+        else
+        {
+            DiVec3 temp(mAttenuationEnd, mAttenuationEnd, mAttenuationEnd);
+            DiVec3 pos = mParentNode->GetDerivedPosition();
+            mAABB.SetExtents(pos - temp, pos + temp);
+        }
         return mAABB;
-    }
-
-    DiString& DiPointLight::GetType()
-    {
-        static DiString type = "PointLight";
-        return type;
     }
 }

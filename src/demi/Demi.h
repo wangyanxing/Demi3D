@@ -27,6 +27,7 @@
 #include "ShaderParam.h"
 #include "Skybox.h"
 #include "SimpleShape.h"
+
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SkyLight.h"

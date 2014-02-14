@@ -138,7 +138,6 @@ namespace Demi
     {
         if (evt.key == OIS::KC_ESCAPE)
         {
-            //CommandMgr->ExecuteCommand("quit");
             mQuit = true;
         }
 

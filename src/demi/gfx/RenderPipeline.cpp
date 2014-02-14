@@ -27,6 +27,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GBuffer.h"
 #include "GfxDriver.h"
 #include "RenderTarget.h"
+#include "Node.h"
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable:4701)
@@ -134,8 +135,13 @@ namespace Demi
         for(int i=0; i < mShaderEnv->numPointLights; i++)
         {
             mShaderEnv->pointLightsColor[i] = sm->GetPointLight(i)->GetColor();
-            DiVec3 pos = sm->GetPointLight(i)->GetPosition();
-            mShaderEnv->pointLightsPosition[i] = pos;
+            //DiVec3 pos = sm->GetPointLight(i)->GetPosition();
+            DiNode* lightNode = sm->GetPointLight(i)->GetParentNode();
+            if(!lightNode)
+                DI_WARNING("The point light should be attached to a specific node");
+            else
+                mShaderEnv->pointLightsPosition[i] = lightNode->GetDerivedPosition();
+            
             mShaderEnv->pointLightsAttenuation[i].x = sm->GetPointLight(i)->GetAttenuationBegin();
             mShaderEnv->pointLightsAttenuation[i].y = sm->GetPointLight(i)->GetAttenuationEnd();
         }

@@ -30,11 +30,11 @@ void InitScene()
 
 	sm->SetAmbientColor(DiColor(0.02f,0.02f,0.02f));
 
-	DiDirLight* dirlight0 = sm->CreateDirLight();
+	DiDirLightPtr dirlight0 = sm->CreateDirLight();
 	dirlight0->SetColor(DiColor(1,1,1,2));
 	dirlight0->SetDirection(DiVec3(2,1.2f,10).normalisedCopy());
 
-	DiDirLight* dirlight1 = sm->CreateDirLight();
+    DiDirLightPtr dirlight1 = sm->CreateDirLight();
 	dirlight1->SetColor(DiColor(1,1,1,1));
 	dirlight1->SetDirection(DiVec3(-2,-1.2f,-10).normalisedCopy());
 

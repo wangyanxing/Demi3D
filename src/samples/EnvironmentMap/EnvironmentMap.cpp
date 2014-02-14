@@ -16,7 +16,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 const int numMeshes = 3;
 DiCullNode* lightSphereNode = nullptr;
-DiPointLight* pointlight = nullptr;
 
 void AddMeshes()
 {
@@ -64,11 +63,11 @@ void InitScene()
     sm->SetAmbientColor(DiColor(1, 1, 1, 1));
 
 	// visbile mesh for the point light
-	pointlight = sm->CreatePointLight();
+	DiPointLightPtr pointlight = sm->CreatePointLight();
     pointlight->SetColor(DiColor(1, 1, 1, 2));
 	pointlight->SetAttenuation(200);
 
-	DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>();
+	DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>("lightsphere");
     lightSphere->CreateSphere(1, 16, 8);
 	DiMaterialPtr m = DiMaterial::QuickCreate("basic_v","basic_p");
     m->SetDiffuse(DiColor(1, 0.8f, 0));
@@ -76,6 +75,7 @@ void InitScene()
 
 	lightSphereNode = sm->GetRootNode()->CreateChild();
 	lightSphereNode->AttachObject(lightSphere);
+	lightSphereNode->AttachObject(pointlight);
 
     sm->GetSkybox()->Enable(1000, "SwedishRoyalCastle.dds");
 
@@ -91,7 +91,6 @@ void UpdateScene()
 	// rotating point light
 	float time = DiBase::Driver->GetElapsedSecond() / 2;
 	lightSphereNode->SetPosition(130 * DiMath::Cos(time), 30 * DiMath::Sin(time), 70 * DiMath::Sin(time));
-	pointlight->SetPosition(lightSphereNode->GetPosition());
 }
 
 int main(int argc, char *argv[])

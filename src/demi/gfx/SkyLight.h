@@ -18,13 +18,15 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
+    typedef shared_ptr<DiSkyLight> DiSkyLightPtr;
+    
+    /** Sky light with a sky color and ground color
+        this kind of light is more suitable than the directional light
+        actually it's a hemisphere light
+     */
     class DI_GFX_API DiSkyLight : public DiLight
     {
     public:
-
-        friend class DiSceneManager;
-
-    protected:
 
         DiSkyLight(DiSceneManager* mgr);
 
@@ -32,17 +34,22 @@ namespace Demi
 
     public:
 
+        /** The general directional of the light
+            when we compute the lighting contribution of this direction, it 
+            is usually the same as the traditional direction light
+         */
         void            SetDirection(const DiVec3& vec) { mDirection = vec; }
 
         DiVec3          GetDirection() const { return mDirection; }
 
+        /** Set the ground color
+            the ground color will reflected in the oppoisite direction of the light
+         */
         void            SetGrondColor(const DiColor& vec) { mGroundColor = vec; }
 
         DiColor         GetGroundColor() const { return mGroundColor; }
 
         const DiAABB&   GetBoundingBox(void) const;
-
-        DiString&       GetType();
 
     protected:
 

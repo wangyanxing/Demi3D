@@ -17,7 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi 
 {
     DiDirLight::DiDirLight(DiSceneManager* mgr)
-        :DiLight(DiLight::TYPE_DIRECTIONAL,mgr),
+        :DiLight(LIGHT_DIRECTIONAL,mgr),
         mDirection(DiVec3::UNIT_Z)
     {
     }
@@ -33,11 +33,5 @@ namespace Demi
     const DiAABB& DiDirLight::GetBoundingBox( void ) const
     {
         return DiAABB::BOX_INFINITE;
-    }
-
-    DiString& DiDirLight::GetType()
-    {
-        static DiString type = "DirectionalLight";
-        return type;
     }
 }

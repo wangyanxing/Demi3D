@@ -10,12 +10,12 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "Demi.h"
 #include "DemoFrame.h"
 
 
-DiCullNode*   lightSphereNode = nullptr;
-DiPointLight* pointlight      = nullptr;
+DiCullNode* lightSphereNode = nullptr;
 
 void AddMesh(float x, float y, const DiColor& col, const DiString& shader)
 {
@@ -49,24 +49,24 @@ void InitScene()
 
     sm->SetAmbientColor(DiColor::Black);
 
-    DiDirLight* dirlight = sm->CreateDirLight();
+    DiDirLightPtr dirlight = sm->CreateDirLight();
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 
 #if 0
     // sky light testing
-    DiSkyLight* skyLight = sm->CreateSkyLight();
+    DiSkyLightPtr skyLight = sm->CreateSkyLight();
     skyLight->SetColor(DiColor(0.3f,0.3f,0.3f));
     skyLight->SetGrondColor(DiColor(0.1f, 0.1f, 0.1f));
     skyLight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 #endif
 
-    pointlight = sm->CreatePointLight();
+    DiPointLightPtr pointlight = sm->CreatePointLight();
     pointlight->SetColor(DiColor());
  	pointlight->SetAttenuation(100);
 
 	// visbile mesh for the point light
-	DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>();
+	DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>("lightSphere");
 	lightSphere->CreateSphere(1,16,8);
 	DiMaterialPtr m = DiMaterial::QuickCreate("basic_v","basic_p");
 	m->SetDiffuse(DiColor(1,0.8f,0));
@@ -74,6 +74,7 @@ void InitScene()
 
 	lightSphereNode = sm->GetRootNode()->CreateChild();
 	lightSphereNode->AttachObject(lightSphere);
+    lightSphereNode->AttachObject(pointlight);
 
 	float y1 = 0, y2 = -20, y3 = 20;      
                              
@@ -110,7 +111,6 @@ void UpdateScene()
 {
 	float time = DiBase::Driver->GetElapsedSecond();
 	lightSphereNode->SetPosition(70 * DiMath::Cos(time), 30 * DiMath::Sin(time), 70 * DiMath::Sin(time));
-	pointlight->SetPosition(lightSphereNode->GetPosition());
 }
 
 int main(int argc, char *argv[])

@@ -18,50 +18,44 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
+    typedef shared_ptr<DiPointLight> DiPointLightPtr;
+    
+    /** Point light, contains the basic attenuation parameters
+        it should be culled and pushed to the final pipeline
+     */
     class DI_GFX_API DiPointLight : public DiLight
     {
     public:
 
-        friend class DiSceneManager;
-
-    protected:
-
         DiPointLight(DiSceneManager* mgr);
 
-        virtual                 ~DiPointLight();
+        virtual         ~DiPointLight();
 
     public:
 
-        void                     SetPosition(const DiVec3& vec)
-        {
-            mPosition = vec;
-        }
+        /** Calculate and return the bounding box
+         */
+        const DiAABB&    GetBoundingBox(void) const;
 
-        DiVec3                   GetPosition() const {return mPosition;}
-
-        virtual const DiAABB&    GetBoundingBox(void) const;
-
-        virtual DiString&        GetType();
-
-        void                     SetAttenuation(float end, float begin = 0)
+        /** Attenuation parameters of the point light
+         */
+        void             SetAttenuation(float end, float begin = 0)
         {
             mAttenuationBegin = begin;
             mAttenuationEnd = end;
         }
 
-        float                    GetAttenuationBegin() const { return mAttenuationBegin; }
+        float            GetAttenuationBegin() const { return mAttenuationBegin; }
 
-        float                    GetAttenuationEnd() const { return mAttenuationEnd; }
+        float            GetAttenuationEnd() const { return mAttenuationEnd; }
 
     protected:
 
-        DiVec3                   mPosition;
-        
-        float                    mAttenuationBegin;
+        float            mAttenuationBegin;
 
-        float                    mAttenuationEnd;
+        float            mAttenuationEnd;
 
-        mutable DiAABB           mAABB;
+        mutable DiAABB   mAABB;
     };
 
 }

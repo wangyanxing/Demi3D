@@ -17,40 +17,36 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "light.h"
 
-namespace Demi 
+namespace Demi
 {
+    typedef shared_ptr<DiDirLight> DiDirLightPtr;
+    
+    /** Directional light
+        only contains direction and color
+     */
     class DI_GFX_API DiDirLight : public DiLight
     {
     public:
 
-        friend class DiSceneManager;
-
-    protected:
-
         DiDirLight(DiSceneManager* mgr);
 
-        virtual ~DiDirLight();
+        virtual         ~DiDirLight();
 
     public:
 
-        virtual void             Bind(DiShaderEnvironment* env);
+        void            Bind(DiShaderEnvironment* env);
 
-        void                     SetDirection(const DiVec3& vec){
-            mDirection = vec;
-        }
+        void            SetDirection(const DiVec3& vec) { mDirection = vec; }
 
-        DiVec3                   GetDirection() const {return mDirection;}
+        DiVec3          GetDirection() const {return mDirection;}
 
-        virtual const DiAABB&    GetBoundingBox(void) const;
-
-        virtual DiString&        GetType();
+        const DiAABB&   GetBoundingBox(void) const;
 
     protected:
 
-        DiVec3                   mDirection;
+        DiVec3          mDirection;
         
     };
-
 }
 
 #endif

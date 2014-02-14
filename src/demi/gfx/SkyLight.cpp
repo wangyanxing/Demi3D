@@ -17,7 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi 
 {
     DiSkyLight::DiSkyLight(DiSceneManager* mgr)
-        :DiLight(DiLight::TYPE_SKY,mgr),
+        :DiLight(LIGHT_SKY,mgr),
         mDirection(DiVec3::ZERO),
         mGroundColor(DiColor::White)
     {
@@ -30,11 +30,5 @@ namespace Demi
     const DiAABB& DiSkyLight::GetBoundingBox(void) const
     {
         return DiAABB::BOX_INFINITE;
-    }
-
-    DiString& DiSkyLight::GetType()
-    {
-        static DiString type = "SkyLight";
-        return type;
     }
 }

@@ -30,7 +30,7 @@ namespace Demi
 
         DiTransformUnit(const DiString& name);
 
-        virtual                    ~DiTransformUnit();
+        virtual                 ~DiTransformUnit();
 
         friend class DiSceneNode;
 

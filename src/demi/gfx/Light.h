@@ -14,69 +14,68 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiLight_h__
 #define DiLight_h__
 
-
 #include "TransformUnit.h"
 
 namespace Demi 
 {
+    /** Dynamic light types
+     Currently the Skylight can only have one
+     instance in the scene manager
+     but actually it's enough
+     */
+    enum LightType
+    {
+        /// Typical directional light
+        LIGHT_DIRECTIONAL = 0,
+        
+        /// Typical point light
+        LIGHT_POINT,
+        
+        /// Hemisphere light
+        LIGHT_SKY,
+        
+        MAX_LIGHT_TYPES
+    };
+    
+    /** A dynamic light source created by the scene manager
+        lights should be attached to nodes in order to get
+        the positions even full transformations
+     */
     class DI_GFX_API DiLight : public DiTransformUnit
     {
-    public:
-
-        enum Type
-        {
-            TYPE_DIRECTIONAL = 0,
-            TYPE_POINT,
-            TYPE_SPOT,
-            TYPE_SKY,
-
-            NUM_TYPES
-        };
-
     protected:
 
         friend class DiRenderPipeline;
         friend class DiSceneManager;
 
-        DiLight(Type type, DiSceneManager* mgr);
+        DiLight(LightType type, DiSceneManager* mgr);
 
         virtual         ~DiLight(void);
 
     public:
 
-        DiLight::Type   GetType() const { return mType; }
+        LightType       GetType() const { return mType; }
 
-        const DiColor&  GetColor(void) const{return mColor;}
+        const DiColor&  GetColor(void) const{ return mColor; }
 
-        void            SetColor(const DiColor &color);
+        /** Set the color of the light
+            usually any type of light should have a color property
+         */
+        void            SetColor(const DiColor &color) { mColor = color; }
+        
+        DiString&       GetType();
 
     protected:
 
-        virtual void    Update(void) const;
-
-    protected:
-
-        Type            mType;
+        LightType       mType;
 
         DiColor         mColor;
 
         DiSceneManager* mCreator;
 
-        mutable DiVec3  mDerivedPosition;
-
-        mutable DiVec3  mDerivedDirection;
-        
-        mutable DiVec3  mDerivedCamRelativePosition;
-        
-        mutable bool    mDerivedCamRelativeDirty;
-        
-        mutable bool    mDerivedTransformDirty;
-
-        DiCamera*       mCameraToBeRelativeTo;
-
-        DiVec3          mDirection;
+        /// The relative camera regarding the shadow processing
+        DiCamera*       mShadowCamera;
     };
-
 }
 
 #endif

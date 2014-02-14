@@ -17,28 +17,21 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    DiLight::DiLight(Type type,DiSceneManager* mgr)
+    DiLight::DiLight(LightType type,DiSceneManager* mgr)
         :mType(type),
         mColor(DiColor::White),
         mCreator(mgr),
-        mCameraToBeRelativeTo(NULL),
-        mDerivedCamRelativeDirty(false),
-        mDerivedTransformDirty(false)
+        mShadowCamera(nullptr)
     {
     }
 
     DiLight::~DiLight(void)
     {
     }
-
-    void DiLight::SetColor( const DiColor &color )
+    
+    DiString& DiLight::GetType()
     {
-        mColor = color;
+        static DiString type = "Light";
+        return type;
     }
-
-    void DiLight::Update( void ) const
-    {
-        
-    }
-
 }

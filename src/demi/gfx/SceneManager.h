@@ -15,7 +15,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiSceneManager_h__
 
 
-#include "Light.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SkyLight.h"
 #include "Scene.h"
 #include "TerrainMap.h"
 #include "Octree.h"
@@ -74,8 +76,8 @@ namespace Demi
         friend class DiRenderPipeline;
         friend class DiOctree;
 
-        typedef DiVector<DiDirLight*>    DirLightList;
-        typedef DiVector<DiPointLight*>    PointLightList;
+        typedef DiVector<DiDirLightPtr>    DirLightList;
+        typedef DiVector<DiPointLightPtr>    PointLightList;
 
         static uint32     ENTITY_TYPE_MASK;
         static uint32     FX_TYPE_MASK;
@@ -125,27 +127,27 @@ namespace Demi
 
         void                    DestroyAllCameras(void);
 
-        DiDirLight*             CreateDirLight();
+        DiDirLightPtr           CreateDirLight();
 
-        size_t                  GetDirLightNum()const {return mDirLights.size();}
+        uint32                  GetDirLightNum()const {return mDirLights.size();}
         
-        DiDirLight*             GetDirLight(size_t id){return mDirLights[id];}
+        DiDirLightPtr           GetDirLight(size_t id){return mDirLights[id];}
 
-        void                    DestroyDirLight(DiDirLight* light);
+        void                    DestroyDirLight(DiDirLightPtr light);
 
-        DiPointLight*           CreatePointLight();
+        DiPointLightPtr         CreatePointLight();
 
-        size_t                  GetPointLightNum()const {return mPointLights.size();}
+        uint32                  GetPointLightNum()const {return mPointLights.size();}
         
-        DiPointLight*           GetPointLight(size_t id){return mPointLights[id];}
+        DiPointLightPtr         GetPointLight(size_t id){return mPointLights[id];}
 
-        void                    DestroyPointLight(DiPointLight* light);
+        void                    DestroyPointLight(DiPointLightPtr light);
 
-        DiSkyLight*             GetSkyLight() { return mSkyLight; }
+        DiSkyLightPtr           GetSkyLight() { return mSkyLight; }
 
         void                    DestroySkyLight();
 
-        DiSkyLight*             CreateSkyLight();
+        DiSkyLightPtr           CreateSkyLight();
 
         void                    Cull(DiCamera* camera,
                                     DiVisibleObjectsBoundsInfo* visibleBounds);
@@ -240,7 +242,7 @@ namespace Demi
 
         PointLightList          mPointLights;
 
-        DiSkyLight*             mSkyLight;
+        DiSkyLightPtr           mSkyLight;
 
         DiTerrainPtr            mTerrain;
 

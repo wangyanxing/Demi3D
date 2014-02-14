@@ -16,9 +16,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RenderPipeline.h"
 #include "Camera.h"
 #include "CullNode.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
-#include "SkyLight.h"
 #include "AssetManager.h"
 #include "CullNode.h"
 #include "InstanceManager.h"
@@ -504,7 +501,7 @@ namespace Demi
         mSceneNodes.clear();
     }
 
-    DiDirLight* DiSceneManager::CreateDirLight()
+    DiDirLightPtr DiSceneManager::CreateDirLight()
     {
         if(mDirLights.size() >= MAX_LIGHTS)
         {
@@ -512,57 +509,45 @@ namespace Demi
             return NULL;
         }
 
-        DiDirLight* l = DI_NEW DiDirLight(this);
+        DiDirLightPtr l = make_shared<DiDirLight>(this);
         mDirLights.push_back(l);
         return l;
     }
 
-    void DiSceneManager::DestroyDirLight( DiDirLight* light )
+    void DiSceneManager::DestroyDirLight( DiDirLightPtr light )
     {
-        DirLightList::iterator it = mDirLights.find(light);
+        auto it = mDirLights.find(light);
         if (it != mDirLights.end())
         {
-            DI_DELETE (*it);
             mDirLights.erase(it);
         }
     }
 
-    DiPointLight* DiSceneManager::CreatePointLight()
+    DiPointLightPtr DiSceneManager::CreatePointLight()
     {
-        if(mPointLights.size() >= MAX_LIGHTS){
+        if(mPointLights.size() >= MAX_LIGHTS)
+        {
             DI_WARNING("Too many point lights, the max number of each type of lights is %d", MAX_LIGHTS);
-            return NULL;
+            return nullptr;
         }
 
-        DiPointLight* l = DI_NEW DiPointLight(this);
+        DiPointLightPtr l = make_shared<DiPointLight>(this);
         mPointLights.push_back(l);
         return l;
     }
 
-    void DiSceneManager::DestroyPointLight( DiPointLight* light )
+    void DiSceneManager::DestroyPointLight( DiPointLightPtr light )
     {
-        PointLightList::iterator it = mPointLights.find(light);
+        auto it = mPointLights.find(light);
         if (it != mPointLights.end())
         {
-            DI_DELETE (*it);
             mPointLights.erase(it);
         }
     }
 
     void DiSceneManager::ClearLights()
     {
-        DI_INFO("Cleaning %d dir lights..", mDirLights.size());
-        for (auto it = mDirLights.begin(); it!=mDirLights.end(); ++it)
-        {
-            DI_DELETE (*it);
-        }
         mDirLights.clear();
-
-        DI_INFO("Cleaning %d point lights..", mPointLights.size());
-        for (auto pit = mPointLights.begin(); pit!=mPointLights.end(); ++pit)
-        {
-            DI_DELETE (*pit);
-        }
         mPointLights.clear();
 
     }
@@ -1091,14 +1076,10 @@ namespace Demi
 
     void DiSceneManager::DestroySkyLight()
     {
-        if (mSkyLight)
-        {
-            DI_DELETE mSkyLight;
-            mSkyLight = nullptr;
-        }
+        mSkyLight = nullptr;
     }
-
-    DiSkyLight* DiSceneManager::CreateSkyLight()
+    
+    DiSkyLightPtr DiSceneManager::CreateSkyLight()
     {
         if (mSkyLight)
         {
@@ -1106,7 +1087,7 @@ namespace Demi
             return mSkyLight;
         }
 
-        mSkyLight = DI_NEW DiSkyLight(this);
+        mSkyLight = make_shared<DiSkyLight>(this);
         return mSkyLight;
     }
 
