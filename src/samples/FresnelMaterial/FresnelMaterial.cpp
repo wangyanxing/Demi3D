@@ -54,7 +54,8 @@ void InitScene()
 
 	sm->SetAmbientColor(DiColor(0.1f,0.1f,0.1f,0.1f));
 
-	DiDirLightPtr dirlight = sm->CreateDirLight();
+    DiDirLightPtr dirlight = make_shared<DiDirLight>();
+    sm->AttachObject(dirlight);
 	dirlight->SetColor(DiColor());
 	dirlight->SetDirection(DiVec3(1,1,2).normalisedCopy());
 

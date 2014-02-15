@@ -13,11 +13,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxPch.h"
 #include "SkyLight.h"
 #include "GpuProgram.h"
+#include "SceneManager.h"
 
 namespace Demi 
 {
-    DiSkyLight::DiSkyLight(DiSceneManager* mgr)
-        :DiLight(LIGHT_SKY,mgr),
+    DiSkyLight::DiSkyLight()
+        :DiLight(LIGHT_SKY),
         mDirection(DiVec3::ZERO),
         mGroundColor(DiColor::White)
     {
@@ -30,5 +31,10 @@ namespace Demi
     const DiAABB& DiSkyLight::GetBoundingBox(void) const
     {
         return DiAABB::BOX_INFINITE;
+    }
+
+    void DiSkyLight::Update(DiCamera* camera)
+    {
+        camera->GetSceneManager()->GetVisibleLights().skyLight = this;
     }
 }

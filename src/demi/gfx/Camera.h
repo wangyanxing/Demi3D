@@ -10,15 +10,16 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #ifndef DiCamera_h__
 #define DiCamera_h__
-
 
 #include "Frustum.h"
 
 namespace Demi 
 {
-
+    /** Camera class, adapted from Ogre3D
+     */
     class DI_GFX_API DiCamera : public DiFrustum
     {
     public:
@@ -168,6 +169,8 @@ namespace Demi
 
         void                CopySettingFrom(const DiCamera* cam);
 
+        /** Return the parent scene manager
+         */
         DiSceneManager*     GetSceneManager() const { return mSceneManager; }
 
         Visibility          GetVisibility( const DiAABB &bound );

@@ -13,11 +13,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxPch.h"
 #include "DirectionalLight.h"
 #include "GpuProgram.h"
+#include "Camera.h"
+#include "SceneManager.h"
 
 namespace Demi 
 {
-    DiDirLight::DiDirLight(DiSceneManager* mgr)
-        :DiLight(LIGHT_DIRECTIONAL,mgr),
+    DiDirLight::DiDirLight()
+        :DiLight(LIGHT_DIRECTIONAL),
         mDirection(DiVec3::UNIT_Z)
     {
     }
@@ -26,12 +28,13 @@ namespace Demi
     {
     }
 
-    void DiDirLight::Bind( DiShaderEnvironment* env )
-    {
-    }
-
     const DiAABB& DiDirLight::GetBoundingBox( void ) const
     {
         return DiAABB::BOX_INFINITE;
+    }
+
+    void DiDirLight::Update(DiCamera* camera)
+    {
+        camera->GetSceneManager()->GetVisibleLights().dirLights.push_back(this);
     }
 }

@@ -16,7 +16,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 void CreateModels()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-#if 1
     const int size = 3;
     for (int i = 0; i < size; i++)
     {
@@ -41,23 +40,6 @@ void CreateModels()
             }
         }
     }
-#else
-    sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));
-
-    DiDirLight* dirlight = sm->CreateDirLight();
-    dirlight->SetColor(DiColor());
-    dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
-
-    DiMaterialPtr mat = DiMaterial::QuickCreate("phong_v", "phong_p");
-    DiSimpleShapePtr model = make_shared<DiSimpleShape>();
-    //model->CreateSphere(10, 16, 16);
-    model->CreateTorus(8, 2, 32, 32);
-
-    mat->SetDiffuse(DiColor::Red);
-    model->SetMaterial(mat);
-    DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
-    cullnode->AttachObject(model);
-#endif
 }
 
 void InitScene()
@@ -65,7 +47,8 @@ void InitScene()
 	DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));
 
-    DiDirLightPtr dirlight = sm->CreateDirLight();
+    DiDirLightPtr dirlight = make_shared<DiDirLight>();
+    sm->AttachObject(dirlight);
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 

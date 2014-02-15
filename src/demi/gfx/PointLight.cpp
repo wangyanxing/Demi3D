@@ -14,11 +14,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PointLight.h"
 #include "GpuProgram.h"
 #include "CullNode.h"
+#include "SceneManager.h"
 
 namespace Demi 
 {
-    DiPointLight::DiPointLight(DiSceneManager* mgr)
-        :DiLight(LIGHT_POINT,mgr),
+    DiPointLight::DiPointLight()
+        :DiLight(LIGHT_POINT),
         mAttenuationBegin(0),
         mAttenuationEnd(50)
     {
@@ -41,5 +42,10 @@ namespace Demi
             mAABB.SetExtents(pos - temp, pos + temp);
         }
         return mAABB;
+    }
+
+    void DiPointLight::Update(DiCamera* camera)
+    {
+        camera->GetSceneManager()->GetVisibleLights().pointLights.push_back(this);
     }
 }

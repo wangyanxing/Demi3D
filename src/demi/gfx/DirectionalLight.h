@@ -28,13 +28,13 @@ namespace Demi
     {
     public:
 
-        DiDirLight(DiSceneManager* mgr);
+        DiDirLight();
 
         virtual         ~DiDirLight();
 
     public:
 
-        void            Bind(DiShaderEnvironment* env);
+        void            Update(DiCamera*);
 
         void            SetDirection(const DiVec3& vec) { mDirection = vec; }
 

@@ -30,14 +30,16 @@ void InitScene()
 
 	sm->SetAmbientColor(DiColor(0.02f,0.02f,0.02f));
 
-	DiDirLightPtr dirlight0 = sm->CreateDirLight();
+    DiDirLightPtr dirlight0 = make_shared<DiDirLight>();
 	dirlight0->SetColor(DiColor(1,1,1,2));
 	dirlight0->SetDirection(DiVec3(2,1.2f,10).normalisedCopy());
 
-    DiDirLightPtr dirlight1 = sm->CreateDirLight();
+    DiDirLightPtr dirlight1 = make_shared<DiDirLight>();
 	dirlight1->SetColor(DiColor(1,1,1,1));
 	dirlight1->SetDirection(DiVec3(-2,-1.2f,-10).normalisedCopy());
 
+    sm->AttachObject(dirlight0);
+    sm->AttachObject(dirlight1);
 	sm->GetSkybox()->Enable(10000,"bridge.dds");
 
 	AddMeshes();

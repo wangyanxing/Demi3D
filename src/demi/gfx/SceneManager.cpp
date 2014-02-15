@@ -44,9 +44,9 @@ namespace Demi
 
     enum Intersection
     {
-        OUTSIDE      = 0,
-        INSIDE       = 1,
-        INTERSECT    = 2
+        OUTSIDE   = 0,
+        INSIDE    = 1,
+        INTERSECT = 2
     };
 
     Intersection intersect( const DiRay &one, const DiAABB &two )
@@ -258,8 +258,7 @@ namespace Demi
         mIllumState(IRS_NONE),
         mLastFrameNumber(0),
         mSkybox(nullptr),
-        mAmbientColor(0.3f,0.3f,0.3f),
-        mSkyLight(nullptr)
+        mAmbientColor(0.3f,0.3f,0.3f)
     {
         mPipeline = Driver->GetPipeline();
         mRootNode = DI_NEW DiCullNode(this,"_root");
@@ -281,7 +280,6 @@ namespace Demi
     {
         DestroyTerrain();
 
-        ClearLights();
         ClearNodes();
         DestroyCamera("_sm_camera");
 
@@ -437,57 +435,6 @@ namespace Demi
         mSceneNodes.clear();
     }
 
-    DiDirLightPtr DiSceneManager::CreateDirLight()
-    {
-        if(mDirLights.size() >= MAX_LIGHTS)
-        {
-            DI_WARNING("Too many directional lights, the max number of each type of lights is %d", MAX_LIGHTS);
-            return NULL;
-        }
-
-        DiDirLightPtr l = make_shared<DiDirLight>(this);
-        mDirLights.push_back(l);
-        return l;
-    }
-
-    void DiSceneManager::DestroyDirLight( DiDirLightPtr light )
-    {
-        auto it = mDirLights.find(light);
-        if (it != mDirLights.end())
-        {
-            mDirLights.erase(it);
-        }
-    }
-
-    DiPointLightPtr DiSceneManager::CreatePointLight()
-    {
-        if(mPointLights.size() >= MAX_LIGHTS)
-        {
-            DI_WARNING("Too many point lights, the max number of each type of lights is %d", MAX_LIGHTS);
-            return nullptr;
-        }
-
-        DiPointLightPtr l = make_shared<DiPointLight>(this);
-        mPointLights.push_back(l);
-        return l;
-    }
-
-    void DiSceneManager::DestroyPointLight( DiPointLightPtr light )
-    {
-        auto it = mPointLights.find(light);
-        if (it != mPointLights.end())
-        {
-            mPointLights.erase(it);
-        }
-    }
-
-    void DiSceneManager::ClearLights()
-    {
-        mDirLights.clear();
-        mPointLights.clear();
-
-    }
-
     bool DiSceneManager::LoadScene(const DiString& scene)
     {
         DI_INFO("Loading scene %s..", scene.c_str());
@@ -513,7 +460,10 @@ namespace Demi
         UpdateDirtyInstanceManagers();
         mSkybox->Update();
         mRootNode->_Update(true, false);
+
+        // clear all culled objects and lights
         mVisibleObjects.objs.clear();
+        mVisibleLights.Clear();
     }
 
     void DiSceneManager::Cull(DiCamera* cam)
@@ -1010,21 +960,14 @@ namespace Demi
             return camVisObjIt->second;
     }
 
-    void DiSceneManager::DestroySkyLight()
+    void DiSceneManager::AttachObject(DiTransUnitPtr obj)
     {
-        mSkyLight = nullptr;
+        mRootNode->AttachObject(obj);
     }
-    
-    DiSkyLightPtr DiSceneManager::CreateSkyLight()
-    {
-        if (mSkyLight)
-        {
-            DI_WARNING("Currently we can only have one skylight");
-            return mSkyLight;
-        }
 
-        mSkyLight = make_shared<DiSkyLight>(this);
-        return mSkyLight;
+    void DiSceneManager::DetachObject(DiTransUnitPtr obj)
+    {
+        mRootNode->DetachObject(obj);
     }
 
     int     DiSceneManager::intersect_call         = 0;

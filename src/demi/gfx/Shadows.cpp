@@ -10,25 +10,9 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
-#include "Light.h"
 
-namespace Demi 
+namespace Demi
 {
-    DiLight::DiLight(LightType type)
-        :mType(type),
-        mColor(DiColor::White),
-        mShadowCamera(nullptr)
-    {
-    }
-
-    DiLight::~DiLight(void)
-    {
-    }
-    
-    DiString& DiLight::GetType()
-    {
-        static DiString type = "Light";
-        return type;
-    }
 }

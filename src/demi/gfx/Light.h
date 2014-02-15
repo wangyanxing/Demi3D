@@ -15,13 +15,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiLight_h__
 
 #include "TransformUnit.h"
+#include "Shadows.h"
 
 namespace Demi 
 {
     /** Dynamic light types
-     Currently the Skylight can only have one
-     instance in the scene manager
-     but actually it's enough
+        Currently the Skylight can only have one
+        instance in the scene manager
+        but actually it's enough
      */
     enum LightType
     {
@@ -37,105 +38,59 @@ namespace Demi
         MAX_LIGHT_TYPES
     };
     
-#define MAX_CASCADE_SPLITS 4
-    
-    /** CSM parameters
-     */
-    struct DI_GFX_API CascadeParams
-    {
-        /** Simply do nothing
-         */
-        CascadeParams()
-        {
-        }
-        
-        /** Set the splits and fade params
-         */
-        void Set(float split1, float split2, float split3, float split4,
-                          float fadeStart, float biasAutoAdjust = 1.0f) :
-        
-            fadeStart(fadeStart),
-            biasAutoAdjust(biasAutoAdjust)
-        {
-            splits[0] = split1;
-            splits[1] = split2;
-            splits[2] = split3;
-            splits[3] = split4;
-        }
-        
-        /** Validate parameters.
-         */
-        void Validate()
-        {
-            for (unsigned i = 0; i < MAX_CASCADE_SPLITS; ++i)
-                splits_[i] = DiMax(splits[i], 0.0f);
-            fadeStart_ = DiMath::Clamp(fadeStart, std::numeric_limits<float>::epsilon(), 1.0f);
-        }
-        
-        /** Return shadow maximum range.
-         */
-        float GetShadowRange() const
-        {
-            float ret = 0.0f;
-            for (unsigned i = 0; i < MAX_CASCADE_SPLITS; ++i)
-                ret = DiMath::Max(ret, splits[i]);
-            
-            return ret;
-        }
-        
-        /// Far clip values of the splits.
-        float splits[4];
-        
-        /// The point relative to the total shadow range where shadow fade begins (0.0 - 1.0)
-        float fadeStart;
-        
-        /// Automatic depth bias adjustment strength.
-        float biasAutoAdjust;
-    };
-    
     /** A dynamic light source created by the scene manager
         lights should be attached to nodes in order to get
         the positions even full transformations
      */
     class DI_GFX_API DiLight : public DiTransformUnit
     {
-    protected:
+    public:
 
         friend class DiRenderPipeline;
         friend class DiSceneManager;
 
-        DiLight(LightType type, DiSceneManager* mgr);
+        DiLight(LightType type);
 
-        virtual         ~DiLight(void);
+        virtual                 ~DiLight(void);
 
     public:
 
-        LightType       GetType() const { return mType; }
+        LightType               GetType(void) const { return mType; }
 
-        const DiColor&  GetColor(void) const{ return mColor; }
+        const DiColor&          GetColor(void) const{ return mColor; }
 
         /** Set the color of the light
             usually any type of light should have a color property
          */
-        void            SetColor(const DiColor &color) { mColor = color; }
+        void                    SetColor(const DiColor &color) { mColor = color; }
         
-        DiString&       GetType();
+        /** Get TransformObj type
+         */
+        DiString&               GetType(void);
         
-        CascadeParams&  GetCSMParams() { return mCascadeParams; }
+        DiCascadeParams&        GetCSMParams(void) { return mCascadeParams; }
+
+        DiShadowFocusParams&    GetFocusParams(void) { return mFocusParams; }
+
+        DiShadowBiasParams&     GetBiasParams(void) { return mBiasParams; }
 
     protected:
 
-        LightType       mType;
+        LightType               mType;
 
-        DiColor         mColor;
-
-        DiSceneManager* mCreator;
+        DiColor                 mColor;
 
         /// The relative camera regarding the shadow processing
-        DiCamera*       mShadowCamera;
+        DiCamera*               mShadowCamera;
         
-        /// for cascade shadow mapping
-        CascadeParams   mCascadeParams;
+        /// For cascade shadow mapping
+        DiCascadeParams         mCascadeParams;
+
+        /// Focusing parameters
+        DiShadowFocusParams     mFocusParams;
+
+        /// Depth bias parameters
+        DiShadowBiasParams      mBiasParams;
     };
 }
 

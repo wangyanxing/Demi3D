@@ -27,7 +27,7 @@ namespace Demi
     {
     public:
 
-        DiPointLight(DiSceneManager* mgr);
+        DiPointLight();
 
         virtual         ~DiPointLight();
 
@@ -44,6 +44,10 @@ namespace Demi
             mAttenuationBegin = begin;
             mAttenuationEnd = end;
         }
+
+        /** Calls only when this point light is visible
+         */
+        void             Update(DiCamera*);
 
         float            GetAttenuationBegin() const { return mAttenuationBegin; }
 

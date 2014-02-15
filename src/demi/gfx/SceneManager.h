@@ -48,18 +48,47 @@ namespace Demi
             const DiSphere& sphereBounds, const DiCamera* cam);
     };
 
+    /** Visibility culling results
+     */
     struct DiVisibleObjs
     {
         typedef DiVector<DiTransUnitPtr> VisibleObjs;
         VisibleObjs  objs;
 
+        /** Update all transform units
+         */
         void    UpdateAll(DiCamera* camera);
 
+        /** Add to the final pipeline
+         */
         void    AddToBatch(DiRenderPipeline* bg);
+    };
+
+    /** Visible lights
+     */
+    struct DiVisibleLights
+    {
+        DiVector<DiDirLight*>   dirLights;
+        DiVector<DiPointLight*> pointLights;
+        DiSkyLight*             skyLight;
+
+        /** Clear all visible lights
+            Called before the culling per frame
+         */
+        void    Clear()
+        {
+            dirLights.clear();
+            pointLights.clear();
+            skyLight = nullptr;
+        }
     };
 
     //////////////////////////////////////////////////////////////////////////
 
+    /** Scene manager class
+        Every render window holds a scene manager which is responsible for
+        creating and destroying scene nodes, managing lights and skyboxs, etc.
+     */
     class DI_GFX_API DiSceneManager : public DiBase
     {
     public:
@@ -73,7 +102,7 @@ namespace Demi
         friend class DiOctree;
 
         typedef DiVector<DiDirLightPtr>    DirLightList;
-        typedef DiVector<DiPointLightPtr>    PointLightList;
+        typedef DiVector<DiPointLightPtr>  PointLightList;
 
         static uint32     ENTITY_TYPE_MASK;
         static uint32     FX_TYPE_MASK;
@@ -90,8 +119,9 @@ namespace Demi
 
     public:
 
-        // create a child node of root node
-        DiCullNode*             CreateNode();
+        /** Create a child scene node of the root
+         */
+        DiCullNode*             CreateNode(void);
 
         DiCullNode*             CreateNode(const DiString& name);
 
@@ -103,11 +133,19 @@ namespace Demi
 
         DiCullNode*             GetSceneNode(const DiString& name);
 
-        size_t                  GetSceneNodeNums()const {return mSceneNodes.size();}
+        uint32                  GetSceneNodeNums(void) const { return mSceneNodes.size(); }
 
         bool                    RenameSceneNode(const DiString& oldName, const DiString& newName);
 
-        DiCullNode*             GetRootNode(){return mRootNode;}
+        /** Attach an object to the root node
+         */
+        void                    AttachObject(DiTransUnitPtr obj);
+
+        /** Detach an object to the root node
+        */
+        void                    DetachObject(DiTransUnitPtr obj);
+
+        DiCullNode*             GetRootNode(void){ return mRootNode; }
 
         DiCamera*               CreateCamera(const DiString& name);
 
@@ -121,54 +159,31 @@ namespace Demi
 
         void                    DestroyAllCameras(void);
 
-        DiDirLightPtr           CreateDirLight();
+        void                    Cull(DiCamera* camera, DiVisibleObjectsBoundsInfo* visibleBounds);
 
-        uint32                  GetDirLightNum()const {return mDirLights.size();}
-        
-        DiDirLightPtr           GetDirLight(size_t id){return mDirLights[id];}
+        void                    ClearNodes(void);
 
-        void                    DestroyDirLight(DiDirLightPtr light);
+        DiCamera*               GetCamera(void) const { return mCamera; }
 
-        DiPointLightPtr         CreatePointLight();
+        DiTerrainPtr            GetTerrain(void) const { return mTerrain; }
 
-        uint32                  GetPointLightNum()const {return mPointLights.size();}
-        
-        DiPointLightPtr         GetPointLight(size_t id){return mPointLights[id];}
+        const DiColor&          GetAmbientColor(void) const { return mAmbientColor; }
 
-        void                    DestroyPointLight(DiPointLightPtr light);
-
-        DiSkyLightPtr           GetSkyLight() { return mSkyLight; }
-
-        void                    DestroySkyLight();
-
-        DiSkyLightPtr           CreateSkyLight();
-
-        void                    Cull(DiCamera* camera,
-                                    DiVisibleObjectsBoundsInfo* visibleBounds);
-
-        void                    ClearNodes();
-
-        void                    ClearLights();
-
-        DiCamera*               GetCamera() const { return mCamera; }
-
-        DiTerrainPtr            GetTerrain() const { return mTerrain; }
-
-        const DiColor&          GetAmbientColor() const { return mAmbientColor; }
-
+        /** Set the global ambient color
+         */
         void                    SetAmbientColor(DiColor val) { mAmbientColor = val; }
 
         bool                    LoadScene(const DiString& sceneName);
 
-        bool                    LoadTerrain();
+        bool                    LoadTerrain(void);
 
-        DiString                GetCurrentSceneName() const { return mCurrentScene; }
+        DiString                GetCurrentSceneName(void) const { return mCurrentScene; }
 
-        DiScenePtr              GetCurrentScene();
+        DiScenePtr              GetCurrentScene(void);
 
-        bool                    HasScene() const;
+        bool                    HasScene(void) const;
 
-        void                    UnloadScene();
+        void                    UnloadScene(void);
 
         void                    DestroyTerrain();
 
@@ -208,7 +223,13 @@ namespace Demi
 
         DiSkybox*               GetSkybox(){return mSkybox;}
 
+        /** Get visible objects including lights
+        */
         DiVisibleObjs&          GetVisibleObjects() { return mVisibleObjects; }
+
+        /** Get visible lights
+         */
+        DiVisibleLights&        GetVisibleLights() { return mVisibleLights; }
 
     protected:
 
@@ -224,12 +245,8 @@ namespace Demi
 
         DiCamera*               mCamera;
 
-        DirLightList            mDirLights;
-
-        PointLightList          mPointLights;
-
-        DiSkyLightPtr           mSkyLight;
-
+        DiVisibleLights         mVisibleLights;
+        
         DiTerrainPtr            mTerrain;
 
         DiRenderPipeline*       mPipeline;
@@ -267,13 +284,13 @@ namespace Demi
 
         DiSkybox*               mSkybox;
 
+        /// visible objects, will be updated every frame
         DiVisibleObjs           mVisibleObjects;
 
     public:
 
         static int              intersect_call;
     };
-
 }
 
 #endif

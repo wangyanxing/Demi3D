@@ -49,19 +49,21 @@ void InitScene()
 
     sm->SetAmbientColor(DiColor::Black);
 
-    DiDirLightPtr dirlight = sm->CreateDirLight();
+    DiDirLightPtr dirlight = make_shared<DiDirLight>();
+    sm->AttachObject(dirlight);
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 
 #if 0
     // sky light testing
-    DiSkyLightPtr skyLight = sm->CreateSkyLight();
+    DiSkyLightPtr skyLight = make_shared<DiSkyLight>();
+    sm->AttachObject(skyLight);
     skyLight->SetColor(DiColor(0.3f,0.3f,0.3f));
     skyLight->SetGrondColor(DiColor(0.1f, 0.1f, 0.1f));
     skyLight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 #endif
 
-    DiPointLightPtr pointlight = sm->CreatePointLight();
+    DiPointLightPtr pointlight = make_shared<DiPointLight>();
     pointlight->SetColor(DiColor());
  	pointlight->SetAttenuation(100);
 

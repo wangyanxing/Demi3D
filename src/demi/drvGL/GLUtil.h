@@ -16,48 +16,55 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    /** OpenGL utilities class which is responsible for
+        the initialization of the GL environment and contexts
+        as well as the extension managements
+     */
     class DI_GLDRV_API DiGLUtil
     {
     public:
 
         DiGLUtil(){}
 
-        virtual ~DiGLUtil(){}
+        virtual             ~DiGLUtil(){}
 
     public:
 
-        const DiString&     GetGLVendor() const
-        {
-            return mVendor;
-        }
+        const DiString&     GetGLVendor() const { return mVendor; }
 
-        const DiString&     GetGLVersion() const
-        {
-            return mVersion;
-        }
+        const DiString&     GetGLVersion() const { return mVersion; }
 
         bool                CheckMinGLVersion(const DiString& v) const;
 
+        /** Check if a specific extension can be supported
+         */
         bool                CheckExtension(const DiString& ext) const;
 
         virtual void*       GetProcAddress(const DiString& procname) = 0;
 
         virtual void        InitExtensions();
 
+        /** For multi-monitors supporting
+         */
         virtual uint8       GetDisplayMonitorCount() const
         {
             //TODO
             return 1;
         }
 
+        /** Depends on the specific platform
+         */
         virtual DiWindow*   CreateNewWindow() = 0;
 
     protected:
 
+        /// OpengGL version
         DiString            mVersion;
-
+        
+        /// Major graphics device vendor
         DiString            mVendor;
 
+        /// Platform independently extension list
         DiSet<DiString>     mExtensionList;
     };
 }

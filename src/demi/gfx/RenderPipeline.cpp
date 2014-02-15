@@ -123,35 +123,36 @@ namespace Demi
         // global parameters
         mShaderEnv->globalAmbient = sm->GetAmbientColor();
 
-        mShaderEnv->numDirLights = (int)sm->GetDirLightNum();
+        DiVisibleLights& visibleLights = sm->GetVisibleLights();
+        mShaderEnv->numDirLights = (int)visibleLights.dirLights.size();
         for(int i=0; i < mShaderEnv->numDirLights; i++)
         {
-            mShaderEnv->dirLightsColor[i] = sm->GetDirLight(i)->GetColor();
-            DiVec3 dir = sm->GetDirLight(i)->GetDirection().normalisedCopy();
+            mShaderEnv->dirLightsColor[i] = visibleLights.dirLights[i]->GetColor();
+            DiVec3 dir = visibleLights.dirLights[i]->GetDirection().normalisedCopy();
             mShaderEnv->dirLightsDir[i] = dir;
         }
 
-        mShaderEnv->numPointLights = (int)sm->GetPointLightNum();
+        mShaderEnv->numPointLights = (int)visibleLights.pointLights.size();
         for(int i=0; i < mShaderEnv->numPointLights; i++)
         {
-            mShaderEnv->pointLightsColor[i] = sm->GetPointLight(i)->GetColor();
+            mShaderEnv->pointLightsColor[i] = visibleLights.pointLights[i]->GetColor();
             //DiVec3 pos = sm->GetPointLight(i)->GetPosition();
-            DiNode* lightNode = sm->GetPointLight(i)->GetParentNode();
+            DiNode* lightNode = visibleLights.pointLights[i]->GetParentNode();
             if(!lightNode)
                 DI_WARNING("The point light should be attached to a specific node");
             else
                 mShaderEnv->pointLightsPosition[i] = lightNode->GetDerivedPosition();
             
-            mShaderEnv->pointLightsAttenuation[i].x = sm->GetPointLight(i)->GetAttenuationBegin();
-            mShaderEnv->pointLightsAttenuation[i].y = sm->GetPointLight(i)->GetAttenuationEnd();
+            mShaderEnv->pointLightsAttenuation[i].x = visibleLights.pointLights[i]->GetAttenuationBegin();
+            mShaderEnv->pointLightsAttenuation[i].y = visibleLights.pointLights[i]->GetAttenuationEnd();
         }
 
-        mShaderEnv->hasSkyLight = sm->GetSkyLight() != nullptr;
-        if (sm->GetSkyLight())
+        mShaderEnv->hasSkyLight = visibleLights.skyLight != nullptr;
+        if (mShaderEnv->hasSkyLight)
         {
-            mShaderEnv->skyLightColor = sm->GetSkyLight()->GetColor();
-            mShaderEnv->groundColor = sm->GetSkyLight()->GetGroundColor();
-            mShaderEnv->skyLightDir = sm->GetSkyLight()->GetDirection();
+            mShaderEnv->skyLightColor = visibleLights.skyLight->GetColor();
+            mShaderEnv->groundColor = visibleLights.skyLight->GetGroundColor();
+            mShaderEnv->skyLightDir = visibleLights.skyLight->GetDirection();
         }
     }
 

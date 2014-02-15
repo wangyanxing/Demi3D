@@ -28,7 +28,7 @@ namespace Demi
     {
     public:
 
-        DiSkyLight(DiSceneManager* mgr);
+        DiSkyLight();
 
         virtual         ~DiSkyLight();
 
@@ -50,6 +50,8 @@ namespace Demi
         DiColor         GetGroundColor() const { return mGroundColor; }
 
         const DiAABB&   GetBoundingBox(void) const;
+
+        void            Update(DiCamera*);
 
     protected:
 
