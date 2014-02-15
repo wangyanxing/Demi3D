@@ -62,7 +62,7 @@ void InitScene()
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     sm->SetAmbientColor(DiColor(1, 1, 1, 1));
 
-	// visibile mesh for the point light
+	// visible mesh for the point light
     DiPointLightPtr pointlight = make_shared<DiPointLight>();
     pointlight->SetColor(DiColor(1, 1, 1, 2));
 	pointlight->SetAttenuation(200);

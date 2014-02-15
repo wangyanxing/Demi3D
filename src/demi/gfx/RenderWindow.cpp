@@ -75,16 +75,16 @@ namespace Demi
         mCurrentPrimitivesNum = 0;
         mCurrentBatchesNum = 0;
 
-        // cull and update
-        DiCamera* mainCam = mSceneManager->GetCamera();
         mSceneManager->PreUpdate();
-        mSceneManager->Cull(mainCam);
-        mSceneManager->GetVisibleObjects().UpdateAll(mainCam);
 
         Driver->BeginFrame();
 
-        // TODO: update RTs
-       
+        // Normal geometry pass
+        DiCamera* mainCam = mSceneManager->GetCamera();
+        mSceneManager->SetCurrentPass(GEOMETRY_PASS);
+        mSceneManager->Cull(mainCam);
+        mSceneManager->GetVisibleObjects().UpdateAll(mainCam);
+
         DiRenderPipeline* rp = Driver->GetPipeline();
         rp->ClearGroup();
         mSceneManager->GetVisibleObjects().AddToBatch(rp);

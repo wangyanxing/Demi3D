@@ -911,4 +911,9 @@ namespace Demi
             return false;
     }
 
+    void DiD3D9Driver::SetDepthBias(float constantBias, float slopeScaledBias)
+    {
+        StateCache->SetRenderState(D3DRS_DEPTHBIAS, constantBias);
+        StateCache->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, slopeScaledBias);
+    }
 }

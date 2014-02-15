@@ -83,6 +83,20 @@ namespace Demi
         }
     };
 
+    /** Render pass
+     */
+    enum RenderPass
+    {
+        /// Normal geometry pass
+        GEOMETRY_PASS,
+        
+        /// Shadow mapping pass
+        SHADOW_PASS,
+
+        /// Other render-to-texture pass
+        RTT_PASS,
+    };
+
     //////////////////////////////////////////////////////////////////////////
 
     /** Scene manager class
@@ -110,17 +124,8 @@ namespace Demi
         static uint32     FRUSTUM_TYPE_MASK;
         static uint32     USER_TYPE_MASK_LIMIT;
 
-        enum IllumState
-        {
-            IRS_NONE,                
-            IRS_RENDER_SHADOW_PASS,    
-            IRS_RENDER_RTT_PASS,    
-        };
-
     public:
 
-        /** Create a child scene node of the root
-         */
         DiCullNode*             CreateNode(void);
 
         DiCullNode*             CreateNode(const DiString& name);
@@ -217,7 +222,11 @@ namespace Demi
 
         DiRaySceneQuery*        CreateRayQuery(const DiRay& ray, unsigned long mask);
 
-        IllumState              GetIllumState() const { return mIllumState; }
+        /** Get current render pass
+         */
+        RenderPass              GetCurrentPass(void) const { return mCurrentRenderPass; }
+
+        void                    SetCurrentPass(RenderPass pass) { mCurrentRenderPass = pass; }
 
         const DiVisibleObjectsBoundsInfo& GetVisibleObjectsBoundsInfo(const DiCamera* cam) const;
 
@@ -230,6 +239,8 @@ namespace Demi
         /** Get visible lights
          */
         DiVisibleLights&        GetVisibleLights() { return mVisibleLights; }
+
+        CameraPool&             GetCameraPool() { return mCameraPool; }
 
     protected:
 
@@ -266,8 +277,6 @@ namespace Demi
 
         DiOctreePtr             mOctree;
 
-        ReentryNodes            mReentryNodes;
-
         int                     mMaxDepth;
 
         DiAABB                  mBox;
@@ -275,7 +284,7 @@ namespace Demi
         typedef DiMap<DiString,DiCamera*> CameraList;
         CameraList              mCameras;
 
-        IllumState              mIllumState;
+        RenderPass              mCurrentRenderPass;
         
         unsigned long           mLastFrameNumber;
 
@@ -286,6 +295,8 @@ namespace Demi
 
         /// visible objects, will be updated every frame
         DiVisibleObjs           mVisibleObjects;
+
+        CameraPool              mCameraPool;
 
     public:
 

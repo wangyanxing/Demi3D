@@ -67,12 +67,12 @@ namespace Demi
         /** Get TransformObj type
          */
         DiString&               GetType(void);
-        
-        DiCascadeParams&        GetCSMParams(void) { return mCascadeParams; }
 
-        DiShadowFocusParams&    GetFocusParams(void) { return mFocusParams; }
+        DiShadowParams&         GetShadowParams(void) { return mShadowParams; }
 
-        DiShadowBiasParams&     GetBiasParams(void) { return mBiasParams; }
+        /** Set up shadow cameras
+         */
+        void                    SetupShadowCamera(DiSceneManager* sceneManager){}
 
     protected:
 
@@ -80,17 +80,8 @@ namespace Demi
 
         DiColor                 mColor;
 
-        /// The relative camera regarding the shadow processing
-        DiCamera*               mShadowCamera;
-        
-        /// For cascade shadow mapping
-        DiCascadeParams         mCascadeParams;
-
-        /// Focusing parameters
-        DiShadowFocusParams     mFocusParams;
-
-        /// Depth bias parameters
-        DiShadowBiasParams      mBiasParams;
+        /// Shadow params
+        DiShadowParams          mShadowParams;
     };
 }
 

@@ -82,6 +82,8 @@ namespace Demi
 
         virtual void                SetFillMode(DiFillMode mode) = 0;
 
+        virtual void                SetDepthBias(float constantBias, float slopeScaledBias) = 0;
+
         virtual bool                RenderGeometry(DiRenderUnit* unit) = 0;
 
         virtual const DiVec2&       GetTexelOffset() const = 0;

@@ -53,7 +53,7 @@ namespace Demi
         mReflect = false;
     }
 
-    DiCamera::DiCamera()
+    DiCamera::DiCamera(DiSceneManager* sm)
         :DiFrustum(),
         mOrientation(DiQuat::IDENTITY),
         mPosition(DiVec3::ZERO),
@@ -63,8 +63,8 @@ namespace Demi
         mCullFrustum(0),
         mUseMinPixelSize(false),
         mPixelDisplayRatio(0),
-        mSceneManager(NULL),
-        mLodCamera(NULL),
+        mSceneManager(sm),
+        mLodCamera(nullptr),
         mSceneLodFactor(1.0f),
         mSceneLodFactorInv(1.0f)
     {

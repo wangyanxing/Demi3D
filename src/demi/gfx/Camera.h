@@ -26,7 +26,7 @@ namespace Demi
 
         DiCamera(const DiString& name,DiSceneManager* sm);
 
-        DiCamera();
+        DiCamera(DiSceneManager* sm);
 
         virtual ~DiCamera(void);
 

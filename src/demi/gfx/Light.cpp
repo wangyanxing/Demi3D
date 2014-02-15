@@ -17,8 +17,7 @@ namespace Demi
 {
     DiLight::DiLight(LightType type)
         :mType(type),
-        mColor(DiColor::White),
-        mShadowCamera(nullptr)
+        mColor(DiColor::White)
     {
     }
 

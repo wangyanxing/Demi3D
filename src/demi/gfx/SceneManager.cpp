@@ -255,10 +255,11 @@ namespace Demi
         :mTerrain(nullptr),
         mParentWindow(parentWnd),
         mOctree(nullptr),
-        mIllumState(IRS_NONE),
+        mCurrentRenderPass(GEOMETRY_PASS),
         mLastFrameNumber(0),
         mSkybox(nullptr),
-        mAmbientColor(0.3f,0.3f,0.3f)
+        mAmbientColor(0.3f,0.3f,0.3f),
+        mCameraPool(this)
     {
         mPipeline = Driver->GetPipeline();
         mRootNode = DI_NEW DiCullNode(this,"_root");
@@ -346,11 +347,6 @@ namespace Demi
     {
         DI_PROFILE(SceneManager_Cull);
         Driver->GetPipeline()->ClearGroup();
-
-        for (auto it = mReentryNodes.begin(); it != mReentryNodes.end(); ++it)
-            AddOctreeNode(*it, mOctree);
-        mReentryNodes.clear();
-
         WalkTree(camera,visibleBounds,mOctree,false);
     }
 
@@ -373,7 +369,7 @@ namespace Demi
             v = camera->GetVisibility( box );
         }
 
-        bool onlyShadowCaster = mIllumState == IRS_RENDER_SHADOW_PASS? true : false;
+        bool onlyShadowCaster = mCurrentRenderPass == SHADOW_PASS? true : false;
 
         if ( v != DiCamera::NONE )
         {

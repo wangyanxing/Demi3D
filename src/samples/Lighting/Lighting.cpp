@@ -46,7 +46,6 @@ void AddMesh(float x, float y, const DiColor& col, const DiString& shader)
 void InitScene()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-
     sm->SetAmbientColor(DiColor::Black);
 
     DiDirLightPtr dirlight = make_shared<DiDirLight>();

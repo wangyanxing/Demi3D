@@ -42,6 +42,13 @@ namespace Demi
 
         const DiAABB&   GetBoundingBox(void) const;
 
+        void            SetupShadowCamera(DiSceneManager* sceneManager);
+
+    protected:
+
+        void            SetupShadowCameraImpl(DiSceneManager* sceneManager, DiCamera* shadowCamera,
+                                             float nearSplit, float farSplit);
+
     protected:
 
         DiVec3          mDirection;

@@ -569,4 +569,16 @@ namespace Demi
         return version;
     }
 
+    void DiGLDriver::SetDepthBias(float constantBias, float slopeScaledBias)
+    {
+        if (constantBias != 0 || slopeScaledBias != 0)
+        {
+            glEnable(GL_POLYGON_OFFSET_FILL);
+            glPolygonOffset(-slopeScaledBias, -constantBias);
+        }
+        else
+        {
+            glDisable(GL_POLYGON_OFFSET_FILL);
+        }
+    }
 }

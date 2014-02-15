@@ -71,6 +71,8 @@ namespace Demi
 
         void                    SetFillMode(DiFillMode mode);
 
+        void                    SetDepthBias(float constantBias, float slopeScaledBias);
+
         bool                    IsDeviceLost() const;
 
         bool                    ResetDevice(uint16 w, uint16 h);

@@ -51,15 +51,6 @@ namespace Demi
 
     DiOctree::~DiOctree()
     {
-        if (mRoot)
-        {
-            for (DiCullNode* node = mNodes.mHead; node; node = node->mNext)
-            {
-                if (node && node->GetCreator())
-                    node->GetCreator()->mReentryNodes.push_back(node);
-            }
-        }
-
         for (uint16 i = 0; i < 8; i++)
             mChildren[i].reset();
 
