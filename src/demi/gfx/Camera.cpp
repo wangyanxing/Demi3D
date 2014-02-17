@@ -29,8 +29,7 @@ namespace Demi
         mUseMinPixelSize(false),
         mPixelDisplayRatio(0),
         mSceneManager(sm),
-        mLastViewport(NULL),
-        mLodCamera(NULL),
+        mLodCamera(nullptr),
         mSceneLodFactor(1.0f),
         mSceneLodFactorInv(1.0f)
     {

@@ -175,10 +175,6 @@ namespace Demi
 
         Visibility          GetVisibility( const DiAABB &bound );
 
-        DiViewport*         GetViewport(void) const {return mLastViewport;}
-        
-        void                NotifyViewport(DiViewport* viewport) {mLastViewport = viewport;}
-
         void                SetLodCamera(const DiCamera* lodCam);
 
         const DiCamera*     GetLodCamera() const;
@@ -234,8 +230,6 @@ namespace Demi
         float               mPixelDisplayRatio;
 
         DiSceneManager*     mSceneManager;
-
-        DiViewport*         mLastViewport;
 
         const DiCamera*     mLodCamera;
 

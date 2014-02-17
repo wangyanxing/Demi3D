@@ -117,6 +117,7 @@ namespace Demi
 
         typedef DiVector<DiDirLightPtr>    DirLightList;
         typedef DiVector<DiPointLightPtr>  PointLightList;
+        typedef DiVector<DiPair<DiRenderTarget*, DiCamera*> > RenderTargets;
 
         static uint32     ENTITY_TYPE_MASK;
         static uint32     FX_TYPE_MASK;
@@ -239,6 +240,16 @@ namespace Demi
         /** Get visible lights
          */
         DiVisibleLights&        GetVisibleLights() { return mVisibleLights; }
+        
+        /** Add extra render target
+            will be rendered per frame
+         */
+        void                    AddExtraRenderTarget(DiRenderTarget* rt, DiCamera* camera)
+        {
+            mExtraRTs.push_back(DiPair<DiRenderTarget*, DiCamera*>(rt, camera));
+        }
+        
+        RenderTargets&          GetExtraRenderTargets() {return mExtraRTs;}
 
         CameraPool&             GetCameraPool() { return mCameraPool; }
 
@@ -254,9 +265,13 @@ namespace Demi
 
         NodeList                mSceneNodes;
 
+        /// Main camera
         DiCamera*               mCamera;
 
+        /// Visible lights, updated after the culling
         DiVisibleLights         mVisibleLights;
+        
+        RenderTargets           mExtraRTs;
         
         DiTerrainPtr            mTerrain;
 

@@ -160,11 +160,8 @@ namespace Demi
         }
     }
     
-    void DiRenderPipeline::RenderPost(DiSceneManager*sm, DiCamera* cam, DiRenderTarget* rt)
+    void DiRenderPipeline::RenderPost(DiSceneManager*sm, DiCamera* cam)
     {
-        if (!rt)
-            return;
-        
         // we don't care about the bone matrics at this moment
         SetCameraParams(sm, cam);
         

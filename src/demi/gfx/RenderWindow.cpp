@@ -90,7 +90,12 @@ namespace Demi
         mSceneManager->GetVisibleObjects().AddToBatch(rp);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
         
-        rp->RenderPost(mSceneManager, mainCam, mSceneCanvas);
+        auto rts = mSceneManager->GetExtraRenderTargets();
+        for (auto it = rts.begin(); it != rts.end(); ++it) {
+            // TODO
+        }
+        
+        rp->RenderPost(mSceneManager, mainCam);
 
         Driver->EndFrame();
         

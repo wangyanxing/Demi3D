@@ -61,7 +61,7 @@ namespace Demi
 
         /** Render UIs and process the post effects
          */
-        void                        RenderPost(DiSceneManager*sm, DiCamera* cam, DiRenderTarget* rt);
+        void                        RenderPost(DiSceneManager*sm, DiCamera* cam);
 
         void                        Init();
 
