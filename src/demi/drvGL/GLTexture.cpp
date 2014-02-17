@@ -382,6 +382,9 @@ namespace Demi
         if (mGLTextureType == GL_TEXTURE_CUBE_MAP)
             faceType = GL_TEXTURE_CUBE_MAP_POSITIVE_X + surface;
         
+        GLenum glfmt = DiGLTypeMappings::GLFormatMapping[fmt];
+        GLenum glType = DiGLTypeMappings::GetDataType(fmt);
+        
         if (isCompressed)
         {
             glGetCompressedTexImageARB(faceType, level, data.data);
@@ -399,7 +402,7 @@ namespace Demi
                 glPixelStorei(GL_PACK_ALIGNMENT, 1);
             }
             // We can only get the entire texture
-            glGetTexImage(faceType, level, mGLFormat, mGLFormat, data.data);
+            glGetTexImage(faceType, level, glfmt, glType, data.data);
             // Restore defaults
             glPixelStorei(GL_PACK_ROW_LENGTH, 0);
             glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0);

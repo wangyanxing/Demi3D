@@ -12,7 +12,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 #include "GfxPch.h"
 #include "Image.h"
-#include "Texture.h"
 #include "AssetManager.h"
 
 #include "nv_dds.h"
@@ -53,6 +52,39 @@ namespace Demi
     DiImage::~DiImage()
     {
 
+    }
+    
+    bool DiImage::SaveTextureAsPng(DiTexturePtr texture, const DiString& file)
+    {
+        DiPixelFormat fmt = texture->GetFormat();
+        if(DiPixelBox::IsCompressedFormat(fmt))
+        {
+            DI_WARNING("Cannot save compressed texture to file");
+            return false;
+            
+        }
+        
+        uint32 width = texture->GetWidth();
+        uint32 height = texture->GetHeight();
+        uint32 components = 4;//DiPixelBox::GetNumComponents(fmt);
+        uint32 size = DiPixelBox::ComputeImageByteSize(width, height, fmt);
+        
+        uint8* data = DI_NEW uint8[size];
+        DiPixelBox dst(width, height, fmt, data);
+        
+        texture->CopyToMemory(dst);
+        
+        // Swizzle RGBA -> BGRA
+        uint32 *ptr = (uint32*)data;
+        for (uint32 i = 0, si = width * height; i < si; ++i)
+        {
+            uint32 col = *ptr;
+            *ptr++ = (col & 0xFF00FF00) | ((col & 0x000000FF) << 16) | ((col & 0x00FF0000) >> 16);
+        }
+        
+        bool ret = stbi_write_png(file.c_str(), width, height, components, data, 0) != 0;
+        DI_DELETE[] data;
+        return ret;
     }
 
     bool DiImage::LoadToTexture( DiTexture* texture )
@@ -669,6 +701,12 @@ namespace Demi
         }
         DI_WARNING( "Unsupported pixel format: %d", eFormat );
         return;
+    }
+    
+    uint32 DiPixelBox::GetNumComponents( DiPixelFormat format )
+    {
+        const PixelFormatDescription &des = PixelFormatDescription::GetFormatDesc(format);
+        return des.componentCount;
     }
 
     void DiPixelBox::GetBitDepths(DiPixelFormat format, int rgba[4])
