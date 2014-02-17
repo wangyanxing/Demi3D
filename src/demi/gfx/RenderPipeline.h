@@ -59,6 +59,10 @@ namespace Demi
 
         void                        Render(DiSceneManager*sm, DiCamera* cam, DiRenderTarget* rt);
 
+        /** Render UIs and process the post effects
+         */
+        void                        RenderPost(DiSceneManager*sm, DiCamera* cam, DiRenderTarget* rt);
+
         void                        Init();
 
         void                        Release();
@@ -87,7 +91,13 @@ namespace Demi
 
         void                        ProcessGBuffers();
 
+        /** Bind the global uniforms including bone matrics
+         */
         void                        SetGlobalParams(DiSceneManager*sm, DiCamera* cam);
+
+        /** Bind uniforms regarding the cameras and viewports
+         */
+        void                        SetCameraParams(DiSceneManager*sm, DiCamera* cam);
 
         bool                        GetEnableGBuffer() const { return mEnableGbuffer; }
 

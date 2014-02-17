@@ -94,8 +94,8 @@ namespace Demi
             PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE * 
             proj * cam->GetViewMatrix();
     }
-
-    void DiRenderPipeline::SetGlobalParams(DiSceneManager*sm, DiCamera* cam)
+    
+    void DiRenderPipeline::SetCameraParams(DiSceneManager*sm, DiCamera* cam)
     {
         const DiCamera* realCam = cam->GetLodCamera();
         mShaderEnv->viewMatrix = realCam->GetViewMatrix();
@@ -103,9 +103,13 @@ namespace Demi
         mShaderEnv->eyePosition = realCam->GetDerivedPosition();
         mShaderEnv->eyeDirection = realCam->GetDirection();
         mShaderEnv->farnearPlane = DiVec4(cam->GetFarClipDistance(),cam->GetNearClipDistance(),0,0);
-
         mShaderEnv->viewProjMatrix = mShaderEnv->projMatrix * mShaderEnv->viewMatrix;
+    }
 
+    void DiRenderPipeline::SetGlobalParams(DiSceneManager*sm, DiCamera* cam)
+    {
+        SetCameraParams(sm, cam);
+        
         Driver->SetFillMode(cam->GetFillMode());
 
         mShaderEnv->time = Driver->GetElapsedSecond();
@@ -155,6 +159,27 @@ namespace Demi
             mShaderEnv->skyLightDir = visibleLights.skyLight->GetDirection();
         }
     }
+    
+    void DiRenderPipeline::RenderPost(DiSceneManager*sm, DiCamera* cam, DiRenderTarget* rt)
+    {
+        if (!rt)
+            return;
+        
+        // we don't care about the bone matrics at this moment
+        SetCameraParams(sm, cam);
+        
+        if (mPostEnable)
+            DiRenderWindow::ActiveWindow->GetPostEffectManager()->Process(this);
+        
+        for (uint32 i = BATCH_POST_FILTER; i < mBatchGroups.size(); i++)
+        {
+            if (!mBatchGroups[i]->IsInterfaceGroup() ||
+                (mBatchGroups[i]->IsInterfaceGroup() && mEnableInterface))
+            {
+                mBatchGroups[i]->Process();
+            }
+        }
+    }
 
     void DiRenderPipeline::Render(DiSceneManager*sm, DiCamera* cam, DiRenderTarget* rt)
     {
@@ -198,36 +223,6 @@ namespace Demi
         {
             mBatchGroups[i]->ClearStatis();
             mBatchGroups[i]->EnableStatis(needStatics);
-        }
-
-        if (mPostEnable)
-            DiRenderWindow::ActiveWindow->GetPostEffectManager()->Process(this);
-
-        for (uint32 i = BATCH_POST_FILTER; i<mBatchGroups.size(); i++)
-        {
-            mBatchGroups[i]->ClearStatis();
-            mBatchGroups[i]->EnableStatis(needStatics);
-        }
-
-        for (uint32 i = BATCH_POST_FILTER; i < mBatchGroups.size(); i++)
-        {
-            if (!mBatchGroups[i]->IsInterfaceGroup() ||
-                (mBatchGroups[i]->IsInterfaceGroup() && mEnableInterface))
-            {
-                mBatchGroups[i]->Process();
-
-                if (needStatics)
-                {
-                    dps += mBatchGroups[i]->GetBatchesNum();
-                    faces += mBatchGroups[i]->GetPrimitivesNum();
-                }
-            }
-        }
-
-        if (needStatics)
-        {
-            DiRenderWindow::ActiveWindow->SetCurrentBatchesNum(dps);
-            DiRenderWindow::ActiveWindow->SetCurrentPrimitivesNum(faces);
         }
     }
 
