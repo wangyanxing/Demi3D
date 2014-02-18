@@ -298,6 +298,10 @@ namespace Demi
 
         CameraPool              mCameraPool;
 
+        /// Z range of the scene
+        /// Should be updated per frame
+        DiVec2                  mZRange;
+
     public:
 
         static int              intersect_call;

@@ -55,10 +55,7 @@ namespace Demi
 
     void DiModel::CullingUpdate( DiRenderBatchGroup* group,DiCamera* )
     {
-        SubModelList::iterator it;
-        SubModelList::iterator itEnd = mSubModels.end();
-        for (it = mSubModels.begin();
-            it != itEnd; ++it)
+        for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
         {
             group->AddRenderUnit(*it);
         }
@@ -91,10 +88,7 @@ namespace Demi
 
     void DiModel::DestroySubModels()
     {
-        SubModelList::iterator it;
-        SubModelList::iterator itEnd = mSubModels.end();
-        for (it = mSubModels.begin();
-            it != itEnd; ++it)
+        for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
         {
             DI_DELETE *it;
         }
@@ -108,10 +102,7 @@ namespace Demi
 
     void DiModel::SetMaterial( const DiString& name )
     {
-        SubModelList::iterator it;
-        SubModelList::iterator itEnd = mSubModels.end();
-        for (it = mSubModels.begin();
-            it != itEnd; ++it)
+        for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
         {
             (*it)->SetMaterial(name);
         }
@@ -119,10 +110,7 @@ namespace Demi
 
     void DiModel::SetMaterial(DiMaterialPtr mat)
     {
-        SubModelList::iterator it;
-        SubModelList::iterator itEnd = mSubModels.end();
-        for (it = mSubModels.begin();
-            it != itEnd; ++it)
+        for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
         {
             (*it)->SetMaterial(mat);
         }

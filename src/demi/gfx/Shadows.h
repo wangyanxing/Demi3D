@@ -14,6 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiShadows_h__
 #define DiShadows_h__
 
+#include "Texture.h"
+
 namespace Demi
 {
 
@@ -90,6 +92,9 @@ namespace Demi
         /// Shadow cameras
         DiCamera* shadowCameras[MAX_LIGHT_SPLITS];
 
+        /// Shadow textures
+        DiTexturePtr shadowTexture;
+
         /// Shadow caster start indices.
         uint16 shadowCasterBegin[MAX_LIGHT_SPLITS];
 
@@ -125,6 +130,17 @@ namespace Demi
         DiCamera* GetCamera();
         
         void Reset();
+    };
+
+    /** Shadow frustum
+     */
+    struct ShadowFrustum
+    {
+        float  neard;
+        float  fard;
+        float  fov;
+        float  ratio;
+        DiVec3 point[8];
     };
 }
 

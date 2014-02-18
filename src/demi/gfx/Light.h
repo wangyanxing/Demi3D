@@ -74,6 +74,10 @@ namespace Demi
          */
         void                    SetupShadowCamera(DiSceneManager* sceneManager){}
 
+        void                    UpdateSplitDist(DiCamera* camera);
+
+        void                    UpdateFrustumPoints(ShadowFrustum &f, const DiVec3 &center, const DiVec3 &view_dir);
+
     protected:
 
         LightType               mType;
@@ -82,6 +86,9 @@ namespace Demi
 
         /// Shadow params
         DiShadowParams          mShadowParams;
+
+        /// test
+        ShadowFrustum           mShadowFrustums[MAX_CASCADE_SPLITS];
     };
 }
 

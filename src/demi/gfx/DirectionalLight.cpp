@@ -44,6 +44,7 @@ namespace Demi
         if (!mParentNode)
             return;
 
+        /*
         int splits = 0;
         DiCamera* camera = sceneManager->GetCamera();
         float nearSplit = camera->GetNearClipDistance();
@@ -68,6 +69,25 @@ namespace Demi
 
             nearSplit = farSplit;
             ++splits;
+        }
+        */
+
+        DiCamera* camera = sceneManager->GetCamera();
+        UpdateSplitDist(camera);
+
+        int cur_num_splits = 4;
+        for (int i = 0; i < cur_num_splits; i++)
+        {
+            UpdateFrustumPoints(mShadowFrustums[i], camera->GetDerivedPosition(), camera->GetDirection());
+            DiCamera* shadowCamera = sceneManager->GetCameraPool().GetCamera();
+
+            float extrusionDistance = camera->GetFarClipDistance();
+            DiVec3 worldDirection = mParentNode->GetDerivedOrientation() * mDirection;
+
+            // Calculate initial position & rotation
+            DiVec3 pos = camera->GetDerivedPosition() - extrusionDistance * worldDirection;
+            shadowCamera->SetPosition(pos);
+            shadowCamera->SetOrientation(mParentNode->GetDerivedOrientation());
         }
     }
 

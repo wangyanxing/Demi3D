@@ -25,17 +25,18 @@ void InitScene()
     dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 
     DiSimpleShapePtr plane = make_shared<DiSimpleShape>();
-    plane->CreatePlane(500);
+    plane->CreatePlane(300);
     plane->SetMaterial(DiMaterial::QuickCreate("lambert_v", "lambert_p"));
     sm->AttachObject(plane);
 
-    DiSimpleShapePtr box = make_shared<DiSimpleShape>();
-    box->CreateBox();
-    box->SetMaterial(DiMaterial::QuickCreate("lambert_v", "lambert_p"));
-    box->GetMaterial()->SetAmbient(DiColor(0.2f, 0.2f, 0.2f));
+    DiModelPtr model = make_shared<DiModel>("knot", "knot.model");
+    auto mat = DiMaterial::QuickCreate("lambert_v", "lambert_p");
+    mat->SetAmbient(DiColor(0.2f, 0.2f, 0.2f));
+    model->SetMaterial(mat);
 
     DiCullNode* boxNode = sm->GetRootNode()->CreateChild();
-    boxNode->AttachObject(box);
+    boxNode->AttachObject(model);
+    boxNode->Scale(5, 5, 5);
     boxNode->Translate(0, 50, 0);
 }
 
