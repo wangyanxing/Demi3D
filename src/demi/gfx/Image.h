@@ -14,9 +14,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiImage_h__
 #define DiImage_h__
 
+#include "Texture.h"
+
 namespace Demi 
 {
-    class DiImage
+    class DI_GFX_API DiImage
     {
     public:
 
@@ -29,6 +31,8 @@ namespace Demi
     public:
 
         bool            LoadToTexture(DiTexture* texture);
+        
+        static bool     SaveTextureAsPng(DiTexturePtr texture, const DiString& file);
 
         int             GetHeight() const { return mHeight; }
 
@@ -122,6 +126,8 @@ namespace Demi
         static uint32    GetNumElemBytes( DiPixelFormat format );
 
         static void      GetBitDepths(DiPixelFormat format, int rgba[4]);
+        
+        static uint32    GetNumComponents( DiPixelFormat format );
                          
         static void      PackColour(const DiColor &colour, const DiPixelFormat pf,  void* dest);
                          
