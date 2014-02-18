@@ -21,6 +21,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PostEffectManager.h"
 #include "Window.h"
 
+#include "Image.h"
 namespace Demi 
 {
     DiRenderWindow* DiRenderWindow::ActiveWindow = nullptr;
@@ -75,6 +76,8 @@ namespace Demi
         mCurrentPrimitivesNum = 0;
         mCurrentBatchesNum = 0;
 
+        DiRenderPipeline* rp = Driver->GetPipeline();
+
         mSceneManager->PreUpdate();
 
         Driver->BeginFrame();
@@ -85,14 +88,34 @@ namespace Demi
         mSceneManager->Cull(mainCam);
         mSceneManager->GetVisibleObjects().UpdateAll(mainCam);
 
-        DiRenderPipeline* rp = Driver->GetPipeline();
         rp->ClearGroup();
         mSceneManager->GetVisibleObjects().AddToBatch(rp);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
         
+        static int i = 0;
+        i++;
+
+        // Process the extra render targets
         auto rts = mSceneManager->GetExtraRenderTargets();
-        for (auto it = rts.begin(); it != rts.end(); ++it) {
-            // TODO
+        for (auto it = rts.begin(); it != rts.end(); ++it) 
+        {
+            if (it->preUpdateCallback)
+                it->preUpdateCallback(it->rt);
+
+            rp->ClearGroup();
+            mSceneManager->SetCurrentPass(RTT_PASS);
+            mSceneManager->Cull(it->camera);
+            mSceneManager->GetVisibleObjects().AddToBatch(rp);
+            rp->Render(mSceneManager, it->camera, it->rt);
+
+            if (i == -1000){
+                auto tex = it->rt->GetParentTexture();
+                DiString file = tex->GetName() + ".png";
+                DiImage::SaveTextureAsPng(tex, file);
+            }
+
+            if (it->postUpdateCallback)
+                it->postUpdateCallback(it->rt);
         }
         
         rp->RenderPost(mSceneManager, mainCam);

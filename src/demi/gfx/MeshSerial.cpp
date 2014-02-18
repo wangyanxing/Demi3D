@@ -171,9 +171,7 @@ namespace Demi
         {
             uint16 streamID = ReadChunk(stream);
             while(!stream->Eof() &&
-                (
-                streamID == DI_SUBMESH ||
-                streamID == DI_MESH_BOUNDS))
+                (streamID == DI_SUBMESH || streamID == DI_MESH_BOUNDS))
             {
                 switch(streamID)
                 {
@@ -187,15 +185,11 @@ namespace Demi
                 }
 
                 if (!stream->Eof())
-                {
                     streamID = ReadChunk(stream);
-                }
 
             }
             if (!stream->Eof())
-            {
                 stream->Skip(-MSTREAM_OVERHEAD_SIZE);
-            }
         }
     }
 

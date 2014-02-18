@@ -278,6 +278,8 @@ namespace Demi
         }
         glPolygonMode(GL_FRONT_AND_BACK, finalwireframe ? GL_LINE : GL_FILL);
 
+        bool flip = mInvertVertexWinding;
+
         // culling mode
         GLenum cullMode = 0;
         switch (mat->GetCullMode())
@@ -287,10 +289,10 @@ namespace Demi
             return;
             break;
         case CULL_CW:
-            cullMode = GL_BACK;
+            cullMode = flip ? GL_FRONT : GL_BACK;
             break;
         case CULL_CCW:
-            cullMode = GL_FRONT;
+            cullMode = flip ? GL_BACK : GL_FRONT;
             break;
         default:
             DI_WARNING("Invalid culling mode.");

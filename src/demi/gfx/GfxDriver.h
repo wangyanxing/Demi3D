@@ -158,8 +158,15 @@ namespace Demi
 
         void                        SetTextureFlipping(bool val) { mNeedTextureFlipping = val; }
 
-        // opengl mode it needs a reversed culling mode
+        /** OpenGL mode needs a reversed culling mode
+         */
         virtual bool                ReversePostpassCullmode() const { return false; }
+
+        /** For camera reflection, etc.
+        */
+        bool                        IsInvertVertexWinding() const { return mInvertVertexWinding; }
+
+        void                        SetInvertVertexWinding(bool val) { mInvertVertexWinding = val; }
 
     public:
 
@@ -221,6 +228,8 @@ namespace Demi
         bool                        mClosing;
 
         bool                        mNeedTextureFlipping;
+
+        bool                        mInvertVertexWinding;
     };
 }
 #endif // GfxDriver_h__

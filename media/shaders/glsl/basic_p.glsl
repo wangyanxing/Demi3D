@@ -29,7 +29,7 @@ void main()
 #endif
 
 #ifdef USE_LIGHTMAP
-	gl_FragColor = gl_FragColor * texture2D( lightMap, In.Texcoord1 );
+	gl_FragColor = gl_FragColor * texture2D( lightMap, gl_TexCoord[1].xy );
 #endif
 	
 #ifdef USE_COLOR

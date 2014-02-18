@@ -775,16 +775,17 @@ namespace Demi
 
         StateCache->SetRenderState(D3DRS_FILLMODE, finalwireframe ? D3DFILL_WIREFRAME : D3DFILL_SOLID);
 
+        bool flip = mInvertVertexWinding;
         switch (mat->GetCullMode())
         {
         case CULL_NONE:
             StateCache->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
             break;
         case CULL_CW:
-            StateCache->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+            StateCache->SetRenderState(D3DRS_CULLMODE, flip ? D3DCULL_CCW : D3DCULL_CW);
             break;
         case CULL_CCW:
-            StateCache->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+            StateCache->SetRenderState(D3DRS_CULLMODE, flip ? D3DCULL_CW : D3DCULL_CCW);
             break;
         }
 

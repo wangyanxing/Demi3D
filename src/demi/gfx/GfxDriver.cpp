@@ -35,7 +35,8 @@ namespace Demi
         mFrameNum(0),
         mClosing(false),
         mWndManager(nullptr),
-        mNeedTextureFlipping(false)
+        mNeedTextureFlipping(false),
+        mInvertVertexWinding(false)
     {
         Driver = this;
         mCommandMgr = DI_NEW DiCommandManager();

@@ -343,13 +343,6 @@ namespace Demi
         return (mSceneNodes.find(name) != mSceneNodes.end());
     }
 
-    void DiSceneManager::Cull(DiCamera* camera,DiVisibleObjectsBoundsInfo* visibleBounds)
-    {
-        DI_PROFILE(SceneManager_Cull);
-        Driver->GetPipeline()->ClearGroup();
-        WalkTree(camera,visibleBounds,mOctree,false);
-    }
-
     void DiSceneManager::WalkTree(DiCamera* camera,
         DiVisibleObjectsBoundsInfo* visibleBounds, DiOctreePtr octant,bool foundvisible)
     {
@@ -456,14 +449,14 @@ namespace Demi
         UpdateDirtyInstanceManagers();
         mSkybox->Update();
         mRootNode->_Update(true, false);
-
-        // clear all culled objects and lights
-        mVisibleObjects.objs.clear();
-        mVisibleLights.Clear();
     }
 
     void DiSceneManager::Cull(DiCamera* cam)
     {
+        // clear all culled objects and lights
+        mVisibleObjects.objs.clear();
+        mVisibleLights.Clear();
+
         CamVisibleObjectsMap::iterator camVisObjIt = mCamVisibleObjectsMap.find(cam);
         DI_ASSERT(camVisObjIt != mCamVisibleObjectsMap.end());
         camVisObjIt->second.Reset();
@@ -964,6 +957,18 @@ namespace Demi
     void DiSceneManager::DetachObject(DiTransUnitPtr obj)
     {
         mRootNode->DetachObject(obj);
+    }
+
+    void DiSceneManager::AddExtraRenderTarget(DiRenderTarget* rt, DiCamera* camera,
+        const RenderTargetParam::RTListener& preListener,
+        const RenderTargetParam::RTListener& postListener)
+    {
+        RenderTargetParam p;
+        p.rt = rt;
+        p.camera = camera;
+        p.preUpdateCallback = preListener;
+        p.postUpdateCallback = postListener;
+        mExtraRTs.push_back(p);
     }
 
     int     DiSceneManager::intersect_call         = 0;

@@ -268,9 +268,9 @@ namespace Demi
 
         float vertices[32] = 
         {
-            -size, 0, -size,// pos
+            -size, 0, -size,  // pos
             0,1,0,            // normal
-            0,1,            // texcoord
+            0,1,              // texcoord
             size, 0,-size,
             0,1,0,
             1,1,

@@ -300,15 +300,18 @@ namespace Demi
             mRealPosition = mPosition;
         }
 
+        // Deriving reflected orientation / position
         if (mRecalcView)
         {
             if (mReflect)
             {
+                // Calculate reflected orientation, use up-vector as fallback axis. 
                 DiVec3 dir = mRealOrientation * DiVec3::NEGATIVE_UNIT_Z;
                 DiVec3 rdir = dir.reflect(mReflectPlane.normal);
                 DiVec3 up = mRealOrientation * DiVec3::UNIT_Y;
                 mDerivedOrientation = dir.getRotationTo(rdir, up) * mRealOrientation;
 
+                // Calculate reflected position.
                 mDerivedPosition = mReflectMatrix.transformAffine(mRealPosition);
             }
             else

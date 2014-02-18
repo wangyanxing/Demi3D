@@ -31,6 +31,16 @@ namespace Demi
         return prect;
     }
 
+    static RECT ToD3DRECTExtent(const DiPixelBox &lockBox)
+    {
+        RECT prect;
+        prect.left = 0;
+        prect.right = static_cast<LONG>(lockBox.GetWidth());
+        prect.top = 0;
+        prect.bottom = static_cast<LONG>(lockBox.GetHeight());
+        return prect;
+    }
+
     DiD3D9TextureDrv::DiD3D9TextureDrv(DiTexture* parent)
         :mD3DUsage(0),
         mPool(D3DPOOL_MANAGED),
@@ -75,18 +85,100 @@ namespace Demi
             return;
         }
 
+        DiPixelFormat tmpFormat = mParent->GetFormat();
+
         DI_ASSERT(mSurface);
 
-        D3DLOCKED_RECT lrect;
+        D3DSURFACE_DESC srcDesc;
+        if (mSurface->GetDesc(&srcDesc) != D3D_OK)
+        {
+            DI_WARNING("Could not get surface information");
+            return;
+        }
 
-        HRESULT res = mSurface->LockRect(&lrect, NULL, D3DLOCK_READONLY);
-        DX9_CHKERR(res);
+        D3DPOOL temppool = D3DPOOL_SCRATCH;
+        // if we're going to try to use GetRenderTargetData, need to use system mem pool
+        bool tryGetRenderTargetData = false;
+        if (((srcDesc.Usage & D3DUSAGE_RENDERTARGET) != 0) &&
+            (srcBox.GetWidth() == dst.GetWidth()) && (srcBox.GetHeight() == dst.GetHeight()) &&
+            (srcBox.GetWidth() == mParent->GetWidth()) && (srcBox.GetHeight() == mParent->GetHeight()) )
+        {
+            tryGetRenderTargetData = true;
+            temppool = D3DPOOL_SYSTEMMEM;
+        }
 
-        DiPixelBox locked(dst.GetWidth(), dst.GetHeight(), mParent->GetFormat());
+        IDirect3DTexture9 *tmp;
+        IDirect3DSurface9 *surface;
+        if (D3DXCreateTexture(
+            DiD3D9Driver::Device,
+            dst.GetWidth(), dst.GetHeight(),
+            1, // 1 mip level ie topmost, generate no mipmaps
+            0, DiD3D9Mappings::D3D9FormatMapping[tmpFormat], temppool,
+            &tmp
+            ) != D3D_OK)
+        {
+            DI_WARNING("Create temporary texture failed");
+            return;
+        }
+        if (tmp->GetSurfaceLevel(0, &surface) != D3D_OK)
+        {
+            tmp->Release();
+            DI_WARNING("Get surface level failed");
+            return;
+        }
+
+        // Copy texture to this temp surface
+        RECT destRect, srcRect;
+        srcRect = ToD3DRECT(srcBox);
+        destRect = ToD3DRECTExtent(dst);
+
+        D3DSURFACE_DESC dstDesc;
+        if (surface->GetDesc(&dstDesc) != D3D_OK)
+            DI_WARNING("Could not get surface information");
+        tmpFormat = DiD3D9Mappings::ConvertPixFormat(dstDesc.Format);
+
+        // Use fast GetRenderTargetData if we are in its usage conditions
+        bool fastLoadSuccess = false;
+        if (tryGetRenderTargetData)
+        {
+            if (DiD3D9Driver::Device->GetRenderTargetData(mSurface, surface) == D3D_OK)
+            {
+                fastLoadSuccess = true;
+            }
+        }
+        if (!fastLoadSuccess)
+        {
+            if (D3DXLoadSurfaceFromSurface(
+                surface, NULL, &destRect,
+                mSurface, NULL, &srcRect,
+                D3DX_DEFAULT, 0) != D3D_OK)
+            {
+                surface->Release();
+                tmp->Release();
+                DI_WARNING("D3DXLoadSurfaceFromSurface failed");
+                return;
+            }
+        }
+
+        // Lock temp surface and copy it to memory
+        D3DLOCKED_RECT lrect; // Filled in by D3D
+        if (surface->LockRect(&lrect, NULL, D3DLOCK_READONLY) != D3D_OK)
+        {
+            surface->Release();
+            tmp->Release();
+            DI_WARNING("LockRect failed");
+            return;
+        }
+
+        DiPixelBox locked(dst.GetWidth(), dst.GetHeight(), tmpFormat);
         FromD3DLock(locked, lrect);
         DiPixelBox::BulkPixelConversion(locked, dst);
 
         mSurface->UnlockRect();
+
+        // Release temporary surface and texture
+        surface->Release();
+        tmp->Release();
     }
 
     void DiD3D9TextureDrv::Release()
@@ -127,6 +219,7 @@ namespace Demi
         DiPixelFormat fmt = mParent->GetFormat();
 
         D3DFORMAT d3dfmt = DiD3D9Mappings::D3D9FormatMapping[fmt];
+        D3DXCheckTextureRequirements(DiD3D9Driver::Device, NULL, NULL, NULL, 0, &d3dfmt, mPool);
 
         D3DRESOURCETYPE resType = D3DRTYPE_TEXTURE;
         if (mParent->GetTextureType() == TEXTURE_CUBE)

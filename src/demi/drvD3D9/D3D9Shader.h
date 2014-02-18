@@ -71,7 +71,6 @@ namespace Demi
 
         int eyePosition;
         int eyeDirection;
-        int eyePositionObjSpace;
 
         int farnearPlane;
 

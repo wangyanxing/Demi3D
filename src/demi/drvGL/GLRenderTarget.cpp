@@ -106,6 +106,12 @@ namespace Demi
             uint32 width  = uint32(mViewport.mWidth  * mWidth);
             uint32 height = uint32(mViewport.mHeight * mHeight);
 
+            if (!mFlippingUV)
+            {
+                // Convert "upper-left" corner to "lower-left"
+                top = GetHeight() - height - top;
+            }
+
             DI_DEBUG("Viewport updated: %d,%d,%d,%d", left, top, width, height);
             Driver->SetViewport(left, top, width, height);
 

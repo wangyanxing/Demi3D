@@ -266,6 +266,7 @@ namespace Demi
         if (DiGLUniforms::msUniformFuncs.empty())
             DiGLUniforms::InitUniformFuncs();
 
+        mSamplers.clear();
         GLint uniformCount = 0;
         glUseProgramObjectARB(mGLHandle);
         glGetObjectParameterivARB(mGLHandle, GL_OBJECT_ACTIVE_UNIFORMS_ARB, &uniformCount);
@@ -454,10 +455,6 @@ namespace Demi
 
         msUniformFuncs["g_eyeDirection"] = [](const DiShaderEnvironment* env, GLuint location) {
             glUniform3fvARB(location, 1, env->eyeDirection.ptr());
-        };
-
-        msUniformFuncs["g_eyePositionObjSpace"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fvARB(location, 1, env->eyePositionObjSpace.ptr());
         };
 
         msUniformFuncs["g_farnearPlane"] = [](const DiShaderEnvironment* env, GLuint location) {

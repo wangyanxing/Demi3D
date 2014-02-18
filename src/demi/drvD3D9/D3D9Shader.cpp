@@ -32,7 +32,6 @@ namespace Demi
 
         eyePosition = -1;
         eyeDirection = -1;
-        eyePositionObjSpace = -1;
 
         farnearPlane = -1;
 
@@ -84,7 +83,6 @@ namespace Demi
 
             eyePosition = GetRegisterID("g_eyePosition");
             eyeDirection = GetRegisterID("g_eyeDirection");
-            eyePositionObjSpace = GetRegisterID("g_eyePositionObjSpace");
 
             farnearPlane = GetRegisterID("g_farnearPlane");
 
@@ -148,7 +146,6 @@ namespace Demi
 
             SET_CONST(eyePosition);
             SET_CONST(eyeDirection);
-            SET_CONST(eyePositionObjSpace);
             SET_CONST(farnearPlane);
 
             SET_CONST(time);

@@ -75,7 +75,7 @@ namespace Demi
         /** Clear all visible lights
             Called before the culling per frame
          */
-        void    Clear()
+        void Clear()
         {
             dirLights.clear();
             pointLights.clear();
@@ -97,6 +97,19 @@ namespace Demi
         RTT_PASS,
     };
 
+    /** Render target parameter struct
+     */
+    struct RenderTargetParam
+    {
+        typedef std::function<void(DiRenderTarget*)> RTListener;
+
+        DiRenderTarget* rt;
+        DiCamera* camera;
+
+        RTListener preUpdateCallback;
+        RTListener postUpdateCallback;
+    };
+
     //////////////////////////////////////////////////////////////////////////
 
     /** Scene manager class
@@ -115,9 +128,9 @@ namespace Demi
         friend class DiRenderPipeline;
         friend class DiOctree;
 
-        typedef DiVector<DiDirLightPtr>    DirLightList;
-        typedef DiVector<DiPointLightPtr>  PointLightList;
-        typedef DiVector<DiPair<DiRenderTarget*, DiCamera*> > RenderTargets;
+        typedef DiVector<DiDirLightPtr>     DirLightList;
+        typedef DiVector<DiPointLightPtr>   PointLightList;
+        typedef DiVector<RenderTargetParam> RenderTargets;
 
         static uint32     ENTITY_TYPE_MASK;
         static uint32     FX_TYPE_MASK;
@@ -164,8 +177,6 @@ namespace Demi
         void                    DestroyCamera(const DiString& name);
 
         void                    DestroyAllCameras(void);
-
-        void                    Cull(DiCamera* camera, DiVisibleObjectsBoundsInfo* visibleBounds);
 
         void                    ClearNodes(void);
 
@@ -244,10 +255,9 @@ namespace Demi
         /** Add extra render target
             will be rendered per frame
          */
-        void                    AddExtraRenderTarget(DiRenderTarget* rt, DiCamera* camera)
-        {
-            mExtraRTs.push_back(DiPair<DiRenderTarget*, DiCamera*>(rt, camera));
-        }
+        void                    AddExtraRenderTarget(DiRenderTarget* rt, DiCamera* camera,
+                                    const RenderTargetParam::RTListener& preListener = nullptr,
+                                    const RenderTargetParam::RTListener& postListener = nullptr);
         
         RenderTargets&          GetExtraRenderTargets() {return mExtraRTs;}
 

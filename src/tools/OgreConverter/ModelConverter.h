@@ -30,7 +30,7 @@ public:
 
 protected:
 
-	void					WriteSimpleMaterial( int boneWeightsNum, const DiString& filename );
+	void					WriteSimpleMaterial( const DiString& filename );
 
 	DiMeshPtr				WriteMesh(const Ogre::Mesh* pMesh);
 

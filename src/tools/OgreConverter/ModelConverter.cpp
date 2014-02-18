@@ -99,14 +99,13 @@ void ModelConverter::ExportMesh( const Mesh* pMesh, const String& filename )
 		while (it.HasMoreElements())
 		{
 			DiSubMesh* subMesh = it.GetNext();
-			unsigned int maxw = subMesh->GetMaxWeights();
 			DiString matname = subMesh->GetMaterialName();
 
 			DiString matfile = filename.c_str();
 			matfile = matfile.ExtractDirName();
 			matfile += matname;
 
-			WriteSimpleMaterial(maxw,matfile);
+			WriteSimpleMaterial(matfile);
 		}
 	}
 }
@@ -198,8 +197,10 @@ void ModelConverter::WriteSubMesh( DiSubMesh* subMod, const Ogre::SubMesh* s )
 	subMod->SetVerticeNum(vertexData->vertexCount);
 
 	// material name
-	DiString matName;
-	matName.Format("%s_%d.mtl",subMod->GetParentMesh()->GetName().c_str(),subMod->GetIndex());
+    DiString matName = s->getMaterialName().c_str();
+    matName.Replace("/", "_");
+    matName.Replace("\\", "_");
+    matName += ".mtl";
 	subMod->SetMaterialName(matName);
 
 	bool use32BitIndexes = (!s->indexData->indexBuffer.isNull() && 
@@ -454,10 +455,10 @@ void ModelConverter::WriteSkeleton( const Ogre::Skeleton* pSkel, DiSkeleton* ske
 	}
 }
 
-void ModelConverter::WriteSimpleMaterial( int boneWeightsNum, const DiString& filename )
+void ModelConverter::WriteSimpleMaterial( const DiString& filename )
 {
-	DiMaterialPtr mat = Demi::DiAssetManager::GetInstancePtr(
-		)->CreateOrReplaceAsset<DiMaterial>("_tempSimple");
+    DiMaterialPtr mat = Demi::DiAssetManager::GetInstancePtr(
+        )->CreateOrReplaceAsset<DiMaterial>("_tempSimple");
 
     mat->LoadShader("basic_v", "basic_p");  //todo
 

@@ -57,7 +57,7 @@ namespace Demi
 
         LightType               GetType(void) const { return mType; }
 
-        const DiColor&          GetColor(void) const{ return mColor; }
+        const DiColor&          GetColor(void) const { return mColor; }
 
         /** Set the color of the light
             usually any type of light should have a color property

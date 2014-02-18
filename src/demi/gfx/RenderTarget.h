@@ -142,6 +142,8 @@ namespace Demi
 
         void                    SetFlippingUV(bool val) { mFlippingUV = val; }
 
+        DiTexturePtr            GetParentTexture() { return mParentTex; }
+
     protected:
 
         DiRtListener*           mListener;

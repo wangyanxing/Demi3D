@@ -88,7 +88,6 @@ namespace Demi
         DiMat4      texViewProjMatrix;
 
         DiVec3      eyePosition;
-        DiVec4      eyePositionObjSpace;
         DiVec3      eyeDirection;        
 
         DiVec4      farnearPlane;

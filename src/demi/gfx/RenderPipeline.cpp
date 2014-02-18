@@ -100,6 +100,15 @@ namespace Demi
         const DiCamera* realCam = cam->GetLodCamera();
         mShaderEnv->viewMatrix = realCam->GetViewMatrix();
         realCam->GetProjectionMatrixRs(mShaderEnv->projMatrix);
+
+        if (false/*Driver->NeedTextureFlipping()*/)
+        {
+            mShaderEnv->projMatrix[1][0] = -mShaderEnv->projMatrix[1][0];
+            mShaderEnv->projMatrix[1][1] = -mShaderEnv->projMatrix[1][1];
+            mShaderEnv->projMatrix[1][2] = -mShaderEnv->projMatrix[1][2];
+            mShaderEnv->projMatrix[1][3] = -mShaderEnv->projMatrix[1][3];
+        }
+
         mShaderEnv->eyePosition = realCam->GetDerivedPosition();
         mShaderEnv->eyeDirection = realCam->GetDirection();
         mShaderEnv->farnearPlane = DiVec4(cam->GetFarClipDistance(),cam->GetNearClipDistance(),0,0);
@@ -184,8 +193,9 @@ namespace Demi
         if (!rt)
             return;
 
-        SetGlobalParams(sm, cam);
+        Driver->SetInvertVertexWinding(cam->IsReflected());
 
+        SetGlobalParams(sm, cam);
         ProcessGBuffers();
 
         rt->Bind();
@@ -300,15 +310,6 @@ namespace Demi
             DiMat4 proj = mShaderEnv->projMatrix;
             mShaderEnv->modelViewProjMatrix = proj * modelview;            
         }
-
-        DiMat4 worldInv = worldmat->inverseAffine();
-        DiVec4 ep;
-        ep.x = mShaderEnv->eyePosition[0];
-        ep.y = mShaderEnv->eyePosition[1];
-        ep.z = mShaderEnv->eyePosition[2];
-        ep.w = 1;
-        DiVec4 epos = worldInv.transformAffine(ep);
-        mShaderEnv->eyePositionObjSpace = epos;
 
         if (batch->mBoneMatrices && batch->mBoneNum > 0 
             && batch->mBoneNum < MAX_BONE_NUM) 

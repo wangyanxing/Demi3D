@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<material>
+ <shader name="vertex">basic_v</shader>
+ <shader name="pixel">basic_p</shader>
+ <flag>USE_MAP,USE_LIGHTMAP</flag>
+ <variables>
+  <sampler2D>
+   <texture name="map">stone1.jpg</texture>
+  </sampler2D>
+  <sampler2D>
+   <texture name="lightMap">RomanBathColumnsLightingMap.dds</texture>
+  </sampler2D>
+ </variables>
+</material>
