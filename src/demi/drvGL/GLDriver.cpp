@@ -278,7 +278,8 @@ namespace Demi
         glPolygonMode(GL_FRONT_AND_BACK, finalwireframe ? GL_LINE : GL_FILL);
 
         // culling
-        bool flip = (mNeedTextureFlipping);
+        bool flip = ((mNeedTextureFlipping && !mInvertVertexWinding) ||
+                     (!mNeedTextureFlipping && mInvertVertexWinding));
         if (mat->GetCullMode() == CULL_NONE)
             glDisable(GL_CULL_FACE);
         else
@@ -286,7 +287,7 @@ namespace Demi
             glEnable(GL_CULL_FACE);
             if (mat->GetCullMode() == CULL_CCW)
                 flip = !flip;
-            if (!flip)
+            if (flip)
                 glCullFace(GL_FRONT);
             else
                 glCullFace(GL_BACK);

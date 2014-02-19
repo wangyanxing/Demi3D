@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Demi.h"
 #include "DemoFrame.h"
+#include "RenderTarget.h"
 
 void SetupWater(DiSceneManager* sm)
 {
@@ -39,7 +40,7 @@ void SetupWater(DiSceneManager* sm)
     refractMap->CreateTexture();
     auto refractRT = refractMap->GetRenderTarget();
 
-    // Water plane
+    // Water plane 
     DiCullNode* nodePlane = sm->GetRootNode()->CreateChild();
     DiSimpleShapePtr model = make_shared<DiSimpleShape>();
     model->CreatePlane(100);

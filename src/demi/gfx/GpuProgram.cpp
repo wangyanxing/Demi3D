@@ -24,13 +24,12 @@ namespace Demi
         memset(this, 0, sizeof(*this));
     }
 
-    void DiShaderEnvironment::SetIdentity(bool rtFliping)
+    void DiShaderEnvironment::SetIdentity()
     {
         DiMat4 projMat = DiMat4::IDENTITY;
         DiBase::Driver->ConvertProjectionMatrix(projMat, projMat);
-
-        // actually texture flipping only for openGL
-        if (rtFliping)
+        
+        if (DiBase::Driver->NeedTextureFlipping())
         {
             projMat[1][0] = -projMat[1][0];
             projMat[1][1] = -projMat[1][1];

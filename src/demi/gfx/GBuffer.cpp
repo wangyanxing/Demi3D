@@ -49,7 +49,7 @@ namespace Demi
 
         DiRenderTarget* rt = tex->GetRenderTarget();
         if (rt)
-            rt->SetShouldUpdate(false);
+            rt->SetFlippingUV(true);
         //rt->SetDepthBufferPool(DiDepthBuffer::POOL_DEFAULT);
 
         //rt->AttachDepthBuffer(mParentWnd->GetRenderBuffer()->GetDepthBuffer());

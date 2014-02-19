@@ -83,10 +83,6 @@ namespace Demi
 
         virtual void            Bind(uint8 mrtID = 0);
 
-        bool                    GetShouldUpdate() const { return mShouldUpdate; }
-
-        void                    SetShouldUpdate(bool val) { mShouldUpdate = val; }
-
         void                    SetDepthBufferPool( uint16 poolId );
 
         uint16                  GetDepthBufferPool() const;
@@ -144,8 +140,6 @@ namespace Demi
         DiViewport              mViewport;
 
         DiTexturePtr            mParentTex;
-
-        bool                    mShouldUpdate;
         
         uint16                  mDepthBufferPoolId;
 

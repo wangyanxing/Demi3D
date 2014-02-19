@@ -27,7 +27,6 @@ namespace Demi
        :mWidth(0),
         mHeight(0),
         mParentTex(nullptr),
-        mShouldUpdate(true),
         mDepthBuffer(nullptr),
         mDepthClearValue(1.0f),
         mClearPerFrame(true),
@@ -110,9 +109,9 @@ namespace Demi
 
     void DiRenderTarget::Bind(uint8 mrtID)
     {
-        PreBind();
-
         Driver->SetTextureFlipping(mFlippingUV);
+        
+        PreBind();
 
         if (!BindRenderTarget(mrtID))
         {
@@ -125,10 +124,8 @@ namespace Demi
             DI_WARNING("Cannot bind depth/stencil buffer");
         }
 
-        if (!mClearPerFrame)
-            return;
-
-        Driver->Clear(mClearFlag, mClearColor, mDepthClearValue);
+        if (mClearPerFrame)
+            Driver->Clear(mClearFlag, mClearColor, mDepthClearValue);
     }
 
     void DiRenderTarget::ClearDepthBuffer()

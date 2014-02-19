@@ -123,7 +123,7 @@ namespace Demi
         DiVec3      skyLightDir;
         
 
-        void        SetIdentity(bool rtFliping = false);
+        void        SetIdentity();
     };
 
     //////////////////////////////////////////////////////////////////////////

@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "PostEffectManager.h"
 #include "Sprite.h"
@@ -103,7 +104,7 @@ namespace Demi
 
     void DiPostEffectManager::PreProcess(DiRenderPipeline* pipe)
     {
-        pipe->GetShaderEnvironment()->SetIdentity(Driver->NeedTextureFlipping());
+        pipe->GetShaderEnvironment()->SetIdentity();
     }
 
     void DiPostEffectManager::DrawQuad( DiMaterial* mat , int quadscale)
@@ -139,7 +140,6 @@ namespace Demi
         bright->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER, "post_bright_p");
         bright->SetInput("image",INPUT_PREV_EFFECT);
         bright->GetShaderParam()->WriteFloat3("vLinearBright",DiVec3(1,-1,1));
-        //bright->GetShaderParam()->WriteFloat2("hdrParam", DiVec2(0.5f, 0.08f));
         
         DiPostEffectPass* down4 = effect->CreatePass("down4");
         down4->BuildTexture(4, PF_A8R8G8B8);

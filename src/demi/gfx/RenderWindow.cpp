@@ -88,12 +88,20 @@ namespace Demi
         mSceneManager->Cull(mainCam);
         mSceneManager->GetVisibleObjects().UpdateAll(mainCam);
 
+        static int i = 0;
+        i++;
+        
         rp->ClearGroup();
         mSceneManager->GetVisibleObjects().AddToBatch(rp);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
-
-        static int i = 0;
-        i++;
+        
+        if (i == 50){
+            DiString prefix = Driver->GetDriverType() == DRV_OPENGL ? "gl_" : "d3d9_";
+            DiString postfix = i == 1?"0":"1";
+            auto tex = mSceneCanvas->GetParentTexture();
+            DiString file = prefix + tex->GetName() + postfix + ".png";
+            DiImage::SaveTextureAsPng(tex, file);
+        }
 
         // Process the extra render targets
         auto rts = mSceneManager->GetExtraRenderTargets();
@@ -108,12 +116,7 @@ namespace Demi
             mSceneManager->GetVisibleObjects().AddToBatch(rp);
             rp->Render(mSceneManager, it->camera, it->rt);
 
-            if (i == 100){
-                DiString prefix = Driver->GetDriverType() == DRV_OPENGL ? "gl_" : "d3d9_";
-                auto tex = it->rt->GetParentTexture();
-                DiString file = prefix + tex->GetName() + ".png";
-                DiImage::SaveTextureAsPng(tex, file);
-            }
+            
 
             if (it->postUpdateCallback)
                 it->postUpdateCallback(it->rt);
@@ -164,6 +167,7 @@ namespace Demi
         mSceneCanvas = mCanvasTexture->GetRenderTarget();
         mCanvasTexture->SetAdaptedRT(mRenderBuffer);
         mCanvasTexture->SetViewportScale(DiVec2::UNIT_SCALE);
+        mSceneCanvas->SetFlippingUV(false);
 
         mPostEffectMgr = DI_NEW DiPostEffectManager(this);
         //mGBuffer = DI_NEW DiGBuffer(this);

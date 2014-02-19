@@ -178,6 +178,8 @@ namespace Demi
         DI_PROFILE(RenderPipeline_Render);
         if (!rt)
             return;
+        
+        rt->Bind();
 
         Driver->SetInvertVertexWinding(cam->IsReflected());
 
@@ -186,8 +188,6 @@ namespace Demi
 
         // todo: move it to the outside
         ProcessGBuffers();
-
-        rt->Bind();
 
         uint32 dps = 0;
         uint32 faces = 0;

@@ -61,8 +61,8 @@ namespace Demi
         mRenderTarget = mTexture->GetRenderTarget();
         if (mRenderTarget)
         {
-            mRenderTarget->SetShouldUpdate(false);
             mRenderTarget->SetDepthBufferPool(0);
+            mRenderTarget->SetFlippingUV(true);
         }
     }
 

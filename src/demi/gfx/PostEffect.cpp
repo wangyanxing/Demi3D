@@ -31,10 +31,7 @@ namespace Demi
 
     DiPostEffect::~DiPostEffect()
     {
-        PassChain::iterator it;
-        PassChain::iterator itend = mPasses.end();
-
-        for (it = mPasses.begin(); it != itend; ++it)
+        for (auto it = mPasses.begin(); it != mPasses.end(); ++it)
         {
             DI_DELETE (*it);
         }
@@ -73,11 +70,8 @@ namespace Demi
 
     int DiPostEffect::GetPassID( const DiString& pass )
     {
-        PassChain::iterator it;
-        PassChain::iterator itend = mPasses.end();
         int count = 0;
-
-        for (it = mPasses.begin(); it != itend; ++it, ++count)
+        for (auto it = mPasses.begin(); it != mPasses.end(); ++it, ++count)
         {
             if ((*it)->GetPassName() == pass)
             {
@@ -92,14 +86,14 @@ namespace Demi
         int id = GetPassID(pass);
         if (id == -1)
         {
-            return NULL;
+            return nullptr;
         }
         else if (id == 0)
         {
             DiPostEffect* preEffect = mMgr->GetPrevEnabledEffect(this);
             if (!preEffect)
             {
-                return NULL;
+                return nullptr;
             }
             else
             {
@@ -115,7 +109,7 @@ namespace Demi
                     return mPasses[i-1];
                 }
             }
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -123,7 +117,7 @@ namespace Demi
     {
         if (mPasses.empty())
         {
-            return NULL;
+            return nullptr;
         }
         for (int i = (int)mPasses.size()-1; i >=0; --i)
         {
@@ -132,7 +126,7 @@ namespace Demi
                 return mPasses[i];
             }
         }
-        return NULL;
+        return nullptr;
     }
 
     void DiPostEffect::SetEnable( bool val )
@@ -153,20 +147,15 @@ namespace Demi
         {
             return mPasses[id];
         }
-        return NULL;
+        return nullptr;
     }
 
     void DiPostEffect::RefereshPasses()
     {
         if (!mEnable)
-        {
             return;
-        }
-
-        PassChain::iterator it;
-        PassChain::iterator itend = mPasses.end();
-
-        for (it = mPasses.begin(); it != itend; ++it)
+        
+        for (auto it = mPasses.begin(); it != mPasses.end(); ++it)
         {
             (*it)->RefreshInput();
         }

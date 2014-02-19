@@ -123,7 +123,7 @@ namespace Demi
     void DiRenderBatchGroup::BindIdentityViewProj()
     {
         DiShaderEnvironment* se = mPipeline->GetShaderEnvironment();
-        se->SetIdentity(Driver->NeedTextureFlipping());
+        se->SetIdentity();
     }
 
     bool DiRenderBatchGroup::IsInterfaceGroup()
