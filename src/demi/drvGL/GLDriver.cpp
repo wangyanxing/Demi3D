@@ -268,37 +268,29 @@ namespace Demi
         // filling mode
         bool finalwireframe = false;
         if (mat->GetForceWireframe())
-        {
             finalwireframe = mat->IsWireframe();
-        }
         else
         {
             if (mat->IsWireframe())
                 finalwireframe = true;
         }
+
         glPolygonMode(GL_FRONT_AND_BACK, finalwireframe ? GL_LINE : GL_FILL);
 
-        bool flip = mInvertVertexWinding;
-
-        // culling mode
-        GLenum cullMode = 0;
-        switch (mat->GetCullMode())
-        {
-        case CULL_NONE:
+        // culling
+        bool flip = (mNeedTextureFlipping);
+        if (mat->GetCullMode() == CULL_NONE)
             glDisable(GL_CULL_FACE);
-            return;
-            break;
-        case CULL_CW:
-            cullMode = flip ? GL_FRONT : GL_BACK;
-            break;
-        case CULL_CCW:
-            cullMode = flip ? GL_BACK : GL_FRONT;
-            break;
-        default:
-            DI_WARNING("Invalid culling mode.");
+        else
+        {
+            glEnable(GL_CULL_FACE);
+            if (mat->GetCullMode() == CULL_CCW)
+                flip = !flip;
+            if (!flip)
+                glCullFace(GL_FRONT);
+            else
+                glCullFace(GL_BACK);
         }
-        glEnable(GL_CULL_FACE);
-        glCullFace(cullMode);
 
         // depth check/write
         if (mat->GetDepthCheck())
@@ -307,9 +299,8 @@ namespace Demi
             glEnable(GL_DEPTH_TEST);
         }
         else
-        {
             glDisable(GL_DEPTH_TEST);
-        }
+
         glDepthMask(mat->GetDepthWrite() ? GL_TRUE : GL_FALSE);
 
         // blending mode

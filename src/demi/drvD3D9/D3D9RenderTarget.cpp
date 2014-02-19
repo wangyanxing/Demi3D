@@ -95,18 +95,12 @@ namespace Demi
 
     void DiD3D9RenderTarget::PreBind()
     {
-        if (mViewportDirty)
-        {
-            uint32 left   = uint32(mViewport.mLeft   * mWidth);
-            uint32 top    = uint32(mViewport.mTop    * mHeight);
-            uint32 width  = uint32(mViewport.mWidth  * mWidth);
-            uint32 height = uint32(mViewport.mHeight * mHeight);
-
-            DI_DEBUG("Viewport updated : %d,%d,%d,%d", left, top, width, height);
-            Driver->SetViewport(left, top, width, height);
-
-            mViewportDirty = false;
-        }
+        uint32 left   = uint32(mViewport.mLeft   * mWidth);
+        uint32 top    = uint32(mViewport.mTop    * mHeight);
+        uint32 width  = uint32(mViewport.mWidth  * mWidth);
+        uint32 height = uint32(mViewport.mHeight * mHeight);
+        
+        Driver->SetViewport(left, top, width, height);
     }
 
     bool DiD3D9RenderTarget::IsCompatibleWith(DiDepthBuffer* db)

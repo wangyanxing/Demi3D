@@ -86,22 +86,23 @@ namespace Demi
     bool DiCameraHelper::Update( float elapsed )
     {
         if (!mEnabled)
-        {
             return false;
-        }
 
         if (mStyle == CS_FREELOOK)
         {
             DiVec3 accel = DiVec3::ZERO;
             if (mGoingForward) 
-            {
                 accel += mCamera->GetDirection();
-            }
-            if (mGoingBack)    accel -= mCamera->GetDirection();
-            if (mGoingRight)    accel += mCamera->GetRight();
-            if (mGoingLeft)    accel -= mCamera->GetRight();
-            if (mGoingUp)        accel += mCamera->GetUp();
-            if (mGoingDown)    accel -= mCamera->GetUp();
+            if (mGoingBack)    
+                accel -= mCamera->GetDirection();
+            if (mGoingRight)    
+                accel += mCamera->GetRight();
+            if (mGoingLeft)    
+                accel -= mCamera->GetRight();
+            if (mGoingUp)        
+                accel += mCamera->GetUp();
+            if (mGoingDown)    
+                accel -= mCamera->GetUp();
 
             float topSpeed = mFastMove ? mTopSpeed * 20 : mTopSpeed;
             if (accel.squaredLength() != 0)

@@ -27,7 +27,6 @@ namespace Demi
        :mWidth(0),
         mHeight(0),
         mParentTex(nullptr),
-        mListener(nullptr),
         mShouldUpdate(true),
         mDepthBuffer(nullptr),
         mDepthClearValue(1.0f),
@@ -35,7 +34,6 @@ namespace Demi
         mClearColor(DiColor::Black),
         mDepthBufferPoolId(DiDepthBuffer::POOL_DEFAULT),
         mClearFlag(CLEAR_COLOR|CLEAR_DEPTH|CLEAR_STENCIL),
-        mViewportDirty(true),
         mIsActive(true),
         mFlippingUV(false)
     {
@@ -59,7 +57,6 @@ namespace Demi
         mParentTex = surface;
         mWidth = mParentTex->GetWidth();
         mHeight = mParentTex->GetHeight();
-        mViewportDirty = true;
         AttachSurface();
     }
 

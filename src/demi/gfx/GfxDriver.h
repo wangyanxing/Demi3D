@@ -158,10 +158,6 @@ namespace Demi
 
         void                        SetTextureFlipping(bool val) { mNeedTextureFlipping = val; }
 
-        /** OpenGL mode needs a reversed culling mode
-         */
-        virtual bool                ReversePostpassCullmode() const { return false; }
-
         /** For camera reflection, etc.
         */
         bool                        IsInvertVertexWinding() const { return mInvertVertexWinding; }

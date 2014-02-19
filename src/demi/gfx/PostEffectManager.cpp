@@ -45,8 +45,7 @@ namespace Demi
 
         mat->LoadShader(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,
                         DiMaterialDefine::SCREEN_QUAD_PIXEL_SHADER);
-        if (Driver->ReversePostpassCullmode())
-            mat->SetCullMode(CULL_CCW);
+        mat->SetCullMode(CULL_NONE);
 
         mScreenQuad->SetBatchGroup(BATCH_POST_FILTER);
         mScreenQuad->SetMaterial(mat);

@@ -69,8 +69,6 @@ namespace Demi
 
         void                        BindMeshContext(DiRenderUnit* batch,DiMat4* mat);
 
-        void                        BindShadowCamera(DiCamera* cam);
-
         bool                        RenderSingleBatch(DiRenderUnit* batch, DiMat4* mat);
 
         void                        Render2DBatch(DiRenderUnit* batch, DiMaterial* material);
@@ -98,6 +96,10 @@ namespace Demi
         /** Bind uniforms regarding the cameras and viewports
          */
         void                        SetCameraParams(DiSceneManager*sm, DiCamera* cam);
+
+        /** Bind uniforms regarding the lights
+        */
+        void                        SetLightingParams(DiSceneManager*sm);
 
         bool                        GetEnableGBuffer() const { return mEnableGbuffer; }
 

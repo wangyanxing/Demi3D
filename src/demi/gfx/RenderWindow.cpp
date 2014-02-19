@@ -91,7 +91,7 @@ namespace Demi
         rp->ClearGroup();
         mSceneManager->GetVisibleObjects().AddToBatch(rp);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
-        
+
         static int i = 0;
         i++;
 
@@ -108,9 +108,10 @@ namespace Demi
             mSceneManager->GetVisibleObjects().AddToBatch(rp);
             rp->Render(mSceneManager, it->camera, it->rt);
 
-            if (i == -1000){
+            if (i == 100){
+                DiString prefix = Driver->GetDriverType() == DRV_OPENGL ? "gl_" : "d3d9_";
                 auto tex = it->rt->GetParentTexture();
-                DiString file = tex->GetName() + ".png";
+                DiString file = prefix + tex->GetName() + ".png";
                 DiImage::SaveTextureAsPng(tex, file);
             }
 

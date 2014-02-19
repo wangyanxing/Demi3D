@@ -20,6 +20,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
+    /** A simple wrapper of the viewport
+     */
     class DI_GFX_API DiViewport
     {
     public:
@@ -38,17 +40,8 @@ namespace Demi
         float mHeight;
     };
 
-    class DI_GFX_API DiRtListener
-    {
-    public:
-
-        DiRtListener(){}
-
-        virtual void PreUpdateRenderTarget(DiRenderTarget*) = 0;
-
-        virtual void PostUpdateRenderTarget(DiRenderTarget*) = 0;
-    };
-
+    /** Render target class, created from the texture
+     */
     class DI_GFX_API DiRenderTarget : public DiDeviceLostListener
     {
     public:
@@ -89,8 +82,6 @@ namespace Demi
         virtual void            PreBind() = 0;
 
         virtual void            Bind(uint8 mrtID = 0);
-
-        void                    SetListener(DiRtListener* val) { mListener = val; }
 
         bool                    GetShouldUpdate() const { return mShouldUpdate; }
 
@@ -146,8 +137,6 @@ namespace Demi
 
     protected:
 
-        DiRtListener*           mListener;
-
         uint32                  mWidth;
 
         uint32                  mHeight;
@@ -169,8 +158,6 @@ namespace Demi
         bool                    mClearPerFrame;
 
         uint32                  mClearFlag;
-
-        bool                    mViewportDirty;
 
         bool                    mIsActive;
 

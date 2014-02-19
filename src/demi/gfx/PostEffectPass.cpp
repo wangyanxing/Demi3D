@@ -70,8 +70,7 @@ namespace Demi
     {
         DiString matname = mPassName + "_m";
         mMaterial = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(matname);
-        if (Driver->ReversePostpassCullmode())
-            mMaterial->SetCullMode(CULL_CCW);
+        mMaterial->SetCullMode(CULL_NONE);
 
         mMaterial->LoadShader(vpshader,fpshader);
     }

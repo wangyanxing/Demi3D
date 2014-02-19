@@ -43,15 +43,17 @@ void SetupWater(DiSceneManager* sm)
     DiCullNode* nodePlane = sm->GetRootNode()->CreateChild();
     DiSimpleShapePtr model = make_shared<DiSimpleShape>();
     model->CreatePlane(100);
+
     auto waterMat = DiMaterial::QuickCreate("pool_fresnel_v", "pool_fresnel_p");
     auto shaderParam = waterMat->GetShaderParameter();
+
     shaderParam->WriteFloat("scale", 1.0f);
     shaderParam->WriteFloat("scroll", 0.05f);
     shaderParam->WriteFloat("fresnelBias", -0.1f);
     shaderParam->WriteFloat("fresnelScale", 1.8f);
     shaderParam->WriteFloat("fresnelPower", 8.0f);
-    shaderParam->WriteFloat4("tintColour", DiVec4(0, 0.05f, 0.05f, 1));
     shaderParam->WriteFloat("noiseScale", 0.05f);
+    shaderParam->WriteFloat4("tintColour", DiVec4(0, 0.05f, 0.05f, 1));
     shaderParam->WriteTexture2D("noiseMap", "waves2.dds");
     shaderParam->WriteTexture2D("reflectMap", "reflect_rt");
     shaderParam->WriteTexture2D("refractMap", "refract_rt");
@@ -62,23 +64,27 @@ void SetupWater(DiSceneManager* sm)
 
     // Add to scene manager with the callbacks
     DiCamera* cam = sm->GetCamera();
+    cam->MoveRelative(DiVec3(0, 0, 700));
+    
+    sm->AddExtraRenderTarget(refractRT, cam,
+        [nodePlane](DiRenderTarget*) {
+            nodePlane->SetVisible(false);
+        },
+        [nodePlane](DiRenderTarget*) {
+            nodePlane->SetVisible(true);
+        }
+    );
+
     sm->AddExtraRenderTarget(reflectRT, cam,
-        [nodePlane, cam](DiRenderTarget* rt) {
+        [nodePlane, cam](DiRenderTarget*) {
             nodePlane->SetVisible(false);
             cam->EnableReflection(DiPlane(DiVec3::UNIT_Y, 0));
         },
-        [nodePlane, cam](DiRenderTarget* rt) {
+        [nodePlane, cam](DiRenderTarget*) {
             nodePlane->SetVisible(true);
             cam->DisableReflection();
-        });
-    
-    sm->AddExtraRenderTarget(refractRT, cam,
-        [nodePlane](DiRenderTarget* rt) {
-            nodePlane->SetVisible(false);
-        },
-        [nodePlane](DiRenderTarget* rt) {
-            nodePlane->SetVisible(true);
-        });
+        }
+    );
 }
 
 void InitScene()

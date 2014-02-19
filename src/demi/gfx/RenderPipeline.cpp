@@ -35,12 +35,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    const DiMat4 PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE(
-        0.5f,   0,     0,  0.5f, 
-        0,   -0.5f,    0,  0.5f, 
-        0,      0,     1,    0,
-        0,      0,     0,    1);
-
     DiRenderPipeline::DiRenderPipeline()
         :
         mActiveVp(NULL),
@@ -85,23 +79,12 @@ namespace Demi
         SAFE_DELETE(mShaderEnv);
     }
 
-    void DiRenderPipeline::BindShadowCamera( DiCamera* cam )
-    {
-        DiMat4 proj;
-        cam->GetProjectionMatrixRs(proj);
-
-        mShaderEnv->texViewProjMatrix = 
-            PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE * 
-            proj * cam->GetViewMatrix();
-    }
-    
     void DiRenderPipeline::SetCameraParams(DiSceneManager*sm, DiCamera* cam)
     {
-        const DiCamera* realCam = cam->GetLodCamera();
-        mShaderEnv->viewMatrix = realCam->GetViewMatrix();
-        realCam->GetProjectionMatrixRs(mShaderEnv->projMatrix);
+        mShaderEnv->viewMatrix = cam->GetViewMatrix();
+        cam->GetProjectionMatrixRs(mShaderEnv->projMatrix);
 
-        if (false/*Driver->NeedTextureFlipping()*/)
+        if (Driver->NeedTextureFlipping())
         {
             mShaderEnv->projMatrix[1][0] = -mShaderEnv->projMatrix[1][0];
             mShaderEnv->projMatrix[1][1] = -mShaderEnv->projMatrix[1][1];
@@ -109,8 +92,8 @@ namespace Demi
             mShaderEnv->projMatrix[1][3] = -mShaderEnv->projMatrix[1][3];
         }
 
-        mShaderEnv->eyePosition = realCam->GetDerivedPosition();
-        mShaderEnv->eyeDirection = realCam->GetDirection();
+        mShaderEnv->eyePosition = cam->GetDerivedPosition();
+        mShaderEnv->eyeDirection = cam->GetDirection();
         mShaderEnv->farnearPlane = DiVec4(cam->GetFarClipDistance(),cam->GetNearClipDistance(),0,0);
         mShaderEnv->viewProjMatrix = mShaderEnv->projMatrix * mShaderEnv->viewMatrix;
     }
@@ -131,14 +114,17 @@ namespace Demi
         mShaderEnv->texelOffsets.y = Driver->GetTexelOffset().y;
         mShaderEnv->texelOffsets.z = Driver->GetTexelOffset().x / mShaderEnv->viewportSize.x;
         mShaderEnv->texelOffsets.w = Driver->GetTexelOffset().y / mShaderEnv->viewportSize.y;
+    }
 
+    void DiRenderPipeline::SetLightingParams(DiSceneManager*sm)
+    {
         // bind lights
         // global parameters
         mShaderEnv->globalAmbient = sm->GetAmbientColor();
 
         DiVisibleLights& visibleLights = sm->GetVisibleLights();
         mShaderEnv->numDirLights = (int)visibleLights.dirLights.size();
-        for(int i=0; i < mShaderEnv->numDirLights; i++)
+        for (int i = 0; i < mShaderEnv->numDirLights; i++)
         {
             mShaderEnv->dirLightsColor[i] = visibleLights.dirLights[i]->GetColor();
             DiVec3 dir = visibleLights.dirLights[i]->GetDirection().normalisedCopy();
@@ -146,16 +132,16 @@ namespace Demi
         }
 
         mShaderEnv->numPointLights = (int)visibleLights.pointLights.size();
-        for(int i=0; i < mShaderEnv->numPointLights; i++)
+        for (int i = 0; i < mShaderEnv->numPointLights; i++)
         {
             mShaderEnv->pointLightsColor[i] = visibleLights.pointLights[i]->GetColor();
             //DiVec3 pos = sm->GetPointLight(i)->GetPosition();
             DiNode* lightNode = visibleLights.pointLights[i]->GetParentNode();
-            if(!lightNode)
+            if (!lightNode)
                 DI_WARNING("The point light should be attached to a specific node");
             else
                 mShaderEnv->pointLightsPosition[i] = lightNode->GetDerivedPosition();
-            
+
             mShaderEnv->pointLightsAttenuation[i].x = visibleLights.pointLights[i]->GetAttenuationBegin();
             mShaderEnv->pointLightsAttenuation[i].y = visibleLights.pointLights[i]->GetAttenuationEnd();
         }
@@ -171,7 +157,7 @@ namespace Demi
     
     void DiRenderPipeline::RenderPost(DiSceneManager*sm, DiCamera* cam)
     {
-        // we don't care about the bone matrics at this moment
+        // we don't care about the bone matrices at this moment
         SetCameraParams(sm, cam);
         
         if (mPostEnable)
@@ -196,6 +182,9 @@ namespace Demi
         Driver->SetInvertVertexWinding(cam->IsReflected());
 
         SetGlobalParams(sm, cam);
+        SetLightingParams(sm);
+
+        // todo: move it to the outside
         ProcessGBuffers();
 
         rt->Bind();
@@ -331,4 +320,5 @@ namespace Demi
         for (uint32 i = 0; i < mBatchGroups.size(); i++)
             mBatchGroups[i]->Clear();
     }
+
 }

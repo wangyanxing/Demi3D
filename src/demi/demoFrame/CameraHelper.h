@@ -36,7 +36,7 @@ namespace Demi
 
         DiCameraHelper(Demi::DiCamera* cam);
 
-        virtual                    ~DiCameraHelper() {}
+        virtual                 ~DiCameraHelper() {}
 
     public:
 
