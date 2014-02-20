@@ -21,7 +21,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PostEffectManager.h"
 #include "Window.h"
 
-#include "Image.h"
 namespace Demi 
 {
     DiRenderWindow* DiRenderWindow::ActiveWindow = nullptr;
@@ -88,20 +87,9 @@ namespace Demi
         mSceneManager->Cull(mainCam);
         mSceneManager->GetVisibleObjects().UpdateAll(mainCam);
 
-        static int i = 0;
-        i++;
-        
         rp->ClearGroup();
         mSceneManager->GetVisibleObjects().AddToBatch(rp);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
-        
-        if (i == 50){
-            DiString prefix = Driver->GetDriverType() == DRV_OPENGL ? "gl_" : "d3d9_";
-            DiString postfix = i == 1?"0":"1";
-            auto tex = mSceneCanvas->GetParentTexture();
-            DiString file = prefix + tex->GetName() + postfix + ".png";
-            DiImage::SaveTextureAsPng(tex, file);
-        }
 
         // Process the extra render targets
         auto rts = mSceneManager->GetExtraRenderTargets();
@@ -167,7 +155,7 @@ namespace Demi
         mSceneCanvas = mCanvasTexture->GetRenderTarget();
         mCanvasTexture->SetAdaptedRT(mRenderBuffer);
         mCanvasTexture->SetViewportScale(DiVec2::UNIT_SCALE);
-        mSceneCanvas->SetFlippingUV(false);
+        mSceneCanvas->SetFlippingUV(true);
 
         mPostEffectMgr = DI_NEW DiPostEffectManager(this);
         //mGBuffer = DI_NEW DiGBuffer(this);

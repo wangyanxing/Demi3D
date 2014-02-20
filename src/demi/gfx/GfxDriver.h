@@ -156,7 +156,7 @@ namespace Demi
 
         bool                        NeedTextureFlipping() const { return mNeedTextureFlipping; }
 
-        void                        SetTextureFlipping(bool val) { mNeedTextureFlipping = val; }
+        virtual void                SetTextureFlipping(bool val) { mNeedTextureFlipping = val; }
 
         /** For camera reflection, etc.
         */

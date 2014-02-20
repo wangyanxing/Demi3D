@@ -20,6 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PostEffect.h"
 #include "RenderWindow.h"
 #include "GBuffer.h"
+#include "RenderPipeline.h"
 
 namespace Demi
 {

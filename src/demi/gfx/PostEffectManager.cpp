@@ -84,7 +84,6 @@ namespace Demi
     void DiPostEffectManager::RenderOutput(DiRenderPipeline* pipe)
     {
         mRenderWindow->GetRenderBuffer()->Bind();
-
         DrawQuad(mScreenQuad->mMaterial.get(),1);
     }
 
@@ -104,13 +103,13 @@ namespace Demi
 
     void DiPostEffectManager::PreProcess(DiRenderPipeline* pipe)
     {
-        pipe->GetShaderEnvironment()->SetIdentity();
     }
 
     void DiPostEffectManager::DrawQuad( DiMaterial* mat , int quadscale)
     {
         if (mat)
         {
+            Driver->GetShaderEnvironment()->SetIdentity();
             mat->SetForceWireframe(true);
             DiSprite* quad = CheckScreenQuad(quadscale);
             mat->Bind();

@@ -129,6 +129,10 @@ namespace Demi
 
         bool                    CanAutoGenMipmaps(DWORD srcUsage, D3DRESOURCETYPE srcType, D3DFORMAT srcFormat);
 
+        /** The texture flipping should be always false in dx renderer
+         */
+        void                    SetTextureFlipping(bool val) { mNeedTextureFlipping = false; }
+
     public:
 
         static IDirect3DVertexShader9*         CreateVertexShader(const DWORD* pFunction);

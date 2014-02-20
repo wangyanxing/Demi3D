@@ -117,9 +117,11 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 			g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
 	}
 
+#if 0
     [flatten] if (g_hasSkyLight){
         AccumulateSkyLight(g_skyLightDir, g_skyLightColor, g_groundColor, lit);
     }
+#endif
 	
 	Out.Color.rgb = lit * g_diffuseColor.rgb;
 	Out.Color.rgb += g_globalAmbient.rgb * g_ambientColor.rgb;	

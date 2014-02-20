@@ -22,7 +22,6 @@ namespace Demi
         , mSwapChain(nullptr)
         , mD3D9DepthBuffer(nullptr)
     {
-        SetShouldUpdate(false);
     }
 
     DiD3D9WindowTarget::~DiD3D9WindowTarget(void)
