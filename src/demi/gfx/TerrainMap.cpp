@@ -836,45 +836,6 @@ namespace Demi
         }
     }
 
-    void DiTerrainMap::CullingUpdate( DiRenderBatchGroup* group,DiCamera* camera)
-    {
-        mVisibles.clear();
-
-        DiVector<int> visibleChunk;
-        mRoot->WalkQuadTree(camera,visibleChunk);
-
-        size_t num = visibleChunk.size();
-        for (size_t i=0; i<num; i++)
-        {
-            mChunks[visibleChunk[i]]->GetBatches(mVisibles);
-        }
-
-        if (mWaterMap)
-        {
-            for (size_t i=0; i<num; i++)
-            {
-                mWaterMap->GetChunk(visibleChunk[i])->UpdateMaterial();
-                mVisibles.push_back(mWaterMap->GetChunk(visibleChunk[i]));
-            }
-        }
-
-         if (mFoliageMap)
-         {
-             mFoliageMap->Update();
-             for (size_t i=0; i<num; i++)
-             {
-                 mFoliageMap->GetChunk(visibleChunk[i])->GetBatches(mVisibles);
-             }
-         }
-
-        for (auto it = mVisibles.begin(); it != mVisibles.end(); ++it)
-        {
-            DiTerrainBatchBase* batch = static_cast<DiTerrainBatchBase*>(*it);
-            batch->UpdateMaterialParams();
-            group->AddRenderUnit(batch);
-        }
-    }
-
     const DiAABB& DiTerrainMap::GetBoundingBox( void ) const
     {
         return DiAABB::BOX_INFINITE;

@@ -48,8 +48,6 @@ namespace Demi
 
         const Demi::DiAABB&     GetBoundingBox(void) const;
 
-        void                    CullingUpdate(Demi::DiRenderBatchGroup*,Demi::DiCamera*);
-
         void                    AddToBatchGroup(DiRenderBatchGroup* bg);
 
         void                    CreateColorBox( float size, const DiColor& color );

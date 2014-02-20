@@ -139,8 +139,6 @@ namespace Demi
                 
     public:
 
-        void                        CullingUpdate(DiRenderBatchGroup*,DiCamera*);
-
         void                        AddToBatchGroup(DiRenderBatchGroup* bg);
 
         void                        Update(DiCamera* camera);

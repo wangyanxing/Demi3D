@@ -62,8 +62,6 @@ namespace Demi
 
         int                 GetChunkID();
 
-        void                CullingUpdate(DiRenderBatchGroup*,DiCamera*);
-
         void                AddToBatchGroup(DiRenderBatchGroup* bg);
 
         void                CorrectChunkPosition();

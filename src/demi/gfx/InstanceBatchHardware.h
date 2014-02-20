@@ -45,8 +45,6 @@ namespace Demi
 
         void            GetWorldTransform( DiMat4* xform ) const;
 
-        void            CullingUpdate(DiRenderBatchGroup*,DiCamera*);
-
         void            AddToBatchGroup(DiRenderBatchGroup* bg);
 
         void            Update(DiCamera* camera);

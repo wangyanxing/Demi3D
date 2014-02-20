@@ -254,20 +254,4 @@ namespace Demi
         else
             mAddToBatch = true;
     }
-
-    void DiInstanceBatchHardware::CullingUpdate( DiRenderBatchGroup* group,DiCamera* )
-    {
-        if( !mKeepStatic )
-        {
-            uint32 ins = UpdateVertexBuffer(NULL);
-            if(ins)
-            {
-                group->AddRenderUnit( this );
-            }
-        }
-        else
-        {
-            group->AddRenderUnit(this);
-        }
-    }
 }

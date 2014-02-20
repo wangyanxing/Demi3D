@@ -44,7 +44,6 @@ namespace Demi
         if (!mParentNode)
             return;
 
-        /*
         int splits = 0;
         DiCamera* camera = sceneManager->GetCamera();
         float nearSplit = camera->GetNearClipDistance();
@@ -70,8 +69,9 @@ namespace Demi
             nearSplit = farSplit;
             ++splits;
         }
-        */
+        
 
+        /*
         DiCamera* camera = sceneManager->GetCamera();
         UpdateSplitDist(camera);
 
@@ -89,6 +89,7 @@ namespace Demi
             shadowCamera->SetPosition(pos);
             shadowCamera->SetOrientation(mParentNode->GetDerivedOrientation());
         }
+        */
     }
 
     void DiDirLight::SetupShadowCameraImpl(DiSceneManager* sceneManager, DiCamera* shadowCamera,
@@ -108,10 +109,10 @@ namespace Demi
         farSplit = DiMath::Min(farSplit, camera->GetFarClipDistance());
 
         // Use the scene Z bounds to limit frustum size if applicable
-        /*if (mShadowParams.focus)
+        if (false/*mShadowParams.focus*/)
         {
-            nearSplit = DiMath::Max(minZ, nearSplit);
-            farSplit = DiMath::Min(maxZ, farSplit);
-        }*/
+            nearSplit = DiMath::Max(sceneManager->GetZRange().x, nearSplit);
+            farSplit  = DiMath::Min(sceneManager->GetZRange().y, farSplit);
+        }
     }
 }

@@ -298,12 +298,6 @@ namespace Demi
         mIndexBuffer->Create(indicesSize);
     }
 
-    void DiTerrainChunk::CullingUpdate( DiRenderBatchGroup* bg,DiCamera* )
-    {
-        for (auto it = mBatches.begin(); it != mBatches.end(); ++it)
-            bg->AddRenderUnit(*it);
-    }
-
     void DiTerrainChunk::AddToBatchGroup(DiRenderBatchGroup* bg)
     {
         for (auto it = mBatches.begin(); it != mBatches.end(); ++it)

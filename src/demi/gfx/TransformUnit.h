@@ -54,8 +54,6 @@ namespace Demi
         
         DiBatchGroupType        GetBatchGroup() const { return mGroupType; }
 
-        virtual    void         CullingUpdate(DiRenderBatchGroup*,DiCamera*){}
-
         virtual void            Update(DiCamera* camera) {}
 
         virtual void            AddToBatchGroup(DiRenderBatchGroup* bg) {}

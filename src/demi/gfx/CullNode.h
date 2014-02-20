@@ -88,9 +88,6 @@ namespace Demi
 
         ConstObjectIterator     GetAttachedObjectIterator() const;
 
-        void                    ProcessBatchGroup(DiCamera* camera,DiRenderPipeline* pipeline, 
-                                    bool onlyShadowCaster, DiVisibleObjectsBoundsInfo* visbleBounds);
-
         void                    ProcessVisibleObjects(std::function<void(DiTransUnitPtr)> func);
 
         /** Set the visibility for all attached objects

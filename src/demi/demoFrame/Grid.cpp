@@ -52,11 +52,6 @@ namespace Demi
         bg->AddRenderUnit(this);
     }
 
-    void DiGridPlane::CullingUpdate( DiRenderBatchGroup* group,DiCamera* )
-    {
-        group->AddRenderUnit(this);
-    }
-
     void DiGridPlane::BuildGrid( uint32 size, float cellSize, const DiColor& c1, const DiColor& c2 )
     {
         const uint32 numColLines = size*2 + 1;

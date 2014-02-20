@@ -647,7 +647,6 @@ namespace Demi
         mWorldSpaceCorners[6] = eyeToWorld.transformAffine(DiVec3(farLeft,   farBottom,  -farDist));
         mWorldSpaceCorners[7] = eyeToWorld.transformAffine(DiVec3(farRight,  farBottom,  -farDist));
 
-
         mRecalcWorldSpaceCorners = false;
     }
 
@@ -1021,4 +1020,15 @@ namespace Demi
         static DiString type = "Frustom";
         return type;
     }
+
+    void DiFrustum::CopySettingFrom(const DiFrustum* frustum)
+    {
+        this->SetProjectionType(frustum->GetProjectionType());
+        this->SetAspectRatio(frustum->GetAspectRatio());
+        this->SetNearClipDistance(frustum->GetNearClipDistance());
+        this->SetFarClipDistance(frustum->GetFarClipDistance());
+        this->SetFOVy(frustum->GetFOVy());
+        this->SetFocalLength(frustum->GetFocalLength());
+    }
+
 }

@@ -93,8 +93,6 @@ namespace Demi
 
         const DiAABB&               GetBoundingBox(void) const;
 
-        virtual void                CullingUpdate(DiRenderBatchGroup*,DiCamera*);
-
         virtual void                AddToBatchGroup(DiRenderBatchGroup* bg);
 
         virtual void                Update(DiCamera* camera);

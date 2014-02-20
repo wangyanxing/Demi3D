@@ -28,7 +28,7 @@ namespace Demi
     DiCullNode::DiCullNode( DiSceneManager* sm,const DiString& name ):
         DiNode(name),
         mCreator(sm),
-        mOctant(NULL)
+        mOctant(nullptr)
     {
     }
 
@@ -166,41 +166,6 @@ namespace Demi
         }
     }
 
-    void DiCullNode::ProcessBatchGroup( DiCamera* camera,DiRenderPipeline* pipeline, 
-        bool onlyShadowCaster, DiVisibleObjectsBoundsInfo* visbleBounds)
-    {
-        auto mit = mObjects.begin();
-        while ( mit != mObjects.end() )
-        {
-            DiTransUnitPtr mo = (*mit);
-
-            if (mo->GetVisible())
-            {
-                DiRenderBatchGroup* gp = pipeline->GetBatchGroup(mo->GetBatchGroup());
-                bool receiveShadows = gp->GetShadowEnable();
-
-                if (!onlyShadowCaster || mo->GetShadowCastEnable())
-                {
-                    mo->NotifyCurrentCamera(camera);
-                    mo->CullingUpdate(gp,camera);
-                    if (visbleBounds)
-                    {
-                        visbleBounds->Merge(mo->GetWorldBoundingBox(true), 
-                            mo->GetWorldBoundingSphere(this, true), camera, 
-                            receiveShadows);
-                    }
-                }
-                else if (onlyShadowCaster && !mo->GetShadowCastEnable() && 
-                    receiveShadows)
-                {
-                    visbleBounds->MergeNonRenderedButInFrustum(mo->GetWorldBoundingBox(true), 
-                        mo->GetWorldBoundingSphere(true), camera);
-                }
-            }
-            ++mit;
-        }
-    }
-
     void DiCullNode::SetVisible( bool vis, bool cascade /*= true*/ )
     {
         for (auto oi = mObjects.begin(); oi != mObjects.end(); ++oi)
@@ -273,14 +238,10 @@ namespace Demi
     bool DiCullNode::IsIn( DiAABB &box )
     {
         if (box.IsNull()) 
-        {
             return false;
-        }
 
         if (box.IsInfinite())
-        {
             return true;
-        }
 
         DiVec3 center = mWorldAABB.GetMaximum().midPoint( mWorldAABB.GetMinimum() );
 

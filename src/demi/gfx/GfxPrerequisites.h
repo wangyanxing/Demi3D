@@ -110,9 +110,9 @@ namespace Demi
     class    DiCommandManager;
     class    DiConsoleVar;
     class    DiConsoleVarListener;
-    struct   DiVisibleObjectsBoundsInfo;
     struct   DiFoliageLayerDesc;
     struct   DiRenderUnitList;
+    class    DiDebugHelper;
     class    DiMesh;
     class    DiSubMesh;
     class    DiModel;

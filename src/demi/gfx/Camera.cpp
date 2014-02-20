@@ -28,10 +28,7 @@ namespace Demi
         mCullFrustum(0),
         mUseMinPixelSize(false),
         mPixelDisplayRatio(0),
-        mSceneManager(sm),
-        mLodCamera(nullptr),
-        mSceneLodFactor(1.0f),
-        mSceneLodFactorInv(1.0f)
+        mSceneManager(sm)
     {
         mFOVy = DiRadian(DiMath::PI/4.0f);
         mNearDist = 1.0f;
@@ -46,9 +43,7 @@ namespace Demi
         mViewMatrix = DiMat4::ZERO;
         DiMat4 mat;
         mat.setIdentity();
-
-        mParentNode = 0;
-
+        mParentNode = nullptr;
         mReflect = false;
     }
 
@@ -62,10 +57,7 @@ namespace Demi
         mCullFrustum(0),
         mUseMinPixelSize(false),
         mPixelDisplayRatio(0),
-        mSceneManager(sm),
-        mLodCamera(nullptr),
-        mSceneLodFactor(1.0f),
-        mSceneLodFactorInv(1.0f)
+        mSceneManager(sm)
     {
         mFOVy = DiRadian(DiMath::PI/4.0f);
         mNearDist = 100.0f;
@@ -80,9 +72,7 @@ namespace Demi
         mViewMatrix = DiMat4::ZERO;
         DiMat4 mat;
         mat.setIdentity();
-
-        mParentNode = 0;
-
+        mParentNode = nullptr;
         mReflect = false;
     }
 
@@ -713,14 +703,9 @@ namespace Demi
 
     void DiCamera::CopySettingFrom(const DiCamera* cam)
     {
+        DiFrustum::CopySettingFrom(this);
         this->SetPosition(cam->GetPosition());
-        this->SetProjectionType(cam->GetProjectionType());
         this->SetOrientation(cam->GetOrientation());
-        this->SetAspectRatio(cam->GetAspectRatio());
-        this->SetNearClipDistance(cam->GetNearClipDistance());
-        this->SetFarClipDistance(cam->GetFarClipDistance());
-        this->SetFOVy(cam->GetFOVy());
-        this->SetFocalLength(cam->GetFocalLength());
     }
 
     DiCamera::Visibility DiCamera::GetVisibility( const DiAABB &bound )
@@ -749,36 +734,6 @@ namespace Demi
             return FULL;
         else
             return PARTIAL;
-    }
-
-    void DiCamera::SetLodCamera( const DiCamera* lodCam )
-    {
-        if (lodCam == this)
-            mLodCamera = NULL;
-        else
-            mLodCamera = lodCam;
-    }
-
-    const DiCamera* DiCamera::GetLodCamera() const
-    {
-        return mLodCamera? mLodCamera : this;
-    }
-
-    void DiCamera::SetLodBias( float factor )
-    {
-        DI_ASSERT(factor > 0.0f);
-        mSceneLodFactor = factor;
-        mSceneLodFactorInv = 1.0f / factor;
-    }
-
-    float DiCamera::GetLodBias( void ) const
-    {
-        return mSceneLodFactor;
-    }
-
-    float DiCamera::GetLodBiasInverse( void ) const
-    {
-        return mSceneLodFactorInv;
     }
 
     void DiCamera::ForwardIntersect( const DiPlane& worldPlane, DiVector<DiVec4>* intersect3d ) const

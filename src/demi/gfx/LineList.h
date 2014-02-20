@@ -49,8 +49,6 @@ namespace Demi
 
         const Demi::DiAABB&     GetBoundingBox(void) const;
 
-        virtual    void         CullingUpdate(Demi::DiRenderBatchGroup*,Demi::DiCamera*);
-
         void                    AddToBatchGroup(DiRenderBatchGroup* bg);
 
         DiString&               GetType();

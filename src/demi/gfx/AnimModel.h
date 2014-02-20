@@ -56,8 +56,6 @@ namespace Demi
 
         bool                    CacheBoneMatrices();
 
-        void                    CullingUpdate(DiRenderBatchGroup*,DiCamera*);
-
         void                    Update(DiCamera* camera);
 
         void                    UpdateAnimation();

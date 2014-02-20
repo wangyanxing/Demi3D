@@ -48,12 +48,6 @@ namespace Demi
             bg->AddRenderUnit(this);
     }
 
-    void DiSimpleShape::CullingUpdate( DiRenderBatchGroup* group,DiCamera* )
-    {
-        if (!mSourceData.empty())
-            group->AddRenderUnit(this);
-    }
-
     void DiSimpleShape::CreateSphere(float SPHERE_RADIUS, int segments, int rings)
     {
         ReleaseSourceData();

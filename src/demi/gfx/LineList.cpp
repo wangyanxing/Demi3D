@@ -65,11 +65,6 @@ namespace Demi
         bg->AddRenderUnit(this);
     }
 
-    void DiLineList::CullingUpdate( DiRenderBatchGroup* group,DiCamera*  )
-    {
-        group->AddRenderUnit(this);
-    }
-
     void DiLineList::CheckResizeLine( size_t maxVerts )
     {
         if (maxVerts > mMaxVerts)

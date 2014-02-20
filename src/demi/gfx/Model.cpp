@@ -53,14 +53,6 @@ namespace Demi
             return mMesh->GetBounds();
     }
 
-    void DiModel::CullingUpdate( DiRenderBatchGroup* group,DiCamera* )
-    {
-        for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
-        {
-            group->AddRenderUnit(*it);
-        }
-    }
-
     void DiModel::AddToBatchGroup(DiRenderBatchGroup* bg)
     {
         for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)

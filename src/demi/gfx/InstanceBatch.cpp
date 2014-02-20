@@ -266,35 +266,6 @@ namespace Demi
         mVisible = true;
     }
 
-    void DiInstanceBatch::CullingUpdate( DiRenderBatchGroup* group, DiCamera* )
-    {
-        mDirtyAnimation = false;
-
-        UpdateVisibility();
-
-        mPrimitiveCount = mMeshReference->GetSubMesh(mCreator->mSubMeshIdx)->GetPrimitiveCount();
-        mPrimitiveCount *= GetModelNums();
-
-        if( mVisible )
-        {
-            if (HasSkeleton())
-            {
-                InstancedModelVec::const_iterator itor = mInstancedModels.begin();
-                InstancedModelVec::const_iterator end  = mInstancedModels.end();
-
-                while( itor != end )    
-                {
-                    mDirtyAnimation |= (*itor)->UpdateAnimation();
-                    ++itor;
-                }
-            }
-
-            group->AddRenderUnit( this );
-        }
-
-        mVisible = true;
-    }
-
     void DiInstanceBatch::CreateAllInstancedModels( void )
     {
         mInstancedModels.reserve( mInstancesPerBatch );

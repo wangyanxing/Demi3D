@@ -184,6 +184,8 @@ namespace Demi
 
         virtual DiString&           GetType();
 
+        void                        CopySettingFrom(const DiFrustum* frustum);
+
     protected:
 
         virtual void                calcProjectionParameters(float& left, float& right,

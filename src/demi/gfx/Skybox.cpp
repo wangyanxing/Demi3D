@@ -89,11 +89,6 @@ namespace Demi
         bg->AddRenderUnit(this);
     }
 
-    void DiSkybox::DiSkyboxShape::CullingUpdate( Demi::DiRenderBatchGroup* group,Demi::DiCamera* )
-    {
-        group->AddRenderUnit(this);
-    }
-
     const DiAABB& DiSkybox::DiSkyboxShape::GetBoundingBox( void ) const
     {
         return DiAABB::BOX_INFINITE;

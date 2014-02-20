@@ -201,13 +201,6 @@ namespace Demi
         }
     }
 
-    void DiAnimModel::CullingUpdate( DiRenderBatchGroup* group,DiCamera* cam)
-    {
-        UpdateAnimation();
-
-        DiModel::CullingUpdate(group,cam);
-    }
-
     void DiAnimModel::Update(DiCamera*)
     {
         UpdateAnimation();

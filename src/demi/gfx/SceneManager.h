@@ -23,31 +23,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    struct DI_GFX_API DiVisibleObjectsBoundsInfo
-    {
-        DiAABB aabb;
-        
-        DiAABB receiverAabb;
-        
-        float minDistance;
-        
-        float maxDistance;
-        
-        float minDistanceInFrustum;
-        
-        float maxDistanceInFrustum;
-
-        DiVisibleObjectsBoundsInfo();
-
-        void Reset();
-
-        void Merge(const DiAABB& boxBounds, const DiSphere& sphereBounds, 
-            const DiCamera* cam, bool receiver=true);
-        
-        void MergeNonRenderedButInFrustum(const DiAABB& boxBounds, 
-            const DiSphere& sphereBounds, const DiCamera* cam);
-    };
-
     /** Visibility culling results
      */
     struct DiVisibleObjs
@@ -240,8 +215,6 @@ namespace Demi
 
         void                    SetCurrentPass(RenderPass pass) { mCurrentRenderPass = pass; }
 
-        const DiVisibleObjectsBoundsInfo& GetVisibleObjectsBoundsInfo(const DiCamera* cam) const;
-
         DiSkybox*               GetSkybox(){return mSkybox;}
 
         /** Get visible objects including lights
@@ -263,11 +236,15 @@ namespace Demi
 
         CameraPool&             GetCameraPool() { return mCameraPool; }
 
+        /** Get Z range
+         */
+        const DiVec2&           GetZRange() const { return mZRange; }
+
     protected:
 
         void                    UpdateDirtyInstanceManagers();
 
-        void                    WalkTree(DiCamera* camera, DiVisibleObjectsBoundsInfo* visibleBounds, DiOctreePtr octree, bool foundvisible);
+        void                    WalkTree(DiCamera* camera, DiOctreePtr octree, bool foundvisible);
 
     protected:
 
@@ -312,9 +289,6 @@ namespace Demi
         RenderPass              mCurrentRenderPass;
         
         unsigned long           mLastFrameNumber;
-
-        typedef DiMap< const DiCamera*, DiVisibleObjectsBoundsInfo> CamVisibleObjectsMap;
-        CamVisibleObjectsMap    mCamVisibleObjectsMap; 
 
         DiSkybox*               mSkybox;
 

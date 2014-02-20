@@ -128,27 +128,6 @@ namespace Demi
         }
     }
 
-    void DiBillboardSet::CullingUpdate( DiRenderBatchGroup* group,DiCamera* cam)
-    {
-        mPrimitiveCount = mNumVisibleBillboards * 2;
-
-        if (!mExternalData && (mAutoUpdate || mBillboardDataChanged || !mBuffersCreated))
-        {
-            BeginBillboards(mActiveBillboards.size());
-            ActiveBillboardList::iterator it;
-            for(it = mActiveBillboards.begin();
-                it != mActiveBillboards.end();
-                ++it )
-            {
-                InjectBillboard(*(*it));
-            }
-            EndBillboards();
-            mBillboardDataChanged = false;
-        }
-
-        group->AddRenderUnit(this);
-    }
-
     DiBillboard* DiBillboardSet::CreateBillboard( const DiVec3& position,
         const DiColor& colour /*= DiColor::White */ )
     {

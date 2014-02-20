@@ -175,16 +175,6 @@ namespace Demi
 
         Visibility          GetVisibility( const DiAABB &bound );
 
-        void                SetLodCamera(const DiCamera* lodCam);
-
-        const DiCamera*     GetLodCamera() const;
-
-        void                SetLodBias(float factor);
-        
-        float               GetLodBias(void) const;
-        
-        float               GetLodBiasInverse(void) const;
-
         void                ForwardIntersect(const DiPlane& worldPlane, DiVector<DiVec4>* intersect3d) const;
 
         DiVector<DiVec4>    GetRayForwardIntersect(const DiVec3& anchor, const DiVec3 *dir, float planeOffset) const;
@@ -230,12 +220,6 @@ namespace Demi
         float               mPixelDisplayRatio;
 
         DiSceneManager*     mSceneManager;
-
-        const DiCamera*     mLodCamera;
-
-        float               mSceneLodFactor;
-
-        float               mSceneLodFactorInv;
 
         bool                IsViewOutOfDate(void) const;
 

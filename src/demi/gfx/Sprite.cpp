@@ -113,17 +113,6 @@ namespace Demi
         UpdateGeometry(rt);
     }
 
-    void DiSprite::CullingUpdate( DiRenderBatchGroup* group, DiCamera* )
-    {
-        DI_ASSERT(DiRenderWindow::ActiveWindow);
-        DiRenderTarget* rt = DiRenderWindow::ActiveWindow->GetRenderBuffer();
-
-        UpdateGeometry(rt);
-
-        if (!mSourceData.empty())
-            group->AddRenderUnit(this);
-    }
-
     void DiSprite::UpdateGeometry(DiRenderTarget* rt)
     {
         if (mQuads.empty())

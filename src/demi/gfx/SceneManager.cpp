@@ -343,8 +343,7 @@ namespace Demi
         return (mSceneNodes.find(name) != mSceneNodes.end());
     }
 
-    void DiSceneManager::WalkTree(DiCamera* camera,
-        DiVisibleObjectsBoundsInfo* visibleBounds, DiOctreePtr octant,bool foundvisible)
+    void DiSceneManager::WalkTree(DiCamera* camera, DiOctreePtr octant,bool foundvisible)
     {
         if (octant->NumNodes() == 0)
             return;
@@ -369,10 +368,28 @@ namespace Demi
             bool vis = true;
             for (DiCullNode* node = octant->mNodes.mHead; node; node = node->mNext)
             {
+                const DiAABB& nodeBounds = node->GetWorldAABB();
+
                 if (v == DiCamera::PARTIAL)
-                    vis = camera->IsVisible(node->GetWorldAABB());
+                    vis = camera->IsVisible(nodeBounds);
+
                 if (vis)
                 {
+                    // evaluate the Z range
+                    if (nodeBounds.IsFinite())
+                    {
+                        DiVec3 viewDir = camera->GetDerivedOrientation() * DiVec3::UNIT_Z;
+                        DiVec3 absViewZ = viewDir.abs();
+                        DiVec3 center = nodeBounds.GetCenter();
+                        float viewCenterZ = viewDir.dotProduct(center) + camera->GetDerivedPosition().z;
+                        DiVec3 edge = nodeBounds.GetHalfSize();
+                        float viewEdgeZ = absViewZ.dotProduct(edge);
+                        float minZ = viewCenterZ - viewEdgeZ;
+                        float maxZ = viewCenterZ + viewEdgeZ;
+                        mZRange.x = DiMath::Min(mZRange.x, minZ);
+                        mZRange.y = DiMath::Max(mZRange.y, maxZ);
+                    }
+
                     node->ProcessVisibleObjects([=](DiTransUnitPtr tu)
                     {
                         DiRenderBatchGroup* gp = Driver->GetPipeline()->GetBatchGroup(tu->GetBatchGroup());
@@ -381,21 +398,7 @@ namespace Demi
                         if (!onlyShadowCaster || tu->GetShadowCastEnable())
                         {
                             mVisibleObjects.objs.push_back(tu);
-
                             tu->NotifyCurrentCamera(camera);
-                            tu->CullingUpdate(gp, camera);
-
-                            if (visibleBounds)
-                            {
-                                visibleBounds->Merge(tu->GetWorldBoundingBox(true),
-                                    tu->GetWorldBoundingSphere(node, true), camera,
-                                    receiveShadows);
-                            }
-                        }
-                        else if (onlyShadowCaster && !tu->GetShadowCastEnable() && receiveShadows)
-                        {
-                            visibleBounds->MergeNonRenderedButInFrustum(tu->GetWorldBoundingBox(true),
-                                tu->GetWorldBoundingSphere(true), camera);
                         }
                     });
                 }
@@ -407,7 +410,7 @@ namespace Demi
 
         for (uint16 i = 0; i < 8; i++)
             if ((child = octant->mChildren[i]))
-                WalkTree(camera, visibleBounds, child, childfoundvisible);
+                WalkTree(camera, child, childfoundvisible);
     }
 
     void DiSceneManager::ClearNodes()
@@ -457,11 +460,9 @@ namespace Demi
         mVisibleObjects.objs.clear();
         mVisibleLights.Clear();
 
-        CamVisibleObjectsMap::iterator camVisObjIt = mCamVisibleObjectsMap.find(cam);
-        DI_ASSERT(camVisObjIt != mCamVisibleObjectsMap.end());
-        camVisObjIt->second.Reset();
+        mZRange = DiVec2(DiMath::POS_INFINITY, 0);
 
-        WalkTree(cam, &(camVisObjIt->second), mOctree, false);
+        WalkTree(cam, mOctree, false);
     }
 
     void DiSceneManager::UnloadScene()
@@ -880,8 +881,6 @@ namespace Demi
         DiCamera *c = DI_NEW DiCamera(name, this);
         mCameras.insert(CameraList::value_type(name, c));
 
-        mCamVisibleObjectsMap[c] = DiVisibleObjectsBoundsInfo();
-
         return c;
     }
 
@@ -916,12 +915,6 @@ namespace Demi
         auto i = mCameras.find(name);
         if (i != mCameras.end())
         {
-            CamVisibleObjectsMap::iterator camVisObjIt = mCamVisibleObjectsMap.find( i->second );
-            if ( camVisObjIt != mCamVisibleObjectsMap.end() )
-            {
-                mCamVisibleObjectsMap.erase( camVisObjIt );
-            }
-
             DI_DELETE i->second;
             mCameras.erase(i);
         }
@@ -935,18 +928,6 @@ namespace Demi
             DestroyCamera(camIt->second);
             camIt = mCameras.begin();
         }
-    }
-
-    const DiVisibleObjectsBoundsInfo& DiSceneManager::GetVisibleObjectsBoundsInfo( const DiCamera* cam ) const
-    {
-        static DiVisibleObjectsBoundsInfo nullBox;
-
-        CamVisibleObjectsMap::const_iterator camVisObjIt = mCamVisibleObjectsMap.find( cam );
-
-        if ( camVisObjIt == mCamVisibleObjectsMap.end() )
-            return nullBox;
-        else
-            return camVisObjIt->second;
     }
 
     void DiSceneManager::AttachObject(DiTransUnitPtr obj)
@@ -977,45 +958,4 @@ namespace Demi
     uint32  DiSceneManager::LIGHT_TYPE_MASK        = 0x20000000;
     uint32  DiSceneManager::FRUSTUM_TYPE_MASK      = 0x10000000;
     uint32  DiSceneManager::USER_TYPE_MASK_LIMIT   = 0x10000000;
-
-    DiVisibleObjectsBoundsInfo::DiVisibleObjectsBoundsInfo()
-    {
-        Reset();
-    }
-
-    void DiVisibleObjectsBoundsInfo::Reset()
-    {
-        aabb.SetNull();
-        receiverAabb.SetNull();
-        minDistance = minDistanceInFrustum = std::numeric_limits<float>::infinity();
-        maxDistance = maxDistanceInFrustum = 0;
-    }
-
-    void DiVisibleObjectsBoundsInfo::Merge( const DiAABB& boxBounds, 
-        const DiSphere& sphereBounds, const DiCamera* cam, bool receiver/*=true*/ )
-    {
-        aabb.Merge(boxBounds);
-        if (receiver)
-        {
-            receiverAabb.Merge(boxBounds);
-        }
-        
-        DiVec3 vsSpherePos = cam->GetViewMatrix(true) * sphereBounds.getCenter();
-        float camDistToCenter = vsSpherePos.length();
-        minDistance = DiMath::Min(minDistance, DiMath::Max((float)0, camDistToCenter - sphereBounds.getRadius()));
-        maxDistance = DiMath::Max(maxDistance, camDistToCenter + sphereBounds.getRadius());
-        minDistanceInFrustum = DiMath::Min(minDistanceInFrustum, DiMath::Max((float)0, camDistToCenter - sphereBounds.getRadius()));
-        maxDistanceInFrustum = DiMath::Max(maxDistanceInFrustum, camDistToCenter + sphereBounds.getRadius());
-    }
-
-    void DiVisibleObjectsBoundsInfo::MergeNonRenderedButInFrustum( const DiAABB& boxBounds,
-        const DiSphere& sphereBounds, const DiCamera* cam )
-    {
-        (void)boxBounds;
-        
-        DiVec3 vsSpherePos = cam->GetViewMatrix(true) * sphereBounds.getCenter();
-        float camDistToCenter = vsSpherePos.length();
-        minDistanceInFrustum = DiMath::Min(minDistanceInFrustum, DiMath::Max((float)0, camDistToCenter - sphereBounds.getRadius()));
-        maxDistanceInFrustum = DiMath::Max(maxDistanceInFrustum, camDistToCenter + sphereBounds.getRadius());
-    }
 }

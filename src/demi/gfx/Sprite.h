@@ -58,9 +58,7 @@ namespace Demi
 
         void                    GetWorldTransform(DiMat4* xform) const;
 
-        const DiAABB&            GetBoundingBox(void) const;
-
-        void                    CullingUpdate(DiRenderBatchGroup*,DiCamera*);
+        const DiAABB&           GetBoundingBox(void) const;
 
         void                    AddToBatchGroup(DiRenderBatchGroup* bg);
 
