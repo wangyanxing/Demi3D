@@ -726,7 +726,6 @@ namespace Demi
         RGBA colour = bb.mColour.GetAsARGB();
         RGBA* pCol;
 
-        // ��������
         DI_ASSERT( bb.mUseTexcoordRect || bb.mTexcoordIndex < mTextureCoords.size() );
 
         const DiFloatRect & r =
@@ -734,12 +733,11 @@ namespace Demi
 
         if (mAllDefaultRotation || bb.mRotation == DiRadian(0))
         {
-            /// ����
             // pos
             *mLockPtr++ = offsets[0].x + bb.mPosition.x;
             *mLockPtr++ = offsets[0].y + bb.mPosition.y;
             *mLockPtr++ = offsets[0].z + bb.mPosition.z;
-            // ��ɫ
+
             pCol = static_cast<RGBA*>(static_cast<void*>(mLockPtr));
             *pCol++ = colour;
             mLockPtr = static_cast<float*>(static_cast<void*>(pCol));
@@ -747,12 +745,10 @@ namespace Demi
             *mLockPtr++ = r.left;
             *mLockPtr++ = r.top;
 
-            /// ����
-            // λ��
             *mLockPtr++ = offsets[1].x + bb.mPosition.x;
             *mLockPtr++ = offsets[1].y + bb.mPosition.y;
             *mLockPtr++ = offsets[1].z + bb.mPosition.z;
-            // ��ɫ
+
             pCol = static_cast<RGBA*>(static_cast<void*>(mLockPtr));
             *pCol++ = colour;
             mLockPtr = static_cast<float*>(static_cast<void*>(pCol));
@@ -760,12 +756,11 @@ namespace Demi
             *mLockPtr++ = r.right;
             *mLockPtr++ = r.top;
 
-            // ����
             // POS
             *mLockPtr++ = offsets[2].x + bb.mPosition.x;
             *mLockPtr++ = offsets[2].y + bb.mPosition.y;
             *mLockPtr++ = offsets[2].z + bb.mPosition.z;
-            // ��ɫ
+
             pCol = static_cast<RGBA*>(static_cast<void*>(mLockPtr));
             *pCol++ = colour;
             mLockPtr = static_cast<float*>(static_cast<void*>(pCol));
@@ -773,12 +768,11 @@ namespace Demi
             *mLockPtr++ = r.left;
             *mLockPtr++ = r.bottom;
 
-            // ����
             // POS
             *mLockPtr++ = offsets[3].x + bb.mPosition.x;
             *mLockPtr++ = offsets[3].y + bb.mPosition.y;
             *mLockPtr++ = offsets[3].z + bb.mPosition.z;
-            // ��ɫ
+
             pCol = static_cast<RGBA*>(static_cast<void*>(mLockPtr));
             *pCol++ = colour;
             mLockPtr = static_cast<float*>(static_cast<void*>(pCol));

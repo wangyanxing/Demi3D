@@ -53,8 +53,10 @@ namespace Demi
         switch (type)
         {
         case VERT_TYPE_FLOAT1:
-        case VERT_TYPE_COLOR:
             return 1;
+            break;
+        case VERT_TYPE_COLOR:
+            return 4;
             break;
         case VERT_TYPE_FLOAT2:
         case VERT_TYPE_SHORT2:

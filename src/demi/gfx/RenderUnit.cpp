@@ -90,9 +90,7 @@ namespace Demi
 
     void DiRenderUnit::ReleaseSourceData()
     {
-        DiVector<DiVertexBuffer*>::iterator it;
-        DiVector<DiVertexBuffer*>::iterator itEnd = mSourceData.end();
-        for (it = mSourceData.begin(); it != itEnd; ++it)
+        for (auto it = mSourceData.begin(); it != mSourceData.end(); ++it)
         {
             if (*it)
             {

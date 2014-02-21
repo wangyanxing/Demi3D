@@ -24,7 +24,7 @@ namespace Demi
 {
     DiQuadElement::DiQuadElement( const DiColor& col )
     {
-        ARGB c = col.GetAsARGB();
+        uint32 c = col.GetAsByte4();
         topLeftColor     = c;
         topRightColor    = c;
         bottomLeftColor  = c;
@@ -45,7 +45,7 @@ namespace Demi
 
     DiQuadElement::DiQuadElement()
     {
-        ARGB c = DiColor::White.GetAsARGB();
+        uint32 c = DiColor::White.GetAsByte4();
         topLeftColor     = c;
         topRightColor    = c;
         bottomLeftColor  = c;

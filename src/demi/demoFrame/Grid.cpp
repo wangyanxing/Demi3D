@@ -79,8 +79,8 @@ namespace Demi
         float* positions = (float*)buffer;
         uint8* colors = buffer + sizeof(float)*3;
 
-        ARGB color2 = c2.GetAsARGB();
-        ARGB color1 = c1.GetAsARGB();
+        uint32 color2 = c2.GetAsByte4();
+        uint32 color1 = c1.GetAsByte4();
 
         const float radius   = size*cellSize;
         const float diameter = radius*2;

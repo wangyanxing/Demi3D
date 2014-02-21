@@ -26,24 +26,28 @@ namespace Demi
         DebugLine(){}
 
         DebugLine(const DiVec3& startPos, const DiVec3& endPos, const DiColor& lineColor) :
-            start(startPos),
-            end(endPos),
-            color(lineColor)
+            point0(startPos),
+            point1(endPos),
+            color0(lineColor.GetAsByte4()),
+            color1(lineColor.GetAsByte4())
         {
         }
 
-        /// start/end position
-        DiVec3 start;
-        DiVec3 end;
-
-        DiColor color;
+        DiVec3 point0;
+        ARGB   color0;
+        
+        DiVec3 point1;
+        ARGB   color1;
     };
+    
+    typedef shared_ptr<DiDebugHelper> DiDebugHelperPtr;
 
     /** Debug helper class
      */
     class DI_GFX_API DiDebugHelper : public DiTransformUnit, public DiRenderUnit
     {
     public:
+        
         DiDebugHelper(void);
 
         ~DiDebugHelper(void);
@@ -58,11 +62,33 @@ namespace Demi
 
         void            AddToBatchGroup(DiRenderBatchGroup* bg);
 
+        /** Add a line and mart the dirty flag
+         */
+        void            AddLine(const DiVec3& startPos, const DiVec3& endPos, const DiColor& lineColor);
+        
+        /** Add a bounding box
+         */
+        void            AddBoundingBox(const DiAABB& bounds, const DiColor& lineColor);
+        
+        void            Clear();
+
         DiString&       GetType();
+        
+    protected:
+        
+        /** Flush the geometry data
+         */
+        void            Flush();
 
     private:
 
         DiVector<DebugLine>     mLines;
+        
+        /// Check if we need to update the geometry data
+        bool            mDirty;
+        
+        /// Size of the vertex buffers
+        uint32          mVbSize;
     };
 }
 

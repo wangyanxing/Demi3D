@@ -48,6 +48,10 @@ namespace Demi
         bool operator!=(const DiColor& rhs) const;
 
         float r,g,b,a;
+        
+        /** It depends on the platform
+         */
+        uint32 GetAsByte4(void) const;
 
         RGBA GetAsRGBA(void) const;
 

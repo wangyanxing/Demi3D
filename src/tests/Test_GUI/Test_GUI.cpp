@@ -10,12 +10,22 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "Demi.h"
 #include "DemoFrame.h"
+#include "DebugHelper.h"
 
 void InitScene()
 {
-	//DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+	DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+    DiDebugHelperPtr dbghelper = make_shared<DiDebugHelper>();
+    sm->AttachObject(dbghelper);
+    dbghelper->AddLine(DiVec3(100, 0, 0), DiVec3(-100,0,0), DiColor::Red);
+    dbghelper->AddLine(DiVec3(0, 100, 0), DiVec3(0,-100,0), DiColor::Red);
+    
+    DiAABB aabb;
+    aabb.SetExtents(100, 100, 100, -100, -100, -100);
+    dbghelper->AddBoundingBox(aabb, DiColor::Green);
 }
 
 void UpdateScene()

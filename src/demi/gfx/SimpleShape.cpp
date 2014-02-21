@@ -725,7 +725,7 @@ namespace Demi
         const int STRIDE = sizeof(float)*3 + sizeof(ARGB);
         const int NUM_INDICES = 3 * 2 * 6;
 
-        ARGB col = color.GetAsARGB();
+        uint32 col = color.GetAsByte4();
 
         float CUBE_HALF_SIZE = size/2;
         Vert vertices[NUM_VERTICES] = 
