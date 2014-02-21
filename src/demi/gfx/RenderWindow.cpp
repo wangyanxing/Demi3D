@@ -40,6 +40,7 @@ namespace Demi
         , mHeight(0)
         , mWndHandle(nullptr)
         , mWindow(nullptr)
+        , mFrameNumber(0)
     {
     }
 
@@ -66,6 +67,8 @@ namespace Demi
     {
         if (!mEnable)
             return;
+        
+        ActiveRenderWindow = this;
 
         DI_PROFILE(RenderWindow_Render);
 
@@ -81,15 +84,19 @@ namespace Demi
 
         Driver->BeginFrame();
 
-        // Normal geometry pass
+        // Pre-culling
         DiCamera* mainCam = mSceneManager->GetCamera();
         mSceneManager->SetCurrentPass(GEOMETRY_PASS);
         mSceneManager->Cull(mainCam);
         mSceneManager->GetVisibleObjects().UpdateAll(mainCam);
 
+        // Normal geometry pass
         rp->ClearGroup();
         mSceneManager->GetVisibleObjects().AddToBatch(rp);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
+        
+        // Shadow mapping pass
+        mSceneManager->GetVisibleLights().SetupShaodwCamera(mSceneManager);
 
         // Process the extra render targets
         auto rts = mSceneManager->GetExtraRenderTargets();
@@ -104,17 +111,19 @@ namespace Demi
             mSceneManager->GetVisibleObjects().AddToBatch(rp);
             rp->Render(mSceneManager, it->camera, it->rt);
 
-            
-
             if (it->postUpdateCallback)
                 it->postUpdateCallback(it->rt);
         }
         
+        // Post filters
         rp->RenderPost(mSceneManager, mainCam);
 
         Driver->EndFrame();
         
         SwapBuffer();
+        
+        mFrameNumber++;
+        ActiveRenderWindow = nullptr;
     }
 
     void DiRenderWindow::Create(uint32 width, uint32 height, const DiString& title, bool fullscreen)

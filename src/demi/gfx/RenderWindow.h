@@ -72,6 +72,8 @@ namespace Demi
         uint32                  GetCurrentBatchesNum() const { return mCurrentBatchesNum; }
 
         uint32                  GetCurrentPrimitivesNum() const { return mCurrentPrimitivesNum; }
+        
+        uint64                  GetFrameNumber() const { return mFrameNumber; }
 
         const DiString&         GetName(){return mName;}
 
@@ -114,6 +116,8 @@ namespace Demi
         uint32                  mWidth;
 
         uint32                  mHeight;
+        
+        uint64                  mFrameNumber;
 
         DiWndHandle             mWndHandle;
 

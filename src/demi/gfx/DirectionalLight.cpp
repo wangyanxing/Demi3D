@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Camera.h"
 #include "SceneManager.h"
 #include "CullNode.h"
+#include "RenderWindow.h"
 
 namespace Demi 
 {
@@ -38,11 +39,27 @@ namespace Demi
     {
         camera->GetSceneManager()->GetVisibleLights().dirLights.push_back(this);
     }
+    
+    void DiDirLight::SetDirection(const Demi::DiVec3 &vec)
+    {
+        mDirection = vec;
+        mShadowCameraDirty = true;
+    }
 
     void DiDirLight::SetupShadowCamera(DiSceneManager* sceneManager)
     {
         if (!mParentNode)
             return;
+        
+        DI_ASSERT(ActiveRenderWindow);
+        
+        if(mParentNode->GetLastUpdateFrameNumber() == ActiveRenderWindow->GetFrameNumber())
+            mShadowCameraDirty = true;
+        
+        if(!mShadowCastEnable || !mShadowCameraDirty)
+            return;
+        
+        mShadowCameraDirty = false;
 
         int splits = 0;
         DiCamera* camera = sceneManager->GetCamera();

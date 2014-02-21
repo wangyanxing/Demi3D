@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "AttachNode.h"
 
@@ -23,7 +24,6 @@ namespace Demi
 
     DiAttachNode::~DiAttachNode()
     {
-
     }
 
     DiAttachNode* DiAttachNode::CreateChild( DiString strName )
@@ -31,7 +31,7 @@ namespace Demi
         if(strName.empty())
         {
             DI_WARNING("Invalid name");
-            return NULL;
+            return nullptr;
         }
 
         DiAttachNode* ret = DI_NEW DiAttachNode(strName);
@@ -63,9 +63,9 @@ namespace Demi
     {
         SetInitialState();
 
-        mBindDerivedInversePosition        = - GetDerivedPosition();
-        mBindDerivedInverseScale            = DiVec3::UNIT_SCALE / GetDerivedScale();
-        mBindDerivedInverseOrientation    = GetDerivedOrientation().Inverse();
+        mBindDerivedInversePosition    = -GetDerivedPosition();
+        mBindDerivedInverseScale       = DiVec3::UNIT_SCALE / GetDerivedScale();
+        mBindDerivedInverseOrientation = GetDerivedOrientation().Inverse();
     }
 
     void DiAttachNode::Reset()
@@ -87,8 +87,5 @@ namespace Demi
     void DiAttachNode::NeedUpdate( bool forceParentUpdate /*= false*/ )
     {
         DiNode::NeedUpdate(forceParentUpdate);
-
-        // �������ֶ����� ���ﴦ���߼�
     }
-
 }

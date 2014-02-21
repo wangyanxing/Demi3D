@@ -36,7 +36,7 @@ namespace Demi
 
         void            Update(DiCamera*);
 
-        void            SetDirection(const DiVec3& vec) { mDirection = vec; }
+        void            SetDirection(const DiVec3& vec);
 
         DiVec3          GetDirection() const {return mDirection;}
 

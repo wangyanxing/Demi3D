@@ -177,6 +177,8 @@ namespace Demi
         void                     RequestUpdate(DiNode* child, bool forceParentUpdate = false);
 
         void                     CancelUpdate(DiNode* child);
+        
+        uint64                   GetLastUpdateFrameNumber() const {return mLastUpdateFrame;}
 
         static void              QueueNeedUpdate(DiNode* n);
 
@@ -239,8 +241,10 @@ namespace Demi
         typedef DiVector<DiNode*> QueuedUpdates;
 
         static QueuedUpdates    sQueuedUpdates;
+        
+        /// record the frame# of the last update
+        uint64                  mLastUpdateFrame;
     };
-
 }
 
 #endif

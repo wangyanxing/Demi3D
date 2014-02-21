@@ -89,6 +89,8 @@ namespace Demi
 
         /// test
         ShadowFrustum           mShadowFrustums[MAX_CASCADE_SPLITS];
+        
+        bool                    mShadowCameraDirty;
     };
 }
 

@@ -256,7 +256,6 @@ namespace Demi
         mParentWindow(parentWnd),
         mOctree(nullptr),
         mCurrentRenderPass(GEOMETRY_PASS),
-        mLastFrameNumber(0),
         mSkybox(nullptr),
         mAmbientColor(0.3f,0.3f,0.3f),
         mCameraPool(this)

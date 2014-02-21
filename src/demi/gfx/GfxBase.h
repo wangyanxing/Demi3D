@@ -22,6 +22,8 @@ namespace Demi
     public:
 
         static DiGfxDriver*         Driver;
+        
+        static DiRenderWindow*      ActiveRenderWindow;
 
         static DiWndHandle          mMainHwnd;
 

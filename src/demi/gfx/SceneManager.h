@@ -56,6 +56,20 @@ namespace Demi
             pointLights.clear();
             skyLight = nullptr;
         }
+        
+        /** Setup shadow cameras
+         */
+        void SetupShaodwCamera(DiSceneManager *sceneManager)
+        {
+            for(auto i = dirLights.begin(); i != dirLights.end(); ++i)
+                (*i)->SetupShadowCamera(sceneManager);
+            
+            for(auto i = pointLights.begin(); i != pointLights.end(); ++i)
+                (*i)->SetupShadowCamera(sceneManager);
+            
+            if(skyLight)
+                skyLight->SetupShadowCamera(sceneManager);
+        }
     };
 
     /** Render pass
@@ -291,8 +305,6 @@ namespace Demi
         CameraList              mCameras;
 
         RenderPass              mCurrentRenderPass;
-        
-        unsigned long           mLastFrameNumber;
 
         DiSkybox*               mSkybox;
 

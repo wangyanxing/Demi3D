@@ -20,6 +20,7 @@ namespace Demi
     DiGfxDriver*      DiBase::Driver     = nullptr;
     DiWndHandle       DiBase::mMainHwnd  = nullptr;
     DiCommandManager* DiBase::CommandMgr = nullptr;
+    DiRenderWindow*   DiBase::ActiveRenderWindow = nullptr;
 
 #if (USE_MEMORY_TRACE == 1)
 

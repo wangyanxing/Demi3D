@@ -10,13 +10,15 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "Node.h"
+#include "RenderWindow.h"
 #include <sstream>
 
 namespace Demi 
 {
-    DiNode::QueuedUpdates    DiNode::sQueuedUpdates;
+    DiNode::QueuedUpdates DiNode::sQueuedUpdates;
 
     DiNode::DiNode()
         :mParent(0),
@@ -36,7 +38,8 @@ namespace Demi
         mInitialPosition(DiVec3::ZERO),
         mInitialOrientation(DiQuat::IDENTITY),
         mInitialScale(DiVec3::UNIT_SCALE),
-        mCachedTransformOutOfDate(true)
+        mCachedTransformOutOfDate(true),
+        mLastUpdateFrame(0)
     {
         static int nodeid = 0;
         std::ostringstream s;
@@ -44,7 +47,6 @@ namespace Demi
         mName = s.str();
 
         NeedUpdate();
-
     }
 
     DiNode::DiNode(const DiString& name)
@@ -78,9 +80,7 @@ namespace Demi
         RemoveAllChildren();
 
         if(mParent)
-        {
             mParent->RemoveChild(this);
-        }
 
         if (mQueuedForUpdate)
         {
@@ -100,14 +100,12 @@ namespace Demi
         return mParent;
     }
 
-
     void DiNode::SetParent(DiNode* parent)
     {
         mParent = parent;
         mParentNotified = false ;
         NeedUpdate();
     }
-
 
     const DiMat4& DiNode::GetFullTransform(void) const
     {
@@ -124,14 +122,19 @@ namespace Demi
 
     void DiNode::_Update(bool updateChildren, bool parentHasChanged)
     {
-        mParentNotified = false ;
+        mParentNotified = false;
 
         if (!updateChildren && !mNeedParentUpdate && !mNeedChildUpdate && !parentHasChanged )
             return;
 
         if (mNeedParentUpdate || parentHasChanged)
             _UpdateFromParent();
+        
+        // Record the frame#
+        if(ActiveRenderWindow)
+            mLastUpdateFrame = ActiveRenderWindow->GetFrameNumber();
 
+        // Update all children
         if (mNeedChildUpdate || parentHasChanged)
         {
             for (size_t i = 0; i < mChildren.size(); ++i)
@@ -141,12 +144,9 @@ namespace Demi
         else
         {
             // Just update selected children
-            ChildUpdateSet::iterator it, itend;
-            itend = mChildrenToUpdate.end();
-            for(it = mChildrenToUpdate.begin(); it != itend; ++it)
+            for(auto it = mChildrenToUpdate.begin(); it != mChildrenToUpdate.end(); ++it)
             {
-                DiNode* child = *it;
-                child->_Update(true, false);
+                (*it)->_Update(true, false);
             }
 
             mChildrenToUpdate.clear();
@@ -161,23 +161,15 @@ namespace Demi
         {
             const DiQuat& parentOrientation = mParent->GetDerivedOrientation();
             if (mInheritOrientation)
-            {
                 mDerivedOrientation = parentOrientation * mOrientation;
-            }
             else
-            {
                 mDerivedOrientation = mOrientation;
-            }
 
             const DiVec3& parentScale = mParent->GetDerivedScale();
             if (mInheritScale)
-            {
                 mDerivedScale = parentScale * mScale;
-            }
             else
-            {
                 mDerivedScale = mScale;
-            }
 
             mDerivedPosition = parentOrientation * (parentScale * mPosition);
             mDerivedPosition += mParent->GetDerivedPosition();
@@ -251,7 +243,6 @@ namespace Demi
         NeedUpdate();
     }
 
-
     void DiNode::SetPosition(const DiVec3& pos)
     {
         DI_ASSERT(!pos.isNaN());
@@ -259,14 +250,11 @@ namespace Demi
         NeedUpdate();
     }
 
-
-
     void DiNode::SetPosition(float x, float y, float z)
     {
         DiVec3 v(x,y,z);
         SetPosition(v);
     }
-
 
     const DiVec3 & DiNode::GetPosition(void) const
     {
@@ -287,7 +275,6 @@ namespace Demi
             axisX.y, axisY.y, axisZ.y,
             axisX.z, axisY.z, axisZ.z);
     }
-
 
     void DiNode::Translate(const DiVec3& d, TransformSpace relativeTo)
     {
@@ -313,8 +300,8 @@ namespace Demi
             mPosition += d;
             break;
         }
+        
         NeedUpdate();
-
     }
 
     void DiNode::Translate(float x, float y, float z, TransformSpace relativeTo)
@@ -383,8 +370,6 @@ namespace Demi
         }
         NeedUpdate();
     }
-
-
 
     void DiNode::SetDerivedPosition( const DiVec3& pos )
     {
@@ -515,7 +500,6 @@ namespace Demi
     {
         mScale = mScale * inScale;
         NeedUpdate();
-
     }
 
     void DiNode::Scale(float x, float y, float z)
@@ -524,7 +508,6 @@ namespace Demi
         mScale.y *= y;
         mScale.z *= z;
         NeedUpdate();
-
     }
 
     const DiString& DiNode::GetName(void) const
@@ -556,7 +539,6 @@ namespace Demi
     const DiQuat& DiNode::GetInitialOrientation(void) const
     {
         return mInitialOrientation;
-
     }
 
     const DiVec3& DiNode::GetInitialScale(void) const
@@ -566,7 +548,6 @@ namespace Demi
 
     void DiNode::NeedUpdate(bool forceParentUpdate)
     {
-
         mNeedParentUpdate = true;
         mNeedChildUpdate = true;
         mCachedTransformOutOfDate = true;
@@ -583,9 +564,7 @@ namespace Demi
     void DiNode::RequestUpdate(DiNode* child, bool forceParentUpdate)
     {
         if (mNeedChildUpdate)
-        {
             return;
-        }
 
         mChildrenToUpdate.insert(child);
         if (mParent && (!mParentNotified || forceParentUpdate))
@@ -593,7 +572,6 @@ namespace Demi
             mParent->RequestUpdate(this, forceParentUpdate);
             mParentNotified = true ;
         }
-
     }
 
     void DiNode::CancelUpdate(DiNode* child)

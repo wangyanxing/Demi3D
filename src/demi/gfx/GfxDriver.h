@@ -11,8 +11,8 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef GfxDriver_h__
-#define GfxDriver_h__
+#ifndef DiGfxDriver_h__
+#define DiGfxDriver_h__
 
 namespace Demi
 {
@@ -38,6 +38,9 @@ namespace Demi
         uint32      mRevision;
     };
 
+    /** Graphics driver class
+        The abstruct layer of the graphics APIs
+     */
     class DI_GFX_API DiGfxDriver : public DiBase
     {
     public:
@@ -106,6 +109,8 @@ namespace Demi
 
         virtual void                CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd) = 0;
 
+        /** .hlsl for Direct3D, .glsl for OpenGL(ES)
+         */
         virtual const DiString&     GetShaderFileExtension() const = 0;
 
         virtual void                BindMaterialStates(const DiMaterial* mat) = 0;
@@ -138,6 +143,8 @@ namespace Demi
 
         DiRenderPipeline*           GetPipeline() const { return mPipeline; }
 
+        /** Get the scene manager from the main render window
+         */
         DiSceneManager*             GetSceneManager();
 
         DiShaderEnvironment*        GetShaderEnvironment() const;
