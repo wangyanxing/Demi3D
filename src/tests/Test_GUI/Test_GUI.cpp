@@ -26,6 +26,11 @@ void InitScene()
     DiAABB aabb;
     aabb.SetExtents(100, 100, 100, -100, -100, -100);
     dbghelper->AddBoundingBox(aabb, DiColor::Green);
+
+    sm->GetCamera()->SetNearClipDistance(50);
+    sm->GetCamera()->SetFarClipDistance(500);
+    dbghelper->AddFrustum(sm->GetCamera(), DiColor::Blue);
+    sm->GetCamera()->SetFarClipDistance(5000);
 }
 
 void UpdateScene()

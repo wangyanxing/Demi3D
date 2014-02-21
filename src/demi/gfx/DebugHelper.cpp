@@ -53,6 +53,47 @@ namespace Demi
         mDirty = true;
     }
     
+    void DiDebugHelper::AddFrustum(const DiFrustum* frustum, const DiColor& lineColor)
+    {
+        const DiVec3 *pts = frustum->GetWorldSpaceCorners();
+        
+        // near
+        AddLine(pts[0],pts[1],lineColor);
+        AddLine(pts[1],pts[2],lineColor);
+        AddLine(pts[2],pts[3],lineColor);
+        AddLine(pts[3],pts[0],lineColor);
+        
+        // far
+        AddLine(pts[5],pts[4],lineColor);
+        AddLine(pts[4],pts[7],lineColor);
+        AddLine(pts[7],pts[6],lineColor);
+        AddLine(pts[6],pts[5],lineColor);
+        
+		// left
+        AddLine(pts[5],pts[6],lineColor);
+        AddLine(pts[6],pts[2],lineColor);
+        AddLine(pts[2],pts[1],lineColor);
+        AddLine(pts[1],pts[5],lineColor);
+		
+        // right
+        AddLine(pts[4],pts[0],lineColor);
+        AddLine(pts[0],pts[3],lineColor);
+        AddLine(pts[3],pts[7],lineColor);
+        AddLine(pts[7],pts[4],lineColor);
+        
+		// bottom
+		AddLine(pts[6],pts[7],lineColor);
+        AddLine(pts[7],pts[3],lineColor);
+        AddLine(pts[3],pts[2],lineColor);
+        AddLine(pts[2],pts[6],lineColor);
+        
+		// top
+        AddLine(pts[4],pts[5],lineColor);
+        AddLine(pts[5],pts[1],lineColor);
+        AddLine(pts[1],pts[0],lineColor);
+        AddLine(pts[0],pts[4],lineColor);
+    }
+    
     void DiDebugHelper::AddBoundingBox(const DiAABB& bounds, const DiColor& lineColor)
     {
         DiVec3 min = bounds.GetMaximum();

@@ -70,6 +70,10 @@ namespace Demi
          */
         void            AddBoundingBox(const DiAABB& bounds, const DiColor& lineColor);
         
+        /** Add a frustum
+         */
+        void            AddFrustum(const DiFrustum* frustum, const DiColor& lineColor);
+        
         void            Clear();
 
         DiString&       GetType();
