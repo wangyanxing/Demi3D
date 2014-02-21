@@ -13,6 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Demi.h"
 #include "DemoFrame.h"
+#include "DebugHelper.h"
 
 void InitScene()
 {
@@ -20,7 +21,9 @@ void InitScene()
     sm->SetAmbientColor(DiColor(0.3f,0.3f,0.3f));
 
     DiDirLightPtr dirlight = make_shared<DiDirLight>();
-    sm->AttachObject(dirlight);
+    DiCullNode* dirNode = sm->GetRootNode()->CreateChild();
+    dirNode->AttachObject(dirlight);
+    dirNode->SetPosition(0, 200, 0);
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
 
@@ -38,6 +41,27 @@ void InitScene()
     boxNode->AttachObject(model);
     boxNode->Scale(5, 5, 5);
     boxNode->Translate(0, 50, 0);
+
+    DiCamera* camera = sm->GetCamera();
+    camera->SetNearClipDistance(20);
+    camera->SetFarClipDistance(1000);
+
+    DiShadowParams& params = dirlight->GetShadowParams();
+    params.splits[0] = 200;
+    params.splits[1] = 400;
+    params.splits[2] = 600;
+    params.splits[3] = 800;
+    params.nonUniform = true;
+    params.quantize = 0.5f;
+    params.minView = 3.0f;
+    dirlight->SetupShadowCamera(sm);
+
+    DiDebugHelperPtr dbghelper = make_shared<DiDebugHelper>();
+    sm->AttachObject(dbghelper);
+    dbghelper->AddFrustum(params.shadowCameras[0], DiColor::White);
+    dbghelper->AddFrustum(params.shadowCameras[1], DiColor::Red);
+    dbghelper->AddFrustum(params.shadowCameras[2], DiColor::Green);
+    dbghelper->AddFrustum(params.shadowCameras[3], DiColor::Blue);
 }
 
 int main(int argc, char *argv[])

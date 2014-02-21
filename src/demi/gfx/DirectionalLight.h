@@ -49,6 +49,8 @@ namespace Demi
         void            SetupShadowCameraImpl(DiSceneManager* sceneManager, DiCamera* shadowCamera,
                                              float nearSplit, float farSplit);
 
+        void            QuantizeShadowCamera(DiCamera* shadowCamera, const DiRect& shadowViewport, const DiAABB& viewBox);
+
     protected:
 
         DiVec3          mDirection;

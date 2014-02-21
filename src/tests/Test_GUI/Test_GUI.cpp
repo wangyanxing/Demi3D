@@ -20,16 +20,17 @@ void InitScene()
 	DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     DiDebugHelperPtr dbghelper = make_shared<DiDebugHelper>();
     sm->AttachObject(dbghelper);
-    dbghelper->AddLine(DiVec3(100, 0, 0), DiVec3(-100,0,0), DiColor::Red);
-    dbghelper->AddLine(DiVec3(0, 100, 0), DiVec3(0,-100,0), DiColor::Red);
-    
-    DiAABB aabb;
-    aabb.SetExtents(100, 100, 100, -100, -100, -100);
-    dbghelper->AddBoundingBox(aabb, DiColor::Green);
 
-    sm->GetCamera()->SetNearClipDistance(50);
+    sm->GetCamera()->SetNearClipDistance(10);
     sm->GetCamera()->SetFarClipDistance(500);
-    dbghelper->AddFrustum(sm->GetCamera(), DiColor::Blue);
+    //dbghelper->AddFrustum(sm->GetCamera(), DiColor::Blue);
+    
+    DiCamera* split0 = sm->GetCamera()->GetSplitFrustum(50, 200);
+    dbghelper->AddFrustum(split0, DiColor::Red);
+
+    DiCamera* split1 = sm->GetCamera()->GetSplitFrustum(220, 400);
+    dbghelper->AddFrustum(split1, DiColor::Green);
+
     sm->GetCamera()->SetFarClipDistance(5000);
 }
 

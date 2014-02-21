@@ -80,7 +80,8 @@ namespace Demi
         return ret;
     }
 
-    CameraPool::CameraPool(DiSceneManager* sm) :sceneManager(sm)
+    CameraPool::CameraPool(DiSceneManager* sm) :sceneManager(sm),
+        currentID(0)
     {
     }
 

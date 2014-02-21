@@ -76,7 +76,6 @@ namespace Demi
     {
     }
 
-
     void DiCamera::SetFillMode(DiFillMode sd)
     {
         mFillMode = sd;
@@ -87,9 +86,19 @@ namespace Demi
         return mFillMode;
     }
     
-    DiFrustum* DiCamera::GetSplitFrustum(float nearClip, float farClip) const
+    DiCamera* DiCamera::GetSplitFrustum(float nearClip, float farClip) const
     {
-        return nullptr;
+        nearClip = DiMath::Max(nearClip, GetNearClipDistance());
+        farClip = DiMath::Min(farClip, GetFarClipDistance());
+        if (farClip < nearClip)
+            farClip = nearClip;
+
+        DiCamera* cam = DI_NEW DiCamera(nullptr);
+        cam->CopySettingFrom(this);
+        cam->SetNearClipDistance(nearClip);
+        cam->SetFarClipDistance(farClip);
+
+        return cam;
     }
 
     void DiCamera::SetPosition(float x, float y, float z)
@@ -133,9 +142,7 @@ namespace Demi
     void DiCamera::SetDirection(const DiVec3& vec)
     {
         if (vec == DiVec3::ZERO) 
-        {
             return;
-        }
 
         DiVec3 zAdjustVec = -vec;
         zAdjustVec.normalise();

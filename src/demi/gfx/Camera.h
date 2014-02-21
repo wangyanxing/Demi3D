@@ -163,7 +163,7 @@ namespace Demi
 
         void                CopySettingFrom(const DiCamera* cam);
     
-        DiFrustum*          GetSplitFrustum(float nearClip, float farClip) const;
+        DiCamera*           GetSplitFrustum(float nearClip, float farClip) const;
 
         /** Return the parent scene manager
          */

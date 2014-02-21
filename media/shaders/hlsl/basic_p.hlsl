@@ -48,7 +48,7 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 #endif
 	
 #ifdef USE_COLOR
-    Out.Color = Out.Color * float4(In.Color, g_opacity);
+    Out.Color = Out.Color * float4(In.Color.xyz, g_opacity);
 #endif	
 
 #ifdef GAMMA_OUTPUT
