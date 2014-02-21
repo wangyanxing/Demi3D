@@ -135,7 +135,6 @@ namespace Demi
     class    DiPostController;
     class    DiConsoleLogger;
     class    DiSimpleShape;
-    class    DiLineList;
 }
 
 #include "GfxBase.h"

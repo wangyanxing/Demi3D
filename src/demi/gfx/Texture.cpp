@@ -157,7 +157,7 @@ namespace Demi
         {
             if (DiPixelBox::IsCompressedFormat(mPixelFormat))
             {
-                DI_ERROR("Render target cannot be compressed format.");
+                DI_WARNING("Render target cannot be compressed format.");
                 return;
             }
         }

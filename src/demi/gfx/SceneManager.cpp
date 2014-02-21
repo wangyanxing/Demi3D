@@ -361,7 +361,7 @@ namespace Demi
             v = camera->GetVisibility( box );
         }
 
-        bool onlyShadowCaster = mCurrentRenderPass == SHADOW_PASS? true : false;
+        bool onlyShadowCaster = mCurrentRenderPass == SHADOW_PASS;
 
         if ( v != DiCamera::NONE )
         {
@@ -392,9 +392,6 @@ namespace Demi
 
                     node->ProcessVisibleObjects([=](DiTransUnitPtr tu)
                     {
-                        DiRenderBatchGroup* gp = Driver->GetPipeline()->GetBatchGroup(tu->GetBatchGroup());
-                        bool receiveShadows = gp->GetShadowEnable();
-
                         if (!onlyShadowCaster || tu->GetShadowCastEnable())
                         {
                             mVisibleObjects.objs.push_back(tu);

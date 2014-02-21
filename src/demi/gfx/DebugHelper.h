@@ -20,7 +20,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    /// Debug rendering line.
+    /** Debug rendering line.
+     */
     struct DebugLine
     {
         DebugLine(){}
@@ -86,7 +87,7 @@ namespace Demi
 
     private:
 
-        DiVector<DebugLine>     mLines;
+        DiVector<DebugLine> mLines;
         
         /// Check if we need to update the geometry data
         bool            mDirty;

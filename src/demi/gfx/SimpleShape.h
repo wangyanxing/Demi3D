@@ -44,8 +44,6 @@ namespace Demi
 
         void                    CreateSphere(float radius = 100, int segments = 16, int rings = 16);
 
-        void                    CreateWireBox(const Demi::DiAABB& aabb);
-
         const Demi::DiAABB&     GetBoundingBox(void) const;
 
         void                    AddToBatchGroup(DiRenderBatchGroup* bg);

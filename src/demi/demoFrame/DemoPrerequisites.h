@@ -21,11 +21,7 @@ namespace Demi
 
     class DiCmdArgs;
     class DiCommandManager;
-    class DiFont;
-    class DiLineList;
     class DiGridPlane;
-    class DiSimpleShape;
-    class Demiension;
     class DiInfo;
     class DiConsoleLogger;
     class DiCameraHelper;

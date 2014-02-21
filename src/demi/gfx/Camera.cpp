@@ -26,8 +26,6 @@ namespace Demi
         mWindowSet(false),
         mAutoAspectRatio(false),
         mCullFrustum(0),
-        mUseMinPixelSize(false),
-        mPixelDisplayRatio(0),
         mSceneManager(sm)
     {
         mFOVy = DiRadian(DiMath::PI/4.0f);
@@ -55,8 +53,6 @@ namespace Demi
         mWindowSet(false),
         mAutoAspectRatio(false),
         mCullFrustum(0),
-        mUseMinPixelSize(false),
-        mPixelDisplayRatio(0),
         mSceneManager(sm)
     {
         mFOVy = DiRadian(DiMath::PI/4.0f);
@@ -89,6 +85,11 @@ namespace Demi
     DiFillMode DiCamera::GetFillMode(void) const
     {
         return mFillMode;
+    }
+    
+    DiFrustum* DiCamera::GetSplitFrustum(float nearClip, float farClip) const
+    {
+        return nullptr;
     }
 
     void DiCamera::SetPosition(float x, float y, float z)

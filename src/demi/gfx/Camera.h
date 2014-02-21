@@ -157,17 +157,13 @@ namespace Demi
 
         const DiQuat&       GetOrientationForViewUpdate(void) const;
 
-        void                SetUseMinPixelSize(bool enable) { mUseMinPixelSize = enable; }
-
-        bool                GetUseMinPixelSize() const { return mUseMinPixelSize; }
-
-        float               GetPixelDisplayRatio() const { return mPixelDisplayRatio; }
-
         void                SetFillMode(DiFillMode sd);
 
         DiFillMode          GetFillMode(void) const;
 
         void                CopySettingFrom(const DiCamera* cam);
+    
+        DiFrustum*          GetSplitFrustum(float nearClip, float farClip) const;
 
         /** Return the parent scene manager
          */
@@ -199,10 +195,6 @@ namespace Demi
 
         DiFillMode          mFillMode;
 
-        unsigned int        mVisFacesLastRender;
-
-        unsigned int        mVisBatchesLastRender;
-
         float               mWLeft, mWTop, mWRight, mWBottom;
 
         bool                mWindowSet;
@@ -215,10 +207,6 @@ namespace Demi
 
         DiFrustum*          mCullFrustum;
 
-        bool                mUseMinPixelSize;
-
-        float               mPixelDisplayRatio;
-
         DiSceneManager*     mSceneManager;
 
         bool                IsViewOutOfDate(void) const;
@@ -229,7 +217,6 @@ namespace Demi
 
         virtual void        SetWindowImpl(void) const;    
     };
-
 }
 
 #endif
