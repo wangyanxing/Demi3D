@@ -91,6 +91,8 @@ namespace Demi
         ShadowFrustum           mShadowFrustums[MAX_CASCADE_SPLITS];
         
         bool                    mShadowCameraDirty;
+        
+        DiCamera*               mShadowCamera;
     };
 }
 

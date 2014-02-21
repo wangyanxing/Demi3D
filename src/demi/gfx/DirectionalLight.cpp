@@ -51,11 +51,11 @@ namespace Demi
         if (!mParentNode)
             return;
         
+        /*
         DI_ASSERT(ActiveRenderWindow);
-        
         if(mParentNode->GetLastUpdateFrameNumber() == ActiveRenderWindow->GetFrameNumber())
             mShadowCameraDirty = true;
-        
+        */
         if(!mShadowCastEnable || !mShadowCameraDirty)
             return;
         
@@ -87,7 +87,45 @@ namespace Demi
             ++splits;
         }
         
+        /*
+        const DiQuat& parentOrientation = mParentNode->GetDerivedOrientation();
+        DiVec3 derivedDir = parentOrientation * mDirection;
+        
+        DiCamera* camera = sceneManager->GetCamera();
+        
+        if(!mShadowCamera)
+            mShadowCamera = DI_NEW DiCamera(sceneManager);
 
+        mShadowCamera->SetProjectionType(PT_ORTHOGRAPHIC);
+        mShadowCamera->SetDirection(derivedDir);
+        mShadowCamera->SetPosition(camera->GetDerivedPosition());
+        mShadowCamera->SetFOVy(DiDegree(90));
+        
+        DiVec2 eyeProjMinMax(0,1);
+
+        DiMat4 cascadeMatricies[MAX_CASCADE_SPLITS];
+        DiVec4 cascadeScales[MAX_CASCADE_SPLITS];
+        DiVec4 cascadeRescales[MAX_CASCADE_SPLITS];
+        DiVec4 cascadeScaledDeltaBiases[MAX_CASCADE_SPLITS];
+        
+        float cascadeZes[MAX_CASCADE_SPLITS + 4];
+        for( unsigned long i = 0; i < sizeof( cascadeZes ) / sizeof( cascadeZes[0] ); ++i )
+            cascadeZes[i] = FLT_MAX;
+        
+        DiMat4 mCamViewI = camera->GetViewMatrix().inverse();
+        DiMat4 mCamProjI = camera->GetProjectionMatrix().inverse();
+        DiMat4 mCamProjToLightSpace = mCamProjI * mCamViewI * mShadowCamera->DiFrustum::GetViewMatrix();
+        
+        //Cam Space near plane corners
+        DiVec3 nearCornersLS[4] =
+        {
+            *D3DXVec3TransformCoord( &tmp, &D3DXVECTOR3( -1, -1, eyeProjMinMax.x ), &mCamProjToLightSpace ),
+            *D3DXVec3TransformCoord( &tmp, &D3DXVECTOR3( 1, -1, eyeProjMinMax.x ), &mCamProjToLightSpace ),
+            *D3DXVec3TransformCoord( &tmp, &D3DXVECTOR3( -1, 1, eyeProjMinMax.x ), &mCamProjToLightSpace ),
+            *D3DXVec3TransformCoord( &tmp, &D3DXVECTOR3( 1, 1, eyeProjMinMax.x ), &mCamProjToLightSpace ),
+        };
+        */
+        
         /*
         DiCamera* camera = sceneManager->GetCamera();
         UpdateSplitDist(camera);
@@ -113,14 +151,20 @@ namespace Demi
         float nearSplit, float farSplit)
     {
         DiCamera* camera = sceneManager->GetCamera();
-        float extrusionDistance = camera->GetFarClipDistance();
+        //float extrusionDistance = camera->GetFarClipDistance();
 
-        DiVec3 worldDirection = mParentNode->GetDerivedOrientation() * mDirection;
+        //DiVec3 worldDirection = mParentNode->GetDerivedOrientation() * mDirection;
 
         // Calculate initial position & rotation
-        DiVec3 pos = camera->GetDerivedPosition() - extrusionDistance * worldDirection;
-        shadowCamera->SetPosition(pos);
-        shadowCamera->SetOrientation(mParentNode->GetDerivedOrientation());
+        //DiVec3 pos = camera->GetDerivedPosition() - extrusionDistance * worldDirection;
+        //shadowCamera->SetPosition(pos);
+        //shadowCamera->SetOrientation(mParentNode->GetDerivedOrientation());
+        
+        const DiQuat& parentOrientation = mParentNode->GetDerivedOrientation();
+        DiVec3 derivedDir = parentOrientation * mDirection;
+        
+        shadowCamera->SetDirection(derivedDir);
+        shadowCamera->SetPosition(camera->GetDerivedPosition());
 
         // Calculate main camera shadowed frustum in light's view space
         farSplit = DiMath::Min(farSplit, camera->GetFarClipDistance());
@@ -132,13 +176,12 @@ namespace Demi
             farSplit  = DiMath::Min(sceneManager->GetZRange().y, farSplit);
         }
 
-        DiCamera* splitFrustum = camera->GetSplitFrustum(nearSplit, farSplit);
+        DiCamera* splitFrustum = shadowCamera->GetSplitFrustum(nearSplit, farSplit);
 
         // Transform frustum volume to light space
-        const DiQuat& parentOrientation = shadowCamera->GetDerivedOrientation();
-        const DiVec3& parentPosition = shadowCamera->GetDerivedPosition();
-        splitFrustum->MoveRelative(parentPosition);
-        splitFrustum->Rotate(parentOrientation);
+        //const DiVec3& parentPosition = shadowCamera->GetDerivedPosition();
+        //splitFrustum->MoveRelative(parentPosition);
+        //splitFrustum->Rotate(parentOrientation);
 
         DiAABB shadowbox = splitFrustum->GetBoundingBox();
 

@@ -26,6 +26,7 @@ void InitScene()
     dirNode->SetPosition(0, 200, 0);
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
+    dirlight->SetShadowCastEnable(true);
 
     DiSimpleShapePtr plane = make_shared<DiSimpleShape>();
     plane->CreatePlane(300);
@@ -54,16 +55,15 @@ void InitScene()
     params.nonUniform = true;
     params.quantize = 0.5f;
     params.minView = 3.0f;
-    //dirlight->SetupShadowCamera(sm);
+    dirlight->SetupShadowCamera(sm);
 
-    /*
     DiDebugHelperPtr dbghelper = make_shared<DiDebugHelper>();
     sm->AttachObject(dbghelper);
     dbghelper->AddFrustum(params.shadowCameras[0], DiColor::White);
     dbghelper->AddFrustum(params.shadowCameras[1], DiColor::Red);
     dbghelper->AddFrustum(params.shadowCameras[2], DiColor::Green);
     dbghelper->AddFrustum(params.shadowCameras[3], DiColor::Blue);
-    */
+
 }
 
 int main(int argc, char *argv[])
