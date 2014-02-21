@@ -375,9 +375,11 @@ namespace Demi
 
                 if (vis)
                 {
-                    // evaluate the Z range
+                    // evaluate the Z range and update the scene bounds
                     if (nodeBounds.IsFinite())
                     {
+                        mBox.Merge(nodeBounds);
+                        
                         DiVec3 viewDir = camera->GetDerivedOrientation() * DiVec3::UNIT_Z;
                         DiVec3 absViewZ = viewDir.abs();
                         DiVec3 center = nodeBounds.GetCenter();
@@ -458,6 +460,7 @@ namespace Demi
         mVisibleLights.Clear();
 
         mZRange = DiVec2(DiMath::POS_INFINITY, 0);
+        mBox.SetNull();
 
         WalkTree(cam, mOctree, false);
     }

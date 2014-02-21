@@ -23,7 +23,7 @@ void InitScene()
 
     sm->GetCamera()->SetNearClipDistance(10);
     sm->GetCamera()->SetFarClipDistance(500);
-    //dbghelper->AddFrustum(sm->GetCamera(), DiColor::Blue);
+    dbghelper->AddFrustum(sm->GetCamera(), DiColor::Blue);
     
     DiCamera* split0 = sm->GetCamera()->GetSplitFrustum(50, 200);
     dbghelper->AddFrustum(split0, DiColor::Red);

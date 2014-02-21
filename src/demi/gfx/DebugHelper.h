@@ -94,6 +94,9 @@ namespace Demi
         
         /// Size of the vertex buffers
         uint32          mVbSize;
+        
+        /// Bounding box
+        DiAABB          mBounds;
     };
 }
 

@@ -239,6 +239,10 @@ namespace Demi
         /** Get Z range
          */
         const DiVec2&           GetZRange() const { return mZRange; }
+        
+        /** Get the bouding box of the whole scene
+         */
+        const DiAABB&           GetBoundingBox() const { return mBox; }
 
     protected:
 

@@ -49,6 +49,8 @@ namespace Demi
     
     void DiDebugHelper::AddLine(const DiVec3& startPos, const DiVec3& endPos, const DiColor& lineColor)
     {
+        mBounds.Merge(startPos);
+        mBounds.Merge(endPos);
         mLines.push_back(DebugLine(startPos,endPos,lineColor));
         mDirty = true;
     }
@@ -123,12 +125,13 @@ namespace Demi
     void DiDebugHelper::Clear()
     {
         mLines.clear();
+        mBounds.SetNull();
         mDirty = true;
     }
 
     const DiAABB& DiDebugHelper::GetBoundingBox(void) const
     {
-        return DiAABB::BOX_INFINITE;
+        return mBounds;
     }
 
     void DiDebugHelper::AddToBatchGroup(DiRenderBatchGroup* bg)
