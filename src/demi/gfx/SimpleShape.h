@@ -20,8 +20,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    typedef shared_ptr<DiSimpleShape> DiSimpleShapePtr;
-
     class DI_GFX_API DiSimpleShape : public Demi::DiRenderUnit, public Demi::DiTransformUnit
     {
     public:

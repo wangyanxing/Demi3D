@@ -22,9 +22,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    
-    typedef shared_ptr<DiMaterial> DiMaterialPtr;
-
     class DI_GFX_API DiMaterial : public DiAsset
     {
     public:

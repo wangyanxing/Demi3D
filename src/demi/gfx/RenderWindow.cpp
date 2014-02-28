@@ -96,14 +96,14 @@ namespace Demi
 
             if (light->GetShadowCastEnable())
             {
-                for (int i = 0; i < MAX_CASCADE_SPLITS; i++)
+                for (int cascadeId = 0; cascadeId < MAX_CASCADE_SPLITS; ++cascadeId)
                 {
-                    DiCamera* cam = light->mShadowCameras[i];
+                    DiCamera* cam = light->mShadowCameras[cascadeId];
                     rp->ClearGroup();
                     mSceneManager->SetCurrentPass(SHADOW_PASS);
                     mSceneManager->Cull(cam);
                     mSceneManager->GetVisibleObjects().AddToBatch(rp);
-                    rp->Render(mSceneManager, cam, light->mShadowTextures[i]->GetRenderTarget());
+                    rp->Render(mSceneManager, cam, light->mShadowTextures[cascadeId]->GetRenderTarget());
                 }
             }
         }

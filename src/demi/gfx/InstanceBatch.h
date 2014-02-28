@@ -24,8 +24,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    typedef shared_ptr<DiInstanceBatch> DiInstanceBatchPtr;
-
     class DiInstanceBatch : public DiRenderUnit, public DiTransformUnit
     {
     public:

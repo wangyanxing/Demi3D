@@ -21,8 +21,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    typedef shared_ptr<DiTerrainMap> DiTerrainPtr;
-
     class DI_GFX_API DiTerrainMap : public DiTransformUnit
     {
     public:

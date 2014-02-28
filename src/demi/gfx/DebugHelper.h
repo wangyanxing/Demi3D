@@ -40,8 +40,7 @@ namespace Demi
         DiVec3 point1;
         ARGB   color1;
     };
-    
-    typedef shared_ptr<DiDebugHelper> DiDebugHelperPtr;
+
 
     /** Debug helper class
      */

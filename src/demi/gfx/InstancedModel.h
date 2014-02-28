@@ -19,8 +19,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    typedef shared_ptr<DiInstancedModel> DiInstancedModelPtr;
-
     class DI_GFX_API DiInstancedModel : public DiTransformUnit
     {
     public:

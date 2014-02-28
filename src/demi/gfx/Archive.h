@@ -24,9 +24,8 @@ namespace Demi
         DiString         basename;
     };
 
-    typedef DiVector<DiFileInfo>        DiFileInfoList;
-    typedef shared_ptr<DiFileInfoList>    DiFileInfoListPtr;
-    typedef shared_ptr<StringVec>        DiStringVecPtr;
+    typedef DiVector<DiFileInfo>       DiFileInfoList;
+    typedef shared_ptr<DiFileInfoList> DiFileInfoListPtr;
 
     //////////////////////////////////////////////////////////////////////////
     class DiArchive
@@ -64,8 +63,6 @@ namespace Demi
 
         DiArchiveType                  mType;
     };
-
-    typedef shared_ptr<DiArchive>      ArchivePtr;
 }
 
 #endif

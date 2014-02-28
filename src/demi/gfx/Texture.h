@@ -56,7 +56,6 @@ namespace Demi
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
-    typedef shared_ptr<DiTexture> DiTexturePtr;
     class DI_GFX_API DiTexture : public DiAsset, 
                                  public DiDeviceLostListener, 
                                  public enable_shared_from_this<DiTexture>

@@ -20,8 +20,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    typedef shared_ptr<DiAnimModel> DiAnimModelPtr;
-
     class DI_GFX_API DiAnimModel : public DiModel
     {
     public:

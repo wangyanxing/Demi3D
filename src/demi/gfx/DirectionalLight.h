@@ -19,8 +19,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    typedef shared_ptr<DiDirLight> DiDirLightPtr;
-    
     /** Directional light
         only contains direction and color
      */

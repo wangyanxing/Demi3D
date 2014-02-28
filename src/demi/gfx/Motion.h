@@ -19,8 +19,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    typedef shared_ptr<DiMotion> DiMotionPtr;
-
     class DI_GFX_API DiMotion : public DiAsset
     {
     public:

@@ -19,8 +19,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    typedef shared_ptr<DiMesh> DiMeshPtr;
-
     class DI_GFX_API DiMesh : public DiAsset
     {
     public:

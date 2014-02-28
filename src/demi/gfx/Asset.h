@@ -52,8 +52,6 @@ namespace Demi
 
         uint32                  mByteSize;
     };
-
-    typedef shared_ptr<DiAsset> DiAssetPtr;
 }
 
 #endif

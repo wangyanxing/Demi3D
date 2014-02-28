@@ -21,8 +21,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    typedef shared_ptr<DiScene> DiScenePtr;
-
     class DI_GFX_API DiScene : public DiAsset
     {
     public:

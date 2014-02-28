@@ -17,9 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "light.h"
 
 namespace Demi 
-{
-    typedef shared_ptr<DiPointLight> DiPointLightPtr;
-    
+{    
     /** Point light, contains the basic attenuation parameters
         it should be culled and pushed to the final pipeline
      */

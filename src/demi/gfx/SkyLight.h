@@ -17,9 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "light.h"
 
 namespace Demi 
-{
-    typedef shared_ptr<DiSkyLight> DiSkyLightPtr;
-    
+{    
     /** Sky light with a sky color and ground color
         this kind of light is more suitable than the directional light
         actually it's a hemisphere light

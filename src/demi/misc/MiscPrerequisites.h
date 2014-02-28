@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PlatformSpecific.h"
 #include "MiscDefines.h"
 #include "DebugAssert.h"
+#include "SmartPtr.h"
 
 namespace Demi
 {
@@ -51,6 +52,8 @@ namespace Demi
     struct   DiXmlStringPoolInterface;
     struct   DiXmlParserInterface;
     struct   DiXmlUtilsInterface;
+    
+	typedef shared_ptr<DiDataStream>    DiDataStreamPtr;
 }
 
 #endif

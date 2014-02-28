@@ -143,6 +143,25 @@ namespace Demi
     typedef shared_ptr<DiOctree>            DiOctreePtr;
     typedef shared_ptr<DiOctreeCullUnit>    DiOctreeCullUnitPtr;
     typedef shared_ptr<DiCullUnit>          DiCullUnitPtr;
+    typedef shared_ptr<DiAnimModel>         DiAnimModelPtr;
+    typedef shared_ptr<StringVec>           DiStringVecPtr;
+	typedef shared_ptr<DiArchive>           ArchivePtr;
+	typedef shared_ptr<DiAsset>             DiAssetPtr;
+	typedef shared_ptr<DiDebugHelper>       DiDebugHelperPtr;
+    typedef shared_ptr<DiDirLight>          DiDirLightPtr;
+    typedef shared_ptr<DiInstanceBatch>     DiInstanceBatchPtr;
+    typedef shared_ptr<DiInstancedModel>    DiInstancedModelPtr;
+    typedef shared_ptr<DiMaterial>          DiMaterialPtr;
+    typedef shared_ptr<DiMesh>              DiMeshPtr;
+    typedef shared_ptr<DiModel>             DiModelPtr;
+    typedef shared_ptr<DiMotion>            DiMotionPtr;
+    typedef shared_ptr<DiPointLight>        DiPointLightPtr;
+    typedef shared_ptr<DiScene>             DiScenePtr;
+    typedef shared_ptr<DiSimpleShape>       DiSimpleShapePtr;
+    typedef shared_ptr<DiSkyLight>          DiSkyLightPtr;
+    typedef shared_ptr<DiTerrainMap>        DiTerrainPtr;
+    typedef shared_ptr<DiTexture>           DiTexturePtr;
+    typedef shared_ptr<DiTransformUnit>     DiTransUnitPtr;
 }
 
 #include "GfxBase.h"

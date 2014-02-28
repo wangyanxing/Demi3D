@@ -326,7 +326,5 @@ namespace Demi
 
     };
 
-    typedef shared_ptr<DiDataStream> DiDataStreamPtr;
-
 }
 #endif // DataStream_h__

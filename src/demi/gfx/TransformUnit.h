@@ -20,8 +20,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    typedef shared_ptr<DiTransformUnit> DiTransUnitPtr;
-
     class DI_GFX_API DiTransformUnit : public DiBase, public enable_shared_from_this<DiTransformUnit>
     {
     public:
