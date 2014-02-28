@@ -17,9 +17,9 @@ License:        The FreeType License:
                 http://git.savannah.gnu.org/cgit/freetype/freetype2.git/tree/docs/FTL.TXT
 		  
 stbi image library
-Version: 		1.29
-Website: 		http://www.nothings.org/stb_image.c
-Description: 	Public domain JPEG/PNG reader
+Version:        1.29
+Website:        http://www.nothings.org/stb_image.c
+Description:    Public domain JPEG/PNG reader
 License:        Unknow, "when you control the images you're loading, no warranty implied; use at your own risk"
 
 OIS
