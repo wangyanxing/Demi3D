@@ -69,11 +69,14 @@ uniform const float3        g_skyLightDir;
 
 uniform const float4        g_cascadeEyeSpaceDepths[MAX_SHADOW_CASCADES];
 uniform const float2        g_shadowDist;   // x: shadow fade dist, y: shadow max dist
-uniform const sampler2D     g_shadowTexture[MAX_SHADOW_CASCADES];
 uniform const float4        g_texMatrixScaleBias[MAX_SHADOW_CASCADES];
 uniform const float4        g_fixedDepthBias;
 uniform const float4        g_gradientScaleBias;
 uniform const float4        g_shadowMapSize;
 uniform const float4        g_invShadowMapSize;
+uniform const sampler2D     g_shadowTexture0;
+uniform const sampler2D     g_shadowTexture1;
+uniform const sampler2D     g_shadowTexture2;
+uniform const sampler2D     g_shadowTexture3;
 
 #endif

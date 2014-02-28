@@ -402,11 +402,13 @@ namespace Demi
         farSplit = DiMath::Min(farSplit, camera->GetFarClipDistance());
 
         // Use the scene Z bounds to limit frustum size if applicable
+#if 0
         if (false/*mShadowParams.focus*/)
         {
             nearSplit = DiMath::Max(sceneManager->GetZRange().x, nearSplit);
             farSplit  = DiMath::Min(sceneManager->GetZRange().y, farSplit);
         }
+#endif
 
         DiCamera* splitFrustum = camera->GetSplitFrustum(nearSplit, farSplit);
 

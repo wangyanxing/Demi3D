@@ -84,19 +84,8 @@ namespace Demi
 
         Driver->BeginFrame();
 
-        // Pre-culling
         DiCamera* mainCam = mSceneManager->GetCamera();
-        mSceneManager->SetCurrentPass(GEOMETRY_PASS);
-        mSceneManager->Cull(mainCam);
-        mSceneManager->GetVisibleObjects().UpdateAll(mainCam);
 
-        // Normal geometry pass
-        rp->ClearGroup();
-        mSceneManager->GetVisibleObjects().AddToBatch(rp);
-        rp->SetCurrentPass(DiRenderPipeline::P_LIGHTING_PASS);
-        rp->Render(mSceneManager, mainCam, mSceneCanvas);
-
-#if 0
         // Shadow mapping pass
         rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
         auto& visLights = mSceneManager->GetVisibleLights();
@@ -104,8 +93,6 @@ namespace Demi
         for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
         {
             DiLight* light = *i;
-
-            Driver->GetShaderEnvironment()->BindShadowLights(light);
 
             if (light->GetShadowCastEnable())
             {
@@ -120,7 +107,15 @@ namespace Demi
                 }
             }
         }
-#endif
+
+        // Normal geometry pass
+        mSceneManager->SetCurrentPass(GEOMETRY_PASS);
+        mSceneManager->Cull(mainCam);
+        mSceneManager->GetVisibleObjects().UpdateAll(mainCam);
+        rp->ClearGroup();
+        mSceneManager->GetVisibleObjects().AddToBatch(rp);
+        rp->SetCurrentPass(DiRenderPipeline::P_LIGHTING_PASS);
+        rp->Render(mSceneManager, mainCam, mSceneCanvas);
 
         // Process the extra render targets
         rp->SetCurrentPass(DiRenderPipeline::P_CUSTOM_RTT_PASS);

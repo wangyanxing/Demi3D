@@ -102,8 +102,6 @@ namespace Demi
         int groundColor;
         int skyLightDir;
 
-        int cascadeEyeSpaceDepths;
-
     public:
 
         DiShaderConstants(DiShaderType tp);

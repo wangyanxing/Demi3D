@@ -43,14 +43,6 @@ namespace Demi
         viewProjMatrix = projMat * viewMatrix;
     }
 
-    void DiShaderEnvironment::BindShadowLights(DiLight* light)
-    {
-        for (int i = 0; i < MAX_CASCADE_SPLITS; ++i)
-        {
-            cascadeEyeSpaceDepths[i].x = light->mCascadePartitionsFrustum[i];
-        }
-    }
-
     void DiCompileDesc::AddMarco( const DiString& name, const DiString& def )
     {
         for (auto it = marcos.begin(); it != marcos.end(); ++it)

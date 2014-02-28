@@ -247,10 +247,6 @@ namespace Demi
 
         CameraPool&             GetCameraPool() { return mCameraPool; }
 
-        /** Get Z range
-         */
-        const DiVec2&           GetZRange() const { return mZRange; }
-        
         /** Get the bouding box of the whole scene
          */
         const DiAABB&           GetBoundingBox() const { return mBox; }
@@ -305,10 +301,6 @@ namespace Demi
         DiVisibleObjs           mVisibleObjects;
 
         CameraPool              mCameraPool;
-
-        /// Z range of the scene
-        /// Should be updated per frame
-        DiVec2                  mZRange;
         
         DiSceneCuller*          mCuller;
         

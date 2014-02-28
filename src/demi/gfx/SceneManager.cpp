@@ -399,7 +399,6 @@ namespace Demi
         mVisibleObjects.objs.clear();
         mCameraPool.Reset();
 
-        mZRange = DiVec2(DiMath::POS_INFINITY, 0);
         mBox.SetNull();
 
         mCuller->Cull(cam);
@@ -413,7 +412,7 @@ namespace Demi
 
     bool DiSceneManager::HasScene() const
     {
-        return mTerrain != NULL;
+        return mTerrain != nullptr;
     }
 
     bool DiSceneManager::LoadTerrain()
@@ -431,9 +430,8 @@ namespace Demi
     DiScenePtr DiSceneManager::GetCurrentScene()
     {
         if (mCurrentScene.empty())
-        {
-            return DiScenePtr();
-        }
+            return nullptr;
+
         return DiAssetManager::GetInstance(
             ).GetAsset<DiScene>(mCurrentScene);
     }
@@ -442,13 +440,9 @@ namespace Demi
     {
         auto it = mSceneNodes.find(name);
         if (it != mSceneNodes.end())
-        {
             return it->second;
-        }
         else
-        {
-            return NULL;
-        }
+            return nullptr;
     }
 
     void DiSceneManager::DirtyInstanceManager( DiInstanceManager *dirtyManager )

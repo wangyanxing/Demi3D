@@ -80,55 +80,51 @@ namespace Demi
         DiShaderEnvironment(void);
 
     public:
-        DiMat4      modelMatrix;
+        DiMat4        modelMatrix;
 
-        DiMat4      viewMatrix;
-        DiMat4      projMatrix;
-        DiMat4      modelViewMatrix;
-        DiMat4      modelViewProjMatrix;
-        DiMat4      viewProjMatrix;
-        DiMat4      texMatrix;
+        DiMat4        viewMatrix;
+        DiMat4        projMatrix;
+        DiMat4        modelViewMatrix;
+        DiMat4        modelViewProjMatrix;
+        DiMat4        viewProjMatrix;
+        DiMat4        texMatrix;
 
-        DiVec3      eyePosition;
-        DiVec3      eyeDirection;        
+        DiVec3        eyePosition;
+        DiVec3        eyeDirection;
 
-        DiVec4      farnearPlane;
+        DiVec4        farnearPlane;
 
-        DiColor     globalAmbient;
-        DiColor     ambientColor;
-        DiColor     diffuseColor;
-        DiColor     specularColor;
-        float       opacity;
-        float       shininess;
+        DiColor       globalAmbient;
+        DiColor       ambientColor;
+        DiColor       diffuseColor;
+        DiColor       specularColor;
+        float         opacity;
+        float         shininess;
 
-        DiVec4      boneMatrices[MAX_BONE_NUM*3];    
-        DiVec4      modelMatrices[MAX_WORLD_MATS*3];
-        uint32      numBones;
-        uint32      numModelMatrices;
+        DiVec4        boneMatrices[MAX_BONE_NUM * 3];
+        DiVec4        modelMatrices[MAX_WORLD_MATS * 3];
+        uint32        numBones;
+        uint32        numModelMatrices;
 
-        float       time;
-        DiVec4      viewportSize;
-        DiVec4      texelOffsets;
+        float         time;
+        DiVec4        viewportSize;
+        DiVec4        texelOffsets;
 
-        int         numDirLights;
-        DiColor     dirLightsColor[MAX_LIGHTS];
-        DiVec4      dirLightsDir[MAX_LIGHTS];
+        int           numDirLights;
+        DiColor       dirLightsColor[MAX_LIGHTS];
+        DiVec4        dirLightsDir[MAX_LIGHTS];
 
-        int         numPointLights;
-        DiColor     pointLightsColor[MAX_LIGHTS];
-        DiVec4      pointLightsPosition[MAX_LIGHTS];
-        DiVec4      pointLightsAttenuation[MAX_LIGHTS];
+        int           numPointLights;
+        DiColor       pointLightsColor[MAX_LIGHTS];
+        DiVec4        pointLightsPosition[MAX_LIGHTS];
+        DiVec4        pointLightsAttenuation[MAX_LIGHTS];
 
-        bool        hasSkyLight;
-        DiColor     skyLightColor;
-        DiColor     groundColor;
-        DiVec3      skyLightDir;
-        
-        DiVec4      cascadeEyeSpaceDepths[MAX_CASCADE_SPLITS];
+        bool          hasSkyLight;
+        DiColor       skyLightColor;
+        DiColor       groundColor;
+        DiVec3        skyLightDir;
 
-        void        SetIdentity();
-
-        void        BindShadowLights(DiLight* light);
+        void          SetIdentity();
     };
 
     //////////////////////////////////////////////////////////////////////////
