@@ -43,6 +43,10 @@ namespace Demi
     class    DiRenderVisitor;
     class    DiNode;
     class    DiCullNode;
+    class    DiCullUnit;
+    class    DiSceneCuller;
+    class    DiOctreeCuller;
+    class    DiOctreeCullUnit;
     class    DiFrustum;
     class    DiSceneManager;
     class    DiStateManager;
@@ -135,6 +139,10 @@ namespace Demi
     class    DiPostController;
     class    DiConsoleLogger;
     class    DiSimpleShape;
+    
+    typedef shared_ptr<DiOctree>            DiOctreePtr;
+    typedef shared_ptr<DiOctreeCullUnit>    DiOctreeCullUnitPtr;
+    typedef shared_ptr<DiCullUnit>          DiCullUnitPtr;
 }
 
 #include "GfxBase.h"

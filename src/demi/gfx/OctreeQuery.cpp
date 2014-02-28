@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+#if 0
     DiOcAABBQuery::DiOcAABBQuery(DiSceneManager* creator)
         : DiAABBQuery(creator)
     {
@@ -160,4 +161,5 @@ namespace Demi
             }
         }
     }
+#endif
 }

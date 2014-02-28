@@ -10,10 +10,12 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "Octree.h"
 #include "CullNode.h"
 #include "SceneManager.h"
+#include "OctreeCuller.h"
 
 namespace Demi
 {
@@ -58,7 +60,7 @@ namespace Demi
         mParent = nullptr;
     }
 
-    void DiOctree::AddNode( DiCullNode* n )
+    void DiOctree::AddNode( DiOctreeCullUnitPtr n )
     {
         mNodes.push_back(n);
         n->SetOctant( shared_from_this() );
@@ -66,7 +68,7 @@ namespace Demi
         IncreaseNodeCount();
     }
 
-    void DiOctree::RemoveNode( DiCullNode* n )
+    void DiOctree::RemoveNode( DiOctreeCullUnitPtr n )
     {
         mNodes.erase(n);
         n->SetOctant( nullptr );

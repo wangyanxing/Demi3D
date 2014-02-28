@@ -254,24 +254,21 @@ namespace Demi
     DiSceneManager::DiSceneManager(DiRenderWindow* parentWnd)
         :mTerrain(nullptr),
         mParentWindow(parentWnd),
-        mOctree(nullptr),
         mCurrentRenderPass(GEOMETRY_PASS),
         mSkybox(nullptr),
         mAmbientColor(0.3f,0.3f,0.3f),
-        mCameraPool(this)
+        mCameraPool(this),
+        mCuller(nullptr),
+        mCullerFactory(nullptr)
     {
+        mCullerFactory = DI_NEW DiSceneCullerFactory(this);
         mPipeline = Driver->GetPipeline();
-        mRootNode = DI_NEW DiCullNode(this,"_root");
         mCamera   = CreateCamera("_sm_camera");
-        mOctree   = make_shared<DiOctree>( nullptr, nullptr, 0xffff );
 
         mBox = DiAABB( -10000, -10000, -10000, 10000, 10000, 10000 );
-        mMaxDepth = 8; 
-
-        mOctree->mBox = mBox;
-        DiVec3 min = mBox.GetMinimum();
-        DiVec3 max = mBox.GetMaximum();
-        mOctree->mHalfSize = ( max - min ) / 2;
+        
+        mCuller = mCullerFactory->CreateSceneCuller("Octree");
+        mRootNode = DI_NEW DiCullNode(this,"_root");
         
         mSkybox = DI_NEW DiSkybox(this);
     }
@@ -282,8 +279,15 @@ namespace Demi
 
         ClearNodes();
         DestroyCamera("_sm_camera");
-
-        SAFE_DELETE(mSkybox);
+        
+        DI_DELETE mCuller;
+        mCuller = nullptr;
+        
+        DI_DELETE mSkybox;
+        mSkybox = nullptr;
+        
+        DI_DELETE mCullerFactory;
+        mCullerFactory = nullptr;
     }
 
     DiCullNode* DiSceneManager::CreateNode()
@@ -308,9 +312,12 @@ namespace Demi
 
     void DiSceneManager::DestroyNode( DiCullNode* node )
     {
-        if ( node )
+        //if (node)
+        //    RemoveOctreeNode( node );
+        
+        if(node)
         {
-            RemoveOctreeNode( node );
+            mCuller->RemoveUnit(node->GetCullUnit());
         }
 
         DestroyNode(node->GetName());
@@ -318,15 +325,17 @@ namespace Demi
 
     void DiSceneManager::DestroyNode( const DiString& name )
     {
-        NodeList::iterator i = mSceneNodes.find(name);
+        auto i = mSceneNodes.find(name);
 
         if (i == mSceneNodes.end())
         {
             DI_ERROR("Cannot find the node %s",name.c_str());
         }
 
-        if (i->second != NULL)
-            RemoveOctreeNode(i->second);
+        if(i->second)
+        {
+            mCuller->RemoveUnit(i->second->GetCullUnit());
+        }
 
         DiNode* parentNode = i->second->GetParent();
         if (parentNode)
@@ -340,75 +349,6 @@ namespace Demi
     bool DiSceneManager::HasSceneNode( const DiString& name )
     {
         return (mSceneNodes.find(name) != mSceneNodes.end());
-    }
-
-    void DiSceneManager::WalkTree(DiCamera* camera, DiOctreePtr octant,bool foundvisible)
-    {
-        if (octant->NumNodes() == 0)
-            return;
-
-        DiCamera::Visibility v = DiCamera::NONE;
-
-        if ( foundvisible )
-            v = DiCamera::FULL;
-        else if ( octant == mOctree )
-            v = DiCamera::PARTIAL;
-        else
-        {
-            DiAABB box;
-            octant->GetCullBounds( &box );
-            v = camera->GetVisibility( box );
-        }
-
-        bool onlyShadowCaster = mCurrentRenderPass == SHADOW_PASS;
-
-        if ( v != DiCamera::NONE )
-        {
-            bool vis = true;
-            for (DiCullNode* node = octant->mNodes.mHead; node; node = node->mNext)
-            {
-                const DiAABB& nodeBounds = node->GetWorldAABB();
-
-                if (v == DiCamera::PARTIAL)
-                    vis = camera->IsVisible(nodeBounds);
-
-                if (vis)
-                {
-                    // evaluate the Z range and update the scene bounds
-                    if (nodeBounds.IsFinite())
-                    {
-                        mBox.Merge(nodeBounds);
-                        
-                        DiVec3 viewDir = camera->GetDerivedOrientation() * DiVec3::UNIT_Z;
-                        DiVec3 absViewZ = viewDir.abs();
-                        DiVec3 center = nodeBounds.GetCenter();
-                        float viewCenterZ = viewDir.dotProduct(center) + camera->GetDerivedPosition().z;
-                        DiVec3 edge = nodeBounds.GetHalfSize();
-                        float viewEdgeZ = absViewZ.dotProduct(edge);
-                        float minZ = viewCenterZ - viewEdgeZ;
-                        float maxZ = viewCenterZ + viewEdgeZ;
-                        mZRange.x = DiMath::Min(mZRange.x, minZ);
-                        mZRange.y = DiMath::Max(mZRange.y, maxZ);
-                    }
-
-                    node->ProcessVisibleObjects([=](DiTransUnitPtr tu)
-                    {
-                        if (!onlyShadowCaster || tu->GetShadowCastEnable())
-                        {
-                            mVisibleObjects.objs.push_back(tu);
-                            tu->NotifyCurrentCamera(camera);
-                        }
-                    });
-                }
-            }
-        }
-
-        DiOctreePtr child;
-        bool childfoundvisible = (v == DiCamera::FULL);
-
-        for (uint16 i = 0; i < 8; i++)
-            if ((child = octant->mChildren[i]))
-                WalkTree(camera, child, childfoundvisible);
     }
 
     void DiSceneManager::ClearNodes()
@@ -461,7 +401,7 @@ namespace Demi
         mZRange = DiVec2(DiMath::POS_INFINITY, 0);
         mBox.SetNull();
 
-        WalkTree(cam, mOctree, false);
+        mCuller->Cull(cam);
     }
 
     void DiSceneManager::UnloadScene()
@@ -499,7 +439,7 @@ namespace Demi
 
     DiCullNode* DiSceneManager::GetSceneNode( const DiString& name )
     {
-        NodeList::iterator it = mSceneNodes.find(name);
+        auto it = mSceneNodes.find(name);
         if (it != mSceneNodes.end())
         {
             return it->second;
@@ -542,95 +482,7 @@ namespace Demi
             mDirtyInstanceManagers.clear();
         }
     }
-
-    void DiSceneManager::UpdateOctreeNode( DiCullNode* onode)
-    {
-        const DiAABB& box = onode->GetWorldAABB();
-
-        if ( box.IsNull() )
-            return;
-
-        if (!mOctree)
-            return;
-
-        if ( !onode->GetOctant() )
-        {
-            if ( !onode->IsIn( mOctree->mBox ) )
-                mOctree->AddNode( onode );
-            else
-                AddOctreeNode( onode, mOctree );
-            return;
-        }
-
-        if ( !onode->IsIn( onode->GetOctant()->mBox ) )
-        {
-            RemoveOctreeNode( onode );
-
-            if ( !onode->IsIn( mOctree->mBox ) )
-                mOctree->AddNode( onode );
-            else
-                AddOctreeNode( onode, mOctree );
-        }
-    }
-
-    void DiSceneManager::RemoveOctreeNode( DiCullNode* n)
-    {
-        if (!mOctree)
-            return;
-
-        DiOctreePtr oct = n->GetOctant();
-
-        if (oct)
-            oct->RemoveNode(n);
-
-        n->SetOctant(nullptr);
-    }
-
-    void DiSceneManager::AddOctreeNode(DiCullNode* n, DiOctreePtr octant, int depth /*= 0 */)
-    {
-        if (!mOctree)
-            return;
-
-        const DiAABB& bx = n->GetWorldAABB();
-
-        if ( ( depth < mMaxDepth ) && octant->IsTwiceSize( bx ) )
-        {
-            int id = octant->GetChildIndexes( bx );
-
-            if (!octant->mChildren[id])
-            {
-                octant->mChildren[id] = make_shared<DiOctree>(octant, mOctree, id);
-                const DiVec3& octantMin = octant->mBox.GetMinimum();
-                const DiVec3& octantMax = octant->mBox.GetMaximum();
-                
-                DiVec3 min = octantMin;
-                DiVec3 max = octantMax;
-                if (id & 1)
-                    min.x = (octantMin.x + octantMax.x) / 2;
-                else
-                    max.x = (octantMin.x + octantMax.x) / 2;
-
-                if (id & 2)
-                    min.y = (octantMin.y + octantMax.y) / 2;
-                else
-                    max.y = (octantMin.y + octantMax.y) / 2;
-
-                if (id & 4)
-                    min.z = (octantMin.z + octantMax.z) / 2;
-                else
-                    max.z = (octantMin.z + octantMax.z) / 2;
-
-                octant->mChildren[id]->mBox.SetExtents( min, max );
-                octant->mChildren[id]->mHalfSize = ( max - min ) / 2;
-            }
-            AddOctreeNode( n, octant->mChildren[id], ++depth );
-        }
-        else
-        {
-            octant->AddNode( n );
-        }
-    }
-
+#if 0
     void _findNodes(const DiAABB &t, DiList<DiCullNode*> &list, DiCullNode *exclude, bool full, DiOctreePtr octant)
     {
 
@@ -797,22 +649,22 @@ namespace Demi
         }
     }
 
-    void DiSceneManager::FindNodesIn( const DiAABB &box, DiList<DiCullNode*>& list, DiCullNode *exclude /*= 0 */ )
+    void DiSceneManager::FindNodesIn( const DiAABB &box, DiList<DiCullNode*>& list, DiCullNode *exclude)
     {
         _findNodes( box, list, exclude, false, mOctree );
     }
 
-    void DiSceneManager::FindNodesIn( const DiSphere &sphere, DiList<DiCullNode*>& list, DiCullNode *exclude /*= 0 */ )
+    void DiSceneManager::FindNodesIn( const DiSphere &sphere, DiList<DiCullNode*>& list, DiCullNode *exclude )
     {
         _findNodes( sphere, list, exclude, false, mOctree );
     }
 
-    void DiSceneManager::FindNodesIn( const DiPlaneBoundedVol &volume, DiList<DiCullNode*>& list, DiCullNode *exclude /*= 0 */ )
+    void DiSceneManager::FindNodesIn( const DiPlaneBoundedVol &volume, DiList<DiCullNode*>& list, DiCullNode *exclude  )
     {
         _findNodes( volume, list, exclude, false, mOctree );
     }
 
-    void DiSceneManager::FindNodesIn( const DiRay &ray, DiList<DiCullNode*>& list, DiCullNode *exclude /*= 0 */ )
+    void DiSceneManager::FindNodesIn( const DiRay &ray, DiList<DiCullNode*>& list, DiCullNode *exclude )
     {
         _findNodes( ray, list, exclude, false, mOctree );
     }
@@ -848,6 +700,7 @@ namespace Demi
         q->SetQueryMask(mask);
         return q;
     }
+#endif
 
     bool DiSceneManager::RenameSceneNode( const DiString& oldName, const DiString& newName )
     {

@@ -201,11 +201,7 @@ namespace Demi
 
         void                    DirtyInstanceManager( DiInstanceManager *dirtyManager );
 
-        void                    UpdateOctreeNode( DiCullNode* );
-
-        void                    RemoveOctreeNode( DiCullNode* );
-
-        void                    AddOctreeNode(DiCullNode *, DiOctreePtr octree, int depth = 0);
+#if 0
 
         void                    FindNodesIn( const DiAABB &box, DiList<DiCullNode*>& list, DiCullNode *exclude = 0 );
 
@@ -222,6 +218,7 @@ namespace Demi
         DiPBVListSceneQuery*    CreatePlaneBoundedVolumeQuery(const PlaneBoundedVolumeList& volumes, unsigned long mask);
 
         DiRaySceneQuery*        CreateRayQuery(const DiRay& ray, unsigned long mask);
+#endif
 
         /** Get current render pass
          */
@@ -257,12 +254,12 @@ namespace Demi
         /** Get the bouding box of the whole scene
          */
         const DiAABB&           GetBoundingBox() const { return mBox; }
+        
+        DiSceneCuller*          GetSceneCuller() const { return mCuller; }
 
     protected:
 
         void                    UpdateDirtyInstanceManagers();
-
-        void                    WalkTree(DiCamera* camera, DiOctreePtr octree, bool foundvisible);
 
     protected:
 
@@ -295,10 +292,6 @@ namespace Demi
 
         typedef DiVector<DiCullNode*> ReentryNodes;
 
-        DiOctreePtr             mOctree;
-
-        int                     mMaxDepth;
-
         DiAABB                  mBox;
 
         typedef DiMap<DiString,DiCamera*> CameraList;
@@ -316,6 +309,10 @@ namespace Demi
         /// Z range of the scene
         /// Should be updated per frame
         DiVec2                  mZRange;
+        
+        DiSceneCuller*          mCuller;
+        
+        DiSceneCullerFactory*   mCullerFactory;
 
     public:
 
