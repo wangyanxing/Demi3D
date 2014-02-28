@@ -41,9 +41,10 @@ namespace Demi
     {
         for ( auto itr = mObjects.begin(); itr != mObjects.end(); ++itr )
         {
-            (*itr)->NotifyAttached((DiCullNode*)NULL);
+            (*itr)->NotifyAttached(nullptr);
         }
         mObjects.clear();
+        mCullUnit.reset();
     }
 
     void DiCullNode::UpdateBounds()
@@ -271,7 +272,8 @@ namespace Demi
 
     void DiCullNode::RemoveNodeAndChildren()
     {
-        mCullUnit->mCuller->RemoveUnit(mCullUnit);
+        if (mCullUnit)
+            mCullUnit->mCuller->RemoveUnit(mCullUnit);
 
         for (size_t i = 0; i < mChildren.size(); ++i)
         {

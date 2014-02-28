@@ -17,6 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "SceneQuery.h"
 
+#if 0
+
 namespace Demi
 {
     class DI_GFX_API DiOcRayQuery : public DiRaySceneQuery
@@ -56,5 +58,7 @@ namespace Demi
         void Execute(SceneQueryListener* listener);
     };
 }
+
+#endif
 
 #endif

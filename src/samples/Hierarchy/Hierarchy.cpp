@@ -28,7 +28,7 @@ void InitScene()
     DiDirLightPtr dirlight = make_shared<DiDirLight>();
     sm->AttachObject(dirlight);
     dirlight->SetColor(DiColor());
-    dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
+    dirlight->SetDirection(DiVec3(-1, -1, -2).normalisedCopy());
 
     int amount = 80;
 

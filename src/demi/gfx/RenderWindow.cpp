@@ -96,6 +96,7 @@ namespace Demi
         rp->SetCurrentPass(DiRenderPipeline::P_LIGHTING_PASS);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
 
+#if 0
         // Shadow mapping pass
         rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
         auto& visLights = mSceneManager->GetVisibleLights();
@@ -119,6 +120,7 @@ namespace Demi
                 }
             }
         }
+#endif
 
         // Process the extra render targets
         rp->SetCurrentPass(DiRenderPipeline::P_CUSTOM_RTT_PASS);

@@ -11,6 +11,7 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
+#include "GfxPch.h"
 #include "OctreeCuller.h"
 #include "CullNode.h"
 #include "SceneManager.h"
