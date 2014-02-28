@@ -210,9 +210,25 @@ namespace Demi
         if (mInstanceState != val)
             mInstanceState = val;
     }
-}
+    
+    bool DiMaterial::IsTransparent() const
+    {
+        return mBlendMode == BLEND_ONE_INV_ALPHA || mBlendMode == BLEND_ALPHA;
+    }
 
-bool DiMaterial::IsTransparent() const
-{
-    return mBlendMode == BLEND_ONE_INV_ALPHA || mBlendMode == BLEND_ALPHA;
+    DiMaterialPtr DiMaterial::GetStaticShadowCasterMaterial()
+    {
+        static DiMaterialPtr StaticShadowCasterMaterial;
+        if (!StaticShadowCasterMaterial)
+            StaticShadowCasterMaterial = DiMaterial::QuickCreate("shadowCaster_v", "shadowCaster_p");
+        return StaticShadowCasterMaterial;
+    }
+
+    DiMaterialPtr DiMaterial::GetAnimatedShadowCasterMaterial()
+    {
+        static DiMaterialPtr AnimatedShadowCasterMaterial;
+        if (!AnimatedShadowCasterMaterial)
+            AnimatedShadowCasterMaterial = DiMaterial::QuickCreate("shadowCaster_v", "shadowCaster_p", CSF_SKINNED);
+        return AnimatedShadowCasterMaterial;
+    }
 }

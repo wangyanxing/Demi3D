@@ -16,13 +16,15 @@
 #define INSTANCE_SHADER		1
 #define INSTANCE_HARDWARE	2
 
+#define MAX_SHADOW_CASCADES 4
+
 uniform const float4x4      g_modelMatrix;
 uniform const float4x4      g_viewMatrix;
 uniform const float4x4      g_projMatrix;
 uniform const float4x4      g_modelViewMatrix;
 uniform const float4x4      g_modelViewProjMatrix;
 uniform const float4x4      g_viewProjMatrix;
-uniform const float4x4      g_texViewProjMatrix;
+uniform const float4x4      g_texMatrix;
 
 uniform const float4x3      g_boneMatrices[MAX_BONES];
 uniform const float4x3      g_modelMatrices[MAX_MODEL_MATS];	//Instance
@@ -64,5 +66,14 @@ uniform const bool          g_hasSkyLight;
 uniform const float4        g_skyLightColor;
 uniform const float4        g_groundColor;
 uniform const float3        g_skyLightDir;
+
+uniform const float4        g_cascadeEyeSpaceDepths[MAX_SHADOW_CASCADES];
+uniform const float2        g_shadowDist;   // x: shadow fade dist, y: shadow max dist
+uniform const sampler2D     g_shadowTexture[MAX_SHADOW_CASCADES];
+uniform const float4        g_texMatrixScaleBias[MAX_SHADOW_CASCADES];
+uniform const float4        g_fixedDepthBias;
+uniform const float4        g_gradientScaleBias;
+uniform const float4        g_shadowMapSize;
+uniform const float4        g_invShadowMapSize;
 
 #endif

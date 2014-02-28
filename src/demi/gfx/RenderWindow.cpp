@@ -93,12 +93,35 @@ namespace Demi
         // Normal geometry pass
         rp->ClearGroup();
         mSceneManager->GetVisibleObjects().AddToBatch(rp);
+        rp->SetCurrentPass(DiRenderPipeline::P_LIGHTING_PASS);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
-        
+
         // Shadow mapping pass
-        mSceneManager->GetVisibleLights().SetupShaodwCamera(mSceneManager);
+        rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
+        auto& visLights = mSceneManager->GetVisibleLights();
+        visLights.SetupShaodwCamera(mSceneManager);
+        for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
+        {
+            DiLight* light = *i;
+
+            Driver->GetShaderEnvironment()->BindShadowLights(light);
+
+            if (light->GetShadowCastEnable())
+            {
+                for (int i = 0; i < MAX_CASCADE_SPLITS; i++)
+                {
+                    DiCamera* cam = light->mShadowCameras[i];
+                    rp->ClearGroup();
+                    mSceneManager->SetCurrentPass(SHADOW_PASS);
+                    mSceneManager->Cull(cam);
+                    mSceneManager->GetVisibleObjects().AddToBatch(rp);
+                    rp->Render(mSceneManager, cam, light->mShadowTextures[i]->GetRenderTarget());
+                }
+            }
+        }
 
         // Process the extra render targets
+        rp->SetCurrentPass(DiRenderPipeline::P_CUSTOM_RTT_PASS);
         auto rts = mSceneManager->GetExtraRenderTargets();
         for (auto it = rts.begin(); it != rts.end(); ++it) 
         {

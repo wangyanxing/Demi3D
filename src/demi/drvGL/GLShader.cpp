@@ -433,8 +433,8 @@ namespace Demi
             glUniformMatrix4fvARB(location, 1, GL_TRUE, env->viewProjMatrix[0]);
         };
 
-        msUniformFuncs["g_texViewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->texViewProjMatrix[0]);
+        msUniformFuncs["g_texMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->texMatrix[0]);
         };
 
         msUniformFuncs["g_boneMatrices"] = [](const DiShaderEnvironment* env, GLuint location) {

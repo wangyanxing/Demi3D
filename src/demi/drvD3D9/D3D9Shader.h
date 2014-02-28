@@ -67,7 +67,7 @@ namespace Demi
         int modelViewMatrix;
         int modelViewProjMatrix;
         int viewProjMatrix;
-        int texViewProjMatrix;
+        int texMatrix;
 
         int eyePosition;
         int eyeDirection;
@@ -101,6 +101,8 @@ namespace Demi
         int skyLightColor;
         int groundColor;
         int skyLightDir;
+
+        int cascadeEyeSpaceDepths;
 
     public:
 

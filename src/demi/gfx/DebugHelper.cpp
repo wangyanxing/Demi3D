@@ -131,7 +131,8 @@ namespace Demi
 
     const DiAABB& DiDebugHelper::GetBoundingBox(void) const
     {
-        return mBounds;
+        //return mBounds;
+        return DiAABB::BOX_INFINITE;
     }
 
     void DiDebugHelper::AddToBatchGroup(DiRenderBatchGroup* bg)

@@ -28,7 +28,7 @@ namespace Demi
         modelViewMatrix = -1;
         modelViewProjMatrix = -1;
         viewProjMatrix = -1;
-        texViewProjMatrix = -1;
+        texMatrix = -1;
 
         eyePosition = -1;
         eyeDirection = -1;
@@ -62,6 +62,8 @@ namespace Demi
         skyLightColor = -1;
         groundColor = -1;
         skyLightDir = -1;
+
+        cascadeEyeSpaceDepths = -1;
     }
 
     DiShaderConstants::~DiShaderConstants(void)
@@ -79,7 +81,7 @@ namespace Demi
             modelViewMatrix = GetRegisterID("g_modelViewMatrix");
             modelViewProjMatrix = GetRegisterID("g_modelViewProjMatrix");
             viewProjMatrix = GetRegisterID("g_viewProjMatrix");
-            texViewProjMatrix = GetRegisterID("g_texViewProjMatrix");
+            texMatrix = GetRegisterID("g_texMatrix");
 
             eyePosition = GetRegisterID("g_eyePosition");
             eyeDirection = GetRegisterID("g_eyeDirection");
@@ -113,6 +115,8 @@ namespace Demi
             skyLightColor = GetRegisterID("g_skyLightColor");
             groundColor = GetRegisterID("g_groundColor");
             skyLightDir = GetRegisterID("g_skyLightDir");
+
+            cascadeEyeSpaceDepths = GetRegisterID("g_cascadeEyeSpaceDepths");
         }
     }
 
@@ -142,7 +146,7 @@ namespace Demi
             SET_CONST(modelViewMatrix);
             SET_CONST(modelViewProjMatrix);
             SET_CONST(viewProjMatrix);
-            SET_CONST(texViewProjMatrix);
+            SET_CONST(texMatrix);
 
             SET_CONST(eyePosition);
             SET_CONST(eyeDirection);
@@ -181,6 +185,13 @@ namespace Demi
                     (float*)(&shaderEnv.groundColor.r), 1);
                 sm->SetPixelShaderConstantF(skyLightDir,
                     (float*)(&shaderEnv.skyLightDir.x), 1);
+            }
+
+            // binding shadow parameters
+            if (cascadeEyeSpaceDepths != -1)
+            {
+                sm->SetPixelShaderConstantF(cascadeEyeSpaceDepths,
+                    (float*)(&shaderEnv.cascadeEyeSpaceDepths), MAX_CASCADE_SPLITS);
             }
 
             SET_CONST(globalAmbient);

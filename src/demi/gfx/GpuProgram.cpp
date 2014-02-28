@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Material.h"
 #include "AssetManager.h"
 #include "GfxDriver.h"
+#include "Light.h"
 
 namespace Demi 
 {
@@ -40,6 +41,14 @@ namespace Demi
         viewMatrix = DiMat4::IDENTITY;
         projMatrix = projMat;
         viewProjMatrix = projMat * viewMatrix;
+    }
+
+    void DiShaderEnvironment::BindShadowLights(DiLight* light)
+    {
+        for (int i = 0; i < MAX_CASCADE_SPLITS; ++i)
+        {
+            cascadeEyeSpaceDepths[i].x = light->mCascadePartitionsFrustum[i];
+        }
     }
 
     void DiCompileDesc::AddMarco( const DiString& name, const DiString& def )

@@ -104,7 +104,7 @@ void AccumulateDirLight(vec3 dir, vec4 color, inout vec3 lit){
 	vec3 litDiffuse = vec3(0.0);
     vec3 litSpecular = vec3(0.0);
 	
-    AccumulatePhong(gSurface.normal, normalize(dir), normalize(gSurface.viewDirWorld),
+    AccumulatePhong(gSurface.normal, normalize(-dir), normalize(gSurface.viewDirWorld),
         color.rgb * color.a, litDiffuse, litSpecular);
 	
     lit += litDiffuse + litSpecular;

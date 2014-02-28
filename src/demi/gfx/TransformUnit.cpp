@@ -19,7 +19,7 @@ namespace Demi
     DiTransformUnit::DiTransformUnit()
         : mQueryFlags(sDefaultQueryFlags)
         , mVisibilityFlags(sDefaultVisibilityFlags)
-        , mShadowCastEnable(true)
+        , mShadowCastEnable(false)
     {
         mParentNode = NULL;
         mGroupType = BATCH_MODEL;

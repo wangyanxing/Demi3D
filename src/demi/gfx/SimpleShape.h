@@ -35,7 +35,7 @@ namespace Demi
 
         void                    GetWorldTransform(Demi::DiMat4* xform) const;
         
-        void                    CreatePlane(float size = 100);
+        void                    CreatePlane(float sizeX = 100, float sizeY = 100);
 
         void                    CreateBox(float size = 100);
 

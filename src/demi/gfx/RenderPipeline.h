@@ -42,7 +42,7 @@ namespace Demi
         friend class DiRenderBatchGroup;
 
         typedef DiVector<DiRenderBatchGroup*> BatchGroups;
-        typedef DiObjectPool<DiMat4>        MatrixPool;
+        typedef DiObjectPool<DiMat4> MatrixPool;
         struct DiMat4Array
         {
             DiMat4    matrixArray[MAX_WORLD_MATS];

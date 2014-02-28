@@ -28,6 +28,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxDriver.h"
 #include "RenderTarget.h"
 #include "Node.h"
+#include "ShaderManager.h"
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable:4701)
@@ -230,10 +231,17 @@ namespace Demi
 
         BindMeshContext(batch,mat);
 
-        DiMaterial* material = NULL;
+        DiMaterial* material = nullptr;
 
         if (mCurrentPass == P_GBUFFER_PASS)
             material = DiRenderWindow::ActiveWindow->GetGBuffer()->GetMaterial().get();
+        else if (mCurrentPass == P_SHADOW_PASS && batch->mMaterial)
+        {
+            if(batch->mMaterial->GetShaderFlags() & CSF_SKINNED)
+                material = DiMaterial::GetAnimatedShadowCasterMaterial().get();
+            else
+                material = DiMaterial::GetStaticShadowCasterMaterial().get();
+        }
         else
             material = batch->mMaterial.get();
 

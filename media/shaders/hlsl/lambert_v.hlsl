@@ -28,7 +28,7 @@ struct VS_OUTPUT
 #if defined( USE_COLOR )
 	half4  Color		: COLOR;
 #endif
-
+     
 #if defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )
 	float2 Texcoord0  	: TEXCOORD0;
 #endif
@@ -38,6 +38,8 @@ struct VS_OUTPUT
 	float3 ViewDir 		: TEXCOORD2;
 	
 	float3 PosWorld		: TEXCOORD3;
+
+    float  Depth        : TEXCOORD4;
 };
 
 VS_OUTPUT vs_main( VS_INPUT In )
@@ -61,6 +63,9 @@ VS_OUTPUT vs_main( VS_INPUT In )
     Out.Normal       	= mul(g_modelMatrix,objNormal).xyz;
 	Out.PosWorld		= mul(g_modelMatrix,objPos);
 	Out.ViewDir			= Out.PosWorld - g_eyePosition;
-	
+
+    float4 t = mul(g_modelViewMatrix, objPos);
+    Out.Depth           = t.z / t.w;
+
 	return Out;
 }

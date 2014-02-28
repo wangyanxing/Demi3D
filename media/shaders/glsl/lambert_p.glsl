@@ -56,7 +56,7 @@ void ComputeSurfaceDataFromGeometry() {
 
 void AccumulateDirLight(vec3 dir,vec4 color, inout vec3 lit){
 
-	float NdotL = max(dot(gSurface.normal, normalize(dir)), 0.0);
+	float NdotL = max(dot(gSurface.normal, normalize(-dir)), 0.0);
 	
 	vec3 litDiffuse = color.rgb * color.a * NdotL;
 	lit += gSurface.albedo.rgb * litDiffuse;

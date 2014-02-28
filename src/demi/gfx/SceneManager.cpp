@@ -448,6 +448,7 @@ namespace Demi
     void DiSceneManager::PreUpdate()
     {
         UpdateDirtyInstanceManagers();
+        mVisibleLights.Clear();
         mSkybox->Update();
         mRootNode->_Update(true, false);
     }
@@ -456,7 +457,7 @@ namespace Demi
     {
         // clear all culled objects and lights
         mVisibleObjects.objs.clear();
-        mVisibleLights.Clear();
+        mCameraPool.Reset();
 
         mZRange = DiVec2(DiMath::POS_INFINITY, 0);
         mBox.SetNull();

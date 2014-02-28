@@ -17,7 +17,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Skeleton.h"
 #include "GfxDriver.h"
+#include "Shadows.h"
 #include "Any.h"
+
 #include <functional>
 
 namespace Demi 
@@ -85,7 +87,7 @@ namespace Demi
         DiMat4      modelViewMatrix;
         DiMat4      modelViewProjMatrix;
         DiMat4      viewProjMatrix;
-        DiMat4      texViewProjMatrix;
+        DiMat4      texMatrix;
 
         DiVec3      eyePosition;
         DiVec3      eyeDirection;        
@@ -122,8 +124,11 @@ namespace Demi
         DiColor     groundColor;
         DiVec3      skyLightDir;
         
+        DiVec4      cascadeEyeSpaceDepths[MAX_CASCADE_SPLITS];
 
         void        SetIdentity();
+
+        void        BindShadowLights(DiLight* light);
     };
 
     //////////////////////////////////////////////////////////////////////////

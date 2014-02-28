@@ -151,6 +151,10 @@ namespace Demi
 
         static DiAssetType          TYPE;
 
+        static DiMaterialPtr        GetStaticShadowCasterMaterial();
+
+        static DiMaterialPtr        GetAnimatedShadowCasterMaterial();
+
     protected:
 
         DiCullMode                  mCullMode;

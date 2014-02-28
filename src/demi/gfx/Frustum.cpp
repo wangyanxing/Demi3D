@@ -105,7 +105,7 @@ namespace Demi
 
     void DiFrustum::SetNearClipDistance(float nearPlane)
     {
-        DI_ASSERT(nearPlane>0);
+//        DI_ASSERT(nearPlane>0);
         mNearDist = nearPlane;
         InvalidateFrustum();
     }
@@ -312,20 +312,11 @@ namespace Demi
             }
             else
             {
-                float half_w = GetOrthoWindowWidth() * 0.5f;
-                float half_h = GetOrthoWindowHeight() * 0.5f;
-
-                left   = - half_w;
-                right  = + half_w;
-                bottom = - half_h;
-                top    = + half_h;
-
-                mLeft = left;
-                mRight = right;
-                mTop = top;
-                mBottom = bottom;
+                left = mLeft;
+                right = mRight;
+                top = mTop;
+                bottom = mBottom;
             }
-
         }
     }
 
@@ -494,9 +485,7 @@ namespace Demi
     void DiFrustum::updateFrustum(void) const
     {
         if (isFrustumOutOfDate())
-        {
             updateFrustumImpl();
-        }
     }
 
     bool DiFrustum::IsViewOutOfDate(void) const
@@ -520,14 +509,11 @@ namespace Demi
         if (mObliqueDepthProjection)
         {
             if (IsViewOutOfDate())
-            {
                 mRecalcFrustum = true;
-            }
         }
 
         return mRecalcFrustum;
     }
-
 
     void DiFrustum::updateViewImpl(void) const
     {
@@ -561,11 +547,8 @@ namespace Demi
     void DiFrustum::updateView(void) const
     {
         if (IsViewOutOfDate())
-        {
             updateViewImpl();
-        }
     }
-
 
     void DiFrustum::updateFrustumPlanesImpl(void) const
     {
@@ -616,9 +599,7 @@ namespace Demi
         updateFrustum();
 
         if (mRecalcFrustumPlanes)
-        {
             updateFrustumPlanesImpl();
-        }
     }
 
     void DiFrustum::updateWorldSpaceCornersImpl(void) const
@@ -641,6 +622,7 @@ namespace Demi
         mWorldSpaceCorners[1] = eyeToWorld.transformAffine(DiVec3(nearLeft,  nearTop,    -mNearDist));
         mWorldSpaceCorners[2] = eyeToWorld.transformAffine(DiVec3(nearLeft,  nearBottom, -mNearDist));
         mWorldSpaceCorners[3] = eyeToWorld.transformAffine(DiVec3(nearRight, nearBottom, -mNearDist));
+
         // far
         mWorldSpaceCorners[4] = eyeToWorld.transformAffine(DiVec3(farRight,  farTop,     -farDist));
         mWorldSpaceCorners[5] = eyeToWorld.transformAffine(DiVec3(farLeft,   farTop,     -farDist));
@@ -655,11 +637,8 @@ namespace Demi
         updateView();
 
         if (mRecalcWorldSpaceCorners)
-        {
             updateWorldSpaceCornersImpl();
-        }
     }
-
 
     float DiFrustum::GetAspectRatio(void) const
     {
@@ -704,7 +683,6 @@ namespace Demi
         mProjType = pt;
         InvalidateFrustum();
     }
-
 
     DiProjectionType DiFrustum::GetProjectionType(void) const
     {
@@ -828,7 +806,6 @@ namespace Demi
                 }
             }
 
-
             // Now YZ 
             // calculate quadratic discriminant: b*b - 4ac
             // x = Ny
@@ -939,6 +916,27 @@ namespace Demi
     {
         mOrthoHeight = h;
         mAspect = w / h;
+
+        float half_w = w * 0.5f;
+        float half_h = h * 0.5f;
+
+        mLeft = -half_w;
+        mRight = +half_w;
+        mBottom = -half_h;
+        mTop = +half_h;
+
+        InvalidateFrustum();
+    }
+
+    void DiFrustum::SetOrthoWindow(float left, float top, float right, float bottom)
+    {
+        mLeft = left;
+        mRight = right;
+        mTop = top;
+        mBottom = bottom;
+
+        mAspect = (right - left) / (bottom - top);
+     
         InvalidateFrustum();
     }
 
@@ -950,7 +948,7 @@ namespace Demi
 
     void DiFrustum::SetOrthoWindowWidth(float w)
     {
-        mOrthoHeight = w / mAspect;
+        SetOrthoWindow(w, w / mAspect);
         InvalidateFrustum();
     }
 

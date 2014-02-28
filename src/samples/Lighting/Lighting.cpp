@@ -51,7 +51,7 @@ void InitScene()
     DiDirLightPtr dirlight = make_shared<DiDirLight>();
     sm->AttachObject(dirlight);
     dirlight->SetColor(DiColor());
-    dirlight->SetDirection(DiVec3(1, 1, 2).normalisedCopy());
+    dirlight->SetDirection(DiVec3(-1, -1, -2).normalisedCopy());
 
 #if 0
     // sky light testing

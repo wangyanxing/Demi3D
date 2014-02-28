@@ -13,6 +13,8 @@
 	#endif
 #endif
 
+#define CASCADE_COUNT_FLAG 4
+
 struct VS_OUTPUT
 {
 	float4 Position 	: POSITION;
@@ -30,6 +32,8 @@ struct VS_OUTPUT
 	float3 ViewDir 		: TEXCOORD2;
 	
 	float3 PosWorld		: TEXCOORD3;
+
+    float  Depth        : TEXCOORD4;
 };
 
 // Data that we can read or derive from the surface shader outputs
@@ -70,7 +74,7 @@ void ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
 void AccumulateDirLight(float3 dir, float4 color,
                     inout float3 lit)
 {
-	float NdotL = max( dot(gSurface.normal, normalize(dir)), 0.0);
+    float NdotL = max(dot(gSurface.normal, normalize(-dir)), 0.0);
 	
 	float3 litDiffuse = color.rgb * color.a * NdotL;
 	lit += gSurface.albedo.rgb * litDiffuse;
@@ -100,6 +104,18 @@ void AccumulateSkyLight(float3 dir, float4 skycolor, float4 groundcolor, inout f
     lit += gSurface.albedo.rgb * color;
 }
 
+static const float4 vCascadeColorsMultiplier[8] =
+{
+    float4 (1.5f, 0.0f, 0.0f, 1.0f),
+    float4 (0.0f, 1.5f, 0.0f, 1.0f),
+    float4 (0.0f, 0.0f, 5.5f, 1.0f),
+    float4 (1.5f, 0.0f, 5.5f, 1.0f),
+    float4 (1.5f, 1.5f, 0.0f, 1.0f),
+    float4 (1.0f, 1.0f, 1.0f, 1.0f),
+    float4 (0.0f, 1.0f, 5.5f, 1.0f),
+    float4 (0.5f, 3.5f, 0.75f, 1.0f)
+};
+
 PS_OUTPUT ps_main( VS_OUTPUT In )
 {			
 	PS_OUTPUT Out;
@@ -126,6 +142,28 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 	Out.Color.rgb = lit * g_diffuseColor.rgb;
 	Out.Color.rgb += g_globalAmbient.rgb * g_ambientColor.rgb;	
 	Out.Color.a = gSurface.albedo.a * g_opacity;
+
+    // shadow mapping
+    float4 vCurrentPixelDepth = In.Depth;
+    float4 fComparison = (vCurrentPixelDepth > g_cascadeEyeSpaceDepths[0]);
+    float4 fComparison2 = (vCurrentPixelDepth > g_cascadeEyeSpaceDepths[1]);
+    float fIndex = dot( 
+                    float4( CASCADE_COUNT_FLAG > 0,
+                            CASCADE_COUNT_FLAG > 1, 
+                            CASCADE_COUNT_FLAG > 2, 
+                            CASCADE_COUNT_FLAG > 3)
+                    , fComparison )
+                 + dot( 
+                    float4( CASCADE_COUNT_FLAG > 4,
+                            CASCADE_COUNT_FLAG > 5,
+                            CASCADE_COUNT_FLAG > 6,
+                            CASCADE_COUNT_FLAG > 7)
+                    , fComparison2 ) ;
+                            
+    int iCurrentCascadeIndex = (int)fIndex;
+    iCurrentCascadeIndex = clamp(iCurrentCascadeIndex, 0, CASCADE_COUNT_FLAG - 1);
+
+    float4 visCascadeColor = vCascadeColorsMultiplier[iCurrentCascadeIndex];
 		
 	// environment mapping
 #if defined(USE_ENV_MAP)
@@ -155,8 +193,7 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 	Out.Color.rgb = sqrt( Out.Color.xyz );
 #endif
 
-	//Out.Color.rgb = gSurface.normal.rgb;
-	//Out.Color.a = 1.0;
+    //Out.Color.rgb *= visCascadeColor.rgb;
 	return Out;
 }
 

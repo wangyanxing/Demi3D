@@ -98,6 +98,9 @@ namespace Demi
         cam->SetNearClipDistance(nearClip);
         cam->SetFarClipDistance(farClip);
 
+        // force update
+        cam->GetProjectionMatrix();
+
         return cam;
     }
 

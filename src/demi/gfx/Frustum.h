@@ -136,7 +136,11 @@ namespace Demi
 
         virtual DiProjectionType    GetProjectionType(void) const;
 
+        /** l = -w/2, r = w/2, b = -h/2, and t = h/2.
+         */
         virtual void                SetOrthoWindow(float w, float h);
+
+        virtual void                SetOrthoWindow(float left, float top, float right, float bottom);
 
         virtual void                SetOrthoWindowHeight(float h);
 

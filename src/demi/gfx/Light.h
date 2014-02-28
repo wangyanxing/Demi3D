@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "TransformUnit.h"
 #include "Shadows.h"
+#include "Texture.h"
 
 namespace Demi 
 {
@@ -78,6 +79,12 @@ namespace Demi
 
         void                    UpdateFrustumPoints(ShadowFrustum &f, const DiVec3 &center, const DiVec3 &view_dir);
 
+        void                    ApplyCropMatrix(DiCamera* shadowCam, ShadowFrustum& f);
+
+    protected:
+
+        void                    CreateShadowTextures();
+
     protected:
 
         LightType               mType;
@@ -93,6 +100,33 @@ namespace Demi
         bool                    mShadowCameraDirty;
         
         DiCamera*               mShadowCamera;
+
+    public:
+
+        DiTexturePtr            mShadowTextures[MAX_CASCADE_SPLITS];
+
+        DiCamera*               mShadowCameras[MAX_CASCADE_SPLITS];
+
+        float                   mCascadePartitionsFrustum[MAX_CASCADE_SPLITS];
+
+    public:
+
+        void                    GetShadowCamera(const DiCamera *cam, DiCamera *texCam, uint16 iteration);
+
+        virtual void            GetShadowCameraForCascade(const DiCamera *cam, DiCamera *texCam,
+                                    uint16 iteration, float nearSplit, float farSplit) {}
+
+        void                    SetSplitPoints(const DiVector<float>& newSplitPoints);
+
+        void                    CalculateSplitPoints(uint16 cascadeCount, float firstSplitDist, float farDist, float lambda);
+
+        uint16                  mCascadeCount;
+        
+        DiVector<float>         mSplitPoints;
+
+        float                   mSplitPadding;
+
+        uint16                  mCurrentIteration;
     };
 }
 

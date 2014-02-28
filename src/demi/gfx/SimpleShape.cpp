@@ -237,7 +237,7 @@ namespace Demi
         mAABB.SetMinimum(-radius,-radius,-radius);
     }
 
-    void DiSimpleShape::CreatePlane( float size /*= 100*/ )
+    void DiSimpleShape::CreatePlane(float sizeX, float sizeY)
     {
         ReleaseSourceData();
         ReleaseIndexBuffer();
@@ -258,20 +258,21 @@ namespace Demi
         mIndexBuffer->Release();
         mAABB.SetNull();
 
-        size /= 2;
+        sizeX /= 2;
+        sizeY /= 2;
 
         float vertices[32] = 
         {
-            -size, 0, -size,  // pos
+            -sizeX, 0, -sizeY,  // pos
             0,1,0,            // normal
             0,1,              // texcoord
-            size, 0,-size,
+            sizeX, 0,-sizeY,
             0,1,0,
             1,1,
-            size, 0,size,
+            sizeX, 0,sizeY,
             0,1,0,
             1,0,
-            -size, 0, size ,
+            -sizeX, 0, sizeY ,
             0,1,0,
             0,0 
         };
@@ -295,8 +296,8 @@ namespace Demi
         memcpy(data,faces,ibsize);
         mIndexBuffer->Unlock();
 
-        mAABB.SetMaximum(size,0,size);
-        mAABB.SetMinimum(-size,0,-size);
+        mAABB.SetMaximum(sizeX,0,sizeY);
+        mAABB.SetMinimum(-sizeX,0,-sizeY);
     }
 
     void DiSimpleShape::CreateBox( float size /*= 100*/ )

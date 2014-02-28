@@ -518,6 +518,20 @@ namespace Demi
             if( cmp.z < z ) z = cmp.z;
         }
 
+        inline void floor()
+        {
+            x = floorf(x);
+            y = floorf(y);
+            z = floorf(z);
+        }
+
+        inline void ceil()
+        {
+            x = ceilf(x);
+            y = ceilf(y);
+            z = ceilf(z);
+        }
+
         /** Sets this vector's components to the maximum of its own and the
             ones of the passed in vector.
             @remarks
@@ -689,6 +703,24 @@ namespace Demi
         inline bool isZero() const
         {
             return DiMath::RealEqual(x,0) && DiMath::RealEqual(y,0) && DiMath::RealEqual(z,0);
+        }
+
+        static inline DiVec3 Min(const DiVec3& a, const DiVec3& b)
+        {
+            return DiVec3(
+                a.x < b.x ? a.x : b.x,
+                a.y < b.y ? a.y : b.y,
+                a.z < b.z ? a.z : b.z
+                );
+        }
+
+        static inline DiVec3 Max(const DiVec3& a, const DiVec3& b)
+        {
+            return DiVec3(
+                a.x > b.x ? a.x : b.x,
+                a.y > b.y ? a.y : b.y,
+                a.z > b.z ? a.z : b.z
+                );
         }
 
         /** As normalise, except that this vector is unaffected and the

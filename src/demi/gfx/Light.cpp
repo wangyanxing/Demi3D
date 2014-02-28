@@ -10,8 +10,11 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "Light.h"
+#include "AssetManager.h"
+#include "RenderTarget.h"
 
 namespace Demi 
 {
@@ -19,8 +22,16 @@ namespace Demi
         :mType(type),
         mColor(DiColor::White),
         mShadowCameraDirty(true),
-        mShadowCamera(nullptr)
+        mShadowCamera(nullptr),
+        mSplitPadding(1.0f)
     {
+        for (int i = 0; i < MAX_CASCADE_SPLITS; ++i)
+            mShadowCameras[i] = nullptr;
+
+        //test
+        CreateShadowTextures();
+
+        CalculateSplitPoints(MAX_CASCADE_SPLITS, 50.0f, 5000.0f, 0.93f);
     }
 
     DiLight::~DiLight(void)
@@ -87,4 +98,80 @@ namespace Demi
         f.point[7] = fc - up*far_height + right*far_width;
     }
 
+    void DiLight::ApplyCropMatrix(DiCamera* shadowCamera, ShadowFrustum& f)
+    {
+        shadowCamera->SetProjectionType(PT_ORTHOGRAPHIC);
+        shadowCamera->SetAspectRatio(1.0);
+    }
+
+    void DiLight::CreateShadowTextures()
+    {
+        for (int i = 0; i < MAX_CASCADE_SPLITS; ++i)
+        {
+            DiString name;
+            static int st = 0;
+            name.Format("_shad_tex_%d", st++);
+            mShadowTextures[i] = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(name);
+            mShadowTextures[i]->SetDimensions(1024, 1024);
+            mShadowTextures[i]->SetFormat(PF_R32F);
+            mShadowTextures[i]->SetUsage(TU_RENDER_TARGET);
+            mShadowTextures[i]->CreateTexture();
+            auto rt = mShadowTextures[i]->GetRenderTarget();
+            rt->SetFlippingUV(true);
+            rt->SetClearColor(DiColor::White);
+        }
+    }
+
+    void DiLight::CalculateSplitPoints(uint16 cascadeCount, float firstSplitDist, float farDist, float lambda)
+    {
+        if (cascadeCount < 2)
+        {
+            DI_WARNING("The cascade count should be greator than 2");
+            return;
+        }
+
+        mSplitPoints.resize(cascadeCount + 1);
+        mCascadeCount = cascadeCount;
+
+        mSplitPoints[0] = 0;
+        firstSplitDist = DiMath::Max(0.001f, firstSplitDist);
+
+        for (uint16 i = 1; i <= mCascadeCount; i++)
+        {
+            float fraction = (float)(i - 1) / (mCascadeCount - 1);
+            float logDist = firstSplitDist * DiMath::Pow(farDist / firstSplitDist, fraction);
+            float linDist = firstSplitDist + fraction * (farDist - firstSplitDist);
+            float splitPoint = linDist + lambda * (logDist - linDist);
+            mSplitPoints[i] = splitPoint;
+        }
+    }
+
+    void DiLight::SetSplitPoints(const DiVector<float>& newSplitPoints)
+    {
+        if (newSplitPoints.size() < 3) // 3, not 2 since splits + 1 points
+        {
+            DI_WARNING("Cannot specify less than 2 splits");
+            return;
+        }
+        mCascadeCount = newSplitPoints.size() - 1;
+        mSplitPoints = newSplitPoints;
+    }
+
+    void DiLight::GetShadowCamera(const DiCamera *cam, DiCamera *texCam, uint16 iteration)
+    {
+        // apply the right clip distance.
+        float nearDist = mSplitPoints[iteration];
+        float farDist = mSplitPoints[iteration + 1];
+
+        // Add a padding factor to internal distances so that the connecting split point will not have bad artifacts.
+        if (iteration > 0)
+            nearDist -= mSplitPadding;
+
+        if (iteration < mCascadeCount - 1)
+            farDist += mSplitPadding;
+
+        mCurrentIteration = iteration;
+
+        GetShadowCameraForCascade(cam, texCam, iteration, nearDist, farDist);
+    }
 }
