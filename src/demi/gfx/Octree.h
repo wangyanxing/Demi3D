@@ -15,12 +15,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiOctree_h__
 
 #include "DList.h"
+#include "OctreeCuller.h"
 
 namespace Demi
 {
-    typedef shared_ptr<DiOctree> DiOctreePtr;
-
-    class DI_GFX_API DiOctree : public DiBase, public enable_shared_from_this<DiOctree>
+    class DI_GFX_API DiOctree : public DiBase,
+                                public enable_shared_from_this<DiOctree>
     {
     public:
 
@@ -30,9 +30,9 @@ namespace Demi
 
     public:
 
-        void          AddNode(DiCullNode* node);
+        void          AddNode(DiOctreeCullUnitPtr node);
                       
-        void          RemoveNode(DiCullNode* node);
+        void          RemoveNode(DiOctreeCullUnitPtr node);
                       
         void          DeleteChild(uint16 id)
         {
@@ -50,7 +50,7 @@ namespace Demi
 
         void          GetCullBounds( DiAABB* ) const;
 
-        typedef DiDList<DiCullNode*> NodeList;
+        typedef DiDList<DiOctreeCullUnitPtr> NodeList;
         NodeList      mNodes;
 
         DiAABB        mBox;

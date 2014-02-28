@@ -15,13 +15,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define CullNode_h__
 
 #include "Node.h"
-#include "DList.h"
-#include "Octree.h"
+#include "SceneCuller.h"
 #include <functional>
 
 namespace Demi
 {
-    class DI_GFX_API DiCullNode : public DiNode, public DiDListBase<DiCullNode*>
+    class DI_GFX_API DiCullNode : public DiNode
     {
     public:
         
@@ -102,13 +101,11 @@ namespace Demi
          */
         void                    _Update(bool updateChildren, bool parentHasChanged);
 
-        DiOctreePtr             GetOctant() { return mOctant; }
-
-        void                    SetOctant( DiOctreePtr o ) { mOctant = o; }
-
         DiAABB&                 GetLocalAABB() { return mLocalAABB; }
 
         const DiAABB&           GetWorldAABB(void) const;
+        
+        DiCullUnitPtr           GetCullUnit() {return mCullUnit;}
 
         /** Test if this node is in a bounding box
          */
@@ -129,8 +126,8 @@ namespace Demi
         DiAABB                  mWorldAABB;
 
         DiAABB                  mLocalAABB;
-
-        DiOctreePtr             mOctant;
+        
+        DiCullUnitPtr           mCullUnit;
     };
 }
 

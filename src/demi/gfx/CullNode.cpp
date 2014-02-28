@@ -15,21 +15,26 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "TransformUnit.h"
 #include "SceneManager.h"
 #include "RenderPipeline.h"
+#include "SceneCuller.h"
 
 namespace Demi
 {
     DiCullNode::DiCullNode(DiSceneManager* sm):
         DiNode(),
         mCreator(sm),
-        mOctant(NULL)
+        mCullUnit(nullptr)
     {
+        if(sm)
+            mCullUnit = sm->GetSceneCuller()->CreateUnit(this);
     }
 
     DiCullNode::DiCullNode( DiSceneManager* sm,const DiString& name ):
         DiNode(name),
         mCreator(sm),
-        mOctant(nullptr)
+        mCullUnit(nullptr)
     {
+        if(sm)
+            mCullUnit = sm->GetSceneCuller()->CreateUnit(this);
     }
 
     DiCullNode::~DiCullNode(void)
@@ -53,7 +58,7 @@ namespace Demi
         }
 
         if (!mWorldAABB.IsNull())
-            mCreator->UpdateOctreeNode( this );
+            mCullUnit->Update();
     }
 
     void DiCullNode::AttachObject(DiTransUnitPtr obj)
@@ -254,9 +259,9 @@ namespace Demi
             return false;
         }
 
-        DiVec3 octreeSize = bmax - bmin;
+        DiVec3 size = bmax - bmin;
         DiVec3 nodeSize = mWorldAABB.GetMaximum() - mWorldAABB.GetMinimum();
-        return nodeSize < octreeSize;
+        return nodeSize < size;
     }
 
     const DiAABB& DiCullNode::GetWorldAABB( void ) const
@@ -266,7 +271,7 @@ namespace Demi
 
     void DiCullNode::RemoveNodeAndChildren()
     {
-        mCreator->RemoveOctreeNode( this ); 
+        mCullUnit->mCuller->RemoveUnit(mCullUnit);
 
         for (size_t i = 0; i < mChildren.size(); ++i)
         {
@@ -277,7 +282,7 @@ namespace Demi
     DiNode* DiCullNode::RemoveChild( uint32 index )
     {
         DiCullNode *on = static_cast<DiCullNode* >( DiNode::RemoveChild( index ) );
-        on->RemoveNodeAndChildren(); 
+        on->RemoveNodeAndChildren();
         return on; 
     }
 
