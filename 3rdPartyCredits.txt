@@ -1,0 +1,42 @@
+ __  ___  __  __  __
+|  \|_ |\/||   _)|  \
+|__/|__|  ||  __)|__/
+
+=======================================================================
+
+Third Party Software Credits	
+
+All other libraries needed to build are included in the repository. Source is available on request or from the listed websites.
+
+
+Freetype 
+Version:        2.4.9
+Website:        http://www.freetype.org/
+Description: 	FreeType is a freely available software library to render fonts.
+License:        The FreeType License:
+                http://git.savannah.gnu.org/cgit/freetype/freetype2.git/tree/docs/FTL.TXT
+		  
+stbi image library
+Version: 		1.29
+Website: 		http://www.nothings.org/stb_image.c
+Description: 	Public domain JPEG/PNG reader
+License:        Unknow, "when you control the images you're loading, no warranty implied; use at your own risk"
+
+OIS
+Version:        1.4
+Website:        http://sourceforge.net/projects/wgois/
+Description:    Object Oriented Input System (OIS) is meant to be a cross platform, simple solution for using all kinds of Input Devices (Keyboards, Mice, Joysticks, etc) and feedback devices (e.g. force feedback). Written in C++ using Object Oriented Design pattern
+License:        zlib/libpng License
+
+zlib
+Version:        1.2.8
+Website:        http://www.zlib.net/
+Description:    A Massively Spiffy Yet Delicately Unobtrusive Compression Library
+License:        zlib License
+
+zziplib
+Version:        0.13.62
+Website:        http://zziplib.sourceforge.net/
+Description:    The zziplib library is intentionally lightweight, it offers the ability to easily extract data from files archived in a single zip file.
+License:        LGPL/MPL License
+				

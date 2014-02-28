@@ -5,3 +5,5 @@
 add_subdirectory(freetype)
 add_subdirectory(ois)
 add_subdirectory(STB)
+add_subdirectory(zlib)
+add_subdirectory(zziplib)
