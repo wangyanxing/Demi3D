@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,14 +31,11 @@ THE SOFTWARE.
 
 // Precompiler options
 #include "OgrePrerequisites.h"
-#include "OgreRenderQueue.h"
 #include "OgreAxisAlignedBox.h"
 #include "OgreSphere.h"
 #include "OgreShadowCaster.h"
-#include "OgreFactoryObj.h"
 #include "OgreAnimable.h"
-#include "OgreAny.h"
-#include "OgreUserObjectBindings.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -325,12 +322,12 @@ namespace Ogre {
 			this MovableObject. This can be a pointer back to one of your own
 			classes for instance.		
 		*/
-		virtual void setUserAny(const Any& anything) { getUserObjectBindings().setUserAny(anything); }
+		OGRE_DEPRECATED virtual void setUserAny(const Any& anything) { getUserObjectBindings().setUserAny(anything); }
 
 		/** @deprecated use UserObjectBindings::getUserAny via getUserObjectBindings() instead.
 			Retrieves the custom user value associated with this object.
 		*/
-		virtual const Any& getUserAny(void) const { return getUserObjectBindings().getUserAny(); }
+		OGRE_DEPRECATED virtual const Any& getUserAny(void) const { return getUserObjectBindings().getUserAny(); }
 
 		/** Return an instance of user objects binding associated with this class.
 		You can use it to associate one or more custom objects with this class instance.
@@ -378,7 +375,7 @@ namespace Ogre {
         /** Gets the queue group for this entity, see setRenderQueueGroup for full details. */
         virtual uint8 getRenderQueueGroup(void) const;
 
-		/// return the full transformation of the parent sceneNode or the attachingPoint node
+		/// Return the full transformation of the parent sceneNode or the attachingPoint node
 		virtual const Matrix4& _getParentNodeFullTransform(void) const;
 
         /** Sets the query flags for this object.
@@ -410,10 +407,10 @@ namespace Ogre {
 		static uint32 getDefaultQueryFlags() { return msDefaultQueryFlags; }
 
 		
-        /** Sets the visiblity flags for this object.
+        /** Sets the visibility flags for this object.
         @remarks
 			As well as a simple true/false value for visibility (as seen in setVisible), 
-			you can also set visiblity flags which when 'and'ed with the SceneManager's
+			you can also set visibility flags which when 'and'ed with the SceneManager's
 			visibility mask can also make an object invisible.
         */
         virtual void setVisibilityFlags(uint32 flags) { mVisibilityFlags = flags; }
@@ -489,14 +486,14 @@ namespace Ogre {
 		*/
 		virtual LightList* _getLightList() { return &mLightList; }
 
-		/// Define a default implementation of method from ShadowCaster which implements no shadows
+		/// Returns details of the edges which might be used to determine a silhouette
         EdgeData* getEdgeList(void) { return NULL; }
-		/// Define a default implementation of method from ShadowCaster which implements no shadows
+		/// Returns whether the object has a valid edge list.
 		bool hasEdgeList(void) { return false; }
         /// Define a default implementation of method from ShadowCaster which implements no shadows
         ShadowRenderableListIterator getShadowVolumeRenderableIterator(
             ShadowTechnique shadowTechnique, const Light* light, 
-            HardwareIndexBufferSharedPtr* indexBuffer, 
+            HardwareIndexBufferSharedPtr* indexBuffer, size_t* indexBufferUsedSize,
             bool extrudeVertices, Real extrusionDist, unsigned long flags = 0);
 		
         /** Overridden member from ShadowCaster. */
@@ -578,7 +575,7 @@ namespace Ogre {
 	{
 	protected:
 		/// Type flag, allocated if requested
-		unsigned long mTypeFlag;
+		uint32 mTypeFlag;
 
 		/// Internal implementation of create method - must be overridden
 		virtual MovableObject* createInstanceImpl(
@@ -624,7 +621,7 @@ namespace Ogre {
 			to a number of different types of object, should you always wish them
 			to be treated the same in queries.
 		*/
-		void _notifyTypeFlags(unsigned long flag) { mTypeFlag = flag; }
+		void _notifyTypeFlags(uint32 flag) { mTypeFlag = flag; }
 
 		/** Gets the type flag for this factory.
 		@remarks
@@ -638,4 +635,7 @@ namespace Ogre {
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
+
 #endif

@@ -4,7 +4,7 @@ This source file is a part of OGRE
 
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -29,83 +29,94 @@ THE SOFTWARE
 // Platform-specific stuff
 #include "OgrePlatform.h"
 
-// Needed for OGRE_WCHAR_T_STRINGS below
 #include <string>
-
 
 // configure memory tracking
 #if OGRE_DEBUG_MODE 
 #	if OGRE_MEMORY_TRACKER_DEBUG_MODE
-#		define OGRE_MEMORY_TRACKER 1
+#        define OGRE_MEMORY_TRACKER 1
 #	else
-#		define OGRE_MEMORY_TRACKER 0
+#        define OGRE_MEMORY_TRACKER 0
 #	endif
 #else
 #	if OGRE_MEMORY_TRACKER_RELEASE_MODE
-#		define OGRE_MEMORY_TRACKER 1
+#        define OGRE_MEMORY_TRACKER 1
 #	else
-#		define OGRE_MEMORY_TRACKER 0
+#        define OGRE_MEMORY_TRACKER 0
 #	endif
 #endif
-
-
-
 
 namespace Ogre {
     // Define ogre version
     #define OGRE_VERSION_MAJOR 1
-    #define OGRE_VERSION_MINOR 8
-    #define OGRE_VERSION_PATCH 1
-	#define OGRE_VERSION_SUFFIX ""
-    #define OGRE_VERSION_NAME "Byatis"
+    #define OGRE_VERSION_MINOR 10
+    #define OGRE_VERSION_PATCH 0
+	#define OGRE_VERSION_SUFFIX "unstable"
+    #define OGRE_VERSION_NAME "Xalafu"
 
     #define OGRE_VERSION    ((OGRE_VERSION_MAJOR << 16) | (OGRE_VERSION_MINOR << 8) | OGRE_VERSION_PATCH)
 
     // define the real number values to be used
     // default to use 'float' unless precompiler option set
     #if OGRE_DOUBLE_PRECISION == 1
-		/** Software floating point type.
-		@note Not valid as a pointer to GPU buffers / parameters
-		*/
+        /** Software floating point type.
+        @note Not valid as a pointer to GPU buffers / parameters
+        */
         typedef double Real;
     #else
-		/** Software floating point type.
-		@note Not valid as a pointer to GPU buffers / parameters
-		*/
+        /** Software floating point type.
+        @note Not valid as a pointer to GPU buffers / parameters
+        */
         typedef float Real;
     #endif
 
     #if OGRE_COMPILER == OGRE_COMPILER_GNUC && OGRE_COMP_VER >= 310 && !defined(STLPORT)
-	#   if OGRE_COMP_VER >= 430
-	#       define HashMap ::std::tr1::unordered_map
-	#		define HashSet ::std::tr1::unordered_set
-	#    else
-	#       define HashMap ::__gnu_cxx::hash_map
-	#       define HashSet ::__gnu_cxx::hash_set
-	#    endif
+    #   if OGRE_COMP_VER >= 430
+    #       define HashMap ::std::tr1::unordered_map
+    #       define HashMultiMap ::std::tr1::unordered_multimap
+    #       define HashSet ::std::tr1::unordered_set
+    #       define HashMultiSet ::std::tr1::unordered_multiset
+    #    else
+    #       define HashMap ::__gnu_cxx::hash_map
+    #       define HashMultiMap ::__gnu_cxx::hash_multimap
+    #       define HashSet ::__gnu_cxx::hash_set
+    #       define HashMultiSet ::__gnu_cxx::hash_multiset
+    #    endif
     #elif OGRE_COMPILER == OGRE_COMPILER_CLANG
     #    if defined(_LIBCPP_VERSION)
     #       define HashMap ::std::unordered_map
+    #       define HashMultiMap ::std::unordered_multimap
     #       define HashSet ::std::unordered_set
+    #       define HashMultiSet ::std::unordered_multiset
     #    else
     #       define HashMap ::std::tr1::unordered_map
+    #       define HashMultiMap ::std::tr1::unordered_multimap
     #       define HashSet ::std::tr1::unordered_set
+    #       define HashMultiSet ::std::tr1::unordered_multiset
     #    endif
     #else
-    #   if OGRE_COMPILER == OGRE_COMPILER_MSVC
-    #       if OGRE_COMP_VER >= 1600 // VC++ 10.0
-	#			define HashMap ::std::tr1::unordered_map
-	#           define HashSet ::std::tr1::unordered_set
-	#		elif OGRE_COMP_VER > 1300 && !defined(_STLP_MSVC)
-    #           define HashMap ::stdext::hash_map
-	#           define HashSet ::stdext::hash_set
+    #   if OGRE_COMPILER == OGRE_COMPILER_MSVC && !defined(_STLP_MSVC)
+    #       if _MSC_FULL_VER >= 150030729 // VC++ 9.0 SP1+
+    #           define HashMap ::std::tr1::unordered_map
+	#           define HashMultiMap ::std::tr1::unordered_multimap
+    #           define HashSet ::std::tr1::unordered_set
+	#           define HashMultiSet ::std::tr1::unordered_multiset
+    #       elif OGRE_THREAD_PROVIDER == 1
+    #           define HashMap ::boost::unordered_map
+    #           define HashMultiMap ::boost::unordered_multimap
+    #           define HashSet ::boost::unordered_set
+    #           define HashMultiSet ::boost::unordered_multiset
     #       else
-    #           define HashMap ::std::hash_map
-	#           define HashSet ::std::hash_set
+    #           define HashMap ::std::unordered_map
+    #           define HashMultiMap ::std::unordered_multimap
+    #           define HashSet ::std::unordered_set
+    #           define HashMultiSet ::std::unordered_multiset
     #       endif
     #   else
-    #       define HashMap ::std::hash_map
-	#       define HashSet ::std::hash_set
+    #       define HashMap ::std::unordered_map
+    #       define HashMultiMap ::std::unordered_multimap
+    #       define HashSet ::std::unordered_set
+    #       define HashMultiSet ::std::unordered_multiset
     #   endif
     #endif
 
@@ -119,13 +130,14 @@ namespace Ogre {
     typedef unsigned int uint;
 	typedef unsigned long ulong;
 
-	// Useful threading defines
-#include "Threading/OgreThreadDefines.h"
-
+    #if __cplusplus >= 201103L
+    #define register
+    #endif
 // Pre-declare classes
 // Allows use of pointers in header files without including individual .h
 // so decreases dependencies between files
     class Angle;
+    class AnimableValue;
     class Animation;
     class AnimationState;
     class AnimationStateSet;
@@ -148,6 +160,7 @@ namespace Ogre {
     template <typename T> class ControllerFunction;
     class ControllerManager;
     template <typename T> class ControllerValue;
+	class DataStream;
 	class DefaultWorkQueue;
     class Degree;
 	class DepthBuffer;
@@ -159,14 +172,14 @@ namespace Ogre {
     class ErrorDialog;
     class ExternalTextureSourceManager;
     class Factory;
-    class Font;
-    class FontPtr;
-    class FontManager;
     struct FrameEvent;
     class FrameListener;
     class Frustum;
+    struct GpuLogicalBufferStruct;
+    struct GpuNamedConstants;
+    class GpuProgramParameters;
+    class GpuSharedParameters;
     class GpuProgram;
-    class GpuProgramPtr;
     class GpuProgramManager;
 	class GpuProgramUsage;
     class HardwareIndexBuffer;
@@ -175,7 +188,6 @@ namespace Ogre {
 	class HardwarePixelBuffer;
     class HardwarePixelBufferSharedPtr;
 	class HighLevelGpuProgram;
-    class HighLevelGpuProgramPtr;
 	class HighLevelGpuProgramManager;
 	class HighLevelGpuProgramFactory;
     class IndexData;
@@ -194,17 +206,17 @@ namespace Ogre {
     class Log;
     class LogManager;
 	class LodStrategy;
+	class LodStrategyManager;
 	class ManualResourceLoader;
 	class ManualObject;
     class Material;
-    class MaterialPtr;
     class MaterialManager;
     class Math;
     class Matrix3;
     class Matrix4;
+    class MemoryDataStream;
     class MemoryManager;
     class Mesh;
-    class MeshPtr;
     class MeshSerializer;
     class MeshSerializerImpl;
     class MeshManager;
@@ -215,11 +227,6 @@ namespace Ogre {
 	class NodeKeyFrame;
 	class NumericAnimationTrack;
 	class NumericKeyFrame;
-    class Overlay;
-    class OverlayContainer;
-    class OverlayElement;
-    class OverlayElementFactory;
-    class OverlayManager;
     class Particle;
     class ParticleAffector;
     class ParticleAffectorFactory;
@@ -235,9 +242,8 @@ namespace Ogre {
     class PixelBox;
     class Plane;
     class PlaneBoundedVolume;
-	class Plugin;
+    class Plugin;
     class Pose;
-    class ProgressiveMesh;
     class Profile;
 	class Profiler;
     class Quaternion;
@@ -260,6 +266,7 @@ namespace Ogre {
     class RenderTarget;
     class RenderTargetListener;
     class RenderTexture;
+    class RenderToVertexBuffer;
 	class MultiRenderTarget;
     class RenderWindow;
     class RenderOperation;
@@ -278,13 +285,13 @@ namespace Ogre {
 	class ScriptCompilerManager;
 	class ScriptLoader;
     class Serializer;
+    class ShadowCameraSetup;
     class ShadowCaster;
     class ShadowRenderable;
 	class ShadowTextureManager;
     class SimpleRenderable;
     class SimpleSpline;
     class Skeleton;
-    class SkeletonPtr;
     class SkeletonInstance;
     class SkeletonManager;
     class Sphere;
@@ -301,7 +308,6 @@ namespace Ogre {
 	class ExternalTextureSource;
     class TextureUnitState;
     class Texture;
-    class TexturePtr;
     class TextureManager;
     class TransformKeyFrame;
 	class Timer;
@@ -326,6 +332,26 @@ namespace Ogre {
     class CompositionPass;
     class CompositionTargetPass;
 	class CustomCompositionPass;
+
+    template<typename T> class SharedPtr;
+	typedef SharedPtr<AnimableValue> AnimableValuePtr;
+    typedef SharedPtr<Compositor> CompositorPtr;
+	typedef SharedPtr<DataStream> DataStreamPtr;
+    typedef SharedPtr<GpuProgram> GpuProgramPtr;
+    typedef SharedPtr<GpuNamedConstants> GpuNamedConstantsPtr;
+    typedef SharedPtr<GpuLogicalBufferStruct> GpuLogicalBufferStructPtr;
+    typedef SharedPtr<GpuSharedParameters> GpuSharedParametersPtr;
+    typedef SharedPtr<GpuProgramParameters> GpuProgramParametersSharedPtr;
+    typedef SharedPtr<HighLevelGpuProgram> HighLevelGpuProgramPtr;
+    typedef SharedPtr<Material> MaterialPtr;
+    typedef SharedPtr<MemoryDataStream> MemoryDataStreamPtr;
+    typedef SharedPtr<Mesh> MeshPtr;
+    typedef SharedPtr<PatchMesh> PatchMeshPtr;
+    typedef SharedPtr<RenderToVertexBuffer> RenderToVertexBufferSharedPtr;
+    typedef SharedPtr<Resource> ResourcePtr;
+	typedef SharedPtr<ShadowCameraSetup> ShadowCameraSetupPtr;
+    typedef SharedPtr<Skeleton> SkeletonPtr;
+    typedef SharedPtr<Texture> TexturePtr;
 }
 
 /* Include all the standard header *after* all the configuration
@@ -356,93 +382,93 @@ namespace Ogre
 	template<typename T>
 	bool operator <(const CustomMemoryStringT(T)& l,const StdStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())<0;
+        return l.compare(0,l.length(),o.c_str(),o.length())<0;
 	}
 	template<typename T>
 	bool operator <(const StdStringT(T)& l,const CustomMemoryStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())<0;
+        return l.compare(0,l.length(),o.c_str(),o.length())<0;
 	}
 	template<typename T>
 	bool operator <=(const CustomMemoryStringT(T)& l,const StdStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())<=0;
+        return l.compare(0,l.length(),o.c_str(),o.length())<=0;
 	}
 	template<typename T>
 	bool operator <=(const StdStringT(T)& l,const CustomMemoryStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())<=0;
+        return l.compare(0,l.length(),o.c_str(),o.length())<=0;
 	}
 	template<typename T>
 	bool operator >(const CustomMemoryStringT(T)& l,const StdStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())>0;
+        return l.compare(0,l.length(),o.c_str(),o.length())>0;
 	}
 	template<typename T>
 	bool operator >(const StdStringT(T)& l,const CustomMemoryStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())>0;
+        return l.compare(0,l.length(),o.c_str(),o.length())>0;
 	}
 	template<typename T>
 	bool operator >=(const CustomMemoryStringT(T)& l,const StdStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())>=0;
+        return l.compare(0,l.length(),o.c_str(),o.length())>=0;
 	}
 	template<typename T>
 	bool operator >=(const StdStringT(T)& l,const CustomMemoryStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())>=0;
+        return l.compare(0,l.length(),o.c_str(),o.length())>=0;
 	}
 
 	template<typename T>
 	bool operator ==(const CustomMemoryStringT(T)& l,const StdStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())==0;
+        return l.compare(0,l.length(),o.c_str(),o.length())==0;
 	}
 	template<typename T>
 	bool operator ==(const StdStringT(T)& l,const CustomMemoryStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())==0;
+        return l.compare(0,l.length(),o.c_str(),o.length())==0;
 	}
 
 	template<typename T>
 	bool operator !=(const CustomMemoryStringT(T)& l,const StdStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())!=0;
+        return l.compare(0,l.length(),o.c_str(),o.length())!=0;
 	}
 	template<typename T>
 	bool operator !=(const StdStringT(T)& l,const CustomMemoryStringT(T)& o)
 	{
-		return l.compare(0,l.length(),o.c_str(),o.length())!=0;
+        return l.compare(0,l.length(),o.c_str(),o.length())!=0;
 	}
 
 	template<typename T>
 	CustomMemoryStringT(T) operator +=(const CustomMemoryStringT(T)& l,const StdStringT(T)& o)
 	{
-		return CustomMemoryStringT(T)(l)+=o.c_str();
+        return CustomMemoryStringT(T)(l)+=o.c_str();
 	}
 	template<typename T>
 	CustomMemoryStringT(T) operator +=(const StdStringT(T)& l,const CustomMemoryStringT(T)& o)
 	{
-		return CustomMemoryStringT(T)(l.c_str())+=o.c_str();
+        return CustomMemoryStringT(T)(l.c_str())+=o.c_str();
 	}
 
 	template<typename T>
 	CustomMemoryStringT(T) operator +(const CustomMemoryStringT(T)& l,const StdStringT(T)& o)
 	{
-		return CustomMemoryStringT(T)(l)+=o.c_str();
+        return CustomMemoryStringT(T)(l)+=o.c_str();
 	}
 
 	template<typename T>
 	CustomMemoryStringT(T) operator +(const StdStringT(T)& l,const CustomMemoryStringT(T)& o)
 	{
-		return CustomMemoryStringT(T)(l.c_str())+=o.c_str();
+        return CustomMemoryStringT(T)(l.c_str())+=o.c_str();
 	}
 
 	template<typename T>
 	CustomMemoryStringT(T) operator +(const T* l,const CustomMemoryStringT(T)& o)
 	{
-		return CustomMemoryStringT(T)(l)+=o;
+        return CustomMemoryStringT(T)(l)+=o;
 	}
 
 	#undef StdStringT
@@ -469,6 +495,34 @@ namespace Ogre
 
 }
 
+#if OGRE_STRING_USE_CUSTOM_MEMORY_ALLOCATOR 
+namespace std 
+{
+#if (OGRE_COMPILER == OGRE_COMPILER_GNUC && OGRE_COMP_VER >= 430) || OGRE_COMPILER == OGRE_COMPILER_CLANG && !defined(STLPORT) && __cplusplus < 201103L
+	namespace tr1
+	{
+#endif
+    template <> struct hash<Ogre::String>
+	{
+    public :
+        size_t operator()(const Ogre::String &str ) const
+        {
+        	size_t _Val = 2166136261U;
+        	size_t _First = 0;
+        	size_t _Last = str.size();
+        	size_t _Stride = 1 + _Last / 10;
+
+        	for(; _First < _Last; _First += _Stride)
+                _Val = 16777619U * _Val ^ (size_t)str[_First];
+        	return (_Val);
+        }
+    };
+#if (OGRE_COMPILER == OGRE_COMPILER_GNUC && OGRE_COMP_VER >= 430) || OGRE_COMPILER == OGRE_COMPILER_CLANG && !defined(STLPORT) && __cplusplus < 201103L
+	}
+#endif
+}
+#endif
+
 //for stl container
 namespace Ogre
 { 
@@ -476,13 +530,13 @@ namespace Ogre
 	struct deque 
 	{ 
 #if OGRE_CONTAINERS_USE_CUSTOM_MEMORY_ALLOCATOR
-	   typedef typename std::deque<T, A> type;    
-	   typedef typename std::deque<T, A>::iterator iterator;
-	   typedef typename std::deque<T, A>::const_iterator const_iterator;
+        typedef typename std::deque<T, A> type;    
+        typedef typename std::deque<T, A>::iterator iterator;
+        typedef typename std::deque<T, A>::const_iterator const_iterator;
 #else
-		typedef typename std::deque<T> type;
-		typedef typename std::deque<T>::iterator iterator;
-		typedef typename std::deque<T>::const_iterator const_iterator;
+        typedef typename std::deque<T> type;
+        typedef typename std::deque<T>::iterator iterator;
+        typedef typename std::deque<T>::const_iterator const_iterator;
 #endif
 	}; 
 
@@ -490,13 +544,13 @@ namespace Ogre
 	struct vector 
 	{ 
 #if OGRE_CONTAINERS_USE_CUSTOM_MEMORY_ALLOCATOR
-		typedef typename std::vector<T, A> type;
-		typedef typename std::vector<T, A>::iterator iterator;
-		typedef typename std::vector<T, A>::const_iterator const_iterator;
+        typedef typename std::vector<T, A> type;
+        typedef typename std::vector<T, A>::iterator iterator;
+        typedef typename std::vector<T, A>::const_iterator const_iterator;
 #else
-		typedef typename std::vector<T> type;
-		typedef typename std::vector<T>::iterator iterator;
-		typedef typename std::vector<T>::const_iterator const_iterator;
+        typedef typename std::vector<T> type;
+        typedef typename std::vector<T>::iterator iterator;
+        typedef typename std::vector<T>::const_iterator const_iterator;
 #endif
 	}; 
 
@@ -504,13 +558,13 @@ namespace Ogre
 	struct list 
 	{ 
 #if OGRE_CONTAINERS_USE_CUSTOM_MEMORY_ALLOCATOR
-	   typedef typename std::list<T, A> type;
-	   typedef typename std::list<T, A>::iterator iterator;
-	   typedef typename std::list<T, A>::const_iterator const_iterator;
+        typedef typename std::list<T, A> type;
+        typedef typename std::list<T, A>::iterator iterator;
+        typedef typename std::list<T, A>::const_iterator const_iterator;
 #else
-		typedef typename std::list<T> type;
-		typedef typename std::list<T>::iterator iterator;
-		typedef typename std::list<T>::const_iterator const_iterator;
+        typedef typename std::list<T> type;
+        typedef typename std::list<T>::iterator iterator;
+        typedef typename std::list<T>::const_iterator const_iterator;
 #endif
 	}; 
 
@@ -518,13 +572,13 @@ namespace Ogre
 	struct set 
 	{ 
 #if OGRE_CONTAINERS_USE_CUSTOM_MEMORY_ALLOCATOR
-	   typedef typename std::set<T, P, A> type;
-	   typedef typename std::set<T, P, A>::iterator iterator;
-	   typedef typename std::set<T, P, A>::const_iterator const_iterator;
+        typedef typename std::set<T, P, A> type;
+        typedef typename std::set<T, P, A>::iterator iterator;
+        typedef typename std::set<T, P, A>::const_iterator const_iterator;
 #else
-		typedef typename std::set<T, P> type;
-		typedef typename std::set<T, P>::iterator iterator;
-		typedef typename std::set<T, P>::const_iterator const_iterator;
+        typedef typename std::set<T, P> type;
+        typedef typename std::set<T, P>::iterator iterator;
+        typedef typename std::set<T, P>::const_iterator const_iterator;
 #endif
 	}; 
 
@@ -532,13 +586,13 @@ namespace Ogre
 	struct map 
 	{ 
 #if OGRE_CONTAINERS_USE_CUSTOM_MEMORY_ALLOCATOR
-	   typedef typename std::map<K, V, P, A> type;
-	   typedef typename std::map<K, V, P, A>::iterator iterator;
-	   typedef typename std::map<K, V, P, A>::const_iterator const_iterator;
+        typedef typename std::map<K, V, P, A> type;
+        typedef typename std::map<K, V, P, A>::iterator iterator;
+        typedef typename std::map<K, V, P, A>::const_iterator const_iterator;
 #else
-		typedef typename std::map<K, V, P> type;
-		typedef typename std::map<K, V, P>::iterator iterator;
-		typedef typename std::map<K, V, P>::const_iterator const_iterator;
+        typedef typename std::map<K, V, P> type;
+        typedef typename std::map<K, V, P>::iterator iterator;
+        typedef typename std::map<K, V, P>::const_iterator const_iterator;
 #endif
 	}; 
 
@@ -546,13 +600,13 @@ namespace Ogre
 	struct multimap 
 	{ 
 #if OGRE_CONTAINERS_USE_CUSTOM_MEMORY_ALLOCATOR
-		typedef typename std::multimap<K, V, P, A> type;
-		typedef typename std::multimap<K, V, P, A>::iterator iterator;
-		typedef typename std::multimap<K, V, P, A>::const_iterator const_iterator;
+        typedef typename std::multimap<K, V, P, A> type;
+        typedef typename std::multimap<K, V, P, A>::iterator iterator;
+        typedef typename std::multimap<K, V, P, A>::const_iterator const_iterator;
 #else
-		typedef typename std::multimap<K, V, P> type;
-		typedef typename std::multimap<K, V, P>::iterator iterator;
-		typedef typename std::multimap<K, V, P>::const_iterator const_iterator;
+        typedef typename std::multimap<K, V, P> type;
+        typedef typename std::multimap<K, V, P>::iterator iterator;
+        typedef typename std::multimap<K, V, P>::const_iterator const_iterator;
 #endif
 	}; 
 

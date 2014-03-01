@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
- Copyright (c) 2000-2012 Torus Knot Software Ltd
+ Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,10 @@ THE SOFTWARE.
 #define __OGRE_POSE_H
 
 #include "OgrePrerequisites.h"
-#include "OgreString.h"
+#include "OgreCommon.h"
 #include "OgreHardwareVertexBuffer.h"
-#include "OgreVector3.h"
 #include "OgreIteratorWrappers.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -59,7 +59,7 @@ namespace Ogre {
 				dedicated at the submesh index + 1)
 			@param name Optional name
 		*/
-		Pose(ushort target, const String& name = StringUtil::BLANK);
+		Pose(ushort target, const String& name = BLANKSTRING);
 		virtual ~Pose();
 		/// Return the name of the pose (may be blank)
 		const String& getName(void) const { return mName; }
@@ -137,5 +137,7 @@ namespace Ogre {
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

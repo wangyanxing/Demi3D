@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,29 +30,21 @@ THE SOFTWARE.
 
 // Precompiler options
 #include "OgrePrerequisites.h"
-#include "OgreHeaderPrefix.h"
-#include "OgreString.h"
 #include <exception>
-
-// Backwards compatibility with old assert mode definitions
-#if OGRE_RELEASE_ASSERT == 1
-#   define OGRE_ASSERT_MODE 1
-#endif
+#include "OgreHeaderPrefix.h"
 
 // Check for OGRE assert mode
 
 // RELEASE_EXCEPTIONS mode
 #if OGRE_ASSERT_MODE == 1
-#   ifdef _DEBUG
+#   if OGRE_DEBUG_MODE
 #       define OgreAssert( a, b ) assert( (a) && (b) )
-
 #   else
 #       if OGRE_COMP != OGRE_COMPILER_BORL
 #           define OgreAssert( a, b ) if( !(a) ) OGRE_EXCEPT( Ogre::Exception::ERR_RT_ASSERTION_FAILED, (b), "no function info")
 #       else
 #           define OgreAssert( a, b ) if( !(a) ) OGRE_EXCEPT( Ogre::Exception::ERR_RT_ASSERTION_FAILED, (b), __FUNC__ )
 #       endif
-
 #   endif
 
 // EXCEPTIONS mode
@@ -66,10 +58,11 @@ THE SOFTWARE.
 // STANDARD mode
 #else
 #   define OgreAssert( a, b ) assert( (a) && (b) )
-
 #endif
 
 namespace Ogre {
+    typedef _StringBase String;
+
 	/** \addtogroup Core
 	*  @{
 	*/
@@ -114,8 +107,8 @@ namespace Ogre {
             ERR_ITEM_NOT_FOUND,
             ERR_FILE_NOT_FOUND,
             ERR_INTERNAL_ERROR,
-            ERR_RT_ASSERTION_FAILED, 
-			ERR_NOT_IMPLEMENTED
+            ERR_RT_ASSERTION_FAILED,
+            ERR_NOT_IMPLEMENTED
         };
 
         /** Default constructor.
@@ -135,7 +128,7 @@ namespace Ogre {
 
         /** Assignment operator.
         */
-        void operator = (const Exception& rhs);
+        Exception & operator = (const Exception& rhs);
 
         /** Returns a string with the full description of this error.
             @remarks
@@ -264,74 +257,74 @@ namespace Ogre {
 		ExceptionFactory() {}
 	public:
 		static UnimplementedException create(
-			ExceptionCodeType<Exception::ERR_NOT_IMPLEMENTED> code, 
+			ExceptionCodeType<Exception::ERR_NOT_IMPLEMENTED> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return UnimplementedException(code.number, desc, src, file, line);
+			return UnimplementedException(Exception::ERR_NOT_IMPLEMENTED, desc, src, file, line);
 		}
 		static FileNotFoundException create(
-			ExceptionCodeType<Exception::ERR_FILE_NOT_FOUND> code, 
+			ExceptionCodeType<Exception::ERR_FILE_NOT_FOUND> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return FileNotFoundException(code.number, desc, src, file, line);
+			return FileNotFoundException(Exception::ERR_FILE_NOT_FOUND, desc, src, file, line);
 		}
 		static IOException create(
-			ExceptionCodeType<Exception::ERR_CANNOT_WRITE_TO_FILE> code, 
+			ExceptionCodeType<Exception::ERR_CANNOT_WRITE_TO_FILE> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return IOException(code.number, desc, src, file, line);
+			return IOException(Exception::ERR_CANNOT_WRITE_TO_FILE, desc, src, file, line);
 		}
 		static InvalidStateException create(
-			ExceptionCodeType<Exception::ERR_INVALID_STATE> code, 
+			ExceptionCodeType<Exception::ERR_INVALID_STATE> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return InvalidStateException(code.number, desc, src, file, line);
+			return InvalidStateException(Exception::ERR_INVALID_STATE, desc, src, file, line);
 		}
 		static InvalidParametersException create(
-			ExceptionCodeType<Exception::ERR_INVALIDPARAMS> code, 
+			ExceptionCodeType<Exception::ERR_INVALIDPARAMS> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return InvalidParametersException(code.number, desc, src, file, line);
+			return InvalidParametersException(Exception::ERR_INVALIDPARAMS, desc, src, file, line);
 		}
 		static ItemIdentityException create(
-			ExceptionCodeType<Exception::ERR_ITEM_NOT_FOUND> code, 
+			ExceptionCodeType<Exception::ERR_ITEM_NOT_FOUND> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return ItemIdentityException(code.number, desc, src, file, line);
+			return ItemIdentityException(Exception::ERR_ITEM_NOT_FOUND, desc, src, file, line);
 		}
 		static ItemIdentityException create(
-			ExceptionCodeType<Exception::ERR_DUPLICATE_ITEM> code, 
+			ExceptionCodeType<Exception::ERR_DUPLICATE_ITEM> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return ItemIdentityException(code.number, desc, src, file, line);
+			return ItemIdentityException(Exception::ERR_DUPLICATE_ITEM, desc, src, file, line);
 		}
 		static InternalErrorException create(
-			ExceptionCodeType<Exception::ERR_INTERNAL_ERROR> code, 
+			ExceptionCodeType<Exception::ERR_INTERNAL_ERROR> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return InternalErrorException(code.number, desc, src, file, line);
+			return InternalErrorException(Exception::ERR_INTERNAL_ERROR, desc, src, file, line);
 		}
 		static RenderingAPIException create(
-			ExceptionCodeType<Exception::ERR_RENDERINGAPI_ERROR> code, 
+			ExceptionCodeType<Exception::ERR_RENDERINGAPI_ERROR> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return RenderingAPIException(code.number, desc, src, file, line);
+			return RenderingAPIException(Exception::ERR_RENDERINGAPI_ERROR, desc, src, file, line);
 		}
 		static RuntimeAssertionException create(
-			ExceptionCodeType<Exception::ERR_RT_ASSERTION_FAILED> code, 
+			ExceptionCodeType<Exception::ERR_RT_ASSERTION_FAILED> /*code*/, 
 			const String& desc, 
 			const String& src, const char* file, long line)
 		{
-			return RuntimeAssertionException(code.number, desc, src, file, line);
+			return RuntimeAssertionException(Exception::ERR_RT_ASSERTION_FAILED, desc, src, file, line);
 		}
 
 	};
@@ -348,4 +341,5 @@ namespace Ogre {
 } // Namespace Ogre
 
 #include "OgreHeaderSuffix.h"
+
 #endif

@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -46,6 +46,7 @@ email                : pjcast@yahoo.com
 
 #include "OgreStringInterface.h"
 #include "OgreResourceGroupManager.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre
 {
@@ -111,7 +112,7 @@ namespace Ogre
 		//manually to create video through code 
 
 		/// Sets an input file name - if needed by plugin
-		void setInputName( String sIN ) { mInputFileName = sIN; }
+		void setInputName( const String &sIN ) { mInputFileName = sIN; }
 		/// Gets currently set input file name
 		const String& getInputName( ) const	{ return mInputFileName; }
 		/// Sets the frames per second - plugin may or may not use this
@@ -187,5 +188,7 @@ namespace Ogre
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

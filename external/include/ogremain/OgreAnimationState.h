@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,14 +26,16 @@ THE SOFTWARE.
 -----------------------------------------------------------------------------
 */
 
-#ifndef __AnimationSet_H__
-#define __AnimationSet_H__
+#ifndef __AnimationState_H__
+#define __AnimationState_H__
 
 #include "OgrePrerequisites.h"
 
-#include "OgreString.h"
+#include "OgreCommon.h"
 #include "OgreController.h"
 #include "OgreIteratorWrappers.h"
+#include "Threading/OgreThreadHeaders.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -195,7 +197,7 @@ namespace Ogre {
 	{
 	public:
 		/// Mutex, public for external locking if needed
-		OGRE_AUTO_MUTEX
+            OGRE_AUTO_MUTEX;
 		/// Create a blank animation state set
 		AnimationStateSet();
 		/// Create an animation set by copying the contents of another
@@ -290,6 +292,8 @@ namespace Ogre {
 	/** @} */	
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif
 

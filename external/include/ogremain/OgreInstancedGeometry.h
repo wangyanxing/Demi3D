@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,14 +31,12 @@ THE SOFTWARE.
 #include "OgrePrerequisites.h"
 #include "OgreMovableObject.h"
 #include "OgreSimpleRenderable.h"
-#include "OgreSkeleton.h"
-#include "OgreSkeletonInstance.h"
-#include "OgreAnimationTrack.h"
-#include "OgreBone.h"
-#include "OgreIteratorWrappers.h"
 #include "OgreMesh.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
+
+    class SkeletonInstance;
 
 	/** \addtogroup Core
 	*  @{
@@ -104,7 +102,7 @@ namespace Ogre {
 	class _OgreExport  InstancedGeometry : public BatchedGeometryAlloc
 	{
 	public:
-		/** Struct holding geometry optimised per SubMesh / lod level, ready
+		/** Struct holding geometry optimised per SubMesh / LOD level, ready
 			for copying to instances. 
 		@remarks
 			Since we're going to be duplicating geometry lots of times, it's
@@ -169,7 +167,6 @@ namespace Ogre {
 		class LODBucket;
 		class MaterialBucket;
 		class BatchInstance;
-		class InstancedObject;
 
 		/** A GeometryBucket is a the lowest level bucket where geometry with 
 			the same vertex & index format is stored. It also acts as the 
@@ -293,7 +290,7 @@ namespace Ogre {
 			InstancedObject(unsigned short index);
 			InstancedObject(unsigned short index,SkeletonInstance *skeleton,AnimationStateSet*animations);
 			~InstancedObject();
-			void setPosition( Vector3  position);
+			void setPosition( const Vector3 &position);
 			const Vector3& getPosition(void) const;
 			void yaw(const Radian& angle);
 			void pitch(const Radian& angle);
@@ -302,7 +299,7 @@ namespace Ogre {
 			void setScale(const Vector3& scale);
 			const Vector3& getScale() const;
 	        void setOrientation(const Quaternion& q);
-	        void setPositionAndOrientation(Vector3 p, const Quaternion& q);
+	        void setPositionAndOrientation(const Vector3 &p, const Quaternion& q);
             Quaternion & getOrientation(void);
 			void addBucketToList(GeometryBucket* bucket);
 			void needUpdate();
@@ -390,7 +387,7 @@ namespace Ogre {
 			BatchInstance* mParent;
 			/// LOD level (0 == full LOD)
 			unsigned short mLod;
-			/// lod value at which this LOD starts to apply (squared)
+			/// LOD value at which this LOD starts to apply (squared)
 			Real mLodValue;
 			/// Lookup of Material Buckets in this BatchInstance
 			MaterialBucketMap mMaterialBucketMap;
@@ -400,9 +397,9 @@ namespace Ogre {
 			LODBucket(BatchInstance* parent, unsigned short lod, Real lodValue);
 			virtual ~LODBucket();
 			BatchInstance* getParent(void) { return mParent; }
-			/// Get the lod index
+			/// Get the LOD index
 			ushort getLod(void) const { return mLod; }
-			/// Get the lod value
+			/// Get the LOD value
 			Real getLodValue(void) const { return mLodValue; }
 			/// Assign a queued submesh to this bucket, using specified mesh LOD
 			void assign(QueuedSubMesh* qsm, ushort atLod);
@@ -455,24 +452,24 @@ namespace Ogre {
 
 			ObjectsMap mInstancesMap;
 		public:
-			/// Lod values as built up - use the max at each level
+			/// LOD values as built up - use the max at each level
 			Mesh::LodValueList mLodValues;
 			/// Local AABB relative to BatchInstance centre
 			AxisAlignedBox mAABB;
 			/// Local bounding radius
 			Real mBoundingRadius;
-			/// The current lod level, as determined from the last camera
+			/// The current LOD level, as determined from the last camera
 			ushort mCurrentLod;
-			/// Current lod value, passed on to do material lod later
+			/// Current LOD value, passed on to do material LOD later
 			Real mLodValue;
-            /// Current camera, passed on to do material lod later
+            /// Current camera, passed on to do material LOD later
             Camera *mCamera;
             /// Cached squared view depth value to avoid recalculation by GeometryBucket
             Real mSquaredViewDepth;
 		protected:
 			/// List of LOD buckets			
 			LODBucketList mLodBucketList;
-            /// Lod strategy reference
+            /// LOD strategy reference
             const LodStrategy *mLodStrategy;
 
 		public:
@@ -529,7 +526,7 @@ namespace Ogre {
 			each axis.
 		*/
 		typedef map<uint32, BatchInstance*>::type BatchInstanceMap;
-		/** Simple vectors where are stored all the renderoperations of the Batch.
+		/** Simple vectors where are stored all the render operations of the Batch.
 			This vector is used when we want to delete the batch, in order to delete only one time each
 			render operation.
 
@@ -673,7 +670,7 @@ namespace Ogre {
 			this InstancedGeometry if you like. The Entity passed in is simply 
 			used as a definition.
 		@note Must be called before 'build'.
-        @note All added entities must use the same lod strategy.
+        @note All added entities must use the same LOD strategy.
 		@param ent The Entity to use as a definition (the Mesh and Materials 
 			referenced will be recorded for the build call).
 		@param position The world position at which to add this Entity
@@ -699,7 +696,7 @@ namespace Ogre {
 			versions! We don't do this for you incase you are preparing this 
 			in advance and so don't want the originals detached yet. 
 		@note Must be called before 'build'.
-        @note All added entities must use the same lod strategy.
+        @note All added entities must use the same LOD strategy.
 		@param node Pointer to the node to use to provide a set of Entity 
 			templates
 		*/
@@ -719,7 +716,7 @@ namespace Ogre {
 			/** Add a new batch instance
 		@remarks
 				This method add a new instance of the whole batch, by creating a new 
-				BatchInstance, containing new lod buckets, material buckets and geometry buckets.
+				BatchInstance, containing new LOD buckets, material buckets and geometry buckets.
 				The new geometry buckets will use the same buffers as the base bucket.
 		@note
 			no note
@@ -810,7 +807,7 @@ namespace Ogre {
 			the sparseness of population is no issue when it comes to rendering.
 			The default is Vector3(0,0,0).
 		@note Must be called before 'build'.
-		@param size Vector3 expressing the 3D origin of the geometry.
+		@param origin Vector3 expressing the 3D origin of the geometry.
 		*/
 		virtual void setOrigin(const Vector3& origin) { mOrigin = origin; }
 		/** Gets the origin of this geometry. */
@@ -885,6 +882,8 @@ namespace Ogre {
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif
 

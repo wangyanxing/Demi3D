@@ -29,6 +29,7 @@
 
 
 #include "OgrePrerequisites.h"
+#include "OgreHeaderPrefix.h"
 
 #if OGRE_UNICODE_SUPPORT 
 
@@ -37,14 +38,14 @@
 #include <string>
 #include <stdexcept>
 
-// Workaround for VC7:
-//      when build with /MD or /MDd, VC7 have both std::basic_string<unsigned short> and
+// Workaround for VC7/7.1/8.0/9.0 (2003 - 2008):
+//      when build with /MD or /MDd, VC have both std::basic_string<unsigned short> and
 // basic_string<__wchar_t> instantiated in msvcprt[d].lib/MSVCP71[D].dll, but the header
 // files tells compiler that only one of them is over there (based on /Zc:wchar_t compile
 // option). And since this file used both of them, causing compiler instantiating another
 // one in user object code, which lead to duplicate symbols with msvcprt.lib/MSVCP71[D].dll.
 //
-#if OGRE_COMPILER == OGRE_COMPILER_MSVC && (1300 <= OGRE_COMP_VER && OGRE_COMP_VER <= 1310)
+#if OGRE_COMPILER == OGRE_COMPILER_MSVC && (OGRE_COMP_VER >= 1300 && OGRE_COMP_VER < 1600)
 
 # if defined(_DLL_CPPLIB)
 
@@ -107,7 +108,7 @@ namespace Ogre {
 // for any compiler that provides this, wchar_t is guaranteed to hold any Unicode value with a single code point (32-bit or larger)
 // so we can safely skip the rest of the testing
 #else // #ifdef __STDC_ISO_10646__
-#if defined( __WIN32__ ) || defined( _WIN32 )
+#if defined( __WIN32__ ) || defined( _WIN32 ) || !defined(ANDROID)
 #define WCHAR_UTF16 // All currently known Windows platforms utilize UTF-16 encoding in wchar_t
 #else // #if defined( __WIN32__ ) || defined( _WIN32 )
 #if OGRE_COMPILER != OGRE_COMPILER_GCCE
@@ -555,7 +556,7 @@ namespace Ogre {
 		//! sets the value of the character at \a loc to the Unicode value \a ch (UTF-32)
 		/*! Providing sentinel values (values between U+D800-U+DFFF) are accepted, but you should be aware
 		that you can also unwittingly create a valid surrogate pair if you don't pay attention to what you
-		are doing. \note This operation may also lengthen the string if a surrogate pair is needed to
+		are doing. @note This operation may also lengthen the string if a surrogate pair is needed to
 		represent the value given, but one is not available to replace; or alternatively shorten the string
 		if an existing surrogate pair is replaced with a character that is representable without a surrogate
 		pair. The return value will signify any lengthening or shortening performed, returning 0 if no change
@@ -933,7 +934,7 @@ namespace Ogre {
 		/*! This function, like its counterpart, will happily create invalid UTF-16 surrogate pairs. These
 		invalid entries will be created for any value of \c in_uc that falls in the range U+D800 - U+DFFF.
 		These are generally useful as sentinel values to represent various program specific conditions.
-		\note This function will also pass through any single UTF-16 code point without modification,
+		@note This function will also pass through any single UTF-16 code point without modification,
 		making it a safe method of ensuring a stream that is unknown UTF-32 or UTF-16 is truly UTF-16.*/
 		static size_t _utf32_to_utf16( const unicode_char& in_uc, code_point out_cp[2] );
 		//@}
@@ -1109,5 +1110,7 @@ namespace Ogre {
 } // namespace Ogre{
 
 #endif // OGRE_UNICODE_SUPPORT
+
+#include "OgreHeaderSuffix.h"
 
 #endif 

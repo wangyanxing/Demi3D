@@ -67,7 +67,7 @@ namespace Demi
     {
         if (!mEnable)
             return;
-        
+
         ActiveRenderWindow = this;
 
         DI_PROFILE(RenderWindow_Render);
@@ -82,8 +82,6 @@ namespace Demi
 
         mSceneManager->PreUpdate();
 
-        Driver->BeginFrame();
-
         DiCamera* mainCam = mSceneManager->GetCamera();
 
         // Cull first
@@ -92,26 +90,26 @@ namespace Demi
         mSceneManager->GetMainVisibleObjects().UpdateAll(mainCam);
 
         // Shadow mapping pass
-        rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
-        auto& visLights = mSceneManager->GetVisibleLights();
-        visLights.SetupShaodwCamera(mSceneManager);
-        for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
-        {
-            DiLight* light = *i;
-            if (light->GetShadowCastEnable())
-            {
-                light->ApplyGeneralShaderConfigs();
-                for (int cascadeId = 0; cascadeId < MAX_CASCADE_SPLITS; ++cascadeId)
-                {
-                    DiCamera* cam = light->mShadowCameras[cascadeId];
-                    rp->ClearGroup();
-                    mSceneManager->SetCurrentPass(SHADOW_PASS);
-                    mSceneManager->Cull(cam);
-                    mSceneManager->GetVisibleObjects().AddToBatch(rp);
-                    rp->Render(mSceneManager, cam, light->mShadowTextures[cascadeId]->GetRenderTarget());
-                }
-            }
-        }
+//         rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
+//         auto& visLights = mSceneManager->GetVisibleLights();
+//         visLights.SetupShaodwCamera(mSceneManager);
+//         for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
+//         {
+//             DiLight* light = *i;
+//             if (light->GetShadowCastEnable())
+//             {
+//                 light->ApplyGeneralShaderConfigs();
+//                 for (int cascadeId = 0; cascadeId < MAX_CASCADE_SPLITS; ++cascadeId)
+//                 {
+//                     DiCamera* cam = light->mShadowCameras[cascadeId];
+//                     rp->ClearGroup();
+//                     mSceneManager->SetCurrentPass(SHADOW_PASS);
+//                     mSceneManager->Cull(cam);
+//                     mSceneManager->GetVisibleObjects().AddToBatch(rp);
+//                     rp->Render(mSceneManager, cam, light->mShadowTextures[cascadeId]->GetRenderTarget());
+//                 }
+//             }
+//         }
 
         // Normal geometry pass
         rp->ClearGroup();
@@ -140,12 +138,10 @@ namespace Demi
         // Post filters
         rp->RenderPost(mSceneManager, mainCam);
 
-        Driver->EndFrame();
-        
-        SwapBuffer();
-        
         mFrameNumber++;
         ActiveRenderWindow = nullptr;
+
+        SwapBuffer();
     }
 
     void DiRenderWindow::Create(uint32 width, uint32 height, const DiString& title, bool fullscreen)

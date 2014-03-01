@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "AssetManager.h"
 #include "OgreFileSystem.h"
 #include "EnginePlugin.h"
+#include "OgreLodStrategyManager.h"
 
 using namespace Ogre;
 
@@ -26,7 +27,7 @@ const DiString gfxDrvLib = "DiDrvD3D9";
 
 void ConverterMgr::Init()
 {
-    logMgr = new LogManager();
+    logMgr = LogManager::getSingletonPtr();
 
     // this log catches output from the parseArgs call and routes it to stdout only
     logMgr->createLog("Temporary log", false, true, true);
@@ -37,22 +38,18 @@ void ConverterMgr::Init()
     // get rid of the temporary log as we use the new log now
     logMgr->destroyLog("Temporary log");
 
-    rgm = new ResourceGroupManager();
+    rgm = ResourceGroupManager::getSingletonPtr();
     mth = new Math();
-    lodMgr = new LodStrategyManager();
-    meshMgr = new MeshManager();
-    matMgr = new MaterialManager();
-    matMgr->initialise();
-    skelMgr = new SkeletonManager();
+    lodMgr = LodStrategyManager::getSingletonPtr();
+    meshMgr = MeshManager::getSingletonPtr();
+    matMgr = MaterialManager::getSingletonPtr();
+    skelMgr = SkeletonManager::getSingletonPtr();
     meshSerializer = new MeshSerializer();
     xmlMeshSerializer = new XMLMeshSerializer();
     skeletonSerializer = new SkeletonSerializer();
     xmlSkeletonSerializer = new XMLSkeletonSerializer();
-    bufferManager = new DefaultHardwareBufferManager();
-    archiveMgr = new ArchiveManager();
-
-    FileSystemArchiveFactory* f = OGRE_NEW FileSystemArchiveFactory();
-    ArchiveManager::getSingleton().addArchiveFactory(f);
+    archiveMgr = ArchiveManager::getSingletonPtr();
+    //bufferManager = new DefaultHardwareBufferManager(); // needed because we don't have a rendersystem
 
     // philo trinity stuff
 
@@ -79,15 +76,7 @@ void ConverterMgr::Shutdown()
     delete skeletonSerializer;
     delete xmlMeshSerializer;
     delete meshSerializer;
-    delete skelMgr;
-    delete matMgr;
-    delete meshMgr;
     delete bufferManager;
-    delete lodMgr;
-    delete mth;
-    delete rgm;
-    delete logMgr;
-    delete archiveMgr;
 }
 
 ConverterMgr::ConverterMgr()
@@ -96,12 +85,12 @@ ConverterMgr::ConverterMgr()
     mth = NULL;
     lodMgr = NULL;
     matMgr = NULL;
+    bufferManager = NULL;
     skelMgr = NULL;
     meshSerializer = NULL;
     xmlMeshSerializer = NULL;
     skeletonSerializer = NULL;
     xmlSkeletonSerializer = NULL;
-    bufferManager = NULL;
     meshMgr = NULL;
     rgm = NULL;
     archiveMgr = NULL;

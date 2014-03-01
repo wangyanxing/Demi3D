@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,9 +33,8 @@ THE SOFTWARE.
 
 #include "OgreBillboardChain.h"
 #include "OgreNode.h"
-#include "OgreIteratorWrappers.h"
-#include "OgreFrameListener.h"
 #include "OgreControllerManager.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -80,7 +79,7 @@ namespace Ogre {
 			be true if you intend to use fading)
 		*/
 		RibbonTrail(const String& name, size_t maxElements = 20, size_t numberOfChains = 1, 
-			bool useTextureCoords = true, bool useColours = true);
+			bool useTextureCoords = true, bool useVertexColours = true);
 		/// destructor
 		virtual ~RibbonTrail();
 
@@ -241,5 +240,7 @@ namespace Ogre {
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

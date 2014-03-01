@@ -4,7 +4,7 @@ This source file is a part of OGRE
 
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -39,7 +39,7 @@ namespace Ogre
 	{
 	public:
 
-		DefaultWorkQueue(const String& name = StringUtil::BLANK);
+		DefaultWorkQueue(const String& name = BLANKSTRING);
 		virtual ~DefaultWorkQueue(); 
 
 		/// Main function for each thread spawned.
@@ -65,11 +65,11 @@ namespace Ogre
 
 		size_t mNumThreadsRegisteredWithRS;
 		/// Init notification mutex (must lock before waiting on initCondition)
-		OGRE_MUTEX(mInitMutex)
+		OGRE_MUTEX(mInitMutex);
 		/// Synchroniser token to wait / notify on thread init 
-		OGRE_THREAD_SYNCHRONISER(mInitSync)
+		OGRE_THREAD_SYNCHRONISER(mInitSync);
 
-		OGRE_THREAD_SYNCHRONISER(mRequestCondition)
+		OGRE_THREAD_SYNCHRONISER(mRequestCondition);
 #if OGRE_THREAD_SUPPORT
 		typedef vector<OGRE_THREAD_TYPE*>::type WorkerThreadList;
 		WorkerThreadList mWorkers;

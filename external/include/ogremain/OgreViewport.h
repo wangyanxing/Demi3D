@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,8 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 #include "OgreCommon.h"
-#include "OgreColourValue.h"
 #include "OgreFrustum.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 	/** \addtogroup Core
@@ -73,25 +73,18 @@ namespace Ogre {
 		};
 
         /** The usual constructor.
-            @param
-                cam Pointer to a camera to be the source for the image.
-            @param
-                target Pointer to the render target to be the destination
+            @param camera
+                Pointer to a camera to be the source for the image.
+            @param target
+                Pointer to the render target to be the destination
                 for the rendering.
-            @param
-                left
-            @param
-                top
-            @param
-                width
-            @param
-                height
+            @param left, top, width, height
                 Dimensions of the viewport, expressed as a value between
                 0 and 1. This allows the dimensions to apply irrespective of
                 changes in the target's size: e.g. to fill the whole area,
                 values of 0,0,1,1 are appropriate.
-            @param
-                ZOrder Relative Z-order on the target. Lower = further to
+            @param ZOrder
+                Relative Z-order on the target. Lower = further to
                 the front.
         */
         Viewport(
@@ -189,13 +182,14 @@ namespace Ogre {
 
         /** Sets the dimensions (after creation).
             @param
-                left
+                left Left point of viewport.
             @param
-                top
+                top Top point of the viewport.
             @param
-                width
+                width Width of the viewport.
             @param
-                height Dimensions relative to the size of the target,
+                height Height of the viewport.
+            @note Dimensions relative to the size of the target,
                 represented as real values between 0 and 1. i.e. the full
                 target area is 0, 0, 1, 1.
         */
@@ -371,7 +365,7 @@ namespace Ogre {
 			be updated using a custom sequence of render queue invocations, with
 			potentially customised ordering and render state options. You should
 			create the named sequence through Root first, then set the name here.
-		@param The name of the RenderQueueInvocationSequence to use. If you
+		@param sequenceName The name of the RenderQueueInvocationSequence to use. If you
 			specify a blank string, behaviour will return to the default render
 			queue management.
 		*/
@@ -386,19 +380,19 @@ namespace Ogre {
         void pointOrientedToScreen(Real orientedX, Real orientedY, int orientationMode,
                                    Real &screenX, Real &screenY);
 
-		/// Add a listener to this camera
+		/// Add a listener to this viewport
 		void addListener(Listener* l);
-		/// Remove a listener to this camera
+		/// Remove a listener to this viewport
 		void removeListener(Listener* l);
 
     protected:
         Camera* mCamera;
         RenderTarget* mTarget;
-        // Relative dimensions, irrespective of target dimensions (0..1)
+        /// Relative dimensions, irrespective of target dimensions (0..1)
         float mRelLeft, mRelTop, mRelWidth, mRelHeight;
-        // Actual dimensions, based on target dimensions
+        /// Actual dimensions, based on target dimensions
         int mActLeft, mActTop, mActWidth, mActHeight;
-        /// ZOrder
+        /// Z-order
         int mZOrder;
         /// Background options
         ColourValue mBackColour;
@@ -429,5 +423,7 @@ namespace Ogre {
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

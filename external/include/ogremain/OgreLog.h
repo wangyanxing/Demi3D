@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,9 @@ THE SOFTWARE.
 #define __Log_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreString.h"
+#include "OgreCommon.h"
+#include "Threading/OgreThreadHeaders.h"
+#include "OgreHeaderPrefix.h"
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_NACL
 namespace pp
@@ -114,7 +116,7 @@ namespace Ogre {
 
 		class Stream;
 
-		OGRE_AUTO_MUTEX // public to allow external locking
+		OGRE_AUTO_MUTEX; // public to allow external locking
         /**
         @remarks
             Usual constructor - called by LogManager.
@@ -165,7 +167,7 @@ namespace Ogre {
         /**
         @remarks
             Register a listener to this log
-        @param
+        @param listener
             A valid listener derived class
         */
         void addListener(LogListener* listener);
@@ -173,7 +175,7 @@ namespace Ogre {
         /**
         @remarks
             Unregister a listener from this log
-        @param
+        @param listener
             A valid listener derived class
         */
         void removeListener(LogListener* listener);
@@ -202,7 +204,7 @@ namespace Ogre {
 			Log* mTarget;
 			LogMessageLevel mLevel;
 			bool mMaskDebug;
-			typedef StringUtil::StrStreamType BaseStream;
+			typedef StringStream BaseStream;
 			BaseStream mCache;
 
 		public:
@@ -242,7 +244,7 @@ namespace Ogre {
 			{
                                 (void)v;
 				mTarget->logMessage(mCache.str(), mLevel, mMaskDebug);
-				mCache.str(StringUtil::BLANK);
+				mCache.str(BLANKSTRING);
 				return *this;
 			}
 
@@ -259,5 +261,7 @@ namespace Ogre {
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

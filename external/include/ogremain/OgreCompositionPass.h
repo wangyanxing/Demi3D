@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,11 +29,11 @@ THE SOFTWARE.
 #define __CompositionPass_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreMaterial.h"
+#include "OgreHeaderPrefix.h"
 #include "OgreRenderSystem.h"
-#include "OgreRenderQueue.h"
 
 namespace Ogre {
+
 	/** \addtogroup Core
 	*  @{
 	*/
@@ -53,11 +53,11 @@ namespace Ogre {
         */
         enum PassType
         {
-            PT_CLEAR,           // Clear target to one colour
-			PT_STENCIL,			// Set stencil operation
-            PT_RENDERSCENE,     // Render the scene or part of it
-            PT_RENDERQUAD,      // Render a full screen quad
-			PT_RENDERCUSTOM		// Render a custom sequence
+            PT_CLEAR,           /// Clear target to one colour
+			PT_STENCIL,			/// Set stencil operation
+            PT_RENDERSCENE,     /// Render the scene or part of it
+            PT_RENDERQUAD,      /// Render a full screen quad
+			PT_RENDERCUSTOM		/// Render a custom sequence
         };
         
         /** Set the type of composition pass */
@@ -132,7 +132,7 @@ namespace Ogre {
         /** Set the viewport clear colour (defaults to 0,0,0,0) 
 			@note applies when PassType is CLEAR
 		 */
-        void setClearColour(ColourValue val);
+        void setClearColour(const ColourValue &val);
         /** Get the viewport clear colour (defaults to 0,0,0,0)	
 			@note applies when PassType is CLEAR
 		 */
@@ -219,6 +219,16 @@ namespace Ogre {
 		*/
 		bool getStencilTwoSidedOperation() const;
 
+		/** Set read back stencil-depth buffer as texture operation.
+			@note applies when PassType is STENCIL
+		*/
+		void setStencilReadBackAsTextureOperation(bool value);
+		/** Get read back stencil-depth buffer
+			@note applies when PassType is STENCIL
+		*/
+		bool getStencilReadBackAsTextureOperation() const;
+
+
 		/// Inputs (for material used for rendering the quad)
 		struct InputTex
 		{
@@ -226,7 +236,7 @@ namespace Ogre {
 			String name;
 			/// MRT surface index if applicable
 			size_t mrtIndex;
-			InputTex() : name(StringUtil::BLANK), mrtIndex(0) {}
+			InputTex() : name(BLANKSTRING), mrtIndex(0) {}
 			InputTex(const String& _name, size_t _mrtIndex = 0)
 				: name(_name), mrtIndex(_mrtIndex) {}
 		};
@@ -237,7 +247,7 @@ namespace Ogre {
 			@param mrtIndex Which surface of an MRT to retrieve
 			@note applies when PassType is RENDERQUAD 
         */
-        void setInput(size_t id, const String &input=StringUtil::BLANK, size_t mrtIndex=0);
+        void setInput(size_t id, const String &input=BLANKSTRING, size_t mrtIndex=0);
         
         /** Get the value of an input.
             @param id    Input to get. Must be in 0..OGRE_MAX_TEXTURE_LAYERS-1.
@@ -323,8 +333,8 @@ namespace Ogre {
 		Real mClearDepth;
 		/// Clear stencil value (in case of PT_CLEAR)
 		uint32 mClearStencil;
-        /// Inputs (for material used for rendering the quad)
-        /// An empty string signifies that no input is used
+        /** Inputs (for material used for rendering the quad).
+            An empty string signifies that no input is used */
         InputTex mInputs[OGRE_MAX_TEXTURE_LAYERS];
 		/// Stencil operation parameters
 		bool mStencilCheck;
@@ -335,8 +345,9 @@ namespace Ogre {
 		StencilOperation mStencilDepthFailOp;
 		StencilOperation mStencilPassOp;
 		bool mStencilTwoSidedOperation;
+		bool mStencilReadBackAsTexture;
 
-        /// true if quad should not cover whole screen
+        /// True if quad should not cover whole screen
         bool mQuadCornerModified;
         /// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of PT_RENDERQUAD)
         Real mQuadLeft;
@@ -345,12 +356,14 @@ namespace Ogre {
         Real mQuadBottom;
 
 		bool mQuadFarCorners, mQuadFarCornersViewSpace;
-		//The type name of the custom composition pass.
+		/// The type name of the custom composition pass.
 		String mCustomType;
     };
 	/** @} */
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

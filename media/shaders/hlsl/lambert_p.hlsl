@@ -2,6 +2,7 @@
 #include <common.hlsl>
 
 #if USE_SHADOW
+//#   define DEBUG_CSM
 #   include <shadow.hlsl>
 #endif
 
@@ -117,13 +118,12 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 	
 	ComputeSurfaceDataFromGeometry(In);
 	
-	float3 lit = float3(0,0,0);
-	
-	for(int i = 0; i < g_numDirLights; i++){
+    float3 lit = float3(0,0,0);
+    for (int i = 0; i < g_numDirLights; i++){
 		AccumulateDirLight(g_dirLightsDir[i], g_dirLightsColor[i], lit);
 	}
 	
-	for(int i = 0; i < g_numPointLights; i++){
+    for (int i = 0; i < g_numPointLights; i++){
 		AccumulatePointLight(g_pointLightsPosition[i], 
 			g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
 	}

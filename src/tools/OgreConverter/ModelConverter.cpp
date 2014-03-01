@@ -78,35 +78,22 @@ ModelConverter::~ModelConverter(void)
 
 void ModelConverter::ExportMesh( const Mesh* pMesh, const String& filename )
 {
+    mCurrentOutputPath = filename.c_str();
+    mCurrentOutputPath = mCurrentOutputPath.ExtractDirName();
+
 	LogManager::getSingleton().logMessage("XMLMeshSerializer writing mesh data to " + filename + "...");
 	
 	mMesh = const_cast<Mesh*>(pMesh);
 
-	LogManager::getSingleton().logMessage("Populating DOM...");
-
 	DiMeshPtr mesh = WriteMesh(pMesh);
 
-	LogManager::getSingleton().logMessage("DOM populated, writing model file..");
+	LogManager::getSingleton().logMessage("Writing model file..");
 
 	if (mesh)
 	{
 		// save to file
 		DiMeshSerializer ms;
 		ms.ExportMesh(mesh,filename);
-
-		// write material files
-		DiMesh::SubMeshIterator it = mesh->GetSubMeshs();
-		while (it.HasMoreElements())
-		{
-			DiSubMesh* subMesh = it.GetNext();
-			DiString matname = subMesh->GetMaterialName();
-
-			DiString matfile = filename.c_str();
-			matfile = matfile.ExtractDirName();
-			matfile += matname;
-
-			WriteSimpleMaterial(matfile);
-		}
 	}
 }
 
@@ -202,6 +189,8 @@ void ModelConverter::WriteSubMesh( DiSubMesh* subMod, const Ogre::SubMesh* s )
     matName.Replace("\\", "_");
     matName += ".mtl";
 	subMod->SetMaterialName(matName);
+
+    WriteSimpleMaterial(mCurrentOutputPath + matName, s->getMaterialName());
 
 	bool use32BitIndexes = (!s->indexData->indexBuffer.isNull() && 
 		s->indexData->indexBuffer->getType() == HardwareIndexBuffer::IT_32BIT);
@@ -455,17 +444,61 @@ void ModelConverter::WriteSkeleton( const Ogre::Skeleton* pSkel, DiSkeleton* ske
 	}
 }
 
-void ModelConverter::WriteSimpleMaterial( const DiString& filename )
+void ModelConverter::WriteSimpleMaterial(const DiString& filename, const String& ogreMatName)
 {
-    DiMaterialPtr mat = Demi::DiAssetManager::GetInstancePtr(
-        )->CreateOrReplaceAsset<DiMaterial>("_tempSimple");
+//     DiMaterialPtr mat = Demi::DiAssetManager::GetInstancePtr(
+//         )->CreateOrReplaceAsset<DiMaterial>("_tempSimple");
+// 
+//     mat->LoadShader("lambert_v", "lambert_p");
+// 
+// 	Demi::DiShaderParameter* materialIns = mat->GetShaderParameter();
+//     if (materialIns)
+// 	    materialIns->WriteTexture2D("diffuseTexture","_default.dds");
+// 
+// 	DiMaterialSerializer mas;
+// 	mas.SaveMaterial(filename,mat.get());
 
-    mat->LoadShader("basic_v", "basic_p");  //todo
+    Ogre::MaterialManager::getSingleton().load(ogreMatName, "General");
+    Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(ogreMatName);
+    auto pass = material->getBestTechnique()->getPass(0);
+    if (!pass)
+        return;
 
-	Demi::DiShaderParameter* materialIns = mat->GetShaderParameter();
-    if (materialIns)
-	    materialIns->WriteTexture2D("diffuseTexture","_default.dds");
+    auto numUnits = pass->getNumTextureUnitStates();
 
-	DiMaterialSerializer mas;
-	mas.SaveMaterial(filename,mat.get());
+    FILE* fp = fopen(filename.c_str(), "w+");
+
+    fprintf(fp, "<?xml version=\"1.0\"?>\n");
+    fprintf(fp, "<material>\n");
+
+    // shader
+    fprintf(fp, "  <shader name=\"vertex\">lambert_v</shader>\n");  // usually using lambert
+    fprintf(fp, "  <shader name=\"pixel\">lambert_p</shader>\n");
+
+    auto amb = pass->getAmbient();
+    auto diffuse = pass->getDiffuse();
+
+    DiString ambstr;
+    ambstr.SetColourValue(DiColor(amb.r, amb.g, amb.b, amb.a));
+    fprintf(fp, "  <ambient>%s</ambient>\n", ambstr.c_str());
+
+    DiString difstr;
+    difstr.SetColourValue(DiColor(diffuse.r, diffuse.g, diffuse.b, diffuse.a));
+    fprintf(fp, "  <diffuse>%s</diffuse>\n", difstr.c_str());
+
+    // textures
+    if (numUnits > 0)
+    {
+        auto unit = pass->getTextureUnitState(0);
+        DiString texname = unit->getTextureName().c_str();
+        fprintf(fp, "  <flag>USE_MAP</flag>\n");
+        fprintf(fp, "  <variables>\n");
+        fprintf(fp, "    <sampler2D>\n");
+        fprintf(fp, "      <texture name = \"map\">%s</texture>\n", texname.c_str());
+        fprintf(fp, "    </sampler2D>\n");
+        fprintf(fp, "  </variables>\n");
+        fprintf(fp, "</material>\n");
+    }
+
+    fclose(fp);
 }

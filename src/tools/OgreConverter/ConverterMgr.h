@@ -82,7 +82,7 @@ protected:
 
 	Ogre::XMLSkeletonSerializer*		xmlSkeletonSerializer;
 
-	Ogre::DefaultHardwareBufferManager*	bufferManager;
+    Ogre::DefaultHardwareBufferManager* bufferManager;
 
 	Ogre::MeshManager*					meshMgr;
 

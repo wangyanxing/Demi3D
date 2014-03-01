@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,11 +29,8 @@ THE SOFTWARE.
 #define __Technique_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreIteratorWrappers.h"
-#include "OgreBlendMode.h"
 #include "OgreCommon.h"
 #include "OgrePass.h"
-#include "OgreIteratorWrappers.h"
 #include "OgreRenderSystemCapabilities.h"
 #include "OgreUserObjectBindings.h"
 
@@ -53,7 +50,7 @@ namespace Ogre {
 	class _OgreExport Technique : public TechniqueAlloc
     {
     protected:
-        // illumination pass state type
+        /// Illumination pass state type
         enum IlluminationPassesState
         {
             IPS_COMPILE_DISABLED = -1,
@@ -66,7 +63,8 @@ namespace Ogre {
         Passes mPasses;
         /// List of derived passes, categorised into IlluminationStage (ordered)
         IlluminationPassList mIlluminationPasses;
-        Material* mParent; // raw pointer since we don't want child to stop parent's destruction
+        // Raw pointer since we don't want child to stop parent's destruction
+        Material* mParent;
         bool mIsSupported;
         IlluminationPassesState mIlluminationPassesCompilationPhase;
 		/// LOD level
@@ -75,7 +73,8 @@ namespace Ogre {
 			MaterialManager, for speed an index is used here.
 		*/
 		unsigned short mSchemeIndex;
-        String mName; // optional name for the technique
+        /// Optional name for the technique
+        String mName;
 
         /// Internal method for clearing illumination pass list
         void clearIlluminationPasses(void);
@@ -161,12 +160,12 @@ namespace Ogre {
 		*/
         String _compile(bool autoManageTextureUnits);
 		/// Internal method for checking GPU vendor / device rules
-		bool checkGPURules(StringUtil::StrStreamType& errors);
+		bool checkGPURules(StringStream& errors);
 		/// Internal method for checking hardware support
-		bool checkHardwareSupport(bool autoManageTextureUnits, StringUtil::StrStreamType& compileErrors);
+		bool checkHardwareSupport(bool autoManageTextureUnits, StringStream& compileErrors);
         /** Internal method for splitting the passes into illumination passes. */        
         void _compileIlluminationPasses(void);
-
+		size_t calculateSize(void) const;
 
         /** Creates a new Pass for this Technique.
         @remarks
@@ -243,7 +242,7 @@ namespace Ogre {
         /** Internal unload method, derived from call to Material::unload. */
         void _unload(void);
 
-        // Is this loaded?
+        /// Is this loaded?
         bool isLoaded(void) const;
 
         /** Tells the technique that it needs recompilation. */

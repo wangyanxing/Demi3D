@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -202,8 +202,8 @@ namespace Ogre {
         Real Norm () const;
         /// Normalises this quaternion, and returns the previous length
         Real normalise(void); 
-        Quaternion Inverse () const;  // apply to non-zero quaternion
-        Quaternion UnitInverse () const;  // apply to unit-length quaternion
+        Quaternion Inverse () const;  /// Apply to non-zero quaternion
+        Quaternion UnitInverse () const;  /// Apply to unit-length quaternion
         Quaternion Exp () const;
         Quaternion Log () const;
 
@@ -266,12 +266,12 @@ namespace Ogre {
             const Quaternion& rkP, const Quaternion& rkQ,
             int iExtraSpins);
 
-        // setup for spherical quadratic interpolation
+        /// Setup for spherical quadratic interpolation
         static void Intermediate (const Quaternion& rkQ0,
             const Quaternion& rkQ1, const Quaternion& rkQ2,
             Quaternion& rka, Quaternion& rkB);
 
-        // spherical quadratic interpolation
+        /// Spherical quadratic interpolation
         static Quaternion Squad (Real fT, const Quaternion& rkP,
             const Quaternion& rkA, const Quaternion& rkB,
             const Quaternion& rkQ, bool shortestPath = false);

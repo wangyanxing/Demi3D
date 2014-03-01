@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,10 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
-#include "OgreVector3.h"
-#include "OgreString.h"
-#include "OgreRenderOperation.h"
+#include "OgreHardwareIndexBuffer.h"
+#include "OgreHardwareVertexBuffer.h"
 #include "OgreAxisAlignedBox.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -146,7 +146,7 @@ namespace Ogre {
             @param destVertexBuffer The destination vertex buffer in which to build the patch.
             @param vertexStart The offset at which to start writing vertices for this patch
             @param destIndexBuffer The destination index buffer in which to build the patch.
-            @param vertexStart The offset at which to start writing indexes for this patch
+            @param indexStart The offset at which to start writing indexes for this patch
 
         */
         void build(HardwareVertexBufferSharedPtr destVertexBuffer, size_t vertexStart,
@@ -236,5 +236,7 @@ namespace Ogre {
 	/** @} */
 
 } // namespace
+
+#include "OgreHeaderSuffix.h"
 
 #endif

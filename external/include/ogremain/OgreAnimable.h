@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,17 +29,18 @@ THE SOFTWARE.
 #define __ANIMABLE_H__
 
 #include "OgrePrerequisites.h"
+#include "OgreCommon.h"
 #include "OgreVector2.h"
-#include "OgreVector3.h"
 #include "OgreVector4.h"
-#include "OgreQuaternion.h"
 #include "OgreColourValue.h"
-#include "OgreSharedPtr.h"
 #include "OgreStringVector.h"
 #include "OgreException.h"
-#include "OgreAny.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
+
+    class Any;
+
 	/** \addtogroup Core
 	*  @{
 	*/
@@ -227,10 +228,6 @@ namespace Ogre {
 
 	};
 
-	typedef SharedPtr<AnimableValue> AnimableValuePtr;
-
-
-
 	/** Defines an interface to classes which have one or more AnimableValue
 		instances to expose.
 	*/
@@ -246,7 +243,7 @@ namespace Ogre {
 			their values.
 		*/
 		virtual const String& getAnimableDictionaryName(void) const 
-		{ return StringUtil::BLANK; }
+		{ return BLANKSTRING; }
         /** Internal method for creating a dictionary of animable value names 
 			for the class, if it does not already exist.
         */
@@ -331,5 +328,8 @@ namespace Ogre {
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
+
 #endif
 

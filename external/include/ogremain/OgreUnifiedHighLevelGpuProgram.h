@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -59,6 +59,9 @@ namespace Ogre {
 	*/
 	class _OgreExport UnifiedHighLevelGpuProgram : public HighLevelGpuProgram
 	{
+	private:
+		static std::map<String,int> mLanguagePriorities;
+
 	public:
 		/// Command object for setting delegate (can set more than once)
 		class CmdDelegate : public ParamCommand
@@ -67,6 +70,9 @@ namespace Ogre {
 			String doGet(const void* target) const;
 			void doSet(void* target, const String& val);
 		};
+
+		static void setPrioriry(String shaderLanguage,int priority);
+		static int	getPriority(String shaderLanguage);
 
 	protected:
 		static CmdDelegate msCmdDelegate;
@@ -90,6 +96,7 @@ namespace Ogre {
 			const String& group, bool isManual = false, ManualResourceLoader* loader = 0);
 		~UnifiedHighLevelGpuProgram();
 
+		virtual size_t calculateSize(void) const;
 
 		/** Adds a new delegate program to the list.
 		@remarks
@@ -114,7 +121,7 @@ namespace Ogre {
 		object containing the definition of the parameters this program understands.
 		*/
 		GpuProgramParametersSharedPtr createParameters(void);
-		/** @copydoc GpuProgram::getBindingDelegate */
+		/** @copydoc GpuProgram::_getBindingDelegate */
 		GpuProgram* _getBindingDelegate(void);
 
 		// All the following methods must delegate to the implementation

@@ -26,6 +26,7 @@
 #else
 #   define USE_SHADOW 0
 #endif
+#   define USE_SHADOW 0
 
 uniform const float4x4      g_modelMatrix;
 uniform const float4x4      g_viewMatrix;

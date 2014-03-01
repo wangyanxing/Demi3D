@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,34 +32,43 @@ THE SOFTWARE.
 #include "OgreHardwareBuffer.h"
 #include "OgreResource.h"
 #include "OgreImage.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
-	/** \addtogroup Core
-	*  @{
-	*/
-	/** \addtogroup Resources
-	*  @{
-	*/
-	/** Enum identifying the texture usage
-    */
+    /** \addtogroup Core
+     *  @{
+     */
+    /** \addtogroup Resources
+     *  @{
+     */
+    /** Enum identifying the texture usage
+     */
     enum TextureUsage
     {
-		/// @copydoc HardwareBuffer::Usage
-		TU_STATIC = HardwareBuffer::HBU_STATIC,
-		TU_DYNAMIC = HardwareBuffer::HBU_DYNAMIC,
-		TU_WRITE_ONLY = HardwareBuffer::HBU_WRITE_ONLY,
-		TU_STATIC_WRITE_ONLY = HardwareBuffer::HBU_STATIC_WRITE_ONLY, 
-		TU_DYNAMIC_WRITE_ONLY = HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY,
-		TU_DYNAMIC_WRITE_ONLY_DISCARDABLE = HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE,
-		/// mipmaps will be automatically generated for this texture
-		TU_AUTOMIPMAP = 0x100,
-		/// this texture will be a render target, i.e. used as a target for render to texture
-		/// setting this flag will ignore all other texture usages except TU_AUTOMIPMAP
-		TU_RENDERTARGET = 0x200,
-		/// default to automatic mipmap generation static textures
-		TU_DEFAULT = TU_AUTOMIPMAP | TU_STATIC_WRITE_ONLY
-        
+        /// @copydoc HardwareBuffer::Usage
+        TU_STATIC = HardwareBuffer::HBU_STATIC,
+        TU_DYNAMIC = HardwareBuffer::HBU_DYNAMIC,
+        TU_WRITE_ONLY = HardwareBuffer::HBU_WRITE_ONLY,
+        TU_STATIC_WRITE_ONLY = HardwareBuffer::HBU_STATIC_WRITE_ONLY, 
+        TU_DYNAMIC_WRITE_ONLY = HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY,
+        TU_DYNAMIC_WRITE_ONLY_DISCARDABLE = HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE,
+		/// Mipmaps will be automatically generated for this texture
+		TU_AUTOMIPMAP = 16,
+		/** This texture will be a render target, i.e. used as a target for render to texture
+		    setting this flag will ignore all other texture usages except TU_AUTOMIPMAP */
+		TU_RENDERTARGET = 32,
+		/// Default to automatic mipmap generation static textures
+        TU_DEFAULT = TU_AUTOMIPMAP | TU_STATIC_WRITE_ONLY
+    };
+
+    /** Enum identifying the texture access privilege
+     */
+    enum TextureAccess
+    {
+        TA_READ = 0x01,
+        TA_WRITE = 0x10,
+        TA_READ_WRITE = TA_READ | TA_WRITE
     };
 
     /** Enum identifying the texture type
@@ -75,7 +84,9 @@ namespace Ogre {
         /// 3D cube map, used in combination with 3D texture coordinates
         TEX_TYPE_CUBE_MAP = 4,
         /// 2D texture array
-        TEX_TYPE_2D_ARRAY = 5
+        TEX_TYPE_2D_ARRAY = 5,
+        /// 2D non-square texture, used in combination with 2D texture coordinates
+        TEX_TYPE_2D_RECT = 6
     };
 
 	/** Enum identifying special mipmap numbers
@@ -87,9 +98,6 @@ namespace Ogre {
 		/// Use TextureManager default
 		MIP_DEFAULT = -1
 	};
-
-    // Forward declaration
-    class TexturePtr;
 
     /** Abstract class representing a Texture resource.
         @remarks
@@ -106,6 +114,8 @@ namespace Ogre {
         Texture(ResourceManager* creator, const String& name, ResourceHandle handle,
             const String& group, bool isManual = false, ManualResourceLoader* loader = 0);
 
+        virtual ~Texture() {}
+        
         /** Sets the type of texture; can only be changed before load() 
         */
         virtual void setTextureType(TextureType ttype ) { mTextureType = ttype; }
@@ -116,13 +126,13 @@ namespace Ogre {
 
         /** Gets the number of mipmaps to be used for this texture.
         */
-        virtual size_t getNumMipmaps(void) const {return mNumMipmaps;}
+        virtual uint8 getNumMipmaps(void) const {return mNumMipmaps;}
 
 		/** Sets the number of mipmaps to be used for this texture.
             @note
                 Must be set before calling any 'load' method.
         */
-        virtual void setNumMipmaps(size_t num) {mNumRequestedMipmaps = mNumMipmaps = num;}
+        virtual void setNumMipmaps(uint8 num) {mNumRequestedMipmaps = mNumMipmaps = num;}
 
 		/** Are mipmaps hardware generated?
 		@remarks
@@ -189,40 +199,40 @@ namespace Ogre {
 
 		/** Returns the height of the texture.
         */
-        virtual size_t getHeight(void) const { return mHeight; }
+        virtual uint32 getHeight(void) const { return mHeight; }
 
         /** Returns the width of the texture.
         */
-        virtual size_t getWidth(void) const { return mWidth; }
+        virtual uint32 getWidth(void) const { return mWidth; }
 
         /** Returns the depth of the texture (only applicable for 3D textures).
         */
-        virtual size_t getDepth(void) const { return mDepth; }
+        virtual uint32 getDepth(void) const { return mDepth; }
 
         /** Returns the height of the original input texture (may differ due to hardware requirements).
         */
-        virtual size_t getSrcHeight(void) const { return mSrcHeight; }
+        virtual uint32 getSrcHeight(void) const { return mSrcHeight; }
 
         /** Returns the width of the original input texture (may differ due to hardware requirements).
         */
-        virtual size_t getSrcWidth(void) const { return mSrcWidth; }
+        virtual uint32 getSrcWidth(void) const { return mSrcWidth; }
 
         /** Returns the original depth of the input texture (only applicable for 3D textures).
         */
-        virtual size_t getSrcDepth(void) const { return mSrcDepth; }
+        virtual uint32 getSrcDepth(void) const { return mSrcDepth; }
 
         /** Set the height of the texture; can only do this before load();
         */
-        virtual void setHeight(size_t h) { mHeight = mSrcHeight = h; }
+        virtual void setHeight(uint32 h) { mHeight = mSrcHeight = h; }
 
         /** Set the width of the texture; can only do this before load();
         */
-        virtual void setWidth(size_t w) { mWidth = mSrcWidth = w; }
+        virtual void setWidth(uint32 w) { mWidth = mSrcWidth = w; }
 
         /** Set the depth of the texture (only applicable for 3D textures);
             can only do this before load();
         */
-        virtual void setDepth(size_t d)  { mDepth = mSrcDepth = d; }
+        virtual void setDepth(uint32 d)  { mDepth = mSrcDepth = d; }
 
         /** Returns the TextureUsage identifier for this Texture
         */
@@ -354,43 +364,54 @@ namespace Ogre {
         */
         virtual size_t getNumFaces() const;
 
-		/** Return hardware pixel buffer for a surface. This buffer can then
-			be used to copy data from and to a particular level of the texture.
-			@param face 	Face number, in case of a cubemap texture. Must be 0
-							for other types of textures.
-                            For cubemaps, this is one of 
-                            +X (0), -X (1), +Y (2), -Y (3), +Z (4), -Z (5)
-			@param mipmap	Mipmap level. This goes from 0 for the first, largest
-							mipmap level to getNumMipmaps()-1 for the smallest.
-			@return	A shared pointer to a hardware pixel buffer
-			@remarks	The buffer is invalidated when the resource is unloaded or destroyed.
-						Do not use it after the lifetime of the containing texture.
-		*/
-		virtual HardwarePixelBufferSharedPtr getBuffer(size_t face=0, size_t mipmap=0) = 0;
+        /** Return hardware pixel buffer for a surface. This buffer can then
+            be used to copy data from and to a particular level of the texture.
+            @param face	Face number, in case of a cubemap texture. Must be 0
+            for other types of textures.
+            For cubemaps, this is one of 
+            +X (0), -X (1), +Y (2), -Y (3), +Z (4), -Z (5)
+            @param mipmap Mipmap level. This goes from 0 for the first, largest
+            mipmap level to getNumMipmaps()-1 for the smallest.
+            @return A shared pointer to a hardware pixel buffer.
+            @remarks The buffer is invalidated when the resource is unloaded or destroyed.
+            Do not use it after the lifetime of the containing texture.
+        */
+        virtual HardwarePixelBufferSharedPtr getBuffer(size_t face=0, size_t mipmap=0) = 0;
 
 
-		/** Populate an Image with the contents of this texture. 
-		@param destImage The target image (contents will be overwritten)
-		@param includeMipMaps Whether to embed mipmaps in the image
-		*/
-		virtual void convertToImage(Image& destImage, bool includeMipMaps = false);
+        /** Populate an Image with the contents of this texture. 
+            @param destImage The target image (contents will be overwritten)
+            @param includeMipMaps Whether to embed mipmaps in the image
+        */
+        virtual void convertToImage(Image& destImage, bool includeMipMaps = false);
 		
-		/** Retrieve a platform or API-specific piece of information from this texture.
-		 This method of retrieving information should only be used if you know what you're doing.
-		 @param name The name of the attribute to retrieve
-		 @param pData Pointer to memory matching the type of data you want to retrieve.
-		*/
-		virtual void getCustomAttribute(const String& name, void* pData) {}
+        /** Retrieve a platform or API-specific piece of information from this texture.
+            This method of retrieving information should only be used if you know what you're doing.
+            @param name The name of the attribute to retrieve.
+            @param pData Pointer to memory matching the type of data you want to retrieve.
+        */
+        virtual void getCustomAttribute(const String& name, void* pData) {}
 		
+
+        /** Enable read and/or write privileges to the texture from shaders.
+            @param bindPoint The buffer binding location for shader access. For OpenGL this must be unique and is not related to the texture binding point.
+            @param access The texture access privileges given to the shader.
+            @param mipmapLevel The texture mipmap level to use.
+            @param textureArrayIndex The index of the texture array to use. If texture is not a texture array, set to 0.
+            @param format Texture format to be read in by shader. For OpenGL this may be different than the bound texture format.
+        */
+        virtual void createShaderAccessPoint(uint bindPoint, TextureAccess access = TA_READ_WRITE,
+                                             int mipmapLevel = 0, int textureArrayIndex = 0,
+                                             PixelFormat* format = NULL) {}
 
 
     protected:
-        size_t mHeight;
-        size_t mWidth;
-        size_t mDepth;
+        uint32 mHeight;
+        uint32 mWidth;
+        uint32 mDepth;
 
-        size_t mNumRequestedMipmaps;
-		size_t mNumMipmaps;
+        uint8 mNumRequestedMipmaps;
+		uint8 mNumMipmaps;
 		bool mMipmapsHardwareGenerated;
         float mGamma;
 		bool mHwGamma;
@@ -399,10 +420,10 @@ namespace Ogre {
 
         TextureType mTextureType;
 		PixelFormat mFormat;
-        int mUsage; // Bit field, so this can't be TextureUsage
+        int mUsage; /// Bit field, so this can't be TextureUsage
 
         PixelFormat mSrcFormat;
-        size_t mSrcWidth, mSrcHeight, mSrcDepth;
+        uint32 mSrcWidth, mSrcHeight, mSrcDepth;
 
         PixelFormat mDesiredFormat;
         unsigned short mDesiredIntegerBitDepth;
@@ -432,65 +453,11 @@ namespace Ogre {
 		String getSourceFileType() const;
 
     };
-
-    /** Specialisation of SharedPtr to allow SharedPtr to be assigned to TexturePtr 
-    @note Has to be a subclass since we need operator=.
-    We could templatise this instead of repeating per Resource subclass, 
-    except to do so requires a form VC6 does not support i.e.
-    ResourceSubclassPtr<T> : public SharedPtr<T>
-    */
-    class _OgreExport TexturePtr : public SharedPtr<Texture> 
-    {
-    public:
-        TexturePtr() : SharedPtr<Texture>() {}
-        explicit TexturePtr(Texture* rep) : SharedPtr<Texture>(rep) {}
-        TexturePtr(const TexturePtr& r) : SharedPtr<Texture>(r) {} 
-        TexturePtr(const ResourcePtr& r) : SharedPtr<Texture>()
-        {
-			// lock & copy other mutex pointer
-            OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
-            {
-			    OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-			    OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-                pRep = static_cast<Texture*>(r.getPointer());
-                pUseCount = r.useCountPointer();
-                if (pUseCount)
-                {
-                    ++(*pUseCount);
-                }
-            }
-        }
-
-        /// Operator used to convert a ResourcePtr to a TexturePtr
-        TexturePtr& operator=(const ResourcePtr& r)
-        {
-            if (pRep == static_cast<Texture*>(r.getPointer()))
-                return *this;
-            release();
-			// lock & copy other mutex pointer
-            OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
-            {
-			    OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-			    OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-                pRep = static_cast<Texture*>(r.getPointer());
-                pUseCount = r.useCountPointer();
-                if (pUseCount)
-                {
-                    ++(*pUseCount);
-                }
-            }
-			else
-			{
-				// RHS must be a null pointer
-				assert(r.isNull() && "RHS must be null if it has no mutex!");
-				setNull();
-			}
-            return *this;
-        }
-    };
 	/** @} */
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

@@ -85,7 +85,7 @@ namespace Demi
     void DemiDemo::Update()
     {
         DI_PROFILE_BEGIN_FRAME
-        
+
         if (mUpdateCallback)
             mUpdateCallback();
 

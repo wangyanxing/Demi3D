@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ THE SOFTWARE.
 #include "OgrePrerequisites.h"
 #include "OgreSerializer.h"
 #include "OgreMeshSerializerImpl.h"
-
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 	
@@ -44,6 +44,8 @@ namespace Ogre {
 		/// Latest version available
 		MESH_VERSION_LATEST,
 		
+		/// OGRE version v1.10+
+		MESH_VERSION_1_10,
 		/// OGRE version v1.8+
 		MESH_VERSION_1_8,
 		/// OGRE version v1.7+
@@ -197,10 +199,13 @@ namespace Ogre {
 		virtual void processMaterialName(Mesh *mesh, String *name) = 0;
 		/// Called to override the reference to a skeleton
 		virtual void processSkeletonName(Mesh *mesh, String *name) = 0;
+		/// Allows to do changes on mesh after it's completely loaded. For example you can generate LOD levels here.
+		virtual void processMeshCompleted(Mesh *mesh) = 0;
 	};
 	/** @} */
 	/** @} */
 }
 
+#include "OgreHeaderSuffix.h"
 
 #endif

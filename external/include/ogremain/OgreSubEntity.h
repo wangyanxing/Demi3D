@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,10 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
-#include "OgreString.h"
 #include "OgreRenderable.h"
 #include "OgreHardwareBufferManager.h"
 #include "OgreResourceGroupManager.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -76,14 +76,17 @@ namespace Ogre {
         /// Pointer to parent.
         Entity* mParentEntity;
 
-        /// Name of Material in use by this SubEntity.
-        String mMaterialName;
-
         /// Cached pointer to material.
-        MaterialPtr mMaterial;
+        MaterialPtr mMaterialPtr;
 
-        // Pointer to the SubMesh defining geometry.
+        /// Pointer to the SubMesh defining geometry.
         SubMesh* mSubMesh;
+
+		/// override the start index for the RenderOperation
+        size_t mIndexStart;
+
+        /// override the end index for the RenderOperation
+        size_t mIndexEnd;
 
         /// Is this SubEntity visible?
         bool mVisible;
@@ -96,11 +99,13 @@ namespace Ogre {
         ushort mRenderQueuePriority;
         /// Flags whether the RenderQueue's default should be used.
         bool mRenderQueuePrioritySet;
-
+#if !OGRE_NO_MESHLOD
 		/// The LOD number of the material to use, calculated by Entity::_notifyCurrentCamera
 		unsigned short mMaterialLodIndex;
-
-        /// blend buffer details for dedicated geometry
+#else
+		const unsigned short mMaterialLodIndex; // = 0
+#endif
+        /// Blend buffer details for dedicated geometry
         VertexData* mSkelAnimVertexData;
         /// Quick lookup of buffers
         TempBlendedBufferInfo mTempSkelAnimInfo;
@@ -151,7 +156,7 @@ namespace Ogre {
         /** Returns whether or not this SubEntity is supposed to be visible. */
         virtual bool isVisible(void) const;
 
-        /** Sets the render queue group this subentity will be rendered through.
+        /** Sets the render queue group this SubEntity will be rendered through.
         @remarks
             Render queues are grouped to allow you to more tightly control the ordering
             of rendered objects. If you do not call this method, the SubEntity will use
@@ -164,7 +169,7 @@ namespace Ogre {
         */
         virtual void setRenderQueueGroup(uint8 queueID);
 
-        /** Sets the render queue group and group priority this subentity will be rendered through.
+        /** Sets the render queue group and group priority this SubEntity will be rendered through.
         @remarks
             Render queues are grouped to allow you to more tightly control the ordering
             of rendered objects. Within a single render group there another type of grouping
@@ -209,6 +214,31 @@ namespace Ogre {
         /** Overridden - see Renderable.
         */
         void getRenderOperation(RenderOperation& op);
+
+		/** Tells this SubEntity to draw a subset of the SubMesh by adjusting the index buffer extents.
+         * Default value is zero so that the entire index buffer is used when drawing.
+         * Valid values are zero to getIndexDataEndIndex()
+        */
+        void setIndexDataStartIndex(size_t start_index);
+
+        /** Returns the current value of the start index used for drawing.
+         * \see setIndexDataStartIndex
+        */
+        size_t getIndexDataStartIndex() const;
+
+        /** Tells this SubEntity to draw a subset of the SubMesh by adjusting the index buffer extents.
+         * Default value is SubMesh::indexData::indexCount so that the entire index buffer is used when drawing.
+         * Valid values are mStartIndex to SubMesh::indexData::indexCount
+        */
+        void setIndexDataEndIndex(size_t end_index);
+
+        /** Returns the current value of the start index used for drawing.
+		*/
+        size_t getIndexDataEndIndex() const;
+
+		/** Reset the custom start/end index to the default values.
+		*/
+        void resetIndexDataStartEndIndex();
 
         /** Overridden - see Renderable.
         */
@@ -284,5 +314,6 @@ namespace Ogre {
 
 }
 
+#include "OgreHeaderSuffix.h"
 
 #endif

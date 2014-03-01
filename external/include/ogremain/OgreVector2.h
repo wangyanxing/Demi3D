@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -54,6 +54,10 @@ namespace Ogre
         Real x, y;
 
     public:
+        /** Default constructor.
+            @note
+                It does <b>NOT</b> initialize the vector for efficiency.
+        */
         inline Vector2()
         {
         }
@@ -498,28 +502,20 @@ namespace Ogre
             @remarks
                 This method assumes that the random number generator has already
                 been seeded appropriately.
-            @param
-                angle The angle at which to deviate in radians
-            @param
-                up Any vector perpendicular to this one (which could generated
-                by cross-product of this vector and any other non-colinear
-                vector). If you choose not to provide this the function will
-                derive one on it's own, however if you provide one yourself the
-                function will be faster (this allows you to reuse up vectors if
-                you call this method more than once)
+            @param angle
+                The angle at which to deviate in radians
             @return
                 A random vector which deviates from this vector by angle. This
                 vector will not be normalised, normalise it if you wish
                 afterwards.
         */
-        inline Vector2 randomDeviant(Real angle) const
+        inline Vector2 randomDeviant(Radian angle) const
         {
-
-            angle *=  Math::UnitRandom() * Math::TWO_PI;
-            Real cosa = cos(angle);
-            Real sina = sin(angle);
-            return  Vector2(cosa * x - sina * y,
-                            sina * x + cosa * y);
+            angle *= Math::RangeRandom(-1, 1);
+            Real cosa = Math::Cos(angle);
+            Real sina = Math::Sin(angle);
+            return Vector2(cosa * x - sina * y,
+                           sina * x + cosa * y);
         }
 
         /** Returns true if this vector is zero length. */

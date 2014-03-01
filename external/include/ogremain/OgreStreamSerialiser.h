@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,9 @@ THE SOFTWARE.
 #define __StreamSerialiser_H__
 
 #include "OgrePrerequisites.h"
+#include "OgreCommon.h"
 #include "OgreDataStream.h"
-
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre 
 {
@@ -192,7 +193,7 @@ namespace Ogre
 		@param msg Descriptive text added to the log if versions are not compatible
 		@return The chunk if it passes the validation.
 		*/
-		virtual const Chunk* readChunkBegin(uint32 id, uint16 maxVersion, const String& msg = StringUtil::BLANK);
+		virtual const Chunk* readChunkBegin(uint32 id, uint16 maxVersion, const String& msg = BLANKSTRING);
 
 		/** Call this to 'rewind' the stream to just before the start of the current
 			chunk. 
@@ -318,8 +319,16 @@ namespace Ogre
 		virtual void read(Node* node, size_t count = 1);
 		virtual void read(bool* val, size_t count = 1);
 
+		/** Start (un)compressing data
+		@param avail_in Available bytes for uncompressing
+		*/
+		virtual void startDeflate(size_t avail_in = 0);
+		/** Stop (un)compressing data
+		*/
+		virtual void stopDeflate();
 	protected:
 		DataStreamPtr mStream;
+		DataStreamPtr mOriginalStream;
 		Endian mEndian;
 		bool mFlipEndian;
 		bool mReadWriteHeader;
@@ -381,6 +390,8 @@ namespace Ogre
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif
 

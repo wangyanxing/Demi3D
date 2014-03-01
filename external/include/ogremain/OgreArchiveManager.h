@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,9 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
-#include "OgreResourceManager.h"
 #include "OgreSingleton.h"
+#include "OgreIteratorWrappers.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -67,15 +68,15 @@ namespace Ogre {
                 extension libraries.
             @param filename
                 The filename that will be opened
-            @param refLibrary
-                The library that contains the data-handling code
+            @param archiveType
+                The type of archive that this is. For example: "Zip".
             @return
                 If the function succeeds, a valid pointer to an Archive
                 object is returned.
             @par
                 If the function fails, an exception is thrown.
         */
-        Archive* load( const String& filename, const String& archiveType);
+        Archive* load( const String& filename, const String& archiveType, bool readOnly);
 
 		/** Unloads an archive.
 		@remarks
@@ -135,5 +136,7 @@ namespace Ogre {
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

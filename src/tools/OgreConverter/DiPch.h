@@ -13,6 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiDiPch_h__
 #define DiDiPch_h__
 
+#define TIXML_USE_STL
 
 #pragma warning(disable:4275)
 #pragma warning(disable:4251)
@@ -24,7 +25,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "OgreSkeletonSerializer.h"
 #include "OgreXMLPrerequisites.h"
 #include "OgreDefaultHardwareBufferManager.h"
-#include "OgreProgressiveMesh.h"
 #include <iostream>
 #include <sys/stat.h>
 

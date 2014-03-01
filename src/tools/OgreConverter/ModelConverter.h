@@ -30,7 +30,7 @@ public:
 
 protected:
 
-	void					WriteSimpleMaterial( const DiString& filename );
+    void					WriteSimpleMaterial(const DiString& filename, const Ogre::String& ogreMatName);
 
 	DiMeshPtr				WriteMesh(const Ogre::Mesh* pMesh);
 
@@ -43,6 +43,8 @@ protected:
 	Ogre::Mesh*				mMesh;
 
 	Ogre::VertexElementType	mColourElementType;
+
+    DiString                mCurrentOutputPath;
 };
 
 

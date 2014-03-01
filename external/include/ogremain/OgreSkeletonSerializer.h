@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,11 @@ THE SOFTWARE.
 #define __SkeletonSerializer_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreSkeleton.h"
 #include "OgreSerializer.h"
 
 namespace Ogre {
+
+    struct LinkedSkeletonAnimationSource;
 
 	/// Skeleton compatibility versions
 	enum SkeletonVersion 
@@ -131,7 +132,7 @@ namespace Ogre {
         size_t calcBoneSize(const Skeleton* pSkel, const Bone* pBone);
         size_t calcBoneSizeWithoutScale(const Skeleton* pSkel, const Bone* pBone);
         size_t calcBoneParentSize(const Skeleton* pSkel);
-        size_t calcAnimationSize(const Skeleton* pSkel, const Animation* pAnim);
+        size_t calcAnimationSize(const Skeleton* pSkel, const Animation* pAnim, SkeletonVersion ver);
         size_t calcAnimationTrackSize(const Skeleton* pSkel, const NodeAnimationTrack* pTrack);
         size_t calcKeyFrameSize(const Skeleton* pSkel, const TransformKeyFrame* pKey);
         size_t calcKeyFrameSizeWithoutScale(const Skeleton* pSkel, const TransformKeyFrame* pKey);

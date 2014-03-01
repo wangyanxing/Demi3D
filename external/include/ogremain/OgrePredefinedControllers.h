@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ THE SOFTWARE.
 #include "OgreCommon.h"
 #include "OgreController.h"
 #include "OgreFrameListener.h"
-#include "OgreGpuProgram.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -83,7 +83,7 @@ namespace Ogre {
         /** Gets the frame number as a parametric value in the range [0,1]
         */
         Real getValue(void) const;
-        /** Sets the frame number as a parametric value in the range [0,1]; the actual frame number is value * (numFrames-1).
+        /** Sets the frame number as a parametric value in the range [0,1]; the actual frame number is (value * numFrames) % numFrames).
         */
         void setValue(Real value);
 
@@ -93,7 +93,7 @@ namespace Ogre {
         @remarks
             Effects can be applied to the scale or the offset of the u or v coordinates, or both. If separate
             modifications are required to u and v then 2 instances are required to control both independently, or 4
-            if you ant separate u and v scales as well as separate u and v offsets.
+            if you want separate u and v scales as well as separate u and v offsets.
         @par
             Because of the nature of this value, it can accept values outside the 0..1 parametric range.
     */
@@ -145,7 +145,7 @@ namespace Ogre {
     protected:
 		/// The parameters to access
 		GpuProgramParametersSharedPtr mParams;
-		/// The index of the parameter to e read or set
+		/// The index of the parameter to be read or set
 		size_t mParamIndex;
     public:
         /** Constructor.
@@ -174,14 +174,13 @@ namespace Ogre {
 	{
 	public:
 		/** Constructor.
-		@param
-		sequenceTime The amount of time in seconds it takes to loop through the whole animation sequence.
-		@param
-		timeOffset The offset in seconds at which to start (default is start at 0)
+         @param
+             deltaInput If true, signifies that the input will be a delta value such that the function should
+             add it to an internal counter before calculating the output.
 		*/
 		PassthroughControllerFunction(bool deltaInput = false);
 
-		/** Overriden function.
+		/** Overridden function.
 		*/
 		Real calculate(Real source);
 	};
@@ -253,7 +252,7 @@ namespace Ogre {
         @par
             output = (waveoutput + 1) * 0.5
         @par
-            Hence a wave output of -1 becomes 0, a wave ouput of 1 becomes 1, and a wave output of 0 becomes 0.5.
+            Hence a wave output of -1 becomes 0, a wave output of 1 becomes 1, and a wave output of 0 becomes 0.5.
     */
     class _OgreExport WaveformControllerFunction : public ControllerFunction<Real>
     {
@@ -288,5 +287,7 @@ namespace Ogre {
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

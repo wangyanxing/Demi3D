@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ THE SOFTWARE.
 
 #include "OgreSceneManager.h"
 #include "OgreSingleton.h"
-#include "OgreIteratorWrappers.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
     
@@ -149,7 +149,7 @@ namespace Ogre {
 			created. If you leave this blank, an auto name will be assigned.
 		*/
 		SceneManager* createSceneManager(const String& typeName, 
-			const String& instanceName = StringUtil::BLANK);
+			const String& instanceName = BLANKSTRING);
 
 		/** Create a SceneManager instance based on scene type support.
 		@remarks
@@ -164,7 +164,7 @@ namespace Ogre {
 			created. If you leave this blank, an auto name will be assigned.
 		*/
 		SceneManager* createSceneManager(SceneTypeMask typeMask, 
-			const String& instanceName = StringUtil::BLANK);
+			const String& instanceName = BLANKSTRING);
 
 		/** Destroy an instance of a SceneManager. */
 		void destroySceneManager(SceneManager* sm);
@@ -229,5 +229,7 @@ namespace Ogre {
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

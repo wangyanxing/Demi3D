@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,9 @@ THE SOFTWARE.
 #define __StringInterface_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreString.h"
 #include "OgreCommon.h"
+#include "Threading/OgreThreadHeaders.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -161,7 +162,7 @@ namespace Ogre {
     class _OgreExport StringInterface 
     {
     private:
-		OGRE_STATIC_MUTEX( msDictionaryMutex )
+        OGRE_STATIC_MUTEX( msDictionaryMutex );
 
         /// Dictionary of parameters
         static ParamDictionaryMap msDictionary;
@@ -183,7 +184,7 @@ namespace Ogre {
         */
         bool createParamDictionary(const String& className)
         {
-			OGRE_LOCK_MUTEX( msDictionaryMutex )
+            OGRE_LOCK_MUTEX( msDictionaryMutex );
 
 			ParamDictionaryMap::iterator it = msDictionary.find(className);
 
@@ -330,6 +331,8 @@ namespace Ogre {
 
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif
 

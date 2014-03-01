@@ -45,12 +45,15 @@ void parseArgs(int numArgs, char **args)
 int main(int numargs, char** args)
 {
 	if (numargs < 2)
-	{
         return -1;
-    }
 
 	parseArgs(numargs, args);
 
+    auto root = OGRE_NEW Ogre::Root("", "", "ogre.log");
+    root->loadPlugin("RenderSystem_Direct3D9_d");
+    root->setRenderSystem(root->getRenderSystemByName("Direct3D9 Rendering Subsystem"));
+    root->getRenderSystem()->setConfigOption("Full Screen","No");
+    root->initialise(true);
 	converterMgr = new ConverterMgr();
 
 	CovOptions option;
@@ -70,6 +73,6 @@ int main(int numargs, char** args)
 	}
 
 	delete converterMgr;
-
+    delete root;
     return 0;
 }

@@ -1,5 +1,5 @@
-
-/*www.sourceforge.net/projects/tinyxml
+/*
+www.sourceforge.net/projects/tinyxml
 Original file by Yves Berquin.
 
 This software is provided 'as-is', without any express or implied
@@ -28,7 +28,6 @@ distribution.
 
 
 #include "DiPch.h"
-
 #ifndef TIXML_USE_STL
 
 #include "tinystr.h"

@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,20 +29,20 @@ THE SOFTWARE.
 #define __Common_H__
 // Common stuff
 
-#include "OgreString.h"
-
 #if defined ( OGRE_GCC_VISIBILITY )
 #   pragma GCC visibility push(default)
 #endif
-
-#include <utility>
-#include <sstream>
 
 #if defined ( OGRE_GCC_VISIBILITY )
 #   pragma GCC visibility pop
 #endif
 
+#include "OgreHeaderPrefix.h"
+
 namespace Ogre {
+
+    typedef _StringBase String;
+
 	/** \addtogroup Core
 	*  @{
 	*/
@@ -100,7 +100,7 @@ namespace Ogre {
     /** Filtering options for textures / mipmaps. */
     enum FilterOptions
     {
-        /// No filtering, used for FILT_MIP to turn off mipmapping
+        /// No filtering, used for FT_MIP to turn off mipmapping
         FO_NONE,
         /// Use the closest pixel
         FO_POINT,
@@ -417,7 +417,7 @@ namespace Ogre {
 
 		template <class InputIterator>
 		HashedVector(InputIterator a, InputIterator b)
-			: mList(a, b), mListHashDirty(false)
+			: mList(a, b), mListHash(0), mListHashDirty(false)
 		{
 			dirtyHash();
 		}
@@ -543,6 +543,8 @@ namespace Ogre {
 	typedef HashedVector<Light*> LightList;
 
 
+    /// Constant blank string, useful for returning by ref where local does not exist
+    const String BLANKSTRING;
 
     typedef map<String, bool>::type UnaryOptionList;
     typedef map<String, String>::type BinaryOptionList;
@@ -659,7 +661,7 @@ namespace Ogre {
          */
         struct Box
         {
-            size_t left, top, right, bottom, front, back;
+            uint32 left, top, right, bottom, front, back;
 			/// Parameterless constructor for setting the members manually
             Box()
 				: left(0), top(0), right(1), bottom(1), front(0), back(1)
@@ -674,7 +676,7 @@ namespace Ogre {
             	@note Note that the left, top, and front edges are included 
  		           	but the right, bottom and back ones are not.
             */
-            Box( size_t l, size_t t, size_t r, size_t b ):
+            Box( uint32 l, uint32 t, uint32 r, uint32 b ):
                 left(l),
                 top(t),   
                 right(r),
@@ -695,7 +697,7 @@ namespace Ogre {
             	@note Note that the left, top, and front edges are included 
  		           	but the right, bottom and back ones are not.
             */
-            Box( size_t l, size_t t, size_t ff, size_t r, size_t b, size_t bb ):
+            Box( uint32 l, uint32 t, uint32 ff, uint32 r, uint32 b, uint32 bb ):
                 left(l),
                 top(t),   
                 right(r),
@@ -714,11 +716,11 @@ namespace Ogre {
             }
             
             /// Get the width of this box
-            size_t getWidth() const { return right-left; }
+            uint32 getWidth() const { return right-left; }
             /// Get the height of this box
-            size_t getHeight() const { return bottom-top; }
+            uint32 getHeight() const { return bottom-top; }
             /// Get the depth of this box
-            size_t getDepth() const { return back-front; }
+            uint32 getDepth() const { return back-front; }
         };
 
     
@@ -764,107 +766,10 @@ namespace Ogre {
 	/// Render window container.
 	typedef vector<RenderWindow*>::type RenderWindowList;
 
-	/// Utility class to generate a sequentially numbered series of names
-	class _OgreExport NameGenerator
-	{
-	protected:
-		String mPrefix;
-		unsigned long long int mNext;
-		OGRE_AUTO_MUTEX
-	public:
-		NameGenerator(const NameGenerator& rhs)
-			: mPrefix(rhs.mPrefix), mNext(rhs.mNext) {}
-		
-		NameGenerator(const String& prefix) : mPrefix(prefix), mNext(1) {}
-
-		/// Generate a new name
-		String generate()
-		{
-			OGRE_LOCK_AUTO_MUTEX
-			std::ostringstream s;
-			s << mPrefix << mNext++;
-			return s.str();
-		}
-
-		/// Reset the internal counter
-		void reset()
-		{
-			OGRE_LOCK_AUTO_MUTEX
-			mNext = 1ULL;
-		}
-
-		/// Manually set the internal counter (use caution)
-		void setNext(unsigned long long int val)
-		{
-			OGRE_LOCK_AUTO_MUTEX
-			mNext = val;
-		}
-
-		/// Get the internal counter
-		unsigned long long int getNext() const
-		{
-			// lock even on get because 64-bit may not be atomic read
-			OGRE_LOCK_AUTO_MUTEX
-			return mNext;
-		}
-
-
-
-
-	};
-
-	/** Template class describing a simple pool of items.
-	*/
-	template <typename T>
-	class Pool
-	{
-	protected:
-		typedef typename list<T>::type ItemList;
-		ItemList mItems;
-		OGRE_AUTO_MUTEX
-	public:
-		Pool() {} 
-		virtual ~Pool() {}
-
-		/** Get the next item from the pool.
-		@return pair indicating whether there was a free item, and the item if so
-		*/
-		virtual std::pair<bool, T> removeItem()
-		{
-			OGRE_LOCK_AUTO_MUTEX
-			std::pair<bool, T> ret;
-			if (mItems.empty())
-			{
-				ret.first = false;
-			}
-			else
-			{
-				ret.first = true;
-				ret.second = mItems.front();
-				mItems.pop_front();
-			}
-			return ret;
-		}
-
-		/** Add a new item to the pool. 
-		*/
-		virtual void addItem(const T& i)
-		{
-			OGRE_LOCK_AUTO_MUTEX
-			mItems.push_front(i);
-		}
-		/// Clear the pool
-		virtual void clear()
-		{
-			OGRE_LOCK_AUTO_MUTEX
-			mItems.clear();
-		}
-
-
-
-	};
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

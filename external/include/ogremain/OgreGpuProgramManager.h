@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,11 +31,13 @@ THE SOFTWARE.
 // Precompiler options
 #include "OgrePrerequisites.h"
 #include "OgreResourceManager.h"
-#include "OgreException.h"
 #include "OgreGpuProgram.h"
 #include "OgreSingleton.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
+
+        //TODO Add documentation and explain rationale of this class.
 
 	/** \addtogroup Core
 	*  @{
@@ -58,6 +60,7 @@ namespace Ogre {
 		SharedParametersMap mSharedParametersMap;
 		MicrocodeMap mMicrocodeCache;
 		bool mSaveMicrocodesToCache;
+		bool mCacheDirty;			// When this is true the cache is 'dirty' and should be resaved to disk.
 			
 		static String addRenderSystemToName( const String &  name );
 
@@ -68,6 +71,10 @@ namespace Ogre {
 	public:
 		GpuProgramManager();
 		virtual ~GpuProgramManager();
+
+		/// Get a resource by name
+		/// @see GpuProgramManager::getResourceByName
+		GpuProgramPtr getByName(const String& name, bool preferHighLevelPrograms = true);
 
         /** Loads a GPU program from a file of assembly. 
 		@remarks
@@ -156,12 +163,12 @@ namespace Ogre {
             GpuProgramType gptype, const String& syntaxCode, bool isManual = false, 
             ManualResourceLoader* loader = 0);
 
-        /** Overrides the standard ResourceManager getByName method.
+        /** Overrides the standard ResourceManager getResourceByName method.
         @param name The name of the program to retrieve
         @param preferHighLevelPrograms If set to true (the default), high level programs will be
             returned in preference to low-level programs.
         */
-        ResourcePtr getByName(const String& name, bool preferHighLevelPrograms = true);
+        ResourcePtr getResourceByName(const String& name, bool preferHighLevelPrograms = true);
 
 
 		/** Create a new set of shared parameters, which can be used across many 
@@ -187,6 +194,10 @@ namespace Ogre {
         */
 		void setSaveMicrocodesToCache( const bool val );
 
+		/** Returns true if the microcodecache changed during the run.
+		*/
+		bool isCacheDirty(void) const;
+
 		bool canGetCompiledShaderBuffer();
         /** Check if a microcode is available for a program in the microcode cache.
         @param name The name of the program.
@@ -200,12 +211,17 @@ namespace Ogre {
         /** Creates a microcode to be later added to the cache.
 		@param size The size of the microcode in bytes
         */
-		virtual Microcode createMicrocode( const size_t size ) const;
+		virtual Microcode createMicrocode( const uint32 size ) const;
 
         /** Adds a microcode for a program to the microcode cache.
         @param name The name of the program.
         */
 		virtual void addMicrocodeToCache( const String & name, const Microcode & microcode );
+
+		/** Removes a microcode for a program from the microcode cache.
+        @param name The name of the program.
+        */
+		virtual void removeMicrocodeFromCache( const String & name );
 
         /** Saves the microcode cache to disk.
         @param stream The destination stream
@@ -258,5 +274,7 @@ namespace Ogre {
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

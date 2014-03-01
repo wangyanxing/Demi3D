@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +30,13 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 #include "OgreSingleton.h"
-#include "OgreCommon.h"
 #include "OgreDataStream.h"
-#include "OgreResource.h"
 #include "OgreArchive.h"
 #include "OgreIteratorWrappers.h"
+#include "OgreCommon.h"
+#include "Threading/OgreThreadHeaders.h"
 #include <ctime>
+#include "OgreHeaderPrefix.h"
 
 // If X11/Xlib.h gets included before this header (for example it happens when
 // including wxWidgets and FLTK), Status is defined as an int which we don't
@@ -140,7 +141,6 @@ namespace Ogre {
         /** This event is fired when a stage of preparing linked world geometry 
             has been completed. The number of stages required will have been 
             included in the resourceCount passed in resourceGroupLoadStarted.
-        @param description Text description of what was just prepared
         */
         virtual void worldGeometryPrepareStageEnded(void) {}
         /** This event is fired when a resource group finished preparing. */
@@ -169,11 +169,20 @@ namespace Ogre {
         /** This event is fired when a stage of loading linked world geometry 
             has been completed. The number of stages required will have been 
             included in the resourceCount passed in resourceGroupLoadStarted.
-        @param description Text description of what was just loaded
         */
         virtual void worldGeometryStageEnded(void) = 0;
         /** This event is fired when a resource group finished loading. */
-        virtual void resourceGroupLoadEnded(const String& groupName) = 0;
+		virtual void resourceGroupLoadEnded(const String& groupName) = 0;
+		/** This event is fired when a resource was just created.
+		@param resource Weak reference to the resource created.
+		*/
+		virtual void resourceCreated(const ResourcePtr& resource)
+		{ (void)resource; }
+		/** This event is fired when a resource is about to be removed.
+		@param resource Weak reference to the resource removed.
+		*/
+		virtual void resourceRemove(const ResourcePtr& resource)
+		{ (void)resource; }
     };
 
 	/**
@@ -252,7 +261,7 @@ namespace Ogre {
     class _OgreExport ResourceGroupManager : public Singleton<ResourceGroupManager>, public ResourceAlloc
     {
     public:
-		OGRE_AUTO_MUTEX // public to allow external locking
+        OGRE_AUTO_MUTEX; // public to allow external locking
 		/// Default resource group name
 		static String DEFAULT_RESOURCE_GROUP_NAME;
         /// Internal resource group name (should be used by OGRE internal only)
@@ -314,9 +323,9 @@ namespace Ogre {
 				LOADED = 4
 			};
 			/// General mutex for dealing with group content
-			OGRE_AUTO_MUTEX
+                    OGRE_AUTO_MUTEX;
 			/// Status-specific mutex, separate from content-changing mutex
-			OGRE_MUTEX(statusMutex)
+                    OGRE_MUTEX(statusMutex);
 			/// Group name
 			String name;
 			/// Group status
@@ -398,6 +407,18 @@ namespace Ogre {
 		void fireResourcePrepareEnded(void);
 		/// Internal event firing method
 		void fireResourceGroupPrepareEnded(const String& groupName);
+		/// Internal event firing method
+		void fireResourceCreated(const ResourcePtr& resource);
+		/// Internal event firing method
+		void fireResourceRemove(const ResourcePtr& resource);
+		/** Internal modification time retrieval */
+		time_t resourceModifiedTime(ResourceGroup* group, const String& filename);
+
+        /** Find out if the named file exists in a group. Internal use only
+         @param group Pointer to the resource group
+         @param filename Fully qualified name of the file to test for
+         */
+        bool resourceExists(ResourceGroup* group, const String& filename);
 
 		/// Stored current group - optimisation for when bulk loading a group
 		ResourceGroup* mCurrentGroup;
@@ -625,7 +646,7 @@ namespace Ogre {
 			this allows duplicate names in alternate paths.
         */
         void addResourceLocation(const String& name, const String& locType, 
-            const String& resGroup = DEFAULT_RESOURCE_GROUP_NAME, bool recursive = false);
+            const String& resGroup = DEFAULT_RESOURCE_GROUP_NAME, bool recursive = false, bool readOnly = true);
         /** Removes a resource location from the search path. */ 
         void removeResourceLocation(const String& name, 
 			const String& resGroup = DEFAULT_RESOURCE_GROUP_NAME);
@@ -798,12 +819,6 @@ namespace Ogre {
         @param filename Fully qualified name of the file to test for
         */
         bool resourceExists(const String& group, const String& filename);
-
-        /** Find out if the named file exists in a group. 
-        @param group Pointer to the resource group
-        @param filename Fully qualified name of the file to test for
-        */
-        bool resourceExists(ResourceGroup* group, const String& filename);
 		
         /** Find out if the named file exists in any group. 
         @param filename Fully qualified name of the file to test for
@@ -846,9 +861,6 @@ namespace Ogre {
         */
         StringVectorPtr findResourceLocation(const String& groupName, const String& pattern);
 
-		/** Retrieve the modification time of a given file */
-		time_t resourceModifiedTime(ResourceGroup* group, const String& filename); 
-
 		/** Create a new resource file in a given group.
 		@remarks
 			This method creates a new file in a resource group and passes you back a 
@@ -864,7 +876,7 @@ namespace Ogre {
 			will be considered candidates for creation.
 		*/
 		DataStreamPtr createResource(const String& filename, const String& groupName = DEFAULT_RESOURCE_GROUP_NAME, 
-			bool overwrite = false, const String& locationPattern = StringUtil::BLANK);
+			bool overwrite = false, const String& locationPattern = BLANKSTRING);
 
 		/** Delete a single resource file.
 		@param filename The name of the file to delete. 
@@ -876,7 +888,7 @@ namespace Ogre {
 			will be considered candidates for deletion.
 		*/
 		void deleteResource(const String& filename, const String& groupName = DEFAULT_RESOURCE_GROUP_NAME, 
-			const String& locationPattern = StringUtil::BLANK);
+			const String& locationPattern = BLANKSTRING);
 
 		/** Delete all matching resource files.
 		@param filePattern The pattern (see StringUtil::match) of the files to delete. 
@@ -888,7 +900,7 @@ namespace Ogre {
 			will be considered candidates for deletion.
 		*/
 		void deleteMatchingResources(const String& filePattern, const String& groupName = DEFAULT_RESOURCE_GROUP_NAME, 
-			const String& locationPattern = StringUtil::BLANK);
+			const String& locationPattern = BLANKSTRING);
 
 		/** Adds a ResourceGroupListener which will be called back during 
             resource loading events. 
@@ -1088,5 +1100,7 @@ namespace Ogre {
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

@@ -164,13 +164,16 @@ namespace Demi
         void                Bind(const DiShaderEnvironment& shaderEnv)
         {
             DiD3D9ShaderUtils<type, _Myt*>::BindShader(this);
-            mConstants.BindEnvironment(shaderEnv);
+            //mConstants.BindEnvironment(shaderEnv);
         }
 
         void                LoadParameters(DiD3D9ShaderParam* sm)
         {
             if (!mConstants.table)
                 return;
+
+            if (DiD3D9BuiltinConsts::msUniformFuncs.empty())
+                DiD3D9BuiltinConsts::InitBuiltinFuncs();
 
             ID3DXConstantTable &table = *mConstants.table;
 
@@ -193,8 +196,10 @@ namespace Demi
                         sm->AddParameter(t, parName);
                         sm->AddD3DParameter(parName, type, cdesc.RegisterIndex);
                     }
-                    else{
-                        DI_DEBUG("%s id:%d", cdesc.Name, cdesc.RegisterIndex);
+                    else
+                    {
+                        // built-in constants
+                        sm->AddBuiltinParameter(cdesc.Name, type, cdesc.RegisterIndex);
                     }
                 }
             }

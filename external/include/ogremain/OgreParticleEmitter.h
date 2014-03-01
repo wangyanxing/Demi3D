@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,12 @@ THE SOFTWARE.
 #define __ParticleEmitter_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreString.h"
 #include "OgreVector3.h"
 #include "OgreColourValue.h"
 #include "OgreStringInterface.h"
 #include "OgreParticleEmitterCommands.h"
 #include "OgreParticle.h"
+#include "OgreHeaderPrefix.h"
 
 
 namespace Ogre {
@@ -79,6 +79,7 @@ namespace Ogre {
         static EmitterCommands::CmdColourRangeEnd msColourRangeEndCmd;
         static EmitterCommands::CmdDirection msDirectionCmd;
         static EmitterCommands::CmdUp msUpCmd;
+		static EmitterCommands::CmdDirPositionRef msDirPositionRefCmd;
         static EmitterCommands::CmdEmissionRate msEmissionRateCmd;
         static EmitterCommands::CmdMaxTTL msMaxTTLCmd;
         static EmitterCommands::CmdMaxVelocity msMaxVelocityCmd;
@@ -107,8 +108,13 @@ namespace Ogre {
         String mType;
         /// Base direction of the emitter, may not be used by some emitters
         Vector3 mDirection;
-        // Notional up vector, used to speed up generation of variant directions, and also to orient some emitters.
+        /// Notional up vector, used to speed up generation of variant directions, and also to orient some emitters.
         Vector3 mUp;
+		/// When true, mDirPositionRef is used instead of mDirection to generate particles
+		bool mUseDirPositionRef;
+		/* Center position to tell in which direction will particles be emitted according to their position,
+            useful for explosions & implosions, some emitters (i.e. point emitter) may not need it. */
+        Vector3 mDirPositionRef;
         /// Angle around direction which particles may be emitted, internally radians but angleunits for interface
         Radian mAngle;
         /// Min speed of particles
@@ -161,7 +167,7 @@ namespace Ogre {
         /** Internal utility method for generating particle exit direction
         @param destVector Reference to vector to complete with new direction (normalised)
         */
-        virtual void genEmissionDirection(Vector3& destVector);
+        virtual void genEmissionDirection( const Vector3 &particlePos, Vector3& destVector );
 
         /** Internal utility method to apply velocity to a particle direction.
         @param destVector The vector to scale by a randomly generated scale between min and max speed.
@@ -232,6 +238,27 @@ namespace Ogre {
         /** Returns the up vector of the emitter. */
         virtual const Vector3& getUp(void) const;
 
+		/** Sets the direction of the emitter.
+			Some particle effects need to emit particles in many random directions, but still
+			following some rules; like not having them collide against each other. Very useful
+			for explosions and implosions (when velocity is negative)
+		@note
+			Although once enabled mDirPositionRef will supersede mDirection; calling setDirection()
+			may still be needed to setup a custom up vector.
+		@param position
+            The reference position in which the direction of the particles will be calculated from,
+			also taking into account the particle's position at the time of emission.
+		@param enable
+            True to use mDirPositionRef, false to use the default behaviour with mDirection
+		*/
+		virtual void setDirPositionReference( const Vector3& position, bool enable );
+
+		/** Returns the position reference to generate direction of emitted particles */
+		virtual const Vector3& getDirPositionReference() const;
+
+		/** Returns whether direction or position reference is used */
+		virtual bool getDirPositionReferenceEnabled() const;
+
         /** Sets the maximum angle away from the emitter direction which particle will be emitted.
         @remarks
             Whilst the direction property defines the general direction of emission for particles, 
@@ -239,7 +266,7 @@ namespace Ogre {
             This allows you to create a scatter effect - if set to 0, all particles will be emitted
             exactly along the emitters direction vector, whereas if you set it to 180 degrees or more,
             particles will be emitted in a sphere, i.e. in all directions.
-        @param degrees
+        @param angle
             Maximum angle which initial particle direction can deviate from the emitter base direction vector.
         */
         virtual void setAngle(const Radian& angle);
@@ -519,6 +546,7 @@ namespace Ogre {
 
 }
 
+#include "OgreHeaderSuffix.h"
 
 #endif
 

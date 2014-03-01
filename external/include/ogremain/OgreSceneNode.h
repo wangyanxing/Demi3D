@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,8 @@ THE SOFTWARE.
 #include "OgrePrerequisites.h"
 
 #include "OgreNode.h"
-#include "OgreIteratorWrappers.h"
 #include "OgreAxisAlignedBox.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -468,5 +468,7 @@ namespace Ogre {
 
 
 }// namespace
+
+#include "OgreHeaderSuffix.h"
 
 #endif

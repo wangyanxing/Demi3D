@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -66,7 +66,7 @@ namespace Ogre {
 		and to back it with a system memory 'shadow' copy which can be read and updated arbitrarily.
 		Ogre handles synchronising this buffer with the real hardware buffer (which should still be
 		created with the HBU_DYNAMIC flag if you intend to update it very frequently). Whilst this
-		approach does have it's own costs, such as increased memory overhead, these costs can 
+		approach does have its own costs, such as increased memory overhead, these costs can 
 		often be outweighed by the performance benefits of using a more hardware efficient buffer.
 		You should look for the 'useShadowBuffer' parameter on the creation methods used to create
 		the buffer of the type you require (see HardwareBufferManager) to enable this feature.
@@ -131,18 +131,38 @@ namespace Ogre {
 				Mandatory on static buffers, i.e. those created without the HBU_DYNAMIC flag. 
 				*/ 
 			    HBL_READ_ONLY,
-                /** As HBL_NORMAL, except the application guarantees not to overwrite any 
+                /** As HBL_DISCARD, except the application guarantees not to overwrite any 
                 region of the buffer which has already been used in this frame, can allow
                 some optimisation on some APIs. */
-                HBL_NO_OVERWRITE
+                HBL_NO_OVERWRITE,
+				/** Lock the buffer for writing only.*/
+				HBL_WRITE_ONLY
     			
 		    };
+
+            /// Device load options
+            /// The following enum is used to controls how data is loaded to devices in a multi device environment
+            /// This enum only works with the Direct3D 9 render system (5/2013).
+            enum UploadOptions 
+            {
+                /* Normal mode, 
+                    Data is automatically updated in all devices 
+                */
+                HBU_DEFAULT    = 0x0000,
+                /* Lazy load,
+                    Data is updated in the currently active device. Any other device will only be updated once 
+                    buffer is requested for rendering.
+                */
+                HBU_ON_DEMAND = 0x0001
+            };
+
 	    protected:
 		    size_t mSizeInBytes;
 		    Usage mUsage;
 		    bool mIsLocked;
 			size_t mLockStart;
 			size_t mLockSize;
+            UploadOptions mLockUploadOption;
 			bool mSystemMemory;
             bool mUseShadowBuffer;
             HardwareBuffer* mShadowBuffer;
@@ -157,7 +177,7 @@ namespace Ogre {
     public:
 		    /// Constructor, to be called by HardwareBufferManager only
             HardwareBuffer(Usage usage, bool systemMemory, bool useShadowBuffer) 
-				: mUsage(usage), mIsLocked(false), mSystemMemory(systemMemory), 
+				: mSizeInBytes(0), mUsage(usage), mIsLocked(false), mLockStart(0), mLockSize(0), mSystemMemory(systemMemory),
                 mUseShadowBuffer(useShadowBuffer), mShadowBuffer(NULL), mShadowUpdated(false), 
                 mSuppressHardwareUpdate(false) 
             {
@@ -178,7 +198,7 @@ namespace Ogre {
 		    @param options Locking options
 		    @return Pointer to the locked memory
 		    */
-		    virtual void* lock(size_t offset, size_t length, LockOptions options)
+		    virtual void* lock(size_t offset, size_t length, LockOptions options, UploadOptions uploadOpt = HBU_DEFAULT)
             {
                 assert(!isLocked() && "Cannot lock this buffer, it is already locked!");
 
@@ -198,7 +218,7 @@ namespace Ogre {
                         mShadowUpdated = true;
                     }
 
-                    ret = mShadowBuffer->lock(offset, length, options);
+                    ret = mShadowBuffer->lock(offset, length, options, uploadOpt);
                 }
                 else
                 {
@@ -208,6 +228,7 @@ namespace Ogre {
                 }
 				mLockStart = offset;
 				mLockSize = length;
+				mLockUploadOption = uploadOpt;
                 return ret;
             }
 
@@ -215,9 +236,9 @@ namespace Ogre {
 		    @param options Locking options
 		    @return Pointer to the locked memory
             */
-            void* lock(LockOptions options)
+			void* lock(LockOptions options, UploadOptions uploadOpt = HBU_DEFAULT)
             {
-                return this->lock(0, mSizeInBytes, options);
+                return this->lock(0, mSizeInBytes, options, uploadOpt);
             }
 		    /** Releases the lock on this buffer. 
             @remarks 
@@ -350,6 +371,28 @@ namespace Ogre {
     };
 	/** @} */
 	/** @} */
+
+	/** Locking helper. Guaranteed unlocking even in case of exception. */
+    template <typename T> struct HardwareBufferLockGuard
+    {
+        HardwareBufferLockGuard(const T& p, HardwareBuffer::LockOptions options)
+            : pBuf(p)
+        {
+            pData = pBuf->lock(options);
+        }
+        HardwareBufferLockGuard(const T& p, size_t offset, size_t length, HardwareBuffer::LockOptions options)
+            : pBuf(p)
+        {
+            pData = pBuf->lock(offset, length, options);
+        }		
+        ~HardwareBufferLockGuard()
+        {
+            pBuf->unlock();
+        }
+        
+        const T& pBuf;
+        void* pData;
+    };
 }
 #endif
 

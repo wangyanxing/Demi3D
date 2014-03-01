@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -156,11 +156,13 @@ namespace Ogre
 			return AllocPolicy::getMaxAllocationSize();
 		}
 
+#if __cplusplus < 201103L
 		void construct(pointer p)
 		{
 			// call placement new
 			new(static_cast<void*>(p)) T();
 		}
+#endif
 
 		void construct(pointer p, const T& val)
 		{
@@ -174,7 +176,6 @@ namespace Ogre
 			// some articles suggest yes, some no
 			p->~T();
 		}
-
 	};
 
 	/// determine equality, can memory from another allocator
@@ -220,6 +221,8 @@ namespace Ogre
 
 }// namespace Ogre
 
+
 #include "OgreHeaderSuffix.h"
+
 #endif // _MemorySTLAllocator_H__
 

@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,11 @@ THE SOFTWARE.
 
 #include "OgreSingleton.h"
 #include "OgreResourceManager.h"
-#include "OgreMaterial.h"
-#include "OgreStringVector.h"
-#include "OgreMaterialSerializer.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
+
+	class MaterialSerializer;
 
 
 	/** \addtogroup Core
@@ -114,12 +114,19 @@ namespace Ogre {
         FilterOptions mDefaultMagFilter;
         /// Default Texture filtering - mipmapping
         FilterOptions mDefaultMipFilter;
+		/// Default Texture filtering - comparison
+		FilterOptions mDefaultCompare;
+
+		bool			mDefaultCompareEnabled;
+		CompareFunction	mDefaultCompareFunction;
+
         /// Default Texture anisotropy
         unsigned int mDefaultMaxAniso;
         /// Serializer - Hold instance per thread if necessary
         OGRE_THREAD_POINTER(MaterialSerializer, mSerializer);
 		/// Default settings
 		MaterialPtr mDefaultSettings;
+
 		/// Overridden from ResourceManager
 		Resource* createImpl(const String& name, ResourceHandle handle, 
 			const String& group, bool isManual, ManualResourceLoader* loader,
@@ -136,13 +143,23 @@ namespace Ogre {
 
 		/// The list of per-scheme (and general) material listeners
 		typedef list<Listener*>::type ListenerList;
-		typedef std::map<String, ListenerList> ListenerMap;
+		typedef map<String, ListenerList>::type ListenerMap;
 		ListenerMap mListenerMap;
 
     public:
 		/// Default material scheme
 		static String DEFAULT_SCHEME_NAME;
+
+		/// Create a new material
+		/// @see ResourceManager::createResource
+		MaterialPtr create (const String& name, const String& group,
+							bool isManual = false, ManualResourceLoader* loader = 0,
+							const NameValuePairList* createParams = 0);
 		
+		/// Get a resource by name
+		/// @see ResourceManager::getResourceByName
+		MaterialPtr getByName(const String& name, const String& groupName = ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+
         /** Default constructor.
         */
         MaterialManager();
@@ -250,13 +267,13 @@ namespace Ogre {
 		Add a listener to handle material events. 
 		If schemeName is supplied, the listener will only receive events for that certain scheme.
 		*/
-		virtual void addListener(Listener* l, const Ogre::String& schemeName = StringUtil::BLANK);
+		virtual void addListener(Listener* l, const Ogre::String& schemeName = BLANKSTRING);
 
 		/** 
 		Remove a listener handling material events. 
 		If the listener was added with a custom scheme name, it needs to be supplied here as well.
 		*/
-		virtual void removeListener(Listener* l, const Ogre::String& schemeName = StringUtil::BLANK);
+		virtual void removeListener(Listener* l, const Ogre::String& schemeName = BLANKSTRING);
 
 		/// Internal method for sorting out missing technique for a scheme
 		virtual Technique* _arbitrateMissingTechniqueForActiveScheme(
@@ -300,5 +317,7 @@ namespace Ogre {
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene formatVersion="1.0" upAxis="y" unitsPerMeter="39.3701" minOgreVersion="1.8" ogreMaxVersion="2.6.2" author="OgreMax Scene Exporter (www.ogremax.com)" application="3DS Max">
+    <environment>
+        <colourAmbient r="0.333333" g="0.333333" b="0.333333"/>
+        <colourBackground r="0" g="0" b="0"/>
+        <clipping near="0" far="100000"/>
+    </environment>
+    <nodes>
+        <node name="default003">
+            <position x="4.92384" y="3.99084e-007" z="9.12999"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="1" qz="-4.37114e-008" qw="7.54979e-008"/>
+            <entity name="default003" castShadows="true" receiveShadows="true" meshFile="default003.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_f1_well01bricks_old_08"/>
+                    <subentity index="1" materialName="_f1_well01metal_01"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="default002">
+            <position x="-9.47882" y="5.19725e-007" z="11.8899"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="1" qz="-4.37114e-008" qw="7.54979e-008"/>
+            <entity name="default002" castShadows="true" receiveShadows="true" meshFile="default002.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_f1_house04bricks_old_04"/>
+                    <subentity index="1" materialName="_f1_house04wood_planks_01"/>
+                    <subentity index="2" materialName="_f1_house04roof_01"/>
+                    <subentity index="3" materialName="_f1_house04window_glass_01"/>
+                    <subentity index="4" materialName="_f1_house04con_dirt_01"/>
+                    <subentity index="5" materialName="_f1_house04bricks_old06"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="default001">
+            <position x="6.91004" y="-3.59251e-007" z="-8.2187"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="default001" castShadows="true" receiveShadows="true" meshFile="default001.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_f1_house02con_dirt_01"/>
+                    <subentity index="1" materialName="_f1_house02wood_planks_01"/>
+                    <subentity index="2" materialName="_f1_house02door_01"/>
+                    <subentity index="3" materialName="_f1_house02bricks_old06"/>
+                    <subentity index="4" materialName="_f1_house02win_shut_03"/>
+                    <subentity index="5" materialName="_f1_house02roof_01"/>
+                    <subentity index="6" materialName="_f1_house02shields"/>
+                    <subentity index="7" materialName="_f1_house02window_glass_01"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="default">
+            <position x="-12.6195" y="-5.01264e-007" z="-11.4676"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="default" castShadows="true" receiveShadows="true" meshFile="default.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_f1_house01bricks_old_04"/>
+                    <subentity index="1" materialName="_f1_house01door_01"/>
+                    <subentity index="2" materialName="_f1_house01window_glass_01"/>
+                    <subentity index="3" materialName="_f1_house01roof_01"/>
+                    <subentity index="4" materialName="_f1_house01wood_planks_01"/>
+                    <subentity index="5" materialName="_f1_house01con_dirt_01"/>
+                    <subentity index="6" materialName="_f1_house01ivy19_DF"/>
+                    <subentity index="7" materialName="_f1_house01win_shut_04"/>
+                    <subentity index="8" materialName="_f1_house01shields"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="default004">
+            <position x="25.4397" y="-2.89156e-009" z="-0.0661511"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="default004" castShadows="true" receiveShadows="true" meshFile="default004.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_haywagonHaywagon_haywagon_D_tga"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="default005">
+            <position x="12.4845" y="4.29856e-007" z="9.83395"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="1" qz="-4.37114e-008" qw="7.54979e-008"/>
+            <entity name="default005" castShadows="true" receiveShadows="true" meshFile="default005.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_fantasy_house4wood002_256"/>
+                    <subentity index="1" materialName="_fantasy_house4house001c"/>
+                    <subentity index="2" materialName="_fantasy_house4roof1"/>
+                    <subentity index="3" materialName="_fantasy_house4doorwindow_set1"/>
+                    <subentity index="4" materialName="_fantasy_house4stone6"/>
+                    <subentity index="5" materialName="_fantasy_house4housedoor_001"/>
+                    <subentity index="6" materialName="_fantasy_house4stone004"/>
+                    <subentity index="7" materialName="_fantasy_house4bricks_old_02"/>
+                    <subentity index="8" materialName="_fantasy_house4windowsc2"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="con_dirt_01">
+            <position x="-22.8773" y="-1.08432e-007" z="-2.48064"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="con_dirt_01" castShadows="true" receiveShadows="true" meshFile="con_dirt_01.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_v3_house3con_dirt_01"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="roof_01">
+            <position x="-22.8773" y="-1.08432e-007" z="-2.48064"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="roof_01" castShadows="true" receiveShadows="true" meshFile="roof_01.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_v3_house3roof_01"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="cloth_001_c">
+            <position x="-22.8773" y="-1.08432e-007" z="-2.48064"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="cloth_001_c" castShadows="true" receiveShadows="true" meshFile="cloth_001_c.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_v3_house3cloth_001_c"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="woodPlanks">
+            <position x="-22.8773" y="-1.08432e-007" z="-2.48064"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="woodPlanks" castShadows="true" receiveShadows="true" meshFile="woodPlanks.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_v3_house3woodPlanks"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="bricks_old06">
+            <position x="-22.8773" y="-1.08432e-007" z="-2.48064"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="bricks_old06" castShadows="true" receiveShadows="true" meshFile="bricks_old06.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_v3_house3bricks_old06"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="doorwindow_set">
+            <position x="-22.8773" y="-1.08432e-007" z="-2.48064"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="doorwindow_set" castShadows="true" receiveShadows="true" meshFile="doorwindow_set.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_v3_house3doorwindow_set"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="default006">
+            <position x="-20.3926" y="4.47116e-007" z="10.2288"/>
+            <scale x="0.0478292" y="0.0478292" z="0.0478292"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="default006" castShadows="true" receiveShadows="true" meshFile="default006.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_tree_04_fMaterial__bark_02_c"/>
+                    <subentity index="1" materialName="_tree_04_fMaterial__bark_01_c"/>
+                    <subentity index="2" materialName="_tree_04_fMaterial__branch_01_c"/>
+                    <subentity index="3" materialName="_tree_04_fMaterial__leaves_07_c"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="default007">
+            <position x="-3.18984" y="-5.44868e-007" z="-12.4651"/>
+            <scale x="0.0198347" y="0.0198347" z="0.0198347"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="default007" castShadows="true" receiveShadows="true" meshFile="default007.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_tree_02_aMaterial__bark_02_c"/>
+                    <subentity index="1" materialName="_tree_02_aMaterial__bark_01_c"/>
+                    <subentity index="2" materialName="_tree_02_aMaterial__branch_01_c"/>
+                    <subentity index="3" materialName="_tree_02_aMaterial__leaves_03_c"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="default008">
+            <position x="-0.0778171" y="5.04784e-007" z="11.5481"/>
+            <scale x="0.0943205" y="0.0943205" z="0.0943205"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="default008" castShadows="true" receiveShadows="true" meshFile="default008.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_bush_01Material__bark_02_c"/>
+                    <subentity index="1" materialName="_bush_01Material__bark_01_c"/>
+                    <subentity index="2" materialName="_bush_01Material__branch_01_c"/>
+                    <subentity index="3" materialName="_bush_01Material__leaves_05_c"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="default009">
+            <position x="21.9934" y="1.8403e-007" z="4.21011"/>
+            <scale x="0.0315056" y="0.0315056" z="0.0315056"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="default009" castShadows="true" receiveShadows="true" meshFile="default009.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_bush_03Material__branch_02_c"/>
+                    <subentity index="1" materialName="_bush_03Material__branch_01_c"/>
+                    <subentity index="2" materialName="_bush_03Material__leaves_05_c"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="Camera001">
+            <position x="32.6062" y="37.3796" z="-5.72109"/>
+            <scale x="1" y="0.999999" z="1"/>
+            <rotation qx="0.276153" qy="0.674904" qz="-0.304021" qw="0.613039"/>
+            <camera name="Camera001" fov="0.602416">
+                <rotation qx="-0.707107" qy="-0" qz="-0" qw="0.707107"/>
+                <clipping near="1" far="1000"/>
+            </camera>
+            <trackTarget nodeName="Camera001.Target">
+                <localDirection x="0" y="-1" z="0"/>
+            </trackTarget>
+        </node>
+        <node name="Camera001.Target">
+            <position x="17.7417" y="24.1678" z="-4.28979"/>
+            <scale x="0.999999" y="1" z="0.999999"/>
+            <rotation qx="0.276153" qy="0.674903" qz="-0.304021" qw="0.613038"/>
+        </node>
+        <node name="Camera002">
+            <position x="43.8261" y="24.9431" z="-3.99616"/>
+            <scale x="1" y="0.999998" z="1"/>
+            <rotation qx="0.276153" qy="0.674904" qz="-0.304021" qw="0.613038"/>
+            <camera name="Camera002" fov="0.602416">
+                <rotation qx="-0.707107" qy="-0" qz="-0" qw="0.707107"/>
+                <clipping near="1" far="1000"/>
+            </camera>
+            <trackTarget nodeName="Camera002.Target">
+                <localDirection x="0" y="-1" z="0"/>
+            </trackTarget>
+        </node>
+        <node name="Camera002.Target">
+            <position x="28.9617" y="11.7312" z="-2.56485"/>
+            <scale x="0.999999" y="1" z="0.999999"/>
+            <rotation qx="0.276153" qy="0.674903" qz="-0.304021" qw="0.613038"/>
+        </node>
+        <node name="default010">
+            <position x="19.0808" y="3.31662e-007" z="7.58754"/>
+            <scale x="0.0315056" y="0.0315056" z="0.0315056"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="default010" castShadows="true" receiveShadows="true" meshFile="default010.mesh">
+                <subentities>
+                    <subentity index="0" materialName="_bush_03Material__branch_02_c"/>
+                    <subentity index="1" materialName="_bush_03Material__branch_01_c"/>
+                    <subentity index="2" materialName="_bush_03Material__leaves_05_c"/>
+                </subentities>
+            </entity>
+        </node>
+        <node name="Plane001">
+            <position x="-1.10306" y="-1.98052e-009" z="-0.0453091"/>
+            <scale x="1" y="1" z="1"/>
+            <rotation qx="0" qy="0" qz="0" qw="1"/>
+            <entity name="Plane001" castShadows="true" receiveShadows="true" meshFile="Plane001.mesh">
+                <subentities>
+                    <subentity index="0" materialName="Material#21"/>
+                </subentities>
+            </entity>
+        </node>
+    </nodes>
+</scene>

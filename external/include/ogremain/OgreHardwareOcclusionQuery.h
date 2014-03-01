@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -119,9 +119,9 @@ public:
     // protected members
     //--
     protected :
-        // numbers of visible pixels determined by last query
+        /// Number of visible pixels determined by last query
         unsigned int mPixelCount;
-        // is query hasn't yet returned a result.
+        /// Has the query returned a result yet?
 		bool		 mIsQueryResultStillOutstanding;
 };
 

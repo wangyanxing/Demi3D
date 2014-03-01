@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 Copyright (c) 2006 Matthias Fink, netAllied GmbH <matthias.fink@web.de>								
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,6 +31,7 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 #include "OgreShadowCameraSetupLiSPSM.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre
 {
@@ -59,7 +60,7 @@ namespace Ogre
 		typedef vector<Real>::type OptimalAdjustFactorList;
 
 	protected:
-		size_t mSplitCount;
+		uint mSplitCount;
 		SplitPointList mSplitPoints;
 		OptimalAdjustFactorList mOptimalAdjustFactors;
 		Real mSplitPadding;
@@ -69,7 +70,7 @@ namespace Ogre
 	public:
 		/// Constructor, defaults to 3 splits
 		PSSMShadowCameraSetup();
-		~PSSMShadowCameraSetup();
+		virtual ~PSSMShadowCameraSetup();
 
 		/** Calculate a new splitting scheme.
 		@param splitCount The number of splits to use
@@ -77,7 +78,7 @@ namespace Ogre
 		@param farDist The far plane to use for the last split
 		@param lambda Factor to use to reduce the split size 
 		*/
-		void calculateSplitPoints(size_t splitCount, Real nearDist, Real farDist, Real lambda = 0.95);
+		void calculateSplitPoints(uint splitCount, Real nearDist, Real farDist, Real lambda = 0.95);
 
 		/** Manually configure a new splitting scheme.
 		@param newSplitPoints A list which is splitCount + 1 entries long, containing the
@@ -102,7 +103,7 @@ namespace Ogre
 		*/
 		Real getSplitPadding() const { return mSplitPadding; }
 		/// Get the number of splits. 
-		size_t getSplitCount() const { return mSplitCount; }
+		uint getSplitCount() const { return mSplitCount; }
 
 		/// Returns a LiSPSM shadow camera with PSSM splits base on iteration.
 		virtual void getShadowCamera(const Ogre::SceneManager *sm, const Ogre::Camera *cam,
@@ -123,4 +124,7 @@ namespace Ogre
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
+
 #endif

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<material>
+  <shader name="vertex">lambert_v</shader>
+  <shader name="pixel">lambert_p</shader>
+  <ambient>0.784314 0.784314 0.784314 1.000000</ambient>
+  <diffuse>0.784314 0.784314 0.784314 1.000000</diffuse>
+  <flag>USE_MAP,SHADOW_HIGH</flag>
+  <variables>
+    <sampler2D>
+      <texture name = "map">window_glass_01a.tga</texture>
+    </sampler2D>
+  </variables>
+</material>

@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -210,6 +210,12 @@ namespace Ogre {
         The offset are in bytes, no matter what type of the pointer.
     */
     template <class T>
+    static FORCEINLINE const T* rawOffsetPointer(const T* ptr, ptrdiff_t offset)
+    {
+        return (const T*)((const char*)(ptr) + offset);
+    }
+
+    template <class T>
     static FORCEINLINE T* rawOffsetPointer(T* ptr, ptrdiff_t offset)
     {
         return (T*)((char*)(ptr) + offset);
@@ -219,6 +225,12 @@ namespace Ogre {
     @note
         The offset are in bytes, no matter what type of the pointer.
     */
+    template <class T>
+    static FORCEINLINE void advanceRawPointer(const T*& ptr, ptrdiff_t offset)
+    {
+        ptr = rawOffsetPointer(ptr, offset);
+    }
+
     template <class T>
     static FORCEINLINE void advanceRawPointer(T*& ptr, ptrdiff_t offset)
     {

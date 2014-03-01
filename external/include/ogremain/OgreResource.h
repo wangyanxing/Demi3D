@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,10 @@ THE SOFTWARE.
 #define _Resource_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreString.h"
-#include "OgreSharedPtr.h"
+#include "OgreAtomicScalar.h"
 #include "OgreStringInterface.h"
-#include "OgreAtomicWrappers.h"
+#include "OgreHeaderPrefix.h"
+#include "Threading/OgreThreadHeaders.h"
 
 namespace Ogre {
 
@@ -77,7 +77,7 @@ namespace Ogre {
 	class _OgreExport Resource : public StringInterface, public ResourceAlloc
     {
 	public:
-		OGRE_AUTO_MUTEX // public to allow external locking
+        OGRE_AUTO_MUTEX; // public to allow external locking
 		class Listener
 		{
 		public:
@@ -88,13 +88,13 @@ namespace Ogre {
 			@deprecated
 				Use loadingComplete instead.
 			*/
-			virtual void backgroundLoadingComplete(Resource*) {}
+			OGRE_DEPRECATED virtual void backgroundLoadingComplete(Resource*) {}
 
 			/** Callback to indicate that background preparing has completed.
 			@deprecated
 				Use preparingComplete instead.
 			*/
-			virtual void backgroundPreparingComplete(Resource*) {}
+			OGRE_DEPRECATED virtual void backgroundPreparingComplete(Resource*) {}
 
 			/** Called whenever the resource finishes loading. 
 			@remarks
@@ -107,7 +107,7 @@ namespace Ogre {
 			virtual void loadingComplete(Resource*) {}
 
 
-			/** called whenever the resource finishes preparing (paging into memory).
+			/** Called whenever the resource finishes preparing (paging into memory).
 			@remarks
 				If a Resource has been marked as background loaded (@see Resource::setBackgroundLoaded)
 				the call does not itself occur in the thread which is doing the preparing;
@@ -163,13 +163,13 @@ namespace Ogre {
 
 		typedef set<Listener*>::type ListenerList;
 		ListenerList mListenerList;
-		OGRE_MUTEX(mListenerListMutex)
+		OGRE_MUTEX(mListenerListMutex);
 
 		/** Protected unnamed constructor to prevent default construction. 
 		*/
 		Resource() 
 			: mCreator(0), mHandle(0), mLoadingState(LOADSTATE_UNLOADED), 
-			mIsBackgroundLoaded(false),	mSize(0), mIsManual(0), mLoader(0)
+			mIsBackgroundLoaded(false),	mSize(0), mIsManual(0), mLoader(0), mStateCount(0)
 		{ 
 		}
 
@@ -214,8 +214,6 @@ namespace Ogre {
 			whether this resource is being loaded from a ManualResourceLoader. 
 		*/
 		virtual void unloadImpl(void) = 0;
-		/** Calculate the size of a resource; this will only be called after 'load' */
-		virtual size_t calculateSize(void) const = 0;
 
     public:
 		/** Standard constructor.
@@ -291,6 +289,14 @@ namespace Ogre {
 			return mIsManual;
 		}
 
+		/** Set "Is this resource manually loaded?"
+		*/
+		virtual void setManuallyLoaded(bool isManual)
+		{
+			mIsManual = isManual;
+		}
+
+
 		/** Unloads the resource; this is not permanent, the resource can be
 			reloaded later if required.
         */
@@ -335,6 +341,14 @@ namespace Ogre {
             return (mLoadingState.get() == LOADSTATE_LOADED); 
         }
 
+		/** Change the Resource loading state to loaded.
+        */
+        virtual void setToLoaded(void) 
+        { 
+			// No lock required to read this state since no modify
+            mLoadingState.set(LOADSTATE_LOADED); 
+        }
+
 		/** Returns whether the resource is currently in the process of
 			background loading.
 		*/
@@ -365,8 +379,8 @@ namespace Ogre {
 		virtual bool isBackgroundLoaded(void) const { return mIsBackgroundLoaded; }
 
 		/** Tells the resource whether it is background loaded or not.
-		@remarks
-			@see Resource::isBackgroundLoaded . Note that calling this only
+
+         @see Resource::isBackgroundLoaded. Note that calling this only
 			defers the normal on-demand loading behaviour of a resource, it
 			does not actually set up a thread to make sure the resource gets
 			loaded in the background. You should use ResourceBackgroundLoadingQueue
@@ -465,28 +479,10 @@ namespace Ogre {
 		*/
 		virtual void _fireUnloadingComplete(void);
 
+		/** Calculate the size of a resource; this will only be called after 'load' */
+		virtual size_t calculateSize(void) const;
 
     };
-
-	/** Shared pointer to a Resource.
-	@remarks
-		This shared pointer allows many references to a resource to be held, and
-		when the final reference is removed, the resource will be destroyed. 
-		Note that the ResourceManager which created this Resource will be holding
-		at least one reference, so this resource will not get destroyed until 
-		someone removes the resource from the manager - this at least gives you
-		strong control over when resources are freed. But the nature of the 
-		shared pointer means that if anyone refers to the removed resource in the
-		meantime, the resource will remain valid.
-	@par
-		You may well see references to ResourcePtr (i.e. ResourcePtr&) being passed 
-		around internally within Ogre. These are 'weak references' ie they do 
-		not increment the reference count on the Resource. This is done for 
-		efficiency in temporary operations that shouldn't need to incur the 
-		overhead of maintaining the reference count; however we don't recommend 
-		you do it yourself since these references are not guaranteed to remain valid.
-	*/
-	typedef SharedPtr<Resource> ResourcePtr;
 
 	/** Interface describing a manual resource loader.
 	@remarks
@@ -532,5 +528,7 @@ namespace Ogre {
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

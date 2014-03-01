@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,11 +30,12 @@ THE SOFTWARE.
 #define __SCRIPTCOMPILER_H_
 
 #include "OgreSharedPtr.h"
-#include "OgreMaterial.h"
-#include "OgreHighLevelGpuProgram.h"
-#include "OgreCompositor.h"
-#include "OgreCompositionPass.h"
+#include "OgreSingleton.h"
+#include "OgreScriptLoader.h"
+#include "OgreGpuProgram.h"
 #include "OgreAny.h"
+#include "Threading/OgreThreadHeaders.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre
 {
@@ -125,7 +126,7 @@ namespace Ogre
 		map<String,String>::type mEnv;
 	public:
 		String name, cls;
-		std::vector<String> bases;
+		vector<String>::type bases;
 		uint32 id;
 		bool abstract;
 		AbstractNodeList children;
@@ -383,7 +384,7 @@ namespace Ogre
 	class _OgreExport ScriptCompilerManager : public Singleton<ScriptCompilerManager>, public ScriptLoader, public ScriptCompilerAlloc
 	{
 	private:
-		OGRE_AUTO_MUTEX
+            OGRE_AUTO_MUTEX;
 
 		// A list of patterns loaded by this compiler manager
 		StringVector mScriptPatterns;
@@ -700,6 +701,7 @@ namespace Ogre
 			ID_2D,
 			ID_3D,
 			ID_CUBIC,
+			ID_2DARRAY,
 			ID_UNLIMITED,
 			ID_ALPHA,
 			ID_GAMMA,
@@ -718,6 +720,10 @@ namespace Ogre
 			ID_BILINEAR,
 			ID_TRILINEAR,
 			ID_ANISOTROPIC,
+		ID_CMPTEST,
+			ID_ON,
+			ID_OFF,
+		ID_CMPFUNC,
 		ID_MAX_ANISOTROPY,
 		ID_MIPMAP_BIAS,
 		ID_COLOUR_OP,
@@ -839,13 +845,33 @@ namespace Ogre
 			ID_DEPTH_FAIL_OP,
 			ID_PASS_OP,
 			ID_TWO_SIDED,
+			ID_READ_BACK_AS_TEXTURE,
 #ifdef RTSHADER_SYSTEM_BUILD_CORE_SHADERS
         ID_RT_SHADER_SYSTEM,
 #endif
+		/// Suport for shader model 5.0
+		// More program IDs
+		ID_TESSELLATION_HULL_PROGRAM,
+		ID_TESSELLATION_DOMAIN_PROGRAM,
+		ID_COMPUTE_PROGRAM,
+		ID_TESSELLATION_HULL_PROGRAM_REF,
+		ID_TESSELLATION_DOMAIN_PROGRAM_REF,
+		ID_COMPUTE_PROGRAM_REF,
+		// More binding IDs
+		ID_GEOMETRY,
+		ID_TESSELLATION_HULL,
+		ID_TESSELLATION_DOMAIN,
+		ID_COMPUTE,
+
+		// Support for subroutine
+		ID_SUBROUTINE,
+
 		ID_END_BUILTIN_IDS
 	};
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif

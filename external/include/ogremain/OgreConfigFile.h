@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,10 +30,10 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 
-#include "OgreString.h"
+#include "OgreCommon.h"
 #include "OgreStringVector.h"
 #include "OgreIteratorWrappers.h"
-#include "OgreDataStream.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -80,9 +80,9 @@ namespace Ogre {
         @param section The name of the section it must be in (if any)
 		@param defaultValue The value to return if the setting is not found
         */
-        String getSetting(const String& key, const String& section = StringUtil::BLANK, const String& defaultValue = StringUtil::BLANK) const;
+        String getSetting(const String& key, const String& section = BLANKSTRING, const String& defaultValue = BLANKSTRING) const;
         /** Gets all settings from the file with the named key. */
-        StringVector getMultiSetting(const String& key, const String& section = StringUtil::BLANK) const;
+        StringVector getMultiSetting(const String& key, const String& section = BLANKSTRING) const;
 
         typedef multimap<String, String>::type SettingsMultiMap;
         typedef MapIterator<SettingsMultiMap> SettingsIterator;
@@ -92,7 +92,7 @@ namespace Ogre {
         /** Get an iterator over all the available sections in the config file */
         SectionIterator getSectionIterator(void);
         /** Get an iterator over all the available settings in a section */
-        SettingsIterator getSettingsIterator(const String& section = StringUtil::BLANK);
+        SettingsIterator getSettingsIterator(const String& section = BLANKSTRING);
 
 
         
@@ -106,5 +106,6 @@ namespace Ogre {
 
 }
 
+#include "OgreHeaderSuffix.h"
 
 #endif

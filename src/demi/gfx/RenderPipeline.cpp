@@ -161,6 +161,8 @@ namespace Demi
         // we don't care about the bone matrices at this moment
         SetCameraParams(sm, cam);
         
+        Driver->BeginFrame();
+
         if (mPostEnable)
             DiRenderWindow::ActiveWindow->GetPostEffectManager()->Process(this);
         
@@ -172,6 +174,7 @@ namespace Demi
                 mBatchGroups[i]->Process();
             }
         }
+        Driver->EndFrame();
     }
 
     void DiRenderPipeline::Render(DiSceneManager*sm, DiCamera* cam, DiRenderTarget* rt)
@@ -181,6 +184,7 @@ namespace Demi
             return;
         
         rt->Bind();
+        Driver->BeginFrame();
 
         Driver->SetInvertVertexWinding(cam->IsReflected());
 
@@ -215,6 +219,7 @@ namespace Demi
 
             mBatchGroups[i]->EnableStatis(false);
         }
+        Driver->EndFrame();
 
         for (uint32 i = 0; i < BATCH_POST_FILTER; i++)
         {

@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,8 @@ THE SOFTWARE.
 
 #ifndef _MemoryTracker_H__
 #define _MemoryTracker_H__
+
+#include "OgreHeaderPrefix.h"
 
 // Don't include prerequisites, can cause a circular dependency
 // This file must be included within another file which already has the prerequisites in it
@@ -58,6 +60,10 @@ namespace __gnu_cxx
 #   endif
 #endif
 
+#if OGRE_MEMORY_TRACKER
+#   include "Threading/OgreThreadHeaders.h"
+#endif
+
 namespace Ogre
 {
 	/** \addtogroup Core
@@ -77,7 +83,7 @@ namespace Ogre
 	class _OgreExport MemoryTracker
 	{
 	protected:
-		OGRE_AUTO_MUTEX
+            OGRE_AUTO_MUTEX;
 
 		// Allocation record
 		struct Alloc
@@ -192,6 +198,8 @@ namespace Ogre
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif
 

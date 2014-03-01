@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ THE SOFTWARE.
 #define __Math_H__
 
 #include "OgrePrerequisites.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre
 {
@@ -189,7 +190,7 @@ namespace Ogre
     */
     class _OgreExport Math 
     {
-   public:
+	public:
        /** The angular units used by the API. This functionality is now deprecated in favor
 	       of discreet angular unit types ( see Degree and Radian above ). The only place
 		   this functionality is actually still used is when parsing files. Search for
@@ -201,9 +202,20 @@ namespace Ogre
            AU_RADIAN
        };
 
+
+       /** This class is used to provide an external random value provider. 
+      */
+       class RandomValueProvider
+       {
+       public:
+            virtual ~RandomValueProvider() {}
+            /** When called should return a random values in the range of [0,1] */
+            virtual Real getRandomUnit() = 0;
+       };
+
     protected:
-       // angle units used by the api
-       static AngleUnit msAngleUnit;
+        /// Angle units used by the api
+        static AngleUnit msAngleUnit;
 
         /// Size of the trig tables as determined by constructor.
         static int mTrigTableSize;
@@ -213,12 +225,15 @@ namespace Ogre
         static Real* mSinTable;
         static Real* mTanTable;
 
+        /// A random value provider. overriding the default random number generator.
+        static RandomValueProvider* mRandProvider;
+
         /** Private function to build trig tables.
         */
         void buildTrigTables();
 
-		static Real SinTable (Real fValue);
-		static Real TanTable (Real fValue);
+        static Real SinTable (Real fValue);
+        static Real TanTable (Real fValue);
     public:
         /** Default constructor.
             @param
@@ -243,48 +258,48 @@ namespace Ogre
 		static inline Real Abs (Real fValue) { return Real(fabs(fValue)); }
 
         /** Absolute value function
-            @param
-                fValue The value, in degrees, whose absolute value will be returned.
+            @param dValue
+                The value, in degrees, whose absolute value will be returned.
          */
 		static inline Degree Abs (const Degree& dValue) { return Degree(fabs(dValue.valueDegrees())); }
 
         /** Absolute value function
-            @param
-                fValue The value, in radians, whose absolute value will be returned.
+            @param rValue
+                The value, in radians, whose absolute value will be returned.
          */
         static inline Radian Abs (const Radian& rValue) { return Radian(fabs(rValue.valueRadians())); }
 
         /** Arc cosine function
-            @param
-                fValue The value whose arc cosine will be returned.
+            @param fValue
+                The value whose arc cosine will be returned.
          */
 		static Radian ACos (Real fValue);
 
         /** Arc sine function
-            @param
-                fValue The value whose arc sine will be returned.
+            @param fValue
+                The value whose arc sine will be returned.
          */
 		static Radian ASin (Real fValue);
 
         /** Arc tangent function
-            @param
-                fValue The value whose arc tangent will be returned.
+            @param fValue
+                The value whose arc tangent will be returned.
          */
 		static inline Radian ATan (Real fValue) { return Radian(atan(fValue)); }
 
         /** Arc tangent between two values function
-            @param
-                fY The first value to calculate the arc tangent with.
-            @param
-                fX The second value to calculate the arc tangent with.
+            @param fY
+                The first value to calculate the arc tangent with.
+            @param fX
+                The second value to calculate the arc tangent with.
          */
 		static inline Radian ATan2 (Real fY, Real fX) { return Radian(atan2(fY,fX)); }
 
         /** Ceiling function
             Returns the smallest following integer. (example: Ceil(1.1) = 2)
 
-            @param
-                fValue The value to round up to the nearest integer.
+            @param fValue
+                The value to round up to the nearest integer.
          */
 		static inline Real Ceil (Real fValue) { return Real(ceil(fValue)); }
 		static inline bool isNaN(Real f)
@@ -295,20 +310,20 @@ namespace Ogre
 		}
 
         /** Cosine function.
-            @param
-                fValue Angle in radians
-            @param
-                useTables If true, uses lookup tables rather than
+            @param fValue
+                Angle in radians
+            @param useTables
+                If true, uses lookup tables rather than
                 calculation - faster but less accurate.
         */
         static inline Real Cos (const Radian& fValue, bool useTables = false) {
 			return (!useTables) ? Real(cos(fValue.valueRadians())) : SinTable(fValue.valueRadians() + HALF_PI);
 		}
         /** Cosine function.
-            @param
-                fValue Angle in radians
-            @param
-                useTables If true, uses lookup tables rather than
+            @param fValue
+                Angle in radians
+            @param useTables
+                If true, uses lookup tables rather than
                 calculation - faster but less accurate.
         */
         static inline Real Cos (Real fValue, bool useTables = false) {
@@ -320,47 +335,57 @@ namespace Ogre
         /** Floor function
             Returns the largest previous integer. (example: Floor(1.9) = 1)
          
-            @param
-                fValue The value to round down to the nearest integer.
+            @param fValue
+                The value to round down to the nearest integer.
          */
-		static inline Real Floor (Real fValue) { return Real(floor(fValue)); }
+        static inline Real Floor (Real fValue) { return Real(floor(fValue)); }
 
-		static inline Real Log (Real fValue) { return Real(log(fValue)); }
+        static inline Real Log (Real fValue) { return Real(log(fValue)); }
 
-		/// Stored value of log(2) for frequent use
-		static const Real LOG2;
+        /// Stored value of log(2) for frequent use
+        static const Real LOG2;
 
-		static inline Real Log2 (Real fValue) { return Real(log(fValue)/LOG2); }
+        static inline Real Log2 (Real fValue) { return Real(log(fValue)/LOG2); }
 
-		static inline Real LogN (Real base, Real fValue) { return Real(log(fValue)/log(base)); }
+        static inline Real LogN (Real base, Real fValue) { return Real(log(fValue)/log(base)); }
 
-		static inline Real Pow (Real fBase, Real fExponent) { return Real(pow(fBase,fExponent)); }
+        static inline Real Pow (Real fBase, Real fExponent) { return Real(pow(fBase,fExponent)); }
 
         static Real Sign (Real fValue);
-		static inline Radian Sign ( const Radian& rValue )
-		{
-			return Radian(Sign(rValue.valueRadians()));
-		}
-		static inline Degree Sign ( const Degree& dValue )
-		{
-			return Degree(Sign(dValue.valueDegrees()));
-		}
+        static inline Radian Sign ( const Radian& rValue )
+        {
+            return Radian(Sign(rValue.valueRadians()));
+        }
+        static inline Degree Sign ( const Degree& dValue )
+        {
+            return Degree(Sign(dValue.valueDegrees()));
+        }
+
+        //Simulate the shader function saturate that clamps a parameter value between 0 and 1
+        static inline float saturate(float t) { return (t < 0) ? 0 : ((t > 1) ? 1 : t); }
+        static inline double saturate(double t) { return (t < 0) ? 0 : ((t > 1) ? 1 : t); }
+        
+        //Simulate the shader function lerp which performers linear interpolation
+        //given 3 parameters v0, v1 and t the function returns the value of (1 ?t)* v0 + t * v1. 
+        //where v0 and v1 are matching vector or scalar types and t can be either a scalar or a vector of the same type as a and b.
+        template<typename V, typename T> static V lerp(const V& v0, const V& v1, const T& t) { 
+            return v0 * (1 - t) + v1 * t; }
 
         /** Sine function.
-            @param
-                fValue Angle in radians
-            @param
-                useTables If true, uses lookup tables rather than
+            @param fValue
+                Angle in radians
+            @param useTables
+                If true, uses lookup tables rather than
                 calculation - faster but less accurate.
         */
         static inline Real Sin (const Radian& fValue, bool useTables = false) {
 			return (!useTables) ? Real(sin(fValue.valueRadians())) : SinTable(fValue.valueRadians());
 		}
         /** Sine function.
-            @param
-                fValue Angle in radians
-            @param
-                useTables If true, uses lookup tables rather than
+            @param fValue
+                Angle in radians
+            @param useTables
+                If true, uses lookup tables rather than
                 calculation - faster but less accurate.
         */
         static inline Real Sin (Real fValue, bool useTables = false) {
@@ -368,28 +393,28 @@ namespace Ogre
 		}
 
         /** Squared function.
-            @param
-                fValue The value to be squared (fValue^2)
+            @param fValue
+                The value to be squared (fValue^2)
         */
 		static inline Real Sqr (Real fValue) { return fValue*fValue; }
 
         /** Square root function.
-            @param
-                fValue The value whose square root will be calculated.
+            @param fValue
+                The value whose square root will be calculated.
          */
 		static inline Real Sqrt (Real fValue) { return Real(sqrt(fValue)); }
 
         /** Square root function.
-            @param
-                fValue The value, in radians, whose square root will be calculated.
+            @param fValue
+                The value, in radians, whose square root will be calculated.
             @return
                 The square root of the angle in radians.
          */
         static inline Radian Sqrt (const Radian& fValue) { return Radian(sqrt(fValue.valueRadians())); }
 
         /** Square root function.
-            @param
-                fValue The value, in degrees, whose square root will be calculated.
+            @param fValue
+                The value, in degrees, whose square root will be calculated.
             @return
                 The square root of the angle in degrees.
          */
@@ -397,8 +422,8 @@ namespace Ogre
 
         /** Inverse square root i.e. 1 / Sqrt(x), good for vector
             normalisation.
-            @param
-                fValue The value whose inverse square root will be calculated.
+            @param fValue
+                The value whose inverse square root will be calculated.
         */
 		static Real InvSqrt (Real fValue);
 
@@ -409,10 +434,10 @@ namespace Ogre
         static Real UnitRandom ();
 
         /** Generate a random number within the range provided.
-            @param
-                fLow The lower bound of the range.
-            @param
-                fHigh The upper bound of the range.
+            @param fLow
+                The lower bound of the range.
+            @param fHigh
+                The upper bound of the range.
             @return
                 A random number in the range from [fLow,fHigh].
          */
@@ -424,21 +449,23 @@ namespace Ogre
          */
         static Real SymmetricRandom ();
 
+        static void SetRandomValueProvider(RandomValueProvider* provider);
+       
         /** Tangent function.
-            @param
-                fValue Angle in radians
-            @param
-                useTables If true, uses lookup tables rather than
+            @param fValue
+                Angle in radians
+            @param useTables
+                If true, uses lookup tables rather than
                 calculation - faster but less accurate.
         */
 		static inline Real Tan (const Radian& fValue, bool useTables = false) {
 			return (!useTables) ? Real(tan(fValue.valueRadians())) : TanTable(fValue.valueRadians());
 		}
         /** Tangent function.
-            @param
-                fValue Angle in radians
-            @param
-                useTables If true, uses lookup tables rather than
+            @param fValue
+                Angle in radians
+            @param useTables
+                If true, uses lookup tables rather than
                 calculation - faster but less accurate.
         */
 		static inline Real Tan (Real fValue, bool useTables = false) {
@@ -473,14 +500,14 @@ namespace Ogre
                 The vertices of the triangle must be given in either
                 trigonometrical (anticlockwise) or inverse trigonometrical
                 (clockwise) order.
-            @param
-                p The point.
-            @param
-                a The triangle's first vertex.
-            @param
-                b The triangle's second vertex.
-            @param
-                c The triangle's third vertex.
+            @param p
+                The point.
+            @param a
+                The triangle's first vertex.
+            @param b
+                The triangle's second vertex.
+            @param c
+                The triangle's third vertex.
             @return
                 If the point resides in the triangle, <b>true</b> is
                 returned.
@@ -497,17 +524,17 @@ namespace Ogre
             trigonometrical (anticlockwise) or inverse trigonometrical
             (clockwise) order, and the point must be guaranteed to be in the
 			same plane as the triangle
-        @param
+        @param p
             p The point.
-        @param
-            a The triangle's first vertex.
-        @param
-            b The triangle's second vertex.
-        @param
-            c The triangle's third vertex.
-		@param 
-			normal The triangle plane's normal (passed in rather than calculated
-				on demand since the caller may already have it)
+        @param a
+            The triangle's first vertex.
+        @param b
+            The triangle's second vertex.
+        @param c
+            The triangle's third vertex.
+		@param normal
+			The triangle plane's normal (passed in rather than calculated
+			on demand since the caller may already have it)
         @return
             If the point resides in the triangle, <b>true</b> is
             returned.
@@ -528,18 +555,18 @@ namespace Ogre
         static std::pair<bool, Real> intersects(const Ray& ray, const AxisAlignedBox& box);
 
         /** Ray / box intersection, returns boolean result and two intersection distance.
-        @param
-            ray The ray.
-        @param
-            box The box.
-        @param
-            d1 A real pointer to retrieve the near intersection distance
-                from the ray origin, maybe <b>null</b> which means don't care
-                about the near intersection distance.
-        @param
-            d2 A real pointer to retrieve the far intersection distance
-                from the ray origin, maybe <b>null</b> which means don't care
-                about the far intersection distance.
+        @param ray
+            The ray.
+        @param box
+            The box.
+        @param d1
+            A real pointer to retrieve the near intersection distance
+            from the ray origin, maybe <b>null</b> which means don't care
+            about the near intersection distance.
+        @param d2
+            A real pointer to retrieve the far intersection distance
+            from the ray origin, maybe <b>null</b> which means don't care
+            about the far intersection distance.
         @return
             If the ray is intersects the box, <b>true</b> is returned, and
             the near intersection distance is return by <i>d1</i>, the
@@ -553,22 +580,22 @@ namespace Ogre
             Real* d1, Real* d2);
 
         /** Ray / triangle intersection, returns boolean result and distance.
-        @param
-            ray The ray.
-        @param
-            a The triangle's first vertex.
-        @param
-            b The triangle's second vertex.
-        @param
-            c The triangle's third vertex.
-		@param 
-			normal The triangle plane's normal (passed in rather than calculated
-				on demand since the caller may already have it), doesn't need
-                normalised since we don't care.
-        @param
-            positiveSide Intersect with "positive side" of the triangle
-        @param
-            negativeSide Intersect with "negative side" of the triangle
+        @param ray
+            The ray.
+        @param a
+            The triangle's first vertex.
+        @param b
+            The triangle's second vertex.
+        @param c
+            The triangle's third vertex.
+		@param normal
+			The triangle plane's normal (passed in rather than calculated
+			on demand since the caller may already have it), doesn't need
+            normalised since we don't care.
+        @param positiveSide
+            Intersect with "positive side" of the triangle
+        @param negativeSide
+            Intersect with "negative side" of the triangle
         @return
             If the ray is intersects the triangle, a pair of <b>true</b> and the
             distance between intersection point and ray origin returned.
@@ -581,18 +608,18 @@ namespace Ogre
             bool positiveSide = true, bool negativeSide = true);
 
         /** Ray / triangle intersection, returns boolean result and distance.
-        @param
-            ray The ray.
-        @param
-            a The triangle's first vertex.
-        @param
-            b The triangle's second vertex.
-        @param
-            c The triangle's third vertex.
-        @param
-            positiveSide Intersect with "positive side" of the triangle
-        @param
-            negativeSide Intersect with "negative side" of the triangle
+        @param ray
+            The ray.
+        @param a
+            The triangle's first vertex.
+        @param b
+            The triangle's second vertex.
+        @param c
+            The triangle's third vertex.
+        @param positiveSide
+            Intersect with "positive side" of the triangle
+        @param negativeSide
+            Intersect with "negative side" of the triangle
         @return
             If the ray is intersects the triangle, a pair of <b>true</b> and the
             distance between intersection point and ray origin returned.
@@ -612,7 +639,7 @@ namespace Ogre
 
         /** Ray / convex plane list intersection test. 
         @param ray The ray to test with
-        @param plaeList List of planes which form a convex volume
+        @param planeList List of planes which form a convex volume
         @param normalIsOutside Does the normal point outside the volume
         */
         static std::pair<bool, Real> intersects(
@@ -620,7 +647,7 @@ namespace Ogre
             bool normalIsOutside);
         /** Ray / convex plane list intersection test. 
         @param ray The ray to test with
-        @param plaeList List of planes which form a convex volume
+        @param planeList List of planes which form a convex volume
         @param normalIsOutside Does the normal point outside the volume
         */
         static std::pair<bool, Real> intersects(
@@ -740,4 +767,7 @@ namespace Ogre
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
+
 #endif

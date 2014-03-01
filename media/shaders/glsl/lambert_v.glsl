@@ -33,7 +33,7 @@ void main()
 #endif
 	
 #if defined( USE_MAP ) 
-	gl_TexCoord[0]   = Texcoord0;
+	gl_TexCoord[0] = vec4(Texcoord0,0.0,0.0);
 #endif
 
 	// world space normal

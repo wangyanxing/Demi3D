@@ -4,7 +4,7 @@ This source file is part of OGRE
     (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,11 +31,9 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 #include "OgreResource.h"
-#include "OgreQuaternion.h"
-#include "OgreVector3.h"
-#include "OgreIteratorWrappers.h"
 #include "OgreStringVector.h"
 #include "OgreAnimation.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 	/** \addtogroup Core
@@ -251,7 +249,6 @@ namespace Ogre {
             animations do not have to sum to 1.0, because some animations may affect only subsets
             of the skeleton. If the weights exceed 1.0 for the same area of the skeleton, the 
             movement will just be exaggerated.
-            @param 
         */
         virtual void setAnimationState(const AnimationStateSet& animSet);
 
@@ -367,7 +364,7 @@ namespace Ogre {
             'compatible' here means identically bones will have same hierarchy,
             but skeletons are not necessary to have same number of bones (if
             number bones of source skeleton's more than this skeleton, they will
-            copied as is, except that duplicate names are unallowed; and in the
+            copied as is, except that duplicate names are disallowed; and in the
             case of bones missing in source skeleton, nothing happen for those
             bones).
         @par
@@ -457,64 +454,8 @@ namespace Ogre {
         */
         void unloadImpl(void);
 		/// @copydoc Resource::calculateSize
-		size_t calculateSize(void) const { return 0; } // TODO 
+		size_t calculateSize(void) const;
 
-    };
-
-    /** Specialisation of SharedPtr to allow SharedPtr to be assigned to SkeletonPtr 
-    @note Has to be a subclass since we need operator=.
-    We could templatise this instead of repeating per Resource subclass, 
-    except to do so requires a form VC6 does not support i.e.
-    ResourceSubclassPtr<T> : public SharedPtr<T>
-    */
-    class _OgreExport SkeletonPtr : public SharedPtr<Skeleton> 
-    {
-    public:
-        SkeletonPtr() : SharedPtr<Skeleton>() {}
-        explicit SkeletonPtr(Skeleton* rep) : SharedPtr<Skeleton>(rep) {}
-        SkeletonPtr(const SkeletonPtr& r) : SharedPtr<Skeleton>(r) {} 
-        SkeletonPtr(const ResourcePtr& r) : SharedPtr<Skeleton>()
-        {
-			// lock & copy other mutex pointer
-            OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
-            {
-			    OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-			    OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-                pRep = static_cast<Skeleton*>(r.getPointer());
-                pUseCount = r.useCountPointer();
-                if (pUseCount)
-                {
-                    ++(*pUseCount);
-                }
-            }
-        }
-
-        /// Operator used to convert a ResourcePtr to a SkeletonPtr
-        SkeletonPtr& operator=(const ResourcePtr& r)
-        {
-            if (pRep == static_cast<Skeleton*>(r.getPointer()))
-                return *this;
-            release();
-			// lock & copy other mutex pointer
-            OGRE_MUTEX_CONDITIONAL(r.OGRE_AUTO_MUTEX_NAME)
-            {
-			    OGRE_LOCK_MUTEX(*r.OGRE_AUTO_MUTEX_NAME)
-			    OGRE_COPY_AUTO_SHARED_MUTEX(r.OGRE_AUTO_MUTEX_NAME)
-                pRep = static_cast<Skeleton*>(r.getPointer());
-                pUseCount = r.useCountPointer();
-                if (pUseCount)
-                {
-                    ++(*pUseCount);
-                }
-            }
-			else
-			{
-				// RHS must be a null pointer
-				assert(r.isNull() && "RHS must be null if it has no mutex!");
-				setNull();
-			}
-            return *this;
-        }
     };
 
 	/// Link to another skeleton to share animations
@@ -534,6 +475,7 @@ namespace Ogre {
 
 }
 
+#include "OgreHeaderSuffix.h"
 
 #endif
 

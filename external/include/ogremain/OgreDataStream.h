@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,14 @@ THE SOFTWARE.
 #define __DataStream_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreString.h"
 #include "OgreSharedPtr.h"
 #include <istream>
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
-	
+
+    typedef _StringBase String;
+
 	/** Template version of cache based on static array.
 	 'cacheSize' defines size of cache in bytes. */
 	template <size_t cacheSize>
@@ -55,6 +57,7 @@ namespace Ogre {
 		{
 			mValidBytes = 0;
 			mPos = 0;
+            memset(mBuffer, 0, cacheSize);
 		}
 		
 		/** Cache data pointed by 'buf'. If 'count' is greater than cache size, we cache only last bytes.
@@ -181,7 +184,7 @@ namespace Ogre {
 			WRITE = 2
 		};
 	protected:
-		/// The name (e.g. resource name) that can be used to identify the source fot his data (optional)
+		/// The name (e.g. resource name) that can be used to identify the source for this data (optional)
 		String mName;		
         /// Size of the data in the stream (may be 0 if size cannot be determined)
         size_t mSize;
@@ -301,11 +304,6 @@ namespace Ogre {
 
 	};
 
-	/** Shared pointer to allow data streams to be passed around without
-		worrying about deallocation
-	*/
-	typedef SharedPtr<DataStream> DataStreamPtr;
-
 	/// List of DataStream items
 	typedef list<DataStreamPtr>::type DataStreamList;
 	/// Shared pointer to list of DataStream items
@@ -330,9 +328,9 @@ namespace Ogre {
 		@param pMem Pointer to the existing memory
 		@param size The size of the memory chunk in bytes
 		@param freeOnClose If true, the memory associated will be destroyed
-			when the stream is destroyed. Note: it's important that if you set
+			when the stream is closed. Note: it's important that if you set
 			this option to true, that you allocated the memory using OGRE_ALLOC_T
-			with a category of MEMCATEGORY_GENERAL ensure the freeing of memory 
+			with a category of MEMCATEGORY_GENERAL to ensure the freeing of memory 
 			matches up.
 		@param readOnly Whether to make the stream on this memory read-only once created
 		*/
@@ -371,7 +369,7 @@ namespace Ogre {
 			This constructor can be used to intentionally read in the entire
 			contents of another stream, copying them to the internal buffer
 			and thus making them available in memory as a single unit.
-		@param sourceStream Weak reference to another DataStream which will provide the source
+		@param sourceStream Another DataStream which will provide the source
 			of data
 		@param freeOnClose If true, the memory associated will be destroyed
 			when the stream is destroyed.
@@ -476,11 +474,6 @@ namespace Ogre {
 		/** Sets whether or not to free the encapsulated memory on close. */
 		void setFreeOnClose(bool free) { mFreeOnClose = free; }
 	};
-
-    /** Shared pointer to allow memory data streams to be passed around without
-    worrying about deallocation
-    */
-    typedef SharedPtr<MemoryDataStream> MemoryDataStreamPtr;
 
     /** Common subclass of DataStream for handling data from 
 		std::basic_istream.
@@ -660,5 +653,8 @@ namespace Ogre {
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
+
 #endif
 

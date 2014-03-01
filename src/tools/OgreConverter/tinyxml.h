@@ -1,5 +1,5 @@
-
-/*www.sourceforge.net/projects/tinyxml
+/*
+www.sourceforge.net/projects/tinyxml
 Original code (2.0 and earlier )copyright (c) 2000-2006 Lee Thomason (www.grinninglizard.com)
 
 This software is provided 'as-is', without any express or implied
@@ -1016,8 +1016,6 @@ public:
 		will be created if it does not exist, or changed if it does.
 	*/
 	void SetAttribute( const char* name, const char * _value );
-
-	void SetAttribute( const char* name, const Ogre::String& _value ){SetAttribute(name,value.c_str());}
 
     #ifdef TIXML_USE_STL
 	const TIXML_STRING* Attribute( const TIXML_STRING& name ) const;

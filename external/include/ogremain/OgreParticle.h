@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ THE SOFTWARE.
 #define __Particle_H__
 
 #include "OgrePrerequisites.h"
-#include "OgreBillboard.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -79,29 +79,29 @@ namespace Ogre {
         /// Personal height if mOwnDimensions == true
         Real mHeight;
         /// Current rotation value
-        Radian rotation;
+        Radian mRotation;
         // Note the intentional public access to internal variables
         // Accessing via get/set would be too costly for 000's of particles
         /// World position
-        Vector3 position;
+        Vector3 mPosition;
         /// Direction (and speed) 
-        Vector3 direction;
+        Vector3 mDirection;
         /// Current colour
-        ColourValue colour;
+        ColourValue mColour;
         /// Time to live, number of seconds left of particles natural life
-        Real timeToLive;
+        Real mTimeToLive;
         /// Total Time to live, number of seconds of particles natural life
-        Real totalTimeToLive;
+        Real mTotalTimeToLive;
         /// Speed of rotation in radians/sec
-        Radian rotationSpeed;
+        Radian mRotationSpeed;
         /// Determines the type of particle.
-        ParticleType particleType;
+        ParticleType mParticleType;
 
         Particle()
-            : mParentSystem(0), mVisual(0), mOwnDimensions(false), rotation(0), 
-            position(Vector3::ZERO), direction(Vector3::ZERO), 
-            colour(ColourValue::White), timeToLive(10), totalTimeToLive(10), 
-            rotationSpeed(0), particleType(Visual)
+            : mParentSystem(0), mVisual(0), mOwnDimensions(false), mWidth(0), mHeight(0),
+            mRotation(0), mPosition(Vector3::ZERO), mDirection(Vector3::ZERO),
+            mColour(ColourValue::White), mTimeToLive(10), mTotalTimeToLive(10),
+            mRotationSpeed(0), mParticleType(Visual)
         {
         }
 
@@ -130,7 +130,7 @@ namespace Ogre {
         /** Sets the current rotation */
         void setRotation(const Radian& rad);
 
-        const Radian& getRotation(void) const { return rotation; }
+        const Radian& getRotation(void) const { return mRotation; }
 
         /** Internal method for notifying the particle of it's owner.
         */
@@ -149,6 +149,8 @@ namespace Ogre {
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif
 

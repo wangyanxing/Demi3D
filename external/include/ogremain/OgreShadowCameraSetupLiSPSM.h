@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 Copyright (c) 2006 Matthias Fink, netAllied GmbH <matthias.fink@web.de>								
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 #include "OgreShadowCameraSetupFocused.h"
-
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre 
 {
@@ -115,12 +115,12 @@ namespace Ogre
 		meter n) that the perspective error is the same on the near and far	plane. In 
 		case P equals the identity matrix the algorithm falls back to a uniform shadow
 		mapping matrix.
-		@param lightSpace: matrix of the light space transformation
-		@param bodyB: intersection body B
-		@param bodyLVS: intersection body LVS (relevant space in front of the camera)
-		@param sm: scene manager
-		@param cam: currently active camera
-		@param light: currently active light
+		@param lightSpace Matrix of the light space transformation
+		@param bodyB Intersection body B
+		@param bodyLVS Intersection body LVS (relevant space in front of the camera)
+		@param sm Scene manager
+		@param cam Currently active camera
+		@param light Currently active light
 		*/
 		Matrix4 calculateLiSPSM(const Matrix4& lightSpace, const PointListBody& bodyB, 
 			const PointListBody& bodyLVS, const SceneManager& sm, 
@@ -144,11 +144,11 @@ namespace Ogre
 		@note
 		A positive value is applied as the distance between viewer and near clipping plane.
 		In case null is returned uniform shadow mapping will be applied.
-		@param lightSpace: matrix of the light space transformation
-		@param bodyBABB_ls: bounding box of the transformed (light space) bodyB
-		@param bodyLVS: point list of the bodyLVS which describes the scene space which is in 
+		@param lightSpace Matrix of the light space transformation
+		@param bodyBABB_ls Bounding box of the transformed (light space) bodyB
+		@param bodyLVS Point list of the bodyLVS which describes the scene space which is in
 		front of the light and the camera
-		@param cam: currently active camera
+		@param cam Currently active camera
 		*/
 		Real calculateNOpt(const Matrix4& lightSpace, const AxisAlignedBox& bodyBABB_ls, 
 			const PointListBody& bodyLVS, const Camera& cam) const;
@@ -162,18 +162,18 @@ namespace Ogre
 		@remarks
 		z0 lies on the parallel plane to the near plane through e and on the near plane of 
 		the frustum C (plane z = bodyB_zMax_ls) and on the line x = e.x.
-		@param lightSpace: matrix of the light space transformation
-		@param e: the LiSPSM parameter e is located near or on the near clipping plane of the 
+		@param lightSpace Matrix of the light space transformation
+		@param e The LiSPSM parameter e is located near or on the near clipping plane of the
 		LiSPSM frustum C
-		@param bodyB_zMax_ls: maximum z-value of the light space bodyB bounding box
-		@param cam: currently active camera
+		@param bodyB_zMax_ls Maximum z-value of the light space bodyB bounding box
+		@param cam Currently active camera
 		*/
 		Vector3 calculateZ0_ls(const Matrix4& lightSpace, const Vector3& e, Real bodyB_zMax_ls, 
 			const Camera& cam) const;
 
 		/** Builds a frustum matrix.
 		@remarks
-		Builds a standard frustum matrix out of the distance infos of the six frustum 
+		Builds a standard frustum matrix out of the distance info of the six frustum 
 		clipping planes.
 		*/
 		Matrix4 buildFrustumProjection(Real left, Real right, Real bottom, 
@@ -249,6 +249,8 @@ namespace Ogre
 	/** @} */
 
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif
 

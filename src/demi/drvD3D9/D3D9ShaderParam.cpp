@@ -34,6 +34,12 @@ namespace Demi
     {
         IDirect3DDevice9* sm = DiD3D9Driver::Device;
 
+        auto env = Driver->GetShaderEnvironment();
+        
+        // bind built-in (global) uniforms
+        for (auto it = mBuiltinFuncs.begin(); it != mBuiltinFuncs.end(); ++it)
+            it->func(env,it->type,it->reg);
+
         for (uint32 i = 0; i < NUM_VARIABLE_TYPES; ++i)
         {
             for (auto it = mShaderParams[i].begin(); it != mShaderParams[i].end(); ++it)
@@ -166,4 +172,173 @@ namespace Demi
         }
     }
 
+
+    DiD3D9BuiltinConsts::BuiltinFuncs DiD3D9BuiltinConsts::msUniformFuncs;
+
+    void DiD3D9BuiltinConsts::InitBuiltinFuncs()
+    {
+        msUniformFuncs["g_modelMatrix"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->modelMatrix);
+        };
+
+        msUniformFuncs["g_viewMatrix"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->viewMatrix);
+        };
+
+        msUniformFuncs["g_projMatrix"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->projMatrix);
+        };
+
+        msUniformFuncs["g_modelViewMatrix"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->modelViewMatrix);
+        };
+
+        msUniformFuncs["g_modelViewProjMatrix"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->modelViewProjMatrix);
+        };
+
+        msUniformFuncs["g_viewProjMatrix"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->viewProjMatrix);
+        };
+
+        msUniformFuncs["g_texMatrix"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->texMatrix);
+        };
+
+        msUniformFuncs["g_boneMatrices"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            DiD3D9Driver::Device->SetVertexShaderConstantF(location, (float*)(&env->boneMatrices), env->numBones * 3);
+        };
+
+        msUniformFuncs["g_modelMatrices"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            DiD3D9Driver::Device->SetVertexShaderConstantF(location, (float*)(&env->modelMatrices), env->numModelMatrices * 3);
+        };
+
+        msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->eyePosition);
+        };
+
+        msUniformFuncs["g_eyeDirection"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->eyeDirection);
+        };
+
+        msUniformFuncs["g_farnearPlane"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->farnearPlane);
+        };
+
+        msUniformFuncs["g_time"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->time);
+        };
+
+        msUniformFuncs["g_viewportSize"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->viewportSize);
+        };
+
+        msUniformFuncs["g_globalAmbient"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->globalAmbient);
+        };
+
+        msUniformFuncs["g_ambientColor"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->ambientColor);
+        };
+
+        msUniformFuncs["g_diffuseColor"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->diffuseColor);
+        };
+
+        msUniformFuncs["g_specularColor"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->specularColor);
+        };
+
+        msUniformFuncs["g_opacity"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->opacity);
+        };
+
+        msUniformFuncs["g_shininess"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->shininess);
+        };
+
+        msUniformFuncs["g_texelOffsets"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->texelOffsets);
+        };
+
+        msUniformFuncs["g_numDirLights"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->numDirLights);
+        };
+
+        msUniformFuncs["g_dirLightsColor"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->dirLightsColor[0].r), env->numDirLights);
+        };
+
+        msUniformFuncs["g_dirLightsDir"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->dirLightsDir[0].x), env->numDirLights);
+        };
+
+        msUniformFuncs["g_numPointLights"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->numPointLights);
+        };
+
+        msUniformFuncs["g_pointLightsColor"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->pointLightsColor[0].r), env->numPointLights);
+        };
+
+        msUniformFuncs["g_pointLightsPosition"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->pointLightsPosition[0].x), env->numPointLights);
+        };
+
+        msUniformFuncs["g_pointLightsAttenuation"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->pointLightsAttenuation[0].x), env->numPointLights);
+        };
+
+        msUniformFuncs["g_hasSkyLight"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->hasSkyLight);
+        };
+
+        msUniformFuncs["g_skyLightColor"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->skyLightColor);
+        };
+
+        msUniformFuncs["g_groundColor"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->groundColor);
+        };
+
+        msUniformFuncs["g_skyLightDir"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->skyLightDir);
+        };
+
+        msUniformFuncs["g_fixedDepthBias"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->fixedDepthBias);
+        };
+
+        msUniformFuncs["g_gradientScaleBias"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->gradientScaleBias);
+        };
+
+        msUniformFuncs["g_shadowMapParams"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->shadowMapParams);
+        };
+
+        msUniformFuncs["g_firstCascadeTexMat"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->firstCascadeTexMat);
+        };
+
+        msUniformFuncs["g_texMatrixScaleBias"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->texMatrixScaleBias[0].x), (env->numShadowCascades - 1));
+        };
+
+        msUniformFuncs["g_shadowTexture0"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            env->shadowTexture[0]->Bind(location);
+        };
+
+        msUniformFuncs["g_shadowTexture1"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            env->shadowTexture[1]->Bind(location);
+        };
+
+        msUniformFuncs["g_shadowTexture2"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            env->shadowTexture[2]->Bind(location);
+        };
+
+        msUniformFuncs["g_shadowTexture3"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            env->shadowTexture[3]->Bind(location);
+        };
+    }
 }

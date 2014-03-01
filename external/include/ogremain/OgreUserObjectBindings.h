@@ -4,7 +4,7 @@ This source file is part of OGRE
 (Object-oriented Graphics Rendering Engine)
 For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2012 Torus Knot Software Ltd
+Copyright (c) 2000-2014 Torus Knot Software Ltd
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ THE SOFTWARE.
 
 #include "OgrePrerequisites.h"
 #include "OgreAny.h"
+#include "OgreHeaderPrefix.h"
 
 namespace Ogre {
 
@@ -40,7 +41,7 @@ namespace Ogre {
 	*  @{
 	*/
 
-	/** Class that provide convenient interface to establish a linkage between
+	/** Class that provides convenient interface to establish a linkage between
 	custom user application objects and Ogre core classes.
 	Any instance of Ogre class that will derive from this class could be associated with custom 
 	application object using this class interface.
@@ -136,5 +137,7 @@ namespace Ogre {
 	/** @} */
 	/** @} */
 }
+
+#include "OgreHeaderSuffix.h"
 
 #endif
