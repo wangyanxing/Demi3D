@@ -62,6 +62,15 @@ namespace Demi
         skyLightColor = -1;
         groundColor = -1;
         skyLightDir = -1;
+
+        fixedDepthBias = -1;
+        gradientScaleBias = -1;
+        shadowMapParams = -1;
+        shadowTexture0 = -1;
+        shadowTexture1 = -1;
+        shadowTexture2 = -1;
+        shadowTexture3 = -1;
+        texMatrixScaleBias = -1;
     }
 
     DiShaderConstants::~DiShaderConstants(void)
@@ -71,49 +80,59 @@ namespace Demi
 
     void DiShaderConstants::LoadConstants(void)
     {
-        if (table)
-        {
-            modelMatrix = GetRegisterID("g_modelMatrix");
-            viewMatrix = GetRegisterID("g_viewMatrix");
-            projMatrix = GetRegisterID("g_projMatrix");
-            modelViewMatrix = GetRegisterID("g_modelViewMatrix");
-            modelViewProjMatrix = GetRegisterID("g_modelViewProjMatrix");
-            viewProjMatrix = GetRegisterID("g_viewProjMatrix");
-            texMatrix = GetRegisterID("g_texMatrix");
+        if (!table)
+            return;
 
-            eyePosition = GetRegisterID("g_eyePosition");
-            eyeDirection = GetRegisterID("g_eyeDirection");
+        modelMatrix = GetRegisterID("g_modelMatrix");
+        viewMatrix = GetRegisterID("g_viewMatrix");
+        projMatrix = GetRegisterID("g_projMatrix");
+        modelViewMatrix = GetRegisterID("g_modelViewMatrix");
+        modelViewProjMatrix = GetRegisterID("g_modelViewProjMatrix");
+        viewProjMatrix = GetRegisterID("g_viewProjMatrix");
+        texMatrix = GetRegisterID("g_texMatrix");
 
-            farnearPlane = GetRegisterID("g_farnearPlane");
+        eyePosition = GetRegisterID("g_eyePosition");
+        eyeDirection = GetRegisterID("g_eyeDirection");
 
-            boneMatrices = GetRegisterID("g_boneMatrices");
-            modelMatrices = GetRegisterID("g_modelMatrices");
+        farnearPlane = GetRegisterID("g_farnearPlane");
 
-            globalAmbient = GetRegisterID("g_globalAmbient");
-            ambientColor = GetRegisterID("g_ambientColor");
-            diffuseColor = GetRegisterID("g_diffuseColor");
-            specularColor = GetRegisterID("g_specularColor");
-            opacity = GetRegisterID("g_opacity");
-            shininess = GetRegisterID("g_shininess");
+        boneMatrices = GetRegisterID("g_boneMatrices");
+        modelMatrices = GetRegisterID("g_modelMatrices");
 
-            time = GetRegisterID("g_time");
-            viewportSize = GetRegisterID("g_viewportSize");
-            texelOffsets = GetRegisterID("g_texelOffsets");
+        globalAmbient = GetRegisterID("g_globalAmbient");
+        ambientColor = GetRegisterID("g_ambientColor");
+        diffuseColor = GetRegisterID("g_diffuseColor");
+        specularColor = GetRegisterID("g_specularColor");
+        opacity = GetRegisterID("g_opacity");
+        shininess = GetRegisterID("g_shininess");
 
-            numDirLights = GetRegisterID("g_numDirLights");
-            dirLightsColor = GetRegisterID("g_dirLightsColor");
-            dirLightsDir = GetRegisterID("g_dirLightsDir");
+        time = GetRegisterID("g_time");
+        viewportSize = GetRegisterID("g_viewportSize");
+        texelOffsets = GetRegisterID("g_texelOffsets");
 
-            numPointLights = GetRegisterID("g_numPointLights");
-            pointLightsColor = GetRegisterID("g_pointLightsColor");
-            pointLightsPosition = GetRegisterID("g_pointLightsPosition");
-            pointLightsAttenuation = GetRegisterID("g_pointLightsAttenuation");
+        numDirLights = GetRegisterID("g_numDirLights");
+        dirLightsColor = GetRegisterID("g_dirLightsColor");
+        dirLightsDir = GetRegisterID("g_dirLightsDir");
 
-            hasSkyLight = GetRegisterID("g_hasSkyLight");
-            skyLightColor = GetRegisterID("g_skyLightColor");
-            groundColor = GetRegisterID("g_groundColor");
-            skyLightDir = GetRegisterID("g_skyLightDir");
-        }
+        numPointLights = GetRegisterID("g_numPointLights");
+        pointLightsColor = GetRegisterID("g_pointLightsColor");
+        pointLightsPosition = GetRegisterID("g_pointLightsPosition");
+        pointLightsAttenuation = GetRegisterID("g_pointLightsAttenuation");
+
+        hasSkyLight = GetRegisterID("g_hasSkyLight");
+        skyLightColor = GetRegisterID("g_skyLightColor");
+        groundColor = GetRegisterID("g_groundColor");
+        skyLightDir = GetRegisterID("g_skyLightDir");
+
+        fixedDepthBias = GetRegisterID("g_fixedDepthBias");
+        gradientScaleBias = GetRegisterID("g_gradientScaleBias");
+        shadowMapParams = GetRegisterID("g_shadowMapParams");
+        shadowTexture0 = GetRegisterID("g_shadowTexture0");
+        shadowTexture1 = GetRegisterID("g_shadowTexture1");
+        shadowTexture2 = GetRegisterID("g_shadowTexture2");
+        shadowTexture3 = GetRegisterID("g_shadowTexture3");
+        firstCascadeTexMat = GetRegisterID("g_firstCascadeTexMat");
+        texMatrixScaleBias = GetRegisterID("g_texMatrixScaleBias");
     }
 
     void DiShaderConstants::BindEnvironment(const DiShaderEnvironment& shaderEnv) const
@@ -194,6 +213,32 @@ namespace Demi
             {
                 sm->SetVertexShaderConstantF(boneMatrices,
                     (float*)(&shaderEnv.boneMatrices), shaderEnv.numBones * 3);
+            }
+
+            if (shadowTexture0 != -1)
+            {
+                shaderEnv.shadowTexture[0]->Bind(shadowTexture0);
+                if (shadowTexture1 != -1) shaderEnv.shadowTexture[1]->Bind(shadowTexture1);
+                if (shadowTexture2 != -1) shaderEnv.shadowTexture[2]->Bind(shadowTexture2);
+                if (shadowTexture3 != -1) shaderEnv.shadowTexture[3]->Bind(shadowTexture3);
+
+                SET_CONST(fixedDepthBias);
+                SET_CONST(gradientScaleBias);
+                SET_CONST(shadowMapParams);
+
+               // if (firstCascadeTexMat != -1)
+                firstCascadeTexMat;
+                d9drv->SetShaderConsts(SHADER_VERTEX, 12, shaderEnv.firstCascadeTexMat);
+//                 {
+//                     sm->SetVertexShaderConstantF(12,
+//                         (float*)(shaderEnv.firstCascadeTexMat[0]), 4);
+//                 }
+
+                if (texMatrixScaleBias != -1)
+                {
+                    sm->SetPixelShaderConstantF(texMatrixScaleBias,
+                        (float*)(&shaderEnv.texMatrixScaleBias[0].x), (shaderEnv.numShadowCascades - 1));
+                }
             }
 
 #undef SET_CONST

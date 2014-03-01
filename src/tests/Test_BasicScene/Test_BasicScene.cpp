@@ -23,7 +23,7 @@ void CreateModels()
         {
             for (int k = 0; k < size; k++)
             {
-                DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", CSF_SKINNED);
+                DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SKINNED);
                 mat->SetDiffuse(DiColor(1, 1, 1));
 
                 DiString name;

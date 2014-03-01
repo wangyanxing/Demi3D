@@ -15,15 +15,25 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Light.h"
 #include "AssetManager.h"
 #include "RenderTarget.h"
+#include "GpuProgram.h"
 
 namespace Demi 
 {
+    const DiMat4 PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE(
+        0.5f,  0, 0, 0.5f,
+        0, -0.5f, 0, 0.5f,
+        0, 0,  1, 0,
+        0, 0,  0, 1);
+
+
     DiLight::DiLight(LightType type)
         :mType(type),
         mColor(DiColor::White),
         mShadowCameraDirty(true),
         mShadowCamera(nullptr),
-        mSplitPadding(1.0f)
+        mSplitPadding(1.0f),
+        mFirstCascadeCamWidth(0),
+        mViewRange(0)
     {
         for (int i = 0; i < MAX_CASCADE_SPLITS; ++i)
             mShadowCameras[i] = nullptr;
@@ -174,4 +184,58 @@ namespace Demi
 
         GetShadowCameraForCascade(cam, texCam, iteration, nearDist, farDist);
     }
+
+    void DiLight::ApplyGeneralShaderConfigs()
+    {
+        DiShaderEnvironment* env = Driver->GetShaderEnvironment();
+        env->fixedDepthBias = DiVec4(0.0005f, 0.001f, 0.001f, 0.003f);
+        env->gradientScaleBias = DiVec4(0.0005f, 0.001f, 0.001f, 0.003f);
+        env->shadowMapParams = DiVec4(500, 6000, 1024, 1.0f / 1024.0f);
+    }
+
+    void DiLight::ApplyShaderConfigs(const DiCamera* texCam, int cascadeID)
+    {
+        DiShaderEnvironment* env = Driver->GetShaderEnvironment();
+        if (cascadeID == 0)
+        {
+            mFirstCascadeViewMatrix = texCam->GetViewMatrix();
+            mFirstCascadeCamWidth = texCam->GetOrthoWindowWidth();
+            mViewRange = texCam->GetFarClipDistance() - texCam->GetNearClipDistance();
+
+            DiMat4 proj;
+            texCam->GetProjectionMatrixRs(proj);
+
+            DiMat4 texMatrix0 = PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE * proj * mFirstCascadeViewMatrix;
+            env->firstCascadeTexMat = texMatrix0;
+        }
+        else
+        {
+            DiMat4 mat0 = mFirstCascadeViewMatrix;
+            DiMat4 mat1 = texCam->GetViewMatrix();
+
+            float offsetX = mat1[0][3] - mat0[0][3];
+            float offsetY = mat1[1][3] - mat0[1][3];
+            float offsetZ = mat1[2][3] - mat0[2][3];
+
+            float width0 = mFirstCascadeCamWidth;
+            float width1 = texCam->GetOrthoWindowWidth();
+
+            float oneOnWidth = 1.0f / width0;
+            float offCenter = width1 / (2.0f * width0) - 0.5;
+
+            auto zRange = Driver->GetDepthInputRange();
+            float depthRange = DiMath::Abs(zRange.first - zRange.second);
+
+            DiVec4 result;
+            result.x = offsetX * oneOnWidth + offCenter;
+            result.y = -offsetY * oneOnWidth + offCenter;
+            result.z = -depthRange * offsetZ / mViewRange;
+            result.w = width0 / width1;
+
+            env->texMatrixScaleBias[cascadeID-1] = result;
+        }
+        env->numShadowCascades = MAX_CASCADE_SPLITS;
+        env->shadowTexture[cascadeID] = mShadowTextures[cascadeID];
+    }
+
 }

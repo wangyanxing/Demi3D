@@ -257,7 +257,6 @@ namespace Demi
         mCurrentRenderPass(GEOMETRY_PASS),
         mSkybox(nullptr),
         mAmbientColor(0.3f,0.3f,0.3f),
-        mCameraPool(this),
         mCuller(nullptr),
         mCullerFactory(nullptr)
     {
@@ -396,8 +395,9 @@ namespace Demi
     void DiSceneManager::Cull(DiCamera* cam)
     {
         // clear all culled objects and lights
+        if (mCurrentRenderPass == GEOMETRY_PASS)
+            mMainVisibleObjects.objs.clear();
         mVisibleObjects.objs.clear();
-        mCameraPool.Reset();
 
         mBox.SetNull();
 
@@ -797,6 +797,14 @@ namespace Demi
         p.preUpdateCallback = preListener;
         p.postUpdateCallback = postListener;
         mExtraRTs.push_back(p);
+    }
+
+    void DiSceneManager::PushVisibleObject(DiTransUnitPtr unit)
+    {
+        if(mCurrentRenderPass == GEOMETRY_PASS )
+            mMainVisibleObjects.objs.push_back(unit);
+        else
+            mVisibleObjects.objs.push_back(unit);
     }
 
     int     DiSceneManager::intersect_call         = 0;

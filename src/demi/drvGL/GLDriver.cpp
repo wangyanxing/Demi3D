@@ -575,4 +575,9 @@ namespace Demi
             glDisable(GL_POLYGON_OFFSET_FILL);
         }
     }
+
+    DiPair<float, float> DiGLDriver::GetDepthInputRange() const
+    {
+        return DiPair<float, float>(-1.0f, 1.0f);
+    }
 }

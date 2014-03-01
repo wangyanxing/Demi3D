@@ -133,6 +133,8 @@ namespace Demi
          */
         void                    SetTextureFlipping(bool val) { mNeedTextureFlipping = false; }
 
+        DiPair<float, float>    GetDepthInputRange() const;
+
     public:
 
         static IDirect3DVertexShader9*         CreateVertexShader(const DWORD* pFunction);

@@ -86,6 +86,11 @@ namespace Demi
 
         DiCamera* mainCam = mSceneManager->GetCamera();
 
+        // Cull first
+        mSceneManager->SetCurrentPass(GEOMETRY_PASS);
+        mSceneManager->Cull(mainCam);
+        mSceneManager->GetMainVisibleObjects().UpdateAll(mainCam);
+
         // Shadow mapping pass
         rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
         auto& visLights = mSceneManager->GetVisibleLights();
@@ -93,9 +98,9 @@ namespace Demi
         for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
         {
             DiLight* light = *i;
-
             if (light->GetShadowCastEnable())
             {
+                light->ApplyGeneralShaderConfigs();
                 for (int cascadeId = 0; cascadeId < MAX_CASCADE_SPLITS; ++cascadeId)
                 {
                     DiCamera* cam = light->mShadowCameras[cascadeId];
@@ -109,11 +114,8 @@ namespace Demi
         }
 
         // Normal geometry pass
-        mSceneManager->SetCurrentPass(GEOMETRY_PASS);
-        mSceneManager->Cull(mainCam);
-        mSceneManager->GetVisibleObjects().UpdateAll(mainCam);
         rp->ClearGroup();
-        mSceneManager->GetVisibleObjects().AddToBatch(rp);
+        mSceneManager->GetMainVisibleObjects().AddToBatch(rp);
         rp->SetCurrentPass(DiRenderPipeline::P_LIGHTING_PASS);
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
 

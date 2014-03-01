@@ -171,6 +171,8 @@ namespace Demi
 
         void                        SetInvertVertexWinding(bool val) { mInvertVertexWinding = val; }
 
+        virtual DiPair<float,float> GetDepthInputRange() const = 0;
+
     public:
 
         typedef DiVector<DiDepthBuffer*>            DepthBufferVec;

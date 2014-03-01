@@ -237,7 +237,7 @@ namespace Demi
             material = DiRenderWindow::ActiveWindow->GetGBuffer()->GetMaterial().get();
         else if (mCurrentPass == P_SHADOW_PASS && batch->mMaterial)
         {
-            if(batch->mMaterial->GetShaderFlags() & CSF_SKINNED)
+            if(batch->mMaterial->GetShaderFlags() & SHADER_FLAG_SKINNED)
                 material = DiMaterial::GetAnimatedShadowCasterMaterial().get();
             else
                 material = DiMaterial::GetStaticShadowCasterMaterial().get();

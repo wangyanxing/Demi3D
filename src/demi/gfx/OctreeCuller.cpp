@@ -168,7 +168,7 @@ namespace Demi
                     {
                         if (!onlyShadowCaster || tu->GetShadowCastEnable())
                         {
-                            mSceneManager->GetVisibleObjects().objs.push_back(tu);
+                            mSceneManager->PushVisibleObject(tu);
                             tu->NotifyCurrentCamera(camera);
                         }
                     });

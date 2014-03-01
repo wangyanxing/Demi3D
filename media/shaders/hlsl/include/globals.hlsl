@@ -16,7 +16,16 @@
 #define INSTANCE_SHADER		1
 #define INSTANCE_HARDWARE	2
 
+
+/// shadow mapping configs
+
 #define MAX_SHADOW_CASCADES 4
+
+#if defined( SHADOW_LOW ) || defined( SHADOW_MEDIUM ) || defined( SHADOW_HIGH )
+#   define USE_SHADOW 1
+#else
+#   define USE_SHADOW 0
+#endif
 
 uniform const float4x4      g_modelMatrix;
 uniform const float4x4      g_viewMatrix;
@@ -67,13 +76,16 @@ uniform const float4        g_skyLightColor;
 uniform const float4        g_groundColor;
 uniform const float3        g_skyLightDir;
 
-uniform const float4        g_cascadeEyeSpaceDepths[MAX_SHADOW_CASCADES];
-uniform const float2        g_shadowDist;   // x: shadow fade dist, y: shadow max dist
-uniform const float4        g_texMatrixScaleBias[MAX_SHADOW_CASCADES];
 uniform const float4        g_fixedDepthBias;
 uniform const float4        g_gradientScaleBias;
-uniform const float4        g_shadowMapSize;
-uniform const float4        g_invShadowMapSize;
+uniform const float4        g_shadowMapParams;  // x: shadow fade dist, y: shadow max dist
+                                                // z: shadow map size,  w: 1/shadow map size
+
+//first cascade shadow texture matrix
+uniform const float4x4      g_firstCascadeTexMat;
+//texture matrix scale bias for all rest cascades
+uniform const float4        g_texMatrixScaleBias[MAX_SHADOW_CASCADES-1];
+
 uniform const sampler2D     g_shadowTexture0;
 uniform const sampler2D     g_shadowTexture1;
 uniform const sampler2D     g_shadowTexture2;

@@ -29,26 +29,27 @@ namespace Demi
 
     void DiShaderManager::InitCommonFlags(void)
     {
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "USE_FOG"            , CSF_USE_FOG ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "USE_COLOR"          , CSF_USE_COLOR ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "DOUBLE_SIDED"       , CSF_DOUBLE_SIDED ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "GAMMA_CORRECTION"   , CSF_GAMMA_CORRECTION ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "USE_LIGHTMAP"       , CSF_USE_LIGHTMAP ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "USE_MAP"             , CSF_USE_MAP ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "USE_ENV_MAP"         , CSF_USE_ENV_MAP ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "ENV_MAP_ADD"         , CSF_ENV_MAP_ADD ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "ENV_MAP_MUL"         , CSF_ENV_MAP_MUL ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "ENV_MAP_MIX"         , CSF_ENV_MAP_MIX ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "ENV_MAP_REFRACT"     , CSF_ENV_MAP_REFRACT ));
-        mCommonFlag.insert( MapNameFlagsIt::value_type( "SKINNED"            , CSF_SKINNED));
+        mCommonFlag["USE_FOG"]          = SHADER_FLAG_USE_FOG;
+        mCommonFlag["USE_COLOR"]        = SHADER_FLAG_USE_COLOR;
+        mCommonFlag["DOUBLE_SIDED"]     = SHADER_FLAG_DOUBLE_SIDED;
+        mCommonFlag["GAMMA_CORRECTION"] = SHADER_FLAG_GAMMA_CORRECTION;
+        mCommonFlag["USE_LIGHTMAP"]     = SHADER_FLAG_USE_LIGHTMAP;
+        mCommonFlag["USE_MAP"]          = SHADER_FLAG_USE_MAP;
+        mCommonFlag["USE_ENV_MAP"]      = SHADER_FLAG_USE_ENV_MAP;
+        mCommonFlag["ENV_MAP_ADD"]      = SHADER_FLAG_ENV_MAP_ADD;
+        mCommonFlag["ENV_MAP_MUL"]      = SHADER_FLAG_ENV_MAP_MUL;
+        mCommonFlag["ENV_MAP_MIX"]      = SHADER_FLAG_ENV_MAP_MIX;
+        mCommonFlag["ENV_MAP_REFRACT"]  = SHADER_FLAG_ENV_MAP_REFRACT;
+        mCommonFlag["SKINNED"]          = SHADER_FLAG_SKINNED;
+        mCommonFlag["SHADOW_DISABLED"]  = SHADER_FLAG_SHADOW_DISABLED;
+        mCommonFlag["SHADOW_LOW"]       = SHADER_FLAG_SHADOW_LOW;
+        mCommonFlag["SHADOW_MEDIUM"]    = SHADER_FLAG_SHADOW_MEDIUM;
+        mCommonFlag["SHADOW_HIGH"]      = SHADER_FLAG_SHADOW_HIGH;
     }
 
     void DiShaderManager::ModifyMarcosByFlag(uint64 flag, DiCompileDesc& desc)
     {
-        MapNameFlagsIt it    = mCommonFlag.begin();
-        MapNameFlagsIt itEnd = mCommonFlag.end();
-
-        for(it = mCommonFlag.begin(); it != itEnd; ++it)
+        for (auto it = mCommonFlag.begin(); it != mCommonFlag.end(); ++it)
         {
             if(flag & it->second)
                 desc.AddMarco(it->first);
@@ -59,15 +60,14 @@ namespace Demi
 
     DiShaderProgram* DiShaderManager::LoadShader(const DiString& filename, DiShaderType type, uint64 flag)
     {
-        DiShaderProgram* shader = NULL;
+        DiShaderProgram* shader = nullptr;
 
         DiString file = filename + Driver->GetShaderFileExtension();
 
-        ShaderLibsIt it = mShaderLibs.find(file);
+        auto it = mShaderLibs.find(file);
         if(it != mShaderLibs.end())
         {
-            DiMap<uint64,DiShaderProgram*>::iterator flagIt =
-                it->second.find(flag);
+            auto flagIt = it->second.find(flag);
 
             if(flagIt != it->second.end())
                 return flagIt->second;
@@ -80,7 +80,7 @@ namespace Demi
         {
             DI_WARNING("Failed to load the shader : %s", file.c_str());
             DI_DELETE shader;
-            return NULL;
+            return nullptr;
         }
 
         DiCompileDesc desc;
@@ -88,7 +88,6 @@ namespace Demi
         desc.profile = DiShaderProgram::GetDefaultProfile(type);
 
         ModifyMarcosByFlag(flag,desc);
-
         shader->Compile(desc);
 
         mShaderLibs[file].insert(DiMap<uint64, DiShaderProgram*>::iterator::value_type(flag, shader));
@@ -99,15 +98,9 @@ namespace Demi
     void DiShaderManager::UnloadAllShaders()
     {
         DI_DEBUG("unloading all shaders..");
-
-        ShaderLibsIt it;
-        ShaderLibsIt itEnd = mShaderLibs.end();
-
-        for(it = mShaderLibs.begin(); it != itEnd; ++it)
+        for (auto it = mShaderLibs.begin(); it != mShaderLibs.end(); ++it)
         {
-            DiMap<uint64,DiShaderProgram*>::iterator fIt;
-            DiMap<uint64,DiShaderProgram*>::iterator fItEnd = it->second.end();
-            for(fIt = it->second.begin(); fIt != fItEnd; ++fIt)
+            for (auto fIt = it->second.begin(); fIt != it->second.end(); ++fIt)
             {
                 SAFE_DELETE(fIt->second);
             }
@@ -119,11 +112,11 @@ namespace Demi
     uint64 DiShaderManager::CoverterFlags(const DiVector<DiString>& flags)
     {
         uint64 flag = 0;
-        for(size_t i = 0; i < flags.size(); i++){
-            MapNameFlagsIt it = mCommonFlag.find(flags[i]);
-            if(it != mCommonFlag.end()){
+        for(size_t i = 0; i < flags.size(); i++)
+        {
+            auto it = mCommonFlag.find(flags[i]);
+            if(it != mCommonFlag.end())
                 flag |= it->second;
-            }
         }
         return flag;
     }
@@ -131,10 +124,10 @@ namespace Demi
     DiString DiShaderManager::CoverterFlags(uint64 flags)
     {
         DiString ret;
-        MapNameFlagsIt it     = mCommonFlag.begin();
-        MapNameFlagsIt itEnd = mCommonFlag.end();
-        for(it = mCommonFlag.begin(); it != itEnd; ++it){
-            if(flags & it->second){
+        for (auto it = mCommonFlag.begin(); it != mCommonFlag.end(); ++it)
+        {
+            if(flags & it->second)
+            {
                 ret += it->first;
                 ret += ",";
             }

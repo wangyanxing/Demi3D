@@ -228,7 +228,7 @@ namespace Demi
     {
         static DiMaterialPtr AnimatedShadowCasterMaterial;
         if (!AnimatedShadowCasterMaterial)
-            AnimatedShadowCasterMaterial = DiMaterial::QuickCreate("shadowCaster_v", "shadowCaster_p", CSF_SKINNED);
+            AnimatedShadowCasterMaterial = DiMaterial::QuickCreate("shadowCaster_v", "shadowCaster_p", SHADER_FLAG_SKINNED);
         return AnimatedShadowCasterMaterial;
     }
 }

@@ -39,7 +39,10 @@ struct VS_OUTPUT
 	
 	float3 PosWorld		: TEXCOORD3;
 
-    float  Depth        : TEXCOORD4;
+#if USE_SHADOW
+    float  Depth : TEXCOORD4;
+    float4 ShadowLightspacePos : TEXCOORD5;
+#endif
 };
 
 VS_OUTPUT vs_main( VS_INPUT In )
@@ -48,24 +51,30 @@ VS_OUTPUT vs_main( VS_INPUT In )
 	float3 objNormal = 0;
 	GET_SPACE_POS_NORMAL
 	
+    float4 viewPos = mul(g_modelViewMatrix,objPos);
+
 	VS_OUTPUT Out;
-	Out.Position       	= mul(g_modelViewProjMatrix,objPos);
+	Out.Position = mul(g_projMatrix,viewPos);
 
 #if defined( USE_COLOR )
-	Out.Color         	= In.Color;
+	Out.Color = In.Color;
 #endif
 
 #if defined( USE_MAP )
-	Out.Texcoord0      	= In.Texcoord0;
+	Out.Texcoord0 = In.Texcoord0;
 #endif
 
 	// world space normal
-    Out.Normal       	= mul(g_modelMatrix,objNormal).xyz;
-	Out.PosWorld		= mul(g_modelMatrix,objPos);
-	Out.ViewDir			= Out.PosWorld - g_eyePosition;
+    Out.Normal = mul(g_modelMatrix, float4(objNormal.xyz, 0.0)).xyz;
+	Out.PosWorld = mul(g_modelMatrix,objPos).xyz;
+	Out.ViewDir  = Out.PosWorld - g_eyePosition;
 
-    float4 t = mul(g_modelViewMatrix, objPos);
-    Out.Depth           = t.z / t.w;
+#if USE_SHADOW
+    Out.Depth = viewPos.z;
+    
+    float4 lightspacepos = mul(g_firstCascadeTexMat, float4(Out.PosWorld.xyz, 1.0));
+    Out.ShadowLightspacePos = lightspacepos;
+#endif
 
 	return Out;
 }

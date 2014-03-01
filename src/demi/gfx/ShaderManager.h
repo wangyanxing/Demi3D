@@ -22,18 +22,22 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi 
 {
     // shader common flags
-    #define CSF_USE_FOG             (uint64)0x1
-    #define CSF_USE_COLOR           (uint64)0x2        //using vertex color
-    #define CSF_DOUBLE_SIDED        (uint64)0x4
-    #define CSF_GAMMA_CORRECTION    (uint64)0x8
-    #define CSF_USE_LIGHTMAP        (uint64)0x10
-    #define CSF_USE_MAP             (uint64)0x20
-    #define CSF_USE_ENV_MAP         (uint64)0x40
-    #define CSF_ENV_MAP_ADD         (uint64)0x80
-    #define CSF_ENV_MAP_MUL         (uint64)0x100
-    #define CSF_ENV_MAP_MIX         (uint64)0x200
-    #define CSF_ENV_MAP_REFRACT     (uint64)0x400
-    #define CSF_SKINNED             (uint64)0x800
+    #define SHADER_FLAG_USE_FOG             (uint64)0x1
+    #define SHADER_FLAG_USE_COLOR           (uint64)0x2        //using vertex color
+    #define SHADER_FLAG_DOUBLE_SIDED        (uint64)0x4
+    #define SHADER_FLAG_GAMMA_CORRECTION    (uint64)0x8
+    #define SHADER_FLAG_USE_LIGHTMAP        (uint64)0x10
+    #define SHADER_FLAG_USE_MAP             (uint64)0x20
+    #define SHADER_FLAG_USE_ENV_MAP         (uint64)0x40
+    #define SHADER_FLAG_ENV_MAP_ADD         (uint64)0x80
+    #define SHADER_FLAG_ENV_MAP_MUL         (uint64)0x100
+    #define SHADER_FLAG_ENV_MAP_MIX         (uint64)0x200
+    #define SHADER_FLAG_ENV_MAP_REFRACT     (uint64)0x400
+    #define SHADER_FLAG_SKINNED             (uint64)0x800
+    #define SHADER_FLAG_SHADOW_DISABLED     (uint64)0x1000     //shadow levels
+    #define SHADER_FLAG_SHADOW_LOW          (uint64)0x2000
+    #define SHADER_FLAG_SHADOW_MEDIUM       (uint64)0x4000
+    #define SHADER_FLAG_SHADOW_HIGH         (uint64)0x4000
 
     ////////////////////////////////////////////////////////////////////////////////
 
@@ -65,12 +69,9 @@ namespace Demi
     protected:
 
         typedef DiMap<DiString, uint64>   MapNameFlags;
-        typedef MapNameFlags::iterator    MapNameFlagsIt;
+        typedef DiMap<DiString, DiMap<uint64, DiShaderProgram*>>    ShaderLibs;
 
         MapNameFlags            mCommonFlag;
-
-        typedef DiMap<DiString, DiMap<uint64,DiShaderProgram*>>    ShaderLibs;
-        typedef ShaderLibs::iterator ShaderLibsIt;
 
         ShaderLibs              mShaderLibs;
     };

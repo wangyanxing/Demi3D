@@ -79,6 +79,8 @@ namespace Demi
 
         const DiString&         GetShaderFileExtension() const;
 
+        DiPair<float, float>    GetDepthInputRange() const;
+
         void                    SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a);
 
         void                    GetDepthStencilFormatFor(DiPixelFormat format, GLenum *depthFormat,

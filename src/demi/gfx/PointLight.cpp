@@ -46,6 +46,8 @@ namespace Demi
 
     void DiPointLight::Update(DiCamera* camera)
     {
-        camera->GetSceneManager()->GetVisibleLights().pointLights.push_back(this);
+        DiSceneManager* sm = camera->GetSceneManager();
+        if (sm->GetCurrentPass() == GEOMETRY_PASS)
+            camera->GetSceneManager()->GetVisibleLights().pointLights.push_back(this);
     }
 }

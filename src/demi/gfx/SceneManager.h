@@ -232,6 +232,12 @@ namespace Demi
         */
         DiVisibleObjs&          GetVisibleObjects() { return mVisibleObjects; }
 
+        DiVisibleObjs&          GetMainVisibleObjects() { return mMainVisibleObjects; }
+
+        /** Push visible objects
+         */
+        void                    PushVisibleObject(DiTransUnitPtr unit);
+
         /** Get visible lights
          */
         DiVisibleLights&        GetVisibleLights() { return mVisibleLights; }
@@ -244,8 +250,6 @@ namespace Demi
                                     const RenderTargetParam::RTListener& postListener = nullptr);
         
         RenderTargets&          GetExtraRenderTargets() {return mExtraRTs;}
-
-        CameraPool&             GetCameraPool() { return mCameraPool; }
 
         /** Get the bouding box of the whole scene
          */
@@ -297,11 +301,11 @@ namespace Demi
 
         DiSkybox*               mSkybox;
 
-        /// visible objects, will be updated every frame
+        DiVisibleObjs           mMainVisibleObjects;
+
+        /// visible objects for other kinds of passes
         DiVisibleObjs           mVisibleObjects;
 
-        CameraPool              mCameraPool;
-        
         DiSceneCuller*          mCuller;
         
         DiSceneCullerFactory*   mCullerFactory;

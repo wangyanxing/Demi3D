@@ -917,4 +917,9 @@ namespace Demi
         StateCache->SetRenderState(D3DRS_DEPTHBIAS, constantBias);
         StateCache->SetRenderState(D3DRS_SLOPESCALEDEPTHBIAS, slopeScaledBias);
     }
+
+    DiPair<float, float> DiD3D9Driver::GetDepthInputRange() const
+    {
+        return DiPair<float, float>(0.0f, 1.0f);
+    }
 }

@@ -81,6 +81,10 @@ namespace Demi
 
         void                    ApplyCropMatrix(DiCamera* shadowCam, ShadowFrustum& f);
 
+        void                    ApplyGeneralShaderConfigs();
+
+        void                    ApplyShaderConfigs(const DiCamera* texCam, int cascadeID);
+
     protected:
 
         void                    CreateShadowTextures();
@@ -127,6 +131,12 @@ namespace Demi
         float                   mSplitPadding;
 
         uint16                  mCurrentIteration;
+
+        DiMat4                  mFirstCascadeViewMatrix;
+        
+        float                   mFirstCascadeCamWidth;
+
+        float                   mViewRange;
     };
 }
 

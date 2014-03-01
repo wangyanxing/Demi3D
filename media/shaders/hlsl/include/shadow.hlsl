@@ -17,21 +17,27 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-uniform float4 texMatrixScaleBias1;
-uniform float4 texMatrixScaleBias2;
-uniform float4 texMatrixScaleBias3;
-uniform float4 fixedDepthBias;
-uniform float4 gradientScaleBias;
-uniform float4 shadowMapSize;
-uniform float4 invShadowMapSize;
-
-float4 tex2D_inBranch(uniform sampler2D sampler, float2 texCoords)
+half getShadowFactor(
+    sampler2D shadowMapUnit,
+    float4 lightSpacePos,
+    float shadowmapSize,
+    float inverseShadowmapSize,
+    float fixedDepthBias,
+    float gradientScaleBias,
+    half shadowLightDotLN)
 {
-#ifdef TEX2D_FORCE_ZERO_GRAD_IN_BRANCH
-    return tex2D(sampler, texCoords, 0, 0);
-#else
-    return tex2D(sampler, texCoords);
-#endif
+    // point on shadowmap
+    float depthAdjust = fixedDepthBias + (1.0f - abs(shadowLightDotLN)) * gradientScaleBias;
+    lightSpacePos.z -= depthAdjust; // lightSpacePos.z contains lightspace position of current object
+
+    // Sample each of them checking whether the pixel under test is shadowed or not
+    float lightMask = (lightSpacePos.z < tex2D(shadowMapUnit, lightSpacePos.xy,0,0).r);
+
+    // Hack to prevent these getting optimized out, thereby preventing OGRE errors
+    lightMask += 0.001 * (0.001*shadowmapSize + inverseShadowmapSize);
+
+    // Get the average
+    return lightMask;
 }
 
 #ifdef DEBUG_CSM
@@ -40,10 +46,6 @@ half3 getCsmShadowFactor
 half getCsmShadowFactor
 #endif
 (
-uniform sampler2D shadowTexture0,
-uniform sampler2D shadowTexture1,
-uniform sampler2D shadowTexture2,
-uniform sampler2D shadowTexture3,
 float4 lightSpacePos0,
 half shadowLightDotLN
 )
@@ -56,8 +58,8 @@ half shadowLightDotLN
 
     if (lightSpacePos0.x > 0.01 && lightSpacePos0.y > 0.01 && lightSpacePos0.x < 0.99 && lightSpacePos0.y < 0.99)
     {
-        factor = getShadowFactor(shadowTexture0, lightSpacePos0, shadowMapSize.x, invShadowMapSize.x,
-            fixedDepthBias.x, gradientScaleBias.x, shadowLightDotLN);
+        factor = getShadowFactor(g_shadowTexture0, lightSpacePos0, g_shadowMapParams.z, g_shadowMapParams.w,
+            g_fixedDepthBias.x, g_gradientScaleBias.x, shadowLightDotLN);
 
 #ifdef DEBUG_CSM
         cascadeColor = float3(1, 0, 0);
@@ -66,13 +68,13 @@ half shadowLightDotLN
     else
     {
         float4 lightSpacePos1;
-        lightSpacePos1.xyz = lightSpacePos0.xyz + texMatrixScaleBias1.xyz;
-        lightSpacePos1.xy *= texMatrixScaleBias1.w;
+        lightSpacePos1.xyz = lightSpacePos0.xyz + g_texMatrixScaleBias[0].xyz;
+        lightSpacePos1.xy *= g_texMatrixScaleBias[0].w;
 
         if (lightSpacePos1.x > 0.01 && lightSpacePos1.y > 0.01 && lightSpacePos1.x < 0.99 && lightSpacePos1.y < 0.99)
         {
-            factor = getShadowFactor(shadowTexture1, lightSpacePos1, shadowMapSize.y, invShadowMapSize.y,
-                fixedDepthBias.y, gradientScaleBias.y, shadowLightDotLN);
+            factor = getShadowFactor(g_shadowTexture1, lightSpacePos1, g_shadowMapParams.z, g_shadowMapParams.w,
+                g_fixedDepthBias.y, g_gradientScaleBias.y, shadowLightDotLN);
 
 #ifdef DEBUG_CSM
             cascadeColor = float3(0, 1, 0);
@@ -81,13 +83,13 @@ half shadowLightDotLN
         else
         {
             float4 lightSpacePos2;
-            lightSpacePos2.xyz = lightSpacePos0.xyz + texMatrixScaleBias2.xyz;
-            lightSpacePos2.xy *= texMatrixScaleBias2.w;
+            lightSpacePos2.xyz = lightSpacePos0.xyz + g_texMatrixScaleBias[1].xyz;
+            lightSpacePos2.xy *= g_texMatrixScaleBias[1].w;
 
             if (lightSpacePos2.x > 0.01 && lightSpacePos2.y > 0.01 && lightSpacePos2.x < 0.99 && lightSpacePos2.y < 0.99)
             {
-                factor = getShadowFactor(shadowTexture2, lightSpacePos2, shadowMapSize.z, invShadowMapSize.z,
-                    fixedDepthBias.z, gradientScaleBias.z, shadowLightDotLN);
+                factor = getShadowFactor(g_shadowTexture2, lightSpacePos2, g_shadowMapParams.z, g_shadowMapParams.w,
+                    g_fixedDepthBias.z, g_gradientScaleBias.z, shadowLightDotLN);
 
 #ifdef DEBUG_CSM
                 cascadeColor = float3(0, 0, 1);
@@ -96,11 +98,11 @@ half shadowLightDotLN
             else
             {
                 float4 lightSpacePos3;
-                lightSpacePos3.xyz = lightSpacePos0.xyz + texMatrixScaleBias3.xyz;
-                lightSpacePos3.xy *= texMatrixScaleBias3.w;
+                lightSpacePos3.xyz = lightSpacePos0.xyz + g_texMatrixScaleBias[2].xyz;
+                lightSpacePos3.xy *= g_texMatrixScaleBias[2].w;
 
-                factor = getShadowFactor(shadowTexture3, lightSpacePos3, shadowMapSize.w, invShadowMapSize.w,
-                    fixedDepthBias.w, gradientScaleBias.w, shadowLightDotLN);
+                factor = getShadowFactor(g_shadowTexture3, lightSpacePos3, g_shadowMapParams.z, g_shadowMapParams.w,
+                    g_fixedDepthBias.w, g_gradientScaleBias.w, shadowLightDotLN);
 
                 // Fade out to edges
                 half weight = saturate((max(abs(lightSpacePos3.x - 0.5), abs(lightSpacePos3.y - 0.5)) - 0.375) * 8);
@@ -118,27 +120,4 @@ half shadowLightDotLN
 #else
     return factor;
 #endif
-}
-
-half getShadowFactor(
-    uniform sampler2D shadowMapUnit,
-    float4 lightSpacePos,
-    uniform float shadowmapSize,
-    uniform float inverseShadowmapSize,
-    uniform float fixedDepthBias,
-    uniform float gradientScaleBias,
-    half shadowLightDotLN)
-{
-    // point on shadowmap
-    float depthAdjust = fixedDepthBias + (1.0f - abs(shadowLightDotLN)) * gradientScaleBias;
-    lightSpacePos.z -= depthAdjust; // lightSpacePos.z contains lightspace position of current object
-
-    // Sample each of them checking whether the pixel under test is shadowed or not
-    float lightMask = (lightSpacePos.z < tex2D_inBranch(shadowMapUnit, lightSpacePos.xy).r);
-
-    // Hack to prevent these getting optimized out, thereby preventing OGRE errors
-    lightMask += 0.001 * (0.001*shadowmapSize + inverseShadowmapSize);
-
-    // Get the average
-    return lightMask;
 }

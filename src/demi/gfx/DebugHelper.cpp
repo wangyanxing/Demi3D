@@ -33,7 +33,7 @@ namespace Demi
         
         mPrimitiveType = PT_LINELIST;
         
-        SetMaterial(DiMaterial::QuickCreate("basic_v", "basic_p", CSF_USE_COLOR));
+        SetMaterial(DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR));
     }
 
     DiDebugHelper::~DiDebugHelper(void)

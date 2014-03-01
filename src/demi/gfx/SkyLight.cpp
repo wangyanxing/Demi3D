@@ -35,6 +35,8 @@ namespace Demi
 
     void DiSkyLight::Update(DiCamera* camera)
     {
-        camera->GetSceneManager()->GetVisibleLights().skyLight = this;
+        DiSceneManager* sm = camera->GetSceneManager();
+        if (sm->GetCurrentPass() == GEOMETRY_PASS)
+            camera->GetSceneManager()->GetVisibleLights().skyLight = this;
     }
 }

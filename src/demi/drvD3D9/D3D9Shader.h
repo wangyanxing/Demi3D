@@ -102,6 +102,16 @@ namespace Demi
         int groundColor;
         int skyLightDir;
 
+        int fixedDepthBias;
+        int gradientScaleBias;
+        int shadowMapParams;
+        int shadowTexture0;
+        int shadowTexture1;
+        int shadowTexture2;
+        int shadowTexture3;
+        int firstCascadeTexMat;
+        int texMatrixScaleBias;
+
     public:
 
         DiShaderConstants(DiShaderType tp);
@@ -182,6 +192,9 @@ namespace Demi
                         DiString parName = cdesc.Name;
                         sm->AddParameter(t, parName);
                         sm->AddD3DParameter(parName, type, cdesc.RegisterIndex);
+                    }
+                    else{
+                        DI_DEBUG("%s id:%d", cdesc.Name, cdesc.RegisterIndex);
                     }
                 }
             }

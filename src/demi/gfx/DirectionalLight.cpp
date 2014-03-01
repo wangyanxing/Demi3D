@@ -37,7 +37,9 @@ namespace Demi
 
     void DiDirLight::Update(DiCamera* camera)
     {
-        camera->GetSceneManager()->GetVisibleLights().dirLights.push_back(this);
+        DiSceneManager* sm = camera->GetSceneManager();
+        if (sm->GetCurrentPass() == GEOMETRY_PASS)
+            sm->GetVisibleLights().dirLights.push_back(this);
     }
     
     void DiDirLight::SetDirection(const Demi::DiVec3 &vec)
@@ -67,6 +69,8 @@ namespace Demi
             DiCamera* shadowCam = mShadowCameras[i];
 
             GetShadowCamera(camera, shadowCam, i);
+
+            ApplyShaderConfigs(shadowCam, i);
         }
 
 #if 0        
