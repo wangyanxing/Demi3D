@@ -54,79 +54,6 @@ namespace Demi
 
     //////////////////////////////////////////////////////////////////////////
 
-    class DI_D3D9DRV_API DiShaderConstants : DiBase
-    {
-    public:
-        ID3DXConstantTable* table;
-
-        DiShaderType type;
-
-        int modelMatrix;
-        int viewMatrix;
-        int projMatrix;
-        int modelViewMatrix;
-        int modelViewProjMatrix;
-        int viewProjMatrix;
-        int texMatrix;
-
-        int eyePosition;
-        int eyeDirection;
-
-        int farnearPlane;
-
-        int boneMatrices;
-        int modelMatrices;
-
-        int globalAmbient;
-        int ambientColor;
-        int diffuseColor;
-        int specularColor;
-        int opacity;
-        int shininess;
-
-        int time;
-        int viewportSize;
-        int texelOffsets;
-
-        int numDirLights;
-        int dirLightsColor;
-        int dirLightsDir;
-
-        int numPointLights;
-        int pointLightsColor;
-        int pointLightsPosition;
-        int pointLightsAttenuation;
-
-        int hasSkyLight;
-        int skyLightColor;
-        int groundColor;
-        int skyLightDir;
-
-        int fixedDepthBias;
-        int gradientScaleBias;
-        int shadowMapParams;
-        int shadowTexture0;
-        int shadowTexture1;
-        int shadowTexture2;
-        int shadowTexture3;
-        int firstCascadeTexMat;
-        int texMatrixScaleBias;
-
-    public:
-
-        DiShaderConstants(DiShaderType tp);
-
-        ~DiShaderConstants(void);
-
-        void    LoadConstants(void);
-
-        void    BindEnvironment(const DiShaderEnvironment& shaderEnv) const;
-
-        int     GetRegisterID(const char* name);
-    };
-
-    //////////////////////////////////////////////////////////////////////////
-
     class DI_D3D9DRV_API DiShaderIncluder : public ID3DXInclude
     {
     private:
@@ -147,7 +74,6 @@ namespace Demi
             : DiShaderInstance(type)
             , mShaderProgram(prog)
             , mD3DShader(nullptr)
-            , mConstants(type)
         {
         }
 
@@ -164,30 +90,27 @@ namespace Demi
         void                Bind(const DiShaderEnvironment& shaderEnv)
         {
             DiD3D9ShaderUtils<type, _Myt*>::BindShader(this);
-            //mConstants.BindEnvironment(shaderEnv);
         }
 
         void                LoadParameters(DiD3D9ShaderParam* sm)
         {
-            if (!mConstants.table)
+            if (!mConstantsTable)
                 return;
 
             if (DiD3D9BuiltinConsts::msUniformFuncs.empty())
                 DiD3D9BuiltinConsts::InitBuiltinFuncs();
 
-            ID3DXConstantTable &table = *mConstants.table;
-
             D3DXCONSTANTTABLE_DESC desc;
-            table.GetDesc(&desc);
+            mConstantsTable->GetDesc(&desc);
             for (uint32 i = 0; i < desc.Constants; i++)
             {
-                D3DXHANDLE constant = table.GetConstant(0, i);
+                D3DXHANDLE constant = mConstantsTable->GetConstant(0, i);
                 DI_ASSERT(constant);
                 if (constant)
                 {
                     D3DXCONSTANT_DESC cdesc;
                     uint32 count = 1;
-                    table.GetConstantDesc(constant, &cdesc, &count);
+                    mConstantsTable->GetConstantDesc(constant, &cdesc, &count);
                     DI_ASSERT(count == 1);
                     if (count == 1 && strncmp(cdesc.Name, "g_", 2))
                     {
@@ -219,7 +142,7 @@ namespace Demi
 
         T*                  mD3DShader;
 
-        DiShaderConstants   mConstants;
+        ID3DXConstantTable* mConstantsTable;
     };
 
     typedef DiD3D9ShaderInstance<SHADER_VERTEX, IDirect3DVertexShader9> DiD3D9VSInstance;
@@ -262,7 +185,7 @@ namespace Demi
                 flag,
                 &dXShaderBuffer,
                 &dXErrorBuffer,
-                &shaderInstance->mConstants.table);
+                &shaderInstance->mConstantsTable);
 
             if (hResult != S_OK)
             {
@@ -275,7 +198,7 @@ namespace Demi
 
                 DI_WARNING(errorLog.c_str());
 
-                shaderInstance->mConstants.table = nullptr;
+                shaderInstance->mConstantsTable = nullptr;
 
                 SAFE_ARRAY_DELETE(defs);
                 SAFE_RELEASE(dXShaderBuffer);
@@ -322,8 +245,6 @@ namespace Demi
 
             shaderInstance->mD3DShader = DiD3D9Driver::CreateVertexShader(data);
             DI_ASSERT(shaderInstance->mD3DShader);
-
-            shaderInstance->mConstants.LoadConstants();
         }
     };
 
@@ -343,8 +264,6 @@ namespace Demi
 
             shaderInstance->mD3DShader = DiD3D9Driver::CreatePixelShader(data);
             DI_ASSERT(shaderInstance->mD3DShader);
-
-            shaderInstance->mConstants.LoadConstants();
         }
     };
 }

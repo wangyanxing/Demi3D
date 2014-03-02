@@ -125,6 +125,7 @@ namespace Demi
             mShadowTextures[i]->SetDimensions(1024, 1024);
             mShadowTextures[i]->SetFormat(PF_R32F);
             mShadowTextures[i]->SetUsage(TU_RENDER_TARGET);
+            mShadowTextures[i]->SetAddressing(AM_CLAMP);
             mShadowTextures[i]->CreateTexture();
             auto rt = mShadowTextures[i]->GetRenderTarget();
             rt->SetFlippingUV(true);
@@ -183,6 +184,9 @@ namespace Demi
         mCurrentIteration = iteration;
 
         GetShadowCameraForCascade(cam, texCam, iteration, nearDist, farDist);
+
+        if (iteration == 0)
+            texCam->GetProjectionMatrixRs(Driver->GetShaderEnvironment()->lightViewProj);
     }
 
     void DiLight::ApplyGeneralShaderConfigs()
@@ -191,6 +195,8 @@ namespace Demi
         env->fixedDepthBias = DiVec4(0.0005f, 0.001f, 0.001f, 0.003f);
         env->gradientScaleBias = DiVec4(0.0005f, 0.001f, 0.001f, 0.003f);
         env->shadowMapParams = DiVec4(500, 6000, 1024, 1.0f / 1024.0f);
+        for (int i = 0; i < MAX_CASCADE_SPLITS; ++i)
+            env->csmSplitPoints[i] = DiVec4(mSplitPoints[i],0,0,0);
     }
 
     void DiLight::ApplyShaderConfigs(const DiCamera* texCam, int cascadeID)

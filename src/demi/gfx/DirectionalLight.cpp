@@ -540,9 +540,7 @@ namespace Demi
         float dist = (topLeftFar.squaredLength() - bottomRightNear.squaredLength()) / (2 * (topLeftFar.z - bottomRightNear.z));
 
         if (dist > farSplit)
-        {
             dist = farSplit;
-        }
 
         DiVec3 localPos(0, 0, -dist); // we have now found the point along frustum center which is equi-distant to the opposing corner positions
 
@@ -552,10 +550,8 @@ namespace Demi
         diameter *= (float)1.01; // allow some boundary pixels for filtering etc. TODO - make this a user constant
         pos += dir * 0.5 * (farClip - nearClip); // pull light back so we can see the scene
 
-
         //calculate window size
         texCam->SetOrthoWindowWidth(diameter);
-
 
         // Round local x/y position based on a world-space texel; this helps to reduce
         // jittering caused by the projection moving with the camera
@@ -580,5 +576,4 @@ namespace Demi
         DiMat4 proj = texCam->GetProjectionMatrix();
         DiMat4 a = viewmat;
     }
-
 }

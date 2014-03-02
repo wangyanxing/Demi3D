@@ -18,8 +18,6 @@
 	#endif
 #endif
 
-#define CASCADE_COUNT_FLAG 4
-
 struct VS_OUTPUT
 {
 	float4 Position 	: POSITION;
@@ -144,10 +142,26 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 #else
     half shadow = 1.0;
 #endif
-	
+    /*
+    half3 cascadeColor = half3(1, 1, 1);
+    if (In.Depth < g_csmSplitPoints[0].x){
+        cascadeColor = half3(1, 0, 0);
+    }
+    else if (In.Depth > g_csmSplitPoints[0].x && In.Depth < g_csmSplitPoints[1].x){
+        cascadeColor = half3(0, 1, 0);
+    }
+    else if (In.Depth > g_csmSplitPoints[1].x && In.Depth < g_csmSplitPoints[2].x){
+        cascadeColor = half3(0, 0, 1);
+    }
+    else if (In.Depth > g_csmSplitPoints[2].x && In.Depth < g_csmSplitPoints[3].x){
+        cascadeColor = half3(0, 1, 1);
+    }
+	*/
     Out.Color.rgb = lit * g_diffuseColor.rgb * shadow;
 	Out.Color.rgb += g_globalAmbient.rgb * g_ambientColor.rgb;	
 	Out.Color.a = gSurface.albedo.a * g_opacity;
+
+    //Out.Color.rgb *= cascadeColor;
 		
 	// environment mapping
 #if defined(USE_ENV_MAP)

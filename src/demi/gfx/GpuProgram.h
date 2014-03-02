@@ -134,6 +134,8 @@ namespace Demi
         DiVec4        texMatrixScaleBias[MAX_CASCADE_SPLITS-1];
         DiVec4        fixedDepthBias;
         DiVec4        gradientScaleBias;
+        DiVec4        csmSplitPoints[MAX_CASCADE_SPLITS];
+        DiMat4        lightViewProj;
 
         void          SetIdentity();
     };

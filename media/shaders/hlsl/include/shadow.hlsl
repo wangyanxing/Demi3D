@@ -45,10 +45,7 @@ half3 getCsmShadowFactor
 #else
 half getCsmShadowFactor
 #endif
-(
-float4 lightSpacePos0,
-half shadowLightDotLN
-)
+(float4 lightSpacePos0, half shadowLightDotLN)
 {
     half factor = 1;
 

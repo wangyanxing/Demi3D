@@ -325,6 +325,14 @@ namespace Demi
             DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->texMatrixScaleBias[0].x), (env->numShadowCascades - 1));
         };
 
+        msUniformFuncs["g_csmSplitPoints"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->csmSplitPoints[0].x), env->numShadowCascades);
+        };
+
+        msUniformFuncs["g_lightViewProj"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
+            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->lightViewProj);
+        };
+
         msUniformFuncs["g_shadowTexture0"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
             env->shadowTexture[0]->Bind(location);
         };

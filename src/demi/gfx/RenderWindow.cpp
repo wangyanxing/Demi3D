@@ -90,26 +90,26 @@ namespace Demi
         mSceneManager->GetMainVisibleObjects().UpdateAll(mainCam);
 
         // Shadow mapping pass
-//         rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
-//         auto& visLights = mSceneManager->GetVisibleLights();
-//         visLights.SetupShaodwCamera(mSceneManager);
-//         for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
-//         {
-//             DiLight* light = *i;
-//             if (light->GetShadowCastEnable())
-//             {
-//                 light->ApplyGeneralShaderConfigs();
-//                 for (int cascadeId = 0; cascadeId < MAX_CASCADE_SPLITS; ++cascadeId)
-//                 {
-//                     DiCamera* cam = light->mShadowCameras[cascadeId];
-//                     rp->ClearGroup();
-//                     mSceneManager->SetCurrentPass(SHADOW_PASS);
-//                     mSceneManager->Cull(cam);
-//                     mSceneManager->GetVisibleObjects().AddToBatch(rp);
-//                     rp->Render(mSceneManager, cam, light->mShadowTextures[cascadeId]->GetRenderTarget());
-//                 }
-//             }
-//         }
+        rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
+        auto& visLights = mSceneManager->GetVisibleLights();
+        visLights.SetupShaodwCamera(mSceneManager);
+        for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
+        {
+            DiLight* light = *i;
+            if (light->GetShadowCastEnable())
+            {
+                light->ApplyGeneralShaderConfigs();
+                for (int cascadeId = 0; cascadeId < MAX_CASCADE_SPLITS; ++cascadeId)
+                {
+                    DiCamera* cam = light->mShadowCameras[cascadeId];
+                    rp->ClearGroup();
+                    mSceneManager->SetCurrentPass(SHADOW_PASS);
+                    mSceneManager->Cull(cam);
+                    mSceneManager->GetVisibleObjects().AddToBatch(rp);
+                    rp->Render(mSceneManager, cam, light->mShadowTextures[cascadeId]->GetRenderTarget());
+                }
+            }
+         }
 
         // Normal geometry pass
         rp->ClearGroup();

@@ -70,10 +70,8 @@ VS_OUTPUT vs_main( VS_INPUT In )
 	Out.ViewDir  = Out.PosWorld - g_eyePosition;
 
 #if USE_SHADOW
-    Out.Depth = viewPos.z;
-    
-    float4 lightspacepos = mul(g_firstCascadeTexMat, float4(Out.PosWorld.xyz, 1.0));
-    Out.ShadowLightspacePos = lightspacepos;
+    Out.Depth = dot(Out.Position.zw, Out.Position.zw);
+    Out.ShadowLightspacePos = mul(g_firstCascadeTexMat, float4(Out.PosWorld.xyz, 1.0));
 #endif
 
 	return Out;

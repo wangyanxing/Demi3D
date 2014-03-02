@@ -26,7 +26,8 @@
 #else
 #   define USE_SHADOW 0
 #endif
-#   define USE_SHADOW 0
+
+#define USE_SHADOW 0
 
 uniform const float4x4      g_modelMatrix;
 uniform const float4x4      g_viewMatrix;
@@ -86,6 +87,9 @@ uniform const float4        g_shadowMapParams;  // x: shadow fade dist, y: shado
 uniform const float4x4      g_firstCascadeTexMat;
 //texture matrix scale bias for all rest cascades
 uniform const float4        g_texMatrixScaleBias[MAX_SHADOW_CASCADES-1];
+
+uniform const float4        g_csmSplitPoints[MAX_SHADOW_CASCADES];
+uniform const float4x4      g_lightViewProj;
 
 uniform const sampler2D     g_shadowTexture0;
 uniform const sampler2D     g_shadowTexture1;

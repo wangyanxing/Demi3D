@@ -151,7 +151,7 @@ void InitScene()
     dirlight->SetDirection(DiVec3(0.3f,-0.7f,0.4).normalisedCopy());
     dirlight->SetShadowCastEnable(true);
 
-#if 0
+#if 1
     DiSimpleShapePtr plane = make_shared<DiSimpleShape>();
     plane->SetShadowCastEnable(false);
     plane->CreatePlane(6000, 6000);
@@ -203,7 +203,7 @@ void InitScene()
     }
 #endif
 
-    SetupScene();
+    //SetupScene();
 
     DiCamera* camera = sm->GetCamera();
     camera->SetNearClipDistance(5);
@@ -216,7 +216,7 @@ void UpdateScene()
 
 int main(int argc, char *argv[])
 {
-    DemiDemo app(DemoConfig("Demi3D Sample - Shadow", 800, 600));
+    DemiDemo app(DemoConfig("Demi3D Sample - Shadow", 1600, 900));
     app.SetInitCallback(functor(InitScene));
     app.Open();
 
