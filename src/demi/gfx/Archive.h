@@ -22,6 +22,9 @@ namespace Demi
         const DiArchive* archive;
         DiString         filename;
         DiString         basename;
+        DiString         path;
+        uint32           compressedSize;
+        uint32           uncompressedSize;
     };
 
     typedef DiVector<DiFileInfo>       DiFileInfoList;

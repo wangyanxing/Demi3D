@@ -325,6 +325,5 @@ namespace Demi
         void           Close(void);
 
     };
-
 }
 #endif // DataStream_h__

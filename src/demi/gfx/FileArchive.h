@@ -19,6 +19,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
+    /** Ordinary file system
+     */
     class DiFileArchive : public DiArchive
     {
     public:
