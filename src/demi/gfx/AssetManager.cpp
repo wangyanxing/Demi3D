@@ -205,8 +205,8 @@ namespace Demi
             {
                 if (i->basename.CheckFileExtension("zip"))
                 {
-                    ArchivePtr ar = mArchiveManager->Load(i->filename, ARCHIVE_ZIP);
-                    zips.push_back(ar);
+                    ArchivePtr a = mArchiveManager->Load(i->filename, ARCHIVE_ZIP);
+                    zips.push_back(a);
                 }
                 else
                     mArchives[i->basename] = ar;

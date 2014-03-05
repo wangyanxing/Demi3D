@@ -200,10 +200,10 @@ namespace Demi
         DiMemoryDataStream(const DiString& name, void* pMem, size_t size, 
             bool freeOnClose = false, bool readOnly = false);
 
-        DiMemoryDataStream(DiDataStream& sourceStream, 
+        DiMemoryDataStream(DiDataStreamPtr sourceStream,
             bool freeOnClose = true, bool readOnly = false);
 
-        DiMemoryDataStream(const DiString& name, DiDataStream& sourceStream, 
+        DiMemoryDataStream(const DiString& name, DiDataStreamPtr sourceStream,
             bool freeOnClose = true, bool readOnly = false);
 
         DiMemoryDataStream(size_t size, bool freeOnClose = true, bool readOnly = false);

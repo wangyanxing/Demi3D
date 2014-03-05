@@ -58,7 +58,6 @@ namespace Demi
         
         return errorMsg;
     }
-
     
     DiZipArchive::DiZipArchive( const DiString& name)
         : DiArchive(name, ARCHIVE_FILE),

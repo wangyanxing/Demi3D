@@ -168,15 +168,15 @@ namespace Demi
         DI_ASSERT(mEnd >= mPos);
     }
 
-    DiMemoryDataStream::DiMemoryDataStream(DiDataStream& sourceStream, 
+    DiMemoryDataStream::DiMemoryDataStream(DiDataStreamPtr sourceStream,
                                        bool freeOnClose, bool readOnly)
                                        : DiDataStream(static_cast<uint16>(
                                        readOnly ? READ : (READ | WRITE)))
     {
-        mSize = sourceStream.Size();
-        if (mSize == 0 && !sourceStream.Eof())
+        mSize = sourceStream->Size();
+        if (mSize == 0 && !sourceStream->Eof())
         {
-            DiString contents = sourceStream.GetAsString();
+            DiString contents = sourceStream->GetAsString();
             mSize = contents.size();
             mData = (BYTE*)malloc(mSize);
             mPos = mData;
@@ -187,21 +187,21 @@ namespace Demi
         {
             mData = (BYTE*)malloc(mSize);
             mPos = mData;
-            mEnd = mData + sourceStream.Read(mData, mSize);
+            mEnd = mData + sourceStream->Read(mData, mSize);
             mFreeOnClose = freeOnClose;
         }
         DI_ASSERT(mEnd >= mPos);
     }
 
-    DiMemoryDataStream::DiMemoryDataStream(const DiString& name, DiDataStream& sourceStream, 
+    DiMemoryDataStream::DiMemoryDataStream(const DiString& name, DiDataStreamPtr sourceStream,
                                        bool freeOnClose, bool readOnly)
                                        : DiDataStream(name, static_cast<uint16>(
                                        readOnly ? READ : (READ | WRITE)))
     {
-        mSize = sourceStream.Size();
-        if (mSize == 0 && !sourceStream.Eof())
+        mSize = sourceStream->Size();
+        if (mSize == 0 && !sourceStream->Eof())
         {
-            DiString contents = sourceStream.GetAsString();
+            DiString contents = sourceStream->GetAsString();
             mSize = contents.size();
             mData = (BYTE*)malloc(mSize);
             mPos = mData;
@@ -212,7 +212,7 @@ namespace Demi
         {
             mData = (BYTE*)malloc(mSize);
             mPos = mData;
-            mEnd = mData + sourceStream.Read(mData, mSize);
+            mEnd = mData + sourceStream->Read(mData, mSize);
             mFreeOnClose = freeOnClose;
         }
         DI_ASSERT(mEnd >= mPos);

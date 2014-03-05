@@ -36,6 +36,7 @@ namespace Demi
     class    DiColor;
     class    DiCmdArgs;
     class    DiDataStream;
+    class    DiMemoryDataStream;
     class    DiTimer;
     class    DiAutoCrashHandler;
     class    DiDynamicAttributeFactory;
@@ -53,7 +54,8 @@ namespace Demi
     struct   DiXmlParserInterface;
     struct   DiXmlUtilsInterface;
     
-	typedef shared_ptr<DiDataStream>    DiDataStreamPtr;
+	typedef shared_ptr<DiDataStream>       DiDataStreamPtr;
+    typedef shared_ptr<DiMemoryDataStream> DiMemoryDataStreamPtr;
 }
 
 #endif
