@@ -192,18 +192,37 @@ namespace Demi
         DI_INFO("Set media path to: %s", mBasePath.c_str());
         DI_INFO("Searching for sub paths");
 
-        ArchivePtr baseDir = mArchiveManager->Load(mBasePath, ARCHIVE_FILE);
+        DiVector<ArchivePtr> zips;
+
+        ArchivePtr baseDir = mArchiveManager->Load(mBasePath);
         DiFileInfoListPtr fl = baseDir->ListFileInfo(true,true);
         for (auto it = fl->begin(); it != fl->end(); ++it)
         {
-            ArchivePtr ar = mArchiveManager->Load(mBasePath+it->filename,ARCHIVE_FILE);
+            ArchivePtr ar = mArchiveManager->Load(it->filename);
 
-            DiStringVecPtr vec = ar->Find("*",false);
+            auto vec = ar->FindFileInfo("*", false);
             for( auto i = vec->begin(); i != vec->end(); ++i )
             {
-                mArchives[*i] = ar;
+                if (i->basename.CheckFileExtension("zip"))
+                {
+                    ArchivePtr ar = mArchiveManager->Load(i->filename, ARCHIVE_ZIP);
+                    zips.push_back(ar);
+                }
+                else
+                    mArchives[i->basename] = ar;
             }
         }
+
+        // search files in zip packs
+        for (auto it = zips.begin(); it != zips.end(); ++it)
+        {
+            auto vec = (*it)->FindFileInfo("*", false);
+            for (auto i = vec->begin(); i != vec->end(); ++i)
+            {
+                mArchives[i->basename] = *it;
+            }
+        }
+
         AddSearchPath(mBasePath);
     }
 
@@ -260,7 +279,7 @@ namespace Demi
     {
         DiString name = fullName.ExtractFileName();
         DiString path = fullName.ExtractDirName();
-        ArchivePtr ar = mArchiveManager->Load(path,ARCHIVE_FILE);
+        ArchivePtr ar = mArchiveManager->Load(path);
         mArchives[name] = ar;
     }
 

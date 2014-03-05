@@ -67,7 +67,7 @@ namespace Demi
     
     
     /** Specialisation of DataStream to handle streaming data from zip archives. */
-    class DI_MISC_API DiZipDataStream : public DiDataStream
+    class DI_GFX_API DiZipDataStream : public DiDataStream
     {
     protected:
         ZZIP_FILE* mZzipFile;

@@ -31,7 +31,9 @@ half getShadowFactor(
     lightSpacePos.z -= depthAdjust; // lightSpacePos.z contains lightspace position of current object
 
     // Sample each of them checking whether the pixel under test is shadowed or not
-    float lightMask = (lightSpacePos.z < tex2D(shadowMapUnit, lightSpacePos.xy,0,0).r);
+    //float lightMask = (lightSpacePos.z < tex2D(shadowMapUnit, lightSpacePos.xy,0,0).r);
+    float s = 0.5;
+    float lightMask = (lightSpacePos.z < s);
 
     // Hack to prevent these getting optimized out, thereby preventing OGRE errors
     lightMask += 0.001 * (0.001*shadowmapSize + inverseShadowmapSize);

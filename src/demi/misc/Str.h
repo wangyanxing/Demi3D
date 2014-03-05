@@ -789,15 +789,6 @@ namespace Demi
 
     //------------------------------------------------------------------------------
     /**
-    */
-    inline bool
-    DiString::CheckFileExtension(const DiString& ext) const
-    {
-        return (this->GetFileExtension() == ext);
-    }
-
-    //------------------------------------------------------------------------------
-    /**
         Return a String object containing the part after the last
         path separator.
     */

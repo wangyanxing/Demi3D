@@ -309,8 +309,9 @@ namespace Demi
                 {
                     DiFileInfo fi;
                     fi.archive = this;
-                    fi.filename = directory;
-                    fi.filename += tagData.name;
+                    fi.path = concatenate_path(mName, directory);
+                    fi.path.SimplifyPath();
+                    fi.filename = concatenate_path(fi.path, tagData.name);
                     fi.basename = tagData.name;
                     detailList->push_back(fi);
                 }

@@ -26,7 +26,8 @@ namespace Demi
 
     enum DiArchiveType
     {
-        ARCHIVE_FILE
+        ARCHIVE_FILE,
+        ARCHIVE_ZIP
     };
 
     enum DiShaderType

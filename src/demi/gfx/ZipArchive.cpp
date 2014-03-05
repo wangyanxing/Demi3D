@@ -61,7 +61,9 @@ namespace Demi
 
     
     DiZipArchive::DiZipArchive( const DiString& name)
-        : DiArchive(name, ARCHIVE_FILE)
+        : DiArchive(name, ARCHIVE_FILE),
+        mZzipDir(nullptr),
+        mPluginIo(nullptr)
     {
     }
 
@@ -83,6 +85,8 @@ namespace Demi
     {
         if (!mZzipDir)
         {
+            DI_INFO("Loading zip archive: %s", mName.c_str());
+
             zzip_error_t zzipError;
             mZzipDir = zzip_dir_open_ext_io(mName.c_str(), &zzipError, 0, mPluginIo);
             CheckZzipError(zzipError, "Opening archive");
@@ -129,7 +133,7 @@ namespace Demi
         if (mZzipDir)
         {
             zzip_dir_close(mZzipDir);
-            mZzipDir = 0;
+            mZzipDir = nullptr;
             mFileList.clear();
         }
     }

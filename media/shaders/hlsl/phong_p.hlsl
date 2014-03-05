@@ -2,7 +2,7 @@
 #include <common.hlsl>
 
 // options
-//#define USE_SCHLICK_FRESNEL
+//define USE_SCHLICK_FRESNEL
 
 #ifdef USE_MAP
 	uniform sampler2D map;

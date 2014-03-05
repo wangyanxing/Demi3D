@@ -1330,4 +1330,10 @@ namespace Demi
         ret.ToUpper();
         return ret;
     }
-} 
+
+    bool DiString::CheckFileExtension(const DiString& ext) const
+    {
+        DiString l = GetFileExtension();
+        return stricmp(l.c_str(), ext.c_str()) == 0;
+    }
+}

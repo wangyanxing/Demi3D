@@ -115,7 +115,7 @@ namespace Demi
         rp->ClearGroup();
         mSceneManager->GetMainVisibleObjects().AddToBatch(rp);
         rp->SetCurrentPass(DiRenderPipeline::P_LIGHTING_PASS);
-        rp->Render(mSceneManager, mainCam, mSceneCanvas);
+        rp->Render(mSceneManager, mainCam, mRenderBuffer);
 
         // Process the extra render targets
         rp->SetCurrentPass(DiRenderPipeline::P_CUSTOM_RTT_PASS);
@@ -136,7 +136,7 @@ namespace Demi
         }
         
         // Post filters
-        rp->RenderPost(mSceneManager, mainCam);
+        //rp->RenderPost(mSceneManager, mainCam);
 
         mFrameNumber++;
         ActiveRenderWindow = nullptr;

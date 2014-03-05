@@ -114,6 +114,7 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 {			
 	PS_OUTPUT Out;
 	
+#if 0
 	ComputeSurfaceDataFromGeometry(In);
 	
     float3 lit = float3(0,0,0);
@@ -125,12 +126,16 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 		AccumulatePointLight(g_pointLightsPosition[i], 
 			g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
 	}
+#endif
 
 #if 0
     [flatten] if (g_hasSkyLight){
         AccumulateSkyLight(g_skyLightDir, g_skyLightColor, g_groundColor, lit);
     }
 #endif
+    
+    float NdotL = max(dot(normalize(In.Normal), normalize(-g_dirLightsDir[0])), 0.0);
+    float3 lit = NdotL.xxx;
 
     // shadow mapping
 #if USE_SHADOW

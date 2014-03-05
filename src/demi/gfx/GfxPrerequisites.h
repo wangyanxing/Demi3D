@@ -21,6 +21,7 @@ namespace Demi
 {
     class    DiArchive;
     class    DiFileArchive;
+    class    DiZipArchive;
     class    DiArchiveManager;
     class    DiSystem;
     class    DiTerrainDesc;
@@ -146,7 +147,7 @@ namespace Demi
     typedef shared_ptr<DiAnimModel>         DiAnimModelPtr;
     typedef shared_ptr<StringVec>           DiStringVecPtr;
 	typedef shared_ptr<DiArchive>           ArchivePtr;
-	typedef shared_ptr<DiAsset>             DiAssetPtr;
+    typedef shared_ptr<DiAsset>             DiAssetPtr;
 	typedef shared_ptr<DiDebugHelper>       DiDebugHelperPtr;
     typedef shared_ptr<DiDirLight>          DiDirLightPtr;
     typedef shared_ptr<DiInstanceBatch>     DiInstanceBatchPtr;

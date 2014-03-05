@@ -14,7 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArchiveManager.h"
 #include "Archive.h"
 #include "FileArchive.h"
-
+#include "ZipArchive.h"
 
 _IMPLEMENT_SINGLETON(Demi::DiArchiveManager);
 
@@ -26,7 +26,7 @@ namespace Demi
 
     DiArchiveManager::~DiArchiveManager()
     {
-        for( ArchiveMap::iterator it = mArchives.begin(); it != mArchives.end(); ++it )
+        for( auto it = mArchives.begin(); it != mArchives.end(); ++it )
         {
             ArchivePtr arch = it->second;
             arch->Unload();
@@ -34,9 +34,9 @@ namespace Demi
         mArchives.clear();
     }
 
-    ArchivePtr DiArchiveManager::Load( const DiString& filename, DiArchiveType archiveType )
+    ArchivePtr DiArchiveManager::Load(const DiString& filename, DiArchiveType archiveType)
     {
-        ArchiveMap::iterator i = mArchives.find(filename);
+        auto i = mArchives.find(filename);
         ArchivePtr pArch;
 
         if (i == mArchives.end())
@@ -59,8 +59,7 @@ namespace Demi
 
     void DiArchiveManager::Unload( const DiString& filename )
     {
-        ArchiveMap::iterator i = mArchives.find(filename);
-
+        auto i = mArchives.find(filename);
         if (i != mArchives.end())
         {
             i->second->Unload();
@@ -79,6 +78,8 @@ namespace Demi
         {
         case ARCHIVE_FILE:
             return ArchivePtr(DI_NEW DiFileArchive(filename));
+        case ARCHIVE_ZIP:
+            return ArchivePtr(DI_NEW DiZipArchive(filename));
         default:
             DI_ERROR("No valid file system!");
             return ArchivePtr();

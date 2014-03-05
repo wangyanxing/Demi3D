@@ -39,7 +39,7 @@ namespace Demi
 
     public:
 
-        ArchivePtr            Load( const DiString& filename, DiArchiveType archiveType);
+        ArchivePtr            Load(const DiString& filename, DiArchiveType archiveType = ARCHIVE_FILE);
 
         void                  Unload(DiArchive* arch);
         
