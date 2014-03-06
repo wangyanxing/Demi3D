@@ -140,7 +140,7 @@ namespace Demi
         {        
             uint32 cliffVertNum = mDesc->GetCliffVertNum();        
             mDesc->mCliffData = DI_NEW char[cliffVertNum];
-            memset(mDesc->mCliffData, CLIFF_A, cliffVertNum*sizeof(char));
+            memset(mDesc->mCliffData, 0/*CLIFF_A*/, cliffVertNum*sizeof(char));
         }        
 
         for (uint16 x = 0; x < mDesc->mSizeX; ++x)

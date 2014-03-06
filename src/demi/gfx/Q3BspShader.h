@@ -55,9 +55,8 @@ namespace Demi
     };
     
     /** Quake3 material
-        Yes they call it shader
+        Yes they called it shader
      */
-    
 	class DiQ3Material
     {
     public:
@@ -68,7 +67,7 @@ namespace Demi
         
     public:
         
-        DiMaterialPtr CreateAsMaterial(int lightmapNumber);
+        DiMaterialPtr CreateAsMaterial(int lightmapNumber, DiTexturePtr lightmap);
         
     public:
         
@@ -92,6 +91,13 @@ namespace Demi
         DiColor    fogColour;
         float      fogDistance;
 
+    protected:
+
+        /** Get alternative JPG to TGA and vice versa
+         */
+        DiString    GetAlternateTextureName(const DiString& texName);
+        
+        DiString    mName;
     };
 }
 

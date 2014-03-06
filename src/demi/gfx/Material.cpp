@@ -42,7 +42,6 @@ namespace Demi
         mEnableVertColor = false;
         mInstanceState   = INSTANCE_DISABLE;
         mShaderFlag      = 0;
-        mCommonVsType    = CVT_MAX_MATS;
         mVertexShader    = NULL;
         mPixelShader     = NULL;
         mShininess       = 32.0f;

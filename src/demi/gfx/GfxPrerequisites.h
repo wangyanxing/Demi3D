@@ -140,6 +140,9 @@ namespace Demi
     class    DiPostController;
     class    DiConsoleLogger;
     class    DiSimpleShape;
+
+    class    DiBspNode;
+    class    DiBspScene;
     
     typedef shared_ptr<DiOctree>            DiOctreePtr;
     typedef shared_ptr<DiOctreeCullUnit>    DiOctreeCullUnitPtr;

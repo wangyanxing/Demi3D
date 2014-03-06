@@ -460,7 +460,7 @@ namespace Demi
         if (!cliffs)
         {
             cliffs = DI_NEW char[cliffVertNum];
-            memset(cliffs, CLIFF_A, sizeof(char) * cliffVertNum);
+            memset(cliffs, 0/*CLIFF_A*/, sizeof(char) * cliffVertNum);
             mStream->Write(cliffs, sizeof(char) * cliffVertNum);
             SAFE_ARRAY_DELETE(cliffs);
         }

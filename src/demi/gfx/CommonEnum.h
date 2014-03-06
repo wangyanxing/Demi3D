@@ -227,20 +227,23 @@ namespace Demi
 
         AC_AXIS_TERRAIN,
     };
-    
-    #define CLIFF_A 0
-    #define CLIFF_B 2
-    #define CLIFF_C 4
-    #define CLIFF_H 1
 
-    enum DiCommonVsType
+    /** Enumerates the wave types for animation */
+    enum DiWaveformType
     {
-        CVT_STATIC_MESH       = 0,
-        CVT_SKEL_1_WEIGHT     = 1,
-        CVT_SKEL_2_WEIGHTS    = 2,
-        CVT_SKEL_4_WEIGHTS    = 3,
-
-        CVT_MAX_MATS
+        /// Standard sine wave which smoothly changes from low to high and back again.
+        WFT_SINE,
+        /// An angular wave with a constant increase / decrease speed with pointed peaks.
+        WFT_TRIANGLE,
+        /// Half of the time is spent at the min, half at the max with instant transition between.
+        WFT_SQUARE,
+        /// Gradual steady increase from min to max over the period with an instant return to min at the end.
+        WFT_SAWTOOTH,
+        /// Gradual steady decrease from max to min over the period, with an instant return to max at the end.
+        WFT_INVERSE_SAWTOOTH,
+        /// Pulse Width Modulation. Works like WFT_SQUARE, except the high to low transition is controlled by duty cycle. 
+        /// With a duty cycle of 50% (0.5) will give the same output as WFT_SQUARE.
+        WFT_PWM
     };
 }
 

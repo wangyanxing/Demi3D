@@ -116,8 +116,6 @@ namespace Demi
 
         DiMaterialPtr               Clone(const DiString& newname);
 
-        DiCommonVsType              GetCommonVsType() const { return mCommonVsType; }
-
         static DiMaterialPtr        QuickCreate(const DiString& vs, const DiString& ps, uint64 flag = 0);
                                     
         static DiMaterialPtr        QuickCreate(const DiString& name, const DiString& vs, const DiString& ps, uint64 flag = 0);
@@ -185,8 +183,6 @@ namespace Demi
         DiColor                     mDiffuse;
         
         DiColor                     mSpecular;
-
-        DiCommonVsType              mCommonVsType;
 
         uint64                      mShaderFlag;
     };

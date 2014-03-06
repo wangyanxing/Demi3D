@@ -44,6 +44,20 @@ namespace Demi
         mNumLevels     = 1;
         mUvSet         = 0;
 
+        mUScroll       = 0;
+        mVScroll       = 0;
+        mRotateSpeed   = 0;
+        mRotateDegree  = 0;
+        mUScale        = 0;
+        mVScale        = 0;
+        mUTrans        = 0;
+        mVTrans        = 0;
+        mRotation      = 0;
+        mUScale        = 1;
+        mVScale        = 1;
+
+        mNeedRecalcTexMat = false;
+
         mViewportScale = DiVec2::UNIT_SCALE;
 
         mAdaptedRT     = nullptr;
@@ -232,6 +246,143 @@ namespace Demi
     void* DiTexture::LockLevel(uint32 level, uint32 surface)
     {
         return mTextureDrv->LockLevel(level,surface);
+    }
+
+    void DiTexture::SetUScale(float val)
+    {
+        mUScale = val;
+        mNeedRecalcTexMat = true;
+    }
+
+    void DiTexture::SetVScale(float val)
+    {
+        mVScale = val;
+        mNeedRecalcTexMat = true;
+    }
+
+    void DiTexture::SetRotateDegree(float val)
+    {
+        mRotateDegree = val;
+        mNeedRecalcTexMat = true;
+    }
+
+    void DiTexture::_UpdateUVAnimation(float delta)
+    {
+        if (!DiMath::RealEqual(mUScroll, 0))
+        {
+            mUTrans -= delta * mUScroll;
+            while (mUTrans >= 1.0)
+                mUTrans -= 1.0;
+            while (mUTrans < 0.0)
+                mUTrans += 1.0;
+            mNeedRecalcTexMat = true;
+        }
+        else
+        {
+            if (!DiMath::RealEqual(mUTrans, 0))
+            {
+                mUTrans = 0;
+                mNeedRecalcTexMat = true;
+            }
+        }
+        
+        if (!DiMath::RealEqual(mVScroll, 0))
+        {
+            mVTrans -= delta * mVScroll;
+            while (mVTrans >= 1.0)
+                mVTrans -= 1.0;
+            while (mVTrans < 0.0)
+                mVTrans += 1.0;
+            mNeedRecalcTexMat = true;
+        }
+        else
+        {
+            if (!DiMath::RealEqual(mVTrans, 0))
+            {
+                mVTrans = 0;
+                mNeedRecalcTexMat = true;
+            }
+        }
+        
+        if (!DiMath::RealEqual(mRotateSpeed, 0))
+        {
+            mRotation -= delta * mRotateSpeed * 360;
+            while (mRotation >= 360)
+                mRotation -= 360;
+            while (mRotation < 360)
+                mRotation += 360;
+            mNeedRecalcTexMat = true;
+        }
+        else
+        {
+            if (!DiMath::RealEqual(mRotation, 0))
+            {
+                mRotation = 0;
+                mNeedRecalcTexMat = true;
+            }
+        }
+    }
+
+    void DiTexture::_RecalcTextureMatrix()
+    {
+        DiMat4 xform;
+
+        xform = DiMat4::IDENTITY;
+        if (mUScale != 1 || mVScale != 1)
+        {
+            xform[0][0] = 1 / mUScale;
+            xform[1][1] = 1 / mVScale;
+
+            xform[0][3] = (-0.5f * xform[0][0]) + 0.5f;
+            xform[1][3] = (-0.5f * xform[1][1]) + 0.5f;
+        }
+
+        if (mUTrans != 0 || mVTrans != 0)
+        {
+            DiMat4 xlate = DiMat4::IDENTITY;
+
+            xlate[0][3] = mUTrans;
+            xlate[1][3] = mVTrans;
+
+            xform = xlate * xform;
+        }
+
+        float rotate = mRotateDegree + mRotation;
+        if (!DiMath::RealEqual(rotate, 0))
+        {
+            DiMat4 rot = DiMat4::IDENTITY;
+            DiDegree theta(rotate);
+            float rad = theta.valueRadians();
+
+            float cosTheta = DiMath::Cos(rad);
+            float sinTheta = DiMath::Sin(rad);
+
+            rot[0][0] = cosTheta;
+            rot[0][1] = -sinTheta;
+            rot[1][0] = sinTheta;
+            rot[1][1] = cosTheta;
+
+            rot[0][3] = 0.5f + ((-0.5f * cosTheta) - (-0.5f * sinTheta));
+            rot[1][3] = 0.5f + ((-0.5f * sinTheta) + (-0.5f * cosTheta));
+
+            xform = rot * xform;
+        }
+
+        mTextureMatrix = xform;
+        mNeedRecalcTexMat = false;
+    }
+
+    void DiTexture::SetRotateSpeed(float speed)
+    {
+        mRotateSpeed = speed;
+    }
+
+    void DiTexture::_Update(float delta)
+    {
+        _UpdateUVAnimation(delta);
+
+        if (mNeedRecalcTexMat)
+            _RecalcTextureMatrix();
     }
 
     void DiTextureDrv::CopyFromMemory(const DiPixelBox& srcBox, uint32 level, uint32 surface /*= 0*/)

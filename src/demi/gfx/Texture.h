@@ -68,6 +68,17 @@ namespace Demi
 
     public:
 
+        enum TextureAnimType
+        {
+            TT_TRANSLATE_U,
+            TT_TRANSLATE_V,
+            TT_SCALE_U,
+            TT_SCALE_V,
+            TT_ROTATE
+        };
+
+    public:
+
         void                    CreateTexture();
 
         void                    Release();
@@ -166,11 +177,41 @@ namespace Demi
 
         DiTextureDrv*           GetTextureDriver(void) { return mTextureDrv; }
 
+        /** UV scale
+         */
+        float                   GetUScale() const { return mUScale; }
+
+        void                    SetUScale(float val);
+
+        float                   GetVScale() const { return mVScale; }
+
+        void                    SetVScale(float val);
+
+        /** UV Animation
+         */
+        float                   GetRotateDegree() const { return mRotateDegree; }
+
+        void                    SetRotateDegree(float val);
+
+        void                    SetRotateSpeed(float speed);
+
+        float                   GetRotateSpeed() const { return mRotateSpeed; }
+
+        void                    SetScrollAnimation(float uScroll, float vScroll) { mUScroll = uScroll; mVScroll = vScroll; }
+        
+        /** Update the uv animation
+         */
+        void                    _Update(float delta);
+
     public:
 
         static DiAssetType      TYPE;
 
     protected:
+
+        void                    _UpdateUVAnimation(float delta);
+
+        void                    _RecalcTextureMatrix();
 
         DiFilterType            mFilter;
                                 
@@ -205,6 +246,29 @@ namespace Demi
         DiTextureDrv*           mTextureDrv;
         
         bool                    mAutoGenerateMipmap;
+
+        float                   mUScroll;
+        
+        float                   mVScroll;
+
+        float                   mRotateSpeed;
+
+        float                   mRotateDegree;
+
+        float                   mUScale;
+
+        float                   mVScale;
+
+        DiMat4                  mTextureMatrix;
+
+        bool                    mNeedRecalcTexMat;
+
+        // current transformation data
+        float                   mUTrans;
+        
+        float                   mVTrans;
+
+        float                   mRotation;
     };
 }
 #endif // Texture_h__
