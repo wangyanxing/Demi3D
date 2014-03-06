@@ -32,8 +32,7 @@ namespace Demi
         
         void    LoadLevel(DiDataStreamPtr& inStream);
         
-        void    ExtractLightmaps(void) const;
-        
+        void    ExtractLightmaps(void);
         
         /** Utility function read the header and set up pointers. */
         void    Initialise(bool headerOnly = false);
@@ -101,6 +100,8 @@ namespace Demi
         
         int* mLeafBrushes;      // Groups of indexes to brushes by leaf
         int mNumLeafBrushes;
+        
+        DiVector<DiTexturePtr> mLightMaps;
     };
 }
 

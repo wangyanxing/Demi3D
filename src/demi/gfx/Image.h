@@ -32,6 +32,8 @@ namespace Demi
 
         bool            LoadToTexture(DiTexture* texture);
         
+        bool            LoadRawDataToTexture(DiTexture* texture, DiPixelFormat fmt, uint32 width, uint32 height);
+        
         static bool     SaveTextureAsPng(DiTexturePtr texture, const DiString& file);
 
         int             GetHeight() const { return mHeight; }
@@ -44,6 +46,8 @@ namespace Demi
 
         void            ParseOthers(DiTexture* texture);
 
+        /** Load the image buffer using STB
+         */
         uint8*          _LoadImage(int& width, int& height, int& components);
 
         void            _FreeImage(uint8* data);

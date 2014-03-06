@@ -16,4 +16,16 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    DiQ3Material::DiQ3Material(const DiString& name)
+    {
+    }
+    
+    DiQ3Material::~DiQ3Material()
+    {
+    }
+    
+    DiMaterialPtr DiQ3Material::CreateAsMaterial(int lightmapNumber)
+    {
+        return nullptr;
+    }
 }

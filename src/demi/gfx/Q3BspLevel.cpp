@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DataStream.h"
 #include "AssetManager.h"
 #include "Texture.h"
+#include "Image.h"
 
 namespace Demi
 {
@@ -69,8 +70,10 @@ namespace Demi
         DumpContents();
     }
     
-    void DiQ3BspLevel::ExtractLightmaps(void) const
+    void DiQ3BspLevel::ExtractLightmaps(void)
     {
+        mLightMaps.clear();
+        
         // Lightmaps are always 128x128x24 (RGB)
         unsigned char* pLightmap = mLightmaps;
         for (int i = 0; i < mNumLightmaps; ++i)
@@ -83,7 +86,10 @@ namespace Demi
             auto lightTexture = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(lmName);
             //lightTexture->Load(stream);
             
-            // 128 X 128, RGB
+            DiImage img(stream);
+            img.LoadRawDataToTexture(lightTexture.get(), PF_R8G8B8, 128, 128);
+            
+            mLightMaps.push_back(lightTexture);
             
             pLightmap += BSP_LIGHTMAP_BANKSIZE;
         }
@@ -95,17 +101,15 @@ namespace Demi
         
         // Header counts
         InitialiseCounts();
+        
         // Data pointers
         if (headerOnly)
-        {
             mLumpStart = 0;
-        }
         else
         {
             mLumpStart = ((unsigned char*)mHeader) + sizeof(mHeader);
 			InitialisePointers();
         }
-        
         
 #if DEMI_ENDIAN == DEMI_BIG_ENDIAN
 		// swap header
@@ -185,9 +189,7 @@ namespace Demi
             return (unsigned char*)mHeader + mHeader->lumps[lumpType].offset;
         }
         else
-        {
             return 0;
-        }
     }
     
     int DiQ3BspLevel::GetLumpSize(int lumpType)

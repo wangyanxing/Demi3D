@@ -66,6 +66,8 @@ namespace Demi
         
         uint32 width = texture->GetWidth();
         uint32 height = texture->GetHeight();
+        
+        // TODO
         uint32 components = 4;//DiPixelBox::GetNumComponents(fmt);
         uint32 size = DiPixelBox::ComputeImageByteSize(width, height, fmt);
         
@@ -85,6 +87,32 @@ namespace Demi
         bool ret = stbi_write_png(file.c_str(), width, height, components, data, 0) != 0;
         DI_DELETE[] data;
         return ret;
+    }
+    
+    bool DiImage::LoadRawDataToTexture(DiTexture* texture, DiPixelFormat fmt, uint32 width, uint32 height)
+    {
+        if(!mImageData)
+            return false;
+        
+        size_t size = mImageData->Size();
+        if(size == 0)
+            return false;
+        
+        shared_ptr<uint8> buffer(DI_NEW uint8[size], [](uint8 *p) { DI_DELETE[] p; });
+        mImageData->Read(buffer.get(), size);
+        
+        texture->Release();
+        texture->SetDimensions(width, height);
+        texture->SetFormat(fmt);
+        texture->SetNumLevels(1);
+        texture->SetResourceUsage(RU_WRITE_ONLY);
+        texture->CreateTexture();
+        DiTextureDrv* texDrv = texture->GetTextureDriver();
+        
+        DiPixelBox pixbox(width, height, fmt, buffer.get());
+        texDrv->CopyFromMemory(pixbox, 0, 0);
+        
+        return true;
     }
 
     bool DiImage::LoadToTexture( DiTexture* texture )
