@@ -20,6 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+#if DEMI_ENDIAN == DEMI_BIG_ENDIAN
     // byte swapping functions
     static void SwapFourBytes(uint32* dw)
     {
@@ -39,6 +40,7 @@ namespace Demi
             SwapFourBytes (&ptr[i]);
         }
     }
+#endif
     
     DiQ3BspLevel::DiQ3BspLevel()
     {

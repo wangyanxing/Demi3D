@@ -343,8 +343,7 @@ namespace Demi
 
     void DiSystemCmd::BindAllSystemCmd(DiCommandManager* cm)
     {
-        cm->AddCommand("quit", functor_ret(&DiSystemCmd::Quit), "close application");
-
+        cm->AddCommand("quit", DiSystemCmd::Quit, "close application");
         DI_INFO("All built-in commands binded");
     }
 

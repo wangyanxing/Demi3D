@@ -30,7 +30,7 @@ namespace Demi
 
     public:
 
-        bool            IsLeaf(void) const;
+        bool            IsLeaf(void) const { return mIsLeaf; }
 
         DiBspNode*      GetFront(void) const;
 
@@ -51,7 +51,13 @@ namespace Demi
         bool            IsLeafVisible(const DiBspNode* leaf) const;
 
         float           GetDistance(const DiVec3& pos) const;
+        
+        void            AddTransUnit(const DiTransUnitPtr tu);
+        
+        void            RemoveTransUnit(const DiTransUnitPtr tu);
 
+        typedef DiSet<DiTransUnitPtr> IntersectingObjectSet;
+        
         struct Brush
         {
             DiList<DiPlane> planes;
@@ -59,7 +65,33 @@ namespace Demi
         };
         typedef DiVector<Brush*> NodeBrushList;
 
-        const NodeBrushList&    GetSolidBrushes(void) const;
+        const NodeBrushList&            GetSolidBrushes(void) const;
+        
+        const IntersectingObjectSet&    GetObjects(void) const { return mMovables; }
+        
+    private:
+        
+        DiBspScene*     mParent;
+        
+        bool            mIsLeaf;
+        
+        DiPlane         mSplitPlane;
+        
+        DiBspNode*      mFront;
+
+        DiBspNode*      mBack;
+        
+        int             mVisCluster;
+        
+        DiAABB          mBounds;
+        
+        int             mNumFaceGroups;
+        
+        int             mFaceGroupStart;
+        
+        IntersectingObjectSet mMovables;
+        
+        NodeBrushList   mSolidBrushes;
     };
 }
 

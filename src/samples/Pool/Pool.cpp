@@ -104,7 +104,7 @@ void InitScene()
 int main(int argc, char *argv[])
 {
     DemiDemo app(DemoConfig("Demi3D Sample - Pool"));
-    app.SetInitCallback(functor(InitScene));
+    app.SetInitCallback(InitScene);
     app.Open();
 
     return 0;

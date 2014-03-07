@@ -18,10 +18,11 @@ Creator:    InputManager.h
 #ifndef DiInputManager_h__
 #define DiInputManager_h__
 
-
 //#include "MyGUI_KeyCode.h"
 //#include "MyGUI_MouseButton.h"
 //#include "MyGUI_Types.h"
+
+#include <functional>
 #include "OIS.h"
 
 namespace Demi
@@ -32,11 +33,11 @@ namespace Demi
         DiInputManager();
         virtual ~DiInputManager();
 
-        typedef Functor1<const OIS::MouseEvent&> MouseMoveCallback;
-        typedef Functor2<const OIS::MouseEvent&, OIS::MouseButtonID> MousePressCallback;
-        typedef Functor2<const OIS::MouseEvent&, OIS::MouseButtonID> MouseReleaseCallback;
-        typedef Functor1<const OIS::KeyEvent&> KeyPressCallback;
-        typedef Functor1<const OIS::KeyEvent&> KeyReleaseCallback;
+        typedef std::function<void(const OIS::MouseEvent&)> MouseMoveCallback;
+        typedef std::function<void(const OIS::MouseEvent&, OIS::MouseButtonID)> MousePressCallback;
+        typedef std::function<void(const OIS::MouseEvent&, OIS::MouseButtonID)> MouseReleaseCallback;
+        typedef std::function<void(const OIS::KeyEvent&)> KeyPressCallback;
+        typedef std::function<void(const OIS::KeyEvent&)> KeyReleaseCallback;
 
         void createInput(size_t _handle);
         void destroyInput();

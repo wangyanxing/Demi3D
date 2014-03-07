@@ -25,11 +25,37 @@ _IMPLEMENT_SINGLETON(Demi::DiAssetManager);
 
 namespace Demi 
 {
-    uint32 DiAssetManager::RESOURCE_SYSTEM_NUM_REFERENCE_COUNTS = 1;
-
     DiAssetManager::DiAssetManager(void)
     {
         mArchiveManager = DI_NEW DiArchiveManager;
+        
+        //register built-in types
+        
+        RegisterAssetType(ASSET_MATERIAL,"mtl",[](const DiString& name){
+            return make_shared<DiMaterial>(name);
+        });
+        
+        RegisterAssetType(ASSET_MODEL,"model",[](const DiString& name){
+            return make_shared<DiMesh>(name);
+        });
+        
+        RegisterAssetType(ASSET_MOTION,"motion",[](const DiString& name){
+            return make_shared<DiMotion>(name);
+        });
+        
+        RegisterAssetType(ASSET_SCENE,"scene",[](const DiString& name){
+            return make_shared<DiScene>(name);
+        });
+        
+        DiVector<DiString> imageExts;
+        imageExts.push_back("jpg");
+        imageExts.push_back("tga");
+        imageExts.push_back("dds");
+        imageExts.push_back("png");
+        
+        RegisterAssetType(ASSET_TEXTURE,imageExts,[](const DiString& name){
+            return make_shared<DiTexture>(name);
+        });
     }
 
     DiAssetManager::~DiAssetManager(void)
@@ -88,19 +114,14 @@ namespace Demi
         {
             DiDataStreamPtr buf = OpenArchive(path,ignoreError);
 
-            if(buf)
+            auto it = mExtensionLoaders.find(extension);
+            if(buf && it != mExtensionLoaders.end())
             {
-                if(extension == "mtl")      
-                    asset = LoadXMLAsset(buf, path);
-                else if (extension == "model")
-                    asset = LoadMeshAsset(buf,path);
-                else if (extension == "motion")
-                    asset = LoadMotionAsset(buf,path);
-                else if (extension == "scene")
-                    asset = LoadSceneAsset(buf,path);
-                else
-                    asset = LoadTextureAsset(buf, path);
+                asset = it->second(path);
+                asset->Load(buf);
             }
+            else
+                DI_WARNING("Cannot load the asset :%s", path.c_str());
         }
 
         if(asset && !asset->LoadingComplete())
@@ -136,35 +157,14 @@ namespace Demi
 
         if(!asset)
         {
-            if (type == ASSET_MATERIAL)
+            auto it = mAssetLoaders.find((uint32)type);
+            if (it != mAssetLoaders.end())
             {
-                asset = DiMaterialPtr(DI_NEW DiMaterial(name));
+                asset = it->second(name);
                 asset->Load();
             }
-            else if (type == ASSET_TEXTURE)
-            {
-                asset = DiTexturePtr(DI_NEW DiTexture(name));
-                asset->Load();
-            }
-            else if (type == ASSET_MODEL)
-            {
-                asset = DiMeshPtr(DI_NEW DiMesh(name));
-                asset->Load();
-            }
-            else if (type == ASSET_MOTION)
-            {
-                asset = DiMotionPtr(DI_NEW DiMotion(name));
-                asset->Load();
-            }
-            else if (type == ASSET_SCENE)
-            {
-                asset = DiScenePtr(DI_NEW DiScene(name));
-                asset->Load();
-            }
-            else 
-            {
-                DI_WARNING("Cannot recognize the asset type : %d", (int)type);
-            }
+            else
+                DI_WARNING("Cannot create asset, invalid type: %d", type);
         }
 
         if(asset && asset->GetAssetType() != type)
@@ -299,5 +299,18 @@ namespace Demi
     bool DiAssetManager::HasArchive( const DiString& filename )
     {
         return mArchives.find(filename) != mArchives.end();
+    }
+    
+    void DiAssetManager::RegisterAssetType(uint32 assetType, const DiString& extension, const AssetLoaderFunc& loader)
+    {
+        mAssetLoaders[assetType] = loader;
+        mExtensionLoaders[extension] = loader;
+    }
+    
+    void DiAssetManager::RegisterAssetType(uint32 assetType, const DiVector<DiString>& extensions, const AssetLoaderFunc& loader)
+    {
+        mAssetLoaders[assetType] = loader;
+        for (auto i = extensions.begin(); i != extensions.end(); ++i)
+            mExtensionLoaders[*i] = loader;
     }
 }

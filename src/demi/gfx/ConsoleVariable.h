@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef ConsoleVariable_h__
 #define ConsoleVariable_h__
 
-#include "Callback.h"
 #include <functional>
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC

@@ -85,8 +85,8 @@ void UpdateScene()
 int main(int argc, char *argv[])
 {
     DemiDemo app( DemoConfig("Demi3D Sample - Lava", 1500, 800));
-	app.SetInitCallback(functor(InitScene));
-	app.SetUpdateCallback(functor(UpdateScene));
+	app.SetInitCallback(InitScene);
+	app.SetUpdateCallback(UpdateScene);
 	app.Open();
 
 	return 0;

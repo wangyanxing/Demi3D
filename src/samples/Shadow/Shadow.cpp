@@ -217,7 +217,7 @@ void UpdateScene()
 int main(int argc, char *argv[])
 {
     DemiDemo app(DemoConfig("Demi3D Sample - Shadow", 800, 600));
-    app.SetInitCallback(functor(InitScene));
+    app.SetInitCallback(InitScene);
     app.Open();
 
     return 0;

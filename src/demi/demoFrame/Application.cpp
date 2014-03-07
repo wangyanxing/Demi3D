@@ -33,6 +33,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   include "ApplicationOSX.h"
 #endif
 
+#include <functional>
+
 namespace Demi
 {
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
@@ -207,12 +209,14 @@ namespace Demi
 
         mInputMgr = new DiInputManager();
         mInputMgr->createInput((size_t)(mMainHwnd));
+        
+        using namespace std::placeholders;
 
-        mInputMgr->registerKeyPressEvent("App::KeyDown", Demi::functor(*this, &DemiDemo::keyPressed));
-        mInputMgr->registerKeyReleaseEvent("App::KeyUp", Demi::functor(*this, &DemiDemo::keyReleased));
-        mInputMgr->registerMouseMoveEvent("App::MsMove", Demi::functor(*this, &DemiDemo::mouseMoved));
-        mInputMgr->registerMousePressEvent("App::MsDown", Demi::functor(*this, &DemiDemo::mousePressed));
-        mInputMgr->registerMouseReleaseEvent("App::MsUp", Demi::functor(*this, &DemiDemo::mouseReleased));
+        mInputMgr->registerKeyPressEvent("App::KeyDown", std::bind(&DemiDemo::keyPressed, this, _1));
+        mInputMgr->registerKeyReleaseEvent("App::KeyUp", std::bind(&DemiDemo::keyReleased, this, _1));
+        mInputMgr->registerMouseMoveEvent("App::MsMove", std::bind(&DemiDemo::mouseMoved, this, _1));
+        mInputMgr->registerMousePressEvent("App::MsDown", std::bind(&DemiDemo::mousePressed, this, _1, _2));
+        mInputMgr->registerMouseReleaseEvent("App::MsUp", std::bind(&DemiDemo::mouseReleased, this, _1, _2));
 
         //mGUIWrapper = new MyGUI::DemiWrapper();
         //mGUIWrapper->init("MyGUI_Core.xml");

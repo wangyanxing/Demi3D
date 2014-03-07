@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiApplication_h__
 #define DiApplication_h__
 
-#include "Callback.h"
 #include "OIS.h"
 
 // namespace MyGUI
@@ -55,71 +54,71 @@ namespace Demi
 
         ~DemiDemo(void);
 
-        static DemiDemo*            GetApp(){return sTheApp;}
+        static DemiDemo* GetApp(){return sTheApp;}
 
     public:
 
-        typedef Functor0            UpdateCallback;
-        typedef Functor0            InitCallback;
-        typedef Functor0            ShutdownCallback;
+        typedef std::function<void(void)> UpdateCallback;
+        typedef std::function<void(void)> InitCallback;
+        typedef std::function<void(void)> ShutdownCallback;
 
     public:
 
-        void                        Update();
+        void              Update();
 
-        void                        Close();
+        void              Close();
 
-        bool                        IsOpen();
+        bool              IsOpen();
 
-        void                        Open();
+        void              Open();
 
-        void                        CloseEngine();
+        void              CloseEngine();
 
-        DiCameraHelper*             GetCameraHelper() { return mCameraHelper; }
-                                    
-        void                        SetUpdateCallback(UpdateCallback val) { mUpdateCallback = val; }
+        DiCameraHelper*   GetCameraHelper() { return mCameraHelper; }
+                          
+        void              SetUpdateCallback(UpdateCallback val) { mUpdateCallback = val; }
 
-        void                        SetShutdownCallback(ShutdownCallback val) { mShutdownCallback = val; }
+        void              SetShutdownCallback(ShutdownCallback val) { mShutdownCallback = val; }
         
-        void                        SetInitCallback(InitCallback val) { mInitCallback = val; }
+        void              SetInitCallback(InitCallback val) { mInitCallback = val; }
 
-        void                        keyPressed(const OIS::KeyEvent &arg);
+        void              keyPressed(const OIS::KeyEvent &arg);
 
-        void                        keyReleased(const OIS::KeyEvent &arg);
+        void              keyReleased(const OIS::KeyEvent &arg);
 
-        void                        mouseMoved(const OIS::MouseEvent& evt);
+        void              mouseMoved(const OIS::MouseEvent& evt);
 
-        void                        mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+        void              mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
 
-        void                        mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+        void              mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
 
-        void                        Run();
+        void              Run();
 
-        void                        OpenImpl();
+        void              OpenImpl();
 
     protected:
 
-        DiAssetManager*             mAssetManager;
-                                    
-        DiCameraHelper*             mCameraHelper;
-                                    
-        static DemiDemo*            sTheApp;
+        DiAssetManager*         mAssetManager;
+                                
+        DiCameraHelper*         mCameraHelper;
+                                
+        static DemiDemo*        sTheApp;
 
-        UpdateCallback              mUpdateCallback;
+        UpdateCallback          mUpdateCallback;
 
-        InitCallback                mInitCallback;
+        InitCallback            mInitCallback;
 
-        ShutdownCallback            mShutdownCallback;
+        ShutdownCallback        mShutdownCallback;
 
-        //MyGUI::DemiWrapper*       mGUIWrapper;
+        //MyGUI::DemiWrapper*   mGUIWrapper;
 
-        DiInputManager*             mInputMgr;
+        DiInputManager*         mInputMgr;
 
-        DiInfo*                     mInfo;
+        DiInfo*                 mInfo;
 
-        DemoConfig                  mConfig;
+        DemoConfig              mConfig;
         
-        bool                        mQuit;
+        bool                    mQuit;
     };
 
 }

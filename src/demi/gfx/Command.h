@@ -59,7 +59,7 @@ namespace Demi
         DiString           mCommand;
     };
     
-    typedef Functor1wRet<Demi::DiCmdArgs*,bool> DiCmdFuntion;
+    typedef std::function<bool(Demi::DiCmdArgs*)> DiCmdFuntion;
 
     struct DI_GFX_API DiCmdInfo
     {

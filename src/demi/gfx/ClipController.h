@@ -14,8 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef ClipController_h__
 #define ClipController_h__
 
-#include "Callback.h"
-
 namespace Demi
 {
     typedef DiMap<DiString, DiClipController*>      ClipControllerMap;
@@ -26,22 +24,22 @@ namespace Demi
 
     struct DiAniEvent
     {
-        typedef Functor1<DiClipController*>    AniCallback;
+        typedef std::function<void(DiClipController*)> AniCallback;
 
         AniCallback                 callBackFunc;
         float                       triggerTime;        
         bool                        isTriggerInLoop;    
     };
 
-    typedef DiHashMap<void*, DiAniEvent >           PlayEndCallbackMap;
+    typedef DiHashMap<void*, DiAniEvent> PlayEndCallbackMap;
 
     class DI_GFX_API DiClipController
     {
     public:
         friend class DiClipControllerSet;
 
-        typedef DiVector<float>                     BoneBlendMask;
-        typedef DiStrHash<float>                    AttachBlendMask;
+        typedef DiVector<float>  BoneBlendMask;
+        typedef DiStrHash<float> AttachBlendMask;
 
     protected:
         

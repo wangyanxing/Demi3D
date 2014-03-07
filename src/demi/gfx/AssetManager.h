@@ -18,8 +18,26 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Singleton.h"
 #include "Asset.h"
 
-namespace Demi 
+namespace Demi
 {
+    /** Description for an asset type
+     */
+    struct DiAssetDesc
+    {
+        // for registering new asset types
+        typedef std::function<DiAssetPtr(DiDataStreamPtr,const DiString&)> AssetLoaderFunc;
+        
+        DiAssetType type;
+        
+        /// file extensions
+        DiVector<DiString> extensions;
+        
+        /// creator callback
+        AssetLoaderFunc creator;
+    };
+    
+    /** Asset manager
+     */
     class DI_GFX_API DiAssetManager : public DiSingleton<DiAssetManager>
     {
     public:
@@ -29,10 +47,6 @@ namespace Demi
         virtual ~DiAssetManager();
 
         _DECLARE_SINGLETON(DiAssetManager)
-
-    public:
-
-        static uint32                RESOURCE_SYSTEM_NUM_REFERENCE_COUNTS;
 
     public:
 
@@ -91,7 +105,15 @@ namespace Demi
         {
             return std::dynamic_pointer_cast<TAsset>(FindAsset(name));
         }
-
+        
+        // for registering new asset types
+        typedef std::function<DiAssetPtr(const DiString&)> AssetLoaderFunc;
+        
+        void                          RegisterAssetType(uint32 assetType,
+                                            const DiVector<DiString>& extensions, const AssetLoaderFunc& loader);
+        
+        void                          RegisterAssetType(uint32 assetType,
+                                                        const DiString& extension, const AssetLoaderFunc& loader);
 
     protected:
 
@@ -109,8 +131,8 @@ namespace Demi
 
     protected:
 
-        typedef DiStrHash<DiAssetPtr>    AssetsTable;
-        typedef DiStrHash<ArchivePtr>    ArchiveTable;
+        typedef DiStrHash<DiAssetPtr> AssetsTable;
+        typedef DiStrHash<ArchivePtr> ArchiveTable;
 
         DiVector<DiString>           mSearchPaths;
 
@@ -121,6 +143,12 @@ namespace Demi
         DiString                     mBasePath;
 
         DiArchiveManager*            mArchiveManager;
+        
+        typedef DiMap<uint32,AssetLoaderFunc> AssetTypeLoaders;
+        typedef DiStrHash<AssetLoaderFunc>    ExtensionLoaders;
+        AssetTypeLoaders             mAssetLoaders;
+        
+        ExtensionLoaders             mExtensionLoaders;
     };
 }
 

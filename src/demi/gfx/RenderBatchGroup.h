@@ -15,7 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define RenderBatchGroup_h__
 
 #include "GfxPrerequisites.h"
-#include "Callback.h"
+#include <functional>
 
 namespace Demi 
 {
@@ -60,7 +60,7 @@ namespace Demi
 
         typedef DiVector<DiPair<DiRenderUnit*,DiMat4*>> RenderUnitList;
 
-        typedef Functor0            ExtraProcess;
+        typedef std::function<void(void)> ExtraProcess;
 
         virtual DiBatchGroupType    GetType() const    {return mType;}
 
