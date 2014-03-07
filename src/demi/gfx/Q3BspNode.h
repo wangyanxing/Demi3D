@@ -28,6 +28,8 @@ namespace Demi
 
         ~DiBspNode();
 
+        friend class DiBspScene;
+
     public:
 
         bool            IsLeaf(void) const { return mIsLeaf; }
