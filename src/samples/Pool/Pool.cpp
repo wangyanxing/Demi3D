@@ -19,6 +19,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DemoFrame.h"
 #include "RenderTarget.h"
 
+#include <functional>
+
 void SetupWater(DiSceneManager* sm)
 {
     // Render targets

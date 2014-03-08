@@ -14,6 +14,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxPch.h"
 #include "Q3BspScene.h"
 #include "AssetManager.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "VertexDeclaration.h"
+#include "Q3BspPatch.h"
+#include "RenderUnit.h"
 
 namespace Demi
 {
@@ -27,8 +32,12 @@ namespace Demi
         , mBrushes(nullptr)
         , mSkyEnabled(false)
         , mName(name)
+        , mNumPatchVertices(0)
+        , mNumBspFaces(0)
+        , mBspFaces(nullptr)
+        , mRenderUnit(nullptr)
+        , mNumPatchIndices(0)
     {
-
     }
 
     DiBspScene::~DiBspScene()
@@ -203,6 +212,9 @@ namespace Demi
 
         q3lvl.ExtractLightmaps();
 
+        initQuake3Patches(q3lvl);
+
+        InitRenderUnit(q3lvl);
     }
 
     void DiBspScene::tagNodesWithMovable(DiBspNode* node, const DiTransUnitPtr mov, const DiVec3& pos)
@@ -307,4 +319,106 @@ namespace Demi
             lineend = strchr(strEnt, '\n');
         }
     }
+
+    void DiBspScene::initQuake3Patches(const DiQ3BspLevel & q3lvl)
+    {
+        mBspFaces = new Q3BspFaceRenderer[q3lvl.mNumFaces];
+        mNumBspFaces = q3lvl.mNumFaces;
+        mNumPatchVertices = 0;
+        mNumPatchIndices = 0;
+
+        for (int i = 0; i < mNumBspFaces; i++)
+        {
+            bsp_face_t* src = &q3lvl.mFaces[i];
+
+            mBspFaces[i].lm_index = src->lm_texture;
+            mBspFaces[i].meshvert = src->elem_start;
+            mBspFaces[i].n_meshverts = src->elem_count;
+            mBspFaces[i].n_vertexes = src->vert_count;
+            for (int j = 0; j < 3; j++)
+                mBspFaces[i].normal[j] = src->normal[j];
+            mBspFaces[i].texture = src->shader;
+            mBspFaces[i].type = src->type;
+            mBspFaces[i].vertex = src->vert_start;
+
+            mBspFaces[i].n_triangles = mBspFaces[i].n_meshverts / 3;
+            if (src->type == BSP_FACETYPE_PATCH)
+            {
+                mBspFaces[i].patch = q3lvl.HandlePatch(i);
+                for (int j = 0; j < mBspFaces[i].patch->size; j++)
+                {
+                    mNumPatchIndices += mBspFaces[i].patch->bezier[j].mNumIndex;
+                    mNumPatchVertices += mBspFaces[i].patch->bezier[j].mNumVertex;
+                }
+            }
+            else
+                mBspFaces[i].patch = nullptr;
+        }
+    }
+
+    void DiBspScene::InitRenderUnit(DiQ3BspLevel & q3lvl)
+    {
+        DI_ASSERT(!mRenderUnit);
+
+        mRenderUnit = DI_NEW DiRenderUnit();
+
+        mRenderUnit->mVertexDecl = Driver->CreateVertexDeclaration();
+        mRenderUnit->mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
+        mRenderUnit->mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
+        //mRenderUnit->mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_COLOR);
+        mRenderUnit->mVertexDecl->AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD, 0);
+        mRenderUnit->mVertexDecl->AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD, 1);
+        mRenderUnit->mVertexDecl->Create();
+
+        mRenderUnit->mVertexOffset = 0;
+        mRenderUnit->ReleaseSourceData();
+
+        mRenderUnit->mSourceData.push_back(Driver->CreateVertexBuffer());
+        DiVertexBuffer* vb = mRenderUnit->mSourceData[0];
+        int vertNum = q3lvl.mNumVertices + mNumPatchVertices;
+        int stride = sizeof(DiQ3BspVertex);
+        mRenderUnit->mVerticesNum = vertNum;
+        vb->SetStride(stride);
+        vb->Create(stride * vertNum);
+
+        DiQ3BspVertex* data = (DiQ3BspVertex*)vb->Lock(0, stride * q3lvl.mNumVertices);
+        for (int v = 0; v < q3lvl.mNumVertices; ++v)
+            BspVertexToBspVertex(&q3lvl.mVertices[v], data++);
+        vb->Unlock();
+
+        int idNum = q3lvl.mNumElements + mNumPatchIndices;
+        mRenderUnit->mIndexBuffer = Driver->CreateIndexBuffer();
+        mRenderUnit->mIndexBuffer->Create(idNum * sizeof(uint32), IB_32BITS);
+        void* ib = mRenderUnit->mIndexBuffer->Lock(0, q3lvl.mNumElements * sizeof(uint32));
+        memcpy(ib, q3lvl.mElements, sizeof(uint32)* q3lvl.mNumElements);
+        mRenderUnit->mIndexBuffer->Unlock();
+
+        // faces
+        mNumLeafFaceGroups = q3lvl.mNumLeafFaces;
+        mLeafFaceGroups = DI_NEW int[mNumLeafFaceGroups];
+        memcpy(mLeafFaceGroups, q3lvl.mLeafFaces, sizeof(int) * mNumLeafFaceGroups);
+        mNumFaceGroups = q3lvl.mNumFaces;
+
+        int face;
+        face = q3lvl.mNumFaces;
+        while (face--)
+        {
+            // Check to see if existing material
+            // Format shader#lightmap
+            int shadIdx = q3lvl.mFaces[face].shader;
+
+        }
+    }
+
+    void DiBspScene::BspVertexToBspVertex(const bsp_vertex_t* src, DiQ3BspVertex* dest)
+    {
+        memcpy(dest->mPosition.ptr(), src->point, sizeof(float)* 3);
+        memcpy(dest->mNormal.ptr(), src->normal, sizeof(float)* 3);
+        //dest->color = src->color;
+        dest->mTexcoord[0].x = src->texcoord[0][0];
+        dest->mTexcoord[0].y = src->texcoord[0][1];
+        dest->mTexcoord[1].x = src->texcoord[1][0];
+        dest->mTexcoord[1].y = src->texcoord[1][1];
+    }
+
 }

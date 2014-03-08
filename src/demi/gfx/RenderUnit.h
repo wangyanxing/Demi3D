@@ -54,6 +54,8 @@ namespace Demi
 
         void                    ReleaseVertexDeclaration();
 
+        /** Set some special flags, e.g. no batch statistics 
+         */
         void                    SetFlag(uint32 flag){mFlags = flag;}
 
         uint32                  GetFlag()const {return mFlags;}

@@ -19,7 +19,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    class DiBspScene
+    struct Q3BspFaceRenderer;
+    class DiQ3BspVertex;
+
+    class DiBspScene : public DiBase
     {
     public:
         DiBspScene(const DiString& name);
@@ -100,22 +103,6 @@ namespace Demi
         int mNumBrushes;
         int mLeafStart; /// The index at which leaf nodes begin
 
-        /** Vertex format for fixed geometry.
-        Note that in this case vertex components (position, normal, texture coords etc)
-        are held interleaved in the same buffer. However, the format here is different from
-        the format used by Quake because older Direct3d drivers like the vertex elements
-        to be in a particular order within the buffer. See VertexDeclaration for full
-        details of this marvellous(not) feature.
-        */
-        struct BspVertex
-        {
-            float position[3];
-            float normal[3];
-            int colour;
-            float texcoords[2];
-            float lightmap[2];
-        };
-
         /// Vertex data holding all the data for the level, but able to render parts of it
         //VertexData* mVertexData;
 
@@ -180,9 +167,15 @@ namespace Demi
         //typedef map<int, PatchSurface*>::type PatchMap;
         //PatchMap mPatches;
         /// Total number of vertices required for all patches
-        size_t mPatchVertexCount;
+        //size_t mPatchVertexCount;
         /// Total number of indexes required for all patches
-        size_t mPatchIndexCount;
+        //size_t mPatchIndexCount;
+
+        Q3BspFaceRenderer* mBspFaces;
+        int mNumBspFaces;
+        int mNumPatchVertices;
+        int mNumPatchIndices;
+
         /// Sky enabled?
         bool mSkyEnabled;
         /// Sky material
@@ -192,11 +185,15 @@ namespace Demi
 
         DiString mName;
 
-        //void initQuake3Patches(const DiQ3BspLevel & q3lvl, VertexDeclaration* decl);
+        void initQuake3Patches(const DiQ3BspLevel & q3lvl);
 
         void buildQuake3Patches(size_t vertOffset, size_t indexOffset);
 
-        void quakeVertexToBspVertex(const bsp_vertex_t* src, BspVertex* dest);
+        void InitRenderUnit(DiQ3BspLevel & q3lvl);
+
+        void BspVertexToBspVertex(const bsp_vertex_t* src, DiQ3BspVertex* dest);
+
+        DiRenderUnit* mRenderUnit;
     };
 }
 

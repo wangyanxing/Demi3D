@@ -18,6 +18,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    struct Q3BspPatch;
+
     class DiQ3BspLevel
     {
     public:
@@ -48,6 +50,8 @@ namespace Demi
         int     GetLumpSize(int lumpType);
 
         void    DumpContents(void);
+
+        Q3BspPatch* HandlePatch(int faceIndex) const;
         
     public:
         

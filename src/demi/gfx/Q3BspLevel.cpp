@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "AssetManager.h"
 #include "Texture.h"
 #include "Image.h"
+#include "Q3BspPatch.h"
 
 namespace Demi
 {
@@ -234,4 +235,66 @@ namespace Demi
             strEnt = strtok(0, "\0");
         }
     }
+
+    Q3BspPatch* DiQ3BspLevel::HandlePatch(int faceIndex) const
+    {
+        Q3BspPatch *q3patch;
+        q3patch = new Q3BspPatch;
+
+        int patch_size_x = (mFaces[faceIndex].mesh_cp[0] - 1) / 2;
+        int patch_size_y = (mFaces[faceIndex].mesh_cp[1] - 1) / 2;
+        int num_bezier_patches = patch_size_y * patch_size_x;
+
+        q3patch->size = num_bezier_patches;
+        q3patch->bezier = DI_NEW DiQ3Bezier[q3patch->size];
+
+        int patchIndex = 0;
+        int ii, n, j, nn;
+        for (ii = 0, n = 0; n < patch_size_x; n++, ii = 2 * n)
+        {
+            for (j = 0, nn = 0; nn < patch_size_y; nn++, j = 2 * nn)
+            {
+                int index = 0;
+                for (int ctr = 0; ctr < 3; ctr++)
+                {
+                    int pos = ctr * mFaces[faceIndex].mesh_cp[0];
+
+                    q3patch->bezier[patchIndex].mControls[index++] =
+                        DiQ3BspVertex(
+                        // position
+                        mVertices[mFaces[faceIndex].vert_start +
+                        ii +
+                        mFaces[faceIndex].mesh_cp[0] * j +
+                        pos].point,
+                        // uv
+                        mVertices[mFaces[faceIndex].vert_start +
+                        ii +
+                        mFaces[faceIndex].mesh_cp[0] * j +
+                        pos].texcoord,
+                        // normal
+                        mVertices[mFaces[faceIndex].vert_start +
+                        ii +
+                        mFaces[faceIndex].mesh_cp[0] * j +
+                        pos].normal);
+
+                    q3patch->bezier[patchIndex].mControls[index++] =
+                        DiQ3BspVertex(
+                        mVertices[mFaces[faceIndex].vert_start + ii + mFaces[faceIndex].mesh_cp[0] * j + pos + 1].point,
+                        mVertices[mFaces[faceIndex].vert_start + ii + mFaces[faceIndex].mesh_cp[0] * j + pos + 1].texcoord,
+                        mVertices[mFaces[faceIndex].vert_start + ii + mFaces[faceIndex].mesh_cp[0] * j + pos + 1].normal);
+
+                    q3patch->bezier[patchIndex].mControls[index++] =
+                        DiQ3BspVertex(
+                        mVertices[mFaces[faceIndex].vert_start + ii + mFaces[faceIndex].mesh_cp[0] * j + pos + 2].point,
+                        mVertices[mFaces[faceIndex].vert_start + ii + mFaces[faceIndex].mesh_cp[0] * j + pos + 2].texcoord,
+                        mVertices[mFaces[faceIndex].vert_start + ii + mFaces[faceIndex].mesh_cp[0] * j + pos + 2].normal);
+                }
+                q3patch->bezier[patchIndex].Tessellate(5);
+                patchIndex++;
+            }
+        }
+
+        return q3patch;
+    }
+
 }

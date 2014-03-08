@@ -210,8 +210,7 @@ struct bsp_shader_t {
 
 struct bsp_vertex_t {
     float point[3];
-    float texture[2];
-    float lightmap[2];
+    float texcoord[2][2];
     float normal[3];
     int color;
 };
@@ -250,7 +249,5 @@ struct bsp_brush_t {
 	int numsides;
 	int shaderIndex;
 };
-
-
 
 #endif
