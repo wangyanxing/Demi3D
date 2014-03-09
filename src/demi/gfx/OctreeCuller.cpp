@@ -189,7 +189,12 @@ namespace Demi
     {
         return DiCullUnitPtr(DI_NEW DiOctreeCullUnit(node, this));
     }
-    
+
+    void DiOctreeCuller::LoadScene(const DiString& scene)
+    {
+        //TODO
+    }
+
     DiOctreeCullUnit::DiOctreeCullUnit(DiCullNode* parentNode, DiSceneCuller* culler)
         :DiCullUnit(parentNode, culler)
     {

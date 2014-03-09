@@ -32,12 +32,16 @@ namespace Demi
         , windowTitle(title)
         , mediaPath("../../Media")
         , logFile("Demi.log")
+        , sceneType("Octree")
         {
         }
 
         uint32      windowWidth;
         uint32      windowHeight;
         DiString    windowTitle;
+        
+        // scene manager type
+        DiString    sceneType;
 
         bool        fullScreen;
 

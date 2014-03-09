@@ -81,19 +81,19 @@ namespace Demi
         
 		~DiZipDataStream();
         
-        size_t Read(void* buf, size_t count);
+        size_t  Read(void* buf, size_t count);
         
-		size_t Write(void* buf, size_t count);
+		size_t  Write(void* buf, size_t count);
         
-        void Skip(long count);
+        void    Skip(long count);
         
-        void Seek( size_t pos );
+        void    Seek( size_t pos );
         
-        size_t Tell(void) const;
+        size_t  Tell(void) const;
         
-        bool Eof(void) const;
+        bool    Eof(void) const;
         
-        void Close(void);
+        void    Close(void);
     };
 }
 

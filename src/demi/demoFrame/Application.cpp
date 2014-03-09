@@ -77,6 +77,8 @@ namespace Demi
 
         mAssetManager = new DiAssetManager;
         mAssetManager->SetBasePath(mConfig.mediaPath);
+
+        CommandMgr->RegisterString("scene_type", config.sceneType, 0, "Scene manager type");
     }
 
     DemiDemo::~DemiDemo(void)
@@ -99,7 +101,7 @@ namespace Demi
             Driver->Render();
         
         if (mQuit)
-        CloseEngine();
+            CloseEngine();
 
         DI_PROFILE_END_FRAME
     }

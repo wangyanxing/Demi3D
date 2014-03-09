@@ -29,6 +29,8 @@ namespace Demi
 
         ~DiBspScene();
 
+        friend class DiBspSceneCuller;
+
         /** Determines if one leaf node is visible from another. */
         bool isLeafVisible(const DiBspNode* from, const DiBspNode* to) const;
 
@@ -66,6 +68,8 @@ namespace Demi
         /** Load direct from stream */
         void load(DiDataStreamPtr& stream);
 
+        void Load(void);
+
         /** Is sky enabled? */
         bool isSkyEnabled(void) const
         {
@@ -86,8 +90,6 @@ namespace Demi
 
         /** Utility class just to enable queueing of patches */
     protected:
-
-        void Load(void);
 
         void Unload(void);
         
@@ -190,6 +192,10 @@ namespace Demi
         void buildQuake3Patches(size_t vertOffset, size_t indexOffset);
 
         void InitRenderUnit(DiQ3BspLevel & q3lvl);
+
+        void InitFaces(DiQ3BspLevel & q3lvl);
+
+        void InitBspNodes(DiQ3BspLevel & q3lvl);
 
         void BspVertexToBspVertex(const bsp_vertex_t* src, DiQ3BspVertex* dest);
 

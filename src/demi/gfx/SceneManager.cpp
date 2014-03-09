@@ -23,6 +23,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RenderWindow.h"
 #include "RenderTarget.h"
 #include "Skybox.h"
+#include "Command.h"
+#include "ConsoleVariable.h"
 #include "GfxDriver.h"
 
 namespace Demi 
@@ -262,11 +264,13 @@ namespace Demi
     {
         mCullerFactory = DI_NEW DiSceneCullerFactory(this);
         mPipeline = Driver->GetPipeline();
-        mCamera   = CreateCamera("_sm_camera");
+        mCamera = CreateCamera("_sm_camera");
 
         mBox = DiAABB( -10000, -10000, -10000, 10000, 10000, 10000 );
         
-        mCuller = mCullerFactory->CreateSceneCuller("Octree");
+        DiString sceneType = CommandMgr->GetConsoleVar("scene_type")->GetString();
+
+        mCuller = mCullerFactory->CreateSceneCuller(sceneType);
         mRootNode = DI_NEW DiCullNode(this,"_root");
         
         mSkybox = DI_NEW DiSkybox(this);
@@ -368,8 +372,11 @@ namespace Demi
     {
         DI_INFO("Loading scene %s..", scene.c_str());
 
+        mCuller->LoadScene(scene);
+#if 0
         DestroyTerrain();
         mCurrentScene = scene;
+#endif
         return true;
     }
 

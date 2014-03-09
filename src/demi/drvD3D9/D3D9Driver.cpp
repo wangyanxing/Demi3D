@@ -465,7 +465,7 @@ namespace Demi
         if (!unit->mIndexBuffer)
         {
             HRESULT hRlt = mDevice->DrawPrimitive(
-                primType, unit->mVertexOffset, unit->mPrimitiveCount);
+                primType, unit->mVertexOffset, unit->mPrimitiveCount);  
             DX9_CHKERR(hRlt);
         }
         else

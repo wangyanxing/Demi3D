@@ -83,6 +83,8 @@ namespace Demi
 
         virtual ConsoleVarFunc  GetOnChangeCallback();
 
+        virtual const char*     GetString() = 0;
+
         virtual int             GetAsInt() const = 0;
 
         virtual float           GetAsFloat() const = 0;

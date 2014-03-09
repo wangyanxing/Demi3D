@@ -211,7 +211,7 @@ namespace Demi
                 else
                     mArchives[i->basename] = ar;
             }
-        }
+        } 
 
         // search files in zip packs
         for (auto it = zips.begin(); it != zips.end(); ++it)

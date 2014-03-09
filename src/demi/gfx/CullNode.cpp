@@ -58,7 +58,7 @@ namespace Demi
             mLocalAABB.Merge((*itr)->GetBoundingBox());
         }
 
-        if (!mWorldAABB.IsNull())
+        if (!mWorldAABB.IsNull() && mCullUnit)
             mCullUnit->Update();
     }
 

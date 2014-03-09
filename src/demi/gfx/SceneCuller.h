@@ -64,6 +64,8 @@ namespace Demi
         virtual void            UpdateUnit(DiCullUnitPtr unit) {}
         
         virtual void            RemoveUnit(DiCullUnitPtr unit) {}
+
+        virtual void            LoadScene(const DiString& scene) = 0;
         
     protected:
         

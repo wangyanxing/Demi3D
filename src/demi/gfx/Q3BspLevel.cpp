@@ -227,6 +227,7 @@ namespace Demi
             DI_INFO("Shader %d: %s", i, mShaders[i].name );
         }
         
+        /*
         DI_INFO("\nEntities:");
         char* strEnt = strtok((char*)mEntities, "\0");
         while (strEnt != 0)
@@ -234,6 +235,7 @@ namespace Demi
             DI_INFO(strEnt);
             strEnt = strtok(0, "\0");
         }
+        */
     }
 
     Q3BspPatch* DiQ3BspLevel::HandlePatch(int faceIndex) const

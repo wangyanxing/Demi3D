@@ -214,6 +214,10 @@ namespace Demi
 
         initQuake3Patches(q3lvl);
 
+        InitBspNodes(q3lvl);
+
+        InitFaces(q3lvl);
+        
         InitRenderUnit(q3lvl);
     }
 
@@ -381,33 +385,64 @@ namespace Demi
         vb->SetStride(stride);
         vb->Create(stride * vertNum);
 
-        DiQ3BspVertex* data = (DiQ3BspVertex*)vb->Lock(0, stride * q3lvl.mNumVertices);
+        DiQ3BspVertex* data = (DiQ3BspVertex*)vb->Lock(0, stride * vertNum);
         for (int v = 0; v < q3lvl.mNumVertices; ++v)
             BspVertexToBspVertex(&q3lvl.mVertices[v], data++);
-        vb->Unlock();
 
         int idNum = q3lvl.mNumElements + mNumPatchIndices;
         mRenderUnit->mIndexBuffer = Driver->CreateIndexBuffer();
         mRenderUnit->mIndexBuffer->Create(idNum * sizeof(uint32), IB_32BITS);
-        void* ib = mRenderUnit->mIndexBuffer->Lock(0, q3lvl.mNumElements * sizeof(uint32));
-        memcpy(ib, q3lvl.mElements, sizeof(uint32)* q3lvl.mNumElements);
-        mRenderUnit->mIndexBuffer->Unlock();
+        void* ib = mRenderUnit->mIndexBuffer->Lock(0, idNum * sizeof(uint32));
+        memcpy(ib, q3lvl.mElements, sizeof(uint32) * q3lvl.mNumElements);
+        uint32* patchIB = (uint32*)ib;
+        patchIB += q3lvl.mNumElements;
+        
+        // patches
 
-        // faces
-        mNumLeafFaceGroups = q3lvl.mNumLeafFaces;
-        mLeafFaceGroups = DI_NEW int[mNumLeafFaceGroups];
-        memcpy(mLeafFaceGroups, q3lvl.mLeafFaces, sizeof(int) * mNumLeafFaceGroups);
-        mNumFaceGroups = q3lvl.mNumFaces;
-
-        int face;
-        face = q3lvl.mNumFaces;
-        while (face--)
+        if (mBspFaces)
         {
-            // Check to see if existing material
-            // Format shader#lightmap
-            int shadIdx = q3lvl.mFaces[face].shader;
+            int indexBufferindex = 0;
+            int vertexBufferindex = 0;
 
+            for (int faceIndex = 0; faceIndex < mNumBspFaces; faceIndex++)
+            {
+                if (mBspFaces[faceIndex].type == BSP_FACETYPE_PATCH)
+                {
+                    Q3BspPatch *patch = mBspFaces[faceIndex].patch;
+                    if (!patch)
+                        continue;
+
+                    for (int bezierIndex = 0; bezierIndex < patch->size; bezierIndex++)
+                    {
+                        patch->bezier[bezierIndex].mBaseBufferindex = indexBufferindex;
+
+                        for (unsigned int index = 0; index < patch->bezier[bezierIndex].mNumIndex; index++)
+                        {
+                            patchIB[indexBufferindex] = (uint32)patch->bezier[bezierIndex].mIndex[index];
+                            indexBufferindex++;
+                        }
+
+                        patch->bezier[bezierIndex].mBaseVertexIndex = vertexBufferindex;
+
+                        for (unsigned int vertex = 0; vertex < patch->bezier[bezierIndex].mNumVertex; vertex++)
+                        {
+                            DiQ3BspVertex *bspVertex = &patch->bezier[bezierIndex].mVertex[vertex];
+
+                            data->mPosition = bspVertex->mPosition;
+                            data->mNormal = bspVertex->mNormal;
+                            data->mTexcoord[0] = bspVertex->mTexcoord[0];
+                            data->mTexcoord[1] = bspVertex->mTexcoord[1];
+                            data++;
+
+                            vertexBufferindex++;
+                        }
+                    }
+                }
+            }
         }
+
+        mRenderUnit->mIndexBuffer->Unlock();
+        vb->Unlock();
     }
 
     void DiBspScene::BspVertexToBspVertex(const bsp_vertex_t* src, DiQ3BspVertex* dest)
@@ -421,4 +456,156 @@ namespace Demi
         dest->mTexcoord[1].y = src->texcoord[1][1];
     }
 
+    void DiBspScene::InitFaces(DiQ3BspLevel & q3lvl)
+    {
+        // faces
+        mNumLeafFaceGroups = q3lvl.mNumLeafFaces;
+        mLeafFaceGroups = DI_NEW int[mNumLeafFaceGroups];
+        memcpy(mLeafFaceGroups, q3lvl.mLeafFaces, sizeof(int)* mNumLeafFaceGroups);
+        mNumFaceGroups = q3lvl.mNumFaces;
+
+        int face;
+        face = q3lvl.mNumFaces;
+        while (face--)
+        {
+            // Check to see if existing material
+            // Format shader#lightmap
+            int shadIdx = q3lvl.mFaces[face].shader;
+
+            // materials
+        }
+    }
+
+    void DiBspScene::InitBspNodes(DiQ3BspLevel & q3lvl)
+    {
+        // Allocate memory for all nodes (leaves and splitters)
+        mNumNodes = q3lvl.mNumNodes + q3lvl.mNumLeaves;
+        mNumLeaves = q3lvl.mNumLeaves;
+        mLeafStart = q3lvl.mNumNodes;
+        mRootNode = DI_NEW DiBspNode[mNumNodes];
+
+        for (int i = 0; i < q3lvl.mNumNodes; ++i)
+        {
+            DiBspNode* node = &mRootNode[i];
+            bsp_node_t* q3node = &q3lvl.mNodes[i];
+
+            // Set non-leaf
+            node->mIsLeaf = false;
+            // Set owner
+            node->mParent = this;
+            // Set plane
+            node->mSplitPlane.normal.x = q3lvl.mPlanes[q3node->plane].normal[0];
+            node->mSplitPlane.normal.y = q3lvl.mPlanes[q3node->plane].normal[1];
+            node->mSplitPlane.normal.z = q3lvl.mPlanes[q3node->plane].normal[2];
+            node->mSplitPlane.d = -q3lvl.mPlanes[q3node->plane].dist;
+            // Set bounding box
+            node->mBounds.SetMinimum(DiVec3(&q3node->bbox[0]));
+            node->mBounds.SetMaximum(DiVec3(&q3node->bbox[3]));
+
+            if (q3node->back < 0)
+            {
+                // Points to leaf, offset to leaf start and negate index
+                node->mBack = &mRootNode[mLeafStart + (~(q3node->back))];
+            }
+            else
+            {
+                // Points to node
+                node->mBack = &mRootNode[q3node->back];
+            }
+            // Set front pointer
+            // Negative indexes in Quake3 mean leaves
+            if (q3node->front < 0)
+            {
+                // Points to leaf, offset to leaf start and negate index
+                node->mFront = &mRootNode[mLeafStart + (~(q3node->front))];
+            }
+            else
+            {
+                // Points to node
+                node->mFront = &mRootNode[q3node->front];
+            }
+        }
+
+        // Brushes
+        mNumBrushes = q3lvl.mNumBrushes;
+        mBrushes = DI_NEW DiBspNode::Brush[mNumBrushes];
+
+        for (int i = 0; i < q3lvl.mNumBrushes; ++i)
+        {
+            bsp_brush_t* q3brush = &q3lvl.mBrushes[i];
+
+            // Create a new OGRE brush
+            DiBspNode::Brush *pBrush = &(mBrushes[i]);
+            int brushSideIdx, numBrushSides;
+            numBrushSides = q3brush->numsides;
+            brushSideIdx = q3brush->firstside;
+            // Iterate over the sides and create plane for each
+            while (numBrushSides--)
+            {
+                bsp_brushside_t* q3brushside = &q3lvl.mBrushSides[brushSideIdx];
+                bsp_plane_t* q3brushplane = &q3lvl.mPlanes[q3brushside->planenum];
+                // Notice how we normally invert Q3A plane distances, but here we do not
+                // Because we want plane normals pointing out of solid brushes, not in
+                DiPlane brushSide(
+                    DiVec3(
+                    q3brushplane->normal[0],
+                    q3brushplane->normal[1],
+                    q3brushplane->normal[2]),
+                    q3brushplane->dist);
+                pBrush->planes.push_back(brushSide);
+                ++brushSideIdx;
+            }
+            // Build world fragment
+            pBrush->fragment.fragmentType = DiSceneQuery::WFT_PLANE_BOUNDED_REGION;
+            pBrush->fragment.planes = &(pBrush->planes);
+        }
+
+        // Leaves
+        for (int i = 0; i < q3lvl.mNumLeaves; ++i)
+        {
+            DiBspNode* node = &mRootNode[i + mLeafStart];
+            bsp_leaf_t* q3leaf = &q3lvl.mLeaves[i];
+
+            // Set leaf
+            node->mIsLeaf = true;
+            // Set owner
+            node->mParent = this;
+            // Set bounding box
+            node->mBounds.SetMinimum(DiVec3(&q3leaf->bbox[0]));
+            node->mBounds.SetMaximum(DiVec3(&q3leaf->bbox[3]));
+            // Set faces
+            node->mFaceGroupStart = q3leaf->face_start;
+            node->mNumFaceGroups = q3leaf->face_count;
+
+            node->mVisCluster = q3leaf->cluster;
+
+            // Load Brushes for this leaf
+            int brushIdx, brushCount, realBrushIdx;
+            brushCount = q3leaf->brush_count;
+            brushIdx = q3leaf->brush_start;
+
+            while (brushCount--)
+            {
+                realBrushIdx = q3lvl.mLeafBrushes[brushIdx];
+                bsp_brush_t* q3brush = &q3lvl.mBrushes[realBrushIdx];
+                // Only load solid ones, we don't care about any other types
+                // Shader determines this
+                bsp_shader_t* brushShader = &q3lvl.mShaders[q3brush->shaderIndex];
+                if (brushShader->content_flags & CONTENTS_SOLID)
+                {
+                    // Get brush 
+                    DiBspNode::Brush *pBrush = &(mBrushes[realBrushIdx]);
+                    DI_ASSERT(pBrush->fragment.fragmentType == DiSceneQuery::WFT_PLANE_BOUNDED_REGION);
+                    // Assign node pointer
+                    node->mSolidBrushes.push_back(pBrush);
+                }
+                ++brushIdx;
+            }
+        }
+
+        mVisData.numClusters = q3lvl.mVis->cluster_count;
+        mVisData.rowLength = q3lvl.mVis->row_size;
+        mVisData.tableData = DI_NEW uint8[q3lvl.mVis->row_size * q3lvl.mVis->cluster_count];
+        memcpy(mVisData.tableData, q3lvl.mVis->data, q3lvl.mVis->row_size * q3lvl.mVis->cluster_count);
+    }
 }

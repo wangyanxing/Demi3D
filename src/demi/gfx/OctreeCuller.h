@@ -16,7 +16,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiOctreeCuller_h__
 
 #include "SceneCuller.h"
-//#include "Octree.h"
 #include "DList.h"
 
 namespace Demi
@@ -42,6 +41,8 @@ namespace Demi
         void            RemoveUnit(DiCullUnitPtr unit);
         
         void            AddUnit(DiCullUnitPtr unit, DiOctreePtr octree, int depth = 0);
+
+        void            LoadScene(const DiString& scene);
         
     protected:
         

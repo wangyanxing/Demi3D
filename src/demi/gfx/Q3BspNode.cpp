@@ -81,4 +81,19 @@ namespace Demi
     {
         return mSolidBrushes;
     }
+
+    int DiBspNode::GetNumFaceGroups(void) const
+    {
+        return mNumFaceGroups;
+    }
+
+    int DiBspNode::GetFaceGroupStart(void) const
+    {
+        return mFaceGroupStart;
+    }
+
+    const DiAABB& DiBspNode::GetBoundingBox(void) const
+    {
+        return mBounds;
+    }
 }
