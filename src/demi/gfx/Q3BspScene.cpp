@@ -37,6 +37,7 @@ namespace Demi
         , mBspFaces(nullptr)
         , mRenderUnit(nullptr)
         , mNumPatchIndices(0)
+        , mIndexBuffer(nullptr)
     {
     }
 
@@ -193,6 +194,15 @@ namespace Demi
         if (mBrushes)
             DI_DELETE[] mBrushes;
 
+        if (mIndexBuffer)
+            DI_DELETE[] mIndexBuffer;
+
+        if (mLeafFaceGroups)
+            DI_DELETE[] mLeafFaceGroups;
+
+        if (mBspFaces)
+            DI_DELETE[] mBspFaces;
+
         //mVertexData = 0;
         mRootNode = 0;
         //mFaceGroups = 0;
@@ -341,7 +351,7 @@ namespace Demi
             mBspFaces[i].n_vertexes = src->vert_count;
             for (int j = 0; j < 3; j++)
                 mBspFaces[i].normal[j] = src->normal[j];
-            mBspFaces[i].texture = src->shader;
+            mBspFaces[i].shader = src->shader;
             mBspFaces[i].type = src->type;
             mBspFaces[i].vertex = src->vert_start;
 
@@ -364,7 +374,7 @@ namespace Demi
     {
         DI_ASSERT(!mRenderUnit);
 
-        mRenderUnit = DI_NEW DiRenderUnit();
+        mRenderUnit = DI_NEW DiBspShape();
 
         mRenderUnit->mVertexDecl = Driver->CreateVertexDeclaration();
         mRenderUnit->mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
@@ -374,14 +384,11 @@ namespace Demi
         mRenderUnit->mVertexDecl->AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD, 1);
         mRenderUnit->mVertexDecl->Create();
 
-        mRenderUnit->mVertexOffset = 0;
-        mRenderUnit->ReleaseSourceData();
-
-        mRenderUnit->mSourceData.push_back(Driver->CreateVertexBuffer());
-        DiVertexBuffer* vb = mRenderUnit->mSourceData[0];
+        mRenderUnit->mVertexBuffer = Driver->CreateVertexBuffer();
+        DiVertexBuffer* vb = mRenderUnit->mVertexBuffer;
         int vertNum = q3lvl.mNumVertices + mNumPatchVertices;
         int stride = sizeof(DiQ3BspVertex);
-        mRenderUnit->mVerticesNum = vertNum;
+        //mRenderUnit->mVerticesNum = vertNum;
         vb->SetStride(stride);
         vb->Create(stride * vertNum);
 
@@ -391,11 +398,18 @@ namespace Demi
 
         int idNum = q3lvl.mNumElements + mNumPatchIndices;
         mRenderUnit->mIndexBuffer = Driver->CreateIndexBuffer();
+        // Create enough index space to render whole level
         mRenderUnit->mIndexBuffer->Create(idNum * sizeof(uint32), IB_32BITS);
-        void* ib = mRenderUnit->mIndexBuffer->Lock(0, idNum * sizeof(uint32));
-        memcpy(ib, q3lvl.mElements, sizeof(uint32) * q3lvl.mNumElements);
-        uint32* patchIB = (uint32*)ib;
-        patchIB += q3lvl.mNumElements;
+
+        if (mIndexBuffer)
+        {
+            DI_DELETE[] mIndexBuffer;
+        }
+        mIndexBuffer = DI_NEW uint32[idNum];
+
+        //void* ib = mRenderUnit->mIndexBuffer->Lock(0, idNum * sizeof(uint32));
+        memcpy(mIndexBuffer, q3lvl.mElements, sizeof(uint32)* q3lvl.mNumElements);
+        uint32* patchIB = mIndexBuffer + q3lvl.mNumElements;
         
         // patches
 
@@ -414,7 +428,7 @@ namespace Demi
 
                     for (int bezierIndex = 0; bezierIndex < patch->size; bezierIndex++)
                     {
-                        patch->bezier[bezierIndex].mBaseBufferindex = indexBufferindex;
+                        patch->bezier[bezierIndex].mBaseBufferindex = indexBufferindex + q3lvl.mNumElements;
 
                         for (unsigned int index = 0; index < patch->bezier[bezierIndex].mNumIndex; index++)
                         {
@@ -422,7 +436,7 @@ namespace Demi
                             indexBufferindex++;
                         }
 
-                        patch->bezier[bezierIndex].mBaseVertexIndex = vertexBufferindex;
+                        patch->bezier[bezierIndex].mBaseVertexIndex = vertexBufferindex + q3lvl.mNumVertices;
 
                         for (unsigned int vertex = 0; vertex < patch->bezier[bezierIndex].mNumVertex; vertex++)
                         {
@@ -441,7 +455,7 @@ namespace Demi
             }
         }
 
-        mRenderUnit->mIndexBuffer->Unlock();
+        //mRenderUnit->mIndexBuffer->Unlock();
         vb->Unlock();
     }
 
@@ -607,5 +621,81 @@ namespace Demi
         mVisData.rowLength = q3lvl.mVis->row_size;
         mVisData.tableData = DI_NEW uint8[q3lvl.mVis->row_size * q3lvl.mVis->cluster_count];
         memcpy(mVisData.tableData, q3lvl.mVis->data, q3lvl.mVis->row_size * q3lvl.mVis->cluster_count);
+    }
+
+    uint32 DiBspScene::CacheGeometry(uint32* pIndexes, Q3BspFaceRenderer* faceGroup)
+    {
+        uint32 idxStart, numIdx, vertexStart;
+
+        if (faceGroup->type == BSP_FACETYPE_MESH || faceGroup->type == BSP_FACETYPE_NORMAL)
+        {
+            idxStart = faceGroup->meshvert;
+            numIdx = faceGroup->n_triangles * 3;
+            vertexStart = faceGroup->vertex;
+        }
+        else if (faceGroup->type == BSP_FACETYPE_PATCH && faceGroup->patch)
+        {
+//          idxStart = faceGroup->patch->bezier
+//          numIdx = faceGroup->patch->getCurrentIndexCount();
+//          vertexStart = faceGroup->patch->getVertexOffset();
+            return 0;
+        }
+        else
+        {
+            // Unsupported face type
+            return 0;
+        }
+
+        uint32* pSrc = mIndexBuffer + idxStart;
+        for (size_t elem = 0; elem < numIdx; ++elem)
+            *pIndexes++ = *pSrc++ + static_cast<unsigned int>(vertexStart);
+
+        return numIdx;
+    }
+
+    DiBspScene::DiBspShape::DiBspShape()
+        : mVertexDecl(nullptr)
+        , mVertexBuffer(nullptr)
+        , mIndexBuffer(nullptr)
+    {
+        SetBatchGroup(BATCH_TERRAIN);
+    }
+
+    DiBspScene::DiBspShape::~DiBspShape()
+    {
+        ClearUnits();
+
+        mRenderUnits.clear();
+        mVertexBuffer->Release();
+        mVertexDecl->Release();
+        mIndexBuffer->Release();
+
+        DI_DELETE mVertexBuffer;
+        DI_DELETE mVertexDecl;
+        DI_DELETE mIndexBuffer;
+    }
+
+    DiString& DiBspScene::DiBspShape::GetType()
+    {
+        static DiString type = "BspLevel";
+        return type;
+    }
+
+    void DiBspScene::DiBspShape::AddToBatchGroup(DiRenderBatchGroup* bg)
+    {
+        for (auto it = mRenderUnits.begin(); it != mRenderUnits.end(); ++it)
+            bg->AddRenderUnit(*it);
+    }
+
+    const DiAABB& DiBspScene::DiBspShape::GetBoundingBox(void) const
+    {
+        return DiAABB::BOX_INFINITE;
+    }
+
+    void DiBspScene::DiBspShape::ClearUnits()
+    {
+        for (auto it = mRenderUnits.begin(); it != mRenderUnits.end(); ++it)
+            DI_DELETE (*it);
+        mRenderUnits.clear();
     }
 }

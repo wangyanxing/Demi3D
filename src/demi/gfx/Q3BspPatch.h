@@ -71,7 +71,7 @@ namespace Demi
 
     struct Q3BspFaceRenderer
     {
-        int texture;
+        int shader;
         int type;
         int vertex;
         int n_vertexes;

@@ -16,6 +16,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Q3BspLevel.h"
 #include "Q3BspNode.h"
+#include "RenderUnit.h"
+#include "TransformUnit.h"
 
 namespace Demi
 {
@@ -165,6 +167,8 @@ namespace Demi
 
         void tagNodesWithMovable(DiBspNode* node, const DiTransUnitPtr mov, const DiVec3& pos);
 
+        uint32 CacheGeometry(uint32* pIndexes, Q3BspFaceRenderer* faceGroup);
+
         /// Storage of patches
         //typedef map<int, PatchSurface*>::type PatchMap;
         //PatchMap mPatches;
@@ -178,11 +182,12 @@ namespace Demi
         int mNumPatchVertices;
         int mNumPatchIndices;
 
-        /// Sky enabled?
+        uint32* mIndexBuffer;
+
         bool mSkyEnabled;
-        /// Sky material
+
         DiString mSkyMaterial;
-        /// Sky details
+
         float mSkyCurvature;
 
         DiString mName;
@@ -199,7 +204,34 @@ namespace Demi
 
         void BspVertexToBspVertex(const bsp_vertex_t* src, DiQ3BspVertex* dest);
 
-        DiRenderUnit* mRenderUnit;
+        class DiBspShape : public DiTransformUnit
+        {
+        public:
+
+            DiBspShape();
+
+            ~DiBspShape();
+
+        public:
+
+            DiString&               GetType();
+
+            void                    AddToBatchGroup(DiRenderBatchGroup* bg);
+
+            const DiAABB&           GetBoundingBox(void) const;
+
+            void                    ClearUnits();
+
+            DiVector<DiRenderUnit*> mRenderUnits;
+
+            DiVertexDeclaration*    mVertexDecl;
+
+            DiVertexBuffer*         mVertexBuffer;
+
+            DiIndexBuffer*          mIndexBuffer;
+        };
+
+        DiBspShape* mRenderUnit;
     };
 }
 

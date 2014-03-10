@@ -37,6 +37,8 @@ namespace Demi
 
         void            Cull(DiCamera* camera);
 
+        void            ProcessVisibilities();
+
         void            UpdateUnit(DiCullUnitPtr unit);
 
         void            RemoveUnit(DiCullUnitPtr unit);
@@ -62,6 +64,8 @@ namespace Demi
         MaterialFaceGroupMap    mMatFaceGroupMap;
 
         DiBspScene*             mLevel;
+
+        DiMaterialPtr           mTestMat;
     };
 
     /** Bsp scene node

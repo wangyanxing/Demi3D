@@ -24,7 +24,6 @@ namespace Demi
     DiBspCullUnit::DiBspCullUnit(DiCullNode* parentNode, DiSceneCuller* culler)
         :DiCullUnit(parentNode, culler)
     {
-
     }
 
     DiBspCullUnit::~DiBspCullUnit()
@@ -46,7 +45,7 @@ namespace Demi
         : DiSceneCuller(sm)
         , mLevel(nullptr)
     {
-
+        mTestMat = DiMaterial::QuickCreate("basic_v", "basic_p");
     }
 
     DiBspSceneCuller::~DiBspSceneCuller()
@@ -63,9 +62,12 @@ namespace Demi
     {
         DI_ASSERT(mLevel);
 
+        mMatFaceGroupMap.clear();
+        mFaceGroupSet.clear();
+
         DiBspNode* cameraNode = mLevel->findLeaf(camera->GetDerivedPosition());
 
-        // Scan through all the other leaf nodes looking for visibles
+        // Scan through all the other leaf nodes looking for visibilities
         int i = mLevel->mNumNodes - mLevel->mLeafStart;
         DiBspNode* nd = mLevel->mRootNode + mLevel->mLeafStart;
 
@@ -82,6 +84,8 @@ namespace Demi
             }
             nd++;
         }
+
+        ProcessVisibilities();
     }
 
     void DiBspSceneCuller::ProcessVisibleLeaf(DiBspNode* leaf, DiCamera* camera)
@@ -98,30 +102,47 @@ namespace Demi
 
             Q3BspFaceRenderer* faceGroup = mLevel->mBspFaces + realIndex;
 
+            std::pair<MaterialFaceGroupMap::iterator, bool> matgrpi;
+            matgrpi = mMatFaceGroupMap.insert(
+                MaterialFaceGroupMap::value_type(mTestMat.get(), DiVector<Q3BspFaceRenderer*>()));
+            matgrpi.first->second.push_back(faceGroup);
+
             mFaceGroupSet.insert(realIndex);
         }
     }
 
     void DiBspSceneCuller::UpdateUnit(DiCullUnitPtr unit)
     {
-
     }
 
     void DiBspSceneCuller::RemoveUnit(DiCullUnitPtr unit)
     {
-
     }
 
     void DiBspSceneCuller::LoadScene(const DiString& scene)
     {
         if (mLevel)
-        {
             DI_DELETE mLevel;
-        }
 
         mLevel = DI_NEW DiBspScene(scene);
         mLevel->Load();
 
+
+    }
+
+    void DiBspSceneCuller::ProcessVisibilities()
+    {
+        mSceneManager->GetMainVisibleObjects().objs.push_back(DiTransUnitPtr(mLevel->mRenderUnit));
+        
+        mLevel->mRenderUnit->ClearUnits();
+
+        DiRenderUnit* ru = DI_NEW DiRenderUnit();
+        mLevel->mRenderUnit->mRenderUnits.push_back(ru);
+        ru->mIndexBuffer = mLevel->mRenderUnit->mIndexBuffer;
+        ru->mVertexDecl = mLevel->mRenderUnit->mVertexDecl;
+        ru->mSourceData.push_back(mLevel->mRenderUnit->mVertexBuffer);
+        ru->mPrimitiveType = PT_TRIANGLELIST;
+        ru->mIndexOffset = 0;
 
     }
 
