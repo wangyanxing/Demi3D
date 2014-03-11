@@ -37,7 +37,9 @@ namespace Demi
     #define SHADER_FLAG_SHADOW_DISABLED     (uint64)0x1000     //shadow levels
     #define SHADER_FLAG_SHADOW_LOW          (uint64)0x2000
     #define SHADER_FLAG_SHADOW_MEDIUM       (uint64)0x4000
-    #define SHADER_FLAG_SHADOW_HIGH         (uint64)0x4000
+    #define SHADER_FLAG_SHADOW_HIGH         (uint64)0x8000
+    #define SHADER_FLAG_ALPHA_TEST          (uint64)0x10000
+    #define SHADER_FLAG_USE_NORMALMAP       (uint64)0x20000
 
     ////////////////////////////////////////////////////////////////////////////////
 

@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<material>
-	<shader name="vertex">phong.vsh</shader>
-	<shader name="pixel">phong.psh</shader>
-	<diffuse>0.737255 0.709804 0.670588 1.000000</diffuse>
-	<shininess>200.000000</shininess>
-	<flag>USE_MAP</flag>
-</material>

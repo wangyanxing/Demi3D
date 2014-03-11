@@ -29,6 +29,10 @@
 
 //#define USE_SHADOW 0
 
+#ifdef ALPHA_TEST
+#   define ALPHATEST 0.5
+#endif 
+
 uniform const float4x4      g_modelMatrix;
 uniform const float4x4      g_viewMatrix;
 uniform const float4x4      g_projMatrix;

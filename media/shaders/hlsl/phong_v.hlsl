@@ -11,12 +11,12 @@ struct VS_INPUT
 #endif
 	
 	float3 Normal		: NORMAL;
-	
-#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )
-	float3 Tangent    	: TANGENT;
+
+#if defined( USE_NORMALMAP )
+    float4 Tangent      : TANGENT;
 #endif
 
-#if defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
+#if defined( USE_MAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
 	float2 Texcoord0  	: TEXCOORD0;
 #endif
 
@@ -33,7 +33,7 @@ struct VS_OUTPUT
 	half4  Color		: COLOR;
 #endif
 
-#if defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
+#if defined( USE_MAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
 	float2 Texcoord0  	: TEXCOORD0;
 #endif
 
@@ -47,7 +47,7 @@ struct VS_OUTPUT
 	
 	float3 PosWorld 	: TEXCOORD4;
 
-#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )
+#if defined( USE_NORMALMAP )
 	float3 Tangent		: TEXCOORD5;
 	float3 Binormal		: TEXCOORD6;
 #endif
@@ -57,8 +57,12 @@ VS_OUTPUT vs_main( VS_INPUT In )
 {
 	float4 objPos = 0;
 	float3 objNormal = 0;
-	GET_SPACE_POS_NORMAL
-	
+#if defined( USE_NORMALMAP )
+    float3 objTangent = 0;
+    GET_SPACE_POS_NORMAL_TANGENT
+#else
+    GET_SPACE_POS_NORMAL
+#endif
 	
 	VS_OUTPUT Out;
 
@@ -68,7 +72,7 @@ VS_OUTPUT vs_main( VS_INPUT In )
 	Out.Color         	= In.Color;
 #endif
 
-#if defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
+#if defined( USE_MAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
 	Out.Texcoord0      	= In.Texcoord0;
 #endif
 
@@ -77,6 +81,11 @@ VS_OUTPUT vs_main( VS_INPUT In )
     Out.Normal    = mul(g_modelMatrix, objNormal).xyz;
 	Out.PosWorld  = mul(g_modelMatrix, objPos);
     Out.ViewDir   = g_eyePosition - Out.PosWorld;
+
+#if defined( USE_NORMALMAP )
+    Out.Tangent = mul(g_modelMatrix, float4(objTangent.xyz, 0.0)).xyz;
+    Out.Binormal = cross(Out.Normal, Out.Tangent);
+#endif
 	
 	return Out;
 }

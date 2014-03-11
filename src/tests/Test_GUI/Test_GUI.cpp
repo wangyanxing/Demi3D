@@ -19,26 +19,24 @@ void InitScene()
 {
 	DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     
-    float scale = 0.5f;
     DiDirLightPtr dirlight;
-    auto mat = DiMaterial::QuickCreate("phong_v", "phong_p");
-    mat->SetAmbient(DiColor(0.1f, 0.1f, 0.1f));
 
-    sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f));
+    sm->SetAmbientColor(DiColor(0.2f, 0.2f, 0.2f));
 
     dirlight = make_shared<DiDirLight>();
     DiCullNode* dirNode = sm->GetRootNode()->CreateChild();
     dirNode->AttachObject(dirlight);
-    dirlight->SetColor(DiColor(0.9f, 0.9f, 0.9f));
-    dirlight->SetDirection(DiVec3(0.3f, -0.7f, 0.4).normalisedCopy());
-    //dirlight->SetShadowCastEnable(true);
+    dirlight->SetColor(DiColor());
+    dirlight->SetDirection(DiVec3(0, -0.3f, -0.4).normalisedCopy());
+    //dirlight->SetShadowCastEnable(true); 
 
     DiCullNode* node = sm->GetRootNode()->CreateChild();
-    DiModelPtr model = make_shared<DiModel>("box", "test2.model");
+    DiModelPtr model = make_shared<DiModel>("box", "arachna_high.model");
     //model->SetShadowCastEnable(true);
-    model->SetMaterial(mat);
+    //model->SetMaterial(mat);
     node->AttachObject(model);
     //node->Scale(10, 10, 10);
+
 }
 
 void UpdateScene()

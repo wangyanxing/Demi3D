@@ -108,6 +108,8 @@ namespace Demi
 
         OIS::ParamList pl;
         pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
+        pl.insert(std::make_pair(std::string("w32_mouse"), "DISCL_FOREGROUND"));
+        pl.insert(std::make_pair(std::string("w32_mouse"), "DISCL_NONEXCLUSIVE"));
 
         mInputManager = OIS::InputManager::createInputSystem(pl);
 

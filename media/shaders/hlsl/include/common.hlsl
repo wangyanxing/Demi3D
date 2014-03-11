@@ -18,7 +18,19 @@ float linstep(float min, float max, float v)
            objNormal += (mul(float4(In.Normal, 0), g_boneMatrices[In.BlendIndices[i]]) * In.BlendWeights[i]).xyz; \
        }\
        objPos.w = 1.0; \
-       objNormal = normalize(objNormal);
+       objNormal = normalize(objNormal);\
+       objTangent = normalize(objTangent);
+
+#   define GET_SPACE_POS_NORMAL_TANGENT
+    for (int i = 0; i<4; i++){ \
+        objPos.xyz += mul(In.Position, g_boneMatrices[In.BlendIndices[i]]) * In.BlendWeights[i]; \
+        objNormal += (mul(float4(In.Normal, 0), g_boneMatrices[In.BlendIndices[i]]) * In.BlendWeights[i]).xyz; \
+        objTangent += (mul(float4(In.Tangent.xyz, 0), g_boneMatrices[In.BlendIndices[i]]) * In.BlendWeights[i]).xyz; \
+    }\
+    objPos.w = 1.0; \
+    objNormal = normalize(objNormal); \
+    objTangent = normalize(objTangent);
+
 
 #   define GET_SPACE_POS \
        for (int i = 0; i<4; i++)\
@@ -28,6 +40,11 @@ float linstep(float min, float max, float v)
 #   define GET_SPACE_POS_NORMAL \
        objPos = In.Position;\
        objNormal = In.Normal;
+
+#   define GET_SPACE_POS_NORMAL_TANGENT \
+       objPos = In.Position; \
+       objNormal = In.Normal; \
+       objTangent = In.Tangent.xyz;
 
 #   define GET_SPACE_POS \
     objPos = In.Position;

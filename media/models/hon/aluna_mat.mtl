@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material>
+ <shader name="vertex">phong_v</shader>
+ <shader name="pixel">phong_p</shader>
+ <flag>USE_MAP,ALPHA_TEST,USE_NORMALMAP</flag>
+ <ambient>0.200000 0.200000 0.200000 1.000000</ambient>
+ <blendMode>ALPHA</blendMode>
+  <variables>
+    <sampler2D>
+      <texture name = "map">aluna_color.dds</texture>
+    </sampler2D>
+	<sampler2D>
+      <texture name = "normalMap">aluna_normal_rxgb.dds</texture>
+    </sampler2D>
+  </variables>
+</material>

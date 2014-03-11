@@ -45,6 +45,8 @@ namespace Demi
         mCommonFlag["SHADOW_LOW"]       = SHADER_FLAG_SHADOW_LOW;
         mCommonFlag["SHADOW_MEDIUM"]    = SHADER_FLAG_SHADOW_MEDIUM;
         mCommonFlag["SHADOW_HIGH"]      = SHADER_FLAG_SHADOW_HIGH;
+        mCommonFlag["ALPHA_TEST"]       = SHADER_FLAG_ALPHA_TEST;
+        mCommonFlag["USE_NORMALMAP"]    = SHADER_FLAG_USE_NORMALMAP;
     }
 
     void DiShaderManager::ModifyMarcosByFlag(uint64 flag, DiCompileDesc& desc)

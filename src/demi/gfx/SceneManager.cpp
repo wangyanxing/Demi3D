@@ -32,7 +32,9 @@ namespace Demi
     void DiVisibleObjs::UpdateAll(DiCamera* camera)
     {
         std::for_each(objs.begin(), objs.end(),
-            [camera](DiTransUnitPtr obj) { obj->Update(camera); });
+            [camera](DiTransUnitPtr obj) {
+            obj->Update(camera); 
+        });
     }
 
     void DiVisibleObjs::AddToBatch(DiRenderPipeline* pipeline)

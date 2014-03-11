@@ -10,6 +10,10 @@
 	uniform sampler2D map;
 #endif
 
+#ifdef USE_NORMALMAP
+    uniform sampler2D normalMap;
+#endif 
+
 #ifdef USE_ENV_MAP
 	uniform samplerCUBE envMap;
 	uniform float		reflectivity;
@@ -40,6 +44,11 @@ struct VS_OUTPUT
     float  Depth : TEXCOORD4;
     float4 ShadowLightspacePos : TEXCOORD5;
 #endif
+
+#if defined( USE_NORMALMAP )
+    float3 Tangent      : TEXCOORD6;
+    float3 Binormal     : TEXCOORD7;
+#endif
 };
 
 // Data that we can read or derive from the surface shader outputs
@@ -55,26 +64,33 @@ static SurfaceData gSurface;
 
 void ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
 {
-    gSurface.normal = normalize(input.Normal);
 	gSurface.viewDirWorld = input.ViewDir;
 	gSurface.positionWorld = input.PosWorld;
+
+#if defined( USE_NORMALMAP )
+    float4 normMapColor;
+    float4 nmTex = tex2D(normalMap, input.Texcoord0);
+    normMapColor.rgb = nmTex.agb;
+    normMapColor.a = nmTex.g;
+    float3 texNormal = float3(normMapColor.rgb * 2.0f - 1.0f);
+    float3x3 rot = float3x3(input.Tangent, input.Binormal, input.Normal);
+    gSurface.normal = normalize(mul(texNormal,rot));
+#else
+    gSurface.normal = normalize(input.Normal);
+#endif
 	
-	#ifdef USE_MAP
-		gSurface.albedo = tex2D( map, input.Texcoord0 );
-		#ifdef GAMMA_INPUT
-			gSurface.albedo.rgb *= gSurface.albedo.rgb;
-		#endif
-	#else
-		gSurface.albedo = float4(1.0,1.0,1.0,1.0);
+#ifdef USE_MAP
+	gSurface.albedo = tex2D( map, input.Texcoord0 );
+	#ifdef GAMMA_INPUT
+		gSurface.albedo.rgb *= gSurface.albedo.rgb;
 	#endif
-	
-	#ifdef USE_COLOR
-		gSurface.albedo = gSurface.albedo * float4( In.Color, 1.0 );
-	#endif	
-	
-	#ifdef ALPHATEST
-		if ( gSurface.albedo.a * g_opacity < ALPHATEST ) discard;
-	#endif
+#else
+	gSurface.albedo = float4(1.0,1.0,1.0,1.0);
+#endif
+
+#ifdef USE_COLOR
+	gSurface.albedo = gSurface.albedo * float4( In.Color, 1.0 );
+#endif	
 }
 
 void AccumulateDirLight(float3 dir, float4 color,
@@ -114,8 +130,12 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 {			
 	PS_OUTPUT Out;
 	
-#if 0
+#if 1
 	ComputeSurfaceDataFromGeometry(In);
+
+#ifdef ALPHATEST
+    if (gSurface.albedo.a * g_opacity < ALPHATEST) discard;
+#endif
 	
     float3 lit = float3(0,0,0);
     for (int i = 0; i < g_numDirLights; i++){
@@ -134,8 +154,8 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
     }
 #endif
     
-    float NdotL = max(dot(normalize(In.Normal), normalize(-g_dirLightsDir[0])), 0.0);
-    float3 lit = NdotL.xxx;
+    //float NdotL = max(dot(normalize(In.Normal), normalize(-g_dirLightsDir[0])), 0.0);
+    //float3 lit = NdotL.xxx;
 
     // shadow mapping
 #if USE_SHADOW

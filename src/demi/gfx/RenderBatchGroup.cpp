@@ -60,7 +60,7 @@ namespace Demi
 
     void DiRenderBatchGroup::Process()
     {
-        if (mRenders.ruList.empty() && mRenders.ruList.empty() 
+        if (mRenders.ruList.empty() && mTransRenders.ruList.empty()
             && !mExtraProcess)
             return;
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<material>
+ <shader name="vertex">phong_v</shader>
+ <shader name="pixel">phong_p</shader>
+ <flag>USE_MAP,USE_NORMALMAP</flag>
+  <variables>
+    <sampler2D>
+      <texture name = "map">relief_rockwall_diffuse.dds</texture>
+    </sampler2D>
+	<sampler2D>
+      <texture name = "normalMap">relief_rockwall_normalmap_rxgb.dds</texture>
+    </sampler2D>
+  </variables>
+</material>

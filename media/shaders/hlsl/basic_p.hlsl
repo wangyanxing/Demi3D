@@ -54,7 +54,6 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 #ifdef GAMMA_OUTPUT
 	Out.Color.xyz = sqrt( Out.Color.xyz );
 #endif
-	
 	return Out;
 }
 

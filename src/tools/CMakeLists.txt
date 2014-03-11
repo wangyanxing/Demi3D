@@ -4,3 +4,4 @@
 if (WIN32)
 add_subdirectory(OgreConverter)
 endif()
+add_subdirectory(K2Converter)

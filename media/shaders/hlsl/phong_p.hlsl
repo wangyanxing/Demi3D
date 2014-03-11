@@ -8,6 +8,10 @@
 	uniform sampler2D map;
 #endif
 
+#ifdef USE_NORMALMAP
+    uniform sampler2D normalMap;
+#endif 
+
 #ifdef USE_SPECULARMAP
 	uniform sampler2D specularMap;
 #endif
@@ -55,31 +59,38 @@ static SurfaceData gSurface;
 void ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
 {
     gSurface.positionWorld = input.PosWorld;
-    gSurface.normal = normalize(input.Normal);
     gSurface.viewDirWorld = input.ViewDir;
+
+#ifdef USE_SPECULARMAP
+    gSurface.specularAmount = tex2D(specularMap, In.Texcoord0).rgb * g_specularColor.rgb;
+#else
+    gSurface.specularAmount = g_specularColor.rgb;
+#endif
+
+#if defined( USE_NORMALMAP )
+    float4 normMapColor;
+    float4 nmTex = tex2D(normalMap, input.Texcoord0);
+    normMapColor.rgb = nmTex.agb;
+    gSurface.specularAmount *= nmTex.g;
+    float3 texNormal = float3(normMapColor.rgb * 2.0f - 1.0f);
+    float3x3 rot = float3x3(input.Tangent, input.Binormal, input.Normal);
+    gSurface.normal = normalize(mul(texNormal, rot));
+#else
+    gSurface.normal = normalize(input.Normal);
+#endif
 	
-	#ifdef USE_MAP
-        gSurface.albedo = tex2D(map, input.Texcoord0);
-		#ifdef GAMMA_INPUT
-        gSurface.albedo.rgb *= gSurface.albedo.rgb;
-		#endif
-	#else
-        gSurface.albedo = float4(1.0, 1.0, 1.0, 1.0);
+#ifdef USE_MAP
+    gSurface.albedo = tex2D(map, input.Texcoord0);
+	#ifdef GAMMA_INPUT
+    gSurface.albedo.rgb *= gSurface.albedo.rgb;
 	#endif
-	
-	#ifdef USE_COLOR
-        gSurface.albedo = gSurface.albedo * float4(n.Color, 1.0);
-	#endif	
-	
-	#ifdef ALPHATEST
-        if (gSurface.albedo.a * g_opacity < ALPHATEST) discard;
-	#endif
-	
-	#ifdef USE_SPECULARMAP
-        gSurface.specularAmount = tex2D(specularMap, In.Texcoord0).rgb * g_specularColor.rgb;
-	#else
-        gSurface.specularAmount = g_specularColor.rgb;
-	#endif
+#else
+    gSurface.albedo = float4(1.0, 1.0, 1.0, 1.0);
+#endif
+
+#ifdef USE_COLOR
+    gSurface.albedo = gSurface.albedo * float4(n.Color, 1.0);
+#endif	
 }
 
 void AccumulatePhong(float3 normal,
@@ -184,6 +195,10 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 	
 	ComputeSurfaceDataFromGeometry(In);
 	
+#ifdef ALPHATEST
+    if (gSurface.albedo.a * g_opacity < ALPHATEST) discard;
+#endif
+
 	float3 lit = float3(0,0,0);
 	
 	for(int i = 0; i < g_numDirLights; i++){
@@ -208,6 +223,6 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 #ifdef GAMMA_OUTPUT
 	Out.Color.rgb = sqrt( Out.Color.xyz );
 #endif
-	
+
 	return Out;
 }

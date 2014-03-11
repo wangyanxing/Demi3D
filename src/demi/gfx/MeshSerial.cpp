@@ -74,7 +74,6 @@ namespace Demi
     bool DiMeshSerializer::CheckHead(char* h0)
     {
         static char head[4] = { 'D', 'e', 'm', 'i' };
-        static char oldhead[4] = { 'M', '3', 'G', '2' };
 
         if (h0[0] == head[0] &&
             h0[1] == head[1] &&
@@ -83,14 +82,8 @@ namespace Demi
         {
             return true;
         }
-        else if (h0[0] == oldhead[0] &&
-            h0[1] == oldhead[1] &&
-            h0[2] == oldhead[2] &&
-            h0[3] == oldhead[3])
-        {
-            return true;
-        }
         
+        DI_WARNING("Cannot load the mesh file, bad file header");
         return false;
     }
 

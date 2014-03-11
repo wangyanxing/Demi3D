@@ -7,6 +7,10 @@ struct VS_INPUT
 	
 	float3 Normal		: NORMAL;
 
+#if defined( USE_NORMALMAP )
+    float4 Tangent      : TANGENT;
+#endif
+
 #if defined( SKINNED)
 	float4 BlendWeights : BLENDWEIGHT;
 	int4   BlendIndices : BLENDINDICES;
@@ -29,7 +33,7 @@ struct VS_OUTPUT
 	half4  Color		: COLOR;
 #endif
      
-#if defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )
+#if defined( USE_MAP ) || defined( USE_NORMALMAP )
 	float2 Texcoord0  	: TEXCOORD0;
 #endif
 
@@ -43,13 +47,23 @@ struct VS_OUTPUT
     float  Depth : TEXCOORD4;
     float4 ShadowLightspacePos : TEXCOORD5;
 #endif
+
+#if defined( USE_NORMALMAP )
+    float3 Tangent      : TEXCOORD6;
+    float3 Binormal     : TEXCOORD7;
+#endif
 };
 
 VS_OUTPUT vs_main( VS_INPUT In )
 {
 	float4 objPos = 0;
 	float3 objNormal = 0;
-	GET_SPACE_POS_NORMAL
+#if defined( USE_NORMALMAP )
+    float3 objTangent = 0;
+    GET_SPACE_POS_NORMAL_TANGENT
+#else
+    GET_SPACE_POS_NORMAL
+#endif
 	
     float4 viewPos = mul(g_modelViewMatrix,objPos);
 
@@ -66,6 +80,10 @@ VS_OUTPUT vs_main( VS_INPUT In )
 
 	// world space normal
     Out.Normal = mul(g_modelMatrix, float4(objNormal.xyz, 0.0)).xyz;
+#if defined( USE_NORMALMAP )
+    Out.Tangent = mul(g_modelMatrix, float4(objTangent.xyz, 0.0)).xyz;
+    Out.Binormal = cross(Out.Normal, Out.Tangent) ;
+#endif
 	Out.PosWorld = mul(g_modelMatrix,objPos).xyz;
 	Out.ViewDir  = Out.PosWorld - g_eyePosition;
 
