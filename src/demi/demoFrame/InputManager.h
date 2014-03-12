@@ -27,7 +27,7 @@ Creator:    InputManager.h
 
 namespace Demi
 {
-    class DiInputManager : public OIS::MouseListener, public OIS::KeyListener, public DiBase
+    class DEMI_DEMO_API DiInputManager : public OIS::MouseListener, public OIS::KeyListener, public DiBase
     {
     public:
         DiInputManager();

@@ -12,16 +12,22 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 #include "Demi.h"
 #include "DemoFrame.h"
+#include "DebugHelper.h"
+
+DiAnimModelPtr am;
+DiDebugHelperPtr debugger;
 
 void CreateModels()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     const int size = 3;
-    for (int i = 0; i < size; i++)
+    int i = 0, j = 0;
+
+    //for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < size; j++)
+        //for (int j = 0; j < size; j++)
         {
-            for (int k = 0; k < size; k++)
+            //for (int k = 0; k < size; k++)
             {
                 DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SKINNED);
                 mat->SetDiffuse(DiColor(1, 1, 1));
@@ -36,10 +42,19 @@ void CreateModels()
 
                 DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
                 cullnode->AttachObject(model);
-                cullnode->SetPosition(i * 120.0f, j * 120.0f, k * 120.0f);
+                //cullnode->SetPosition(i * 120.0f, j * 120.0f, k * 120.0f);
+
+                debugger = make_shared<DiDebugHelper>();
+                debugger->AddSkeleton(model->GetSkeleton(), DiColor::Red);
+                DiMaterialPtr m = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
+                debugger->SetMaterial(m);
+                sm->GetRootNode()->AttachObject(debugger);
+                am = model;
             }
         }
     }
+
+    
 }
 
 void InitScene()
@@ -57,6 +72,8 @@ void InitScene()
 
 void UpdateScene()
 {
+    debugger->Clear();
+    debugger->AddSkeleton(am->GetSkeleton(), DiColor::Red);
 }
 
 int main(int argc, char *argv[])

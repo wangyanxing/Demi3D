@@ -21,7 +21,7 @@ float linstep(float min, float max, float v)
        objNormal = normalize(objNormal);\
        objTangent = normalize(objTangent);
 
-#   define GET_SPACE_POS_NORMAL_TANGENT
+#   define GET_SPACE_POS_NORMAL_TANGENT \
     for (int i = 0; i<4; i++){ \
         objPos.xyz += mul(In.Position, g_boneMatrices[In.BlendIndices[i]]) * In.BlendWeights[i]; \
         objNormal += (mul(float4(In.Normal, 0), g_boneMatrices[In.BlendIndices[i]]) * In.BlendWeights[i]).xyz; \

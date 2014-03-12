@@ -16,6 +16,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "VertexDeclaration.h"
 #include "VertexBuffer.h"
 #include "ShaderManager.h"
+#include "Skeleton.h"
+#include "Bone.h"
 
 namespace Demi
 {
@@ -24,6 +26,8 @@ namespace Demi
         mVbSize(0),
         mDirty(true)
     {
+        SetBatchGroup(BATCH_HELPER);
+
         mSourceData.push_back(Driver->CreateVertexBuffer());
         
         mVertexDecl = Driver->CreateVertexDeclaration();
@@ -183,5 +187,18 @@ namespace Demi
         mSourceData[0]->Unlock();
         
         mDirty = false;
+    }
+
+    void DiDebugHelper::AddSkeleton(const DiSkeletonInstance* skeleton, const DiColor& lineColor)
+    {
+        uint32 numBons = skeleton->GetNumBones();
+        for (uint32 i = 0; i < numBons; ++i)
+        {
+            const DiBone* b = skeleton->GetBone(i);
+            DiNode* p = b->GetParent();
+            DiVec3 pos = b->GetDerivedPosition();
+            DiVec3 posParent = p ? (p->GetDerivedPosition()) : pos;
+            AddLine(pos, posParent, lineColor);
+        }
     }
 }

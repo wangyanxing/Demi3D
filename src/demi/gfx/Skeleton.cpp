@@ -193,8 +193,7 @@ namespace Demi
     {
         UpdateTransforms();
 
-        BoneList::iterator i;
-        for (i = mBoneList.begin(); i != mBoneList.end(); ++i)
+        for (auto i = mBoneList.begin(); i != mBoneList.end(); ++i)
         {            
             (*i)->SetBindingPose();
         }
@@ -234,7 +233,6 @@ namespace Demi
 
     DiSkeletonInstance::~DiSkeletonInstance()
     {
-
     }
 
     void DiSkeletonInstance::Init()

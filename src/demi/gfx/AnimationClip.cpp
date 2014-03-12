@@ -16,6 +16,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "KeyFrame.h"
 #include "Node.h"
 
+#include "Bone.h"
+
 namespace Demi
 {
     namespace 
@@ -254,7 +256,11 @@ namespace Demi
         GetInterpolatedKeyFrame(timeIndex, &kf);
 
         DiVec3 translate = kf.GetTranslate() * weight * scl;
+#if 1
         node->Translate(translate);
+#else
+        node->SetPosition(translate);
+#endif
 
         DiQuat rotate;
         DiAnimation::RotationInterMode rim =
@@ -269,7 +275,11 @@ namespace Demi
             rotate = DiQuat::Slerp(weight, 
                 DiQuat::IDENTITY, kf.GetRotation(), mUseShortestRotationPath);
         }
+#if 1
         node->Rotate(rotate);
+#else
+        node->SetOrientation(rotate);
+#endif
 
         DiVec3 scale = kf.GetScale();
 
@@ -284,7 +294,11 @@ namespace Demi
                 scale = DiVec3::UNIT_SCALE + (scale - DiVec3::UNIT_SCALE) * weight;
             }
         }
+#if 1
         node->Scale(scale);
+#else 
+        node->SetScale(scale);
+#endif
     }
 
     DiTransformKeyFrame* DiNodeClip::GetNodeKeyFrame( unsigned short index ) const

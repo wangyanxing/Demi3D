@@ -69,6 +69,10 @@ namespace Demi
         /** Add a bounding box
          */
         void            AddBoundingBox(const DiAABB& bounds, const DiColor& lineColor);
+
+        /** Add a skeleton
+         */
+        void            AddSkeleton(const DiSkeletonInstance* skeleton, const DiColor& lineColor);
         
         /** Add a frustum
          */

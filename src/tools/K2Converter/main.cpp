@@ -27,6 +27,8 @@ using namespace Demi;
 #include "Bone.h"
 #include "ClipController.h"
 #include "AnimationClip.h"
+#include "Animation.h"
+#include "KeyFrame.h"
 
 #pragma warning(disable : 4996)
 
@@ -39,7 +41,7 @@ using namespace Demi;
 DiAssetManager* g_assetMgr = 0;
 DiMesh*		    g_currentModel = 0;
 DiSubMesh*		g_currentSub = 0;
-bool			g_trans_orit = true;
+bool			g_trans_orit = false;
 DiString		g_prefix;
 
 struct Vert
@@ -68,6 +70,17 @@ struct matrix34
     float m20, m21, m22;
     float m30, m31, m32;
 };
+
+struct bone
+{
+    matrix34 inv_matrix;
+    matrix34 matrix;
+    DiString name;
+    int id;
+    int parent;
+};
+
+DiVector<bone> g_curBones;
 
 DiMat4 converMat(const matrix34& m)
 {
@@ -170,10 +183,114 @@ void read_string(FILE* fp, char* are, int length)
     are[length] = '\0';
 }
 
-void read_bone(int id, FILE* fp, DiSkeleton* skeleton, DiVector<DiPair<int, int>>& parentTable)
+void convert_bones(DiSkeleton* skeleton)
+{
+#if 1
+    FILE* fp = fopen("bones.txt","w+");
+    fprintf(fp, "DiVector<DiVec3> bones;\n");
+    for (size_t i = 0; i < g_curBones.size(); ++i)
+    {
+        DiVec3 pos, scale;
+        DiQuat rot;
+        DiMat4 mat = converMat(g_curBones[i].matrix);
+        mat.decomposition(pos, scale, rot);
+        fprintf(fp, "bones.push_back(DiVec3(%f, %f, %f));\n", pos.x, pos.y, pos.z);
+    }
+    fclose(fp);
+#endif
+
+    for (size_t i = 0; i < g_curBones.size(); ++i)
+        skeleton->CreateBone(g_curBones[i].name, g_curBones[i].id);
+
+    DiBone* root = nullptr;
+
+    for (size_t i = 0; i < g_curBones.size(); ++i)
+    {
+        DiBone* b = skeleton->GetBone(g_curBones[i].id);
+        if (g_curBones[i].parent >= 0)
+        {
+#if 1
+            DiBone* p = skeleton->GetBone(g_curBones[i].parent);
+            p->AddChild(b);
+#endif
+        }
+        else
+            root = b;
+    }
+
+    DiVector<DiBone*> level;
+    level.push_back(root);
+
+    while (!level.empty())
+    {
+        DiVector<DiBone*> next;
+        for (auto i = level.begin(); i != level.end(); ++i)
+        {
+            DiBone* bone = (*i);
+            int id = bone->GetHandle();
+
+            DiVec3 pos, scale;
+            DiQuat rot;
+
+            DiMat4 mat = converMat(g_curBones[id].matrix);
+            mat.decomposition(pos, scale, rot);
+
+            DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_X);
+            if (g_trans_orit)
+            {
+                pos = q*pos;
+                rot = q*rot;
+            }
+
+            if (g_curBones[id].parent >= 0)
+            {
+                DiMat4 parentmat = DiMat4::IDENTITY;
+                parentmat = converMat(g_curBones[g_curBones[id].parent].matrix);
+
+                DiVec3 parent_pos, parent_scale;
+                DiQuat parent_rot;
+                parentmat.decomposition(parent_pos, parent_scale, parent_rot);
+
+                if (g_trans_orit)
+                {
+                    parent_pos = q*parent_pos;
+                    parent_rot = q*parent_rot;
+                }
+
+                pos = parent_rot.Inverse() * (pos - parent_pos) / parent_scale;
+                rot = parent_rot.Inverse() * rot;
+            }
+
+#if 0
+            if (bone->GetParent())
+#else
+            if (false)
+#endif
+            {
+                bone->SetDerivedPosition(pos);
+                bone->SetDerivedOrientation(rot);
+            }
+            else
+            {
+                bone->SetPosition(pos);
+                bone->SetOrientation(rot);
+            }
+
+            bone->SetScale(scale);
+
+            size_t cn = bone->GetChildrenNum();
+            for (size_t c = 0; c < cn; c++)
+                next.push_back((DiBone*)bone->GetChild(c));
+        }
+
+        level = next;
+    }
+}
+
+void read_bone(int id, FILE* fp)
 {
     int parent_bone_index = read_int(fp);
-    printf("parent bone index = %d\n", parent_bone_index);
+    //printf("parent bone index = %d\n", parent_bone_index);
 
     matrix34 inv_matrix;
     matrix34 matrix;
@@ -183,25 +300,20 @@ void read_bone(int id, FILE* fp, DiSkeleton* skeleton, DiVector<DiPair<int, int>
     //printf("\n");
     print_matrix34(matrix);
 
-    DiMat4 mat = converMat(matrix);
-
     char length = read_char(fp);
     char name[255];
     read_string(fp, name, length);
-    printf("name : %s\n", name);
+    //printf("name : %s\n", name);
 
-    DiBone* bone = skeleton->CreateBone(name, id);
-    DiVec3 pos, scale;
-    DiQuat rot;
-    mat.decomposition(pos, scale, rot);
-    bone->SetPosition(pos);
-    bone->SetScale(scale);
-    bone->SetOrientation(rot);
+    g_curBones[id].id = id;
+    g_curBones[id].parent = parent_bone_index;
+    g_curBones[id].matrix = matrix;
+    g_curBones[id].inv_matrix = inv_matrix;
+    g_curBones[id].name = name;
+
+
 
     char zero = read_char(fp);
-
-    parentTable[id].first = id;
-    parentTable[id].second = parent_bone_index;
 }
 
 void read_verts(FILE* fp)
@@ -628,23 +740,15 @@ DiMotionPtr convertMesh(const char* name, const char* outpath)
     DiMotionPtr mt = Demi::DiAssetManager::GetInstancePtr()->CreateOrReplaceAsset<DiMotion>(motionname);
     DiSkeleton* skeleton = mt->CreateSkeleton();
 
-    DiVector<DiPair<int, int>> parentTable(num_bones);
+    g_curBones.resize(num_bones);
 
     printf("------------bone-----------\n");
     for (int i = 0; i < num_bones; i++)
     {
-        read_bone(i, fp, skeleton, parentTable);
+        read_bone(i, fp);
     }
 
-    for (auto i = parentTable.begin(); i != parentTable.end(); ++i)
-    {
-        DiBone* b = skeleton->GetBone(i->first);
-        if (i->second >= 0)
-        {
-            DiBone* parent = skeleton->GetBone(i->second);
-            parent->AddChild(b);
-        }
-    }
+    convert_bones(skeleton);
 
     printf("------------mesh-----------\n");
     if (!check_fourcc_chunk(fp, "mesh"))
@@ -706,51 +810,87 @@ enum ClipTags
 
 struct Clip
 {
-    Clip(int b)
-        :bone(b)
+    Clip(int b = 0)
+    :bone(b)
     {
-        vis = 0;
-        pos = DiVec3::ZERO;
-        rot = DiVec3::ZERO;
-        scale = DiVec3::UNIT_SCALE;
+        //vis.resize(frames, 0);
+        //pos.resize(frames,DiVec3::ZERO);
+        //rot.resize(frames,DiVec3::ZERO);
+        //scale.resize(frames,DiVec3::UNIT_SCALE);
     }
     int bone;
-    int vis;
-    DiVec3 pos;
-    DiVec3 rot;
-    DiVec3 scale;
+    DiVector<int> vis;
+    DiVector<DiVec3> pos;
+    DiVector<DiVec3> rot;
+    DiVector<DiVec3> scale;
 };
 
-void updateClip(Clip& c, int keytype, float val, int vis)
+size_t maxClipKeys(Clip& c)
+{
+    return std::max(c.pos.size(), std::max(c.rot.size(), c.scale.size()));
+}
+
+void updateClipSize(Clip& c, int keytype, int size)
 {
     switch (keytype)
     {
     case MKEY_X:
-        c.pos.x = val; return;
     case MKEY_Y:
-        c.pos.y = val; return;
     case MKEY_Z:
-        c.pos.z = val; return;
+        if (c.pos.size() != size)
+            c.pos.resize(size, DiVec3::ZERO);
+        return;
     case MKEY_PITCH:
-        c.rot.x = val; return;
     case MKEY_ROLL:
-        c.rot.y = val; return;
     case MKEY_YAW:
-        c.rot.z = val; return;
+        if (c.rot.size() != size)
+            c.rot.resize(size, DiVec3::ZERO);
+        return;
     case MKEY_VISIBILITY:
-        c.vis = vis; return;
+        if (c.vis.size() != size)
+            c.vis.resize(size, 0);
+        return;
     case MKEY_SCALE_X:
-        c.scale.x = val; return;
     case MKEY_SCALE_Y:
-        c.scale.x = val; return;
     case MKEY_SCALE_Z:
-        c.scale.x = val; return;
+        if (c.scale.size() != size)
+            c.scale.resize(size, DiVec3::UNIT_SCALE);
+        return;
     default:
         break;
     }
 }
 
-void readClip(FILE* fp)
+void updateClip(Clip& c, int keytype, int keyID, float val, int vis)
+{
+    switch (keytype)
+    {
+    case MKEY_X:
+        c.pos[keyID].x = val; return;
+    case MKEY_Y:
+        c.pos[keyID].y = val; return;
+    case MKEY_Z:
+        c.pos[keyID].z = val; return;
+    case MKEY_PITCH:
+        c.rot[keyID].x = val; return;
+    case MKEY_ROLL:
+        c.rot[keyID].y = val; return;
+    case MKEY_YAW:
+        c.rot[keyID].z = val; return;
+    case MKEY_VISIBILITY:
+        c.vis[keyID] = vis; return;
+    case MKEY_SCALE_X:
+        c.scale[keyID].x = val; return;
+    case MKEY_SCALE_Y:
+        c.scale[keyID].x = val; return;
+    case MKEY_SCALE_Z:
+        c.scale[keyID].x = val; return;
+    default:
+        break;
+    }
+}
+
+void readClip(FILE* fp, DiVector<Clip>& clips)
 {
     if (!check_fourcc_chunk(fp, "bmtn"))
     {
@@ -769,31 +909,129 @@ void readClip(FILE* fp)
     read_string(fp, name, nameLen);
     read_uchar(fp);
 
-    printf("boneindex: %d, keytype: %d, numkeys: %d\n", boneindex, keytype, numkeys);
-    //printf("keytype: %d\n", keytype);
-    //printf("numkeys: %d\n", numkeys);
-    printf("name: %s\n", name);
+    //printf("boneindex: %d, keytype: %d, numkeys: %d\n", boneindex, keytype, numkeys);
+    //printf("name: %s\n", name);
+
+    Clip& c = clips[boneindex];
+    updateClipSize(c, keytype, numkeys);
     
     if (keytype == MKEY_VISIBILITY)
     {
         unsigned char* data = new unsigned char[numkeys];
         fread(data, numkeys, 1, fp);
+        for (int i = 0; i < numkeys; i++)
+            updateClip(c, keytype, i, 0, data[i]);
         delete[] data;
     }
     else
     {
         float* data = new float[numkeys];
         fread(data, numkeys * sizeof(float), 1, fp);
-        //for (int i = 0; i < numkeys; i++)
-            //printf("%f ", data[i]);
-        //printf("\n");
+        for (int i = 0; i < numkeys; i++)
+            updateClip(c, keytype, i, data[i], 0);
         delete[] data;
     }
 
     delete[] name;
 }
 
-void convertClip(const char* name, const char* outpath)
+void convertToDemiAnim(DiVector<Clip>& clips, DiAnimation* anim, DiSkeleton* skeleton, int numFrames)
+{
+    DiVector<DiVector<DiVec3> > vs;
+    DiVector<DiVector<DiVec3> > rs;
+    for (size_t i = 0; i < clips.size(); ++i)
+    {
+        Clip& c = clips[i];
+        DiBone* bone = skeleton->GetBone(i);
+
+        DiMat4 boneLocal;
+        boneLocal.makeTransform(bone->GetPosition(),bone->GetScale(),bone->GetOrientation());
+        boneLocal = boneLocal.inverse();
+
+        DiVector<DiVec3> mod;
+        DiVector<DiVec3> modr;
+
+        DiNodeClip* clip = anim->CreateNodeClip(i, bone);
+        size_t maxkeys = maxClipKeys(c);
+        for (size_t k = 0; k < maxkeys; ++k)
+        {
+            DiTransformKeyFrame* key = clip->CreateNodeKeyFrame(float(k) / float(numFrames));
+            DiVec3 trans = DiVec3::ZERO;
+            DiVec3 scale = DiVec3::UNIT_SCALE;
+            DiQuat rot = DiQuat::IDENTITY;
+            
+            if (k < c.pos.size())
+                trans = c.pos[k];
+            else
+                trans = c.pos.back();
+
+            if (k < c.scale.size())
+                scale = c.scale[k];
+            else
+                scale = c.scale.back();
+
+            DiVec3 euler;
+            if (k < c.rot.size())
+                euler = c.rot[k];
+            else
+                euler = c.rot.back();
+
+            DiMat3 rotmat;
+            rotmat.FromEulerAnglesYXZ(DiDegree(euler.z), DiDegree(euler.y), DiDegree(euler.x));
+            rot.FromRotationMatrix(rotmat);
+
+            DiMat4 m;
+            m.makeTransform(trans,scale,rot);
+            m = boneLocal * m;
+            DiVec3 _p, _s;
+            DiQuat _q;
+            m.decomposition(_p, _s, _q);
+
+            mod.push_back(trans);
+            modr.push_back(euler);
+
+            key->SetTranslate(_p);
+            key->SetScale(_s);
+            key->SetRotation(_q);
+        }
+
+        vs.push_back(mod);
+        rs.push_back(modr);
+    }
+
+#if 1
+    FILE* fp = fopen("clips.txt", "w+");
+    fprintf(fp, "std::vector<std::vector<DiVec3> > clips; \n");
+    fprintf(fp, "std::vector<std::vector<DiVec3> > rotclips; \n");
+    fprintf(fp, "void initClips(){ \n");
+    fprintf(fp, "std::vector<DiVec3> t; \n");
+
+    for (size_t i = 0; i < vs.size(); ++i)
+    {
+        fprintf(fp, "t = {");
+        for (auto pi = vs[i].begin(); pi != vs[i].end(); ++pi)
+        {
+            fprintf(fp, "%sDiVec3(%f,%f,%f)", pi == vs[i].begin() ? "" : ",", pi->x, pi->y, pi->z);
+        }
+        fprintf(fp, "};\n");
+        fprintf(fp, "clips.push_back(t);\n");
+    }
+    for (size_t i = 0; i < rs.size(); ++i)
+    {
+        fprintf(fp, "t = {");
+        for (auto pi = rs[i].begin(); pi != rs[i].end(); ++pi)
+        {
+            fprintf(fp, "%sDiVec3(%f,%f,%f)", pi == rs[i].begin() ? "" : ",", pi->x, pi->y, pi->z);
+        }
+        fprintf(fp, "};\n");
+        fprintf(fp, "rotclips.push_back(t);\n");
+    }
+    fprintf(fp, "}\n");
+    fclose(fp);
+#endif
+}
+
+void convertClip(const char* name, const char* outpath, DiMotionPtr motion)
 {
     FILE* fp = fopen(name, "rb");
 
@@ -818,10 +1056,32 @@ void convertClip(const char* name, const char* outpath)
     printf("num bones: %d\n", num_bones);
     printf("num frames: %d\n", num_frames);
 
+
+    DiVector<Clip> clips;
+    for (int i = 0; i < num_bones; i++)
+    {
+        clips.push_back(Clip(i));
+    }
+
     while (!feof(fp))
     {
-        readClip(fp);
+        readClip(fp,clips);
     }
+
+    DiString animName = name;
+    animName = animName.ExtractFileName();
+    animName = animName.ExtractBaseName();
+    float length = num_frames / 30.0f; // fixed fps for now
+    DiAnimation* anim = motion->CreateAnimation(animName, length);
+    DiSkeleton* ske = motion->GetSkeleton();
+
+    convertToDemiAnim(clips, anim, ske, num_frames);
+
+    DiMotionSerializer ser;
+    DiString out = outpath;
+    out += animName;
+    out += ".motion";
+    ser.ExportMotion(motion, out);
 
     fclose(fp);
 }
@@ -830,17 +1090,22 @@ int main(int numargs, char** args)
 {
     init_engine();
 
-    DiString quality = "high.model";
+    //DiString quality = "high.model";
+    //DiString quality = "pumkinward.model";
+    DiString quality = "model.model";
     g_prefix = "";
-    DiString inpath = "L:\\Games\\HON_res\\heroes\\";
+    //DiString inpath = "L:\\Games\\HON_res\\heroes\\";
+    DiString inpath = "L:\\Games\\HON_res\\world\\props\\";
     DiString texturepath = "L:\\Games\\HON_tex\\00000000\\heroes\\";
     DiString output = "C:\\Demi\\media\\models\\hon\\";
 
 
     DiVector<DiString> files;
+    //files.push_back("halloween_props");
+    files.push_back("cauldron");
     //files.push_back("aluna");
     //files.push_back("rally");
-    files.push_back("andromeda");
+    //files.push_back("andromeda");
     //files.push_back("arachna");
     //files.push_back("armadon");
 
@@ -861,8 +1126,10 @@ int main(int numargs, char** args)
     //g_prefix = "teapot";
     //convertMesh("L:\\Games\\HON_res\\core\\null\\null.model", "C:\\Demi\\media\\models\\hon\\");
 
-    g_prefix = "armadon";
-    convertClip("L:\\Games\\HON_res\\heroes\\armadon\\clips\\walk_1.clip", "C:\\Demi\\media\\models\\hon\\");
+    g_prefix = "default_1";
+    //convertClip("L:\\Games\\HON_res\\heroes\\aluna\\clips\\default_1.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
+    //convertClip("L:\\Games\\HON_res\\world\\props\\halloween_props\\pumkinward.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
+    convertClip("L:\\Games\\HON_res\\world\\props\\cauldron\\clips\\default_1.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
 
     close_engine();
 
