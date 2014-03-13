@@ -125,7 +125,16 @@ namespace Demi
         AddLine(v2, max, lineColor);
         AddLine(v3, v6, lineColor);
     }
-    
+
+    void DiDebugHelper::AddBoundingBox(const DiVec3& pos, float size, const DiColor& lineColor)
+    {
+        DiAABB b;
+        DiVec3 minv = pos - DiVec3(size, size, size);
+        DiVec3 maxv = pos + DiVec3(size, size, size);
+        b.SetExtents(minv, maxv);
+        AddBoundingBox(b, lineColor);
+    }
+
     void DiDebugHelper::Clear()
     {
         mLines.clear();

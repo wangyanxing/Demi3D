@@ -38,7 +38,7 @@ namespace Demi
         typedef DiVector<DiNode*> Children;
         friend class DiSceneManager;
 
-    protected:
+    public:
 
         DiNode();
 
@@ -113,10 +113,10 @@ namespace Demi
 
         virtual DiNode*          CreateChild(
             const DiVec3& translate = DiVec3::ZERO, 
-            const DiQuat& rotate = DiQuat::IDENTITY ) = 0;
+            const DiQuat& rotate = DiQuat::IDENTITY );
 
         virtual DiNode*          CreateChild(const DiString& name, const DiVec3& translate = DiVec3::ZERO,
-            const DiQuat& rotate = DiQuat::IDENTITY) = 0;
+            const DiQuat& rotate = DiQuat::IDENTITY);
 
         size_t                   GetChildrenNum() const
         {

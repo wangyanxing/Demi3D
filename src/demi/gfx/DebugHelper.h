@@ -70,6 +70,8 @@ namespace Demi
          */
         void            AddBoundingBox(const DiAABB& bounds, const DiColor& lineColor);
 
+        void            AddBoundingBox(const DiVec3& pos, float size, const DiColor& lineColor);
+
         /** Add a skeleton
          */
         void            AddSkeleton(const DiSkeletonInstance* skeleton, const DiColor& lineColor);

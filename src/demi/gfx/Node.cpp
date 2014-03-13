@@ -626,4 +626,23 @@ namespace Demi
     {
         mName = newName;
     }
+
+    DiNode* DiNode::CreateChild(const DiVec3& translate /*= DiVec3::ZERO*/, const DiQuat& rotate /*= DiQuat::IDENTITY */)
+    {
+        DiNode* node = DI_NEW DiNode();
+        AddChild(node);
+        node->Translate(translate);
+        node->Rotate(rotate);
+        return node;
+    }
+
+    DiNode* DiNode::CreateChild(const DiString& name, const DiVec3& translate /*= DiVec3::ZERO*/, const DiQuat& rotate /*= DiQuat::IDENTITY*/)
+    {
+        DiNode* node = DI_NEW DiNode(name);
+        AddChild(node);
+        node->Translate(translate);
+        node->Rotate(rotate);
+        return node;
+    }
+
 }

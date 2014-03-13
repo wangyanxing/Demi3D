@@ -78,6 +78,8 @@ namespace Demi
 
         void              CloseEngine();
 
+        DiInputManager*   GetInputManager() { return mInputMgr; }
+
         DiCameraHelper*   GetCameraHelper() { return mCameraHelper; }
                           
         void              SetUpdateCallback(UpdateCallback val) { mUpdateCallback = val; }

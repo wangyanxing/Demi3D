@@ -188,6 +188,7 @@ void convert_bones(DiSkeleton* skeleton)
 #if 1
     FILE* fp = fopen("bones.txt","w+");
     fprintf(fp, "DiVector<DiVec3> bones;\n");
+    fprintf(fp, "DiVector<DiQuat> boneRots;\n");
     for (size_t i = 0; i < g_curBones.size(); ++i)
     {
         DiVec3 pos, scale;
@@ -195,6 +196,7 @@ void convert_bones(DiSkeleton* skeleton)
         DiMat4 mat = converMat(g_curBones[i].matrix);
         mat.decomposition(pos, scale, rot);
         fprintf(fp, "bones.push_back(DiVec3(%f, %f, %f));\n", pos.x, pos.y, pos.z);
+        fprintf(fp, "boneRots.push_back(DiQuat(%f, %f, %f, %f));\n", rot.w, rot.x, rot.y, rot.z);
     }
     fclose(fp);
 #endif
@@ -276,6 +278,8 @@ void convert_bones(DiSkeleton* skeleton)
                 bone->SetOrientation(rot);
             }
 
+            printf("boneid:%d pos: %f,%f,%f\n", id, pos.x, pos.y, pos.z);
+
             bone->SetScale(scale);
 
             size_t cn = bone->GetChildrenNum();
@@ -303,15 +307,13 @@ void read_bone(int id, FILE* fp)
     char length = read_char(fp);
     char name[255];
     read_string(fp, name, length);
-    //printf("name : %s\n", name);
+    printf("boneid: %d, name : %s\n", id, name);
 
     g_curBones[id].id = id;
     g_curBones[id].parent = parent_bone_index;
     g_curBones[id].matrix = matrix;
     g_curBones[id].inv_matrix = inv_matrix;
     g_curBones[id].name = name;
-
-
 
     char zero = read_char(fp);
 }
@@ -545,6 +547,61 @@ void read_tang(FILE* fp)
     delete[] vertics;
 }
 
+void read_surf(FILE* fp)
+{
+    printf("-----------surf------------\n");
+
+    int chunk_size = read_int(fp);
+    
+    int surfindex = read_int(fp);
+    int num_planes = read_int(fp);
+    int num_points = read_int(fp);
+    int num_edges = read_int(fp);
+    int num_tris = read_int(fp);
+
+    float minx, miny, minz;
+    float maxx, maxy, maxz;
+    minx = read_float(fp);
+    miny = read_float(fp);
+    minz = read_float(fp);
+    maxx = read_float(fp);
+    maxy = read_float(fp);
+    maxz = read_float(fp);
+
+    for (int i = 0; i < num_planes; ++i)
+    {
+        float p1 = read_float(fp);
+        float p2 = read_float(fp);
+        float p3 = read_float(fp);
+        float p4 = read_float(fp);
+    }
+
+    for (int i = 0; i < num_points; ++i)
+    {
+        float p1 = read_float(fp);
+        float p2 = read_float(fp);
+        float p3 = read_float(fp);
+    }
+
+    for (int i = 0; i < num_edges; ++i)
+    {
+        float p1 = read_float(fp);
+        float p2 = read_float(fp);
+        float p3 = read_float(fp);
+        float p4 = read_float(fp);
+        float p5 = read_float(fp);
+        float p6 = read_float(fp);
+    }
+
+    for (int i = 0; i < num_tris; ++i)
+    {
+        int p1 = read_int(fp);
+        int p2 = read_int(fp);
+        int p3 = read_int(fp);
+    }
+
+}
+
 void read_mesh(FILE* fp)
 {
     float minx, miny, minz;
@@ -552,15 +609,8 @@ void read_mesh(FILE* fp)
 
     printf("\n##################################\n\n");
 
-    g_currentSub = g_currentModel->CreateSubMesh();
     g_currentVerts.clear();
 
-    g_currentSub->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
-    g_currentSub->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
-    g_currentSub->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
-    g_currentSub->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
-
-    // mesh trunkµÄ´óÐ¡
     read_int(fp);
 
     int mesh_index = read_int(fp);
@@ -572,7 +622,21 @@ void read_mesh(FILE* fp)
 
     int vertics_count = read_int(fp);
     printf("vertics count:%d\n", vertics_count);
-    g_currentSub->SetVerticeNum(vertics_count);
+
+    if (vertics_count != 0)
+    {
+        g_currentSub = g_currentModel->CreateSubMesh();
+        g_currentSub->SetVerticeNum(vertics_count);
+        g_currentSub->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
+        g_currentSub->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+        g_currentSub->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
+        g_currentSub->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
+    }
+    else
+    {
+        g_currentSub = NULL;
+    }
+
     g_currentVerts.resize(vertics_count);
 
     minx = read_float(fp);
@@ -599,21 +663,17 @@ void read_mesh(FILE* fp)
     printf("material name : %s\n", name);
     read_char(fp);
     DiString matname = name;
-    if (matname == "material")
+
+    if (g_currentSub)
     {
-        g_currentSub->SetMaterialName(g_prefix + "_mat.mtl");
-    }
-    else if (matname == "256material")
-    {
-        g_currentSub->SetMaterialName(g_prefix + "_256_mat.mtl");
-    }
-    else if (matname == "ramp_1")
-    {
-        g_currentSub->SetMaterialName(g_prefix + "_ramp_1.mtl");
-    }
-    else
-    {
-        g_currentSub->SetMaterialName(g_prefix + "_mat.mtl");
+        if (matname == "material")
+            g_currentSub->SetMaterialName(g_prefix + "_mat.mtl");
+        else if (matname == "256material")
+            g_currentSub->SetMaterialName(g_prefix + "_256_mat.mtl");
+        else if (matname == "ramp_1")
+            g_currentSub->SetMaterialName(g_prefix + "_ramp_1.mtl");
+        else
+            g_currentSub->SetMaterialName(g_prefix + "_mat.mtl");
     }
 
     while (!feof(fp))
@@ -661,6 +721,11 @@ void read_mesh(FILE* fp)
         {
             return;
         }
+        else if (check_fourcc_chunk(hed, "surf"))
+        {
+            read_surf(fp);
+            return;
+        }
         else
         {
             printf("!!!!!wrong way : %c%c%c%c\n", hed[0], hed[1], hed[2], hed[3]);
@@ -671,8 +736,11 @@ void read_mesh(FILE* fp)
 
 void set_mesh_verts()
 {
-    void* data = g_currentSub->CreateSourceData(0, g_currentVerts.size(), sizeof(float)* 11);
-    memcpy(data, &g_currentVerts[0], g_currentVerts.size()*sizeof(float)* 11);
+    if (g_currentSub)
+    {
+        void* data = g_currentSub->CreateSourceData(0, g_currentVerts.size(), sizeof(float)* 11);
+        memcpy(data, &g_currentVerts[0], g_currentVerts.size()*sizeof(float)* 11);
+    }
 }
 
 DiMotionPtr convertMesh(const char* name, const char* outpath)
@@ -768,6 +836,7 @@ DiMotionPtr convertMesh(const char* name, const char* outpath)
     exfile = exfile.ExtractFileName();
     DiString out = outpath;
     out += exfile;
+
     ms.ExportMesh(model, out);
 
     fclose(fp);
@@ -944,10 +1013,6 @@ void convertToDemiAnim(DiVector<Clip>& clips, DiAnimation* anim, DiSkeleton* ske
         Clip& c = clips[i];
         DiBone* bone = skeleton->GetBone(i);
 
-        DiMat4 boneLocal;
-        boneLocal.makeTransform(bone->GetPosition(),bone->GetScale(),bone->GetOrientation());
-        boneLocal = boneLocal.inverse();
-
         DiVector<DiVec3> mod;
         DiVector<DiVec3> modr;
 
@@ -980,18 +1045,16 @@ void convertToDemiAnim(DiVector<Clip>& clips, DiAnimation* anim, DiSkeleton* ske
             rotmat.FromEulerAnglesYXZ(DiDegree(euler.z), DiDegree(euler.y), DiDegree(euler.x));
             rot.FromRotationMatrix(rotmat);
 
-            DiMat4 m;
-            m.makeTransform(trans,scale,rot);
-            m = boneLocal * m;
-            DiVec3 _p, _s;
+            DiVec3 _p;
             DiQuat _q;
-            m.decomposition(_p, _s, _q);
+            _p = bone->ConvertWorldToLocalPosition(trans);
+            _q = bone->ConvertWorldToLocalOrientation(rot);
 
             mod.push_back(trans);
             modr.push_back(euler);
 
             key->SetTranslate(_p);
-            key->SetScale(_s);
+            key->SetScale(scale);
             key->SetRotation(_q);
         }
 
@@ -1090,19 +1153,22 @@ int main(int numargs, char** args)
 {
     init_engine();
 
-    //DiString quality = "high.model";
+    DiString quality = "high.model";
     //DiString quality = "pumkinward.model";
-    DiString quality = "model.model";
+    //DiString quality = "model.model";
     g_prefix = "";
     //DiString inpath = "L:\\Games\\HON_res\\heroes\\";
-    DiString inpath = "L:\\Games\\HON_res\\world\\props\\";
+    //DiString inpath = "L:\\Games\\HON_res\\world\\props\\";
+    DiString inpath = "L:\\Games\\HON_res\\buildings\\hellbourne\\";
+    //DiString texturepath = "L:\\Games\\HON_tex\\00000000\\heroes\\";
     DiString texturepath = "L:\\Games\\HON_tex\\00000000\\heroes\\";
     DiString output = "C:\\Demi\\media\\models\\hon\\";
 
 
     DiVector<DiString> files;
     //files.push_back("halloween_props");
-    files.push_back("cauldron");
+    //files.push_back("haiou");
+    files.push_back("range_rax");
     //files.push_back("aluna");
     //files.push_back("rally");
     //files.push_back("andromeda");
@@ -1129,7 +1195,7 @@ int main(int numargs, char** args)
     g_prefix = "default_1";
     //convertClip("L:\\Games\\HON_res\\heroes\\aluna\\clips\\default_1.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
     //convertClip("L:\\Games\\HON_res\\world\\props\\halloween_props\\pumkinward.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
-    convertClip("L:\\Games\\HON_res\\world\\props\\cauldron\\clips\\default_1.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
+    convertClip("L:\\Games\\HON_res\\buildings\\hellbourne\\range_rax\\clips\\default_1.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
 
     close_engine();
 
