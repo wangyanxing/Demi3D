@@ -95,7 +95,7 @@ DiQuat convEuler(DiVec3& v)
     switch (order)
     {
     case 0:
-        rotmat.FromEulerAnglesXYZ(DiDegree(v.z), DiDegree(v.y), DiDegree(v.x));
+        rotmat.FromEulerAnglesXYZ(DiDegree(v.x), DiDegree(v.y), DiDegree(v.z));
         break;
     case 1:
         rotmat.FromEulerAnglesXZY(DiDegree(v.z), DiDegree(v.y), DiDegree(v.x));
@@ -127,7 +127,7 @@ DiQuat convEuler(DiVec3& v)
 #endif
 }
 
-int gNumKeys = 151;
+int gNumKeys = 2201;
 float gCurKey = 0;
 DiVec3 getClip(int bone, int key)
 {
@@ -140,15 +140,17 @@ DiVec3 getClipRot(int bone, int key)
 
 void refreshDebugger()
 {
+    DiVec3 p0 = getClip(0, gCurKey);
     DiVec3 p1 = getClip(1, gCurKey);
     DiVec3 p2 = getClip(2, gCurKey);
-    DiVec3 p3 = getClip(3, gCurKey);
-    DiVec3 p4 = getClip(4, gCurKey);
+    //DiVec3 p3 = getClip(3, gCurKey);
+    //DiVec3 p4 = getClip(4, gCurKey);
 
+    DiVec3 r0 = getClipRot(0, gCurKey);
     DiVec3 r1 = getClipRot(1, gCurKey);
     DiVec3 r2 = getClipRot(2, gCurKey);
-    DiVec3 r3 = getClipRot(3, gCurKey);
-    DiVec3 r4 = getClipRot(4, gCurKey);
+    //DiVec3 r3 = getClipRot(3, gCurKey);
+    //DiVec3 r4 = getClipRot(4, gCurKey);
 
     debugger->Clear();
     {
@@ -156,9 +158,6 @@ void refreshDebugger()
         nd.SetPosition(p1);
 
         DiQuat curq = convEuler(r1);
-        //nd.Pitch(DiRadian(DiDegree(r1.x)));
-        //nd.Yaw(DiRadian(DiDegree(r1.y)));
-        //nd.Roll(DiRadian(DiDegree(r1.z)));
         nd.SetOrientation(curq);
         //DiVec3 curp = p1;
         debugger->AddBoundingBox(nd.GetDerivedPosition(), 0.3f, DiColor::White);
@@ -166,14 +165,13 @@ void refreshDebugger()
         //curp = p1 + curq * p2;
         DiNode nd2;
         nd.AddChild(&nd2);
-        nd2.Translate(p3);
-        curq = convEuler(r3);
+        nd2.SetPosition(p2);
+        curq = convEuler(r2);
         nd2.SetOrientation(curq);
         debugger->AddBoundingBox(nd2.GetDerivedPosition(), 0.3f, DiColor::White);
+        
         terNode->SetPosition(nd2.GetDerivedPosition());
         terNode->SetOrientation(nd2.GetDerivedOrientation());
-
-        terNode;
     }
 //     {
 //         DiNode nd;
@@ -201,10 +199,12 @@ void refreshDebugger()
 
 void InitScene()
 {
+#if 0
     DemiDemo::GetApp()->GetInputManager()->registerMousePressEvent("testeuler", [](const OIS::MouseEvent& evt, OIS::MouseButtonID id){
-//        if (id == OIS::MB_Left)
-//             refreshDebugger();
+        if (id == OIS::MB_Left)
+             refreshDebugger();
     });
+#endif
 
 	DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     
@@ -275,8 +275,8 @@ void InitScene()
 
 void UpdateScene()
 {
-    gCurKey += 0.1f;
-    //refreshDebugger();
+    gCurKey += 1.0f;
+    refreshDebugger();
     return;
 
 

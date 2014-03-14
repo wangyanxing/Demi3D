@@ -11,7 +11,6 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#pragma warning(disable:4267)
 #include "Demi.h"
 
 using namespace Demi;
@@ -30,13 +29,18 @@ using namespace Demi;
 #include "Animation.h"
 #include "KeyFrame.h"
 
-#pragma warning(disable : 4996)
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+#  pragma warning(disable : 4996)
+#  pragma warning(disable:4267)
+#endif
 
 #include <stdio.h>
 #include <string.h>
 #include <fstream>
 
-#include <windows.h>
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+#   include <windows.h>
+#endif
 
 DiAssetManager* g_assetMgr = 0;
 DiMesh*		    g_currentModel = 0;
@@ -371,13 +375,13 @@ void read_face(FILE* fp)
     }
     else if (indexsize == 1)
     {
-        USHORT* id16 = (USHORT*)(id);
+        uint16* id16 = (uint16*)(id);
         unsigned char* indices = new unsigned char[numfaces * 3];
         fread(indices, sizeof(unsigned char)* 3 * numfaces, 1, fp);
 
         for (int i = 0; i < numfaces * 3; i++)
         {
-            id16[i] = (USHORT)indices[i];
+            id16[i] = (uint16)indices[i];
         }
 
         delete[]indices;
@@ -845,6 +849,7 @@ DiMotionPtr convertMesh(const char* name, const char* outpath)
 
 void copyRelMats(const char* texPath, const char* name, const char* outpath)
 {
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
     DiVector<DiString> files;
     files.push_back("color.dds");
     files.push_back("normal_rxgb.dds");
@@ -861,6 +866,7 @@ void copyRelMats(const char* texPath, const char* name, const char* outpath)
 
         CopyFileA(src.c_str(), dest.c_str(), FALSE);
     }
+#endif
 }
 
 enum ClipTags
@@ -1153,17 +1159,25 @@ int main(int numargs, char** args)
 {
     init_engine();
 
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+    DiString resBase = "L:/Games/HON_res/";
+    DiString resTexBase = "L:/Games/HON_tex/";
+    DiString output = "C:/Demi/media/models/hon/";
+#else
+    DiString resBase = "/Users/wangya/Projects/HONres/resources0/";
+    DiString resTexBase = "/Users/wangya/Projects/HONres/textures/";
+    DiString output = "/Users/wangya/Demi/media/models/hon/";
+#endif
+    
     DiString quality = "high.model";
     //DiString quality = "pumkinward.model";
     //DiString quality = "model.model";
     g_prefix = "";
     //DiString inpath = "L:\\Games\\HON_res\\heroes\\";
     //DiString inpath = "L:\\Games\\HON_res\\world\\props\\";
-    DiString inpath = "L:\\Games\\HON_res\\buildings\\hellbourne\\";
+    DiString inpath = resBase + "buildings/hellbourne/";
     //DiString texturepath = "L:\\Games\\HON_tex\\00000000\\heroes\\";
-    DiString texturepath = "L:\\Games\\HON_tex\\00000000\\heroes\\";
-    DiString output = "C:\\Demi\\media\\models\\hon\\";
-
+    DiString texturepath = resTexBase + "00000000/heroes/";
 
     DiVector<DiString> files;
     //files.push_back("halloween_props");
@@ -1183,7 +1197,7 @@ int main(int numargs, char** args)
         DiString out = output;
         g_prefix = files[i];
         out += g_prefix + "_";
-        DiString filename = inpath + files[i] + "\\" + quality;
+        DiString filename = inpath + files[i] + "/" + quality;
         auto motion = convertMesh(filename.c_str(), out.c_str());
         motions[i] = motion;
 
@@ -1195,7 +1209,8 @@ int main(int numargs, char** args)
     g_prefix = "default_1";
     //convertClip("L:\\Games\\HON_res\\heroes\\aluna\\clips\\default_1.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
     //convertClip("L:\\Games\\HON_res\\world\\props\\halloween_props\\pumkinward.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
-    convertClip("L:\\Games\\HON_res\\buildings\\hellbourne\\range_rax\\clips\\default_1.clip", "C:\\Demi\\media\\models\\hon\\", motions[0]);
+    convertClip(DiString(resBase + "buildings/hellbourne/range_rax/clips/default_1.clip").c_str(),
+                output.c_str(), motions[0]);
 
     close_engine();
 
