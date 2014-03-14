@@ -32,12 +32,32 @@ void InitScene()
     dirNode->AttachObject(dirlight);
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(0, -0.3f, -0.4).normalisedCopy());
+
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+    DiString resBase = "L:/Games/HON_res/";
+    DiString resTexBase = "L:/Games/HON_tex/";
+    DiString output = "C:/Demi/media/models/hon/";
+#else
+    DiString resBase = "/Users/wangya/Projects/HONres/resources0/";
+    DiString resTexBase = "/Users/wangya/Projects/HONres/textures/";
+    DiString output = "/Users/wangya/Demi/media/models/hon/";
+#endif
     
-    
+    k2anim = new K2Anim(resBase,sm);
+    //k2anim->Load("items/couriers/dragon/high.model", "items/couriers/dragon/clips/default_1.clip");
+    k2anim->Load("buildings/hellbourne/range_rax/high.model", "buildings/hellbourne/range_rax/clips/default_1.clip");
+    k2anim->_UpdateBonesHelper();
+
+    DemiDemo::GetApp()->GetInputManager()->registerMousePressEvent("testeuler",
+        [](const OIS::MouseEvent& evt, OIS::MouseButtonID id){
+            if (id == OIS::MB_Right)
+                k2anim->mBonesHelper->SetVisible(!k2anim->mBonesHelper->GetVisible());
+        });
 }
 
 void UpdateScene()
 {
+    k2anim->_UpdateClipsHelper();
 }
 
 int main(int argc, char *argv[])

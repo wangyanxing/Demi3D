@@ -23,6 +23,29 @@ struct Trans
     DiVec3 scale;
 };
 
+struct Clip
+{
+    Clip(int b = 0)
+    :bone(b)
+    {
+    }
+    int bone;
+    DiVector<int> vis;
+    DiVector<DiVec3> pos;
+    DiVector<DiVec3> rot;
+    DiVector<DiVec3> scale;
+
+    DiVec3 getPos(int id){
+        return id >= pos.size() ? pos.back() : pos[id];
+    }
+    DiVec3 getRot(int id){
+        return id >= rot.size() ? rot.back() : rot[id];
+    }
+    DiVec3 getScale(int id){
+        return id >= scale.size() ? scale.back() : scale[id];
+    }
+};
+
 /** K2 engine animation testing helper
  */
 
@@ -30,7 +53,7 @@ class K2Anim
 {
 public:
     
-    K2Anim(const DiString& baseDir);
+    K2Anim(const DiString& baseDir, DiSceneManager* sm);
     
     ~K2Anim();
     
@@ -41,14 +64,28 @@ public:
     void    _LoadBones(const DiString& model);
     
     void    _LoadClips(const DiString& clip);
+
+    void    _UpdateBonesHelper();
+
+    void    _UpdateClipsHelper();
     
     // bones
     DiVector<Trans> mBones;
-    DiVector<DiPair<int,int> > mParents;
-    
+    DiVector<int> mParents;
+    DiVector<DiNode*> mBoneNodes;
+    DiMap<DiNode*,int> mBoneIds;
+    DiNode* mRootBone;
+
     // clips
-    DiVector<DiVector<Trans> > mClips;
+    DiVector<Clip> mClips;
     int mNumFrames;
     
     DiString mBaseDir;
+
+    DiSceneManager* mSm;
+
+    // skeleton helper
+    DiDebugHelperPtr mBonesHelper;
+
+    DiDebugHelperPtr mClipsHelper;
 };
