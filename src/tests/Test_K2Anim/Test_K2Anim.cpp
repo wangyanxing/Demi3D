@@ -44,8 +44,16 @@ void InitScene()
 #endif
     
     k2anim = new K2Anim(resBase,sm);
-    //k2anim->Load("items/couriers/dragon/high.model", "items/couriers/dragon/clips/default_1.clip");
-    k2anim->Load("buildings/hellbourne/range_rax/high.model", "buildings/hellbourne/range_rax/clips/default_1.clip");
+    k2anim->Load("items/couriers/dragon/high.model", "items/couriers/dragon/clips/default_1.clip");
+    //k2anim->Load("buildings/hellbourne/range_rax/high.model", "buildings/hellbourne/range_rax/clips/default_1.clip");
+    //k2anim->Load("world/props/plants/goodplant/model.model", "world/props/plants/goodplant/clips/default_1.clip");
+    //k2anim->Load("world/props/plants/badplant/model.model", "world/props/plants/badplant/clips/default_1.clip");
+    //k2anim->Load("world/props/fish/model.model", "world/props/fish/clips/path_1.clip");
+    //k2anim->Load("world/props/halloween_props/pumkinward.model", "world/props/halloween_props/pumkinward.clip");
+    //k2anim->Load("world/props/halloween_props/ghost/model.model", "world/props/halloween_props/ghost/default_1.clip");
+    //k2anim->Load("world/props/winter/snowman/model.model", "world/props/winter/snowman/default_1.clip");
+    //k2anim->Load("heroes/aluna/high.model", "heroes/aluna/clips/walk_1.clip");
+    
     k2anim->_UpdateBonesHelper();
 
     DemiDemo::GetApp()->GetInputManager()->registerMousePressEvent("testeuler",

@@ -41,6 +41,7 @@ bool check_fourcc_chunk(FILE* fp, char* sig)
         sig[2] != hed[2] ||
         sig[3] != hed[3])
     {
+        printf("false fourcc chunk:%c%c%c%c\n",hed[0],hed[1],hed[2],hed[3]);
         return false;
     }
     return true;
@@ -178,7 +179,7 @@ void updateClip(Clip& c, int keytype, int keyID, float val, int vis)
 }
 
 
-void readClip(FILE* fp, DiVector<Clip>& clips)
+void readClip(FILE* fp, DiMap<DiString,Clip>& clips)
 {
     if (!check_fourcc_chunk(fp, "bmtn"))
     {
@@ -200,8 +201,10 @@ void readClip(FILE* fp, DiVector<Clip>& clips)
     //printf("boneindex: %d, keytype: %d, numkeys: %d\n", boneindex, keytype, numkeys);
     //printf("name: %s\n", name);
 
-    Clip& c = clips[boneindex];
+    Clip& c = clips[DiString(name)];
     updateClipSize(c, keytype, numkeys);
+    
+    printf("id=%d, name=%s, ktype=%d, ks=%d\n",boneindex,name,keytype,numkeys);
 
     if (keytype == MKEY_VISIBILITY)
     {
@@ -219,7 +222,11 @@ void readClip(FILE* fp, DiVector<Clip>& clips)
             updateClip(c, keytype, i, data[i], 0);
         delete[] data;
     }
-
+    
+    //skip some space if needed
+    int kfsize = keytype == MKEY_VISIBILITY?1:4;
+    int rest = chunkSize - (sizeof(int)*3 + 1 + nameLen + 1 + numkeys*kfsize);
+    for(int i = 0; i < rest; ++i) read_uchar(fp);
     delete[] name;
 }
 
@@ -303,6 +310,7 @@ void K2Anim::_LoadBones(const DiString& model)
     int num_surfs = read_int(fp);
     int num_bones = read_int(fp);
     
+    printf("model version: %d\n",version);
     printf("%d bones\n", num_bones);
     
     float minx, miny, minz;
@@ -328,11 +336,11 @@ void K2Anim::_LoadBones(const DiString& model)
     mBones.clear();
     mParents.clear();
     mBoneNodes.clear();
+    mNameTable.clear();
     for (int id = 0; id < num_bones; id++)
     {
         int parent_bone_index = read_int(fp);
         mParents.push_back(parent_bone_index);
-        printf("bone:%2d, parent:%2d\n", id, parent_bone_index);
         
         matrix34 inv_matrix;
         matrix34 matrix;
@@ -343,14 +351,18 @@ void K2Anim::_LoadBones(const DiString& model)
         char name[255];
         read_string(fp, name, length);
         
+        printf("bone:%s[%2d], parent:%2d\n", name, id, parent_bone_index);
+        
         read_char(fp);
+        
+        mNameTable[name] = id;
         
         DiMat4 mat = converMat(matrix);
         Trans t;
         mat.decomposition(t.pos, t.scale, t.rot);
         mBones.push_back(t);
 
-        mBoneNodes.push_back(new DiNode());
+        mBoneNodes.push_back(new DiNode(name));
         mBoneIds[mBoneNodes.back()] = id;
     }
 
@@ -391,14 +403,11 @@ void K2Anim::_LoadClips(const DiString& clip)
     int num_bones = read_int(fp);
     mNumFrames = read_int(fp);
 
+    printf("clip version: %d\n", version);
     printf("num bones: %d\n", num_bones);
     printf("num frames: %d\n", mNumFrames);
 
     mClips.clear();
-    for (int i = 0; i < num_bones; i++)
-    {
-        mClips.push_back(Clip(i));
-    }
 
     while (!feof(fp))
     {
@@ -412,11 +421,26 @@ void K2Anim::Load(const DiString& model, const DiString& clip)
 {
     _LoadBones(model);
     _LoadClips(clip);
+    
+    // create visualizers
+    for (auto i = mBoneNodes.begin(); i!=mBoneNodes.end(); ++i)
+    {
+        DiCullNode* terNode = mSm->GetRootNode()->CreateChild();
+        DiSimpleShapePtr termBox = make_shared<DiSimpleShape>();
+        termBox->CreateBox(0.5);
+        DiMaterialPtr matbox = DiMaterial::QuickCreate("lambert_v", "lambert_p");
+        matbox->SetAmbient(DiColor(0.3f, 0.3f, 0.3f));
+        termBox->SetMaterial(matbox);
+        terNode->AttachObject(termBox);
+        mBoneVisuals.push_back(terNode);
+    }
 }
+
 
 void K2Anim::_UpdateBonesHelper()
 {
     mBonesHelper->Clear();
+
     uint32 numBons = mBones.size();
     for (uint32 i = 0; i < numBons; ++i)
     {
@@ -424,6 +448,21 @@ void K2Anim::_UpdateBonesHelper()
         DiVec3 posParent = mParents[i] >= 0 ? mBones[mParents[i]].pos : pos;
 
         mBonesHelper->AddLine(pos, posParent, DiColor::Yellow);
+        
+        DiAABB b;
+        DiVec3 minv = pos - DiVec3(0.1, 0.1, 0.1);
+        DiVec3 maxv = pos + DiVec3(0.1, 0.1, 0.1);
+        b.SetExtents(minv, maxv);
+        
+#if 1
+        if (mNameTable["Scene Root"] == (int)i ||
+            mNameTable["Bip01"] == (int)i ||
+            mNameTable["Bip01 Pelvis"] == (int)i ||
+            mNameTable["Bip01 Spine"] == (int)i)
+#endif
+        {
+            mBonesHelper->AddBoundingBox(b, DiColor::Blue);
+        }
     }
 }
 
@@ -431,7 +470,7 @@ void K2Anim::_UpdateClipsHelper()
 {
     mClipsHelper->Clear();
     static float key = 0;
-    key += 0.1f;
+    key += 1.0f;
     if (key >= mNumFrames)
         key = 0;
     
@@ -443,14 +482,18 @@ void K2Anim::_UpdateClipsHelper()
         for (auto i = level.begin(); i != level.end(); ++i)
         {
             DiNode* bone = *i;
-            int id = mBoneIds[bone];
+            DiString boneName = bone->GetName();
 
-            if (id < mClips.size())
+            auto it = mClips.find(boneName);
+            if (it != mClips.end())
             {
-                bone->SetPosition(mClips[id].getPos(key));
-                bone->SetScale(mClips[id].getScale(key));
-                DiQuat rot = convEuler(mClips[id].getRot(key));
+                DiVec3 eulerrot = it->second.getRot(key);
+                DiQuat rot = convEuler(eulerrot);
                 bone->SetOrientation(rot);
+                
+                bone->SetPosition(it->second.getPos(key));
+                
+                bone->SetScale(it->second.getScale(key));
             }
 
             size_t cn = bone->GetChildrenNum();
@@ -459,6 +502,8 @@ void K2Anim::_UpdateClipsHelper()
         }
         level = next;
     }
+    
+    mRootBone->_Update(true, false);
 
     uint32 numBons = mBoneNodes.size();
     for (uint32 i = 0; i < numBons; ++i)
@@ -467,6 +512,25 @@ void K2Anim::_UpdateClipsHelper()
         DiNode* p = b->GetParent();
         DiVec3 pos = b->GetDerivedPosition();
         DiVec3 posParent = p ? (p->GetDerivedPosition()) : pos;
-        mClipsHelper->AddLine(pos, posParent, DiColor::Red);
+       // mClipsHelper->AddLine(pos, posParent, DiColor::Red);
+        
+        if (b->GetName() == "Scene Root" ||
+            b->GetName() == "Bip01" ||
+            b->GetName() == "Bip01 Pelvis" ||
+            b->GetName() == "Bip01 Spine")
+        {
+            mBoneVisuals[i]->SetVisible(true);
+        }
+        else
+        {
+#if 1
+            mBoneVisuals[i]->SetVisible(false);
+#else
+            mBoneVisuals[i]->SetVisible(true);
+#endif
+        }
+        mBoneVisuals[i]->SetPosition(pos);
+        mBoneVisuals[i]->SetOrientation(b->GetDerivedOrientation());
+        mBoneVisuals[i]->SetScale(b->GetDerivedScale());
     }
 }

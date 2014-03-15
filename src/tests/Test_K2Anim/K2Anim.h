@@ -73,11 +73,13 @@ public:
     DiVector<Trans> mBones;
     DiVector<int> mParents;
     DiVector<DiNode*> mBoneNodes;
+    DiMap<DiString,int> mNameTable;
+
     DiMap<DiNode*,int> mBoneIds;
     DiNode* mRootBone;
 
     // clips
-    DiVector<Clip> mClips;
+    DiMap<DiString,Clip> mClips;
     int mNumFrames;
     
     DiString mBaseDir;
@@ -88,4 +90,6 @@ public:
     DiDebugHelperPtr mBonesHelper;
 
     DiDebugHelperPtr mClipsHelper;
+    
+    DiVector<DiCullNode*> mBoneVisuals;
 };
