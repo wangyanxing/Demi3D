@@ -35,6 +35,18 @@ struct Clip
     DiVector<DiVec3> rot;
     DiVector<DiVec3> scale;
 
+    void resize(int frames)
+    {
+        if (pos.empty())
+            pos.resize(frames, DiVec3::ZERO);
+        if (vis.empty())
+            vis.resize(frames, 255);
+        if (rot.empty())
+            rot.resize(frames, DiVec3::ZERO);
+        if (scale.empty())
+            scale.resize(frames, DiVec3::UNIT_SCALE);
+    }
+
     DiVec3 getPos(int id){
         return id >= pos.size() ? pos.back() : pos[id];
     }

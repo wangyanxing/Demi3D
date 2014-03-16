@@ -12,6 +12,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "K2Anim.h"
+#include "euler.h"
+#include "MathMisc.h"
 
 struct matrix34
 {
@@ -125,23 +127,23 @@ void updateClipSize(Clip& c, int keytype, int size)
         case MKEY_X:
         case MKEY_Y:
         case MKEY_Z:
-            if (c.pos.size() != size)
+            if (c.pos.size() < size)
                 c.pos.resize(size, DiVec3::ZERO);
             return;
         case MKEY_PITCH:
         case MKEY_ROLL:
         case MKEY_YAW:
-            if (c.rot.size() != size)
+            if (c.rot.size() < size)
                 c.rot.resize(size, DiVec3::ZERO);
             return;
         case MKEY_VISIBILITY:
-            if (c.vis.size() != size)
+            if (c.vis.size() < size)
                 c.vis.resize(size, 0);
             return;
         case MKEY_SCALE_X:
         case MKEY_SCALE_Y:
         case MKEY_SCALE_Z:
-            if (c.scale.size() != size)
+            if (c.scale.size() < size)
                 c.scale.resize(size, DiVec3::UNIT_SCALE);
             return;
         default:
@@ -179,7 +181,7 @@ void updateClip(Clip& c, int keytype, int keyID, float val, int vis)
 }
 
 
-void readClip(FILE* fp, DiMap<DiString,Clip>& clips)
+void readClip(FILE* fp, DiMap<DiString,Clip>& clips, int frameNum)
 {
     if (!check_fourcc_chunk(fp, "bmtn"))
     {
@@ -201,8 +203,14 @@ void readClip(FILE* fp, DiMap<DiString,Clip>& clips)
     //printf("boneindex: %d, keytype: %d, numkeys: %d\n", boneindex, keytype, numkeys);
     //printf("name: %s\n", name);
 
+    int i = 0;
+    if (DiString(name) == "Bip01")
+    {
+        i++;
+    }
+
     Clip& c = clips[DiString(name)];
-    updateClipSize(c, keytype, numkeys);
+    c.resize(frameNum);
     
     printf("id=%d, name=%s, ktype=%d, ks=%d\n",boneindex,name,keytype,numkeys);
 
@@ -212,6 +220,8 @@ void readClip(FILE* fp, DiMap<DiString,Clip>& clips)
         fread(data, numkeys, 1, fp);
         for (int i = 0; i < numkeys; i++)
             updateClip(c, keytype, i, 0, data[i]);
+        for (int i = numkeys; i < frameNum; ++i)
+            updateClip(c, keytype, i, 0, data[numkeys - 1]);
         delete[] data;
     }
     else
@@ -220,6 +230,8 @@ void readClip(FILE* fp, DiMap<DiString,Clip>& clips)
         fread(data, numkeys * sizeof(float), 1, fp);
         for (int i = 0; i < numkeys; i++)
             updateClip(c, keytype, i, data[i], 0);
+        for (int i = numkeys; i < frameNum; ++i)
+            updateClip(c, keytype, i, data[numkeys - 1], 0);
         delete[] data;
     }
     
@@ -411,7 +423,7 @@ void K2Anim::_LoadClips(const DiString& clip)
 
     while (!feof(fp))
     {
-        readClip(fp, mClips);
+        readClip(fp, mClips, mNumFrames);
     }
 
     fclose(fp);
@@ -434,6 +446,15 @@ void K2Anim::Load(const DiString& model, const DiString& clip)
         terNode->AttachObject(termBox);
         mBoneVisuals.push_back(terNode);
     }
+
+    DiEuler e;
+    e.fromQuat(DiQuat(0.092f,0.701f,-0.092f,0.701f));
+    e.normalise();
+
+    DiEuler e2(0,0,DiDegree(-104).valueRadians());
+    DiQuat q = e2;
+    q.normalise();
+    q.normalise();
 }
 
 
@@ -454,11 +475,13 @@ void K2Anim::_UpdateBonesHelper()
         DiVec3 maxv = pos + DiVec3(0.1, 0.1, 0.1);
         b.SetExtents(minv, maxv);
         
-#if 1
+#if 0
         if (mNameTable["Scene Root"] == (int)i ||
             mNameTable["Bip01"] == (int)i ||
             mNameTable["Bip01 Pelvis"] == (int)i ||
-            mNameTable["Bip01 Spine"] == (int)i)
+            mNameTable["Bip01 Spine"] == (int)i ||
+            mNameTable["Bip01 L Thigh"] == (int)i ||
+            mNameTable["Bip01 L Calf"] == (int)i)
 #endif
         {
             mBonesHelper->AddBoundingBox(b, DiColor::Blue);
@@ -487,9 +510,15 @@ void K2Anim::_UpdateClipsHelper()
             auto it = mClips.find(boneName);
             if (it != mClips.end())
             {
-                DiVec3 eulerrot = it->second.getRot(key);
-                DiQuat rot = convEuler(eulerrot);
-                bone->SetOrientation(rot);
+                //if (bone->GetName() == "Box01")
+                {
+                    DiVec3 eulerrot = it->second.getRot(key);
+                    DiEuler e(DiDegree(eulerrot.y), DiDegree(eulerrot.x), DiDegree(eulerrot.z));
+                    e.normalise();
+                    //DiQuat rot = convEuler(eulerrot);
+                    bone->SetOrientation(e);
+                    //DI_DEBUG("%f,%f,%f\n", eulerrot.x, eulerrot.y, eulerrot.z);
+                }
                 
                 bone->SetPosition(it->second.getPos(key));
                 
@@ -509,23 +538,30 @@ void K2Anim::_UpdateClipsHelper()
     for (uint32 i = 0; i < numBons; ++i)
     {
         DiNode* b = mBoneNodes[i];
+        
         DiNode* p = b->GetParent();
         DiVec3 pos = b->GetDerivedPosition();
         DiVec3 posParent = p ? (p->GetDerivedPosition()) : pos;
-       // mClipsHelper->AddLine(pos, posParent, DiColor::Red);
+        //
         
+#if 0
         if (b->GetName() == "Scene Root" ||
             b->GetName() == "Bip01" ||
             b->GetName() == "Bip01 Pelvis" ||
-            b->GetName() == "Bip01 Spine")
+            b->GetName() == "Bip01 Spine" ||
+            b->GetName() == "Bip01 L Thigh" || 
+            b->GetName() == "Bip01 L Calf")
         {
+            mClipsHelper->AddLine(pos, posParent, DiColor::Red);
             mBoneVisuals[i]->SetVisible(true);
         }
         else
+#endif
         {
-#if 1
+#if 0
             mBoneVisuals[i]->SetVisible(false);
 #else
+            mClipsHelper->AddLine(pos, posParent, DiColor::Red);
             mBoneVisuals[i]->SetVisible(true);
 #endif
         }

@@ -44,7 +44,8 @@ void InitScene()
 #endif
     
     k2anim = new K2Anim(resBase,sm);
-    k2anim->Load("items/couriers/dragon/high.model", "items/couriers/dragon/clips/default_1.clip");
+    //k2anim->Load("items/couriers/dragon/high.model", "items/couriers/dragon/clips/default_1.clip");
+    k2anim->Load("items/couriers/panda/high.model", "items/couriers/panda/clips/default_1.clip");
     //k2anim->Load("buildings/hellbourne/range_rax/high.model", "buildings/hellbourne/range_rax/clips/default_1.clip");
     //k2anim->Load("world/props/plants/goodplant/model.model", "world/props/plants/goodplant/clips/default_1.clip");
     //k2anim->Load("world/props/plants/badplant/model.model", "world/props/plants/badplant/clips/default_1.clip");
@@ -60,12 +61,13 @@ void InitScene()
         [](const OIS::MouseEvent& evt, OIS::MouseButtonID id){
             if (id == OIS::MB_Right)
                 k2anim->mBonesHelper->SetVisible(!k2anim->mBonesHelper->GetVisible());
+            else if (id == OIS::MB_Left)
+                k2anim->_UpdateClipsHelper();
         });
 }
 
 void UpdateScene()
 {
-    k2anim->_UpdateClipsHelper();
 }
 
 int main(int argc, char *argv[])
