@@ -595,8 +595,6 @@ void K2Anim::_UpdateClipsHelper()
                 //if (bone->GetName() == "Box01")
                 {
                     DiVec3 eulerrot = it->second.getRot(key);
-                    DiEuler e(DiDegree(eulerrot.y), DiDegree(eulerrot.x), DiDegree(eulerrot.z));
-                    e.normalise();
                     DiQuat rot = convertEuler(eulerrot);
                     bone->SetOrientation(rot);
                     //DI_DEBUG("%f,%f,%f\n", eulerrot.x, eulerrot.y, eulerrot.z);

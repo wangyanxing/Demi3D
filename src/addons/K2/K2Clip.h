@@ -18,12 +18,30 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    /** Load a k2 clip
+    /** It is used for binding pose and bone hierarchy
      */
-    class DEMI_K2_API DiK2Clip
+    struct DEMI_K2_API K2Skeleton
+    {
+        DiVector<DiString>   names;
+        DiVector<DiMat4>     trans;
+        DiVector<DiMat4>     invtrans;
+        DiVector<int>        parents;
+        DiMap<DiString, int> nameMap;
+    };
+
+    /** k2 animation clips
+     */
+    class DEMI_K2_API DiK2Animation
     {
     public:
 
+        DiK2Animation();
+
+        ~DiK2Animation();
+
+    public:
+
+        K2Skeleton      mSkeleton;
     };
 }
 

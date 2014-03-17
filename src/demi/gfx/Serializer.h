@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiSerializer_h__
 #define DiSerializer_h__
 
+#define DI_LOG_RES_SERIAL
 #ifdef DI_LOG_RES_SERIAL
 #    define DI_SERIAL_LOG(...) DI_DEBUG(__VA_ARGS__)
 #else
@@ -45,6 +46,8 @@ namespace Demi
         void                     ReadInts(DiDataStreamPtr& stream, uint32* pDest, size_t count);
         
         int                      ReadInt(DiDataStreamPtr& stream);
+
+        uint8                    ReadByte(DiDataStreamPtr& stream);
         
         float                    ReadFloat(DiDataStreamPtr& stream);
 

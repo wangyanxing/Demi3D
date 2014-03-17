@@ -19,7 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     class DiK2Model;
-    class DiK2Clip;
+    class DiK2Animation;
 }
 
 #endif

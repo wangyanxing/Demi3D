@@ -70,6 +70,13 @@ namespace Demi
         stream->Read(&ret, sizeof(int));
         return ret;
     }
+
+    uint8 DiSerializer::ReadByte(DiDataStreamPtr& stream)
+    {
+        uint8 ret = 0;
+        stream->Read(&ret, sizeof(uint8));
+        return ret;
+    }
     
     float DiSerializer::ReadFloat(DiDataStreamPtr& stream)
     {
@@ -100,7 +107,7 @@ namespace Demi
 
     DiString DiSerializer::ReadString( DiDataStreamPtr& stream, size_t numChars )
     {
-        assert (numChars <= 255);
+        DI_ASSERT(numChars < 255);
         char str[255];
         stream->Read(str, numChars);
         str[numChars] = '\0';

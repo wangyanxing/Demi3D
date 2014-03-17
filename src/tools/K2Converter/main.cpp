@@ -500,6 +500,7 @@ void read_lnk(FILE* fp)
 
 void read_sign(FILE* fp)
 {
+    // what's this
     printf("-----------sign------------\n");
     int chunkSize = read_int(fp);
 

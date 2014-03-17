@@ -16,5 +16,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    DiK2Animation::DiK2Animation()
+    {
+
+    }
+
+    DiK2Animation::~DiK2Animation()
+    {
+
+    }
 
 }

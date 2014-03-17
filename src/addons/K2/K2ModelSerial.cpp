@@ -16,10 +16,51 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "XMLFile.h"
 #include "K2Model.h"
 #include "Mesh.h"
+#include "Model.h"
 #include "SubMesh.h"
+#include "AssetManager.h"
+#include "K2Clip.h"
+#include "Material.h"
+#include "ShaderManager.h"
+#include "ShaderParam.h"
+#include "Texture.h"
 
 namespace Demi
 {
+    /// temp structure for model loading
+    struct matrix34
+    {
+        float m00, m01, m02;
+        float m10, m11, m12;
+        float m20, m21, m22;
+        float m30, m31, m32;
+
+        DiMat4 convert()
+        {
+            DiMat4 ret(
+                m00, m01, m02, 0,
+                m10, m11, m12, 0,
+                m20, m21, m22, 0,
+                m30, m31, m32, 1);
+            ret = ret.transpose();
+            return ret;
+        }
+    };
+
+    struct K2Vert
+    {
+        DiVec3 pos;
+        DiVec2 uv;
+        DiVec3 normal;
+        DiVec3 tangent;
+    };
+
+    bool g_trans_orit = false;
+    DiVector<K2Vert> gCurrentVerts;
+
+
+    //////////////////////////////////////////////////////////////////////////
+
     DiK2MdfSerial::DiK2MdfSerial()
     {
     }
@@ -28,10 +69,20 @@ namespace Demi
     {
     }
 
-    bool DiK2MdfSerial::ParseMdf(DiDataStreamPtr data, DiK2Model* target)
+    bool DiK2MdfSerial::ParseMdf(const DiString& file, DiK2Model* target)
     {
+        FILE* fp = fopen(file.c_str(), "r");
+        if (!fp)
+        {
+            DI_WARNING("Cannot open k2 mdf: %s", file.c_str());
+            return false;
+        }
+        DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
+
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
         xmlfile->Load(data->GetAsString());
+        data->Close();
+
         DiXMLElement root = xmlfile->GetRoot();
         return ParseMdf(root, target);
     }
@@ -49,6 +100,7 @@ namespace Demi
         {
             if (child.CheckName("anim"))
                 ParseAnim(child, target);
+            child = child.GetNext();
         }
 
         return true;
@@ -77,11 +129,19 @@ namespace Demi
             anim.loopbackframe = data.GetInt("loopbackframe");
     }
     
-    bool DiK2MdfSerial::LoadModel(DiDataStreamPtr data, DiK2Model* target)
+    bool DiK2MdfSerial::LoadModel(const DiString& file, DiK2Model* target)
     {
+        FILE* fp = fopen(file.c_str(), "rb");
+        if (!fp)
+        {
+            DI_WARNING("Cannot open k2 mdf: %s", file.c_str());
+            return false;
+        }
+
+        DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
         mStream = data;
         
-        DI_SERIAL_LOG("Loading k2 model: %s", data->GetName());
+        DI_SERIAL_LOG("Loading k2 model: %s", file.c_str());
         
         if (!CheckFourcc("SMDL"))
         {
@@ -103,6 +163,11 @@ namespace Demi
         int num_sprites = ReadInt(mStream);
         int num_surfs = ReadInt(mStream);
         int num_bones = ReadInt(mStream);
+
+        if (version == 1)
+        {
+            DI_WARNING("It's an old version of k2 model: %s", target->GetName().c_str());
+        }
         
         DI_SERIAL_LOG("version : %d", version);
         DI_SERIAL_LOG("%d meshes", num_meshes);
@@ -121,14 +186,77 @@ namespace Demi
         maxy = ReadFloat(mStream);
         maxz = ReadFloat(mStream);
         
-        DiMeshPtr mesh = nullptr;
+        DiString meshname = target->GetName() + "/";
+        meshname += mStream->GetName();
+        DiMeshPtr mesh = DiAssetManager::GetInstancePtr()->CreateOrReplaceAsset<DiMesh>(meshname);
 
         DiAABB bounds(minx, miny, minz, maxx, maxy, maxz);
         mesh->SetBounds(bounds);
-        
+
+        if (!LoadBones(target->GetAnimation(), num_bones))
+            return false;
+
+        if (!CheckFourcc("mesh"))
+        {
+            DI_WARNING("invalid k2 model file: it should be mesh chunk");
+            return false;
+        }
+
+        while (!mStream->Eof())
+        {
+            DiSubMesh* sub = LoadMeshes(target,mesh);
+
+            if (sub)
+            {
+                void* data = sub->CreateSourceData(0, gCurrentVerts.size(), sizeof(float)* 11);
+                memcpy(data, &gCurrentVerts[0], gCurrentVerts.size()*sizeof(float)* 11);
+            }
+        }
+
+        DiModelPtr model = make_shared<DiModel>(meshname,mesh);
+        target->SetMesh(model);
+
+        mStream->Close();
+        mStream = nullptr;
+
         return true;
     }
-    
+
+    bool DiK2MdfSerial::LoadBones(DiK2Animation* target, int numBones)
+    {
+        if (!CheckFourcc("bone"))
+        {
+            DI_WARNING("It should be a bone chunk");
+            return false;
+        }
+
+        // chunk size
+        ReadInt(mStream);
+
+        for (int i = 0; i < numBones; ++i)
+        {
+            int parentID = ReadInt(mStream);
+
+            matrix34 inv_matrix;
+            matrix34 matrix;
+            mStream->Read(&inv_matrix, sizeof(matrix34));
+            mStream->Read(&matrix, sizeof(matrix34));
+
+            uint8 length = ReadByte(mStream);
+            DiString name = ReadString(mStream, length);
+            ReadByte(mStream);  // should be zero, end of the string
+
+            DI_SERIAL_LOG("Bone ID: %d, name : %s", i, name.c_str());
+
+            target->mSkeleton.names.push_back(name);
+            target->mSkeleton.parents.push_back(parentID);
+            target->mSkeleton.trans.push_back(matrix.convert());
+            target->mSkeleton.invtrans.push_back(inv_matrix.convert());
+            target->mSkeleton.nameMap[name] = i;
+        }
+        return true;
+    }
+
     bool DiK2MdfSerial::CheckFourcc(char* sig)
     {
         char hed[4];
@@ -153,5 +281,482 @@ namespace Demi
             return false;
         }
         return true;
+    }
+
+    DiSubMesh* DiK2MdfSerial::LoadMeshes(DiK2Model* target, DiMeshPtr mesh)
+    {
+        gCurrentVerts.clear();
+
+        // chunk size
+        ReadInt(mStream);
+
+        int mesh_index = ReadInt(mStream);
+        int mesh_mod = ReadInt(mStream);
+        int vertics_count = ReadInt(mStream);
+
+        DiSubMesh* submesh = nullptr;
+        if (vertics_count != 0)
+        {
+            submesh = mesh->CreateSubMesh();
+            submesh->SetVerticeNum(vertics_count);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
+        }
+       
+        gCurrentVerts.resize(vertics_count);
+
+        float minx, miny, minz;
+        float maxx, maxy, maxz;
+
+        minx = ReadFloat(mStream);
+        miny = ReadFloat(mStream);
+        minz = ReadFloat(mStream);
+
+        maxx = ReadFloat(mStream);
+        maxy = ReadFloat(mStream);
+        maxz = ReadFloat(mStream);
+
+        DiAABB bounds(minx, miny, minz, maxx, maxy, maxz);
+
+        int bone_link = ReadInt(mStream);
+
+        uint8 mesh_name_length = ReadByte(mStream);
+        uint8 material_name_length = ReadByte(mStream);
+
+        DiString meshName = ReadString(mStream, mesh_name_length);
+        ReadByte(mStream);
+
+        DiString materialName = ReadString(mStream, material_name_length);
+        ReadByte(mStream);
+
+        DI_SERIAL_LOG("Mesh name: %s", meshName.c_str());
+        DI_SERIAL_LOG("Material name: %s", materialName.c_str());
+
+        if (submesh)
+        {
+            submesh->SetMaterialName(target->GetName() + "/" + materialName);
+            ParseMaterial(target->GetName(), materialName);
+        }
+
+        while (!mStream->Eof())
+        {
+            char hed[4];
+            mStream->Read(hed, sizeof(char) * 4);
+
+            if (CheckFourcc(hed, "vrts"))
+                read_verts();
+            else if (CheckFourcc(hed, "face"))
+                read_face(submesh);
+            else if (CheckFourcc(hed, "nrml"))
+                read_nrml();
+            else if (CheckFourcc(hed, "texc"))
+                read_texc();
+            else if (CheckFourcc(hed, "colr"))
+                read_colr();
+            else if (CheckFourcc(hed, "lnk1"))
+                read_lnk();
+            else if (CheckFourcc(hed, "lnk3"))
+                read_lnk();
+            else if (CheckFourcc(hed, "sign"))
+                read_sign();
+            else if (CheckFourcc(hed, "tang"))
+                read_tang();
+            else if (CheckFourcc(hed, "mesh"))
+                // start another turn
+                return submesh;
+            else if (CheckFourcc(hed, "surf"))
+                read_surf();
+            else
+            {
+                DI_WARNING("K2 Model:Unknown data chunk tag: %c%c%c%c", hed[0], hed[1], hed[2], hed[3]);
+                return submesh;
+            }
+        }
+
+        return submesh;
+    }
+
+    void DiK2MdfSerial::read_verts()
+    {
+        DI_SERIAL_LOG("------------verts-----------");
+        int chunkSize = ReadInt(mStream);
+        int numverts = (chunkSize - 4) / 12;
+        int meshindex = ReadInt(mStream);
+        DI_SERIAL_LOG("mesh index:%d", meshindex);
+        float* vertics = new float[3 * numverts];
+        mStream->Read(vertics, sizeof(float)* 3 * numverts);
+
+        DI_ASSERT(gCurrentVerts.size() == numverts);
+        for (int i = 0; i < numverts; i++)
+        {
+            if (g_trans_orit)
+            {
+                gCurrentVerts[i].pos.x = -vertics[i * 3 + 1];
+                gCurrentVerts[i].pos.y = vertics[i * 3 + 2];
+                gCurrentVerts[i].pos.z = -vertics[i * 3 + 0];
+                DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_Y);
+                gCurrentVerts[i].pos = q*gCurrentVerts[i].pos;
+            }
+            else
+            {
+                gCurrentVerts[i].pos.x = vertics[i * 3 + 0];
+                gCurrentVerts[i].pos.y = vertics[i * 3 + 1];
+                gCurrentVerts[i].pos.z = vertics[i * 3 + 2];
+            }
+        }
+
+        delete[] vertics;
+    }
+
+    void DiK2MdfSerial::read_face(DiSubMesh* sub)
+    {
+        DI_SERIAL_LOG("-----------face------------");
+        int chunkSize = ReadInt(mStream);
+        int meshindex = ReadInt(mStream);
+        int numfaces = ReadInt(mStream);
+        DI_SERIAL_LOG("face nums:%d", numfaces);
+        sub->SetPrimitiveCount(numfaces);
+        sub->SetPrimitiveType(PT_TRIANGLELIST);
+
+        uint8 indexsize = ReadByte(mStream);
+        DI_SERIAL_LOG("index size:%d", indexsize);
+
+        void* id = sub->CreateIndexData(3 * numfaces, indexsize == 4);
+
+        if (indexsize == 2)
+        {
+            mStream->Read(id, sizeof(unsigned short)* 3 * numfaces);
+        }
+        else if (indexsize == 1)
+        {
+            uint16* id16 = (uint16*)(id);
+            unsigned char* indices = new unsigned char[numfaces * 3];
+            mStream->Read(indices, sizeof(unsigned char)* 3 * numfaces);
+
+            for (int i = 0; i < numfaces * 3; i++)
+            {
+                id16[i] = (uint16)indices[i];
+            }
+
+            delete[]indices;
+        }
+        else if (indexsize == 4)//32bits index
+        {
+            mStream->Read(id, sizeof(unsigned int)* 3 * numfaces);
+        }
+        else
+        {
+            DI_SERIAL_LOG("Unknown error when reading face data");
+        }
+    }
+
+    void DiK2MdfSerial::read_nrml()
+    {
+        DI_SERIAL_LOG("-----------nrml------------");
+        int chunkSize = ReadInt(mStream);
+
+        int numverts = (chunkSize - 4) / 12;
+        DI_SERIAL_LOG("normal nums:%d", numverts);
+
+        if (!numverts)
+            return;
+        int meshindex = ReadInt(mStream);
+
+        float* vertics = new float[3 * numverts];
+        mStream->Read(vertics, sizeof(float)* 3 * numverts);
+
+        DI_ASSERT(gCurrentVerts.size() == numverts);
+        for (int i = 0; i < numverts; i++)
+        {
+            if (g_trans_orit)
+            {
+                gCurrentVerts[i].normal.x = -vertics[i * 3 + 1];
+                gCurrentVerts[i].normal.y = vertics[i * 3 + 2];
+                gCurrentVerts[i].normal.z = -vertics[i * 3 + 0];
+                DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_Y);
+                gCurrentVerts[i].normal = q*gCurrentVerts[i].normal;
+            }
+            else
+            {
+                gCurrentVerts[i].normal.x = vertics[i * 3 + 0];
+                gCurrentVerts[i].normal.y = vertics[i * 3 + 1];
+                gCurrentVerts[i].normal.z = vertics[i * 3 + 2];
+            }
+        }
+
+        delete[] vertics;
+    }
+
+    void DiK2MdfSerial::read_texc()
+    {
+        DI_SERIAL_LOG("-----------texc------------");
+        int chunkSize = ReadInt(mStream);
+
+        int numverts = (chunkSize - 4) / 8;
+        DI_SERIAL_LOG("texc nums:%d", numverts);
+
+        int meshindex = ReadInt(mStream);
+        float temp = ReadFloat(mStream);
+
+        float* vertics = new float[2 * numverts];
+        mStream->Read(vertics, sizeof(float)* 2 * numverts);
+
+        DI_ASSERT(gCurrentVerts.size() == numverts);
+        for (int i = 0; i < numverts; i++)
+        {
+            gCurrentVerts[i].uv.x = vertics[i * 2 + 0];
+            gCurrentVerts[i].uv.y = vertics[i * 2 + 1];
+        }
+        delete[] vertics;
+    }
+
+    void DiK2MdfSerial::read_colr()
+    {
+        DI_SERIAL_LOG("-----------colr------------");
+        int chunkSize = ReadInt(mStream);
+
+        int numverts = (chunkSize - 4) / 4;
+        DI_SERIAL_LOG("colr nums:%d", numverts);
+        int meshindex = ReadInt(mStream);
+
+        unsigned int* vertics = new unsigned int[numverts];
+        mStream->Read(vertics, sizeof(unsigned int)*numverts);
+        delete[] vertics; // unused currently
+    }
+
+    void DiK2MdfSerial::read_lnk()
+    {
+        DI_SERIAL_LOG("-----------lnk------------");
+        int chunkSize = ReadInt(mStream);
+
+        int meshIndex = ReadInt(mStream);
+        int vertNums = ReadInt(mStream);
+
+        for (int i = 0; i < vertNums; i++)
+        {
+            int num_weights = ReadInt(mStream);
+
+            float* weights = new float[num_weights];
+            int* indexes = new int[num_weights];
+
+            mStream->Read(weights, sizeof(float)*num_weights);
+            mStream->Read(indexes, sizeof(int)*num_weights);
+
+            delete[] weights;
+            delete[] indexes;
+        }
+    }
+
+    void DiK2MdfSerial::read_sign()
+    {
+        // what's this
+        DI_SERIAL_LOG("-----------sign------------");
+        int chunkSize = ReadInt(mStream);
+        mStream->Skip(chunkSize);
+    }
+
+    void DiK2MdfSerial::read_tang()
+    {
+        DI_SERIAL_LOG("-----------tang------------");
+        int chunkSize = ReadInt(mStream);
+
+        int numverts = (chunkSize - 4) / 12;
+        DI_SERIAL_LOG("tang nums:%d", numverts);
+        int meshindex = ReadInt(mStream);
+        int what = ReadInt(mStream);
+
+        float* vertics = new float[3 * numverts];
+        mStream->Read(vertics, sizeof(float)* 3 * numverts);
+
+        DI_ASSERT(gCurrentVerts.size() == numverts);
+        for (int i = 0; i < numverts; i++)
+        {
+            if (g_trans_orit)
+            {
+                gCurrentVerts[i].tangent.x = -vertics[i * 3 + 1];
+                gCurrentVerts[i].tangent.y = vertics[i * 3 + 2];
+                gCurrentVerts[i].tangent.z = -vertics[i * 3 + 0];
+                DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_Y);
+                gCurrentVerts[i].tangent = q*gCurrentVerts[i].tangent;
+            }
+            else
+            {
+                gCurrentVerts[i].tangent.x = vertics[i * 3 + 0];
+                gCurrentVerts[i].tangent.y = vertics[i * 3 + 1];
+                gCurrentVerts[i].tangent.z = vertics[i * 3 + 2];
+            }
+        }
+
+        delete[] vertics;
+    }
+
+    void DiK2MdfSerial::read_surf()
+    {
+        DI_SERIAL_LOG("-----------surf------------");
+
+        int chunk_size = ReadInt(mStream);
+
+#if 0
+        int surfindex = ReadInt(mStream);
+        int num_planes = ReadInt(mStream);
+        int num_points = ReadInt(mStream);
+        int num_edges = ReadInt(mStream);
+        int num_tris = ReadInt(mStream);
+
+        float minx, miny, minz;
+        float maxx, maxy, maxz;
+        minx = ReadFloat(mStream);
+        miny = ReadFloat(mStream);
+        minz = ReadFloat(mStream);
+        maxx = ReadFloat(mStream);
+        maxy = ReadFloat(mStream);
+        maxz = ReadFloat(mStream);
+
+        for (int i = 0; i < num_planes; ++i)
+        {
+            float p1 = ReadFloat(mStream);
+            float p2 = ReadFloat(mStream);
+            float p3 = ReadFloat(mStream);
+            float p4 = ReadFloat(mStream);
+        }
+
+        for (int i = 0; i < num_points; ++i)
+        {
+            float p1 = ReadFloat(mStream);
+            float p2 = ReadFloat(mStream);
+            float p3 = ReadFloat(mStream);
+        }
+
+        for (int i = 0; i < num_edges; ++i)
+        {
+            float p1 = ReadFloat(mStream);
+            float p2 = ReadFloat(mStream);
+            float p3 = ReadFloat(mStream);
+            float p4 = ReadFloat(mStream);
+            float p5 = ReadFloat(mStream);
+            float p6 = ReadFloat(mStream);
+        }
+
+        for (int i = 0; i < num_tris; ++i)
+        {
+            int p1 = ReadInt(mStream);
+            int p2 = ReadInt(mStream);
+            int p3 = ReadInt(mStream);
+        }
+#else
+        mStream->Skip(chunk_size);
+#endif
+    }
+
+    DiMaterialPtr DiK2MdfSerial::ParseMaterial(const DiString& basePath, const DiString& name)
+    {
+        DiString xmlFile = basePath + "/" + name;
+        xmlFile += ".material";
+
+        FILE* fp = fopen(xmlFile.c_str(), "r");
+        if (!fp)
+        {
+            DI_WARNING("Cannot open k2 material: %s", xmlFile.c_str());
+            return nullptr;
+        }
+
+        DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
+
+        uint64 shaderFlag = 0;
+        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        xmlfile->Load(data->GetAsString());
+
+        DiXMLElement root = xmlfile->GetRoot();
+        if (root.GetName() != "material")
+        {
+            DI_WARNING("Invalid k2 material script.");
+            return nullptr;
+        }
+
+        bool translucent = false;
+
+        DiXMLElement child = root.GetChild();
+        while (child)
+        {
+            if (child.CheckName("phase"))
+            {
+                // we just care this
+                if (child.GetAttribute("name") == "color")
+                {
+                    if (child.HasAttribute("translucent"))
+                        translucent = child.GetBool("translucent");
+                    if (child.HasAttribute("alphatest") && child.GetBool("alphatest"))
+                        shaderFlag |= SHADER_FLAG_ALPHA_TEST;
+
+                    // samplers
+                    DiXMLElement samplers = child.GetChild();
+                    while (samplers)
+                    {
+                        if (samplers.CheckName("sampler"))
+                        {
+                            if (samplers.GetAttribute("name") == "diffuse")
+                                shaderFlag |= SHADER_FLAG_USE_MAP;
+                            else if (samplers.GetAttribute("name") == "normalmap")
+                                shaderFlag |= SHADER_FLAG_USE_NORMALMAP;
+
+                            // we don't care about their team map for now
+                        }
+
+                        samplers = samplers.GetNext();
+                    }
+                }
+            }
+            child = child.GetNext();
+        }
+
+        data->Close();
+
+        DiMaterialPtr mat = DiMaterial::QuickCreate(basePath + "/" + name, "phong_v", "phong_p", shaderFlag);
+        if (translucent)
+            mat->SetBlendMode(BLEND_ALPHA);
+
+        DiShaderParameter* sm = mat->GetShaderParameter();
+
+        // load textures
+        if (shaderFlag & SHADER_FLAG_USE_MAP)
+        {
+            DiString colorPath = basePath + "/";
+            colorPath += "color.dds";
+
+            FILE* texFp = fopen(colorPath.c_str(), "rb");
+            if (!texFp)
+            {
+                DI_WARNING("Cannot open k2 texture: %s", colorPath.c_str());
+            }
+            else
+            {
+                DiTexturePtr tex = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(colorPath);
+                DiDataStreamPtr texdata(DI_NEW DiFileHandleDataStream(colorPath,texFp));
+                tex->Load(texdata);
+                sm->WriteTexture2D("map", colorPath);
+            }
+        }
+        if (shaderFlag & SHADER_FLAG_USE_NORMALMAP)
+        {
+            DiString colorPath = basePath + "/";
+            colorPath += "normal_rxgb.dds";
+
+            FILE* texFp = fopen(colorPath.c_str(), "rb");
+            if (!texFp)
+            {
+                DI_WARNING("Cannot open k2 texture: %s", colorPath.c_str());
+            }
+            else
+            {
+                DiTexturePtr tex = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(colorPath);
+                DiDataStreamPtr texdata(DI_NEW DiFileHandleDataStream(colorPath,texFp));
+                tex->Load(texdata);
+                sm->WriteTexture2D("normalMap", colorPath);
+            }
+        }
+
+        return mat;
     }
 }

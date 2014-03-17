@@ -44,7 +44,7 @@ namespace Demi
     {
     public:
 
-        DiK2Model();
+        DiK2Model(const DiString& path);
 
         ~DiK2Model();
 
@@ -57,18 +57,41 @@ namespace Demi
         K2Anim&         GetAnim(uint32 id) { return mAnims[id]; }
         
         DiModelPtr      GetMesh() {return mMesh;}
+
+        void            SetMesh(DiModelPtr model) { mMesh = model; }
         
         /** e.g. "heroes/aluna"
          */
         const DiString& GetName() const {return mName;}
 
+        DiK2Animation*  GetAnimation() { return mAnimation; }
+
+        DiCullNode*     CreateNode(DiSceneManager* sm);
+
+        DiCullNode*     GetNode() { return mNode; }
+
     private:
 
+        /** Load the model from a full path, e.g. heroes/aluna
+        */
+        void            Load(const DiString& path);
+
+    private:
+
+        /// animation configs
         DiVector<K2Anim>  mAnims;
 
+        /// a Demi mesh
         DiModelPtr        mMesh;
+
+        /// the actual animation sets
+        DiK2Animation*    mAnimation;
         
+        /// full path to this asset folder
         DiString          mName;
+
+        /// Scene node
+        DiCullNode*       mNode;
     };
 }
 
