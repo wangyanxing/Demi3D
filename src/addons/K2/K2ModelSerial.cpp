@@ -40,6 +40,14 @@ namespace Demi
             DI_WARNING("Invalid material script.");
             return false;
         }
+        
+        DiXMLElement child = rootNode.GetChild();
+        while (child)
+        {
+            if(child.CheckName("anim"))
+                
+                
+        }
 
         return true;
     }

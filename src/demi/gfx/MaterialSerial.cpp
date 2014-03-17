@@ -307,9 +307,7 @@ namespace Demi
 
     DiString DiMaterialSerializer::CullmodeToString( DiCullMode cm )
     {
-        DiMap<DiString, DiCullMode>::iterator it;
-        DiMap<DiString, DiCullMode>::iterator itEnd = sCullModeMap.end();
-        for (it = sCullModeMap.begin(); it != itEnd; ++it)
+        for (auto it = sCullModeMap.begin(); it != sCullModeMap.end(); ++it)
         {
             if (it->second == cm)
             {
@@ -321,9 +319,7 @@ namespace Demi
 
     DiString DiMaterialSerializer::BlendModeToString( DiBlendMode cm )
     {
-        DiMap<DiString,DiBlendMode>::iterator it;
-        DiMap<DiString,DiBlendMode>::iterator itEnd = sBlendModeMap.end();
-        for (it = sBlendModeMap.begin(); it != itEnd; ++it)
+        for (auto it = sBlendModeMap.begin(); it != sBlendModeMap.end(); ++it)
         {
             if (it->second == cm)
             {

@@ -31,6 +31,10 @@ namespace Demi
         bool    ParseMdf(DiDataStreamPtr data, DiK2Model* target);
 
         bool    ParseMdf(DiXMLElement data, DiK2Model* target);
+        
+    private:
+        
+        void    ParseAnim(DiXMLElement data, DiK2Model* target);
     };
 }
 
