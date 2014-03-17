@@ -50,17 +50,25 @@ namespace Demi
 
     public:
 
-        K2Anim&   AddAnim();
+        K2Anim&         AddAnim();
 
-        uint32    GetAnimNums() const { return mAnims.size(); }
+        uint32          GetAnimNums() const { return mAnims.size(); }
 
-        K2Anim&   GetAnim(uint32 id) { return mAnims[id]; }
+        K2Anim&         GetAnim(uint32 id) { return mAnims[id]; }
+        
+        DiModelPtr      GetMesh() {return mMesh;}
+        
+        /** e.g. "heroes/aluna"
+         */
+        const DiString& GetName() const {return mName;}
 
     private:
 
         DiVector<K2Anim>  mAnims;
 
         DiModelPtr        mMesh;
+        
+        DiString          mName;
     };
 }
 

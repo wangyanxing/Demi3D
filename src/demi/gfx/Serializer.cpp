@@ -63,6 +63,20 @@ namespace Demi
     {
         stream->Read(pDest, sizeof(unsigned int) * count);
     }
+    
+    int DiSerializer::ReadInt(DiDataStreamPtr& stream)
+    {
+        int ret = 0;
+        stream->Read(&ret, sizeof(int));
+        return ret;
+    }
+    
+    float DiSerializer::ReadFloat(DiDataStreamPtr& stream)
+    {
+        float ret = 0;
+        stream->Read(&ret, sizeof(float));
+        return ret;
+    }
 
     void DiSerializer::ReadObject( DiDataStreamPtr& stream, DiVec3& pDest )
     {

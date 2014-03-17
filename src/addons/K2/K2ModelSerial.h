@@ -15,16 +15,17 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2ModelSerial_h__
 
 #include "K2Prerequisites.h"
+#include "Serializer.h"
 
 namespace Demi
 {
-    class DEMI_K2_API DiK2MdfSerial
+    class DEMI_K2_API DiK2MdfSerial : public DiSerializer
     {
     public:
 
         DiK2MdfSerial();
 
-        virtual ~DiK2MdfSerial();
+        ~DiK2MdfSerial();
 
     public:
 
@@ -32,9 +33,17 @@ namespace Demi
 
         bool    ParseMdf(DiXMLElement data, DiK2Model* target);
         
+        bool    LoadModel(DiDataStreamPtr data, DiK2Model* target);
+        
     private:
         
         void    ParseAnim(DiXMLElement data, DiK2Model* target);
+        
+        bool    LoadBones(DiDataStreamPtr data, DiK2Model* target);
+        
+        bool    CheckFourcc(char* sig);
+        
+        bool    CheckFourcc(char* hed, char* sig);
     };
 }
 

@@ -14,10 +14,15 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiSerializer_h__
 #define DiSerializer_h__
 
+#ifdef DI_LOG_RES_SERIAL
+#    define DI_SERIAL_LOG(...) DI_DEBUG(__VA_ARGS__)
+#else
+#    define DI_SERIAL_LOG(...)
+#endif
 
 namespace Demi
 {
-    class DiSerializer : public DiBase
+    class DI_GFX_API DiSerializer : public DiBase
     {
     public:
 
@@ -38,6 +43,10 @@ namespace Demi
         void                     ReadShorts(DiDataStreamPtr& stream, uint16* pDest, size_t count);
 
         void                     ReadInts(DiDataStreamPtr& stream, uint32* pDest, size_t count);
+        
+        int                      ReadInt(DiDataStreamPtr& stream);
+        
+        float                    ReadFloat(DiDataStreamPtr& stream);
 
         void                     ReadObject(DiDataStreamPtr& stream, DiVec3& pDest);
 

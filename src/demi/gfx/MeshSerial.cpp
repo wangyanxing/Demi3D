@@ -22,14 +22,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-//#define DI_LOG_MESH_LODING
-
-#ifdef DI_LOG_MESH_LODING
-#    define DI_SERIAL_LOG(...) DI_DEBUG(__VA_ARGS__)
-#else
-#    define DI_SERIAL_LOG(...)
-#endif
-
 
     DiMeshSerializer::DiMeshSerializer()
     {
