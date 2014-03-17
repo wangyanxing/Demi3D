@@ -16,5 +16,18 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    DiK2Model::DiK2Model()
+    {
+    }
+
+    DiK2Model::~DiK2Model()
+    {
+    }
+
+    K2Anim& DiK2Model::AddAnim()
+    {
+        mAnims.push_back(K2Anim());
+        return mAnims.back();
+    }
 
 }

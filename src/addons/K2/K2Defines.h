@@ -18,7 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   ifdef DEMI_STATIC_API
 #       define DEMI_K2_API
 #   else
-#       ifdef DI_DEMO_EXPORT
+#       ifdef DI_K2_EXPORT
 #           define DEMI_K2_API __declspec(dllexport)
 #       else
 #           define DEMI_K2_API __declspec(dllimport)

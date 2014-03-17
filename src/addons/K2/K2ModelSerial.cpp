@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Pch.h"
 #include "K2ModelSerial.h"
 #include "XMLFile.h"
+#include "K2Model.h"
 
 namespace Demi
 {
@@ -44,11 +45,33 @@ namespace Demi
         DiXMLElement child = rootNode.GetChild();
         while (child)
         {
-            if(child.CheckName("anim"))
-                
-                
+            if (child.CheckName("anim"))
+                ParseAnim(child, target);
         }
 
         return true;
+    }
+
+    void DiK2MdfSerial::ParseAnim(DiXMLElement data, DiK2Model* target)
+    {
+        DiString animName = data.GetAttribute("name");
+        DiString clipName = data.GetAttribute("clip");
+
+        K2Anim& anim = target->AddAnim();
+        anim.name = animName;
+        anim.clip = clipName;
+        anim.loop = false;
+        anim.fps = 25;
+        anim.numframes = 0;
+        anim.loopbackframe = 0;
+
+        if (data.HasAttribute("loop"))
+            anim.loop = data.GetBool("loop");
+        if (data.HasAttribute("fps"))
+            anim.fps = data.GetFloat("fps");
+        if (data.HasAttribute("numframes"))
+            anim.numframes = data.GetInt("numframes");
+        if (data.HasAttribute("loopbackframe"))
+            anim.loopbackframe = data.GetInt("loopbackframe");
     }
 }

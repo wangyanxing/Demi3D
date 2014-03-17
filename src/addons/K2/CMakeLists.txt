@@ -30,7 +30,7 @@ endif ()
 set_property(TARGET DiK2 PROPERTY FOLDER "Addons")
 
 # specify a precompiled header to use
-use_precompiled_header(DiDrvD3D9 
+use_precompiled_header(DiK2 
   "${CMAKE_CURRENT_SOURCE_DIR}/K2Pch.h"
   "${CMAKE_CURRENT_SOURCE_DIR}/K2Pch.cpp"
 )
