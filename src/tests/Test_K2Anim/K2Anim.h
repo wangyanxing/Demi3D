@@ -80,6 +80,8 @@ public:
     void    _UpdateBonesHelper();
 
     void    _UpdateClipsHelper();
+
+    void    _UpdateClips();
     
     // bones
     DiVector<Trans> mBones;

@@ -53,7 +53,7 @@ void InitScene()
     //k2anim->Load("world/props/halloween_props/pumkinward.model", "world/props/halloween_props/pumkinward.clip");
     //k2anim->Load("world/props/halloween_props/ghost/model.model", "world/props/halloween_props/ghost/default_1.clip");
     //k2anim->Load("world/props/winter/snowman/model.model", "world/props/winter/snowman/default_1.clip");
-    //k2anim->Load("heroes/aluna/high.model", "heroes/aluna/clips/walk_1.clip");
+    //k2anim->Load("heroes/aluna/high.model", "heroes/aluna/clips/default_1.clip");
     
     k2anim->_UpdateBonesHelper();
 
@@ -63,11 +63,13 @@ void InitScene()
                 k2anim->mBonesHelper->SetVisible(!k2anim->mBonesHelper->GetVisible());
             else if (id == OIS::MB_Left)
                 k2anim->_UpdateClipsHelper();
+
         });
 }
 
 void UpdateScene()
 {
+    k2anim->_UpdateClipsHelper();
 }
 
 int main(int argc, char *argv[])

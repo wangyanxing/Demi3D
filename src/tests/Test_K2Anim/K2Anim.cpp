@@ -180,7 +180,6 @@ void updateClip(Clip& c, int keytype, int keyID, float val, int vis)
     }
 }
 
-
 void readClip(FILE* fp, DiMap<DiString,Clip>& clips, int frameNum)
 {
     if (!check_fourcc_chunk(fp, "bmtn"))
@@ -242,33 +241,75 @@ void readClip(FILE* fp, DiMap<DiString,Clip>& clips, int frameNum)
     delete[] name;
 }
 
-int order = 0;
-DiQuat convEuler(DiVec3& v)
+typedef struct RotOrderInfo {
+    short axis[3];
+    short parity; /* parity of axis permutation (even=0, odd=1) - 'n' in original code */
+} RotOrderInfo;
+
+typedef enum eEulerRotationOrders {
+    EULER_ORDER_DEFAULT = 1, /* blender classic = XYZ */
+    EULER_ORDER_XYZ = 1,
+    EULER_ORDER_XZY,
+    EULER_ORDER_YXZ,
+    EULER_ORDER_YZX,
+    EULER_ORDER_ZXY,
+    EULER_ORDER_ZYX
+    /* there are 6 more entries with dulpicate entries included */
+} eEulerRotationOrders;
+
+
+static const RotOrderInfo rotOrders[] = {
+    /* i, j, k, n */
+    { { 0, 1, 2 }, 0 }, /* XYZ */
+    { { 0, 2, 1 }, 1 }, /* XZY */
+    { { 1, 0, 2 }, 1 }, /* YXZ */
+    { { 1, 2, 0 }, 0 }, /* YZX */
+    { { 2, 0, 1 }, 0 }, /* ZXY */
+    { { 2, 1, 0 }, 1 }  /* ZYX */
+};
+#define GET_ROTATIONORDER_INFO(order) (assert(order >= 0 && order <= 6), (order < 1) ? &rotOrders[0] : &rotOrders[(order) - 1])
+
+void eulO_to_quat(float q[4], const float e[3], const short order)
 {
-    DiMat3 rotmat;
-    switch (order)
-    {
-    case 0:
-        rotmat.FromEulerAnglesXYZ(DiDegree(v.x), DiDegree(v.y), DiDegree(v.z));
-        break;
-    case 1:
-        rotmat.FromEulerAnglesXZY(DiDegree(v.x), DiDegree(v.y), DiDegree(v.z));
-        break;
-    case 2:
-        rotmat.FromEulerAnglesYXZ(DiDegree(v.x), DiDegree(v.y), DiDegree(v.z));
-        break;
-    case 3:
-        rotmat.FromEulerAnglesYZX(DiDegree(v.x), DiDegree(v.y), DiDegree(v.z));
-        break;
-    case 4:
-        rotmat.FromEulerAnglesZXY(DiDegree(v.x), DiDegree(v.y), DiDegree(v.z));
-        break;
-    case 5:
-        rotmat.FromEulerAnglesZYX(DiDegree(v.x), DiDegree(v.y), DiDegree(v.z));
-        break;
-    }
-    DiQuat q;
-    q.FromRotationMatrix(rotmat);
+    const RotOrderInfo *R = GET_ROTATIONORDER_INFO(order);
+    short i = R->axis[0], j = R->axis[1], k = R->axis[2];
+    double ti, tj, th, ci, cj, ch, si, sj, sh, cc, cs, sc, ss;
+    double a[3];
+
+    ti = e[i] * 0.5f;
+    tj = e[j] * (R->parity ? -0.5f : 0.5f);
+    th = e[k] * 0.5f;
+
+    ci = cos(ti);
+    cj = cos(tj);
+    ch = cos(th);
+    si = sin(ti);
+    sj = sin(tj);
+    sh = sin(th);
+
+    cc = ci * ch;
+    cs = ci * sh;
+    sc = si * ch;
+    ss = si * sh;
+
+    a[i] = cj * sc - sj * cs;
+    a[j] = cj * ss + sj * cc;
+    a[k] = cj * cs - sj * sc;
+
+    q[0] = cj * cc + sj * ss;
+    q[1] = a[0];
+    q[2] = a[1];
+    q[3] = a[2];
+
+    if (R->parity) q[j + 1] = -q[j + 1];
+}
+
+DiQuat convertEuler(const DiVec3& eulerrot)
+{
+    float qout[] = { 1, 0, 0, 0 };
+    float ein[] = { DiDegree(eulerrot.x).valueRadians(), DiDegree(eulerrot.y).valueRadians(), DiDegree(eulerrot.z).valueRadians() };
+    eulO_to_quat(qout, ein, EULER_ORDER_YXZ);
+    DiQuat q(qout);
     return q;
 }
 
@@ -433,9 +474,9 @@ void K2Anim::Load(const DiString& model, const DiString& clip)
 {
     _LoadBones(model);
     _LoadClips(clip);
-    
+
     // create visualizers
-    for (auto i = mBoneNodes.begin(); i!=mBoneNodes.end(); ++i)
+    for (auto i = mBoneNodes.begin(); i != mBoneNodes.end(); ++i)
     {
         DiCullNode* terNode = mSm->GetRootNode()->CreateChild();
         DiSimpleShapePtr termBox = make_shared<DiSimpleShape>();
@@ -448,15 +489,56 @@ void K2Anim::Load(const DiString& model, const DiString& clip)
     }
 
     DiEuler e;
-    e.fromQuat(DiQuat(0.092f,0.701f,-0.092f,0.701f));
+    e.fromQuat(DiQuat(0.092f, 0.701f, -0.092f, 0.701f));
     e.normalise();
 
-    DiEuler e2(0,0,DiDegree(-104).valueRadians());
+    DiEuler e2(0, 0, DiDegree(-104).valueRadians());
     DiQuat q = e2;
     q.normalise();
     q.normalise();
-}
 
+    DiVec3 bip01Pos(0.000000, 1.129078, 14.300982);
+    DiVec3 bip01PelvisPos(0.000000, 1.12907827, 14.3009815);
+
+    DiQuat bip01Rot(0.608761966, 0, 0, -0.793352902);
+    DiQuat bip01PelvisRot(0.0922950432, 0.701057017, -0.0922949165, 0.701058030);
+
+    DiEuler bip01eu;
+    bip01eu.fromQuat(bip01Rot);
+    bip01eu.normalise();
+    float b01yaw = bip01eu.yaw().valueDegrees();
+    float b01pitch = bip01eu.pitch().valueDegrees();
+    float b01roll = bip01eu.roll().valueDegrees();
+
+    DiEuler bip01Pelviseu;
+    bip01Pelviseu.fromQuat(bip01PelvisRot);
+    bip01Pelviseu.normalise();
+    float b01Pelvisyaw = bip01Pelviseu.yaw().valueDegrees();
+    float b01Pelvispitch = bip01Pelviseu.pitch().valueDegrees();
+    float b01Pelvisroll = bip01Pelviseu.roll().valueDegrees();
+
+    DiMat4 parent;
+    parent.makeInverseTransform(bip01Pos, DiVec3::UNIT_SCALE, bip01Rot);
+
+    DiMat4 child;
+    child.makeTransform(bip01PelvisPos, DiVec3::UNIT_SCALE, bip01PelvisRot);
+    child = parent * child;
+    child = child.inverse();
+
+    DiMat3 t;
+    child.extract3x3Matrix(t);
+    DiQuat qq;
+    qq.FromRotationMatrix(t);
+
+    DiEuler bip01PelviseuKF(DiDegree(0), DiDegree(-90), DiDegree(-90));
+    DiQuat kfquat = bip01PelviseuKF;
+    kfquat = qq * kfquat;
+
+    int x = 0; x++;
+
+
+    _UpdateClips();
+}
 
 void K2Anim::_UpdateBonesHelper()
 {
@@ -493,7 +575,7 @@ void K2Anim::_UpdateClipsHelper()
 {
     mClipsHelper->Clear();
     static float key = 0;
-    key += 1.0f;
+    key += 0.1f;
     if (key >= mNumFrames)
         key = 0;
     
@@ -515,8 +597,8 @@ void K2Anim::_UpdateClipsHelper()
                     DiVec3 eulerrot = it->second.getRot(key);
                     DiEuler e(DiDegree(eulerrot.y), DiDegree(eulerrot.x), DiDegree(eulerrot.z));
                     e.normalise();
-                    //DiQuat rot = convEuler(eulerrot);
-                    bone->SetOrientation(e);
+                    DiQuat rot = convertEuler(eulerrot);
+                    bone->SetOrientation(rot);
                     //DI_DEBUG("%f,%f,%f\n", eulerrot.x, eulerrot.y, eulerrot.z);
                 }
                 
@@ -528,6 +610,12 @@ void K2Anim::_UpdateClipsHelper()
             size_t cn = bone->GetChildrenNum();
             for (size_t c = 0; c < cn; c++)
                 next.push_back((DiBone*)bone->GetChild(c));
+
+            if (bone->GetName() == "Bip01 Pelvis")
+            {
+                DiQuat qpel = bone->GetDerivedOrientation();
+                DiVec3 pos = bone->GetDerivedPosition();
+            }
         }
         level = next;
     }
@@ -568,5 +656,78 @@ void K2Anim::_UpdateClipsHelper()
         mBoneVisuals[i]->SetPosition(pos);
         mBoneVisuals[i]->SetOrientation(b->GetDerivedOrientation());
         mBoneVisuals[i]->SetScale(b->GetDerivedScale());
+    }
+}
+
+void K2Anim::_UpdateClips()
+{
+    mClipsHelper->Clear();
+    static float key = 0;
+    key += 0.1f;
+    if (key >= mNumFrames)
+        key = 0;
+
+    int count = 0;
+    for (auto i = mClips.begin(); i != mClips.end(); ++i)
+    {
+        DiString name = i->first;
+
+        if (name == "Bip01 Pelvis")
+        {
+            int x = 0; x++;
+        }
+
+        int boneID = mNameTable[name];
+        int parentID = mParents[boneID];
+        Trans& t = mBones[boneID];
+
+        DiMat4 child;
+        child.makeTransform(t.pos, t.scale, t.rot);
+
+        if (parentID >= 0)
+        {
+            Trans& tpar = mBones[parentID];
+            DiMat4 parent;
+            parent.makeInverseTransform(tpar.pos, tpar.scale, tpar.rot);
+
+            child = parent * child;
+        }
+        child = child.inverse();
+
+        DiVec3 kpos = i->second.getPos(key);
+        DiVec3 eulerrot = i->second.getRot(key);
+        DiEuler e(DiDegree(eulerrot.x), DiDegree(eulerrot.y), DiDegree(eulerrot.z));
+        e.normalise();
+        DiQuat krot = e;
+        DiQuat krot2 = DiEuler(DiDegree(eulerrot.y), DiDegree(eulerrot.x), DiDegree(eulerrot.z));
+
+        float qout[] = { 1, 0, 0, 0 };
+        float ein[] = { DiDegree(eulerrot.x).valueRadians(), DiDegree(eulerrot.y).valueRadians(), DiDegree(eulerrot.z).valueRadians() };
+        eulO_to_quat(qout, ein, EULER_ORDER_YXZ);
+
+        DiVec3 kscale = i->second.getScale(key);
+
+        DiMat4 keyframe;
+        keyframe.makeTransform(kpos, kscale, krot2);
+
+        keyframe = child * keyframe;
+
+        DiVec3 p, s;
+        DiQuat r;
+        keyframe.decomposition(p, s, r);
+       
+        DiVec3 worldPos = t.pos + p;
+        mBoneVisuals[count++]->SetPosition(worldPos);
+
+        if (name == "Bip01" || name == "Bip01 Pelvis" || name == "Bip01 Spine")
+        {
+            DiString sp;
+            sp.SetVector3(p);
+            DiString sr;
+            sr.SetQuaternion(r);
+            DI_DEBUG("%s",name.c_str());
+            DI_DEBUG("%s", sp.c_str());
+            DI_DEBUG("%s", sr.c_str());
+        }
     }
 }
