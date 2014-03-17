@@ -337,7 +337,7 @@ namespace Demi
     {
         if(rootNode.GetName() != "material")
         {
-            DI_ERROR("Invalid material script.");
+            DI_WARNING("Invalid material script.");
             return;
         }
 
