@@ -34,6 +34,8 @@ namespace Demi
         bool    ParseMdf(DiXMLElement data, DiK2Model* target);
 
         bool    LoadModel(const DiString& file, DiK2Model* target);
+        
+        bool    LoadClip(const DiString& file, const DiString& name, DiK2Animation* target);
 
         DiMaterialPtr ParseMaterial(const DiString& basePath, const DiString& name);
         

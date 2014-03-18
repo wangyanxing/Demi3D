@@ -23,6 +23,21 @@ namespace Demi
 #define MAX_TEXTURE_LAYERS      16
 #define MAX_LIGHTS              8    
 #define MAX_MRT                 8
+    
+    /** widely used
+     */
+    struct Trans
+    {
+        Trans()
+        {
+            pos = DiVec3::ZERO;
+            scale = DiVec3::UNIT_SCALE;
+            rot = DiQuat::IDENTITY;
+        }
+        DiVec3 pos;
+        DiVec3 scale;
+        DiQuat rot;
+    };
 
     enum DiArchiveType
     {

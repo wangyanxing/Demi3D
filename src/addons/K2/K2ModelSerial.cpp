@@ -57,7 +57,86 @@ namespace Demi
 
     bool g_trans_orit = false;
     DiVector<K2Vert> gCurrentVerts;
+    
+    enum ClipTags
+    {
+        MKEY_X,
+        MKEY_Y,
+        MKEY_Z,
+        MKEY_PITCH,
+        MKEY_ROLL,
+        MKEY_YAW,
+        MKEY_VISIBILITY,
+        MKEY_SCALE_X,
+        MKEY_SCALE_Y,
+        MKEY_SCALE_Z
+    };
 
+    /** A raw clip data structure, using Euler angle
+     */
+    struct Clip
+    {
+        Clip(int b = 0)
+        :bone(b)
+        {
+        }
+        int bone;
+        DiVector<int> vis;
+        DiVector<DiVec3> pos;
+        DiVector<DiVec3> rot;
+        DiVector<DiVec3> scale;
+        
+        void resize(int frames)
+        {
+            if (pos.empty())
+                pos.resize(frames, DiVec3::ZERO);
+            if (vis.empty())
+                vis.resize(frames, 255);
+            if (rot.empty())
+                rot.resize(frames, DiVec3::ZERO);
+            if (scale.empty())
+                scale.resize(frames, DiVec3::UNIT_SCALE);
+        }
+        
+        DiVec3 getPos(int id){
+            return id >= pos.size() ? pos.back() : pos[id];
+        }
+        DiVec3 getRot(int id){
+            return id >= rot.size() ? rot.back() : rot[id];
+        }
+        DiVec3 getScale(int id){
+            return id >= scale.size() ? scale.back() : scale[id];
+        }
+    };
+
+    void updateClip(Clip& c, int keytype, int keyID, float val, int vis)
+    {
+        switch (keytype)
+        {
+            case MKEY_X:
+                c.pos[keyID].x = val; return;
+            case MKEY_Y:
+                c.pos[keyID].y = val; return;
+            case MKEY_Z:
+                c.pos[keyID].z = val; return;
+            case MKEY_PITCH:
+                c.rot[keyID].x = val; return;
+            case MKEY_ROLL:
+                c.rot[keyID].y = val; return;
+            case MKEY_YAW:
+                c.rot[keyID].z = val; return;
+            case MKEY_VISIBILITY:
+                c.vis[keyID] = vis; return;
+            case MKEY_SCALE_X:
+                c.scale[keyID].x = val; return;
+            case MKEY_SCALE_Y:
+                c.scale[keyID].x = val; return;
+            case MKEY_SCALE_Z:
+                c.scale[keyID].x = val; return;
+            default:
+                break;
+        }
+    }
 
     //////////////////////////////////////////////////////////////////////////
 
@@ -77,6 +156,9 @@ namespace Demi
             DI_WARNING("Cannot open k2 mdf: %s", file.c_str());
             return false;
         }
+        
+        DI_LOG("Loading k2 mdf: %s",file.c_str());
+        
         DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
 
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
@@ -134,9 +216,11 @@ namespace Demi
         FILE* fp = fopen(file.c_str(), "rb");
         if (!fp)
         {
-            DI_WARNING("Cannot open k2 mdf: %s", file.c_str());
+            DI_WARNING("Cannot open k2 model: %s", file.c_str());
             return false;
         }
+        
+        DI_LOG("Loading k2 model: %s",file.c_str());
 
         DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
         mStream = data;
@@ -758,5 +842,75 @@ namespace Demi
         }
 
         return mat;
+    }
+    
+    bool DiK2MdfSerial::LoadClip(const DiString& file, const DiString& name, DiK2Animation* target)
+    {
+        FILE* fp = fopen(file.c_str(), "rb");
+        if (!fp)
+        {
+            DI_WARNING("Cannot open k2 clip: %s", file.c_str());
+            return false;
+        }
+        
+        DI_LOG("Loading k2 clip: %s",file.c_str());
+        
+        DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
+        mStream = data;
+
+        if (!CheckFourcc("CLIP"))
+        {
+            DI_WARNING("Unknow clip file format");
+            return false;
+        }
+        
+        if (!CheckFourcc("head"))
+        {
+            DI_WARNING("Clip file does not start with head chunk");
+            return false;
+        }
+        
+        int what = ReadInt(mStream);
+        int version = ReadInt(mStream);
+        int num_bones = ReadInt(mStream);
+        int numFrames = ReadInt(mStream);
+        
+        if (version != 2)
+        {
+            DI_WARNING("The version(%d) of the clip file: %s may not be supported now", version, file.c_str());
+        }
+        
+        DI_SERIAL_LOG("Frame number: %d", numFrames);
+        
+        K2Clip& clip = target->mClips[name];
+        clip.name = name;
+        
+        DiStrHash<Clip> rawClips;
+        
+        while(!mStream->Eof())
+        {
+            if (!CheckFourcc("bmtn"))
+            {
+                DI_WARNING("Unknow clip chunk");
+                return false;
+            }
+            
+            int chunkSize = ReadInt(mStream);
+            
+            int boneindex = ReadInt(mStream);
+            int keytype = ReadInt(mStream);
+            int numkeys = ReadInt(mStream);
+            
+            uint8 nameLen = ReadByte(mStream);
+            DiString bonename = ReadString(mStream,nameLen);
+            ReadByte(mStream);
+
+            clip.Construct(bonename, numFrames);
+            
+            Clip& c = rawClips[bonename];
+            
+        }
+        
+        return true;
     }
 }

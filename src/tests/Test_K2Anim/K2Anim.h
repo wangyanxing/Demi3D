@@ -16,13 +16,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DebugHelper.h"
 #include "Bone.h"
 
-struct Trans
-{
-    DiVec3 pos;
-    DiQuat rot;
-    DiVec3 scale;
-};
-
 struct Clip
 {
     Clip(int b = 0)
