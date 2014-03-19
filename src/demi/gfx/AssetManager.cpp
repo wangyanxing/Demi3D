@@ -176,7 +176,9 @@ namespace Demi
                 asset->Load();
             }
             else
-                DI_WARNING("Cannot create asset, invalid type: %d", type);
+            {
+                DI_WARNING("Cannot create asset, unregistered asset type: %s", type.c_str());
+            }
         }
 
         if(asset && asset->GetAssetType() != type)

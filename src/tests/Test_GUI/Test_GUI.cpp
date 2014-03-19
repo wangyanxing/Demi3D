@@ -21,8 +21,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 DiK2Model* k2md = nullptr;
 
-#if DEMI_DEBUG
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+#   if DEMI_DEBUG
 const DiString k2Plugin = "DiK2_d";
+#   else
+const DiString k2Plugin = "DiK2";
+#   endif
 #else
 const DiString k2Plugin = "DiK2";
 #endif

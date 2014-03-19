@@ -82,6 +82,8 @@ namespace Demi
 
         if (!mCompiled)
         {
+            DiLogManager::GetInstancePtr()->Output(LOG_LEVEL_WARNING, "shaders:");
+            DiLogManager::GetInstancePtr()->Output(LOG_LEVEL_WARNING, source);
             DiString msg;
             msg.Format("GLSL compile info: %s\n", mShaderProgram->GetShaderFileName().c_str());
             LogObjectInfo(msg, mShaderHandle);

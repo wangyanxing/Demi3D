@@ -7,9 +7,11 @@ varying vec3 vPosWorld;
 // options
 #define USE_SCHLICK_FRESNEL
 
-#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )
-varying vec3 Tangent;
-varying vec3 Binormal;
+#if defined( USE_NORMALMAP )
+varying vec3 vTangent;
+varying vec3 vBinormal;
+
+uniform sampler2D normalMap;
 #endif
 
 #if defined( USE_COLOR )
@@ -46,32 +48,39 @@ SurfaceData gSurface;
 
 void ComputeSurfaceDataFromGeometry()
 {
-    gSurface.normal = normalize(vNormal);
 	gSurface.viewDirWorld = vViewDir;
 	gSurface.positionWorld = vPosWorld;
+    
+#ifdef USE_SPECULARMAP
+    gSurface.specularAmount = texture2D( specularMap, gl_TexCoord[0].xy ).rgb * g_specularColor.rgb;
+#else
+    gSurface.specularAmount = g_specularColor.rgb;
+#endif
+    
+#if defined( USE_NORMALMAP )
+    vec4 normMapColor;
+    vec4 nmTex = texture2D(normalMap, gl_TexCoord[0].xy);
+    normMapColor.rgb = nmTex.agb;
+    gSurface.specularAmount *= nmTex.g;
+    vec3 texNormal = vec3(normMapColor.rgb * 2.0f - 1.0f);
+    mat3 rot = mat3(vTangent, vBinormal, vNormal);
+    gSurface.normal = normalize(rot * texNormal);
+#else
+    gSurface.normal = normalize(vNormal);
+#endif
 	
-	#ifdef USE_MAP
-		gSurface.albedo = texture2D( map, gl_TexCoord[0].xy );
-		#ifdef GAMMA_INPUT
-			gSurface.albedo.rgb *= gSurface.albedo.rgb;
-		#endif
-	#else
-		gSurface.albedo = vec4(1.0,1.0,1.0,1.0);
+#ifdef USE_MAP
+	gSurface.albedo = texture2D( map, gl_TexCoord[0].xy );
+	#ifdef GAMMA_INPUT
+		gSurface.albedo.rgb *= gSurface.albedo.rgb;
 	#endif
-	
-	#ifdef USE_COLOR
-		gSurface.albedo = gSurface.albedo * vec4( vColor, 1.0 );
-	#endif	
-	
-	#ifdef ALPHATEST
-		if ( gSurface.albedo.a * g_opacity < ALPHATEST ) discard;
-	#endif
-	
-	#ifdef USE_SPECULARMAP
-		gSurface.specularAmount = texture2D( specularMap, gl_TexCoord[0].xy ).rgb * g_specularColor.rgb;
-	#else
-		gSurface.specularAmount = g_specularColor.rgb;
-	#endif
+#else
+	gSurface.albedo = vec4(1.0,1.0,1.0,1.0);
+#endif
+
+#ifdef USE_COLOR
+	gSurface.albedo = gSurface.albedo * vec4( vColor, 1.0 );
+#endif
 }
 
 void AccumulatePhong(vec3 normal,
@@ -172,6 +181,10 @@ void AccumulateSkyLight(vec3 dir, vec4 skycolor, vec4 groundcolor, inout vec3 li
 void main(){
 
 	ComputeSurfaceDataFromGeometry();
+    
+#ifdef ALPHATEST
+	if ( gSurface.albedo.a * g_opacity < ALPHATEST ) discard;
+#endif
 	
 	vec3 lit = vec3(0.0);
 	

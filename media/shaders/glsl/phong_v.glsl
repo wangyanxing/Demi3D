@@ -3,11 +3,11 @@
 
 attribute vec3  Position;
 attribute vec3  Normal;
-#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )
+#if defined( USE_NORMALMAP )
 attribute vec3	Tangent;
 #endif
 
-#if defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
+#if defined( USE_MAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
 attribute vec2  Texcoord0;
 #endif
 
@@ -25,14 +25,21 @@ varying vec3 vNormal;
 varying vec3 vViewDir;
 varying vec3 vPosWorld;
 
-#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )
-varying vec3 Tangent;
-varying vec3 Binormal;
+#if defined( USE_NORMALMAP )
+varying vec3 vTangent;
+varying vec3 vBinormal;
 #endif
 
 void main()
 {
-	GET_SPACE_POS_NORMAL(objPos, objNormal);
+#if defined( USE_NORMALMAP )
+    GET_SPACE_POS_NORMAL_TANGENT(objPos, objNormal, objTangent);
+#else
+	//GET_SPACE_POS_NORMAL(objPos, objNormal);
+    vec4 objPos = vec4(Position.xyz,1.0);
+    vec3 objNormal = Normal;
+    vec3 objTangent = Tangent;
+#endif
 	
 	gl_Position = g_modelViewProjMatrix * objPos;
 
@@ -41,11 +48,16 @@ void main()
 #endif
 	
 #if defined( USE_MAP ) 
-	gl_TexCoord[0] = Texcoord0;
+	gl_TexCoord[0] = vec4(Texcoord0,0.0,0.0);
 #endif
 
 	// world space normal
-    vNormal    = (g_modelMatrix * vec4(objNormal,0.0)).xyz;
-	vPosWorld  = (g_modelMatrix * objPos).xyz;
-	vViewDir   = g_eyePosition - vPosWorld;
+    vNormal   = (g_modelMatrix * vec4(objNormal,0.0)).xyz;
+	vPosWorld = (g_modelMatrix * objPos).xyz;
+	vViewDir  = g_eyePosition - vPosWorld;
+    
+#if defined( USE_NORMALMAP )
+    vTangent  = (g_modelMatrix * vec4(objTangent, 0.0)).xyz;
+    vBinormal = cross(vNormal, vTangent);
+#endif
 }
