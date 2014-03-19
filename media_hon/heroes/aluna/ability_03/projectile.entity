@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectile
+	name="Projectile_Aluna_Ability3"
+	
+	speed="400"
+	gravity="0"
+	
+	modelscale="1"
+	model="/shared/models/invis.mdf"
+	
+	impacteffect=""
+	traileffect="effects/shadow.effect"
+	deatheffect=""
+	
+	canturn="true"
+	flying="false"
+	
+	touchradius="80"
+	maxtouchespertarget="1"
+	touchtargetscheme="enemy_units"
+	toucheffecttype="Magic"
+	touchradiusdiradjust="false"
+	
+	lifetime="-1"	
+	turnrate="90000"	
+>
+	<onframe/>
+	
+	<onspawn>
+		<setproxy entity="this_entity" target="target_entity" />
+	</onspawn>
+
+	<ontouch>
+		<applystate name="State_Aluna_Ability3_Enemy" duration="3000,3500,4000,4500" target="target_entity" />
+	</ontouch>
+
+	<onimpact>
+		<pushentityproxy entity="target_entity" index="0" />
+		<setproxy entity="this_entity" target="stack_entity" />
+		<kill source="this_entity" target="target_entity" experiencebountymul="0" goldbountymult="0" nocorpse="true" nodeathanim="true" />	
+		<compare a="stack_entity" b="0" op="gt">
+			<retarget target="stack_entity" />
+		</compare>
+		<else>
+			<setactivemodifierkey entity="proxy_entity" name="" />
+			<resettimer entity="proxy_entity"/>
+		</else>
+	</onimpact>
+
+</projectile>

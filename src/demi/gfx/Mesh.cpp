@@ -17,21 +17,17 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    DiAssetType DiMesh::TYPE = ASSET_MODEL;
+    DiString DiMesh::TYPE = "Model";
 
     DiMesh::DiMesh( const DiString& name )
         :DiAsset(name),
         mSkeleton(NULL)
     {
-
     }
 
     DiMesh::~DiMesh()
     {
-        SubMeshList::iterator it;
-        SubMeshList::iterator itEnd = mSubMeshList.end();
-
-        for (it = mSubMeshList.begin(); it != itEnd; ++it)
+        for (auto it = mSubMeshList.begin(); it != mSubMeshList.end(); ++it)
         {
             DI_DELETE (*it);
         }

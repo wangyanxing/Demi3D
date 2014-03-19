@@ -26,7 +26,7 @@ namespace Demi
 
         DiAsset(const DiString& name);
 
-        virtual                ~DiAsset(void);
+        virtual                 ~DiAsset(void);
 
     public:
 
@@ -34,23 +34,25 @@ namespace Demi
 
         const DiString&         GetName(void) const { return mName; }
 
-        virtual DiAssetType     GetAssetType() const = 0;
+        virtual const DiString& GetAssetType() const = 0;
 
         virtual bool            LoadingComplete() const = 0;
 
-        virtual    bool         Load(DiDataStreamPtr data) = 0;
+        virtual bool            Load(DiDataStreamPtr data) = 0;
 
-        virtual    bool         Load() = 0;
+        virtual bool            Load() = 0;
 
     private:
 
-        DiAsset &               operator = (const DiAsset&) { return *this; }
+        /** Disable the default assignment operator
+         */
+        DiAsset&  operator = (const DiAsset&) { return *this; }
 
     protected:
 
-        DiString                mName;
+        DiString  mName;
 
-        uint32                  mByteSize;
+        uint32    mByteSize;
     };
 }
 

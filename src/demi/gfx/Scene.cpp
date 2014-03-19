@@ -19,17 +19,15 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiAssetType DiScene::TYPE = ASSET_SCENE;
+    DiString DiScene::TYPE = "Scene";
 
     DiScene::DiScene( const DiString& name )
         :DiAsset(name)
     {
-
     }
 
     DiScene::~DiScene()
     {
-
     }
 
     bool DiScene::LoadingComplete() const
@@ -48,5 +46,4 @@ namespace Demi
     {
         return true;
     }
-
 }

@@ -35,7 +35,7 @@ namespace Demi
 
     public:
 
-        DiAssetType                 GetAssetType() const {return TYPE;}
+        const DiString&             GetAssetType() const { return TYPE; }
 
         bool                        LoadingComplete() const;
 
@@ -83,7 +83,7 @@ namespace Demi
 
     public:
 
-        static DiAssetType          TYPE;
+        static DiString             TYPE;
 
     protected:
 

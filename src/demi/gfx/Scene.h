@@ -39,7 +39,7 @@ namespace Demi
 
         bool                    Load();
 
-        DiAssetType             GetAssetType() const{return TYPE;}
+        const DiString&         GetAssetType() const { return TYPE; }
 
         DiTerrainDesc&          GetTerrainDesc() { return mTerrainDesc; }
 
@@ -47,7 +47,7 @@ namespace Demi
 
     public:
 
-        static DiAssetType      TYPE;
+        static DiString         TYPE;
 
     protected:
 

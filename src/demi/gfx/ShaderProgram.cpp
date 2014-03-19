@@ -32,11 +32,6 @@ namespace Demi
         SAFE_DELETE(mShader);
     }
 
-    Demi::DiAssetType DiShaderProgram::GetAssetType() const
-    {
-        return ASSET_SHADER;
-    }
-
     bool DiShaderProgram::Load(DiDataStreamPtr data)
     {
         mShaderFileName = data->GetName();

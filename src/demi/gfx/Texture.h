@@ -149,7 +149,7 @@ namespace Demi
 
         bool                    LoadingComplete(void) const;
 
-        DiAssetType             GetAssetType(void) const {return TYPE;}
+        const DiString&         GetAssetType() const { return TYPE; }
 
         bool                    Load(DiDataStreamPtr data);
 
@@ -205,7 +205,7 @@ namespace Demi
 
     public:
 
-        static DiAssetType      TYPE;
+        static DiString         TYPE;
 
     protected:
 

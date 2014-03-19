@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ability
+	name="Ability_Aluna3"
+	
+	icon="icon.tga"
+	anim=""		
+	
+	casttime="0"
+	castactiontime="0"	
+	
+	maxlevel="4"
+	requiredlevel="1,3,5,7"
+	
+	actiontype="target_self"
+	targetscheme=""
+	
+	casteffecttype="Magic"
+	casteffect=""
+	
+	manacost="100,110,120,130"
+	cooldowntime="30000,28000,26000,24000"
+	
+	statuseffecttooltip="State_Aluna_Ability3"
+	
+	frontqueue="true"
+	inheritmovement="true"
+	noninterrupting="true"
+>
+	<!-- Button 1 applies MS buff and starts the show -->
+	<onimpact >
+		<spawnunit name="Gadget_Aluna_Ability3_Image" target="source_position" pushentity="true" proxy="proxy_entity" />	
+		<setproxy entity="target_entity" target="stack_entity" />
+		<setproxy entity="this_entity" target="stack_entity" />
+		<applystate name="State_Aluna_Ability3" duration="3000,3500,4000,4500" target="source_entity" />
+		<starttimer duration="3000,3500,4000,4500" />
+		<showchannelbar duration="3000,3500,4000,4500" />
+		<setactivemodifierkey entity="this_entity" name="button2" />
+		<!-- Timer starting calibration -->
+		<setaccumulator value="50" />
+	</onimpact>
+
+
+	<modifier key="ult" priority="100" icon="icon_b.tga" />
+	
+	<!-- Button 2 spawns shadow projectile that runs back -->
+	<modifier key="button2" modpriority="100"
+		ignorecooldown="true"
+		statuseffecttooltip="State_Aluna_Ability3_Button2"
+		anim=""
+		icon="icon2.tga"
+		casttime="0"
+		castactiontime="0"
+		manacost="0"
+		actiontype="no_target"
+		cooldowntime="0"
+		>		
+		<onframe>
+			<!-- Spawning trail of gadgets every x units and proxy chain -->
+			<distance target="proxy_entity" source="source_entity" />		
+			<compare a="result" b="125" op="gt">
+				<spawnunit name="Gadget_Aluna_Ability3" target="source_position" pushentity="true" proxy="proxy_entity" />	
+				<setproxy entity="this_entity" target="stack_entity" />
+				<!-- Adding additional time for each gadget traversed  --> 
+				<setaccumulator value="accumulator" valueb="344" valueop="add" />
+			</compare>
+		</onframe>		
+		
+		<!-- Sends shadow projectile back on impact -->
+		<onimpact>
+			<!-- Checking distance from last spawned gadget and converting to time to compensate for time intervals  --> 
+			<distance target="proxy_entity" source="source_entity" />
+			<evaluate a="result" b="2.5" op="mult" />
+			<setaccumulator value="accumulator" valueb="result" valueop="add" />
+			<resettimer />
+			<hidechannelbar />
+			<spawnprojectile name="Projectile_Aluna_Ability3" source="source_entity" target="proxy_entity" pushentity="true" proxy="this_entity" />		
+			<setproxy entity="this_entity" target="stack_entity" index="1" />
+			<!-- Start timer for shadow projectile duration -->
+			<starttimer duration="accumulator" />
+			<showchannelbar duration="accumulator" />
+			<setactivemodifierkey entity="this_entity" name="button3" />				
+		</onimpact>
+		
+		<ontimer>
+			<!-- Deletes trail of gadgets if no button impact -->
+			<spawnprojectile name="Projectile_Aluna_Ability3_Expire" source="source_entity" target="proxy_entity" pushentity="true" />		
+			<setactivemodifierkey entity="this_entity" name="" />				
+		</ontimer>
+	</modifier>
+	
+	<!-- Button 3 teleports hero to shadow projectile -->
+	<modifier key="button3" modpriority="100"
+		ignorecooldown="true" 
+		statuseffecttooltip="State_Aluna_Ability3_Button3"
+		anim="" 
+		icon="icon3.tga"
+		casttime="0" 
+		castactiontime="0" 
+		manacost="0" 
+		actiontype="no_target" 
+		cooldowntime="0"
+	>
+		<onimpact>
+			<!-- Deletes trail of gadgets ahead of projectile --> 
+			<pushentityproxy entity="this_entity" index="1" />
+			<pushentityproxy entity="stack_entity" index="0" />
+			<spawnprojectile name="Projectile_Aluna_Ability3_Expire" source="source_entity" target="stack_entity" pushentity="true" />
+			<!-- Poof -->
+			<playeffect effect="effects/poof.effect" source="source_position" occlude="true" />
+			<pushentityproxy entity="this_entity" index="1" />
+			<teleport source="this_owner_entity" target="stack_entity" interpolate="false" />
+			<playeffect effect="effects/poof.effect" target="this_owner_position" occlude="true" />
+			<delete	source="this_entity" target="stack_entity" />
+			<resettimer />
+			<hidechannelbar />
+			<setactivemodifierkey entity="this_entity" name="" />
+			<order command="stop" target="source_entity" />
+			<disjoint target="source_entity" />
+		</onimpact>
+
+		<ontimer>
+			<!-- Deletes trail of gadgets ahead of projectile -->
+			<pushentityproxy entity="this_entity" index="1" />
+			<pushentityproxy entity="stack_entity" index="0" />
+			<spawnprojectile name="Projectile_Aluna_Ability3_Expire" source="source_entity" target="stack_entity" pushentity="true" />     
+			<!-- Timer expires (button resets) before shadow projectile reaches origin -->
+			<pushentityproxy entity="this_entity" index="1" />
+			<delete	source="this_entity" target="stack_entity" />
+			<resettimer />
+			<hidechannelbar />
+			<setactivemodifierkey entity="this_entity" name="" />	
+		</ontimer>
+	</modifier>
+</ability>

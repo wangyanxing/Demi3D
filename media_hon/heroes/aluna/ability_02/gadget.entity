@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gadget
+	name="Gadget_Aluna_Ability2"
+	
+	icon=""
+	portrait=""
+	model="/shared/models/invis.mdf"
+	passiveeffect=""
+
+	boundsheight="0"
+	boundsradius="0"
+	isselectable="false"
+	iscontrollable="false"
+	selectionradius="0"
+	targetoffset="0 0 0"
+
+	canrotate="false"
+	ismobile="false"	
+	
+	attacktype="none"
+	combattype="Ranged"	
+	
+	sightrangeday="800"
+	sightrangenight="800"
+
+	unitwalking="true"
+	canattack="false"
+	deathtime="0"
+	corpsetime="0"
+	invulnerable="true"
+	flying="true"
+	drawonmap="false"
+	
+	lifetime="600"
+	clearvision="true"
+>
+	<!-- Over 9000 -->
+	<modifier key="ult" priority="100" lifetime="7000"/>
+	<!-- Regular -->
+	<onexpired>
+		<spawnunit name="Gadget_Aluna_Ability2_Linger" count="1" target="this_position" />
+	</onexpired>
+</gadget>

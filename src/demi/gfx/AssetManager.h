@@ -27,7 +27,7 @@ namespace Demi
         // for registering new asset types
         typedef std::function<DiAssetPtr(DiDataStreamPtr,const DiString&)> AssetLoaderFunc;
         
-        DiAssetType type;
+        DiString type;
         
         /// file extensions
         DiVector<DiString> extensions;
@@ -51,7 +51,7 @@ namespace Demi
     public:
 
         DiAssetPtr                    GetAsset(const DiString& path, 
-                                                DiAssetType type, bool ignoreError=false);
+                                                const DiString& type, bool ignoreError=false);
 
         template <class TAsset>
         shared_ptr<TAsset>            GetAsset(const DiString& path, bool ignoreError=false)
@@ -61,7 +61,7 @@ namespace Demi
         
 
         DiAssetPtr                    CreateManualAsset(const DiString& name, 
-                                                DiAssetType type);
+                                                const DiString& type);
 
         template <class TAsset>
         shared_ptr<TAsset>            CreateManualAsset(const DiString& name)
@@ -70,7 +70,7 @@ namespace Demi
         }
 
         DiAssetPtr                    CreateOrReplaceAsset(const DiString& name, 
-                                                DiAssetType type);
+                                                const DiString& type);
 
         template <class TAsset>
         shared_ptr<TAsset>            CreateOrReplaceAsset(const DiString& name)
@@ -109,15 +109,17 @@ namespace Demi
         // for registering new asset types
         typedef std::function<DiAssetPtr(const DiString&)> AssetLoaderFunc;
         
-        void                          RegisterAssetType(uint32 assetType,
+        void                          RegisterAssetType(const DiString& type,
                                             const DiVector<DiString>& extensions, const AssetLoaderFunc& loader);
         
-        void                          RegisterAssetType(uint32 assetType,
+        void                          RegisterAssetType(const DiString& type,
                                                         const DiString& extension, const AssetLoaderFunc& loader);
+
+        void                          UnregisterAssetType(const DiString& type);
 
     protected:
 
-        DiAssetPtr                   LoadAsset(const DiString& path, bool ignoreError = false);
+        DiAssetPtr                   LoadAsset(const DiString& path, const DiString& type, bool ignoreError = false);
 
         DiAssetPtr                   LoadXMLAsset(DiDataStreamPtr data, const DiString& path);
 
@@ -144,8 +146,8 @@ namespace Demi
 
         DiArchiveManager*            mArchiveManager;
         
-        typedef DiMap<uint32,AssetLoaderFunc> AssetTypeLoaders;
-        typedef DiStrHash<AssetLoaderFunc>    ExtensionLoaders;
+        typedef DiStrHash<AssetLoaderFunc> AssetTypeLoaders;
+        typedef DiStrHash<AssetLoaderFunc> ExtensionLoaders;
         AssetTypeLoaders             mAssetLoaders;
         
         ExtensionLoaders             mExtensionLoaders;

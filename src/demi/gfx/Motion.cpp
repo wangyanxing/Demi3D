@@ -19,23 +19,20 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiAssetType DiMotion::TYPE = ASSET_MOTION;
+    DiString DiMotion::TYPE = "Motion";
 
     DiMotion::DiMotion( const DiString& name )
         :DiAsset(name),
-        mSkeleton(NULL),
-        mAttachSet(NULL)
+        mSkeleton(nullptr),
+        mAttachSet(nullptr)
     {
-
     }
 
     DiMotion::~DiMotion()
     {
         SAFE_DELETE(mSkeleton);
         
-        AnimationList::iterator it;
-        AnimationList::iterator itEnd = mAnimationList.end();
-        for (it = mAnimationList.begin(); it != itEnd; ++it)
+        for (auto it = mAnimationList.begin(); it != mAnimationList.end(); ++it)
         {
             SAFE_DELETE(it->second);
         }

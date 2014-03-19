@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectile
+	name="Projectile_Aluna_Ability3_Expire"
+	speed="10000"
+	gravity="0"
+	modelscale="1"
+	model="/shared/models/invis.mdf"
+	impacteffect=""
+	traileffect=""
+	deatheffect=""
+	canturn="true"
+	flying="false"
+	lifetime="-1"	
+	ignoreinvulnerable="true"	
+>
+	<onimpact>
+		<pushentityproxy entity="target_entity" index="0" />
+		<kill source="this_entity" target="target_entity" experiencebountymul="0" goldbountymult="0" nocorpse="true" nodeathanim="true" />	
+		<compare a="stack_entity" b="0" op="gt">
+			<retarget target="stack_entity" />
+		</compare>
+	</onimpact>
+
+</projectile>

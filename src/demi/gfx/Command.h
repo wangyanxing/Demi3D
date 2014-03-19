@@ -94,11 +94,13 @@ namespace Demi
                                  
         static void              DestroyConsoleLogger();
                                  
-        bool                     AddCommand(const char* pcCmd, DiCmdFuntion pFunction, const char* pcHelp);
+        bool                     AddCommand(const DiString& command, DiCmdFuntion pFunction, const char* pcHelp);
                                  
-        bool                     ExecuteCommand(const char* pcCmd);
+        bool                     ExecuteCommand(const DiString& command);
                                  
         int                      GetNumVars();
+
+        bool                     HasCommand(const DiString& varName);
                                  
         DiConsoleVar*            RegisterString(const DiString& varName,const DiString& varValue,int flags, 
                                      const DiString& desc = "",std::function<void(DiConsoleVar*)> callFunc = nullptr );

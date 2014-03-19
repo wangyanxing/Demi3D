@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<state
+	name="State_Aluna_Ability3"
+	icon="icon.tga"	
+	passiveeffect="effects/state.effect"
+	effecttype="StatusBuff"
+	movespeedmultiplier="0.25,0.30,0.35,0.4"
+	unitwalking="true"
+>
+	<modifier key="ult" modpriority="100"
+	> 
+		<oninflict>
+			<spawnaffector name="Affector_Aluna_Ability4" target="source_entity" pushentity="true" />
+			<setproxy target="stack_entity" />
+		</oninflict>
+
+		<onexpired>
+			<delete source="source_entity" target="proxy_entity" />
+		</onexpired>
+	</modifier>
+</state>

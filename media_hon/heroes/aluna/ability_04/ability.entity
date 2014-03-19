@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ability
+	name="Ability_Aluna4"
+	
+	icon="icon.tga"
+	anim="ability_4"
+	
+	casttime="0"
+	castactiontime="0"
+
+	maxlevel="3"
+	requiredlevel="6,11,16"
+
+	actiontype="target_self"
+	targetscheme=""
+	
+	casteffecttype="SuperiorMagic"
+	casteffect=""
+	
+	manacost="75"
+	cooldowntime="500"
+	maxcharges="1,2,3"
+	
+	statuseffecttooltip="State_Aluna_Ability4"
+	
+	frontqueue="true"
+	inheritmovement="true"
+	noninterrupting="true"
+>
+
+	<onlearn>
+		<setcharges a="1" />
+	</onlearn>
+	
+	<onupgrade>
+		<addcharges count="1" />
+	</onupgrade>
+	
+	<onimpact>
+		<applystate name="State_Aluna_Ability4" target="source_entity" duration="10000" pushentity="true" />
+		<!-- Compensating for abilityimpact in the ultimate state by adding 1 extra charge (counts ultimate cast as an abilityimpact) -->
+		<addcharges entity="stack_entity" count="2" />
+		<applystate name="State_Aluna_Ability4_Charges" target="source_entity" duration="60000,50000,40000" proxy="this_entity" pushentity="true" />
+		<addcharges entity="stack_entity" count="1" duration="60000,50000,40000" />
+		<removecharge />
+		<compare a="charges" b="0" op="eq">
+			<activatemodifierkey name="aluna_ult_disabled" />
+		</compare>
+	</onimpact>
+	
+	<modifier key="aluna_ult_disabled" modpriority="90"
+		disabled="true"
+	>
+		<onframe>
+			<compare a="charges" b="0" op="gt">
+				<deactivatemodifierkey name="aluna_ult_disabled" />
+			</compare>
+		</onframe>
+	</modifier>
+</ability>

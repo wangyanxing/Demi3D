@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<state
+	name="State_Aluna_Ability4_Charges"
+	
+	ishidden="true"
+	impactinterval="60000,50000,40000"
+	maxcharges="3"
+	deathpersist="true"
+
+>
+	<oninflict>
+		<starttimer entity="proxy_entity" duration="60000,50000,40000" />
+	</oninflict>
+	
+	<onimpact>
+		<addcharges entity="proxy_entity" count="1" />
+		<compare a="charges" b="1" op="gt">
+			<starttimer entity="proxy_entity" duration="60000,50000,40000" />
+			<changeduration b="60000,50000,40000" op="max" />
+		</compare>
+		<removecharge />
+	</onimpact>
+</state>

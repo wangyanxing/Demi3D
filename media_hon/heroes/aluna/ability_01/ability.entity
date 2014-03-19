@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ability
+	name="Ability_Aluna1"
+	
+	icon="icon.tga"
+	anim="ability_1"
+	
+	casttime="1000"
+	castactiontime="300"
+	
+	maxlevel="4"
+	requiredlevel="1,3,5,7"
+	
+	actiontype="target_entity"
+	targetscheme="enemy_units"
+	
+	casteffecttype="Magic"
+	casteffect=""
+
+	manacost="100,110,120,130"
+	cooldowntime="15000,14000,13000,12000"
+	range="600"
+	
+	statuseffecttooltip="State_Aluna_Ability1_Self"
+	statuseffecttooltip2="State_Aluna_Ability1_Enemy"
+
+	showareacast="true"
+	areacastmaterial="/shared/materials/area_cast_indicator_spokes.material"
+>
+	<onimpact>
+		<applystate name="State_Stunned" duration="1000" />	
+		<spawnaffector name="Affector_Aluna_Ability1" target="target_entity" proxy="target_entity" param="1000" />
+		<hasmodifier name="ult">
+			<playeffect effect="effects/linkred.effect" target="target_entity"/>
+		</hasmodifier>
+		<else>
+			<playeffect effect="effects/link.effect" target="target_entity"/>
+		</else>
+	</onimpact>
+	<modifier key="ult" modpriority="100" icon="iconb.tga" />
+</ability>

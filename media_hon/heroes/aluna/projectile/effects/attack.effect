@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<effect deferred="true" useentityeffectscale="true">
+
+	<definitions>
+
+		<particlesystem name="system0" space="world" scale=".85">
+
+			<simpleemitter
+				life="600"
+				spawnrate="500"
+				count="5"
+				bone="_bone_righthand"
+				minparticlelife="75"
+				maxparticlelife="150"
+				gravity="0"
+				speed="50"
+				drag="0"
+				acceleration="1"
+				position="0 0 0"
+				material="/shared/effects/materials/electric_impact_01.material"
+				offsetsphere="25 25 25"
+				minangle="0"
+				maxangle="0"
+				direction="0 0 0"
+				offsetdirection="0 0 0"
+				offsetradial="0 0 0"
+			>
+				<particle 
+					minangle="0"
+					maxangle="0"
+					minanglespeed="0"
+					maxanglespeed="1440"
+					startcolor="0 0 0"
+					midcolor="1 1 1"
+					endcolor="0 0 0"
+					midcolorpos=".5"
+					startframe="0"
+					endframe="0"
+					startsize="5"
+					midsize="50"
+					endsize="90"
+					midsizepos=".5"
+					startalpha="0"
+					midalpha=".5"
+					endalpha="0"
+					midalphapos=".6"
+					startstickiness="0"
+					endstickiness="0"
+					lockup="false"
+					lockright="false"
+					pitch="0"
+					yaw="0"
+				/>
+			</simpleemitter>
+
+			<billboard
+				bone="_bone_righthand"
+				size="35"
+				depthbias="-50"
+				life="200"
+				startcolor="1 1 1"
+				endcolor="0 0 0"
+				material="/shared/effects/materials/whitedot.material"
+			/>
+
+			<billboard
+				bone="_bone_righthand"
+				size="90"
+				depthbias="-50"
+				life="200"
+				startcolor="0 0 1"
+				endcolor="0 0 0"
+				material="/shared/effects/materials/whitedot.material"
+			/>
+			
+			<billboard
+				bone="_bone_righthand"
+				size="90"
+				depthbias="-50"
+				life="200"
+				startcolor="0 0 1"
+				endcolor="0 0 0"
+				material="/shared/effects/materials/whitedot.material"
+			/>
+			
+			<billboard
+				bone="_bone_righthand"
+				life="200"
+				param="0.1"	
+				startsize="50"
+				endsize="150"
+				startalpha="0"
+				midalpha=".4"
+				endalpha="0"				
+				depthbias="-50"
+				material="/shared/effects/materials/refract_swell.material"
+				lockup="1"
+				lockright="1"
+				pitch="90"
+			/>
+			
+			<billboard
+				bone="_bone_centerofchest"
+				delay="175"
+				life="200"
+				param="0.1"	
+				startsize="50"
+				endsize="150"
+				startalpha="0"
+				midalpha=".4"
+				endalpha="0"				
+				depthbias="0"
+				material="/shared/effects/materials/refract_swell.material"
+				lockup="1"
+				lockright="1"
+				pitch="90"
+			/>
+
+		</particlesystem>
+
+	</definitions>
+
+	<thread>
+		<spawnparticlesystem instance="instance0" particlesystem="system0" />
+		<waitfordeath instance="instance0" />
+		<!-- <die /> -->
+	</thread>
+</effect>
+
+<!-- [min|max][start|mid|end]property[speed][position] -->

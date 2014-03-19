@@ -18,29 +18,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    /** Frame events, play sounds etc.
-     */
-    struct K2FrameEvent
-    {
-        int frame;
-        DiString cmd;
-    };
-
-    struct K2Anim
-    {
-        DiString name;
-        DiString clip;
-        bool     loop;
-        float    fps;
-        int      numframes;
-        int      loopbackframe;
-
-        DiVector<K2FrameEvent> events;
-    };
+    
 
     /** Load a k2 mdf model
      */
-    class DEMI_K2_API DiK2Model
+    class DEMI_K2_API DiK2Model : public DiBase
     {
     public:
 
@@ -50,16 +32,8 @@ namespace Demi
 
     public:
 
-        K2Anim&         AddAnim();
+        DiModelPtr      GetMesh() { return mMesh; }
 
-        uint32          GetAnimNums() const { return mAnims.size(); }
-
-        K2Anim&         GetAnim(uint32 id) { return mAnims[id]; }
-        
-        DiModelPtr      GetMesh() {return mMesh;}
-
-        void            SetMesh(DiModelPtr model) { mMesh = model; }
-        
         /** e.g. "heroes/aluna"
          */
         const DiString& GetName() const {return mName;}
@@ -70,28 +44,31 @@ namespace Demi
 
         DiCullNode*     GetNode() { return mNode; }
 
+        void            Update(float deltaTime);
+
     private:
 
-        /** Load the model from a full path, e.g. heroes/aluna
-        */
         void            Load(const DiString& path);
 
     private:
-
-        /// animation configs
-        DiVector<K2Anim>  mAnims;
 
         /// a Demi mesh
         DiModelPtr        mMesh;
 
         /// the actual animation sets
         DiK2Animation*    mAnimation;
+
+        /// the skeleton
+        DiK2Skeleton*     mSkeleton;
         
         /// full path to this asset folder
         DiString          mName;
 
         /// Scene node
         DiCullNode*       mNode;
+
+        /// the real data
+        DiK2ModelAssetPtr mAsset;
     };
 }
 

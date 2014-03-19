@@ -26,7 +26,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    DiAssetType DiMaterial::TYPE = ASSET_MATERIAL;
+    DiString DiMaterial::TYPE = "Material";
 
     DiMaterial::DiMaterial(const DiString& name) :
         DiAsset(name),mShaderParameter(NULL),

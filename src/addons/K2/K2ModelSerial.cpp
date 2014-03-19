@@ -24,6 +24,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ShaderManager.h"
 #include "ShaderParam.h"
 #include "Texture.h"
+#include "Command.h"
+#include "ConsoleVariable.h"
+#include "K2Asset.h"
 
 namespace Demi
 {
@@ -97,16 +100,6 @@ namespace Demi
             if (scale.empty())
                 scale.resize(frames, DiVec3::UNIT_SCALE);
         }
-        
-        DiVec3 getPos(int id){
-            return id >= pos.size() ? pos.back() : pos[id];
-        }
-        DiVec3 getRot(int id){
-            return id >= rot.size() ? rot.back() : rot[id];
-        }
-        DiVec3 getScale(int id){
-            return id >= scale.size() ? scale.back() : scale[id];
-        }
     };
 
     void updateClip(Clip& c, int keytype, int keyID, float val, int vis)
@@ -138,6 +131,80 @@ namespace Demi
         }
     }
 
+
+    typedef struct RotOrderInfo {
+        short axis[3];
+        short parity; /* parity of axis permutation (even=0, odd=1) - 'n' in original code */
+    } RotOrderInfo;
+
+    typedef enum eEulerRotationOrders {
+        EULER_ORDER_DEFAULT = 1, /* blender classic = XYZ */
+        EULER_ORDER_XYZ = 1,
+        EULER_ORDER_XZY,
+        EULER_ORDER_YXZ,
+        EULER_ORDER_YZX,
+        EULER_ORDER_ZXY,
+        EULER_ORDER_ZYX
+        /* there are 6 more entries with dulpicate entries included */
+    } eEulerRotationOrders;
+
+    static const RotOrderInfo rotOrders[] = {
+        /* i, j, k, n */
+        { { 0, 1, 2 }, 0 }, /* XYZ */
+        { { 0, 2, 1 }, 1 }, /* XZY */
+        { { 1, 0, 2 }, 1 }, /* YXZ */
+        { { 1, 2, 0 }, 0 }, /* YZX */
+        { { 2, 0, 1 }, 0 }, /* ZXY */
+        { { 2, 1, 0 }, 1 }  /* ZYX */
+    };
+#define GET_ROTATIONORDER_INFO(order) (assert(order >= 0 && order <= 6), (order < 1) ? &rotOrders[0] : &rotOrders[(order) - 1])
+
+    void eulO_to_quat(float q[4], const float e[3], const short order)
+    {
+        const RotOrderInfo *R = GET_ROTATIONORDER_INFO(order);
+        short i = R->axis[0], j = R->axis[1], k = R->axis[2];
+        double ti, tj, th, ci, cj, ch, si, sj, sh, cc, cs, sc, ss;
+        double a[3];
+
+        ti = e[i] * 0.5f;
+        tj = e[j] * (R->parity ? -0.5f : 0.5f);
+        th = e[k] * 0.5f;
+
+        ci = cos(ti);
+        cj = cos(tj);
+        ch = cos(th);
+        si = sin(ti);
+        sj = sin(tj);
+        sh = sin(th);
+
+        cc = ci * ch;
+        cs = ci * sh;
+        sc = si * ch;
+        ss = si * sh;
+
+        a[i] = cj * sc - sj * cs;
+        a[j] = cj * ss + sj * cc;
+        a[k] = cj * cs - sj * sc;
+
+        q[0] = cj * cc + sj * ss;
+        q[1] = a[0];
+        q[2] = a[1];
+        q[3] = a[2];
+
+        if (R->parity) 
+            q[j + 1] = -q[j + 1];
+    }
+
+    DiQuat convertEuler(const DiVec3& eulerrot)
+    {
+        float qout[] = { 1, 0, 0, 0 };
+        float ein[] = { DiDegree(eulerrot.x).valueRadians(), 
+            DiDegree(eulerrot.y).valueRadians(), DiDegree(eulerrot.z).valueRadians() };
+        eulO_to_quat(qout, ein, EULER_ORDER_YXZ);
+        DiQuat q(qout);
+        return q;
+    }
+
     //////////////////////////////////////////////////////////////////////////
 
     DiK2MdfSerial::DiK2MdfSerial()
@@ -148,7 +215,7 @@ namespace Demi
     {
     }
 
-    bool DiK2MdfSerial::ParseMdf(const DiString& file, DiK2Model* target)
+    bool DiK2MdfSerial::ParseMdf(const DiString& file, DiK2ModelAsset* target)
     {
         FILE* fp = fopen(file.c_str(), "r");
         if (!fp)
@@ -161,7 +228,7 @@ namespace Demi
         
         DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
 
-        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
         xmlfile->Load(data->GetAsString());
         data->Close();
 
@@ -169,7 +236,7 @@ namespace Demi
         return ParseMdf(root, target);
     }
 
-    bool DiK2MdfSerial::ParseMdf(DiXMLElement rootNode, DiK2Model* target)
+    bool DiK2MdfSerial::ParseMdf(DiXMLElement rootNode, DiK2ModelAsset* target)
     {
         if (rootNode.GetName() != "model")
         {
@@ -188,7 +255,7 @@ namespace Demi
         return true;
     }
 
-    void DiK2MdfSerial::ParseAnim(DiXMLElement data, DiK2Model* target)
+    void DiK2MdfSerial::ParseAnim(DiXMLElement data, DiK2ModelAsset* target)
     {
         DiString animName = data.GetAttribute("name");
         DiString clipName = data.GetAttribute("clip");
@@ -197,7 +264,7 @@ namespace Demi
         anim.name = animName;
         anim.clip = clipName;
         anim.loop = false;
-        anim.fps = 25;
+        anim.fps  = 25;
         anim.numframes = 0;
         anim.loopbackframe = 0;
 
@@ -211,7 +278,7 @@ namespace Demi
             anim.loopbackframe = data.GetInt("loopbackframe");
     }
     
-    bool DiK2MdfSerial::LoadModel(const DiString& file, DiK2Model* target)
+    bool DiK2MdfSerial::LoadModel(const DiString& file, DiK2ModelAsset* target)
     {
         FILE* fp = fopen(file.c_str(), "rb");
         if (!fp)
@@ -277,7 +344,7 @@ namespace Demi
         DiAABB bounds(minx, miny, minz, maxx, maxy, maxz);
         mesh->SetBounds(bounds);
 
-        if (!LoadBones(target->GetAnimation(), num_bones))
+        if (!LoadBones(target->GetBoneData(), num_bones))
             return false;
 
         if (!CheckFourcc("mesh"))
@@ -297,8 +364,7 @@ namespace Demi
             }
         }
 
-        DiModelPtr model = make_shared<DiModel>(meshname,mesh);
-        target->SetMesh(model);
+        target->SetMesh(mesh);
 
         mStream->Close();
         mStream = nullptr;
@@ -306,7 +372,7 @@ namespace Demi
         return true;
     }
 
-    bool DiK2MdfSerial::LoadBones(DiK2Animation* target, int numBones)
+    bool DiK2MdfSerial::LoadBones(DiK2BonesDataPtr target, int numBones)
     {
         if (!CheckFourcc("bone"))
         {
@@ -332,11 +398,11 @@ namespace Demi
 
             DI_SERIAL_LOG("Bone ID: %d, name : %s", i, name.c_str());
 
-            target->mSkeleton.names.push_back(name);
-            target->mSkeleton.parents.push_back(parentID);
-            target->mSkeleton.trans.push_back(matrix.convert());
-            target->mSkeleton.invtrans.push_back(inv_matrix.convert());
-            target->mSkeleton.nameMap[name] = i;
+            target->names.push_back(name);
+            target->parents.push_back(parentID);
+            target->trans.push_back(matrix.convert());
+            target->invtrans.push_back(inv_matrix.convert());
+            target->nameMap[name] = i;
         }
         return true;
     }
@@ -367,7 +433,7 @@ namespace Demi
         return true;
     }
 
-    DiSubMesh* DiK2MdfSerial::LoadMeshes(DiK2Model* target, DiMeshPtr mesh)
+    DiSubMesh* DiK2MdfSerial::LoadMeshes(DiK2ModelAsset* target, DiMeshPtr mesh)
     {
         gCurrentVerts.clear();
 
@@ -420,8 +486,14 @@ namespace Demi
 
         if (submesh)
         {
-            submesh->SetMaterialName(target->GetName() + "/" + materialName);
-            ParseMaterial(target->GetName(), materialName);
+            DiString fullpath = DiK2MdfSerial::GetK2MediaPath(target->GetName());
+            DiString mateiralFile = fullpath + "/" + materialName;
+            mateiralFile += ".material";
+
+            DiString matName = target->GetName() + "/" + materialName;
+            submesh->SetMaterialName(matName);
+
+            ParseMaterial(mateiralFile, matName, fullpath);
         }
 
         while (!mStream->Eof())
@@ -734,15 +806,12 @@ namespace Demi
 #endif
     }
 
-    DiMaterialPtr DiK2MdfSerial::ParseMaterial(const DiString& basePath, const DiString& name)
+    DiMaterialPtr DiK2MdfSerial::ParseMaterial(const DiString& matFile, const DiString& name, const DiString& basePath)
     {
-        DiString xmlFile = basePath + "/" + name;
-        xmlFile += ".material";
-
-        FILE* fp = fopen(xmlFile.c_str(), "r");
+        FILE* fp = fopen(matFile.c_str(), "r");
         if (!fp)
         {
-            DI_WARNING("Cannot open k2 material: %s", xmlFile.c_str());
+            DI_WARNING("Cannot open k2 material: %s", matFile.c_str());
             return nullptr;
         }
 
@@ -795,9 +864,7 @@ namespace Demi
             child = child.GetNext();
         }
 
-        data->Close();
-
-        DiMaterialPtr mat = DiMaterial::QuickCreate(basePath + "/" + name, "phong_v", "phong_p", shaderFlag);
+        DiMaterialPtr mat = DiMaterial::QuickCreate(name, "phong_v", "phong_p", shaderFlag);
         if (translucent)
             mat->SetBlendMode(BLEND_ALPHA);
 
@@ -844,7 +911,7 @@ namespace Demi
         return mat;
     }
     
-    bool DiK2MdfSerial::LoadClip(const DiString& file, const DiString& name, DiK2Animation* target)
+    bool DiK2MdfSerial::LoadClip(const DiString& file, K2Anim* anim, DiK2ModelAsset* target)
     {
         FILE* fp = fopen(file.c_str(), "rb");
         if (!fp)
@@ -852,8 +919,6 @@ namespace Demi
             DI_WARNING("Cannot open k2 clip: %s", file.c_str());
             return false;
         }
-        
-        DI_LOG("Loading k2 clip: %s",file.c_str());
         
         DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
         mStream = data;
@@ -872,8 +937,14 @@ namespace Demi
         
         int what = ReadInt(mStream);
         int version = ReadInt(mStream);
-        int num_bones = ReadInt(mStream);
+        int numBones = ReadInt(mStream);
         int numFrames = ReadInt(mStream);
+
+        if (anim->numframes == 0)
+            anim->numframes = numFrames;
+
+        K2KeyFrames* kf = DI_NEW K2KeyFrames();
+        target->AddKeyFrame(anim->name, kf);
         
         if (version != 2)
         {
@@ -882,18 +953,15 @@ namespace Demi
         
         DI_SERIAL_LOG("Frame number: %d", numFrames);
         
-        K2Clip& clip = target->mClips[name];
-        clip.name = name;
-        
         DiStrHash<Clip> rawClips;
-        
+
+        // temp data chunks
+        float* dataFloats = DI_NEW float[numFrames];
+
         while(!mStream->Eof())
         {
             if (!CheckFourcc("bmtn"))
-            {
-                DI_WARNING("Unknow clip chunk");
-                return false;
-            }
+                break;
             
             int chunkSize = ReadInt(mStream);
             
@@ -905,12 +973,57 @@ namespace Demi
             DiString bonename = ReadString(mStream,nameLen);
             ReadByte(mStream);
 
-            clip.Construct(bonename, numFrames);
-            
             Clip& c = rawClips[bonename];
-            
+            c.resize(numFrames);
+
+            //DI_SERIAL_LOG("id=%d, name=%s, ktype=%d, ks=%d", boneindex, name.c_str(), keytype, numkeys);
+            if (keytype == MKEY_VISIBILITY)
+            {
+                // we don't care it
+                mStream->Skip(numkeys);
+            }
+            else
+            {
+                mStream->Read(dataFloats, numkeys * sizeof(float));
+                for (int i = 0; i < numkeys; i++)
+                    updateClip(c, keytype, i, dataFloats[i], 0);
+                for (int i = numkeys; i < numFrames; ++i)
+                    updateClip(c, keytype, i, dataFloats[numkeys - 1], 0);
+            }
+
+            //skip some space if needed
+            int kfsize = keytype == MKEY_VISIBILITY ? 1 : 4;
+            int rest = chunkSize - (sizeof(int)* 3 + 1 + nameLen + 1 + numkeys*kfsize);
+            if (rest > 0)
+                mStream->Skip(rest);
+        }
+
+        // convert the raw data to our data structure
+        for (auto i = rawClips.begin(); i != rawClips.end(); ++i)
+        {
+            Clip& c = i->second;
+            DiString boneName = i->first;
+            for (int f = 0; f < numFrames; ++f)
+            {
+                auto& frames = kf->boneFrames[boneName];
+                Trans trans;
+                trans.pos = c.pos[f];
+                trans.scale = c.scale[f];
+                trans.rot = convertEuler(c.rot[f]);
+                frames.push_back(trans);
+            }
         }
         
+        delete[] dataFloats;
+
         return true;
+    }
+
+    DiString DiK2MdfSerial::GetK2MediaPath(const DiString& relativePath)
+    {
+        DiString baseFolder = DiBase::CommandMgr->GetConsoleVar("k2_media_folder")->GetString();
+        baseFolder += "/";
+        baseFolder += relativePath;
+        return baseFolder;
     }
 }

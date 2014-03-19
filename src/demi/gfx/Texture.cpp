@@ -19,7 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiAssetType DiTexture::TYPE = ASSET_TEXTURE;
+    DiString DiTexture::TYPE = "Texture";
 
     DiTexture::DiTexture(const DiString& name)
         :DiAsset(name)

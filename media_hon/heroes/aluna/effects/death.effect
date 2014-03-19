@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<effect deferred="true">
+	<definitions>
+		<particlesystem name="system0" space="world" scale="1.0">
+
+			<terrainemitter
+				life="7500"
+				timenudge="1000"
+				position="0 50 0"
+				material="/shared/effects/materials/grass.material"
+				spawnrate="35"
+				range="75"
+				direction="0 0 1"
+				minangle="-30"
+				maxangle="30"
+				particlelife="3000"
+			>
+				<particle
+					minyaw="0"
+					maxyaw="360"
+					lockright="0"
+					lockup="0"
+					color=".5 1 .5"
+					startsize="0"
+					midsize="25"
+					minendsize="50"
+					maxendsize="75"
+					midsizepos=".11"
+					flare="true"
+					startalpha="1"
+					midalpha="1"
+					endalpha="0"
+					midalphapos=".75"
+				/>
+			</terrainemitter>
+
+			<simpleemitter
+				life="7500"
+				spawnrate="8"
+				gravity="0"
+				speed="0.0"
+				drag="0.0"
+				offsetsphere="80 80 0"
+				direction="0 1 0.1"
+				position="0 50 0"
+				minangle="-30"
+				maxangle="30"
+			>
+				<particle
+					turn="true"
+				>
+					<model
+						life="5000"
+						model="green_flower/model.mdf"
+						anim="idle"
+						minscale=".2"
+						maxscale=".5"
+						position="0 0 0"
+						directionalspace="local"
+						minyaw="0"
+						maxyaw="360"
+						color=".25 1 0"
+						startalpha="0"
+						midalpha="1"
+						endalpha="0"
+					/>
+				</particle>
+			</simpleemitter>
+			
+			<terrainemitter
+				life="7500"
+				particlelife="6000"
+				spawnrate="6"
+				gravity="0"
+				range="95"
+				position="0 50 0"
+			>
+				<particle
+				>
+					<model
+						position="0 0 30"
+						minlife="3000"
+						maxlife="5000"
+						color="1 .25 0"
+						model="red_flower/model.mdf"
+						anim="default_1"
+						minstartscale=".25"
+						maxstartscale=".5"
+						minendscale="1"
+						maxendscale="2"
+						startalpha="0"
+						midalpha="1"
+						endalpha="0"
+						midalphapos=".5"
+						minyaw="0"
+						maxyaw="360"
+					/>
+				</particle>
+			</terrainemitter>
+
+		</particlesystem>
+	</definitions>
+	<thread>
+		<spawnparticlesystem instance="instance0" particlesystem="system0" />
+		<waitfordeath instance="instance0" />
+		<!-- <die /> -->
+	</thread>
+</effect>
+
+<!-- [min|max][start|mid|end]property[speed][pos] -->
+

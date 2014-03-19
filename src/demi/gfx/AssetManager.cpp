@@ -31,19 +31,19 @@ namespace Demi
         
         //register built-in types
         
-        RegisterAssetType(ASSET_MATERIAL,"mtl",[](const DiString& name){
+        RegisterAssetType("Material","mtl",[](const DiString& name){
             return make_shared<DiMaterial>(name);
         });
         
-        RegisterAssetType(ASSET_MODEL,"model",[](const DiString& name){
+        RegisterAssetType("Model","model",[](const DiString& name){
             return make_shared<DiMesh>(name);
         });
         
-        RegisterAssetType(ASSET_MOTION,"motion",[](const DiString& name){
+        RegisterAssetType("Motion","motion",[](const DiString& name){
             return make_shared<DiMotion>(name);
         });
         
-        RegisterAssetType(ASSET_SCENE,"scene",[](const DiString& name){
+        RegisterAssetType("Scene","scene",[](const DiString& name){
             return make_shared<DiScene>(name);
         });
         
@@ -53,7 +53,7 @@ namespace Demi
         imageExts.push_back("dds");
         imageExts.push_back("png");
         
-        RegisterAssetType(ASSET_TEXTURE,imageExts,[](const DiString& name){
+        RegisterAssetType("Texture",imageExts,[](const DiString& name){
             return make_shared<DiTexture>(name);
         });
     }
@@ -63,12 +63,12 @@ namespace Demi
         SAFE_DELETE(mArchiveManager);
     }
 
-    DiAssetPtr DiAssetManager::GetAsset( const DiString& path, DiAssetType type, bool ignoreError)
+    DiAssetPtr DiAssetManager::GetAsset(const DiString& path, const DiString& type, bool ignoreError)
     {
         DiAssetPtr asset = FindAsset(path);
 
         if(!asset)
-            asset = LoadAsset(path,ignoreError);
+            asset = LoadAsset(path,type,ignoreError);
 
         if(asset && asset->GetAssetType() != type)
             asset.reset();
@@ -104,12 +104,13 @@ namespace Demi
         return DiAssetPtr();
     }
 
-    DiAssetPtr DiAssetManager::LoadAsset( const DiString& path , bool ignoreError)
+    DiAssetPtr DiAssetManager::LoadAsset(const DiString& path, const DiString& type, bool ignoreError)
     {
         DiAssetPtr asset;
         DiString extension = path.GetFileExtension();
         extension.ToLower();
 
+        // if we have an extension loader, use it
         if(!extension.empty())
         {
             DiDataStreamPtr buf = OpenArchive(path,ignoreError);
@@ -119,6 +120,17 @@ namespace Demi
             {
                 asset = it->second(path);
                 asset->Load(buf);
+            }
+            else
+                DI_WARNING("Cannot load the asset :%s", path.c_str());
+        }
+        // otherwise we just call Load() without parameter
+        {
+            auto it = mAssetLoaders.find(type);
+            if (it != mAssetLoaders.end())
+            {
+                asset = it->second(path);
+                asset->Load();
             }
             else
                 DI_WARNING("Cannot load the asset :%s", path.c_str());
@@ -151,13 +163,13 @@ namespace Demi
         return asset;
     }
 
-    DiAssetPtr DiAssetManager::CreateManualAsset( const DiString& name, DiAssetType type )
+    DiAssetPtr DiAssetManager::CreateManualAsset(const DiString& name, const DiString& type)
     {
         DiAssetPtr asset = FindAsset(name);
 
         if(!asset)
         {
-            auto it = mAssetLoaders.find((uint32)type);
+            auto it = mAssetLoaders.find(type);
             if (it != mAssetLoaders.end())
             {
                 asset = it->second(name);
@@ -168,9 +180,7 @@ namespace Demi
         }
 
         if(asset && asset->GetAssetType() != type)
-        {
             asset.reset();
-        }
 
         if(asset)
         {
@@ -283,7 +293,7 @@ namespace Demi
         mArchives[name] = ar;
     }
 
-    Demi::DiAssetPtr DiAssetManager::CreateOrReplaceAsset( const DiString& name, DiAssetType type )
+    Demi::DiAssetPtr DiAssetManager::CreateOrReplaceAsset(const DiString& name, const DiString& type)
     {
         DestroyAsset(name);
         return CreateManualAsset(name,type);
@@ -301,16 +311,26 @@ namespace Demi
         return mArchives.find(filename) != mArchives.end();
     }
     
-    void DiAssetManager::RegisterAssetType(uint32 assetType, const DiString& extension, const AssetLoaderFunc& loader)
+    void DiAssetManager::RegisterAssetType(const DiString& type,
+        const DiString& extension, const AssetLoaderFunc& loader)
     {
-        mAssetLoaders[assetType] = loader;
+        mAssetLoaders[type] = loader;
         mExtensionLoaders[extension] = loader;
     }
     
-    void DiAssetManager::RegisterAssetType(uint32 assetType, const DiVector<DiString>& extensions, const AssetLoaderFunc& loader)
+    void DiAssetManager::RegisterAssetType(const DiString& type,
+        const DiVector<DiString>& extensions, const AssetLoaderFunc& loader)
     {
-        mAssetLoaders[assetType] = loader;
+        mAssetLoaders[type] = loader;
         for (auto i = extensions.begin(); i != extensions.end(); ++i)
             mExtensionLoaders[*i] = loader;
     }
+
+    void DiAssetManager::UnregisterAssetType(const DiString& type)
+    {
+        auto it = mAssetLoaders.find(type);
+        if (it != mAssetLoaders.end())
+            mAssetLoaders.erase(it);
+    }
+
 }

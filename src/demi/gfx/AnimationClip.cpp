@@ -68,7 +68,8 @@ namespace Demi
             if (i != std::lower_bound(mKeyFrames.begin(), mKeyFrames.end(), 
                 &timeKey, KeyFrameTimeLess()))
             {
-                DI_ERROR("���ҹؼ�֡ʧ��");
+                DI_WARNING("Wrong keyframe");
+                return 0;
             }
 #endif
         }
@@ -112,14 +113,7 @@ namespace Demi
 
         t1 = (*keyFrame1)->GetTime();
 
-        if (t1 == t2)
-        {
-            return 0.0;
-        }
-        else
-        {
-            return (timePos - t1) / (t2 - t1);
-        }
+        return t1 == t2 ? 0 : (timePos - t1) / (t2 - t1);
     }
 
     DiKeyFrame* DiAnimationClip::CreateKeyFrame( float timePos )
@@ -140,7 +134,7 @@ namespace Demi
 
     void DiAnimationClip::RemoveKeyFrame( uint32 index )
     {
-        assert( index < (uint32)mKeyFrames.size() );
+        DI_ASSERT( index < (uint32)mKeyFrames.size() );
 
         KeyFrameList::iterator i = mKeyFrames.begin();
         i += index;
@@ -178,7 +172,6 @@ namespace Demi
         for (KeyFrameList::const_iterator i = mKeyFrames.begin(); 
             i != mKeyFrames.end(); ++i)
         {
-            /// ��ȡ��֡��ʱ����
             float timePos = (*i)->GetTime();
 
             DiVector<float>::iterator it =
@@ -215,7 +208,6 @@ namespace Demi
         mSplines(NULL),mSplineBuildNeeded(false),
         mUseShortestRotationPath(true)
     {
-
     }
 
     DiNodeClip::DiNodeClip( DiAnimation* parent, unsigned int handle, DiNode* targetNode )
@@ -224,7 +216,6 @@ namespace Demi
         mSplines(NULL),mSplineBuildNeeded(false),
         mUseShortestRotationPath(true)
     {
-
     }
 
     DiNodeClip::~DiNodeClip()
@@ -248,9 +239,7 @@ namespace Demi
     void DiNodeClip::ApplyToNode( DiNode* node, const DiTimeIndex& timeIndex, float weight /*= 1.0*/, float scl /*= 1.0f*/ )
     {
         if (mKeyFrames.empty() || !weight || !node)
-        {
             return;
-        }
 
         DiTransformKeyFrame kf(0, timeIndex.GetTimePos());
         GetInterpolatedKeyFrame(timeIndex, &kf);
@@ -286,13 +275,9 @@ namespace Demi
         if (scale != DiVec3::UNIT_SCALE)
         {
             if (scl != 1.0f)
-            {
                 scale = DiVec3::UNIT_SCALE + (scale - DiVec3::UNIT_SCALE) * scl;
-            }
             else if (weight != 1.0f)
-            {
                 scale = DiVec3::UNIT_SCALE + (scale - DiVec3::UNIT_SCALE) * weight;
-            }
         }
 #if 1
         node->Scale(scale);

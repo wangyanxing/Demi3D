@@ -29,8 +29,6 @@ namespace Demi
 
     public:
 
-        DiAssetType                 GetAssetType() const;
-
         bool                        LoadingComplete() const;
 
         bool                        Load(DiDataStreamPtr data);

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<state
+	name="State_Aluna_Ability3_Enemy"
+	icon="icon.tga"	
+	passiveeffect="effects/slow.effect"
+	effecttype="StatusDebuff"
+	allowtransfer="true"
+	
+	movespeedslow="0.25,0.30,0.35,0.4"
+>
+</state>

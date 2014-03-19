@@ -60,18 +60,6 @@ namespace Demi
         INSTANCE_DISABLE,
     };
 
-    enum DiAssetType
-    {
-        ASSET_MATERIAL = 0,
-        ASSET_SHADER,
-        ASSET_TEXTURE,
-        ASSET_MODEL,
-        ASSET_MOTION,
-        ASSET_SCENE,
-
-        NUM_TYPES
-    };
-
     enum
     { 
         TERRAIN_LAYER_NUM = 2, 

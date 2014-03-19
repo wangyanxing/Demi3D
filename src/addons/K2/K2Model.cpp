@@ -18,6 +18,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SceneManager.h"
 #include "Model.h"
 #include "K2ModelSerial.h"
+#include "Command.h"
+#include "ConsoleVariable.h"
+#include "AssetManager.h"
+#include "K2Asset.h"
 
 namespace Demi
 {
@@ -25,6 +29,7 @@ namespace Demi
         : mAnimation(DI_NEW DiK2Animation())
         , mNode(nullptr)
         , mName(path)
+        , mSkeleton(nullptr)
     {
         Load(path);
     }
@@ -32,12 +37,7 @@ namespace Demi
     DiK2Model::~DiK2Model()
     {
         DI_DELETE mAnimation;
-    }
-
-    K2Anim& DiK2Model::AddAnim()
-    {
-        mAnims.push_back(K2Anim());
-        return mAnims.back();
+        DI_DELETE mSkeleton;
     }
 
     DiCullNode* DiK2Model::CreateNode(DiSceneManager* sm)
@@ -54,8 +54,21 @@ namespace Demi
 
     void DiK2Model::Load(const DiString& path)
     {
-        DiK2MdfSerial serial;
-        serial.ParseMdf(path + "/model.mdf", this);
-        serial.LoadModel(path + "/high.model", this);
+        // get the asset
+        mAsset = DiAssetManager::GetInstance().GetAsset<DiK2ModelAsset>(path);
+
+        // create animation clips
+        mAnimation = DI_NEW DiK2Animation();
+        mAsset->CreateClipInstance(mAnimation);
+
+        mMesh = make_shared<DiModel>(path, mAsset->GetMesh());
+
+        mSkeleton = DI_NEW DiK2Skeleton();
+        mSkeleton->CreateBones(mAsset->GetBoneData());
+    }
+
+    void DiK2Model::Update(float deltaTime)
+    {
+        mAnimation->Update(deltaTime);
     }
 }

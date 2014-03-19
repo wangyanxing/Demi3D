@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hero
+	name="Hero_Aluna"
+
+	team="Legion"
+	icon="icon.tga"
+	portrait="icon.tga"
+	model="model.mdf"
+	skin=""
+	
+	passiveeffect="effects/body.effect"
+	spawneffect=""
+	respawneffect="/shared/effects/respawn.effect"
+	selectedsound="sounds/voice/select_%.wav"
+	selectedflavorsound="sounds/voice/select_flavour_%.wav"
+	confirmmovesound="sounds/voice/move_%.wav"
+	confirmattacksound="sounds/voice/attack_%.wav"
+	nomanasound="sounds/voice/no_mana.wav"
+	cooldownsound="sounds/voice/cooldown.wav"
+	announcersound="sounds/voice/hero_select.wav"
+	tauntedsound="sounds/voice/taunt_prior.wav"
+	tauntkillsound="sounds/voice/taunt_after.wav"
+	
+	infoheight="170"
+	preglobalscale="1.35"
+	modelscale="1.0"
+	effectscale="0.9"
+	boundsheight="112"
+	boundsradius="24"
+	selectionradius="48"
+	targetoffset="0 0 64"
+
+	category="physical magic"
+	difficulty="3.5"
+	
+	movespeed="300"
+	turnrate="540"
+	turnsmoothing="0.05"
+
+	maxhealth="150"
+	healthregen="0.25"
+	maxmana="0"
+	manaregen="0.01"
+
+	armor="0"
+	magicarmor="5.5"
+
+	inventory0="Ability_Aluna1"
+	inventory1="Ability_Aluna2"
+	inventory2="Ability_Aluna3"
+	inventory3="Ability_Aluna4"
+	inventory4="Ability_AttributeBoost"
+	inventory5=""
+	inventory6=""
+	inventory8="Ability_Taunt"
+
+	attackduration="800"
+	attackactiontime="400"
+	attackcooldown="1550"
+	attackdamagemin="25"
+	attackdamagemax="31"
+	attacknumanims="3"
+	attackoffset="0 40 100"
+	attackprojectile="Projectile_AlunaAttack"
+	attackrange="600"
+	attackstarteffect="projectile/effects/attack.effect"
+	attackactioneffect=""
+	attackimpacteffect=""
+	attacktype="ranged"
+	combattype="Hero"
+
+	aggrorange="800"
+	sightrangeday="1800"
+	sightrangenight="800"
+	wanderrange="250"
+
+	primaryattribute="Intelligence"
+	strength="16"
+	strengthperlevel="2.0"
+	agility="18"
+	agilityperlevel="1.8"
+	intelligence="22"
+	intelligenceperlevel="2.8"
+	
+	previewmodel="preview.mdf"
+	previewpos="0 0 -60"
+	previewangles="0 0 0"
+	previewscale="1.3"
+	
+	storemodel="preview.mdf"
+	storepos="0 0 -20"
+	storeangles="0 0 0"
+	storescale="1.3"
+>
+	<recommendeditem name="Item_ManaPotion" />	
+	<recommendeditem name="Item_MinorTotem" />
+	<recommendeditem name="Item_RunesOfTheBlight" />
+	<recommendeditem name="Item_HealthPotion" />
+	<recommendeditem name="Item_HomecomingStone" />
+	
+	<recommendeditem name="Item_Bottle" />
+	<recommendeditem name="Item_PowerSupply" />
+	<recommendeditem name="Item_BloodChalice" />
+	<recommendeditem name="Item_EnhancedMarchers" />
+	<recommendeditem name="Item_Astrolabe" />
+	
+	
+	<recommendeditem name="Item_Silence" />
+	<recommendeditem name="Item_Morph" />
+	<recommendeditem name="Item_Weapon3" />
+	<recommendeditem name="Item_Lightning2" />
+	<recommendeditem name="Item_Stealth" />
+	
+	<modifier key="ult" modpriority="100" passiveeffect="ability_04/effects/state.effect" />
+</hero>

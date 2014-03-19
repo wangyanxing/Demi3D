@@ -44,7 +44,7 @@ namespace Demi
 
         void                        SetCullMode(DiCullMode val);
 
-        DiAssetType                 GetAssetType() const {return TYPE;}
+        const DiString&             GetAssetType() const  { return TYPE; }
 
         bool                        GetDepthWrite() const { return mDepthWrite; }
                                     
@@ -144,7 +144,9 @@ namespace Demi
 
     public:
 
-        static DiAssetType          TYPE;
+        /** This static property is needed for assets creating method
+         */
+        static DiString             TYPE;
 
         static DiMaterialPtr        GetStaticShadowCasterMaterial();
 

@@ -68,11 +68,9 @@ namespace Demi
 
     bool DiTerrainMap::Load( const DiString& sceneName )
     {
-        DiScenePtr scene = std::dynamic_pointer_cast<DiScene>(DiAssetManager::GetInstance().GetAsset(sceneName,ASSET_SCENE));
+        DiScenePtr scene = std::dynamic_pointer_cast<DiScene>(DiAssetManager::GetInstance().GetAsset(sceneName,"Scene"));
         if (!scene)
-        {
             return false;
-        }
 
         Unload();
 

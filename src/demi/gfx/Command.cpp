@@ -133,17 +133,15 @@ namespace Demi
         CommandMgr = nullptr;
     }
 
-    bool DiCommandManager::AddCommand(const char* cmd, DiCmdFuntion pFunction, const char* pcHelp)
+    bool DiCommandManager::AddCommand(const DiString& cmd, DiCmdFuntion pFunction, const char* pcHelp)
     {
-        DI_ASSERT(cmd);
         DI_ASSERT(pcHelp);
         DI_ASSERT(pFunction);
 
-        if (!cmd || !pFunction || !pcHelp)
+        if (!pFunction || !pcHelp)
             return false;
 
-        DiString cmds = cmd;
-        DiVector<DiString> splitList = cmds.Tokenize(" ");
+        DiVector<DiString> splitList = cmd.Tokenize(" ");
 
         if (splitList.empty())
             return false;
@@ -161,15 +159,13 @@ namespace Demi
         return true;
     }
 
-    bool DiCommandManager::ExecuteCommand(const char* pcCmd)
+    bool DiCommandManager::ExecuteCommand(const DiString& cmd)
     {
-        DI_ASSERT(pcCmd != nullptr);
-
-        if (!pcCmd)
+        if (cmd.size() < 1)
             return false;
         
         // this is a comment
-        if (pcCmd[0] == '#')
+        if (cmd[0] == '#')
             return true;
 
         DiCmdArgs argus;
@@ -177,13 +173,13 @@ namespace Demi
         DiString& command = argus.GetCommand();
         DiKeyList& splitList = argus.GetKeyList();
 
-        DiString cmds = pcCmd;
+        DiString cmds = cmd;
         cmds.Tokenize(" ", splitList);
 
         if (splitList.empty())
             return true;
 
-        command = pcCmd;
+        command = cmd;
 
         DiString& kName = splitList.at(0);
 
@@ -347,6 +343,11 @@ namespace Demi
         DI_INFO("All built-in commands binded");
     }
 
+    bool DiCommandManager::HasCommand(const DiString& varName)
+    {
+        return mMapVariables.find(varName) != mMapVariables.end();
+    }
+
     bool DiSystemCmd::Quit(DiCmdArgs*)
     {
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
@@ -390,6 +391,5 @@ namespace Demi
             SAFE_DELETE(sConsoleLogger);
         }
     }
-    
 #endif
 }

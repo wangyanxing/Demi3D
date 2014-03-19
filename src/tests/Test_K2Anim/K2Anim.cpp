@@ -257,7 +257,6 @@ typedef enum eEulerRotationOrders {
     /* there are 6 more entries with dulpicate entries included */
 } eEulerRotationOrders;
 
-
 static const RotOrderInfo rotOrders[] = {
     /* i, j, k, n */
     { { 0, 1, 2 }, 0 }, /* XYZ */

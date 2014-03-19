@@ -16,11 +16,23 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DebugHelper.h"
 
 #include "K2Model.h"
+#include "K2Clip.h"
+#include "EnginePlugin.h"
+
+DiK2Model* k2md = nullptr;
+
+#if DEMI_DEBUG
+const DiString k2Plugin = "DiK2_d";
+#else
+const DiString k2Plugin = "DiK2";
+#endif
 
 void InitScene()
 {
-	DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-    
+    DiPlugin::LoadPlugin(k2Plugin);
+
+    DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+
     DiDirLightPtr dirlight;
 
     sm->SetAmbientColor(DiColor(0.2f, 0.2f, 0.2f));
@@ -32,18 +44,15 @@ void InitScene()
     dirlight->SetDirection(DiVec3(0, -0.3f, -0.4).normalisedCopy());
     //dirlight->SetShadowCastEnable(true); 7
 
-    DiString honMediaPath = DiAssetManager::GetInstance().GetBasePath();
-    honMediaPath += "../media_hon";
-    honMediaPath.SimplifyPath();
-
     DiCullNode* node = sm->GetRootNode()->CreateChild();
-    DiK2Model* k2md = DI_NEW DiK2Model(honMediaPath + "/heroes/aluna");
+    k2md = DI_NEW DiK2Model("heroes/aluna");
     k2md->CreateNode(sm);
+    k2md->GetAnimation()->Play("idle");
 }
 
 void UpdateScene()
 {
-    
+    k2md->Update(DiBase::Driver->GetDeltaSecond());
 }
 
 int main(int argc, char *argv[])

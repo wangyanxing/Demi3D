@@ -29,23 +29,25 @@ namespace Demi
 
     public:
 
-        bool    ParseMdf(const DiString& file, DiK2Model* target);
+        bool    ParseMdf(const DiString& file, DiK2ModelAsset* target);
 
-        bool    ParseMdf(DiXMLElement data, DiK2Model* target);
+        bool    ParseMdf(DiXMLElement data, DiK2ModelAsset* target);
 
-        bool    LoadModel(const DiString& file, DiK2Model* target);
+        bool    LoadModel(const DiString& file, DiK2ModelAsset* target);
         
-        bool    LoadClip(const DiString& file, const DiString& name, DiK2Animation* target);
+        bool    LoadClip(const DiString& file, K2Anim* anim, DiK2ModelAsset* target);
 
-        DiMaterialPtr ParseMaterial(const DiString& basePath, const DiString& name);
-        
+        DiMaterialPtr ParseMaterial(const DiString& matFile, const DiString& basePath, const DiString& name);
+
+        static  DiString GetK2MediaPath(const DiString& relativePath);
+
     private:
         
-        void    ParseAnim(DiXMLElement data, DiK2Model* target);
+        void    ParseAnim(DiXMLElement data, DiK2ModelAsset* target);
         
-        bool    LoadBones(DiK2Animation* target, int numBones);
+        bool    LoadBones(DiK2BonesDataPtr target, int numBones);
 
-        DiSubMesh*  LoadMeshes(DiK2Model* target, DiMeshPtr mesh);
+        DiSubMesh*  LoadMeshes(DiK2ModelAsset* target, DiMeshPtr mesh);
 
         bool    CheckFourcc(char* sig);
         
