@@ -51,6 +51,30 @@ void InitScene()
     k2md = DI_NEW DiK2Model("heroes/aluna/model.mdf");
     k2md->CreateNode(sm);
     k2md->GetAnimation()->Play("idle");
+    
+    DemiDemo::GetApp()->GetInputManager()->registerKeyReleaseEvent("changeClip",
+        [&](const OIS::KeyEvent& e){
+            switch (e.key)
+            {
+                case OIS::KC_1:
+                    k2md->GetAnimation()->Play("idle");
+                    break;
+                case OIS::KC_2:
+                    k2md->GetAnimation()->Play("walk_1");
+                    break;
+                case OIS::KC_3:
+                    k2md->GetAnimation()->Play("death_1");
+                    break;
+                case OIS::KC_4:
+                    k2md->GetAnimation()->Play("attack_1");
+                    break;
+                case OIS::KC_5:
+                    k2md->GetAnimation()->Play("attack_2");
+                    break;
+                default:
+                    break;
+            }
+        });
 }
 
 void UpdateScene()

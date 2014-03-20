@@ -68,10 +68,6 @@ namespace Demi
         void            CacheBoneMatrices();
         
     private:
-        
-        void            Interpolate(const Trans& source, const Trans& target, float factor, Trans& output);
-
-    private:
 
         DiNode*             mRootNode;
 
@@ -117,6 +113,16 @@ namespace Demi
         {
             return mCurFrame < mNumFrames-1 ? mCurFrame+1 : (mLoop ? 0 : mNumFrames - 1);
         }
+        
+        /// get the interpolated keyframe
+        void        GetFrameTrans(const DiString& bone, Trans& output);
+        
+        void        Cleanup()
+        {
+            mCurFrame = 0;
+            mInterpFactor = 0;
+            mTime = 0;
+        }
 
         K2KeyFrames* mKeyFrames;
     };
@@ -147,6 +153,10 @@ namespace Demi
 
         /// target clip (for blending)
         DiK2Clip*         mTarget;
+        
+        float             mBlendTime;
+        
+        float             mBlendElapsed;
 
         DiK2BonesData     mSkeleton;
         

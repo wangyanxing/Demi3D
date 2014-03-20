@@ -21,6 +21,8 @@ namespace Demi
     DiK2Animation::DiK2Animation()
         : mSource(nullptr)
         , mTarget(nullptr)
+        , mBlendElapsed(0)
+        , mBlendTime(0.2f)  // a default value
     {
     }
 
@@ -42,10 +44,13 @@ namespace Demi
         }
 
         DiK2Clip* clip = it->second;
+        clip->Cleanup();
+        
+        mBlendElapsed = 0;
         
         if (!mSource)
             mSource = clip;
-        else
+        else if(clip != mSource)
             mTarget = clip;
     }
 
@@ -53,11 +58,23 @@ namespace Demi
     {
         if (!mSource && !mTarget)
             return;
-
+        
+        if (mSource && mTarget)
+        {
+            mBlendElapsed += deltaTime;
+            if (mBlendElapsed >= mBlendTime)
+            {
+                mBlendElapsed = 0;
+                mSource = mTarget;
+                mTarget = nullptr;
+            }
+        }
+        
         if (mSource)
             mSource->Update(deltaTime);
-        // TODO
-
+        
+        if (mTarget)
+            mTarget->Update(deltaTime);
     }
 
     DiK2Clip* DiK2Animation::AddClip(const DiString& name)
@@ -101,6 +118,20 @@ namespace Demi
 
     DiK2Clip::~DiK2Clip()
     {
+    }
+    
+    void DiK2Clip::GetFrameTrans(const DiString& bone, Trans& output)
+    {
+        int curFrame  = mCurFrame;
+        int nextFrame = GetNextFrame();
+        
+        Trans& source = mKeyFrames->boneFrames[bone][curFrame];
+        Trans& target = mKeyFrames->boneFrames[bone][nextFrame];
+        
+        // just linear interpolate for now
+        output.rot = DiQuat::Nlerp(mInterpFactor, source.rot, target.rot,true);
+        output.pos = source.pos + (target.pos - source.pos) * mInterpFactor;
+        output.scale = source.scale + (target.scale - source.scale) * mInterpFactor;
     }
 
     DiK2Skeleton::DiK2Skeleton()
@@ -160,6 +191,9 @@ namespace Demi
     void DiK2Skeleton::Apply(DiK2Animation* anim)
     {
         DiK2Clip* clip = anim->mSource;
+        DiK2Clip* clipTargt = anim->mTarget;
+        float blendWeight = anim->mBlendElapsed / anim->mBlendTime;
+        
         if (!clip)
             return;
 
@@ -172,26 +206,28 @@ namespace Demi
 
             DiNode* bone = GetBone(boneName);
             
-            int curFrame  = clip->mCurFrame;
-            int nextFrame = clip->GetNextFrame();
-            
             Trans t;
-            Interpolate(it->second[curFrame], it->second[nextFrame], clip->mInterpFactor, t);
+            clip->GetFrameTrans(boneName, t);
             
-            bone->SetOrientation(t.rot);
-            bone->SetPosition(t.pos);
-            bone->SetScale(t.scale);
+            if (clipTargt)
+            {
+                Trans tTarget;
+                clipTargt->GetFrameTrans(boneName, tTarget);
+                
+                // linear as well
+                bone->SetOrientation(DiQuat::Nlerp(blendWeight, t.rot, tTarget.rot, true));
+                bone->SetPosition(t.pos + (tTarget.pos - t.pos) * blendWeight);
+                bone->SetScale(t.scale + (tTarget.scale - t.scale) * blendWeight);
+            }
+            else
+            {
+                bone->SetOrientation(t.rot);
+                bone->SetPosition(t.pos);
+                bone->SetScale(t.scale);
+            }
         }
     }
     
-    void DiK2Skeleton::Interpolate(const Trans& source, const Trans& target, float factor, Trans& output)
-    {
-        // just linear interpolate for now
-        output.rot = DiQuat::Nlerp(factor, source.rot, target.rot,true);
-        output.pos = source.pos + (target.pos - source.pos) * factor;
-        output.scale = source.scale + (target.scale - source.scale) * factor;
-    }
-
     void DiK2Skeleton::CacheBoneMatrices()
     {
         // yeah we just have one root bone here
