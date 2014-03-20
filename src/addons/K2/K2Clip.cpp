@@ -100,25 +100,10 @@ namespace Demi
     {
     }
 
-    void DiK2Clip::Apply(DiK2Skeleton* skeleton)
-    {
-        for (auto it = mKeyFrames->boneFrames.begin(); it != mKeyFrames->boneFrames.end(); ++it)
-        {
-            const DiString& boneName = it->first;
-            if (!skeleton->HasBone(boneName))
-                continue;
-         
-            DiNode* bone = skeleton->GetBone(boneName);
-            Trans& t = it->second[mCurFrame];
-            bone->SetOrientation(t.rot);
-            bone->SetPosition(t.pos);
-            bone->SetScale(t.scale);
-        }
-    }
-
     DiK2Skeleton::DiK2Skeleton()
         : mRootNode(nullptr)
         , mRowData(nullptr)
+        , mBoneMatrices(nullptr)
     {
     }
 
@@ -134,6 +119,11 @@ namespace Demi
             DI_DELETE (*i);
         }
         mBones.clear();
+
+        if (mBoneMatrices)
+        {
+            DI_DELETE[] mBoneMatrices;
+        }
     }
 
     void DiK2Skeleton::CreateBones(DiK2BonesDataPtr boneData)
@@ -159,6 +149,44 @@ namespace Demi
             }
             else
                 mRootNode = mBones[i];
+        }
+
+        mBoneMatrices = DI_NEW DiMat4[mBones.size()];
+    }
+
+    void DiK2Skeleton::Apply(DiK2Animation* anim)
+    {
+        DiK2Clip* clip = anim->mSource;
+        if (!clip)
+            return;
+
+        for (auto it = clip->mKeyFrames->boneFrames.begin(); 
+            it != clip->mKeyFrames->boneFrames.end(); ++it)
+        {
+            const DiString& boneName = it->first;
+            if (!HasBone(boneName))
+                continue;
+
+            DiNode* bone = GetBone(boneName);
+            Trans& t = it->second[clip->mCurFrame];
+            bone->SetOrientation(t.rot);
+            bone->SetPosition(t.pos);
+            bone->SetScale(t.scale);
+        }
+    }
+
+    void DiK2Skeleton::CacheBoneMatrices()
+    {
+        // yeah we just have one root bone here
+        mRootNode->_Update(true, false);
+
+        for (uint32 i = 0; i < mBones.size(); ++i)
+        {
+            DiNode* bone = mBones[i];
+            DiMat4& invMat = mRowData->invtrans[i];
+            const DiMat4& mat = bone->GetFullTransform();
+
+            mBoneMatrices[i] = mat * invMat;
         }
     }
 }

@@ -66,14 +66,14 @@ VS_OUTPUT vs_main( VS_INPUT In )
 	
 	VS_OUTPUT Out;
 
-	Out.Position       	= mul(g_modelViewProjMatrix,objPos);
+	Out.Position  = mul(g_modelViewProjMatrix,objPos);
 
 #if defined( USE_COLOR )
-	Out.Color         	= In.Color;
+	Out.Color     = In.Color;
 #endif
 
 #if defined( USE_MAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
-	Out.Texcoord0      	= In.Texcoord0;
+	Out.Texcoord0 = In.Texcoord0;
 #endif
 
     // world space normal

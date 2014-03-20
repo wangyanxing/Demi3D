@@ -5,7 +5,7 @@ varying vec3 vViewDir;
 varying vec3 vPosWorld;
 
 // options
-#define USE_SCHLICK_FRESNEL
+//#define USE_SCHLICK_FRESNEL
 
 #if defined( USE_NORMALMAP )
 varying vec3 vTangent;
@@ -197,10 +197,12 @@ void main(){
 			g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
 	}
 	
+#if 0
 	if (g_hasSkyLight == 1){
 		AccumulateSkyLight(g_skyLightDir, g_skyLightColor, g_groundColor, lit);
 	}
-	
+#endif
+
 	gl_FragColor.rgb = lit * g_diffuseColor.rgb;
 	gl_FragColor.rgb += g_globalAmbient.rgb * g_ambientColor.rgb;	
 	gl_FragColor.a = gSurface.albedo.a * g_opacity;

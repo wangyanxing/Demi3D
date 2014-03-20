@@ -47,11 +47,11 @@ namespace Demi
 
         DiMeshPtr         GetMesh(){return mMesh;}
 
-        size_t            GetNumSubEntites()const {return mSubModels.size();}
+        uint32            GetNumSubModels()const {return mSubModels.size();}
 
         DiSubModel*       CreateSubModel(DiSubMesh* sm);
 
-        DiSubModel*       GetSubModel(size_t id);
+        DiSubModel*       GetSubModel(uint32 id);
 
         void              DestroySubModels();
 

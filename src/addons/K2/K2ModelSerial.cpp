@@ -52,10 +52,23 @@ namespace Demi
 
     struct K2Vert
     {
+        K2Vert()
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                weights[i] = 0;
+                indices[i] = 0;
+            }
+        }
+
         DiVec3 pos;
         DiVec2 uv;
         DiVec3 normal;
         DiVec3 tangent;
+
+        // for skinning
+        float weights[4];
+        uint8 indices[4];
     };
 
     bool g_trans_orit = false;
@@ -315,6 +328,11 @@ namespace Demi
         int num_surfs = ReadInt(mStream);
         int num_bones = ReadInt(mStream);
 
+        if (num_bones > MAX_BONE_NUM)
+        {
+            DI_WARNING("Too many bones: %d!", num_bones);
+        }
+
         if (version == 1)
         {
             DI_WARNING("It's an old version of k2 model: %s", target->GetName().c_str());
@@ -357,10 +375,12 @@ namespace Demi
         {
             DiSubMesh* sub = LoadMeshes(target,mesh);
 
+            int stride = sub->GetVertexElements().GetStreamElementsSize(0);
+
             if (sub)
             {
-                void* data = sub->CreateSourceData(0, gCurrentVerts.size(), sizeof(float)* 11);
-                memcpy(data, &gCurrentVerts[0], gCurrentVerts.size()*sizeof(float)* 11);
+                void* data = sub->CreateSourceData(0, gCurrentVerts.size(), stride);
+                memcpy(data, &gCurrentVerts[0], gCurrentVerts.size()*stride);
             }
         }
 
@@ -398,10 +418,22 @@ namespace Demi
 
             DI_SERIAL_LOG("Bone ID: %d, name : %s", i, name.c_str());
 
+            DiMat4 mat = matrix.convert();
+            DiMat4 invMat = inv_matrix.convert();
+
+            if (g_trans_orit)
+            {
+                DiMat3 m;
+                m.FromAngleAxis(DiVec3::UNIT_Y, DiRadian(DiDegree(-90)));
+                DiMat4 mm(m);
+                mat = mm*mat;
+                invMat = mm.inverse();
+            }
+
             target->names.push_back(name);
             target->parents.push_back(parentID);
-            target->trans.push_back(matrix.convert());
-            target->invtrans.push_back(inv_matrix.convert());
+            target->trans.push_back(mat);
+            target->invtrans.push_back(invMat);
             target->nameMap[name] = i;
         }
         return true;
@@ -453,6 +485,8 @@ namespace Demi
             submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
             submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
             submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_BLENDWEIGHT);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES);
         }
        
         gCurrentVerts.resize(vertics_count);
@@ -484,6 +518,8 @@ namespace Demi
         DI_SERIAL_LOG("Mesh name: %s", meshName.c_str());
         DI_SERIAL_LOG("Material name: %s", materialName.c_str());
 
+        bool hasanim = target->GetAnimNums() > 0;
+
         if (submesh)
         {
             DiString fullpath = DiK2MdfSerial::GetK2MediaPath(target->GetName());
@@ -493,7 +529,7 @@ namespace Demi
             DiString matName = target->GetName() + "/" + materialName;
             submesh->SetMaterialName(matName);
 
-            ParseMaterial(mateiralFile, matName, fullpath);
+            ParseMaterial(mateiralFile, matName, fullpath, hasanim);
         }
 
         while (!mStream->Eof())
@@ -677,6 +713,7 @@ namespace Demi
         DI_SERIAL_LOG("colr nums:%d", numverts);
         int meshindex = ReadInt(mStream);
 
+        // we don't need the vertex color currently
         unsigned int* vertics = new unsigned int[numverts];
         mStream->Read(vertics, sizeof(unsigned int)*numverts);
         delete[] vertics; // unused currently
@@ -694,11 +731,19 @@ namespace Demi
         {
             int num_weights = ReadInt(mStream);
 
+            DI_ASSERT(num_weights <= 4);
+
             float* weights = new float[num_weights];
             int* indexes = new int[num_weights];
 
             mStream->Read(weights, sizeof(float)*num_weights);
             mStream->Read(indexes, sizeof(int)*num_weights);
+
+            for (int w = 0; w < num_weights; ++w)
+            {
+                gCurrentVerts[i].weights[w] = weights[w];
+                gCurrentVerts[i].indices[w] = indexes[w];
+            }
 
             delete[] weights;
             delete[] indexes;
@@ -806,7 +851,8 @@ namespace Demi
 #endif
     }
 
-    DiMaterialPtr DiK2MdfSerial::ParseMaterial(const DiString& matFile, const DiString& name, const DiString& basePath)
+    DiMaterialPtr DiK2MdfSerial::ParseMaterial(const DiString& matFile, const DiString& name,
+        const DiString& basePath, bool needSkinning)
     {
         FILE* fp = fopen(matFile.c_str(), "r");
         if (!fp)
@@ -863,6 +909,9 @@ namespace Demi
             }
             child = child.GetNext();
         }
+
+        if (needSkinning)
+            shaderFlag |= SHADER_FLAG_SKINNED;
 
         DiMaterialPtr mat = DiMaterial::QuickCreate(name, "phong_v", "phong_p", shaderFlag);
         if (translucent)
@@ -1010,6 +1059,24 @@ namespace Demi
                 trans.pos = c.pos[f];
                 trans.scale = c.scale[f];
                 trans.rot = convertEuler(c.rot[f]);
+
+                if (g_trans_orit)
+                {
+                    DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_Y);
+                    trans.pos = q * trans.pos;
+                    trans.rot = q * trans.rot;
+//                     DiMat4 m;
+//                     m.makeTransform(trans.pos, trans.scale, trans.rot);
+// 
+//                     DiMat3 rotm;
+//                     rotm.FromAngleAxis(DiVec3::UNIT_X, DiRadian(DiDegree(-90)));
+//                     DiMat4 rotm4(rotm);
+// 
+//                     m = m * rotm4;
+// 
+//                     m.decomposition(trans.pos, trans.scale, trans.rot);
+                }
+
                 frames.push_back(trans);
             }
         }

@@ -18,8 +18,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    
-
     /** Load a k2 mdf model
      */
     class DEMI_K2_API DiK2Model : public DiBase
@@ -50,6 +48,8 @@ namespace Demi
 
         void            Load(const DiString& path);
 
+        void            _UpdateDebugger();
+
     private:
 
         /// a Demi mesh
@@ -69,6 +69,9 @@ namespace Demi
 
         /// the real data
         DiK2ModelAssetPtr mAsset;
+
+        /// for debugging purpose
+        DiDebugHelperPtr  mDebugger;
     };
 }
 

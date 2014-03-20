@@ -37,7 +37,8 @@ namespace Demi
         
         bool    LoadClip(const DiString& file, K2Anim* anim, DiK2ModelAsset* target);
 
-        DiMaterialPtr ParseMaterial(const DiString& matFile, const DiString& basePath, const DiString& name);
+        DiMaterialPtr ParseMaterial(const DiString& matFile, const DiString& basePath, 
+            const DiString& name, bool needSkinning);
 
         static  DiString GetK2MediaPath(const DiString& relativePath);
 

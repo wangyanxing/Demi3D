@@ -53,15 +53,25 @@ namespace Demi
 
         uint32          GetNumBones() const { return mBones.size(); }
 
+        DiMat4*         GetBoneMatrices() { return mBoneMatrices; }
+
         DiNode*         GetBone(uint32 id) { return mBones[id]; }
 
         bool            HasBone(const DiString& name) const { return mBoneNames.find(name) != mBoneNames.end(); }
 
         DiNode*         GetBone(const DiString& name) { return mBoneNames[name]; }
 
+        /** Apply an animation clip
+         */
+        void            Apply(DiK2Animation* anim);
+
+        void            CacheBoneMatrices();
+
     private:
 
         DiNode*             mRootNode;
+
+        DiMat4*             mBoneMatrices;
 
         DiVector<DiNode*>   mBones;
 
@@ -95,8 +105,6 @@ namespace Demi
 
         void        Update(float deltaTime);
 
-        void        Apply(DiK2Skeleton* skeleton);
-        
         K2KeyFrames* mKeyFrames;
     };
 

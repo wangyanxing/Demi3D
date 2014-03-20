@@ -1,12 +1,12 @@
 
-#define MAX_BONES			75
-#define MAX_MODEL_MATS		75
+#define MAX_BONES           75
+#define MAX_MODEL_MATS      75
 
-#define MAX_LIGHTS			8
+#define MAX_LIGHTS          8
 
-#define INSTANCE_NONE		0
-#define INSTANCE_SHADER		1
-#define INSTANCE_HARDWARE	2
+#define INSTANCE_NONE       0
+#define INSTANCE_SHADER     1
+#define INSTANCE_HARDWARE   2
 
 uniform mat4    g_modelMatrix;
 uniform mat4    g_viewMatrix;
@@ -56,3 +56,7 @@ float linstep(float min, float max, float v)
 {
     return clamp((v - min) / (max - min), 0.0, 1.0);
 }
+
+#ifdef ALPHA_TEST
+#   define ALPHATEST 0.5
+#endif 
