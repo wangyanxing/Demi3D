@@ -48,7 +48,11 @@ namespace Demi
 
         void            Load(const DiString& path);
 
+#ifdef ENABLE_K2_ANIM_DEBUGGER
         void            _UpdateDebugger();
+        /// for debugging purpose
+        DiDebugHelperPtr  mDebugger;
+#endif
 
     private:
 
@@ -69,9 +73,6 @@ namespace Demi
 
         /// the real data
         DiK2ModelAssetPtr mAsset;
-
-        /// for debugging purpose
-        DiDebugHelperPtr  mDebugger;
     };
 }
 

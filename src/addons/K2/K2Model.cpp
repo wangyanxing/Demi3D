@@ -23,8 +23,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ConsoleVariable.h"
 #include "AssetManager.h"
 #include "K2Asset.h"
-#include "DebugHelper.h"
 #include "ShaderManager.h"
+
+#ifdef ENABLE_K2_ANIM_DEBUGGER
+#   include "DebugHelper.h"
+#endif
 
 namespace Demi
 {
@@ -53,6 +56,7 @@ namespace Demi
         mNode = sm->GetRootNode()->CreateChild();
         mNode->AttachObject(mMesh);
 
+#ifdef ENABLE_K2_ANIM_DEBUGGER
         if (!mDebugger)
         {
             mDebugger = make_shared<DiDebugHelper>();
@@ -61,8 +65,8 @@ namespace Demi
             helpermat->SetDepthCheck(false);
             mDebugger->SetMaterial(helpermat);
         }
-
         mNode->AttachObject(mDebugger);
+#endif
 
         return mNode;
     }
@@ -95,9 +99,12 @@ namespace Demi
         mSkeleton->Apply(mAnimation);
         mSkeleton->CacheBoneMatrices();
 
+#ifdef ENABLE_K2_ANIM_DEBUGGER
         _UpdateDebugger();
+#endif
     }
 
+#ifdef ENABLE_K2_ANIM_DEBUGGER
     void DiK2Model::_UpdateDebugger()
     {
         mDebugger->Clear();
@@ -121,4 +128,5 @@ namespace Demi
             mDebugger->AddBoundingBox(b, DiColor::White);
         }
     }
+#endif
 }
