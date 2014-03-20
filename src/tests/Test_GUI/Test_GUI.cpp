@@ -46,10 +46,9 @@ void InitScene()
     dirNode->AttachObject(dirlight);
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(0, -0.3f, -0.4).normalisedCopy());
-    //dirlight->SetShadowCastEnable(true); 7
+    //dirlight->SetShadowCastEnable(true);
 
-    DiCullNode* node = sm->GetRootNode()->CreateChild();
-    k2md = DI_NEW DiK2Model("heroes/aluna");
+    k2md = DI_NEW DiK2Model("heroes/aluna/model.mdf");
     k2md->CreateNode(sm);
     k2md->GetAnimation()->Play("idle");
 }

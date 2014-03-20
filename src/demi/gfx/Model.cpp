@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "Model.h"
 #include "AssetManager.h"
@@ -95,37 +96,29 @@ namespace Demi
     void DiModel::SetMaterial( const DiString& name )
     {
         for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
-        {
             (*it)->SetMaterial(name);
-        }
     }
 
     void DiModel::SetMaterial(DiMaterialPtr mat)
     {
         for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
-        {
             (*it)->SetMaterial(mat);
-        }
     }
 
     void DiModel::Init()
     {
         if (mMesh)
-        {
             InitSubModels();
-        }
 
         if( mParentNode )
-        {
             mParentNode->NeedUpdate();
-        }
     }
 
-    DiSubModel* DiModel::GetSubModel( size_t id )
+    DiSubModel* DiModel::GetSubModel( uint32 id )
     {
         if (id >= mSubModels.size())
         {
-            return NULL;
+            return nullptr;
         }
         return mSubModels[id];
     }

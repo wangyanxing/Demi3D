@@ -55,6 +55,8 @@ namespace Demi
         DiK2ModelAsset(const DiString& name);
 
         ~DiK2ModelAsset();
+        
+        friend class DiK2MdfSerial;
 
     public:
 
@@ -87,6 +89,8 @@ namespace Demi
         void             AddKeyFrame(const DiString& animName, K2KeyFrames* kf);
 
         void             CreateClipInstance(DiK2Animation* anim);
+        
+        const DiString&  GetBaseFolder() const {return mBaseFolder;}
 
     public:
 
@@ -102,6 +106,13 @@ namespace Demi
         DiVector<K2Anim> mAnims;
 
         DiStrHash<K2KeyFrames*> mKeyFrames;
+        
+        /// file (it's usually "high.model")
+        DiString         mModelFile;
+        
+        /// file folder
+        /// e.g. "heroes/aluna"
+        DiString         mBaseFolder;
     };
 }
 

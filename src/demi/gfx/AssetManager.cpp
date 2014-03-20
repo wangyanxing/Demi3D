@@ -111,12 +111,12 @@ namespace Demi
         extension.ToLower();
 
         // if we have an extension loader, use it
-        if(!extension.empty())
+        if(!extension.empty() && mExtensionLoaders.find(extension) != mExtensionLoaders.end())
         {
             DiDataStreamPtr buf = OpenArchive(path,ignoreError);
 
             auto it = mExtensionLoaders.find(extension);
-            if(buf && it != mExtensionLoaders.end())
+            if(buf)
             {
                 asset = it->second(path);
                 asset->Load(buf);
@@ -125,7 +125,7 @@ namespace Demi
                 DI_WARNING("Cannot load the asset :%s", path.c_str());
         }
         // otherwise we just call Load() without parameter
-        {
+        else {
             auto it = mAssetLoaders.find(type);
             if (it != mAssetLoaders.end())
             {

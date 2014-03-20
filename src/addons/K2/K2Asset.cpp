@@ -44,18 +44,25 @@ namespace Demi
     {
         DiK2MdfSerial serial;
 
-        DiString baseFolder = DiK2MdfSerial::GetK2MediaPath(mName);
+        DiString mdfFile = DiK2MdfSerial::GetK2MediaPath(mName);
+        mBaseFolder = mName.ExtractDirName();
+        if (!mBaseFolder.empty() && mBaseFolder[mBaseFolder.size()-1] == '/')
+            mBaseFolder = mBaseFolder.substr(0,mBaseFolder.size()-1);
 
         DiTimer timer;
 
         mBoneData = make_shared<DiK2BonesData>();
 
-        serial.ParseMdf(baseFolder + "/model.mdf", this);
-        serial.LoadModel(baseFolder + "/high.model", this);
+        serial.ParseMdf(mdfFile, this);
+        
+        DiString absPath = mdfFile.ExtractDirName();
+        
+        DiString modelFile = absPath + mModelFile;
+        serial.LoadModel(modelFile, this);
 
         for (auto i = mAnims.begin(); i != mAnims.end(); ++i)
         {
-            DiString clipFile = baseFolder + "/" + i->clip;
+            DiString clipFile = absPath + i->clip;
             serial.LoadClip(clipFile, &(*i), this);
         }
 

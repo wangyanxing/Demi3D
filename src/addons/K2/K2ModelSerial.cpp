@@ -71,7 +71,7 @@ namespace Demi
         uint8 indices[4];
     };
 
-    bool g_trans_orit = false;
+    bool g_trans_orit = true;
     DiVector<K2Vert> gCurrentVerts;
     
     enum ClipTags
@@ -237,7 +237,7 @@ namespace Demi
             return false;
         }
         
-        DI_LOG("Loading k2 mdf: %s",file.c_str());
+        DI_LOG("Loading k2 mdf: %s", file.c_str());
         
         DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
 
@@ -253,10 +253,14 @@ namespace Demi
     {
         if (rootNode.GetName() != "model")
         {
-            DI_WARNING("Invalid material script.");
+            DI_WARNING("Invalid K2 MDF script, can't find the model tag");
             return false;
         }
         
+        // xxx.model
+        target->mModelFile = rootNode.GetAttribute("file");
+        
+        // animation clips
         DiXMLElement child = rootNode.GetChild();
         while (child)
         {
@@ -335,7 +339,7 @@ namespace Demi
 
         if (version == 1)
         {
-            DI_WARNING("It's an old version of k2 model: %s", target->GetName().c_str());
+            DI_WARNING("It's an old version of k2 model: %s", file.c_str());
         }
         
         DI_SERIAL_LOG("version : %d", version);
@@ -355,7 +359,7 @@ namespace Demi
         maxy = ReadFloat(mStream);
         maxz = ReadFloat(mStream);
         
-        DiString meshname = target->GetName() + "/";
+        DiString meshname = target->GetBaseFolder() + "/";
         meshname += mStream->GetName();
         DiMeshPtr mesh = DiAssetManager::GetInstancePtr()->CreateOrReplaceAsset<DiMesh>(meshname);
 
@@ -424,10 +428,10 @@ namespace Demi
             if (g_trans_orit)
             {
                 DiMat3 m;
-                m.FromAngleAxis(DiVec3::UNIT_Y, DiRadian(DiDegree(-90)));
+                m.FromAngleAxis(DiVec3::UNIT_X, DiRadian(DiDegree(-90)));
                 DiMat4 mm(m);
                 mat = mm*mat;
-                invMat = mm.inverse();
+                invMat = mat.inverse();
             }
 
             target->names.push_back(name);
@@ -522,11 +526,11 @@ namespace Demi
 
         if (submesh)
         {
-            DiString fullpath = DiK2MdfSerial::GetK2MediaPath(target->GetName());
+            DiString fullpath = DiK2MdfSerial::GetK2MediaPath(target->GetBaseFolder());
             DiString mateiralFile = fullpath + "/" + materialName;
             mateiralFile += ".material";
 
-            DiString matName = target->GetName() + "/" + materialName;
+            DiString matName = target->GetBaseFolder() + "/" + materialName;
             submesh->SetMaterialName(matName);
 
             ParseMaterial(mateiralFile, matName, fullpath, hasanim);
@@ -984,12 +988,13 @@ namespace Demi
             return false;
         }
         
-        int what = ReadInt(mStream);
+        ReadInt(mStream);//chunk size
+        
         int version = ReadInt(mStream);
         int numBones = ReadInt(mStream);
         int numFrames = ReadInt(mStream);
 
-        if (anim->numframes == 0)
+        if (anim->numframes == 0 || anim->numframes > numFrames)
             anim->numframes = numFrames;
 
         K2KeyFrames* kf = DI_NEW K2KeyFrames();
@@ -1014,7 +1019,7 @@ namespace Demi
             
             int chunkSize = ReadInt(mStream);
             
-            int boneindex = ReadInt(mStream);
+            ReadInt(mStream); //bone index, unused here
             int keytype = ReadInt(mStream);
             int numkeys = ReadInt(mStream);
             
@@ -1025,10 +1030,9 @@ namespace Demi
             Clip& c = rawClips[bonename];
             c.resize(numFrames);
 
-            //DI_SERIAL_LOG("id=%d, name=%s, ktype=%d, ks=%d", boneindex, name.c_str(), keytype, numkeys);
             if (keytype == MKEY_VISIBILITY)
             {
-                // we don't care it
+                // we don't care about the visibilities since they are always 255
                 mStream->Skip(numkeys);
             }
             else
@@ -1052,6 +1056,7 @@ namespace Demi
         {
             Clip& c = i->second;
             DiString boneName = i->first;
+            bool rootbone = boneName == "Scene Root";
             for (int f = 0; f < numFrames; ++f)
             {
                 auto& frames = kf->boneFrames[boneName];
@@ -1060,21 +1065,13 @@ namespace Demi
                 trans.scale = c.scale[f];
                 trans.rot = convertEuler(c.rot[f]);
 
-                if (g_trans_orit)
+                if (g_trans_orit && rootbone)
                 {
-                    DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_Y);
+                    // rotate the root bone (usually "Scene Root")
+                    
+                    DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_X);
                     trans.pos = q * trans.pos;
                     trans.rot = q * trans.rot;
-//                     DiMat4 m;
-//                     m.makeTransform(trans.pos, trans.scale, trans.rot);
-// 
-//                     DiMat3 rotm;
-//                     rotm.FromAngleAxis(DiVec3::UNIT_X, DiRadian(DiDegree(-90)));
-//                     DiMat4 rotm4(rotm);
-// 
-//                     m = m * rotm4;
-// 
-//                     m.decomposition(trans.pos, trans.scale, trans.rot);
                 }
 
                 frames.push_back(trans);

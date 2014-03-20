@@ -51,7 +51,7 @@ namespace Demi
             DI_DELETE mNode;
         }
         mNode = sm->GetRootNode()->CreateChild();
-        //mNode->AttachObject(mMesh);
+        mNode->AttachObject(mMesh);
 
         if (!mDebugger)
         {

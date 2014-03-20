@@ -41,7 +41,7 @@ namespace Demi
         }
 
         // register the asset type
-        DiAssetManager::GetInstance().RegisterAssetType(DiK2ModelAsset::TYPE, "mdf", [](const DiString& name){
+        DiAssetManager::GetInstance().RegisterAssetType(DiK2ModelAsset::TYPE, "", [](const DiString& name){
             return make_shared<DiK2ModelAsset>(name);
         });
     }

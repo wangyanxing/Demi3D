@@ -83,8 +83,10 @@ namespace Demi
             else
                 mTime = length;
         }
-        mCurFrame = (mTime / length) * mNumFrames;
-        DI_ASSERT(mCurFrame < mNumFrames);
+
+        float realFrame = (mTime / length) * mNumFrames;
+        mCurFrame = DiMath::Clamp(int(realFrame), 0, mNumFrames-1);
+        mInterpFactor = realFrame - mCurFrame;
     }
 
     DiK2Clip::DiK2Clip() : 
@@ -93,6 +95,7 @@ namespace Demi
         , mFPS(0)
         , mNumFrames(0)
         , mTime(0)
+        , mInterpFactor(0)
     {
     }
 
@@ -168,11 +171,25 @@ namespace Demi
                 continue;
 
             DiNode* bone = GetBone(boneName);
-            Trans& t = it->second[clip->mCurFrame];
+            
+            int curFrame  = clip->mCurFrame;
+            int nextFrame = clip->GetNextFrame();
+            
+            Trans t;
+            Interpolate(it->second[curFrame], it->second[nextFrame], clip->mInterpFactor, t);
+            
             bone->SetOrientation(t.rot);
             bone->SetPosition(t.pos);
             bone->SetScale(t.scale);
         }
+    }
+    
+    void DiK2Skeleton::Interpolate(const Trans& source, const Trans& target, float factor, Trans& output)
+    {
+        // just linear interpolate for now
+        output.rot = DiQuat::Nlerp(factor, source.rot, target.rot,true);
+        output.pos = source.pos + (target.pos - source.pos) * factor;
+        output.scale = source.scale + (target.scale - source.scale) * factor;
     }
 
     void DiK2Skeleton::CacheBoneMatrices()

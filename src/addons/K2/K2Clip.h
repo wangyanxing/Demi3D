@@ -66,6 +66,10 @@ namespace Demi
         void            Apply(DiK2Animation* anim);
 
         void            CacheBoneMatrices();
+        
+    private:
+        
+        void            Interpolate(const Trans& source, const Trans& target, float factor, Trans& output);
 
     private:
 
@@ -97,6 +101,9 @@ namespace Demi
         float       mFPS;
 
         int         mCurFrame;
+        
+        /// interpolation factor [0,1]
+        float       mInterpFactor;
 
         int         mNumFrames;
 
@@ -104,6 +111,12 @@ namespace Demi
         float       mTime;
 
         void        Update(float deltaTime);
+        
+        /// for interpolation
+        int         GetNextFrame()
+        {
+            return mCurFrame < mNumFrames-1 ? mCurFrame+1 : (mLoop ? 0 : mNumFrames - 1);
+        }
 
         K2KeyFrames* mKeyFrames;
     };
