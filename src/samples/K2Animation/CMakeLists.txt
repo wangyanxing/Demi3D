@@ -2,4 +2,4 @@
 # Copyright (c) 2013-2014 the Demi3D project.
 #
 
-DI_ADD_TEST(Test_K2Anim)
+DI_ADD_SAMPLE(Sample_K2Animation)

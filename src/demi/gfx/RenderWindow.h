@@ -48,6 +48,8 @@ namespace Demi
         DiPostEffectManager*    GetPostEffectManager() {return mPostEffectMgr;}
 
         DiRenderTarget*         GetRenderBuffer() {return mRenderBuffer;}
+        
+        DiRenderTarget*         GetSceneCanvas() {return mSceneCanvas;}
 
         DiGBuffer*              GetGBuffer() const {return mGBuffer;}
 

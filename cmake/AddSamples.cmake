@@ -7,7 +7,7 @@ file(GLOB SAMPLE_HEADERS "*.h")
 file(GLOB SAMPLE_SRCS "*.cpp")
 
 DI_ADD_EXECUTABLE(${TARGETNAME} ${SAMPLE_HEADERS} ${SAMPLE_SRCS})
-include_directories(${OIS_INCLUDE_DIRS} ${DEMI_SOURCE_DIR}/src/demi ${DEMI_SOURCE_DIR}/src/demi/demoFrame)
+include_directories(${OIS_INCLUDE_DIRS} ${DEMI_SOURCE_DIR}/src/demi ${DEMI_SOURCE_DIR}/src/demi/demoFrame ${DEMI_SOURCE_DIR}/src/addons/K2)
 
 if (NOT APPLE)
 	set_property(TARGET ${TARGETNAME} APPEND PROPERTY DEBUG_POSTFIX "_d")

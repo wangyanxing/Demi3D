@@ -32,9 +32,12 @@
 #include "PointLight.h"
 #include "SkyLight.h"
 
+#include "Command.h"
+#include "ConsoleVariable.h"
 #include "ShaderManager.h"
 #include "RenderWindow.h"
 #include "RenderPipeline.h"
+#include "RenderTarget.h"
 #include "Skeleton.h"
 #include "ShaderProgram.h"
 #include "PostEffectManager.h"

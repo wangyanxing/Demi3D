@@ -20,6 +20,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RenderPipeline.h"
 #include "PostEffectManager.h"
 #include "Window.h"
+#include "Command.h"
+#include "ConsoleVariable.h"
 
 namespace Demi 
 {
@@ -183,6 +185,9 @@ namespace Demi
         mCanvasTexture->SetAdaptedRT(mRenderBuffer);
         mCanvasTexture->SetViewportScale(DiVec2::UNIT_SCALE);
         mSceneCanvas->SetFlippingUV(true);
+        
+        float clearColor = CommandMgr->GetConsoleVar("clear_color")->GetAsFloat();
+        mSceneCanvas->SetClearColor(DiColor(clearColor,clearColor,clearColor,clearColor));
 
         mPostEffectMgr = DI_NEW DiPostEffectManager(this);
         //mGBuffer = DI_NEW DiGBuffer(this);

@@ -50,7 +50,8 @@ void InitScene()
     //dirlight->SetShadowCastEnable(true);
     
     sm->GetCamera()->Move(DiVec3(0,50,70));
-    
+
+    DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
     k2md = DI_NEW DiK2Model("heroes/aluna/model.mdf");
     k2md->CreateNode(sm);
