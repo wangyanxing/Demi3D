@@ -21,14 +21,20 @@ namespace Demi
 
     void DiPlugin::LoadPlugin(const DiString& pgName)
     {
-        DiDynLib* lib = DiDynLib::LoadLib(pgName);
+        DiString plugin = pgName;
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+#   if DEMI_DEBUG
+        plugin += "_d";
+#   endif
+#endif
+        DiDynLib* lib = DiDynLib::LoadLib(plugin);
         if (lib)
         {
             DLL_START_PLUGIN entryFunc = (DLL_START_PLUGIN)lib->GetSymbol("PluginBegin");
 
             if (!entryFunc)
             {
-                DI_WARNING("Cannot find the beginning function of the plugin : %s", pgName.c_str());
+                DI_WARNING("Cannot find the beginning function of the plugin : %s", plugin.c_str());
             }
 
             entryFunc();
@@ -37,19 +43,25 @@ namespace Demi
 
     void DiPlugin::UnloadPlugin(const DiString& pgName)
     {
-        if (!DiDynLib::HasLib(pgName))
+        DiString plugin = pgName;
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+#   if DEMI_DEBUG
+        plugin += "_d";
+#   endif
+#endif
+        if (!DiDynLib::HasLib(plugin))
         {
-            DI_WARNING("The plugin : %s has not loaded yet.", pgName.c_str());
+            DI_WARNING("The plugin : %s has not loaded yet.", plugin.c_str());
             return;
         }
 
-        DiDynLib* lib = DiDynLib::LoadLib(pgName);
+        DiDynLib* lib = DiDynLib::LoadLib(plugin);
         DI_ASSERT(lib);
         DLL_START_PLUGIN endFunc = (DLL_START_PLUGIN)lib->GetSymbol("PluginEnd");
 
         if (!endFunc)
         {
-            DI_WARNING("Cannot find the ending function of the plugin : %s", pgName.c_str());
+            DI_WARNING("Cannot find the ending function of the plugin : %s", plugin.c_str());
         }
 
         endFunc();

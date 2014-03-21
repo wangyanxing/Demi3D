@@ -258,7 +258,9 @@ namespace Demi
         }
         
         // xxx.model
-        target->mModelFile = rootNode.GetAttribute("file");
+        target->mModelFile = rootNode.GetAttribute("high"); // TODO: make it optional
+        if( target->mModelFile.empty() )
+            target->mModelFile = rootNode.GetAttribute("file");
         
         // animation clips
         DiXMLElement child = rootNode.GetChild();
@@ -361,6 +363,7 @@ namespace Demi
         
         DiString meshname = target->GetBaseFolder() + "/";
         meshname += mStream->GetName();
+        meshname += file.ExtractFileName();
         DiMeshPtr mesh = DiAssetManager::GetInstancePtr()->CreateOrReplaceAsset<DiMesh>(meshname);
 
         DiAABB bounds(minx, miny, minz, maxx, maxy, maxz);
@@ -476,8 +479,8 @@ namespace Demi
         // chunk size
         ReadInt(mStream);
 
-        int mesh_index = ReadInt(mStream);
-        int mesh_mod = ReadInt(mStream);
+        ReadInt(mStream); // mesh index
+        ReadInt(mStream); // mesh mod
         int vertics_count = ReadInt(mStream);
 
         DiSubMesh* submesh = nullptr;
@@ -508,7 +511,7 @@ namespace Demi
 
         DiAABB bounds(minx, miny, minz, maxx, maxy, maxz);
 
-        int bone_link = ReadInt(mStream);
+        ReadInt(mStream); //bone link
 
         uint8 mesh_name_length = ReadByte(mStream);
         uint8 material_name_length = ReadByte(mStream);
@@ -521,6 +524,14 @@ namespace Demi
 
         DI_SERIAL_LOG("Mesh name: %s", meshName.c_str());
         DI_SERIAL_LOG("Material name: %s", materialName.c_str());
+        
+        if(materialName.empty())
+        {
+            materialName = mesh->GetName();
+            materialName = materialName.ExtractFileName();
+            materialName = materialName.ExtractBaseName();
+            materialName += "material";
+        }
 
         bool hasanim = target->GetAnimNums() > 0;
 
@@ -900,10 +911,13 @@ namespace Demi
                         if (samplers.CheckName("sampler"))
                         {
                             if (samplers.GetAttribute("name") == "diffuse")
+                            {
                                 shaderFlag |= SHADER_FLAG_USE_MAP;
+                            }
                             else if (samplers.GetAttribute("name") == "normalmap")
+                            {
                                 shaderFlag |= SHADER_FLAG_USE_NORMALMAP;
-
+                            }
                             // we don't care about their team map for now
                         }
 

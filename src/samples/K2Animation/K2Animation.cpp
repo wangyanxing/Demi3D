@@ -23,19 +23,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 DiK2Model* k2md = nullptr;
 DiK2Model* k2md2 = nullptr;
 
-#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-#   if DEMI_DEBUG
-const DiString k2Plugin = "DiK2_d";
-#   else
-const DiString k2Plugin = "DiK2";
-#   endif
-#else
-const DiString k2Plugin = "DiK2";
-#endif
-
 void InitScene()
 {
-    DiPlugin::LoadPlugin(k2Plugin);
+    DiPlugin::LoadPlugin("DiK2");
     
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     
@@ -53,12 +43,13 @@ void InitScene()
     
     k2md = DI_NEW DiK2Model("heroes/aluna/model.mdf");
     k2md->CreateNode(sm);
-    k2md->GetNode()->Translate(-50, -40, 0);
+    k2md->GetNode()->Translate(-50, -50, 0);
     k2md->GetAnimation()->Play("idle");
     
     k2md2 = DI_NEW DiK2Model("items/couriers/panda/model.mdf");
+    //k2md2 = DI_NEW DiK2Model("heroes/javaras/model.mdf");
     k2md2->CreateNode(sm);
-    k2md2->GetNode()->Translate(50, -40, 0);
+    k2md2->GetNode()->Translate(50, -50, 0);
     k2md2->GetAnimation()->Play("idle");
     
     DemiDemo::GetApp()->GetInputManager()->registerKeyReleaseEvent("changeClip",
@@ -120,6 +111,8 @@ int main(int argc, char *argv[])
     app.SetShutdownCallback([&](){
         DI_DELETE k2md;
         DI_DELETE k2md2;
+        
+        DiPlugin::UnloadPlugin("DiK2");
     });
 	app.Open();
     

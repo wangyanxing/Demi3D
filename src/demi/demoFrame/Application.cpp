@@ -37,18 +37,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    const DiString gfxD3D9DrvLib = "DiDrvD3D9";
+    const DiString gfxGLDrvLib   = "DiDrvGL";
+    
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
-        const DiString gfxGLDrvLib = "DiDrvGL";
-#       define USE_OPEN_GL 1
+#   define USE_OPEN_GL 1
 #else
 #   define USE_OPEN_GL 0
-#   if DEMI_DEBUG
-        const DiString gfxD3D9DrvLib = "DiDrvD3D9_d";
-        const DiString gfxGLDrvLib   = "DiDrvGL_d";
-#   else
-        const DiString gfxD3D9DrvLib = "DiDrvD3D9";
-        const DiString gfxGLDrvLib   = "DiDrvGL";
-#   endif
 #endif
 
     DemiDemo::DemiDemo(DemoConfig config) :
