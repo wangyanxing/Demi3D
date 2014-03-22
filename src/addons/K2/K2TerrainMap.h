@@ -16,18 +16,19 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "K2Prerequisites.h"
 #include "K2TerrainDesc.h"
+#include "K2MapLoader.h"
 #include "Material.h"
 #include "TransformUnit.h"
 
 namespace Demi
 {
-    class DEMI_K2_API DiTerrainMap : public DiTransformUnit
+    class DEMI_K2_API DiTerrain : public DiTransformUnit
     {
     public:
 
-        DiTerrainMap();
+        DiTerrain();
 
-        virtual                     ~DiTerrainMap();
+        virtual                     ~DiTerrain();
 
         friend class DiTerrainChunk;
 
@@ -63,7 +64,7 @@ namespace Demi
 
         ARGB*                       GetColorData(uint32 x, uint32 y);
 
-        BYTE*                       GetTextureID(uint16 layer) { return mDesc->mLayers[layer].textureId; }
+        K2TileLayer*                GetTextureID(uint16 layer) { return mDesc->mTextureIDMap->GetBuffer(layer); }
 
         char*                       GetCliffData();
 
@@ -161,15 +162,16 @@ namespace Demi
 
         uint32                      GetRealGridId(uint16 trunkIDx, uint16 trunkIDy, uint32 gridID);
 
-        DiMaterialPtr               GetMaterial(const DiPair<BYTE,BYTE>& textureid);
+        DiMaterialPtr               GetMaterial(const K2TerrainTexture& textureid);
 
-        DiMaterialPtr               GenerateMaterial(const DiString& layer0,const DiString& layer1);
+        DiMaterialPtr               GenerateMaterial(const DiString matName, const DiString& dif0,const DiString& dif1,
+                                        const DiString& norm0, const DiString& norm1);
         
         void                        GetPointOrNeighbour(int x, int y, DiVec3& out);
 
     protected:
 
-        typedef DiMap<DiPair<BYTE,BYTE>,DiMaterialPtr> MaterialTable;
+        typedef DiMap<K2TerrainTexture, DiMaterialPtr> MaterialTable;
 
         MaterialTable               mMaterialTable;
 

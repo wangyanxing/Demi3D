@@ -24,17 +24,16 @@ namespace Demi
     DiK2World::DiK2World()
         : mRootNode(nullptr)
     {
-
     }
 
     DiK2World::~DiK2World()
     {
-
+        Unload();
     }
 
     void DiK2World::Unload()
     {
-
+        mTerrain->Unload();
     }
 
     void DiK2World::Load(const DiString& path)

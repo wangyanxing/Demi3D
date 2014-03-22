@@ -24,7 +24,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiFoliageMap::DiFoliageMap( DiTerrainMap* terrainmap )
+    DiFoliageMap::DiFoliageMap( DiTerrain* terrainmap )
         :mTable(NULL),
         mTerrainMap(terrainmap)
     {

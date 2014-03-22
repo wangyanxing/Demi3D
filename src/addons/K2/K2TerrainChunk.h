@@ -36,7 +36,9 @@ namespace Demi
 
         DiTerrainChunk* mParent;
 
-        DiString        DemiureAlias[TERRAIN_LAYER_NUM];
+        DiString        mDiffuseTexture[TERRAIN_LAYER_NUM];
+
+        DiString        mNormalTexture[TERRAIN_LAYER_NUM];
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -45,13 +47,13 @@ namespace Demi
     {
     public:
 
-        DiTerrainChunk(uint16 x, uint16 y, DiTerrainMap* parent);
+        DiTerrainChunk(uint16 x, uint16 y, DiTerrain* parent);
 
         virtual                ~DiTerrainChunk();
 
     public:
 
-        friend class DiTerrainMap;
+        friend class DiTerrain;
         friend class DiTerrainBatch;
 
         typedef DiVector<DiTerrainBatch*> Batches;
@@ -96,7 +98,7 @@ namespace Demi
 
     protected:
 
-        DiTerrainMap*       mParent;
+        DiTerrain*          mParent;
 
         DiVertexBuffer*     mVertexBuffer;
 

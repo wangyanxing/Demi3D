@@ -65,7 +65,7 @@ namespace Demi
 
     //////////////////////////////////////////////////////////////////////////
 
-    DiTerrainChunk::DiTerrainChunk( uint16 x, uint16 y , DiTerrainMap* parent) : 
+    DiTerrainChunk::DiTerrainChunk( uint16 x, uint16 y , DiTerrain* parent) : 
         mParent(parent),
         mVertexBuffer(NULL),
         mIndexBuffer(NULL),
@@ -85,29 +85,32 @@ namespace Demi
     {
         {
             Driver->GetPipeline()->ClearGroup();
-
-            Batches::iterator it;
-            Batches::iterator itEnd = mBatches.end();
-            for (it = mBatches.begin(); it != itEnd; ++it)
+            for (auto it = mBatches.begin(); it != mBatches.end(); ++it)
             {
                 DI_DELETE *it;
             }
             mBatches.clear();
         }                
 
-        DiMap<DiPair<BYTE,BYTE>,DiVector<uint16>> ids;
+        DiMap<K2TerrainTexture, DiVector<uint16>> ids;
         uint32 gridsize = CHUNK_GRID_SIZE * CHUNK_GRID_SIZE;
 
         DiSet<uint32>& ht = mParent->GetHidedTile();
 
-        for (uint16 i=0; i< gridsize; i++)
+        for (uint16 i = 0; i < gridsize; i++)
         {
             uint32 realGridID = mParent->GetRealGridId(mChunkIDX,mChunkIDY,i);
             if (!ht.contains(realGridID))
             {
-                DiPair<BYTE,BYTE> bytes;
-                bytes.first = mParent->GetTextureID(0)[realGridID];
-                bytes.second = mParent->GetTextureID(1)[realGridID];
+                K2TileLayer& l0 = mParent->GetTextureID(0)[realGridID];
+                K2TileLayer& l1 = mParent->GetTextureID(1)[realGridID];
+
+                K2TerrainTexture bytes;
+                bytes.diffuse0 = l0.diffuseID;
+                bytes.normal0 = l0.normalID;
+                bytes.diffuse1 = l0.diffuseID;
+                bytes.normal1 = l0.normalID;
+
                 ids[bytes].push_back(i);
             }
         }
@@ -118,30 +121,28 @@ namespace Demi
         uint16* data = static_cast<uint16*>(bf);
 
         uint16 iboffset = 0;
-        DiMap<DiPair<BYTE,BYTE>,DiVector<uint16>>::iterator it;
-        DiMap<DiPair<BYTE,BYTE>,DiVector<uint16>>::iterator itEnd = ids.end();
-        for (it = ids.begin(); it != itEnd; ++it)
+        for (auto it = ids.begin(); it != ids.end(); ++it)
         {
-            DiTerrainBatch* batch    = DI_NEW DiTerrainBatch(this);
-            batch->mIndexOffset        = iboffset;
-            batch->mVertexDecl        = mParent->mVertexDecl;
-            batch->mPrimitiveCount    = it->second.size() * 2;
-            batch->mPrimitiveType    = PT_TRIANGLELIST;
-            batch->mIndexBuffer        = mIndexBuffer;
+            DiTerrainBatch* batch   = DI_NEW DiTerrainBatch(this);
+            batch->mIndexOffset     = iboffset;
+            batch->mVertexDecl      = mParent->mVertexDecl;
+            batch->mPrimitiveCount  = it->second.size() * 2;
+            batch->mPrimitiveType   = PT_TRIANGLELIST;
+            batch->mIndexBuffer     = mIndexBuffer;
             batch->mSourceData.push_back(mVertexBuffer);
             batch->mVertexOffset    = 0;
-            batch->mVerticesNum        = (CHUNK_GRID_SIZE + 1) * (CHUNK_GRID_SIZE + 1);
+            batch->mVerticesNum     = (CHUNK_GRID_SIZE + 1) * (CHUNK_GRID_SIZE + 1);
             batch->mMaterial        = mParent->GetMaterial(it->first);
             if (!mParent->GetTextureTable().empty())
             {
-                batch->DemiureAlias[0]    = mParent->GetTextureTable()[it->first.first];
-                batch->DemiureAlias[1]    = mParent->GetTextureTable()[it->first.second];
+                batch->mDiffuseTexture[0] = mParent->GetTextureTable()[it->first.diffuse0];
+                batch->mDiffuseTexture[1] = mParent->GetTextureTable()[it->first.diffuse1];
+                batch->mNormalTexture[0] = mParent->GetTextureTable()[it->first.normal0];
+                batch->mNormalTexture[1] = mParent->GetTextureTable()[it->first.normal1];
             }
             mBatches.push_back(batch);
 
-            DiVector<uint16>::iterator iv;
-            DiVector<uint16>::iterator ivend = it->second.end();
-            for (iv = it->second.begin(); iv != ivend; ++iv)
+            for (auto iv = it->second.begin(); iv != it->second.end(); ++iv)
             {
                 uint16 i = (uint16)((*iv) % CHUNK_GRID_SIZE);
                 uint16 j = (uint16)((*iv) / CHUNK_GRID_SIZE);
@@ -154,16 +155,12 @@ namespace Demi
                 if (i % 2 == 0)
                 {
                     if (j % 2 != 0)
-                    {
                         fst = false;
-                    }
                 }
                 else
                 {
                     if (j % 2 == 0)
-                    {
                         fst = false;
-                    }
                 }
 
                 if (fst)
@@ -261,15 +258,11 @@ namespace Demi
 
     void DiTerrainChunk::Unload()
     {
+        for (auto it = mBatches.begin(); it != mBatches.end(); ++it)
         {
-            Batches::iterator it;
-            Batches::iterator itEnd = mBatches.end();
-            for (it = mBatches.begin(); it != itEnd; ++it)
-            {
-                DI_DELETE *it;
-            }
-            mBatches.clear();
+            DI_DELETE *it;
         }
+        mBatches.clear();
 
         if (mIndexBuffer)
         {
@@ -278,7 +271,7 @@ namespace Demi
             mIndexBuffer = NULL;
         }
 
-        if(mVertexBuffer)
+        if (mVertexBuffer)
         {
             mVertexBuffer->Release();
             DI_DELETE mVertexBuffer;

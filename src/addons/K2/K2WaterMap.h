@@ -28,7 +28,7 @@ namespace Demi
 
         friend class DiWaterChunk;
 
-        DiWaterMap(DiTerrainMap* terrainmap);
+        DiWaterMap(DiTerrain* terrainmap);
 
         virtual                 ~DiWaterMap();
 
@@ -58,7 +58,7 @@ namespace Demi
 
     protected:
 
-        DiTerrainMap*           mTerrainMap;
+        DiTerrain*           mTerrainMap;
 
         DiTexturePtr            mWaterMapTexture;
 

@@ -10,8 +10,11 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "MiscPch.h"
 #include "PathLib.h"
+
+#include <io.h>
 
 namespace Demi
 {
@@ -78,6 +81,11 @@ namespace Demi
         size_t pos = appFile.rfind(_SLASH);
         path = appFile.substr(0, pos) + _SLASH;
         return path;
+    }
+
+    bool DiPathLib::FileExisted(const DiString& file)
+    {
+        return (access(file.c_str(), 0) != -1);
     }
 
 }

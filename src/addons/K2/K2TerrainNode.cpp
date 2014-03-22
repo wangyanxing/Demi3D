@@ -18,7 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiQuadNode::DiQuadNode(DiTerrainMap* terrain,DiQuadNode* parent,uint16 size,uint16 xoff, uint16 yoff)
+    DiQuadNode::DiQuadNode(DiTerrain* terrain,DiQuadNode* parent,uint16 size,uint16 xoff, uint16 yoff)
         : mChunk(nullptr),
         mTerrain(terrain),
         mParent(parent),

@@ -17,6 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "ConsoleVariable.h"
 #include "K2Asset.h"
+#include "PathLib.h"
+#include "Texture.h"
 
 namespace Demi
 {
@@ -64,4 +66,45 @@ namespace Demi
         DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
         return data;
     }
+
+    DiTexturePtr DiK2Configs::GetTexture(const DiString& relPath)
+    {
+        DiTexturePtr ret = DiAssetManager::GetInstance().FindAsset<DiTexture>(relPath);
+        if (ret)
+            return ret;
+
+        DiString full = GetK2MediaPath(relPath);
+
+        if (DiString::EndsWith(full, "_n"))
+            full += "_rxgb";
+
+        DiString tgaFile = full + ".tga";
+        DiString ddsFile = full + ".dds";
+
+        FILE* fp = NULL;
+
+        // if the file is a tga image, maybe we should change it to .dds
+        if (!DiPathLib::FileExisted(tgaFile))
+        {
+            // try dds
+            fp = fopen(ddsFile.c_str(), "rb");
+        }
+        else
+        {
+            // try tga
+            fp = fopen(tgaFile.c_str(), "rb");
+        }
+
+        if (!fp)
+        {
+            DI_WARNING("Cannot open the texture file: %s", ddsFile.c_str());
+            return nullptr;
+        }
+        DiDataStreamPtr texData(DI_NEW DiFileHandleDataStream(relPath,fp));
+
+        ret = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(relPath);
+        ret->Load(texData);
+        return ret;
+    }
+
 }

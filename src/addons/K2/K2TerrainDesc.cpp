@@ -12,6 +12,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 #include "K2Pch.h"
 #include "K2TerrainDesc.h"
+#include "K2MapLoader.h"
 
 bool Demi::DiTerrainDesc::CheckValid() const
 {
@@ -32,15 +33,13 @@ void Demi::DiTerrainDesc::Release()
     SAFE_ARRAY_DELETE(mHeightData);    
     SAFE_ARRAY_DELETE(mCliffData);
     SAFE_ARRAY_DELETE(mColorData);
-    SAFE_ARRAY_DELETE(mLayers[0].textureId);
-    SAFE_ARRAY_DELETE(mLayers[1].textureId);
 
     SAFE_ARRAY_DELETE(mWaterMap);
     SAFE_ARRAY_DELETE(mWaterHeightMap);
 
-    FoliageLayers::iterator it;
-    FoliageLayers::iterator itEnd = mFoliageLayers.end();
-    for (it = mFoliageLayers.begin(); it != itEnd; ++it)
+    SAFE_DELETE(mTextureIDMap);
+
+    for (auto it = mFoliageLayers.begin(); it != mFoliageLayers.end(); ++it)
     {
         SAFE_DELETE(*it);
     }
@@ -59,6 +58,7 @@ Demi::DiTerrainDesc::DiTerrainDesc()
     mCliffData      = nullptr;
     mWaterMap       = nullptr;
     mWaterHeightMap = nullptr;
+    mTextureIDMap   = nullptr;
 }
 
 Demi::DiTerrainDesc::~DiTerrainDesc()
@@ -109,26 +109,26 @@ uint32 Demi::DiTerrainDesc::GetCliffGridYNum()
 
 DiFoliageLayerDesc::DiFoliageLayerDesc()
 {
-    mRenderTechnique    = 0;
-    mAnimate            = true;
-    mLighting            = false;
-    mColor            = 0xffffffff;
+    mRenderTechnique = 0;
+    mAnimate    = true;
+    mLighting   = false;
+    mColor      = 0xffffffff;
 
-    mMinWidth            = 20;
-    mMinHeight        = 60;
-    mMaxWidth            = 25;
-    mMaxHeight        = 100;
-    mAnimFreq            = 10;
-    mAnimMag            = 20;
-    mDensity            = 0.01f;
-    mAnimSpeed        = 0.2f;
+    mMinWidth   = 20;
+    mMinHeight  = 60;
+    mMaxWidth   = 25;
+    mMaxHeight  = 100;
+    mAnimFreq   = 10;
+    mAnimMag    = 20;
+    mDensity    = 0.01f;
+    mAnimSpeed  = 0.2f;
 
     ClearDensityMap();
 }
 
 void Demi::DiFoliageLayerDesc::ClearDensityMap()
 {
-    memset(mDensityMap,0,FOLIAGE_DENSITY_MAP_SIZE*FOLIAGE_DENSITY_MAP_SIZE*sizeof(BYTE));
+    memset(mDensityMap,0,FOLIAGE_DENSITY_MAP_SIZE * FOLIAGE_DENSITY_MAP_SIZE*sizeof(BYTE));
 }
 
 void Demi::DiFoliageLayerDesc::Load( DiDataStreamPtr ds )
@@ -147,7 +147,7 @@ void Demi::DiFoliageLayerDesc::Load( DiDataStreamPtr ds )
     ds->Read(&mMinHeight,          sizeof(mMinHeight));
     ds->Read(&mMaxHeight,          sizeof(mMaxHeight));
     ds->Read(&mColor,              sizeof(mColor));
-    ds->Read(&mDensityMap,         sizeof(BYTE)*FOLIAGE_DENSITY_MAP_SIZE*FOLIAGE_DENSITY_MAP_SIZE);
+    ds->Read(&mDensityMap,         sizeof(BYTE)*FOLIAGE_DENSITY_MAP_SIZE * FOLIAGE_DENSITY_MAP_SIZE);
 }
 
 void Demi::DiFoliageLayerDesc::Save( DiDataStreamPtr ds )

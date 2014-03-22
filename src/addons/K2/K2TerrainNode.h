@@ -22,7 +22,7 @@ namespace Demi
     {
     public:
 
-        DiQuadNode(DiTerrainMap* terrain,DiQuadNode* parent,uint16 size,uint16 xoff, uint16 yoff);
+        DiQuadNode(DiTerrain* terrain,DiQuadNode* parent,uint16 size,uint16 xoff, uint16 yoff);
 
         virtual         ~DiQuadNode();
 
@@ -40,7 +40,7 @@ namespace Demi
 
     protected:
 
-        DiTerrainMap*   mTerrain;
+        DiTerrain*   mTerrain;
 
         DiQuadNode*     mParent;
 

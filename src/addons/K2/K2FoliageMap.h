@@ -23,7 +23,7 @@ namespace Demi
     public:
         friend class DiFoliageChunk;
 
-        DiFoliageMap(DiTerrainMap* terrainmap);
+        DiFoliageMap(DiTerrain* terrainmap);
 
         virtual                     ~DiFoliageMap();
 
@@ -49,7 +49,7 @@ namespace Demi
 
         void                        DeleteLayer( int layerID );
 
-        DiTerrainMap*               GetTerrainMap(){return mTerrainMap;}
+        DiTerrain*               GetTerrainMap(){return mTerrainMap;}
 
         void                        Update();
 
@@ -63,7 +63,7 @@ namespace Demi
 
     protected:
 
-        DiTerrainMap*               mTerrainMap;
+        DiTerrain*               mTerrainMap;
 
         DiVector<DiFoliageChunk*>   mChunks;
 

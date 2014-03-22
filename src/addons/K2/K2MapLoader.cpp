@@ -148,6 +148,15 @@ namespace Demi
         }
     }
 
+    void DiK2TileMap::Load(uint32 width, uint32 height)
+    {
+        Unload();
+        mWidth = width;
+        mHeight = height;
+        for (int l = 0; l < 2; l++)
+            mBuffer[l] = DI_NEW K2TileLayer[width*height];
+    }
+
     void DiK2TileMap::Unload()
     {
         if (mBuffer)

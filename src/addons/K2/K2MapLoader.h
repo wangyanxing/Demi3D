@@ -66,6 +66,8 @@ namespace Demi
     */
     struct K2TileLayer
     {
+        K2TileLayer() : value(0), diffuseID(0), normalID(0)
+        {}
         uint16 value;
         uint16 diffuseID;
         uint16 normalID;
@@ -82,6 +84,10 @@ namespace Demi
     public:
 
         void            Load(DiDataStreamPtr data);
+
+        /** Load with original values
+         */
+        void            Load(uint32 width, uint32 height);
 
         void            Unload();
 

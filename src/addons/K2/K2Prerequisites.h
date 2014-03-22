@@ -25,7 +25,7 @@ namespace Demi
     class DiK2ModelAsset;
     class DiK2BonesData;
     class DiK2World;
-    class DiTerrainMap;
+    class DiTerrain;
     class DiTerrainChunk;
     class DiTerrainDesc;
     class DiWaterMap;
@@ -35,6 +35,7 @@ namespace Demi
     class DiFoliageLayer;
     class DiCliffMap;
     class DiCliff;
+    class DiK2TileMap;
 
     struct K2KeyFrames;
     struct K2Anim;
@@ -42,7 +43,7 @@ namespace Demi
     typedef shared_ptr<DiK2BonesData>   DiK2BonesDataPtr;
     typedef shared_ptr<DiK2ModelAsset>  DiK2ModelAssetPtr;
     typedef shared_ptr<DiTerrainDesc>   DiTerrainDescPtr;
-    typedef shared_ptr<DiTerrainMap>    DiTerrainPtr;
+    typedef shared_ptr<DiTerrain>    DiTerrainPtr;
 }
 
 #endif

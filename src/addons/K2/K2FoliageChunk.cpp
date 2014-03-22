@@ -42,7 +42,7 @@ namespace Demi
 
     void DiFoliageLayerBatch::GetWorldTransform( DiMat4* xform ) const
     {
-        DiTerrainMap* tr = mParent->mParent->GetTerrainMap();
+        DiTerrain* tr = mParent->mParent->GetTerrainMap();
         *xform = tr->GetChunk(mParent->mChunkID.x, mParent->mChunkID.y)->GetTransform();
     }
 

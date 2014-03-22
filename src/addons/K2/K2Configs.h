@@ -34,6 +34,11 @@ namespace Demi
             e.g. we can use "heroes/aluna/model.mdf" as the argument
          */
         static DiDataStreamPtr GetDataStream(const DiString& relPath, bool asBinary);
+
+        /** Load and get the texture file by a relative path
+            we don't need extension here 
+         */
+        static DiTexturePtr    GetTexture(const DiString& relPath);
     };
 }
 

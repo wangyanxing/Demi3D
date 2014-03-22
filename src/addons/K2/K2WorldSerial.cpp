@@ -34,9 +34,9 @@ namespace Demi
         DiDataStreamPtr dataHeightmap = DiK2Configs::GetDataStream(path + "/heightmap", true);
         heightMap.Load(dataHeightmap);
 
-        DiK2TileMap tileMap;
+        terrainDesc->mTextureIDMap = DI_NEW DiK2TileMap();
         DiDataStreamPtr dataTilemap = DiK2Configs::GetDataStream(path + "/tilematerialmap", true);
-        tileMap.Load(dataTilemap);
+        terrainDesc->mTextureIDMap->Load(dataTilemap);
 
         LoadTextureList(path, terrainDesc);
 
@@ -44,9 +44,7 @@ namespace Demi
         terrainDesc->mSizeY = (heightMap.GetHeight() - 1) / CHUNK_GRID_SIZE;
         terrainDesc->mHeightData = heightMap.GetBuffer();
 
-        terrainDesc->mTextureTable[0] = "g1_ground";
-
-        world->mTerrain = make_shared<DiTerrainMap>();
+        world->mTerrain = make_shared<DiTerrain>();
         world->mTerrain->Load(terrainDesc);
     }
 
@@ -72,6 +70,13 @@ namespace Demi
             {
                 int id = child.GetInt("id");
                 DiString name = child.GetAttribute("name");
+
+                if (name == "$checker" || name == "$flat_dull")
+                    name.clear(); // dummy texture
+
+                name.TrimLeft("/");
+                name = name.ExtractBaseName();
+
                 terrainDesc->mTextureTable[id] = name;
             }
             child = child.GetNext();

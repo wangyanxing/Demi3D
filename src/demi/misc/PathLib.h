@@ -14,17 +14,25 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef PathLib_h__
 #define PathLib_h__
 
+#include "MiscPrerequisites.h"
+
 namespace Demi
 {
     class DI_MISC_API DiPathLib
     {
     public:
         
-        // For example "D:\Demi\Bin\Debug\Sample_demi.exe"
+        /** For example "C:\Demi\Bin\Debug\Sample_demi.exe"
+         */
         static const DiString& GetApplicationFileName();
 
-        // For example "D:\Demi\Bin\Debug\"
+        /** For example "C:\Demi\Bin\Debug\"
+         */
         static const DiString& GetApplicationPath();
+
+        /** we need a absolute path
+        */
+        static bool FileExisted(const DiString& file);
 
         static DiString        msAppFile;
     };

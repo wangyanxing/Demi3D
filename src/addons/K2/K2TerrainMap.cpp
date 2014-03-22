@@ -35,6 +35,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2FoliageLayer.h"
 #include "K2TerrainMap.h"
 #include "K2TerrainChunk.h"
+#include "K2Configs.h"
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable:4505)
@@ -42,7 +43,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiTerrainMap::DiTerrainMap()
+    DiTerrain::DiTerrain()
        :mVertexDecl(nullptr),
         mVertexBuffer(nullptr),
         mDesc(nullptr),
@@ -56,7 +57,7 @@ namespace Demi
         CreateVertexDecl();
     }
 
-    DiTerrainMap::~DiTerrainMap()
+    DiTerrain::~DiTerrain()
     {
         if (mVertexDecl)
         {
@@ -66,7 +67,7 @@ namespace Demi
         }
     }
 
-    bool DiTerrainMap::Load(DiTerrainDescPtr desc)
+    bool DiTerrain::Load(DiTerrainDescPtr desc)
     {
         if (!desc->CheckValid())
         {
@@ -108,10 +109,10 @@ namespace Demi
 
         for (uint32 i = 0; i < TERRAIN_LAYER_NUM; i++)
         {
-            if (!mDesc->mLayers[i].textureId)
+            if (!mDesc->mTextureIDMap)
             {
-                mDesc->mLayers[i].textureId = DI_NEW uint8[gridSize];
-                memset(mDesc->mLayers[i].textureId, 0, gridSize*sizeof(uint8));
+                mDesc->mTextureIDMap = DI_NEW DiK2TileMap();
+                mDesc->mTextureIDMap->Load(CHUNK_GRID_SIZE*mDesc->mSizeX, CHUNK_GRID_SIZE*mDesc->mSizeY);
             }
         }
 
@@ -148,7 +149,7 @@ namespace Demi
         return true;
     }
 
-    void DiTerrainMap::Unload()
+    void DiTerrain::Unload()
     {
         for (auto it = mChunks.begin(); it != mChunks.end(); ++it)
         {
@@ -165,7 +166,7 @@ namespace Demi
         SAFE_DELETE(mRoot);
     }
 
-    void DiTerrainMap::CreateVertexDecl()
+    void DiTerrain::CreateVertexDecl()
     {
         DI_ASSERT(!mVertexDecl);
 
@@ -177,7 +178,7 @@ namespace Demi
         mVertexDecl->Create();
     }
     
-    ARGB DiTerrainMap::GetColor( uint32 vertid )
+    ARGB DiTerrain::GetColor( uint32 vertid )
     {
         uint32 size = (CHUNK_GRID_SIZE*mDesc->mSizeX + 1) * 
             (CHUNK_GRID_SIZE*mDesc->mSizeY + 1);
@@ -187,13 +188,13 @@ namespace Demi
         return mDesc->mColorData[vertid];
     }
 
-    ARGB DiTerrainMap::GetColor( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
+    ARGB DiTerrain::GetColor( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
     {
         uint32 realid = GetRealVertId(trunkIDx,trunkIDy,vertid);
         return GetColor(realid);
     }
 
-    float DiTerrainMap::GetHeight( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
+    float DiTerrain::GetHeight( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
     {
         uint32 realid = GetRealVertId(trunkIDx,trunkIDy,vertid);
 
@@ -204,7 +205,7 @@ namespace Demi
         return mDesc->mHeightData[realid];
     }
 
-    bool DiTerrainMap::GetHeight( float worldX, float worldZ, float& outHeight )
+    bool DiTerrain::GetHeight( float worldX, float worldZ, float& outHeight )
     {
         DiVec3 pos(worldX,0,worldZ);
         if(!CoverTerrain(pos))
@@ -229,7 +230,7 @@ namespace Demi
         }
     }
 
-    uint32 DiTerrainMap::GetRealVertId( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
+    uint32 DiTerrain::GetRealVertId( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
     {
         uint32 tileIDx,tileIDy;
         tileIDx = vertid % (CHUNK_GRID_SIZE + 1);
@@ -242,7 +243,7 @@ namespace Demi
         return realid;
     }
 
-    uint32 DiTerrainMap::GetRealGridId( uint16 trunkIDx, uint16 trunkIDy, uint32 gridID )
+    uint32 DiTerrain::GetRealGridId( uint16 trunkIDx, uint16 trunkIDy, uint32 gridID )
     {
         uint32 tileIDx,tileIDy;
         tileIDx = gridID % (CHUNK_GRID_SIZE);
@@ -255,7 +256,7 @@ namespace Demi
         return realid;
     }
 
-    DiMaterialPtr DiTerrainMap::GetMaterial(const DiPair<BYTE,BYTE>& textureid)
+    DiMaterialPtr DiTerrain::GetMaterial(const K2TerrainTexture& textureid)
     {
         DiTerrainDesc::TextureTable& texTable = GetTextureTable();
         if(texTable.empty())
@@ -266,27 +267,38 @@ namespace Demi
         else
         {
             DiString texlayer0,texlayer1;
-            if (texTable.contains(textureid.first))
-                texlayer0 = texTable[textureid.first];
-            else
-            {
-                DI_WARNING("Cannot find the texture ID0: %d",textureid.first);
-            }
+            DiString normlayer0, normlayer1;
 
-            if (texTable.contains(textureid.second))
-                texlayer1 = texTable[textureid.second];
+            if (texTable.contains(textureid.diffuse0))
+                texlayer0 = texTable[textureid.diffuse0];
             else
-            {
-                DI_WARNING("Cannot find the texture ID1: %d",textureid.second);
-            }
+                DI_WARNING("Cannot find the diffuse texture ID0: %d", textureid.diffuse0);
 
-            DiMaterialPtr mat = GenerateMaterial(texlayer0,texlayer1);
+            if (texTable.contains(textureid.diffuse1))
+                texlayer1 = texTable[textureid.diffuse1];
+            else
+                DI_WARNING("Cannot find the diffuse texture ID1: %d", textureid.diffuse1);
+
+            if (texTable.contains(textureid.normal0))
+                normlayer0 = texTable[textureid.normal0];
+            else
+                DI_WARNING("Cannot find the normal texture ID0: %d", textureid.normal0);
+
+            if (texTable.contains(textureid.normal1))
+                normlayer1 = texTable[textureid.normal1];
+            else
+                DI_WARNING("Cannot find the normal texture ID1: %d", textureid.normal1);
+
+            DiString matName;
+            matName.Format("_termat_%d%d%d%d", textureid.diffuse0, textureid.diffuse1, textureid.normal0, textureid.normal1);
+
+            DiMaterialPtr mat = GenerateMaterial(matName, texlayer0, texlayer1, normlayer0, normlayer1);
             mMaterialTable[textureid] = mat;
             return mat;
         }
     }
 
-    float DiTerrainMap::GetHeightAtPoint( uint32 x, uint32 y )
+    float DiTerrain::GetHeightAtPoint( uint32 x, uint32 y )
     {
         uint32 vertx,verty;
         GetVerticesNum(vertx,verty);
@@ -299,12 +311,12 @@ namespace Demi
         return *GetHeightData(x, y);
     }
 
-    float* DiTerrainMap::GetHeightData()
+    float* DiTerrain::GetHeightData()
     {
         return mDesc->mHeightData;
     }
 
-    float* DiTerrainMap::GetHeightData( uint32 x, uint32 y )
+    float* DiTerrain::GetHeightData( uint32 x, uint32 y )
     {
         uint32 vertx,verty;
         GetVerticesNum(vertx,verty);
@@ -313,13 +325,13 @@ namespace Demi
         return &mDesc->mHeightData[y * vertx + x];
     }
 
-    void DiTerrainMap::GetVerticesNum( uint32& outx, uint32& outy )
+    void DiTerrain::GetVerticesNum( uint32& outx, uint32& outy )
     {
         outx = (CHUNK_GRID_SIZE * mDesc->mSizeX + 1);
         outy = (CHUNK_GRID_SIZE * mDesc->mSizeY + 1);
     }
 
-    Demi::DiIntVec2 DiTerrainMap::GetVerticesNum()
+    Demi::DiIntVec2 DiTerrain::GetVerticesNum()
     {
         DiIntVec2 res;
         res.x = (int)(CHUNK_GRID_SIZE * mDesc->mSizeX + 1);
@@ -327,7 +339,7 @@ namespace Demi
         return res;
     }
 
-    DiIntVec2 DiTerrainMap::GetVertexPos( const DiVec3& WSpos )
+    DiIntVec2 DiTerrain::GetVertexPos( const DiVec3& WSpos )
     {
         uint32 vertx,verty;
         GetVerticesNum(vertx,verty);
@@ -345,7 +357,7 @@ namespace Demi
         return tpos;
     }
 
-    DiTerrainChunk* DiTerrainMap::GetChunk( uint32 idx, uint32 idy )
+    DiTerrainChunk* DiTerrain::GetChunk( uint32 idx, uint32 idy )
     {
         uint32 id = idx * mDesc->mSizeX + idy;
         if(id < mChunks.size())
@@ -354,17 +366,17 @@ namespace Demi
             return nullptr;
     }
 
-    DiTerrainChunk* DiTerrainMap::GetChunk( uint32 id )
+    DiTerrainChunk* DiTerrain::GetChunk( uint32 id )
     {
         return mChunks[id];
     }
 
-    ARGB* DiTerrainMap::GetColorData()
+    ARGB* DiTerrain::GetColorData()
     {
         return mDesc->mColorData;
     }
 
-    ARGB* DiTerrainMap::GetColorData( uint32 x, uint32 y )
+    ARGB* DiTerrain::GetColorData( uint32 x, uint32 y )
     {
         uint32 vertx,verty;
         GetVerticesNum(vertx,verty);
@@ -373,12 +385,12 @@ namespace Demi
         return &mDesc->mColorData[y * vertx + x];
     }
     
-    char* DiTerrainMap::GetCliffData()
+    char* DiTerrain::GetCliffData()
     {
         return mDesc->mCliffData;
     }
 
-    bool DiTerrainMap::CoverTerrain( const DiVec3& pos, float size )
+    bool DiTerrain::CoverTerrain( const DiVec3& pos, float size )
     {
         float half = size/2;
         DiVec3 p;
@@ -402,7 +414,7 @@ namespace Demi
         return false;
     }
 
-    bool DiTerrainMap::CoverTerrain( const DiVec2& pos )
+    bool DiTerrain::CoverTerrain( const DiVec2& pos )
     {
         float width = GetTerrainWidth();
         float height = GetTerrainHeight();
@@ -414,7 +426,7 @@ namespace Demi
         return true;
     }
 
-    bool DiTerrainMap::CoverTerrain( const DiVec3& pos )
+    bool DiTerrain::CoverTerrain( const DiVec3& pos )
     {
         float width = GetTerrainWidth();
         float height = GetTerrainHeight();
@@ -423,19 +435,19 @@ namespace Demi
         return CoverTerrain(terrainPos);
     }
 
-    float DiTerrainMap::GetTerrainWidth() const
+    float DiTerrain::GetTerrainWidth() const
     {
         float wholeSizeX = mDesc->mGridSize * mDesc->mSizeX * CHUNK_GRID_SIZE;
         return wholeSizeX;
     }
 
-    float DiTerrainMap::GetTerrainHeight() const
+    float DiTerrain::GetTerrainHeight() const
     {
         float wholeSizeY = mDesc->mGridSize * mDesc->mSizeY * CHUNK_GRID_SIZE;
         return wholeSizeY;
     }
 
-    void DiTerrainMap::GetNTAtPoint( uint32 x, uint32 y, DiVec3& normal, DiVec3& tangent)
+    void DiTerrain::GetNTAtPoint( uint32 x, uint32 y, DiVec3& normal, DiVec3& tangent)
     {
         DiVec3 here = GetPoint(x,y);
         DiVec2 hereUv(0,0);
@@ -520,7 +532,7 @@ namespace Demi
         tangent.normalise();
     }
 
-    DiVec3 DiTerrainMap::GetPoint( uint32 x, uint32 y )
+    DiVec3 DiTerrain::GetPoint( uint32 x, uint32 y )
     {
         DiVec3 pos;
         pos.x = x * mDesc->mGridSize - GetTerrainWidth() / 2;
@@ -529,7 +541,7 @@ namespace Demi
         return pos;
     }
 
-    void DiTerrainMap::GetNormalTangent( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid, DiVec3& n, DiVec3& t )
+    void DiTerrain::GetNormalTangent( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid, DiVec3& n, DiVec3& t )
     {
         uint32 realid = GetRealVertId(trunkIDx,trunkIDy,vertid);
 
@@ -544,7 +556,7 @@ namespace Demi
         GetNTAtPoint(vertx,verty,n,t);
     }
 
-    bool DiTerrainMap::AddTexture( int ID,const DiString& texBaseName )
+    bool DiTerrain::AddTexture( int ID,const DiString& texBaseName )
     {
         if(!GetTextureTable().contains(ID))
         {
@@ -554,25 +566,21 @@ namespace Demi
         return false;
     }
 
-    void DiTerrainMap::AddTexture( const DiSet<DiString>& bs )
+    void DiTerrain::AddTexture( const DiSet<DiString>& bs )
     {
-        DiSet<DiString>::const_iterator it;
-        DiSet<DiString>::const_iterator itEnd = bs.end();
-        for (it = bs.begin(); it != itEnd; ++it)
+        for (auto it = bs.begin(); it != bs.end(); ++it)
         {
             AddTexture(*it);
         }
     }
 
-    int DiTerrainMap::AddTexture( const DiString& texBaseName )
+    int DiTerrain::AddTexture( const DiString& texBaseName )
     {
         if (mDesc->mTextureTable.empty())
             mDesc->mTextureTable[0] = texBaseName;
 
-        DiTerrainDesc::TextureTable::iterator it;
-        DiTerrainDesc::TextureTable::iterator itEnd = mDesc->mTextureTable.end();
         int maxid = -1000;
-        for (it = mDesc->mTextureTable.begin(); it != itEnd; ++it)
+        for (auto it = mDesc->mTextureTable.begin(); it != mDesc->mTextureTable.end(); ++it)
         {
             if (it->second == texBaseName)
                 return it->first;
@@ -588,11 +596,9 @@ namespace Demi
         return maxid+1;
     }
 
-    DiMaterialPtr DiTerrainMap::GenerateMaterial( const DiString& layer0,const DiString& layer1 )
+    DiMaterialPtr DiTerrain::GenerateMaterial(const DiString matName, const DiString& dif0, const DiString& dif1,
+        const DiString& norm0, const DiString& norm1)
     {
-        DiString matName;
-        matName.Format("_ter_mat_%s_%s",layer0.c_str(),layer1.c_str());
-
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(matName);
 
         mat->LoadShader(DiMaterialDefine::TERRAIN_VERTEX_SHADER,
@@ -603,54 +609,37 @@ namespace Demi
         DiVec4 worldSize(GetGridSize(),GetTextureScale(),1,1);
         params->WriteFloat4("v_WorldSizes",worldSize);
 
-        DiString texl0Dif;
-        DiString texl0Norm;
+        DiString defaultTexture = "_default.dds";
 
-        DiString texl1Dif;
-        DiString texl1Norm;
+        DiString texl0Dif = dif0.empty() ? defaultTexture : dif0;
+        DiString texl0Norm = norm0.empty() ? defaultTexture : norm0;
 
-        if (layer0.empty())
-        {
-            texl0Dif = "_default.dds";
-            texl0Norm = "_default.dds";
-        }
-        else
-        {
-            texl0Dif = layer0 + "_d.dds";
-            texl0Norm = layer0 + "_n.dds";
-        }
+        DiString texl1Dif = dif1.empty() ? dif0 : dif1;
+        DiString texl1Norm = norm1.empty() ? norm0 : norm1;
 
-        if (layer1.empty())
-        {
-            texl1Dif = "_default.dds";
-            texl1Norm = "_default.dds";
-        }
-        else
-        {
-            texl1Dif = layer1 + "_d.dds";
-            texl1Norm = layer1 + "_n.dds";
-        }
+        DiTexturePtr textureDif0 = DiK2Configs::GetTexture(texl0Dif);
+        DiTexturePtr textureNorm0 = DiK2Configs::GetTexture(texl0Norm);
+        DiTexturePtr textureDif1 = DiK2Configs::GetTexture(texl1Dif);
+        DiTexturePtr textureNorm1 = DiK2Configs::GetTexture(texl1Norm);
 
-        DiTexturePtr texture;
+        params->WriteTexture2D("diffuseMap_0", textureDif0);
+        textureDif0->SetFilter(FILTER_BILINEAR);
 
-        texture = params->WriteTexture2D("diffuseMap_0", texl0Dif);
-        texture->SetFilter(FILTER_BILINEAR);
+        params->WriteTexture2D("diffuseMap_1", textureDif1);
+        textureDif1->SetFilter(FILTER_BILINEAR);
 
-        texture = params->WriteTexture2D("diffuseMap_1", texl1Dif);
-        texture->SetFilter(FILTER_BILINEAR);
+        params->WriteTexture2D("normalMap_0", textureNorm0);
+        textureNorm0->SetFilter(FILTER_BILINEAR);
 
-        texture = params->WriteTexture2D("normalMap_0", texl0Norm);
-        texture->SetFilter(FILTER_BILINEAR);
-
-        texture = params->WriteTexture2D("normalMap_1", texl1Norm);
-        texture->SetFilter(FILTER_BILINEAR);
+        params->WriteTexture2D("normalMap_1", textureNorm1);
+        textureNorm1->SetFilter(FILTER_BILINEAR);
 
         mat->SetCullMode(CULL_CCW);
 
         return mat;
     }
 
-    bool DiTerrainMap::RayIntersects( const DiRay& ray, DiVec3& out )
+    bool DiTerrain::RayIntersects( const DiRay& ray, DiVec3& out )
     {
         DiAABB aabb = mRoot->GetBounds();
         float result = 0;
@@ -744,7 +733,7 @@ namespace Demi
         return testok;
     }
 
-    DiVec2 DiTerrainMap::GetWorldSize() const
+    DiVec2 DiTerrain::GetWorldSize() const
     {
         DiVec2 size;
         size.x = mDesc->mGridSize * mDesc->mSizeX * CHUNK_GRID_SIZE;
@@ -752,12 +741,12 @@ namespace Demi
         return size;
     }
 
-    DiIntVec2 DiTerrainMap::GetChunkSize() const
+    DiIntVec2 DiTerrain::GetChunkSize() const
     {
         return DiIntVec2(mDesc->mSizeX,mDesc->mSizeY);
     }
 
-    DiVec3 DiTerrainMap::GetPosition( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
+    DiVec3 DiTerrain::GetPosition( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
     {
         DiVec3 position;
 
@@ -772,7 +761,7 @@ namespace Demi
         return position;
     }
 
-    void DiTerrainMap::AddToBatchGroup(DiRenderBatchGroup* bg)
+    void DiTerrain::AddToBatchGroup(DiRenderBatchGroup* bg)
     {
         for (auto it = mVisibles.begin(); it != mVisibles.end(); ++it)
         {
@@ -782,7 +771,7 @@ namespace Demi
         }
     }
 
-    void DiTerrainMap::Update(DiCamera* camera)
+    void DiTerrain::Update(DiCamera* camera)
     {
         mVisibles.clear();
 
@@ -810,12 +799,12 @@ namespace Demi
         }
     }
 
-    const DiAABB& DiTerrainMap::GetBoundingBox( void ) const
+    const DiAABB& DiTerrain::GetBoundingBox( void ) const
     {
         return DiAABB::BOX_INFINITE;
     }
 
-    bool DiTerrainMap::QuadRayIntersects( uint32 x, uint32 z, const DiRay& ray, float& outPos )
+    bool DiTerrain::QuadRayIntersects( uint32 x, uint32 z, const DiRay& ray, float& outPos )
     {
         DiVec3 v1 = GetPoint(x,z);
         DiVec3 v2 = GetPoint(x+1,z);
@@ -874,7 +863,7 @@ namespace Demi
         return false;
     }
 
-    void DiTerrainMap::GetPointOrNeighbour( int x, int y, DiVec3& out )
+    void DiTerrain::GetPointOrNeighbour( int x, int y, DiVec3& out )
     {
         uint32 vx,vy;
         GetVerticesNum(vx,vy);
@@ -885,7 +874,7 @@ namespace Demi
         out = GetPoint(x, y);
     }
 
-    void DiTerrainMap::UpdateMaxMinHeight( float newheight )
+    void DiTerrain::UpdateMaxMinHeight( float newheight )
     {
         if (newheight > mMaxHeight)
         {
@@ -897,33 +886,25 @@ namespace Demi
         }
     }
 
-    DiMap<DiString,int> DiTerrainMap::GetTextureUsages( int layer )
+    DiMap<DiString,int> DiTerrain::GetTextureUsages( int layer )
     {
         DiMap<DiString,int> usages;
 
-        DiVector<DiTerrainChunk*>::iterator it;
-        DiVector<DiTerrainChunk*>::iterator itEnd = mChunks.end();
-        for (it = mChunks.begin(); it != itEnd; ++it)
+        for (auto it = mChunks.begin(); it != mChunks.end(); ++it)
         {
             DiTerrainChunk* chunk = *it;
 
             if (chunk->mBatches.empty())
-            {
                 continue;
-            }
             else
             {
                 for (size_t i=0; i<chunk->mBatches.size(); i++)
                 {
-                    DiString name = chunk->mBatches[i]->DemiureAlias[layer];
+                    DiString name = chunk->mBatches[i]->mDiffuseTexture[layer];
                     if (!usages.contains(name))
-                    {
                         usages[name] = chunk->mBatches[i]->mPrimitiveCount/2;
-                    }
                     else
-                    {
                         usages[name] += chunk->mBatches[i]->mPrimitiveCount/2;
-                    }
                 }
             }
         }
@@ -931,7 +912,7 @@ namespace Demi
         return usages;
     }
 
-    void DiTerrainMap::ShowLayer( int layerID, bool vis )
+    void DiTerrain::ShowLayer( int layerID, bool vis )
     {
         DiPair<DiString,DiString> marco;
         if (layerID == 0)
@@ -947,7 +928,7 @@ namespace Demi
         }
     }
 
-    int DiTerrainMap::GetTextureID( const DiString& names )
+    int DiTerrain::GetTextureID( const DiString& names )
     {
         for (auto it = mDesc->mTextureTable.begin(); it != mDesc->mTextureTable.end(); ++it)
         {
@@ -957,7 +938,7 @@ namespace Demi
         return -1;
     }
 
-    void DiTerrainMap::LoadWaterMap()
+    void DiTerrain::LoadWaterMap()
     {
         // water data
         mWaterMap = DI_NEW DiWaterMap(this);
@@ -973,7 +954,7 @@ namespace Demi
         }
     }
 
-    void DiTerrainMap::LoadFoliageMap()
+    void DiTerrain::LoadFoliageMap()
     {
         mFoliageMap = DI_NEW DiFoliageMap(this);
         mFoliageMap->Load();
@@ -990,7 +971,7 @@ namespace Demi
         }
     }
 
-    DiVec2 DiTerrainMap::GetChunkCenterPos( uint32 idx, uint32 idy )
+    DiVec2 DiTerrain::GetChunkCenterPos( uint32 idx, uint32 idy )
     {
         DiVec2 pos(0,0);
 
@@ -1006,7 +987,7 @@ namespace Demi
         return pos;
     }
 
-    DiString& DiTerrainMap::GetType()
+    DiString& DiTerrain::GetType()
     {
         static DiString type = "TerrainMap";
         return type;

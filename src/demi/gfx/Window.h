@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiWindow_h__
 #define DiWindow_h__
 
+#include "GfxPrerequisites.h"
 
 namespace Demi
 {

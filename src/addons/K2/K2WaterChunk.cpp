@@ -125,7 +125,7 @@ namespace Demi
 
     void DiWaterChunk::UpdateMaterial()
     {
-        DiTerrainMap* tr = mParent->mTerrainMap;
+        DiTerrain* tr = mParent->mTerrainMap;
         DiVec4 worldSize(tr->GetGridSize(),tr->GetTextureScale(),tr->GetWorldSize().x,tr->GetWorldSize().y);
 
         mMaterial->GetShaderParameter()->WriteFloat4("v_WorldSizes",worldSize);
@@ -133,7 +133,7 @@ namespace Demi
 
     void DiWaterChunk::GetWorldTransform( DiMat4* xform ) const
     {
-        DiTerrainMap* tr = mParent->mTerrainMap;
+        DiTerrain* tr = mParent->mTerrainMap;
         *xform = tr->GetChunk(mChunkID.x,mChunkID.y)->GetTransform();
     }
 

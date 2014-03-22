@@ -18,14 +18,24 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    struct DiTerrainLayerDesc
+    struct K2TerrainTexture
     {
-        DiTerrainLayerDesc()
+        uint32 ToHash() const
         {
-            textureId = nullptr;
+            // pretty simple
+            return (diffuse0 << 24) + (diffuse1 << 16) + (normal0 << 8) + normal1;
         }
 
-        uint8* textureId;
+        DEMI_K2_API friend bool operator <(const K2TerrainTexture& a, const K2TerrainTexture& b)
+        {
+            return a.ToHash() < b.ToHash();
+        }
+
+        uint16 diffuse0;
+        uint16 normal0;
+
+        uint16 diffuse1;
+        uint16 normal1;
     };
 
     struct DEMI_K2_API DiFoliageLayerDesc
@@ -121,7 +131,7 @@ namespace Demi
 
         TextureTable        mTextureTable;
 
-        DiTerrainLayerDesc  mLayers[TERRAIN_LAYER_NUM];
+        DiK2TileMap*        mTextureIDMap;
 
         typedef DiVector<DiFoliageLayerDesc*> FoliageLayers;
 

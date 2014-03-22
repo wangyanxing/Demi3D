@@ -25,7 +25,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiWaterMap::DiWaterMap( DiTerrainMap* terrainmap )
+    DiWaterMap::DiWaterMap( DiTerrain* terrainmap )
         :mTerrainMap(terrainmap),
         mCommonDecl(nullptr),
         mIndexBuffer(nullptr)
