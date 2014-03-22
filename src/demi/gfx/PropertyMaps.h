@@ -34,7 +34,7 @@ namespace Demi
         MAPFILTER_BILINEAR
     };
 
-    class DiByteMap
+    class DI_GFX_API DiByteMap
     {
     public:
 

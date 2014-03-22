@@ -24,12 +24,25 @@ namespace Demi
     class DiK2Skeleton;
     class DiK2ModelAsset;
     class DiK2BonesData;
+    class DiK2World;
+    class DiTerrainMap;
+    class DiTerrainChunk;
+    class DiTerrainDesc;
+    class DiWaterMap;
+    class DiWaterChunk;
+    class DiFoliageMap;
+    class DiFoliageChunk;
+    class DiFoliageLayer;
+    class DiCliffMap;
+    class DiCliff;
 
     struct K2KeyFrames;
     struct K2Anim;
 
     typedef shared_ptr<DiK2BonesData>   DiK2BonesDataPtr;
     typedef shared_ptr<DiK2ModelAsset>  DiK2ModelAssetPtr;
+    typedef shared_ptr<DiTerrainDesc>   DiTerrainDescPtr;
+    typedef shared_ptr<DiTerrainMap>    DiTerrainPtr;
 }
 
 #endif

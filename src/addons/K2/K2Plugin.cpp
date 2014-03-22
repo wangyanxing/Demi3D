@@ -13,9 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "K2Pch.h"
 #include "K2Plugin.h"
-#include "AssetManager.h"
-#include "Command.h"
-#include "K2Asset.h"
+#include "K2Configs.h"
 
 namespace Demi
 {
@@ -31,24 +29,12 @@ namespace Demi
     {
         DI_LOG("K2 Plugin loaded");
 
-        // default hon media folder
-        if (!DiBase::CommandMgr->HasCommand("k2_media_folder"))
-        {
-            DiString honMediaPath = DiAssetManager::GetInstance().GetBasePath();
-            honMediaPath += "../media_hon"; // default value
-            honMediaPath.SimplifyPath();
-            DiBase::CommandMgr->RegisterString("k2_media_folder", honMediaPath, 0);
-        }
-
-        // register the asset type
-        DiAssetManager::GetInstance().RegisterAssetType(DiK2ModelAsset::TYPE, "", [](const DiString& name){
-            return make_shared<DiK2ModelAsset>(name);
-        });
+        DiK2Configs::Init();
     }
 
     void DiK2Plugin::Uninstall()
     {
-        DiAssetManager::GetInstance().UnregisterAssetType(DiK2ModelAsset::TYPE);
+        DiK2Configs::Shutdown();
 
         DI_LOG("K2 Plugin unloaded");
     }

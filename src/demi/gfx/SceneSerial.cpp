@@ -16,8 +16,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SceneManager.h"
 #include "GfxDriver.h"
 #include "DirectionalLight.h"
-#include "TerrainMap.h"
-#include "WaterMap.h"
 #include "MaterialSerial.h"
 #include "SceneFormat.h"
 #include "CullNode.h"
@@ -25,6 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Model.h"
 #include "GfxDriver.h"
 
+#if 0
 namespace Demi
 {
     DiSceneSerializer::DiSceneSerializer()
@@ -127,15 +126,15 @@ namespace Demi
     {
         rootNode.SetAttribute("Name",pScene->GetName());
 
-        DiTerrainDesc& desc = pScene->GetTerrainDesc();
+        DiTerrainDescPtr desc = pScene->GetTerrainDesc();
 
         DiXMLElement terrain = rootNode.CreateChild("Terrain");
-        terrain.SetFloat("GridSize",desc.mGridSize);
-        terrain.SetInt("SizeX",desc.mSizeX);
-        terrain.SetInt("SizeY",desc.mSizeY);
-        terrain.SetFloat("TextureScale",desc.DemiureScale);
+        terrain.SetFloat("GridSize", desc->mGridSize);
+        terrain.SetInt("SizeX", desc->mSizeX);
+        terrain.SetInt("SizeY", desc->mSizeY);
+        terrain.SetFloat("TextureScale", desc->mTextureScale);
 
-        DiTerrainDesc::TextureTable& texTable = desc.DemiureTable;
+        DiTerrainDesc::TextureTable& texTable = desc->mTextureTable;
         auto itEnd = texTable.end();
         for (auto it=texTable.begin(); it!=itEnd; ++it)
         {
@@ -193,8 +192,8 @@ namespace Demi
 
     void DiSceneSerializer::ReadBinaryData( DiScene* pDest, DiDataStreamPtr stream )
     {
-        DiTerrainDesc& desc = pDest->GetTerrainDesc();
-        desc.Release();
+        DiTerrainDescPtr desc = pDest->GetTerrainDesc();
+        desc->Release();
 
         char sign[4];
         stream->Read(sign,4);
@@ -215,14 +214,11 @@ namespace Demi
 
             DiSceneBinSerializerImpl* impl = GetImplemention((DiMeshSerialVersion)version);
             if (impl)
-            {
                 impl->ImportSceneBin(stream,pDest);
-            }
 
             DI_DELETE impl;
             return;
         }
-
         
         return;
     }
@@ -242,12 +238,12 @@ namespace Demi
             return;
         }
 
-        DiTerrainDesc& desc = pScene->GetTerrainDesc();
+        DiTerrainDescPtr desc = pScene->GetTerrainDesc();
 
-        desc.mGridSize = terrainNode.GetFloat("GridSize");
-        desc.mSizeX    = terrainNode.GetInt("SizeX");
-        desc.mSizeY = terrainNode.GetInt("SizeY");
-        desc.DemiureScale = terrainNode.GetFloat("TextureScale");
+        desc->mGridSize = terrainNode.GetFloat("GridSize");
+        desc->mSizeX = terrainNode.GetInt("SizeX");
+        desc->mSizeY = terrainNode.GetInt("SizeY");
+        desc->mTextureScale = terrainNode.GetFloat("TextureScale");
         
         DiXMLElement child = terrainNode.GetChild();
         while(child)
@@ -258,7 +254,7 @@ namespace Demi
                 DI_ASSERT(!name.empty());
                 int id = child.GetInt("ID");
                 
-                desc.DemiureTable[id] = name;
+                desc->mTextureTable[id] = name;
             }
 
             child = child.GetNext();
@@ -277,18 +273,14 @@ namespace Demi
     DiSceneBinSerializerImpl* DiSceneSerializer::GetImplemention( DiMeshSerialVersion ver )
     {
         if (ver == SCENE_SERIAL_VERSION_0)
-        {
             return DI_NEW DiSceneBinSerializerImpl();
-        }
         else 
-        {
-            return NULL;
-        }
+            return nullptr;
     }
 
     void DiSceneBinSerializerImpl::ExportSceneBin( const DiScenePtr pScene )
     {
-        DiTerrainDesc* desc = &pScene->GetTerrainDesc();
+        DiTerrainDesc* desc = pScene->GetTerrainDesc().get();
 
         ExportHeightMap(desc);
 
@@ -305,7 +297,7 @@ namespace Demi
 
     void DiSceneBinSerializerImpl::ImportSceneBin( DiDataStreamPtr& stream, DiScene* pDest )
     {
-        DiTerrainDesc* desc = &pDest->GetTerrainDesc();
+        DiTerrainDesc* desc = pDest->GetTerrainDesc().get();
         if (!stream->Eof())
         {
             uint16 streamID = ReadChunk(stream);
@@ -334,15 +326,11 @@ namespace Demi
                 }
 
                 if (!stream->Eof())
-                {
                     streamID = ReadChunk(stream);
-                }
 
             }
             if (!stream->Eof())
-            {
                 stream->Skip(-MSTREAM_OVERHEAD_SIZE);
-            }
         }
     }
 
@@ -386,7 +374,7 @@ namespace Demi
 
         for (BYTE i=0; i<TERRAIN_LAYER_NUM; i++)
         {
-            BYTE* texData = desc->mLayers[i].DemiureId;
+            BYTE* texData = desc->mLayers[i].textureId;
             if (!texData)
             {
                 texData = DI_NEW BYTE[gridNum];
@@ -465,9 +453,7 @@ namespace Demi
             SAFE_ARRAY_DELETE(cliffs);
         }
         else
-        {
             mStream->Write(cliffs,sizeof(char) * cliffVertNum);
-        }
     }
 
     void DiSceneBinSerializerImpl::ImportHeightMap( DiTerrainDesc* desc, DiDataStreamPtr ds )
@@ -475,13 +461,9 @@ namespace Demi
         int vertNum = desc->GetVertNum();
         desc->mHeightData = DI_NEW float[vertNum];
         if (mCurChunkSize != 0)
-        {
             ds->Read(desc->mHeightData,sizeof(float) * vertNum);
-        }
         else
-        {
             memset(desc->mHeightData,0,sizeof(float)*vertNum);
-        }
     }
 
     void DiSceneBinSerializerImpl::ImportVertColor( DiTerrainDesc* desc, DiDataStreamPtr ds )
@@ -490,24 +472,20 @@ namespace Demi
         desc->mColorData = DI_NEW uint32[vertNum];
 
         if (mCurChunkSize != 0)
-        {
             ds->Read(desc->mColorData,sizeof(uint32) * vertNum);
-        }
         else
-        {
             memset(desc->mColorData,0,sizeof(uint32)*vertNum);
-        }
     }
 
     void DiSceneBinSerializerImpl::ImportLayerData( DiTerrainDesc* desc, DiDataStreamPtr ds )
     {
         int gridNum = desc->GetGridNum();
         
-        desc->mLayers[0].DemiureId = DI_NEW BYTE[gridNum];
-        desc->mLayers[1].DemiureId = DI_NEW BYTE[gridNum];
+        desc->mLayers[0].textureId = DI_NEW BYTE[gridNum];
+        desc->mLayers[1].textureId = DI_NEW BYTE[gridNum];
 
-        ds->Read(desc->mLayers[0].DemiureId,sizeof(BYTE) * gridNum);
-        ds->Read(desc->mLayers[1].DemiureId,sizeof(BYTE) * gridNum);
+        ds->Read(desc->mLayers[0].textureId,sizeof(BYTE) * gridNum);
+        ds->Read(desc->mLayers[1].textureId,sizeof(BYTE) * gridNum);
     }
 
     void DiSceneBinSerializerImpl::ImportWaterData( DiTerrainDesc* desc, DiDataStreamPtr ds )
@@ -608,3 +586,4 @@ namespace Demi
         return NULL;
     }
 }
+#endif

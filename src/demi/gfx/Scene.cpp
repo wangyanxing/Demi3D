@@ -13,7 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "GfxPch.h"
 #include "Scene.h"
-#include "TerrainMap.h"
+//#include "TerrainMap.h"
 #include "SceneSerial.h"
 #include "CullNode.h"
 
@@ -24,6 +24,7 @@ namespace Demi
     DiScene::DiScene( const DiString& name )
         :DiAsset(name)
     {
+        //mTerrainDesc = make_shared<DiTerrainDesc>();
     }
 
     DiScene::~DiScene()
@@ -37,8 +38,8 @@ namespace Demi
 
     bool DiScene::Load( DiDataStreamPtr data )
     {
-        DiSceneSerializer ss;
-        ss.ImportScene(data,this);
+        //DiSceneSerializer ss;
+        //ss.ImportScene(data,this);
         return true;
     }
 

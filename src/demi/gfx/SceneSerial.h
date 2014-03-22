@@ -21,7 +21,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-
+#if 0
     enum DiMeshSerialVersion
     {
         SCENE_SERIAL_VERSION_0 = 0,
@@ -112,6 +112,7 @@ namespace Demi
         DiSceneBinSerializerImpl*    GetImplemention(DiMeshSerialVersion ver);
 
     };
+#endif
 }
 
 #endif

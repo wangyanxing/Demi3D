@@ -256,7 +256,7 @@ namespace Demi
     //////////////////////////////////////////////////////////////////////////
 
     DiSceneManager::DiSceneManager(DiRenderWindow* parentWnd)
-        :mTerrain(nullptr),
+        ://mTerrain(nullptr),
         mParentWindow(parentWnd),
         mCurrentRenderPass(GEOMETRY_PASS),
         mSkybox(nullptr),
@@ -280,7 +280,7 @@ namespace Demi
 
     DiSceneManager::~DiSceneManager(void)
     {
-        DestroyTerrain();
+        //DestroyTerrain();
 
         ClearNodes();
         DestroyCamera("_sm_camera");
@@ -382,6 +382,7 @@ namespace Demi
         return true;
     }
 
+#if 0
     void DiSceneManager::DestroyTerrain()
     {
         if (!mTerrain)
@@ -392,6 +393,19 @@ namespace Demi
         mRootNode->DetachObject(mTerrain);
         mTerrain->Unload();
     }
+
+    bool DiSceneManager::LoadTerrain()
+    {
+        if (!mCurrentScene.empty())
+        {
+            mTerrain = make_shared<DiTerrainMap>();
+            mTerrain->Load(mCurrentScene);
+            mRootNode->AttachObject(mTerrain);
+            return true;
+        }
+        return false;
+    }
+#endif
 
     void DiSceneManager::PreUpdate()
     {
@@ -415,25 +429,19 @@ namespace Demi
 
     void DiSceneManager::UnloadScene()
     {
+#if 0
         DestroyTerrain();
+#endif
         mCurrentScene.clear();
     }
 
     bool DiSceneManager::HasScene() const
     {
+#if 0
         return mTerrain != nullptr;
-    }
-
-    bool DiSceneManager::LoadTerrain()
-    {
-        if (!mCurrentScene.empty())
-        {
-            mTerrain = make_shared<DiTerrainMap>(this);
-            mTerrain->Load(mCurrentScene);
-            mRootNode->AttachObject(mTerrain);
-            return true;
-        }
+#else
         return false;
+#endif
     }
 
     DiScenePtr DiSceneManager::GetCurrentScene()

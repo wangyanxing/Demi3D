@@ -18,7 +18,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PointLight.h"
 #include "SkyLight.h"
 #include "Scene.h"
-#include "TerrainMap.h"
 #include "Octree.h"
 
 namespace Demi 
@@ -171,7 +170,7 @@ namespace Demi
 
         DiCamera*               GetCamera(void) const { return mCamera; }
 
-        DiTerrainPtr            GetTerrain(void) const { return mTerrain; }
+        //DiTerrainPtr            GetTerrain(void) const { return mTerrain; }
 
         const DiColor&          GetAmbientColor(void) const { return mAmbientColor; }
 
@@ -181,8 +180,6 @@ namespace Demi
 
         bool                    LoadScene(const DiString& sceneName);
 
-        bool                    LoadTerrain(void);
-
         DiString                GetCurrentSceneName(void) const { return mCurrentScene; }
 
         DiScenePtr              GetCurrentScene(void);
@@ -191,8 +188,11 @@ namespace Demi
 
         void                    UnloadScene(void);
 
+#if 0
         void                    DestroyTerrain();
 
+        bool                    LoadTerrain(void);
+#endif
         DiRenderWindow*         GetRenderWindow(){return mParentWindow;}
 
         void                    PreUpdate();
@@ -275,7 +275,7 @@ namespace Demi
         
         RenderTargets           mExtraRTs;
         
-        DiTerrainPtr            mTerrain;
+        //DiTerrainPtr            mTerrain;
 
         DiRenderPipeline*       mPipeline;
 

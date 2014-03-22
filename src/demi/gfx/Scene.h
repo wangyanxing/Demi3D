@@ -16,7 +16,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 
 #include "Asset.h"
-#include "TerrainDesc.h"
 #include "XMLElement.h"
 
 namespace Demi
@@ -41,7 +40,7 @@ namespace Demi
 
         const DiString&         GetAssetType() const { return TYPE; }
 
-        DiTerrainDesc&          GetTerrainDesc() { return mTerrainDesc; }
+        //DiTerrainDescPtr        GetTerrainDesc() { return mTerrainDesc; }
 
         DiXMLElement            GetWaterMaterial() const { return mWaterMaterial; }
 
@@ -51,12 +50,11 @@ namespace Demi
 
     protected:
 
-        DiTerrainDesc           mTerrainDesc;
+        //DiTerrainDescPtr        mTerrainDesc;
 
         DiXMLElement            mWaterMaterial;
         
     };
-
 }
 
 #endif

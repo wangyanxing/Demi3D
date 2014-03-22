@@ -24,9 +24,6 @@ namespace Demi
     class    DiZipArchive;
     class    DiArchiveManager;
     class    DiSystem;
-    class    DiTerrainDesc;
-    class    DiTerrain;
-    class    DiTerrainNode;
     class    DiGpuVariable;
     class    DiShaderEnvironment;
     class    DiMaterial;
@@ -64,16 +61,6 @@ namespace Demi
     class    DiRenderWindow;
     class    DiRenderDevice;
     class    DiShaderProgram;
-    class    DiTerrainMap;
-    class    DiTerrainChunk;
-    class    DiTerrainDesc;
-    class    DiWaterMap;
-    class    DiWaterChunk;
-    class    DiFoliageMap;
-    class    DiFoliageChunk;
-    class    DiFoliageLayer;
-    class    DiCliffMap;
-    class    DiCliff;
     class    DiQuadNode;
     class    DiSprite;
     class    DiPostEffectRt;
@@ -163,7 +150,6 @@ namespace Demi
     typedef shared_ptr<DiScene>             DiScenePtr;
     typedef shared_ptr<DiSimpleShape>       DiSimpleShapePtr;
     typedef shared_ptr<DiSkyLight>          DiSkyLightPtr;
-    typedef shared_ptr<DiTerrainMap>        DiTerrainPtr;
     typedef shared_ptr<DiTexture>           DiTexturePtr;
     typedef shared_ptr<DiTransformUnit>     DiTransUnitPtr;
 }
