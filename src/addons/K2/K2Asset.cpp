@@ -16,6 +16,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Clip.h"
 #include "K2ModelSerial.h"
 
+#include "PathLib.h"
+
 namespace Demi
 {
     DiString DiK2ModelAsset::TYPE = "K2Model";
@@ -56,6 +58,10 @@ namespace Demi
         serial.ParseMdf(mdfFile, this);
         
         DiString absPath = mdfFile.ExtractDirName();
+
+        DiString treeFile = absPath + "tree.tree";
+        if (DiPathLib::FileExisted(treeFile))
+            mTreeFile = treeFile;
         
         DiString modelFile = absPath + mModelFile;
         serial.LoadModel(modelFile, this);

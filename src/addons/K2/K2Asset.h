@@ -113,6 +113,9 @@ namespace Demi
         /// file folder
         /// e.g. "heroes/aluna"
         DiString         mBaseFolder;
+
+        /// Tree config file
+        DiString         mTreeFile;
     };
 }
 

@@ -58,7 +58,7 @@ namespace Demi
 
     protected:
 
-        DiTerrain*           mTerrainMap;
+        DiTerrain*              mTerrainMap;
 
         DiTexturePtr            mWaterMapTexture;
 

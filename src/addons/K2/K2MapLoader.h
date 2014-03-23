@@ -124,6 +124,60 @@ namespace Demi
 
         uint32* mBuffer;
     };
+
+    /** terrain water color map
+    */
+    class DEMI_K2_API DiK2VertexCliffMap : public DiK2BaseMapLoader
+    {
+    public:
+
+        DiK2VertexCliffMap();
+
+        ~DiK2VertexCliffMap();
+
+    public:
+
+        void    Load(DiDataStreamPtr data);
+
+        /** Load with original values
+        */
+        void    Load(uint32 width, uint32 height);
+
+        void    Unload();
+
+        uint32* GetBuffer() { return mBuffer; }
+
+    private:
+
+        uint32* mBuffer;
+    };
+
+    /** terrain water color map
+    */
+    class DEMI_K2_API DiK2TileCliffMap : public DiK2BaseMapLoader
+    {
+    public:
+
+        DiK2TileCliffMap();
+
+        ~DiK2TileCliffMap();
+
+    public:
+
+        void    Load(DiDataStreamPtr data);
+
+        /** Load with original values
+        */
+        void    Load(uint32 width, uint32 height);
+
+        void    Unload();
+
+        uint8* GetBuffer() { return mBuffer; }
+
+    private:
+
+        uint8* mBuffer;
+    };
 }
 
 #endif

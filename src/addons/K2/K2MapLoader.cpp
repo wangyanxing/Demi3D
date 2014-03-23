@@ -203,7 +203,7 @@ namespace Demi
         mHeight = height;
         mBuffer = DI_NEW uint32[width*height];
         uint32 orgColr = 0xFFFFFF00;
-        for (int i = 0; i < width*height; ++i)
+        for (uint32 i = 0; i < width*height; ++i)
             mBuffer[i] = orgColr;
     }
 
@@ -215,4 +215,89 @@ namespace Demi
             mBuffer = nullptr;
         }
     }
+
+    DiK2VertexCliffMap::DiK2VertexCliffMap()
+        : mBuffer(nullptr)
+    {
+    }
+
+    DiK2VertexCliffMap::~DiK2VertexCliffMap()
+    {
+    }
+
+    void DiK2VertexCliffMap::Load(DiDataStreamPtr data)
+    {
+        DI_LOG("Loading k2 vertex cliff map");
+
+        int w = 0, h = 0;
+        data->Read(&w, sizeof(int));
+        data->Read(&h, sizeof(int));
+
+        mWidth = w;
+        mHeight = h;
+
+        data->Read(mBuffer, w*h*sizeof(uint32));
+    }
+
+    void DiK2VertexCliffMap::Load(uint32 width, uint32 height)
+    {
+        Unload();
+        mWidth = width;
+        mHeight = height;
+        mBuffer = DI_NEW uint32[width*height];
+        for (uint32 i = 0; i < width*height; ++i)
+            mBuffer[i] = 0;
+    }
+
+    void DiK2VertexCliffMap::Unload()
+    {
+        if (mBuffer)
+        {
+            DI_DELETE[] mBuffer;
+            mBuffer = nullptr;
+        }
+    }
+
+    DiK2TileCliffMap::DiK2TileCliffMap()
+        : mBuffer(nullptr)
+    {
+    }
+
+    DiK2TileCliffMap::~DiK2TileCliffMap()
+    {
+    }
+
+    void DiK2TileCliffMap::Load(DiDataStreamPtr data)
+    {
+        DI_LOG("Loading k2 tile cliff map");
+
+        int w = 0, h = 0;
+        data->Read(&w, sizeof(int));
+        data->Read(&h, sizeof(int));
+
+        mWidth = w;
+        mHeight = h;
+
+        data->Read(mBuffer, w*h*sizeof(uint8));
+    }
+
+    void DiK2TileCliffMap::Load(uint32 width, uint32 height)
+    {
+        Unload();
+        mWidth = width;
+        mHeight = height;
+        mBuffer = DI_NEW uint8[width*height];
+        for (uint32 i = 0; i < width*height; ++i)
+            mBuffer[i] = 0;
+    }
+
+    void DiK2TileCliffMap::Unload()
+    {
+        if (mBuffer)
+        {
+            DI_DELETE[] mBuffer;
+            mBuffer = nullptr;
+        }
+    }
+
 }

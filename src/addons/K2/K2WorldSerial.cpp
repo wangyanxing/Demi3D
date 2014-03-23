@@ -50,6 +50,9 @@ namespace Demi
 
         world->mTerrain = make_shared<DiTerrain>();
         world->mTerrain->Load(terrainDesc);
+
+        // load entities
+        LoadEntityList(path, world);
     }
 
     void DiK2WorldSerial::LoadTextureList(const DiString& path, DiTerrainDescPtr terrainDesc)
@@ -84,6 +87,40 @@ namespace Demi
                 name = name.ExtractBaseName();
 
                 terrainDesc->mTextureTable[id] = name;
+            }
+            child = child.GetNext();
+        }
+    }
+
+    void DiK2WorldSerial::LoadEntityList(const DiString& path, DiK2World* world)
+    {
+        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/entitylist", false);
+
+        DI_LOG("Loading K2 entity lists");
+
+        shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
+        xmlfile->Load(texListData->GetAsString());
+
+        DiXMLElement root = xmlfile->GetRoot();
+        if (root.GetName() != "entitylist")
+        {
+            DI_WARNING("Invalid K2 entitylist script");
+            return;
+        }
+
+        DiXMLElement child = root.GetChild();
+        while (child)
+        {
+            if (child.CheckName("entity"))
+            {
+                int id = child.GetInt("id");
+                DiString model = child.GetAttribute("model");
+                model.TrimLeft("/");
+                DiString type = child.GetAttribute("type");
+                DiVec3 rot = child.GetVector3("angles");
+                DiVec3 pos = child.GetVector3("position");
+                DiVec3 scale = child.GetVector3("scale");
+
             }
             child = child.GetNext();
         }

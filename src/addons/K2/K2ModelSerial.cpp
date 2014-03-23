@@ -535,6 +535,10 @@ namespace Demi
 
         bool hasanim = target->GetAnimNums() > 0;
 
+        // for now, we don't need animation on trees
+        if (!target->mTreeFile.empty())
+            hasanim = false;
+
         if (submesh)
         {
             DiString fullpath = DiK2MdfSerial::GetK2MediaPath(target->GetBaseFolder());
