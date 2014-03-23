@@ -57,7 +57,7 @@ namespace Demi
         if (mMaterial)
         {
             DiVec4 worldSize(mParent->mParent->GetGridSize(),
-                mParent->mParent->GetTextureScale(),0,0);
+                1.0f / mParent->mParent->GetTextureScale(), 0, 0);
 
             mMaterial->GetShaderParameter()->WriteFloat4("v_WorldSizes",worldSize);
         }
@@ -97,7 +97,7 @@ namespace Demi
 
         DiSet<uint32>& ht = mParent->GetHidedTile();
 
-        for (uint16 i = 0; i < gridsize; i++)
+        for (uint32 i = 0; i < gridsize; i++)
         {
             uint32 realGridID = mParent->GetRealGridId(mChunkIDX,mChunkIDY,i);
             if (!ht.contains(realGridID))
@@ -108,8 +108,8 @@ namespace Demi
                 K2TerrainTexture bytes;
                 bytes.diffuse0 = l0.diffuseID;
                 bytes.normal0 = l0.normalID;
-                bytes.diffuse1 = l0.diffuseID;
-                bytes.normal1 = l0.normalID;
+                bytes.diffuse1 = l1.diffuseID;
+                bytes.normal1 = l1.normalID;
 
                 ids[bytes].push_back(i);
             }

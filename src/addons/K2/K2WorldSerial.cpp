@@ -38,6 +38,10 @@ namespace Demi
         DiDataStreamPtr dataTilemap = DiK2Configs::GetDataStream(path + "/tilematerialmap", true);
         terrainDesc->mTextureIDMap->Load(dataTilemap);
 
+        terrainDesc->mColorMap = DI_NEW DiK2VertexColorMap();
+        DiDataStreamPtr dataColmap = DiK2Configs::GetDataStream(path + "/vertexcolormap", true);
+        terrainDesc->mColorMap->Load(dataColmap);
+
         LoadTextureList(path, terrainDesc);
 
         terrainDesc->mSizeX = (heightMap.GetWidth() - 1) / CHUNK_GRID_SIZE;
@@ -70,6 +74,8 @@ namespace Demi
             {
                 int id = child.GetInt("id");
                 DiString name = child.GetAttribute("name");
+
+                DI_LOG("K2 terrain tile[%d]: %s", id, name.c_str());
 
                 if (name == "$checker" || name == "$flat_dull")
                     name.clear(); // dummy texture

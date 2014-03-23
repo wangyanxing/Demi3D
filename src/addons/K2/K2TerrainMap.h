@@ -60,9 +60,9 @@ namespace Demi
 
         DiIntVec2                   GetChunkSize() const;
 
-        ARGB*                       GetColorData();
+        uint32*                     GetColorData();
 
-        ARGB*                       GetColorData(uint32 x, uint32 y);
+        uint32*                     GetColorData(uint32 x, uint32 y);
 
         K2TileLayer*                GetTextureID(uint16 layer) { return mDesc->mTextureIDMap->GetBuffer(layer); }
 
@@ -148,9 +148,9 @@ namespace Demi
 
         void                        CreateVertexDecl();
 
-        ARGB                        GetColor(uint32 vertid);
+        uint32                      GetColor(uint32 vertid);
 
-        ARGB                        GetColor(uint16 trunkIDx, uint16 trunkIDy, uint32 vertid);
+        uint32                      GetColor(uint16 trunkIDx, uint16 trunkIDy, uint32 vertid);
 
         float                       GetHeight(uint16 trunkIDx, uint16 trunkIDy, uint32 vertid);
 

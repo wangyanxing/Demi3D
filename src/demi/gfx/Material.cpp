@@ -44,7 +44,7 @@ namespace Demi
         mShaderFlag      = 0;
         mVertexShader    = NULL;
         mPixelShader     = NULL;
-        mShininess       = 32.0f;
+        mShininess       = 16;
 
         if (Driver)
             mShaderParameter = Driver->CreateShaderParams(*this);

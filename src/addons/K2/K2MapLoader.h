@@ -112,6 +112,10 @@ namespace Demi
 
         void    Load(DiDataStreamPtr data);
 
+        /** Load with original values
+        */
+        void    Load(uint32 width, uint32 height);
+
         void    Unload();
 
         uint32* GetBuffer() { return mBuffer; }

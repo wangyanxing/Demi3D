@@ -35,6 +35,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2FoliageLayer.h"
 #include "K2TerrainMap.h"
 #include "K2TerrainChunk.h"
+#include "K2MapLoader.h"
 #include "K2Configs.h"
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
@@ -97,14 +98,10 @@ namespace Demi
             mMaxHeight = mMinHeight = 0;
         }
 
-        if (!mDesc->mColorData)
+        if (!mDesc->mColorMap)
         {
-            mDesc->mColorData = DI_NEW ARGB[vertSize];
-            for (uint32 s = 0; s < vertSize; s++)
-            {
-                DiColor c(1, 1, 1, 0);
-                mDesc->mColorData[s] = c.GetAsARGB();
-            }
+            mDesc->mColorMap = DI_NEW DiK2VertexColorMap();
+            mDesc->mColorMap->Load(CHUNK_GRID_SIZE*mDesc->mSizeX + 1, CHUNK_GRID_SIZE*mDesc->mSizeY + 1);
         }
 
         for (uint32 i = 0; i < TERRAIN_LAYER_NUM; i++)
@@ -178,17 +175,13 @@ namespace Demi
         mVertexDecl->Create();
     }
     
-    ARGB DiTerrain::GetColor( uint32 vertid )
+    uint32 DiTerrain::GetColor(uint32 vertid)
     {
-        uint32 size = (CHUNK_GRID_SIZE*mDesc->mSizeX + 1) * 
-            (CHUNK_GRID_SIZE*mDesc->mSizeY + 1);
-
-        DI_ASSERT(vertid < size);
-
-        return mDesc->mColorData[vertid];
+        DI_ASSERT(vertid < mDesc->GetVertNum());
+        return mDesc->mColorMap->GetBuffer()[vertid];
     }
 
-    ARGB DiTerrain::GetColor( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
+    uint32 DiTerrain::GetColor(uint16 trunkIDx, uint16 trunkIDy, uint32 vertid)
     {
         uint32 realid = GetRealVertId(trunkIDx,trunkIDy,vertid);
         return GetColor(realid);
@@ -371,18 +364,18 @@ namespace Demi
         return mChunks[id];
     }
 
-    ARGB* DiTerrain::GetColorData()
+    uint32* DiTerrain::GetColorData()
     {
-        return mDesc->mColorData;
+        return mDesc->mColorMap->GetBuffer();
     }
 
-    ARGB* DiTerrain::GetColorData( uint32 x, uint32 y )
+    uint32* DiTerrain::GetColorData(uint32 x, uint32 y)
     {
         uint32 vertx,verty;
         GetVerticesNum(vertx,verty);
 
         DI_ASSERT (x >= 0 && x < vertx && y >= 0 && y < verty);
-        return &mDesc->mColorData[y * vertx + x];
+        return &mDesc->mColorMap->GetBuffer()[y * vertx + x];
     }
     
     char* DiTerrain::GetCliffData()
@@ -606,7 +599,7 @@ namespace Demi
 
         DiShaderParameter* params = mat->GetShaderParameter();
     
-        DiVec4 worldSize(GetGridSize(),GetTextureScale(),1,1);
+        DiVec4 worldSize(GetGridSize(), 1.0f / GetTextureScale() , 1 , 1);
         params->WriteFloat4("v_WorldSizes",worldSize);
 
         DiString defaultTexture = "_default.dds";
@@ -618,21 +611,18 @@ namespace Demi
         DiString texl1Norm = norm1.empty() ? norm0 : norm1;
 
         DiTexturePtr textureDif0 = DiK2Configs::GetTexture(texl0Dif);
-        DiTexturePtr textureNorm0 = DiK2Configs::GetTexture(texl0Norm);
+        DiTexturePtr textureNorm0 = DiK2Configs::GetTexture(texl0Norm + "_rxgb");
+        DiTexturePtr textureSpec0 = DiK2Configs::GetTexture(texl0Norm + "_s");
         DiTexturePtr textureDif1 = DiK2Configs::GetTexture(texl1Dif);
-        DiTexturePtr textureNorm1 = DiK2Configs::GetTexture(texl1Norm);
+        DiTexturePtr textureNorm1 = DiK2Configs::GetTexture(texl1Norm + "_rxgb");
+        DiTexturePtr textureSpec1 = DiK2Configs::GetTexture(texl1Norm + "_s");
 
         params->WriteTexture2D("diffuseMap_0", textureDif0);
-        textureDif0->SetFilter(FILTER_BILINEAR);
-
         params->WriteTexture2D("diffuseMap_1", textureDif1);
-        textureDif1->SetFilter(FILTER_BILINEAR);
-
+        params->WriteTexture2D("specularMap_0", textureSpec0);
+        params->WriteTexture2D("specularMap_1", textureSpec1);
         params->WriteTexture2D("normalMap_0", textureNorm0);
-        textureNorm0->SetFilter(FILTER_BILINEAR);
-
         params->WriteTexture2D("normalMap_1", textureNorm1);
-        textureNorm1->SetFilter(FILTER_BILINEAR);
 
         mat->SetCullMode(CULL_CCW);
 
@@ -647,9 +637,7 @@ namespace Demi
 
         float d1, d2;
         if (!DiMath::intersects(ray, aabb, &d1, &d2))
-        {
             return false;
-        }
 
         DiVec3 start = ray.getPoint(d1) + GetTerrainWidth()/2;
         DiVec3 end = ray.getPoint(d2) + GetTerrainHeight()/2;;

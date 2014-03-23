@@ -75,9 +75,6 @@ namespace Demi
 
         DiString full = GetK2MediaPath(relPath);
 
-        if (DiString::EndsWith(full, "_n"))
-            full += "_rxgb";
-
         DiString tgaFile = full + ".tga";
         DiString ddsFile = full + ".dds";
 

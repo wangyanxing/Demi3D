@@ -34,12 +34,12 @@ void InitScene()
     DiCullNode* dirNode = sm->GetRootNode()->CreateChild();
     dirNode->AttachObject(dirlight);
     dirlight->SetColor(DiColor());
-    dirlight->SetDirection(DiVec3(0, -0.3f, -0.4).normalisedCopy());
+    dirlight->SetDirection(DiVec3(0.5f,-0.866f,0).normalisedCopy());
     
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
     world = DI_NEW DiK2World();
-    world->Load("maps/loadtest");
+    world->Load("maps/te2");
     world->CreateNode(sm);
 }
 

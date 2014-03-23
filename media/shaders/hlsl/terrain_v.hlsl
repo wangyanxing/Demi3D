@@ -11,6 +11,7 @@ struct VS_OUTPUT
 	float3 Normal			: TEXCOORD1;
 	float3 Tangent			: TEXCOORD2;
 	float3 Binormal			: TEXCOORD3;
+	float3 ViewDir	 	    : TEXCOORD4;
 };
 
 VS_OUTPUT vs_main(
@@ -26,9 +27,7 @@ VS_OUTPUT vs_main(
 	
 	float4 vPosition	= float4(vTile.x * v_WorldSizes.x, height, vTile.y * v_WorldSizes.x, 1.0);
 	float3 vWorldPos	= mul(g_modelMatrix,vPosition);
-	float2 vTexcoord0;
-	vTexcoord0.x		= vWorldPos.x * v_WorldSizes.y;
-	vTexcoord0.y		= vWorldPos.z * v_WorldSizes.y;
+	float2 vTexcoord0   = vTile * v_WorldSizes.y;
 	
 	float4 vNormal		= float4(tc0.xyz / 255.0 * 2.0 - 1.0,1);
 	float4 vTangent 	= float4(tc1.xyz / 255.0 * 2.0 - 1.0,1);
@@ -44,6 +43,7 @@ VS_OUTPUT vs_main(
 	Out.Position		= mul(g_modelViewProjMatrix, vPosition);
 	Out.Color0			= vertexColor;
 	Out.Texcoord0		= float4(vTexcoord0,0,0);
+	Out.ViewDir         = g_eyePosition - vWorldPos;
 
 	return Out;
 }

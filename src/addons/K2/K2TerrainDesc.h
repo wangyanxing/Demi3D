@@ -117,13 +117,13 @@ namespace Demi
 
         float               mTextureScale;
 
-        uint32*             mColorData;    
+        DiK2VertexColorMap* mColorMap;
 
         uint32              mCliffSpace;    
 
         char*               mCliffData;    
 
-        uint8*              mWaterMap;    
+        uint8*              mWaterMap;
 
         float*              mWaterHeightMap;
 

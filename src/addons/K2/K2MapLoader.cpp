@@ -196,6 +196,17 @@ namespace Demi
         data->Read(mBuffer, sizeof(uint32)* w * h);
     }
 
+    void DiK2VertexColorMap::Load(uint32 width, uint32 height)
+    {
+        Unload();
+        mWidth = width;
+        mHeight = height;
+        mBuffer = DI_NEW uint32[width*height];
+        uint32 orgColr = 0xFFFFFF00;
+        for (int i = 0; i < width*height; ++i)
+            mBuffer[i] = orgColr;
+    }
+
     void DiK2VertexColorMap::Unload()
     {
         if (mBuffer)
