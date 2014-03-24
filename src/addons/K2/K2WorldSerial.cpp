@@ -44,6 +44,10 @@ namespace Demi
         DiDataStreamPtr dataColmap = DiK2Configs::GetDataStream(path + "/vertexcolormap", true);
         terrainDesc->mColorMap->Load(dataColmap);
 
+        terrainDesc->mTileCliffMap = DI_NEW DiK2TileCliffMap();
+        DiDataStreamPtr tileCliffmap = DiK2Configs::GetDataStream(path + "/tilecliffmap", true);
+        terrainDesc->mTileCliffMap->Load(tileCliffmap);
+
         LoadTextureList(path, terrainDesc);
 
         terrainDesc->mSizeX = (heightMap.GetWidth() - 1) / CHUNK_GRID_SIZE;
@@ -173,6 +177,6 @@ namespace Demi
         world->mName = root.GetAttribute("name");
         terrainDesc->mGridSize = root.GetFloat("scale");
         terrainDesc->mTextureScale = root.GetFloat("texturescale");
-        terrainDesc->mCliffSpace = root.GetUint("cliffsize");
+        terrainDesc->mCliffSize = root.GetUint("cliffsize");
     }
 }

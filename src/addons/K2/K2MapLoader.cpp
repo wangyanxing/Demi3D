@@ -254,6 +254,8 @@ namespace Demi
         mWidth = w;
         mHeight = h;
 
+        mBuffer = DI_NEW uint32[w * h];
+
         for (int i = 0; i < w * h; ++i)
         {
             uint32 val = 0;
@@ -300,6 +302,8 @@ namespace Demi
 
         mWidth = w;
         mHeight = h;
+
+        mBuffer = DI_NEW uint8[w * h];
 
         for (int i = 0; i < w * h; ++i)
         {

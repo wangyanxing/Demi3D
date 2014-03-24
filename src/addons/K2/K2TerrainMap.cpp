@@ -104,6 +104,12 @@ namespace Demi
             mDesc->mColorMap->Load(CHUNK_GRID_SIZE*mDesc->mSizeX + 1, CHUNK_GRID_SIZE*mDesc->mSizeY + 1);
         }
 
+        if (!mDesc->mTileCliffMap)
+        {
+            mDesc->mTileCliffMap = DI_NEW DiK2TileCliffMap();
+            mDesc->mTileCliffMap->Load(CHUNK_GRID_SIZE*mDesc->mSizeX, CHUNK_GRID_SIZE*mDesc->mSizeY);
+        }
+
         for (uint32 i = 0; i < TERRAIN_LAYER_NUM; i++)
         {
             if (!mDesc->mTextureIDMap)
@@ -117,13 +123,6 @@ namespace Demi
             LoadWaterMap();
 
         LoadFoliageMap();
-
-        if (!mDesc->mCliffData)
-        {
-            uint32 cliffVertNum = mDesc->GetCliffVertNum();
-            mDesc->mCliffData = DI_NEW char[cliffVertNum];
-            memset(mDesc->mCliffData, 0/*CLIFF_A*/, cliffVertNum*sizeof(char));
-        }
 
         for (uint16 x = 0; x < mDesc->mSizeX; ++x)
         {
@@ -374,11 +373,6 @@ namespace Demi
         return &mDesc->mColorMap->GetBuffer()[y * vertx + x];
     }
     
-    char* DiTerrain::GetCliffData()
-    {
-        return mDesc->mCliffData;
-    }
-
     bool DiTerrain::CoverTerrain( const DiVec3& pos, float size )
     {
         float half = size/2;

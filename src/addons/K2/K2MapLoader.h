@@ -172,7 +172,7 @@ namespace Demi
 
         void    Unload();
 
-        uint8* GetBuffer() { return mBuffer; }
+        uint8*  GetBuffer() { return mBuffer; }
 
     private:
 

@@ -97,14 +97,6 @@ namespace Demi
 
         uint32              GetGridNum();
         
-        uint32              GetCliffVertNum();
-        
-        uint32              GetCliffGridNum();
-        
-        uint32              GetCliffGridXNum();
-        
-        uint32              GetCliffGridYNum();
-
     public:
 
         float               mGridSize;    
@@ -119,9 +111,9 @@ namespace Demi
 
         DiK2VertexColorMap* mColorMap;
 
-        uint32              mCliffSpace;    
+        uint32              mCliffSize; 
 
-        char*               mCliffData;
+        DiK2TileCliffMap*   mTileCliffMap;
 
         uint8*              mWaterMap;
 

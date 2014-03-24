@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Asset.h"
 #include "PathLib.h"
 #include "Texture.h"
+#include "PathLib.h"
 #include "euler.h"
 
 namespace Demi
@@ -112,5 +113,12 @@ namespace Demi
             DiDegree(eulerrot.y).valueRadians(), DiDegree(eulerrot.z).valueRadians());
         DiEuler::ToQuat(q, euler, DiEuler::YXZ);
         return q;
+    }
+
+    bool DiK2Configs::K2ArchiveExists(const DiString& relPath)
+    {
+        // TODO ZIP
+        DiString full = GetK2MediaPath(relPath);
+        return DiPathLib::FileExisted(full);
     }
 }

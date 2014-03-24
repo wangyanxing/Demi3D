@@ -31,13 +31,12 @@ bool Demi::DiTerrainDesc::CheckValid() const
 void Demi::DiTerrainDesc::Release()
 {
     SAFE_ARRAY_DELETE(mHeightData);    
-    SAFE_ARRAY_DELETE(mCliffData);
-
     SAFE_ARRAY_DELETE(mWaterMap);
     SAFE_ARRAY_DELETE(mWaterHeightMap);
 
     SAFE_DELETE(mTextureIDMap);
     SAFE_DELETE(mColorMap);
+    SAFE_DELETE(mTileCliffMap);
 
     for (auto it = mFoliageLayers.begin(); it != mFoliageLayers.end(); ++it)
     {
@@ -51,14 +50,14 @@ Demi::DiTerrainDesc::DiTerrainDesc()
     mGridSize       = 32;
     mSizeX          = 5;
     mSizeY          = 5;
-    mCliffSpace     = 4;
+    mCliffSize      = 4;
     mTextureScale   = 16.0f;
     mHeightData     = nullptr;
-    mCliffData      = nullptr;
     mWaterMap       = nullptr;
     mWaterHeightMap = nullptr;
     mTextureIDMap   = nullptr;
     mColorMap       = nullptr;
+    mTileCliffMap   = nullptr;
 }
 
 Demi::DiTerrainDesc::~DiTerrainDesc()
@@ -74,37 +73,6 @@ uint32 Demi::DiTerrainDesc::GetVertNum()
 uint32 Demi::DiTerrainDesc::GetGridNum()
 {
     return CHUNK_GRID_SIZE*mSizeX * CHUNK_GRID_SIZE*mSizeY;
-}
-
-uint32 Demi::DiTerrainDesc::GetCliffVertNum()
-{
-    uint32 cliffGridX = (CHUNK_GRID_SIZE*mSizeX)/mCliffSpace;
-    uint32 cliffGridY = (CHUNK_GRID_SIZE*mSizeY)/mCliffSpace;
-    
-    uint32 vertSize = (cliffGridX + 1) * (cliffGridY + 1);
-    
-    return vertSize;
-}
-
-uint32 Demi::DiTerrainDesc::GetCliffGridNum()
-{
-    uint32 cliffGridX = (CHUNK_GRID_SIZE*mSizeX)/mCliffSpace;
-    uint32 cliffGridY = (CHUNK_GRID_SIZE*mSizeY)/mCliffSpace;
-    
-    uint32 gridSize = cliffGridX * cliffGridY;
-    return gridSize;    
-}
-
-uint32 Demi::DiTerrainDesc::GetCliffGridXNum()
-{
-    uint32 cliffGridX = (CHUNK_GRID_SIZE*mSizeX)/mCliffSpace;
-    return cliffGridX;
-}
-
-uint32 Demi::DiTerrainDesc::GetCliffGridYNum()
-{
-    uint32 cliffGridY = (CHUNK_GRID_SIZE*mSizeY)/mCliffSpace;
-    return cliffGridY;
 }
 
 DiFoliageLayerDesc::DiFoliageLayerDesc()

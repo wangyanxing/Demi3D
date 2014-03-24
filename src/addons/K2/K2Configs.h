@@ -36,6 +36,8 @@ namespace Demi
          */
         static DiDataStreamPtr GetDataStream(const DiString& relPath, bool asBinary);
 
+        static bool K2ArchiveExists(const DiString& relPath);
+
         /** Load and get the texture file by a relative path
             we don't need extension here 
          */

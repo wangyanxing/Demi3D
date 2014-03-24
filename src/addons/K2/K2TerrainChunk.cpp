@@ -81,39 +81,43 @@ namespace Demi
 
     void DiTerrainChunk::BuildBatches()
     {
+        Driver->GetPipeline()->ClearGroup();
+        for (auto it = mBatches.begin(); it != mBatches.end(); ++it)
         {
-            Driver->GetPipeline()->ClearGroup();
-            for (auto it = mBatches.begin(); it != mBatches.end(); ++it)
-            {
-                DI_DELETE *it;
-            }
-            mBatches.clear();
-        }                
+            DI_DELETE *it;
+        }
+        mBatches.clear();
 
         DiMap<K2TerrainTexture, DiVector<uint16>> ids;
         uint32 gridsize = CHUNK_GRID_SIZE * CHUNK_GRID_SIZE;
 
-        DiSet<uint32>& ht = mParent->GetHidedTile();
+        uint32 cliffTileNum = 0;
 
+        // we should get rid of the cliff tiles
         for (uint32 i = 0; i < gridsize; i++)
         {
-            uint32 realGridID = mParent->GetRealGridId(mChunkIDX,mChunkIDY,i);
-            if (!ht.contains(realGridID))
+            uint32 realGridID = mParent->GetRealGridId(mChunkIDX, mChunkIDY, i);
+            
+            K2TileLayer& l0 = mParent->GetTextureID(0)[realGridID];
+            K2TileLayer& l1 = mParent->GetTextureID(1)[realGridID];
+
+            uint8 tileCliff = mParent->GetTileCliffData()[realGridID];
+            if (tileCliff != 0)
             {
-                K2TileLayer& l0 = mParent->GetTextureID(0)[realGridID];
-                K2TileLayer& l1 = mParent->GetTextureID(1)[realGridID];
-
-                K2TerrainTexture bytes;
-                bytes.diffuse0 = l0.diffuseID;
-                bytes.normal0 = l0.normalID;
-                bytes.diffuse1 = l1.diffuseID;
-                bytes.normal1 = l1.normalID;
-
-                ids[bytes].push_back(i);
+                cliffTileNum++;
+                continue;
             }
+
+            K2TerrainTexture bytes;
+            bytes.diffuse0 = l0.diffuseID;
+            bytes.normal0 = l0.normalID;
+            bytes.diffuse1 = l1.diffuseID;
+            bytes.normal1 = l1.normalID;
+
+            ids[bytes].push_back(i);
         }
 
-        int indicesSize = 16 * 6 * gridsize;
+        int indicesSize = 16 * 6 * (gridsize - cliffTileNum);
 
         void* bf = mIndexBuffer->Lock(0,indicesSize);
         uint16* data = static_cast<uint16*>(bf);
@@ -202,9 +206,9 @@ namespace Demi
         mVertexBuffer->SetStride(vertSize);
 
         void* buffer = mVertexBuffer->Lock(0,size);
-        BYTE* base = (BYTE*)buffer;
+        uint8* base = (uint8*)buffer;
 
-        for (uint32 i=0; i<vertNum; i++)
+        for (uint32 i = 0; i < vertNum; i++)
         {
             DiVec3 vec = mParent->GetPosition(mChunkIDX,mChunkIDY,i);
             mQuadNode->GetBounds().Merge(vec);
@@ -215,24 +219,24 @@ namespace Demi
             ARGB* color = (ARGB*)(pos);
             *color++ = mParent->GetColor(mChunkIDX,mChunkIDY,i);
 
-            BYTE tileIDx,tileIDy;
-            tileIDx = (BYTE)(i % ((uint32)CHUNK_GRID_SIZE + 1));
-            tileIDy = (BYTE)(i / ((uint32)CHUNK_GRID_SIZE + 1));
+            uint8 tileIDx, tileIDy;
+            tileIDx = (uint8)(i % ((uint32)CHUNK_GRID_SIZE + 1));
+            tileIDy = (uint8)(i / ((uint32)CHUNK_GRID_SIZE + 1));
 
             DiVec3 normal,tangent;
             mParent->GetNormalTangent(mChunkIDX,mChunkIDY,i,normal,tangent);
             DiIntVec3 n = PackVector(normal);
             DiIntVec3 t = PackVector(tangent);
 
-            BYTE* st = (BYTE*)(color);
-            *st++ = (BYTE)n.x;
-            *st++ = (BYTE)n.y;
-            *st++ = (BYTE)n.z;
+            uint8* st = (uint8*)(color);
+            *st++ = (uint8)n.x;
+            *st++ = (uint8)n.y;
+            *st++ = (uint8)n.z;
             *st++ = tileIDx;
 
-            *st++ = (BYTE)t.x;
-            *st++ = (BYTE)t.y;
-            *st++ = (BYTE)t.z;
+            *st++ = (uint8)t.x;
+            *st++ = (uint8)t.y;
+            *st++ = (uint8)t.z;
             *st++ = tileIDy;
 
             base += vertSize;

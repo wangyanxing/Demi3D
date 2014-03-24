@@ -37,6 +37,7 @@ namespace Demi
     class DiCliff;
     class DiK2TileMap;
     class DiK2VertexColorMap;
+    class DiK2TileCliffMap;
 
     struct K2KeyFrames;
     struct K2Anim;

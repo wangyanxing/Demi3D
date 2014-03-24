@@ -64,9 +64,9 @@ namespace Demi
 
         uint32*                     GetColorData(uint32 x, uint32 y);
 
-        K2TileLayer*                GetTextureID(uint16 layer) { return mDesc->mTextureIDMap->GetBuffer(layer); }
+        uint8*                      GetTileCliffData() const {return mDesc->mTileCliffMap->GetBuffer();}
 
-        char*                       GetCliffData();
+        K2TileLayer*                GetTextureID(uint16 layer) { return mDesc->mTextureIDMap->GetBuffer(layer); }
 
         DiWaterMap*                 GetWaterMap(){ return mWaterMap; }
 
@@ -87,8 +87,6 @@ namespace Demi
         DiVec2                      GetChunkCenterPos(uint32 idx, uint32 idy);
 
         DiTerrainChunk*             GetChunk(uint32 id);
-
-        DiSet<uint32>&              GetHidedTile() { return mHidedTile; }
 
         bool                        CoverTerrain(const DiVec3& pos, float size);
 
@@ -194,8 +192,6 @@ namespace Demi
         float                       mMinHeight;
 
         DiQuadNode*                 mRoot;
-
-        DiSet<uint32>               mHidedTile;
     };
 }
 
