@@ -39,12 +39,10 @@ namespace Demi
     DiTerrainBatch::DiTerrainBatch(DiTerrainChunk* parent)
         :mParent(parent),DiTerrainBatchBase()
     {
-
     }
 
     DiTerrainBatch::~DiTerrainBatch()
     {
-
     }
 
     void DiTerrainBatch::GetWorldTransform( DiMat4* xform ) const

@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Asset.h"
 #include "PathLib.h"
 #include "Texture.h"
+#include "euler.h"
 
 namespace Demi
 {
@@ -104,4 +105,12 @@ namespace Demi
         return ret;
     }
 
+    DiQuat DiK2Configs::ConvertAngles(const DiVec3& eulerrot)
+    {
+        DiQuat q;
+        DiVec3 euler(DiDegree(eulerrot.x).valueRadians(),
+            DiDegree(eulerrot.y).valueRadians(), DiDegree(eulerrot.z).valueRadians());
+        DiEuler::ToQuat(q, euler, DiEuler::YXZ);
+        return q;
+    }
 }

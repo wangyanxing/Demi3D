@@ -35,6 +35,8 @@ namespace Demi
         void    LoadTextureList(const DiString& path, DiTerrainDescPtr terrainDesc);
 
         void    LoadEntityList(const DiString& path, DiK2World* world);
+
+        void    LoadWorldConfig(const DiString& path, DiTerrainDescPtr terrainDesc, DiK2World* world);
     };
 }
 

@@ -202,9 +202,7 @@ namespace Demi
     {
         DiVec3 pos(worldX,0,worldZ);
         if(!CoverTerrain(pos))
-        {
             return false;
-        }
 
         DiIntVec2 vert = GetVertexPos(pos);
         
@@ -218,9 +216,7 @@ namespace Demi
             return true;
         }
         else
-        {
             return false;
-        }
     }
 
     uint32 DiTerrain::GetRealVertId( uint16 trunkIDx, uint16 trunkIDy, uint32 vertid )
@@ -413,9 +409,7 @@ namespace Demi
         float height = GetTerrainHeight();
 
         if (pos.x < 0 || pos.x > width || pos.y < 0 || pos.y > height)
-        {
             return false;
-        }
         return true;
     }
 
@@ -562,9 +556,7 @@ namespace Demi
     void DiTerrain::AddTexture( const DiSet<DiString>& bs )
     {
         for (auto it = bs.begin(); it != bs.end(); ++it)
-        {
             AddTexture(*it);
-        }
     }
 
     int DiTerrain::AddTexture( const DiString& texBaseName )
@@ -596,6 +588,7 @@ namespace Demi
 
         mat->LoadShader(DiMaterialDefine::TERRAIN_VERTEX_SHADER,
                         DiMaterialDefine::TERRAIN_PIXEL_SHADER);
+        //mat->SetWireframe(true);
 
         DiShaderParameter* params = mat->GetShaderParameter();
     
@@ -690,8 +683,8 @@ namespace Demi
             float zfactor = zstep / xstep;
             float zinc = xinc * zfactor;
             float ziter = (start.z / GetGridSize()) - (xstart - xbegin) * zfactor;
-            assert((xend - xbegin) * xinc > 0);
-            assert(DiMath::Abs(zinc) <= 1);
+            DI_ASSERT((xend - xbegin) * xinc > 0);
+            DI_ASSERT(DiMath::Abs(zinc) <= 1);
             for (int xi = xbegin; xi != xend; xi += xinc, ziter += zinc)
             {
                 int zi = DiMath::IFloor(ziter);
@@ -738,9 +731,9 @@ namespace Demi
     {
         DiVec3 position;
 
-        BYTE tileIDx,tileIDy;
-        tileIDx = (BYTE)(vertid % ((uint32)CHUNK_GRID_SIZE + 1));
-        tileIDy = (BYTE)(vertid / ((uint32)CHUNK_GRID_SIZE + 1));
+        uint8 tileIDx,tileIDy;
+        tileIDx = (uint8)(vertid % ((uint32)CHUNK_GRID_SIZE + 1));
+        tileIDy = (uint8)(vertid / ((uint32)CHUNK_GRID_SIZE + 1));
 
         position.x = (trunkIDx * CHUNK_GRID_SIZE + tileIDx) * mDesc->mGridSize - GetTerrainWidth() / 2;
         position.y = GetHeight(trunkIDx,trunkIDy,vertid);
@@ -865,13 +858,9 @@ namespace Demi
     void DiTerrain::UpdateMaxMinHeight( float newheight )
     {
         if (newheight > mMaxHeight)
-        {
             mMaxHeight = newheight;
-        }
         if (newheight < mMinHeight)
-        {
             mMinHeight = newheight;
-        }
     }
 
     DiMap<DiString,int> DiTerrain::GetTextureUsages( int layer )
@@ -911,18 +900,14 @@ namespace Demi
         marco.second = vis?"1":"0";
 
         for (auto it = mMaterialTable.begin(); it != mMaterialTable.end(); ++it)
-        {
-            (it->second)->RecompileShader(SHADER_PIXEL,marco);
-        }
+            (it->second)->RecompileShader(SHADER_PIXEL, marco);
     }
 
     int DiTerrain::GetTextureID( const DiString& names )
     {
         for (auto it = mDesc->mTextureTable.begin(); it != mDesc->mTextureTable.end(); ++it)
-        {
             if (it->second == names)
                 return it->first;
-        }
         return -1;
     }
 
@@ -934,12 +919,8 @@ namespace Demi
 
         // create chunks
         for (uint16 x = 0; x < mDesc->mSizeX; ++x)
-        {
             for (uint16 y = 0; y < mDesc->mSizeY; ++y)
-            {
                 mWaterMap->AddChunk(x,y);
-            }
-        }
     }
 
     void DiTerrain::LoadFoliageMap()
@@ -951,12 +932,8 @@ namespace Demi
 
         // create chunks
         for (uint16 x = 0; x < mDesc->mSizeX; ++x)
-        {
             for (uint16 y = 0; y < mDesc->mSizeY; ++y)
-            {
                 mFoliageMap->AddChunk(x,y);
-            }
-        }
     }
 
     DiVec2 DiTerrain::GetChunkCenterPos( uint32 idx, uint32 idy )

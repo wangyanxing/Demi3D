@@ -83,7 +83,7 @@ namespace Demi
 
     bool DiQuadNode::IsLeaf()
     {
-        return mChildren[0] == NULL;
+        return mChildren[0] == nullptr;
     }
 
     void DiQuadNode::WalkQuadTree( DiCamera* camera, DiVector<int>& visibleChunk )
@@ -93,16 +93,12 @@ namespace Demi
             if (!IsLeaf())
             {
                 for (int i = 0; i < 4; ++i)
-                {
                     mChildren[i]->WalkQuadTree(camera,visibleChunk);
-                }
             }
             else
             {
                 if (mChunk)
-                {
                     visibleChunk.push_back(mChunk->GetChunkID());
-                }
             }
         }
     }

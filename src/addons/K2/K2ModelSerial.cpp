@@ -24,6 +24,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ShaderManager.h"
 #include "ShaderParam.h"
 #include "Texture.h"
+#include "K2Configs.h"
 #include "Command.h"
 #include "ConsoleVariable.h"
 #include "K2Asset.h"
@@ -73,6 +74,7 @@ namespace Demi
 
     bool g_trans_orit = true;
     DiVector<K2Vert> gCurrentVerts;
+    DiQuat g_trans_orit_quat(DiRadian(DiDegree(-90)), DiVec3::UNIT_X);
     
     enum ClipTags
     {
@@ -142,80 +144,6 @@ namespace Demi
             default:
                 break;
         }
-    }
-
-
-    typedef struct RotOrderInfo {
-        short axis[3];
-        short parity; /* parity of axis permutation (even=0, odd=1) - 'n' in original code */
-    } RotOrderInfo;
-
-    typedef enum eEulerRotationOrders {
-        EULER_ORDER_DEFAULT = 1, /* blender classic = XYZ */
-        EULER_ORDER_XYZ = 1,
-        EULER_ORDER_XZY,
-        EULER_ORDER_YXZ,
-        EULER_ORDER_YZX,
-        EULER_ORDER_ZXY,
-        EULER_ORDER_ZYX
-        /* there are 6 more entries with dulpicate entries included */
-    } eEulerRotationOrders;
-
-    static const RotOrderInfo rotOrders[] = {
-        /* i, j, k, n */
-        { { 0, 1, 2 }, 0 }, /* XYZ */
-        { { 0, 2, 1 }, 1 }, /* XZY */
-        { { 1, 0, 2 }, 1 }, /* YXZ */
-        { { 1, 2, 0 }, 0 }, /* YZX */
-        { { 2, 0, 1 }, 0 }, /* ZXY */
-        { { 2, 1, 0 }, 1 }  /* ZYX */
-    };
-#define GET_ROTATIONORDER_INFO(order) (assert(order >= 0 && order <= 6), (order < 1) ? &rotOrders[0] : &rotOrders[(order) - 1])
-
-    void eulO_to_quat(float q[4], const float e[3], const short order)
-    {
-        const RotOrderInfo *R = GET_ROTATIONORDER_INFO(order);
-        short i = R->axis[0], j = R->axis[1], k = R->axis[2];
-        double ti, tj, th, ci, cj, ch, si, sj, sh, cc, cs, sc, ss;
-        double a[3];
-
-        ti = e[i] * 0.5f;
-        tj = e[j] * (R->parity ? -0.5f : 0.5f);
-        th = e[k] * 0.5f;
-
-        ci = cos(ti);
-        cj = cos(tj);
-        ch = cos(th);
-        si = sin(ti);
-        sj = sin(tj);
-        sh = sin(th);
-
-        cc = ci * ch;
-        cs = ci * sh;
-        sc = si * ch;
-        ss = si * sh;
-
-        a[i] = cj * sc - sj * cs;
-        a[j] = cj * ss + sj * cc;
-        a[k] = cj * cs - sj * sc;
-
-        q[0] = cj * cc + sj * ss;
-        q[1] = a[0];
-        q[2] = a[1];
-        q[3] = a[2];
-
-        if (R->parity) 
-            q[j + 1] = -q[j + 1];
-    }
-
-    DiQuat convertEuler(const DiVec3& eulerrot)
-    {
-        float qout[] = { 1, 0, 0, 0 };
-        float ein[] = { DiDegree(eulerrot.x).valueRadians(), 
-            DiDegree(eulerrot.y).valueRadians(), DiDegree(eulerrot.z).valueRadians() };
-        eulO_to_quat(qout, ein, EULER_ORDER_YXZ);
-        DiQuat q(qout);
-        return q;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -350,23 +278,26 @@ namespace Demi
         DI_SERIAL_LOG("%d surfaces", num_surfs);
         DI_SERIAL_LOG("%d bones", num_bones);
         
-        float minx, miny, minz;
-        float maxx, maxy, maxz;
-        
-        minx = ReadFloat(mStream);
-        miny = ReadFloat(mStream);
-        minz = ReadFloat(mStream);
-        
-        maxx = ReadFloat(mStream);
-        maxy = ReadFloat(mStream);
-        maxz = ReadFloat(mStream);
+        DiVec3 minBound, maxBound;
+        minBound.x = ReadFloat(mStream);
+        minBound.y = ReadFloat(mStream);
+        minBound.z = ReadFloat(mStream);
+        maxBound.x = ReadFloat(mStream);
+        maxBound.y = ReadFloat(mStream);
+        maxBound.z = ReadFloat(mStream);
         
         DiString meshname = target->GetBaseFolder() + "/";
         meshname += mStream->GetName();
         meshname += file.ExtractFileName();
         DiMeshPtr mesh = DiAssetManager::GetInstancePtr()->CreateOrReplaceAsset<DiMesh>(meshname);
 
-        DiAABB bounds(minx, miny, minz, maxx, maxy, maxz);
+        if (g_trans_orit)
+        {
+            minBound = g_trans_orit_quat * minBound;
+            maxBound = g_trans_orit_quat * maxBound;
+        }
+        DiAABB bounds(minBound, maxBound);
+        
         mesh->SetBounds(bounds);
 
         if (!LoadBones(target->GetBoneData(), num_bones))
@@ -498,18 +429,20 @@ namespace Demi
        
         gCurrentVerts.resize(vertics_count);
 
-        float minx, miny, minz;
-        float maxx, maxy, maxz;
+        DiVec3 minBound, maxBound;
+        minBound.x = ReadFloat(mStream);
+        minBound.y = ReadFloat(mStream);
+        minBound.z = ReadFloat(mStream);
+        maxBound.x = ReadFloat(mStream);
+        maxBound.y = ReadFloat(mStream);
+        maxBound.z = ReadFloat(mStream);
 
-        minx = ReadFloat(mStream);
-        miny = ReadFloat(mStream);
-        minz = ReadFloat(mStream);
-
-        maxx = ReadFloat(mStream);
-        maxy = ReadFloat(mStream);
-        maxz = ReadFloat(mStream);
-
-        DiAABB bounds(minx, miny, minz, maxx, maxy, maxz);
+        if (g_trans_orit)
+        {
+            minBound = g_trans_orit_quat * minBound;
+            maxBound = g_trans_orit_quat * maxBound;
+        }
+        DiAABB bounds(minBound, maxBound);
 
         ReadInt(mStream); //bone link
 
@@ -541,14 +474,13 @@ namespace Demi
 
         if (submesh)
         {
-            DiString fullpath = DiK2MdfSerial::GetK2MediaPath(target->GetBaseFolder());
-            DiString mateiralFile = fullpath + "/" + materialName;
+            DiString mateiralFile = target->GetBaseFolder() + "/" + materialName;
             mateiralFile += ".material";
 
             DiString matName = target->GetBaseFolder() + "/" + materialName;
             submesh->SetMaterialName(matName);
 
-            ParseMaterial(mateiralFile, matName, fullpath, hasanim);
+            ParseMaterial(mateiralFile, matName, target->GetBaseFolder(), hasanim);
         }
 
         while (!mStream->Eof())
@@ -602,20 +534,12 @@ namespace Demi
         DI_ASSERT(gCurrentVerts.size() == numverts);
         for (int i = 0; i < numverts; i++)
         {
+            gCurrentVerts[i].pos.x = vertics[i * 3 + 0];
+            gCurrentVerts[i].pos.y = vertics[i * 3 + 1];
+            gCurrentVerts[i].pos.z = vertics[i * 3 + 2];
+
             if (g_trans_orit)
-            {
-                gCurrentVerts[i].pos.x = -vertics[i * 3 + 1];
-                gCurrentVerts[i].pos.y = vertics[i * 3 + 2];
-                gCurrentVerts[i].pos.z = -vertics[i * 3 + 0];
-                DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_Y);
-                gCurrentVerts[i].pos = q*gCurrentVerts[i].pos;
-            }
-            else
-            {
-                gCurrentVerts[i].pos.x = vertics[i * 3 + 0];
-                gCurrentVerts[i].pos.y = vertics[i * 3 + 1];
-                gCurrentVerts[i].pos.z = vertics[i * 3 + 2];
-            }
+                gCurrentVerts[i].pos = g_trans_orit_quat * gCurrentVerts[i].pos;
         }
 
         delete[] vertics;
@@ -681,20 +605,12 @@ namespace Demi
         DI_ASSERT(gCurrentVerts.size() == numverts);
         for (int i = 0; i < numverts; i++)
         {
+            gCurrentVerts[i].normal.x = vertics[i * 3 + 0];
+            gCurrentVerts[i].normal.y = vertics[i * 3 + 1];
+            gCurrentVerts[i].normal.z = vertics[i * 3 + 2];
+
             if (g_trans_orit)
-            {
-                gCurrentVerts[i].normal.x = -vertics[i * 3 + 1];
-                gCurrentVerts[i].normal.y = vertics[i * 3 + 2];
-                gCurrentVerts[i].normal.z = -vertics[i * 3 + 0];
-                DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_Y);
-                gCurrentVerts[i].normal = q*gCurrentVerts[i].normal;
-            }
-            else
-            {
-                gCurrentVerts[i].normal.x = vertics[i * 3 + 0];
-                gCurrentVerts[i].normal.y = vertics[i * 3 + 1];
-                gCurrentVerts[i].normal.z = vertics[i * 3 + 2];
-            }
+                gCurrentVerts[i].normal = g_trans_orit_quat * gCurrentVerts[i].normal;
         }
 
         delete[] vertics;
@@ -793,20 +709,12 @@ namespace Demi
         DI_ASSERT(gCurrentVerts.size() == numverts);
         for (int i = 0; i < numverts; i++)
         {
+            gCurrentVerts[i].tangent.x = vertics[i * 3 + 0];
+            gCurrentVerts[i].tangent.y = vertics[i * 3 + 1];
+            gCurrentVerts[i].tangent.z = vertics[i * 3 + 2];
+
             if (g_trans_orit)
-            {
-                gCurrentVerts[i].tangent.x = -vertics[i * 3 + 1];
-                gCurrentVerts[i].tangent.y = vertics[i * 3 + 2];
-                gCurrentVerts[i].tangent.z = -vertics[i * 3 + 0];
-                DiQuat q(DiRadian(DiDegree(-90)), DiVec3::UNIT_Y);
-                gCurrentVerts[i].tangent = q*gCurrentVerts[i].tangent;
-            }
-            else
-            {
-                gCurrentVerts[i].tangent.x = vertics[i * 3 + 0];
-                gCurrentVerts[i].tangent.y = vertics[i * 3 + 1];
-                gCurrentVerts[i].tangent.z = vertics[i * 3 + 2];
-            }
+                gCurrentVerts[i].tangent = g_trans_orit_quat * gCurrentVerts[i].tangent;
         }
 
         delete[] vertics;
@@ -873,14 +781,7 @@ namespace Demi
     DiMaterialPtr DiK2MdfSerial::ParseMaterial(const DiString& matFile, const DiString& name,
         const DiString& basePath, bool needSkinning)
     {
-        FILE* fp = fopen(matFile.c_str(), "r");
-        if (!fp)
-        {
-            DI_WARNING("Cannot open k2 material: %s", matFile.c_str());
-            return nullptr;
-        }
-
-        DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
+        DiDataStreamPtr data = DiK2Configs::GetDataStream(matFile, false);
 
         uint64 shaderFlag = 0;
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
@@ -895,12 +796,15 @@ namespace Demi
 
         bool translucent = false;
 
+        DiString diffuseTex;
+        DiString normalTex;
+
         DiXMLElement child = root.GetChild();
         while (child)
         {
             if (child.CheckName("phase"))
             {
-                // we just care this
+                // we just care about this
                 if (child.GetAttribute("name") == "color")
                 {
                     if (child.HasAttribute("translucent"))
@@ -916,10 +820,12 @@ namespace Demi
                         {
                             if (samplers.GetAttribute("name") == "diffuse")
                             {
+                                diffuseTex = samplers.GetAttribute("texture").ExtractBaseName();
                                 shaderFlag |= SHADER_FLAG_USE_MAP;
                             }
                             else if (samplers.GetAttribute("name") == "normalmap")
                             {
+                                normalTex = samplers.GetAttribute("texture").ExtractBaseName() + "_rxgb";
                                 shaderFlag |= SHADER_FLAG_USE_NORMALMAP;
                             }
                             // we don't care about their team map for now
@@ -945,38 +851,18 @@ namespace Demi
         if (shaderFlag & SHADER_FLAG_USE_MAP)
         {
             DiString colorPath = basePath + "/";
-            colorPath += "color.dds";
-
-            FILE* texFp = fopen(colorPath.c_str(), "rb");
-            if (!texFp)
-            {
-                DI_WARNING("Cannot open k2 texture: %s", colorPath.c_str());
-            }
-            else
-            {
-                DiTexturePtr tex = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(colorPath);
-                DiDataStreamPtr texdata(DI_NEW DiFileHandleDataStream(colorPath,texFp));
-                tex->Load(texdata);
+            colorPath += diffuseTex;
+            DiTexturePtr tex = DiK2Configs::GetTexture(colorPath);
+            if (tex)
                 sm->WriteTexture2D("map", colorPath);
-            }
         }
         if (shaderFlag & SHADER_FLAG_USE_NORMALMAP)
         {
             DiString colorPath = basePath + "/";
-            colorPath += "normal_rxgb.dds";
-
-            FILE* texFp = fopen(colorPath.c_str(), "rb");
-            if (!texFp)
-            {
-                DI_WARNING("Cannot open k2 texture: %s", colorPath.c_str());
-            }
-            else
-            {
-                DiTexturePtr tex = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(colorPath);
-                DiDataStreamPtr texdata(DI_NEW DiFileHandleDataStream(colorPath,texFp));
-                tex->Load(texdata);
+            colorPath += normalTex;
+            DiTexturePtr tex = DiK2Configs::GetTexture(colorPath);
+            if (tex)
                 sm->WriteTexture2D("normalMap", colorPath);
-            }
         }
 
         return mat;
@@ -1081,7 +967,7 @@ namespace Demi
                 Trans trans;
                 trans.pos = c.pos[f];
                 trans.scale = c.scale[f];
-                trans.rot = convertEuler(c.rot[f]);
+                trans.rot = DiK2Configs::ConvertAngles(c.rot[f]);
 
                 if (g_trans_orit && rootbone)
                 {

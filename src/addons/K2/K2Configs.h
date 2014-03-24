@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     /** Global configuration manager
+        and some misc functions
      */
     class DEMI_K2_API DiK2Configs : public DiBase
     {
@@ -38,7 +39,9 @@ namespace Demi
         /** Load and get the texture file by a relative path
             we don't need extension here 
          */
-        static DiTexturePtr    GetTexture(const DiString& relPath);
+        static DiTexturePtr GetTexture(const DiString& relPath);
+
+        static DiQuat ConvertAngles(const DiVec3& eulerrot);
     };
 }
 

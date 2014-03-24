@@ -18,6 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "K2Model.h"
 #include "K2Clip.h"
+#include "K2Configs.h"
 #include "EnginePlugin.h"
 
 DiK2Model* k2md = nullptr;
@@ -42,16 +43,43 @@ void InitScene()
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
     
     k2md = DI_NEW DiK2Model("heroes/aluna/model.mdf");
-    k2md->CreateNode(sm);
-    k2md->GetNode()->Translate(-50, -50, 0);
-    k2md->GetAnimation()->Play("idle");
+    //k2md->CreateNode(sm);
+    //k2md->GetNode()->Translate(-50, -50, 0);
+    //k2md->GetAnimation()->Play("idle");
     
-    k2md2 = DI_NEW DiK2Model("items/couriers/panda/model.mdf");
+    //k2md2 = DI_NEW DiK2Model("items/couriers/panda/model.mdf");
     //k2md2 = DI_NEW DiK2Model("heroes/javaras/model.mdf");
+    k2md2 = DI_NEW DiK2Model("world/cliffs/hellbourne/A_F.mdf");
     k2md2->CreateNode(sm);
     k2md2->GetNode()->Translate(50, -50, 0);
-    k2md2->GetAnimation()->Play("idle");
+    //k2md2->GetAnimation()->Play("idle");
+
+    DemiDemo::GetApp()->GetInputManager()->registerKeyReleaseEvent("changeClip",
+        [&](const OIS::KeyEvent& e){
+        DiVec3 angle[] =
+        {
+            DiVec3(0, 0, 0),
+            DiVec3(0, 90, 0),
+            DiVec3(0, 180, 0),
+            DiVec3(0, 270, 0),
+        };
+
+        int id = 0;
+        switch (e.key)
+        {
+        case OIS::KC_1:
+        case OIS::KC_2:
+        case OIS::KC_3:
+        case OIS::KC_4:
+            id = e.key - OIS::KC_1;
+            DiQuat q = DiK2Configs::ConvertAngles(angle[id]);
+            k2md2->GetNode()->SetOrientation(q);
+            break;
+        }
+    });
+}
     
+#if 0
     DemiDemo::GetApp()->GetInputManager()->registerKeyReleaseEvent("changeClip",
           [&](const OIS::KeyEvent& e){
               switch (e.key)
@@ -96,6 +124,7 @@ void InitScene()
               }
           });
 }
+#endif
 
 void UpdateScene()
 {

@@ -96,12 +96,10 @@ namespace Demi
     size_t DiInstanceManager::GetMaxOrBestNumInstancesPerBatch( const DiString& materialName, size_t suggestedSize, uint16 flags )
     {
         DiMaterialPtr mat = DiAssetManager::GetInstance().GetAsset<DiMaterial>( materialName );
-        DiInstanceBatch *batch = NULL;
+        DiInstanceBatch *batch = nullptr;
 
         if( !mat )
-        {
-            return NULL;
-        }
+            return 0;
 
         switch( mInstancingTechnique )
         {
@@ -132,13 +130,9 @@ namespace Demi
         DiString matname = SetupMaterial(materialName);
 
         if( mInstanceBatches.empty() )
-        {
             instanceBatch = BuildNewBatch( matname, true );
-        }
         else
-        {
             instanceBatch = GetFreeBatch( matname );
-        }
 
         return instanceBatch->CreateInstancedModel();
     }
@@ -168,9 +162,7 @@ namespace Demi
                     en = itor->second.end();
                 }
                 else
-                {
                     ++it;
-                }
             }
 
             ++itor;

@@ -23,11 +23,9 @@ namespace Demi
     {
     public:
 
-        friend class             DiInstanceBatch;
-        
-        friend class             DiInstanceBatchShader;
-
-        friend class             DiInstanceBatchHardware;
+        friend class DiInstanceBatch;
+        friend class DiInstanceBatchShader;
+        friend class DiInstanceBatchHardware;
 
     public:
 

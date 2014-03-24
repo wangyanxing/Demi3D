@@ -18,12 +18,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2TerrainMap.h"
 #include "K2World.h"
 #include "K2WorldSerial.h"
+#include "K2Model.h"
 
 namespace Demi
 {
-    DiK2World::DiK2World()
+    DiK2World::DiK2World(DiSceneManager* sm)
         : mRootNode(nullptr)
     {
+        mRootNode = sm->GetRootNode()->CreateChild();
     }
 
     DiK2World::~DiK2World()
@@ -33,6 +35,12 @@ namespace Demi
 
     void DiK2World::Unload()
     {
+        for (auto i = mModels.begin(); i != mModels.end(); ++i)
+        {
+            DI_DELETE (*i);
+        }
+        mModels.clear();
+
         mTerrain->Unload();
     }
 
@@ -40,19 +48,14 @@ namespace Demi
     {
         DiK2WorldSerial serial;
         serial.Load(path,this);
+        mRootNode->AttachObject(mTerrain);
     }
 
-    DiCullNode* DiK2World::CreateNode(DiSceneManager* sm)
+    DiK2Model* DiK2World::AddModel(const DiString& mdf, const DiString& type)
     {
-        if (mRootNode)
-        {
-            DI_DELETE mRootNode;
-            mRootNode = nullptr;
-        }
-        mRootNode = sm->GetRootNode()->CreateChild();
-
-        mRootNode->AttachObject(mTerrain);
-
-        return mRootNode;
+        DiK2Model* md = DI_NEW DiK2Model(mdf);
+        md->CreateNode(mRootNode);
+        mModels.push_back(md);
+        return md;
     }
 }

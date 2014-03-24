@@ -16,11 +16,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2World.h"
 #include "K2MapLoader.h"
 #include "K2Configs.h"
-
+#include "K2Model.h"
 #include "K2TerrainMap.h"
 #include "K2TerrainDesc.h"
+
 #include "XMLFile.h"
 #include "XMLElement.h"
+#include "CullNode.h"
 
 namespace Demi
 {
@@ -47,6 +49,8 @@ namespace Demi
         terrainDesc->mSizeX = (heightMap.GetWidth() - 1) / CHUNK_GRID_SIZE;
         terrainDesc->mSizeY = (heightMap.GetHeight() - 1) / CHUNK_GRID_SIZE;
         terrainDesc->mHeightData = heightMap.GetBuffer();
+
+        LoadWorldConfig(path, terrainDesc, world);
 
         world->mTerrain = make_shared<DiTerrain>();
         world->mTerrain->Load(terrainDesc);
@@ -117,12 +121,58 @@ namespace Demi
                 DiString model = child.GetAttribute("model");
                 model.TrimLeft("/");
                 DiString type = child.GetAttribute("type");
-                DiVec3 rot = child.GetVector3("angles");
-                DiVec3 pos = child.GetVector3("position");
-                DiVec3 scale = child.GetVector3("scale");
 
+                DiVec3 angles = child.GetVector3("angles");
+                std::swap(angles.y, angles.z);
+                //angles.y *= -1;
+
+                DiQuat rot = DiK2Configs::ConvertAngles(angles);
+                DiVec3 pos = child.GetVector3("position");
+                std::swap(pos.y, pos.z);
+
+                DiVec2 worldSize = world->GetTerrain()->GetWorldSize();
+                pos.x = worldSize.x - pos.x;
+                pos.x -= worldSize.x / 2;
+                pos.z -= worldSize.y / 2;
+
+                if (type == "Prop_Cliff")
+                {
+                    //rot = DiQuat(DiRadian(DiDegree(-angles.y)), DiVec3::UNIT_Y);
+                }
+
+                float scale = child.GetFloat("scale");
+
+                DiK2Model* k2md = world->AddModel(model, type);
+                k2md->GetNode()->SetPosition(pos);
+                k2md->GetNode()->SetOrientation(rot);
+                k2md->GetNode()->SetScale(scale);
+
+                uint32 size = world->GetNumModels();
+                DI_DEBUG("Model[%d] %s", size-1, type.c_str());
             }
             child = child.GetNext();
         }
+    }
+
+    void DiK2WorldSerial::LoadWorldConfig(const DiString& path, DiTerrainDescPtr terrainDesc, DiK2World* world)
+    {
+        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/worldconfig", false);
+
+        DI_LOG("Loading K2 worldconfig");
+
+        shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
+        xmlfile->Load(texListData->GetAsString());
+
+        DiXMLElement root = xmlfile->GetRoot();
+        if (root.GetName() != "world")
+        {
+            DI_WARNING("Invalid K2 worldconfig script");
+            return;
+        }
+
+        world->mName = root.GetAttribute("name");
+        terrainDesc->mGridSize = root.GetFloat("scale");
+        terrainDesc->mTextureScale = root.GetFloat("texturescale");
+        terrainDesc->mCliffSpace = root.GetUint("cliffsize");
     }
 }

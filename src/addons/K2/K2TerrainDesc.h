@@ -121,7 +121,7 @@ namespace Demi
 
         uint32              mCliffSpace;    
 
-        char*               mCliffData;    
+        char*               mCliffData;
 
         uint8*              mWaterMap;
 

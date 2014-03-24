@@ -30,7 +30,7 @@ namespace Demi
 
         enum BatchSettingId
         {
-            CAST_SHADOWS        = 0,
+            CAST_SHADOWS = 0,
             SHOW_BOUNDINGBOX,
 
             NUM_SETTINGS
@@ -38,12 +38,12 @@ namespace Demi
 
         struct BatchSettings
         {
-            bool    setting[NUM_SETTINGS];
+            bool setting[NUM_SETTINGS];
 
             BatchSettings()
             {
-                setting[CAST_SHADOWS]                = true;
-                setting[SHOW_BOUNDINGBOX]            = false;
+                setting[CAST_SHADOWS]     = true;
+                setting[SHOW_BOUNDINGBOX] = false;
             }
         };
 
@@ -57,11 +57,11 @@ namespace Demi
 
     public:
 
-        typedef DiVector<DiInstanceBatchPtr>        InstanceBatchVec;    //vec[batchN] = Batch
+        typedef DiVector<DiInstanceBatchPtr>      InstanceBatchVec;    //vec[batchN] = Batch
 
-        typedef DiMap<DiString, InstanceBatchVec>    InstanceBatchMap;    //map[materialName] = Vec
+        typedef DiMap<DiString, InstanceBatchVec> InstanceBatchMap;    //map[materialName] = Vec
 
-        typedef DiMap<DiString, BatchSettings>        BatchSettingsMap;
+        typedef DiMap<DiString, BatchSettings>    BatchSettingsMap;
 
     public:
 

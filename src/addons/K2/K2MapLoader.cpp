@@ -14,6 +14,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Pch.h"
 #include "K2MapLoader.h"
 
+#define _FLIP_TERRAIN_X
+
+#ifdef _FLIP_TERRAIN_X
+#   define _ID (w*(i/w)) + (w-1-(i%w))
+#else
+#   define _ID i
+#endif
+
 namespace Demi
 {
     DiK2HeightMap::DiK2HeightMap()
@@ -48,9 +56,15 @@ namespace Demi
         
         mBuffer = DI_NEW float[w * h];
 
+
         if (asFloat)
         {
-            data->Read(mBuffer, sizeof(float) * w * h);
+            for (int i = 0; i < w * h; ++i)
+            {
+                float val = 0;
+                data->Read(&val, sizeof(float));
+                mBuffer[_ID] = val;
+            }
         }
         else
         {
@@ -58,23 +72,22 @@ namespace Demi
             {
                 uint8 val = 0;
                 data->Read(&val, sizeof(uint8));
-                mBuffer[i] = val / 256.0f;
+                mBuffer[_ID] = val / 256.0f;
             }
             
             for (int i = 0; i < w * h; ++i)
             {
                 uint8 val = 0;
                 data->Read(&val, sizeof(uint8));
-                mBuffer[i] += val;
+                mBuffer[_ID] += val;
             }
             
             for (int i = 0; i < w * h; ++i)
             {
                 uint8 val = 0;
                 data->Read(&val, sizeof(uint8));
-                mBuffer[i] += val * 256.0f;
-                mBuffer[i] -= 32768.0f;
-                //mBuffer[i] *= 100;
+                mBuffer[_ID] += val * 256.0f;
+                mBuffer[_ID] -= 32768.0f;
             }
         }
     }
@@ -132,16 +145,16 @@ namespace Demi
                 {
                     int t;
                     data->Read(&t, sizeof(int));
-                    mBuffer[l][i].value = (uint16)t;
+                    mBuffer[l][_ID].value = (uint16)t;
                     data->Read(&t, sizeof(int));
-                    mBuffer[l][i].diffuseID = (uint16)t;
+                    mBuffer[l][_ID].diffuseID = (uint16)t;
                     data->Read(&t, sizeof(int));
-                    mBuffer[l][i].normalID = (uint16)t;
+                    mBuffer[l][_ID].normalID = (uint16)t;
                     data->Skip(sizeof(float)* 7); // I don't know what they are doing
                 }
                 else
                 {
-                    data->Read(&mBuffer[l][i], sizeof(K2TileLayer));
+                    data->Read(&mBuffer[l][_ID], sizeof(K2TileLayer));
                     data->Skip(sizeof(float)* 3 + sizeof(uint16)); // I don't know either
                 }
             }
@@ -193,7 +206,12 @@ namespace Demi
 
         mBuffer = DI_NEW uint32[w * h];
 
-        data->Read(mBuffer, sizeof(uint32)* w * h);
+        for (int i = 0; i < w * h; ++i)
+        {
+            uint32 val = 0;
+            data->Read(&val, sizeof(uint32));
+            mBuffer[_ID] = val;
+        }
     }
 
     void DiK2VertexColorMap::Load(uint32 width, uint32 height)
@@ -236,7 +254,12 @@ namespace Demi
         mWidth = w;
         mHeight = h;
 
-        data->Read(mBuffer, w*h*sizeof(uint32));
+        for (int i = 0; i < w * h; ++i)
+        {
+            uint32 val = 0;
+            data->Read(&val, sizeof(uint32));
+            mBuffer[_ID] = val;
+        }
     }
 
     void DiK2VertexCliffMap::Load(uint32 width, uint32 height)
@@ -278,7 +301,12 @@ namespace Demi
         mWidth = w;
         mHeight = h;
 
-        data->Read(mBuffer, w*h*sizeof(uint8));
+        for (int i = 0; i < w * h; ++i)
+        {
+            uint8 val = 0;
+            data->Read(&val, sizeof(uint8));
+            mBuffer[_ID] = val;
+        }
     }
 
     void DiK2TileCliffMap::Load(uint32 width, uint32 height)
@@ -299,5 +327,6 @@ namespace Demi
             mBuffer = nullptr;
         }
     }
-
 }
+
+#undef _ID

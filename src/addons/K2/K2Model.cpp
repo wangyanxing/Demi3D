@@ -71,6 +71,18 @@ namespace Demi
         return mNode;
     }
 
+    DiCullNode* DiK2Model::CreateNode(DiCullNode* parent)
+    {
+        if (mNode)
+        {
+            mNode->DetachAllObjects();
+            DI_DELETE mNode;
+        }
+        mNode = parent->CreateChild();
+        mNode->AttachObject(mMesh);
+        return mNode;
+    }
+
     void DiK2Model::Load(const DiString& path)
     {
         // get the asset

@@ -40,6 +40,8 @@ namespace Demi
 
         DiCullNode*     CreateNode(DiSceneManager* sm);
 
+        DiCullNode*     CreateNode(DiCullNode* parent);
+
         DiCullNode*     GetNode() { return mNode; }
 
         void            Update(float deltaTime);

@@ -22,7 +22,7 @@ namespace Demi
     {
     public:
 
-        DiK2World();
+        DiK2World(DiSceneManager* sm);
 
         ~DiK2World();
 
@@ -34,13 +34,27 @@ namespace Demi
 
         void            Load(const DiString& path);
 
-        DiCullNode*     CreateNode(DiSceneManager* sm);
+        DiString        GetName() { return mName; }
+
+        DiTerrainPtr    GetTerrain() { return mTerrain; }
+
+        /** add a map model (not NPCs or heroes)
+         */
+        DiK2Model*      AddModel(const DiString& mdf, const DiString& type);
+
+        uint32          GetNumModels() const { return mModels.size(); }
+
+        DiK2Model*      GetModel(uint32 id) { return mModels[id]; }
 
     private:
 
         DiTerrainPtr    mTerrain;
 
         DiCullNode*     mRootNode;
+
+        DiString        mName;
+
+        DiVector<DiK2Model*> mModels;
     };
 }
 
