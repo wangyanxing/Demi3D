@@ -52,6 +52,8 @@ namespace Demi
     public:
 
         void    Load(DiDataStreamPtr data);
+
+        void    Load(uint32 width, uint32 height);
         
         void    Unload();
 

@@ -81,20 +81,21 @@ namespace Demi
         uint32 vertSize = mDesc->GetVertNum(); 
         uint32 gridSize = mDesc->GetGridNum();
 
-        if (mDesc->mHeightData)
+        if (mDesc->mHeightMap)
         {
+            float* buffer = mDesc->mHeightMap->GetBuffer();
             for (size_t i = 0; i<vertSize; i++)
             {
-                if (mDesc->mHeightData[i] > mMaxHeight)
-                    mMaxHeight = mDesc->mHeightData[i];
-                if (mDesc->mHeightData[i] < mMinHeight)
-                    mMinHeight = mDesc->mHeightData[i];
+                if (buffer[i] > mMaxHeight)
+                    mMaxHeight = buffer[i];
+                if (buffer[i] < mMinHeight)
+                    mMinHeight = buffer[i];
             }
         }
         else
         {
-            mDesc->mHeightData = DI_NEW float[vertSize];
-            memset(mDesc->mHeightData, 0, vertSize*sizeof(float));
+            mDesc->mHeightMap = DI_NEW DiK2HeightMap();
+            mDesc->mHeightMap->Load(CHUNK_GRID_SIZE*mDesc->mSizeX + 1, CHUNK_GRID_SIZE*mDesc->mSizeY + 1);
             mMaxHeight = mMinHeight = 0;
         }
 
@@ -194,7 +195,7 @@ namespace Demi
             (CHUNK_GRID_SIZE*mDesc->mSizeY + 1);
         DI_ASSERT(vertid < size);
 
-        return mDesc->mHeightData[realid];
+        return mDesc->mHeightMap->GetBuffer()[realid];
     }
 
     bool DiTerrain::GetHeight( float worldX, float worldZ, float& outHeight )
@@ -301,7 +302,7 @@ namespace Demi
 
     float* DiTerrain::GetHeightData()
     {
-        return mDesc->mHeightData;
+        return mDesc->mHeightMap->GetBuffer();
     }
 
     float* DiTerrain::GetHeightData( uint32 x, uint32 y )
@@ -310,7 +311,7 @@ namespace Demi
         GetVerticesNum(vertx,verty);
 
         DI_ASSERT (x >= 0 && x < vertx && y >= 0 && y < verty);
-        return &mDesc->mHeightData[y * vertx + x];
+        return &mDesc->mHeightMap->GetBuffer()[y * vertx + x];
     }
 
     void DiTerrain::GetVerticesNum( uint32& outx, uint32& outy )
@@ -580,9 +581,7 @@ namespace Demi
     {
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(matName);
 
-        mat->LoadShader(DiMaterialDefine::TERRAIN_VERTEX_SHADER,
-                        DiMaterialDefine::TERRAIN_PIXEL_SHADER);
-        //mat->SetWireframe(true);
+        mat->LoadShader(DiK2Configs::TERRAIN_SHADER + "_v", DiK2Configs::TERRAIN_SHADER + "_p");
 
         DiShaderParameter* params = mat->GetShaderParameter();
     
@@ -729,9 +728,9 @@ namespace Demi
         tileIDx = (uint8)(vertid % ((uint32)CHUNK_GRID_SIZE + 1));
         tileIDy = (uint8)(vertid / ((uint32)CHUNK_GRID_SIZE + 1));
 
-        position.x = (trunkIDx * CHUNK_GRID_SIZE + tileIDx) * mDesc->mGridSize - GetTerrainWidth() / 2;
-        position.y = GetHeight(trunkIDx,trunkIDy,vertid);
-        position.z = (trunkIDy * CHUNK_GRID_SIZE + tileIDy) * mDesc->mGridSize - GetTerrainWidth() / 2;
+        position.x = (trunkIDx * CHUNK_GRID_SIZE + tileIDx) * mDesc->mGridSize;
+        position.y = GetHeight(trunkIDx, trunkIDy, vertid);
+        position.z = (trunkIDy * CHUNK_GRID_SIZE + tileIDy) * mDesc->mGridSize;
 
         return position;
     }
@@ -940,8 +939,8 @@ namespace Demi
         float wholeSizeX = mDesc->mGridSize * mDesc->mSizeX * CHUNK_GRID_SIZE;
         float wholeSizeY = mDesc->mGridSize * mDesc->mSizeY * CHUNK_GRID_SIZE;
 
-        pos.x -= wholeSizeX/2;
-        pos.y -= wholeSizeY/2;
+        //pos.x -= wholeSizeX/2;
+        //pos.y -= wholeSizeY/2;
 
         return pos;
     }

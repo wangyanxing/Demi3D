@@ -64,7 +64,7 @@ namespace Demi
 
         uint32*                     GetColorData(uint32 x, uint32 y);
 
-        uint8*                      GetTileCliffData() const {return mDesc->mTileCliffMap->GetBuffer();}
+        uint8*                      GetTileCliffData() const { return mDesc->mTileCliffMap->GetBuffer(); }
 
         K2TileLayer*                GetTextureID(uint16 layer) { return mDesc->mTextureIDMap->GetBuffer(layer); }
 

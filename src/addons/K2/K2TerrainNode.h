@@ -40,15 +40,13 @@ namespace Demi
 
     protected:
 
-        DiTerrain*   mTerrain;
+        DiTerrain*      mTerrain;
 
         DiQuadNode*     mParent;
 
         DiQuadNode*     mChildren[4];
 
         DiAABB          mAABB;
-
-        DiVec3          mPosition;
 
         DiTerrainChunk* mChunk;
 

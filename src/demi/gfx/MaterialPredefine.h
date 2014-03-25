@@ -32,12 +32,6 @@ namespace Demi
         static DiString        PARAM_INSTANCE_SHADER;
         static DiString        PARAM_INSTANCE_HARDWARE;
 
-        // terrain shaders
-        static DiString        TERRAIN_VERTEX_SHADER;
-        static DiString        TERRAIN_PIXEL_SHADER;
-        static DiString        WATER_PIXEL_SHADER;
-        static DiString        WATER_VERTEX_SHADER;
-
         // for sky box
         static DiString        SKY_VERTEX_SHADER;
         static DiString        SKY_PIXEL_SHADER;

@@ -121,4 +121,23 @@ namespace Demi
         DiString full = GetK2MediaPath(relPath);
         return DiPathLib::FileExisted(full);
     }
+
+    DiString DiK2Configs::GetShader(const DiString& shader)
+    {
+        static DiStrHash<DiString> table;
+        if (table.empty())
+        {
+            table["mesh_color_cliff"] = CLIFF_SHADER;
+        }
+
+        auto i = table.find(shader);
+        if (i != table.end())
+            return i->second;
+        else
+            return MESH_SHADER;
+    }
+
+    DiString DiK2Configs::MESH_SHADER    = "k2_color";
+    DiString DiK2Configs::CLIFF_SHADER   = "k2_cliff";
+    DiString DiK2Configs::TERRAIN_SHADER = "k2_terrain";
 }

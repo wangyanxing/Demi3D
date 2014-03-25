@@ -21,14 +21,8 @@ namespace Demi
     DiString DiMaterialDefine::PARAM_INSTANCE_SHADER    = "1";
     DiString DiMaterialDefine::PARAM_INSTANCE_HARDWARE  = "2";
 
-    DiString DiMaterialDefine::TERRAIN_VERTEX_SHADER    = "terrain_v";
-    DiString DiMaterialDefine::TERRAIN_PIXEL_SHADER     = "terrain_p";
-
     DiString DiMaterialDefine::SCREEN_QUAD_VERT_SHADER  = "screenquad_v";
     DiString DiMaterialDefine::SCREEN_QUAD_PIXEL_SHADER = "screenquad_p";
-
-    DiString DiMaterialDefine::WATER_PIXEL_SHADER  = "water_p";
-    DiString DiMaterialDefine::WATER_VERTEX_SHADER = "water_v";
 
     DiString DiMaterialDefine::DEFAULT_MATERIAL  = "defaultMat.mtl";
 

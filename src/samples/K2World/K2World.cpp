@@ -21,9 +21,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "EnginePlugin.h"
 #include "K2World.h"
 #include "K2Configs.h"
+#include "K2TerrainMap.h"
 
 DiK2World* world = nullptr;
-DiK2Model* md0 = nullptr;
 
 void InitScene()
 {
@@ -41,33 +41,14 @@ void InitScene()
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
     world = DI_NEW DiK2World(sm);
-    world->Load("maps/te2");
+    world->Load("maps/tcli");
 
-    md0 = world->GetModel(22);
+    DiVec2 worldsize = world->GetTerrain()->GetWorldSize();
 
-    DemiDemo::GetApp()->GetInputManager()->registerKeyReleaseEvent("changeClip",
-        [&](const OIS::KeyEvent& e){
-        DiVec3 angle[] =
-        {
-            DiVec3(0, 0, 0),
-            DiVec3(0, 90, 0),
-            DiVec3(0, 180, 0),
-            DiVec3(0, 270, 0),
-        };
-
-        int id = 0;
-        switch (e.key)
-        {
-        case OIS::KC_1:
-        case OIS::KC_2:
-        case OIS::KC_3:
-        case OIS::KC_4:
-            id = e.key - OIS::KC_1;
-            DiQuat q = DiK2Configs::ConvertAngles(angle[id]);
-            md0->GetNode()->SetOrientation(q);
-            break;
-        }
-    });
+    auto cameraHelper = DemiDemo::GetApp()->GetCameraHelper();
+    cameraHelper->SetStyle(CS_FREELOOK);
+    cameraHelper->SetTopSpeed(600);
+    cameraHelper->GetCamera()->SetPosition(worldsize.x / 2, 500, worldsize.y / 2);
 }
 
 void UpdateScene()

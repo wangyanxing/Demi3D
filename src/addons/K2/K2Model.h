@@ -75,6 +75,9 @@ namespace Demi
 
         /// the real data
         DiK2ModelAssetPtr mAsset;
+
+        /// Materials
+        DiVector<DiMaterialPtr> mMaterials;
     };
 }
 

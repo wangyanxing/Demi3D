@@ -105,7 +105,7 @@ namespace Demi
 
         uint16              mSizeY;        
 
-        float*              mHeightData;    
+        DiK2HeightMap*      mHeightMap;
 
         float               mTextureScale;
 
@@ -119,7 +119,7 @@ namespace Demi
 
         float*              mWaterHeightMap;
 
-        typedef DiMap<int,DiString>    TextureTable;
+        typedef DiMap<int,DiString> TextureTable;
 
         TextureTable        mTextureTable;
 

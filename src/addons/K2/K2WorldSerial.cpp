@@ -32,27 +32,23 @@ namespace Demi
 
         DiTerrainDescPtr terrainDesc = make_shared<DiTerrainDesc>();
 
-        DiK2HeightMap heightMap;
-        DiDataStreamPtr dataHeightmap = DiK2Configs::GetDataStream(path + "/heightmap", true);
-        heightMap.Load(dataHeightmap);
+        terrainDesc->mHeightMap = DI_NEW DiK2HeightMap();
+        terrainDesc->mHeightMap->Load(DiK2Configs::GetDataStream(path + "/heightmap", true));
 
         terrainDesc->mTextureIDMap = DI_NEW DiK2TileMap();
-        DiDataStreamPtr dataTilemap = DiK2Configs::GetDataStream(path + "/tilematerialmap", true);
-        terrainDesc->mTextureIDMap->Load(dataTilemap);
+        terrainDesc->mTextureIDMap->Load(DiK2Configs::GetDataStream(path + "/tilematerialmap", true));
 
         terrainDesc->mColorMap = DI_NEW DiK2VertexColorMap();
-        DiDataStreamPtr dataColmap = DiK2Configs::GetDataStream(path + "/vertexcolormap", true);
-        terrainDesc->mColorMap->Load(dataColmap);
+        terrainDesc->mColorMap->Load(DiK2Configs::GetDataStream(path + "/vertexcolormap", true));
 
         terrainDesc->mTileCliffMap = DI_NEW DiK2TileCliffMap();
-        DiDataStreamPtr tileCliffmap = DiK2Configs::GetDataStream(path + "/tilecliffmap", true);
-        terrainDesc->mTileCliffMap->Load(tileCliffmap);
+        terrainDesc->mTileCliffMap->Load(DiK2Configs::GetDataStream(path + "/tilecliffmap", true));
 
+        // load texture list
         LoadTextureList(path, terrainDesc);
 
-        terrainDesc->mSizeX = (heightMap.GetWidth() - 1) / CHUNK_GRID_SIZE;
-        terrainDesc->mSizeY = (heightMap.GetHeight() - 1) / CHUNK_GRID_SIZE;
-        terrainDesc->mHeightData = heightMap.GetBuffer();
+        terrainDesc->mSizeX = (terrainDesc->mHeightMap->GetWidth() - 1) / CHUNK_GRID_SIZE;
+        terrainDesc->mSizeY = (terrainDesc->mHeightMap->GetHeight() - 1) / CHUNK_GRID_SIZE;
 
         LoadWorldConfig(path, terrainDesc, world);
 
@@ -126,30 +122,27 @@ namespace Demi
                 model.TrimLeft("/");
                 DiString type = child.GetAttribute("type");
 
+                if (type != "Prop_Cliff")
+                {
+                    child = child.GetNext();
+                    continue;
+                }
+
                 DiVec3 angles = child.GetVector3("angles");
                 std::swap(angles.y, angles.z);
-                //angles.y *= -1;
 
-                DiQuat rot = DiK2Configs::ConvertAngles(angles);
-                DiVec3 pos = child.GetVector3("position");
-                std::swap(pos.y, pos.z);
+                Trans transform;
+
+                transform.rot = DiK2Configs::ConvertAngles(angles);
+                transform.pos = child.GetVector3("position");
+                std::swap(transform.pos.y, transform.pos.z);
 
                 DiVec2 worldSize = world->GetTerrain()->GetWorldSize();
-                pos.x = worldSize.x - pos.x;
-                pos.x -= worldSize.x / 2;
-                pos.z -= worldSize.y / 2;
-
-                if (type == "Prop_Cliff")
-                {
-                    //rot = DiQuat(DiRadian(DiDegree(-angles.y)), DiVec3::UNIT_Y);
-                }
+                transform.pos.x = worldSize.x - transform.pos.x;
 
                 float scale = child.GetFloat("scale");
 
-                DiK2Model* k2md = world->AddModel(model, type);
-                k2md->GetNode()->SetPosition(pos);
-                k2md->GetNode()->SetOrientation(rot);
-                k2md->GetNode()->SetScale(scale);
+                DiK2Model* k2md = world->AddModel(model, type, transform);
 
                 uint32 size = world->GetNumModels();
                 DI_DEBUG("Model[%d] %s", size-1, type.c_str());

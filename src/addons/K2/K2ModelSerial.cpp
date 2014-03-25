@@ -477,10 +477,8 @@ namespace Demi
             DiString mateiralFile = target->GetBaseFolder() + "/" + materialName;
             mateiralFile += ".material";
 
-            DiString matName = target->GetBaseFolder() + "/" + materialName;
-            submesh->SetMaterialName(matName);
-
-            ParseMaterial(mateiralFile, matName, target->GetBaseFolder(), hasanim);
+            auto mat = ParseMaterial(mateiralFile, target->GetBaseFolder(), hasanim);
+            submesh->SetMaterialName(mat->GetName());
         }
 
         while (!mStream->Eof())
@@ -489,28 +487,28 @@ namespace Demi
             mStream->Read(hed, sizeof(char) * 4);
 
             if (CheckFourcc(hed, "vrts"))
-                read_verts();
+                ReadVertices();
             else if (CheckFourcc(hed, "face"))
-                read_face(submesh);
+                ReadFaces(submesh);
             else if (CheckFourcc(hed, "nrml"))
-                read_nrml();
+                ReadNormals();
             else if (CheckFourcc(hed, "texc"))
-                read_texc();
+                ReadUVs();
             else if (CheckFourcc(hed, "colr"))
-                read_colr();
+                ReadVertColors();
             else if (CheckFourcc(hed, "lnk1"))
-                read_lnk();
+                ReadBoneLinks();
             else if (CheckFourcc(hed, "lnk3"))
-                read_lnk();
+                ReadBoneLinks();
             else if (CheckFourcc(hed, "sign"))
-                read_sign();
+                ReadSigns();
             else if (CheckFourcc(hed, "tang"))
-                read_tang();
+                ReadTangents();
             else if (CheckFourcc(hed, "mesh"))
                 // start another turn
                 return submesh;
             else if (CheckFourcc(hed, "surf"))
-                read_surf();
+                ReadSurfaces();
             else
             {
                 DI_WARNING("K2 Model:Unknown data chunk tag: %c%c%c%c", hed[0], hed[1], hed[2], hed[3]);
@@ -521,7 +519,7 @@ namespace Demi
         return submesh;
     }
 
-    void DiK2MdfSerial::read_verts()
+    void DiK2MdfSerial::ReadVertices()
     {
         DI_SERIAL_LOG("------------verts-----------");
         int chunkSize = ReadInt(mStream);
@@ -545,7 +543,7 @@ namespace Demi
         delete[] vertics;
     }
 
-    void DiK2MdfSerial::read_face(DiSubMesh* sub)
+    void DiK2MdfSerial::ReadFaces(DiSubMesh* sub)
     {
         DI_SERIAL_LOG("-----------face------------");
         int chunkSize = ReadInt(mStream);
@@ -587,7 +585,7 @@ namespace Demi
         }
     }
 
-    void DiK2MdfSerial::read_nrml()
+    void DiK2MdfSerial::ReadNormals()
     {
         DI_SERIAL_LOG("-----------nrml------------");
         int chunkSize = ReadInt(mStream);
@@ -616,7 +614,7 @@ namespace Demi
         delete[] vertics;
     }
 
-    void DiK2MdfSerial::read_texc()
+    void DiK2MdfSerial::ReadUVs()
     {
         DI_SERIAL_LOG("-----------texc------------");
         int chunkSize = ReadInt(mStream);
@@ -639,7 +637,7 @@ namespace Demi
         delete[] vertics;
     }
 
-    void DiK2MdfSerial::read_colr()
+    void DiK2MdfSerial::ReadVertColors()
     {
         DI_SERIAL_LOG("-----------colr------------");
         int chunkSize = ReadInt(mStream);
@@ -654,7 +652,7 @@ namespace Demi
         delete[] vertics; // unused currently
     }
 
-    void DiK2MdfSerial::read_lnk()
+    void DiK2MdfSerial::ReadBoneLinks()
     {
         DI_SERIAL_LOG("-----------lnk------------");
         int chunkSize = ReadInt(mStream);
@@ -685,7 +683,7 @@ namespace Demi
         }
     }
 
-    void DiK2MdfSerial::read_sign()
+    void DiK2MdfSerial::ReadSigns()
     {
         // what's this
         DI_SERIAL_LOG("-----------sign------------");
@@ -693,7 +691,7 @@ namespace Demi
         mStream->Skip(chunkSize);
     }
 
-    void DiK2MdfSerial::read_tang()
+    void DiK2MdfSerial::ReadTangents()
     {
         DI_SERIAL_LOG("-----------tang------------");
         int chunkSize = ReadInt(mStream);
@@ -720,7 +718,7 @@ namespace Demi
         delete[] vertics;
     }
 
-    void DiK2MdfSerial::read_surf()
+    void DiK2MdfSerial::ReadSurfaces()
     {
         DI_SERIAL_LOG("-----------surf------------");
 
@@ -778,7 +776,7 @@ namespace Demi
 #endif
     }
 
-    DiMaterialPtr DiK2MdfSerial::ParseMaterial(const DiString& matFile, const DiString& name,
+    DiMaterialPtr DiK2MdfSerial::ParseMaterial(const DiString& matFile,
         const DiString& basePath, bool needSkinning)
     {
         DiDataStreamPtr data = DiK2Configs::GetDataStream(matFile, false);
@@ -798,6 +796,7 @@ namespace Demi
 
         DiString diffuseTex;
         DiString normalTex;
+        DiString shaderVs, shaderPs;
 
         DiXMLElement child = root.GetChild();
         while (child)
@@ -807,10 +806,14 @@ namespace Demi
                 // we just care about this
                 if (child.GetAttribute("name") == "color")
                 {
+
                     if (child.HasAttribute("translucent"))
                         translucent = child.GetBool("translucent");
                     if (child.HasAttribute("alphatest") && child.GetBool("alphatest"))
                         shaderFlag |= SHADER_FLAG_ALPHA_TEST;
+
+                    shaderVs = child.GetAttribute("vs");
+                    shaderPs = child.GetAttribute("ps");
 
                     // samplers
                     DiXMLElement samplers = child.GetChild();
@@ -825,7 +828,7 @@ namespace Demi
                             }
                             else if (samplers.GetAttribute("name") == "normalmap")
                             {
-                                normalTex = samplers.GetAttribute("texture").ExtractBaseName() + "_rxgb";
+                                normalTex = samplers.GetAttribute("texture").ExtractBaseName();
                                 shaderFlag |= SHADER_FLAG_USE_NORMALMAP;
                             }
                             // we don't care about their team map for now
@@ -841,7 +844,9 @@ namespace Demi
         if (needSkinning)
             shaderFlag |= SHADER_FLAG_SKINNED;
 
-        DiMaterialPtr mat = DiMaterial::QuickCreate(name, "phong_v", "phong_p", shaderFlag);
+        DiString shader = DiK2Configs::GetShader(shaderVs);
+
+        DiMaterialPtr mat = DiMaterial::QuickCreate(shader+"_v", shader+"_p", shaderFlag);
         if (translucent)
             mat->SetBlendMode(BLEND_ALPHA);
 
@@ -858,11 +863,15 @@ namespace Demi
         }
         if (shaderFlag & SHADER_FLAG_USE_NORMALMAP)
         {
-            DiString colorPath = basePath + "/";
-            colorPath += normalTex;
-            DiTexturePtr tex = DiK2Configs::GetTexture(colorPath);
-            if (tex)
-                sm->WriteTexture2D("normalMap", colorPath);
+            DiString colorPath = basePath + "/" + normalTex;
+
+            DiTexturePtr normtex = DiK2Configs::GetTexture(colorPath + "_rxgb");
+            if (normtex)
+                sm->WriteTexture2D("normalMap", normtex);
+
+            DiTexturePtr spectex = DiK2Configs::GetTexture(colorPath + "_s");
+            if (spectex)
+                sm->WriteTexture2D("specularMap", spectex);
         }
 
         return mat;

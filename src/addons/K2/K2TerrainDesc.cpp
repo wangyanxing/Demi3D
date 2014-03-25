@@ -30,10 +30,10 @@ bool Demi::DiTerrainDesc::CheckValid() const
 
 void Demi::DiTerrainDesc::Release()
 {
-    SAFE_ARRAY_DELETE(mHeightData);    
     SAFE_ARRAY_DELETE(mWaterMap);
     SAFE_ARRAY_DELETE(mWaterHeightMap);
 
+    SAFE_DELETE(mHeightMap);
     SAFE_DELETE(mTextureIDMap);
     SAFE_DELETE(mColorMap);
     SAFE_DELETE(mTileCliffMap);
@@ -52,12 +52,12 @@ Demi::DiTerrainDesc::DiTerrainDesc()
     mSizeY          = 5;
     mCliffSize      = 4;
     mTextureScale   = 16.0f;
-    mHeightData     = nullptr;
     mWaterMap       = nullptr;
     mWaterHeightMap = nullptr;
     mTextureIDMap   = nullptr;
     mColorMap       = nullptr;
     mTileCliffMap   = nullptr;
+    mHeightMap      = nullptr;
 }
 
 Demi::DiTerrainDesc::~DiTerrainDesc()

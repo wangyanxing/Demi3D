@@ -40,11 +40,17 @@ namespace Demi
 
         /** add a map model (not NPCs or heroes)
          */
-        DiK2Model*      AddModel(const DiString& mdf, const DiString& type);
+        DiK2Model*      AddModel(const DiString& mdf, const DiString& type, const Trans& trans);
 
         uint32          GetNumModels() const { return mModels.size(); }
 
         DiK2Model*      GetModel(uint32 id) { return mModels[id]; }
+
+    private:
+
+        void            ProcessTrees(DiK2Model* model);
+
+        void            ProcessCliff(DiK2Model* model);
 
     private:
 

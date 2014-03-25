@@ -29,10 +29,10 @@ namespace Demi
 {
     static DiIntVec3 PackVector(const DiVec3& vec)
     {
-        DiIntVec3 v;
-        v.x = DiMath::Clamp(int((vec.x + 1.0f) * 0.5f * 255.0f),0,255);
-        v.y = DiMath::Clamp(int((vec.y + 1.0f) * 0.5f * 255.0f),0,255);
-        v.z = DiMath::Clamp(int((vec.z + 1.0f) * 0.5f * 255.0f),0,255);
+        DiIntVec3 v(
+            DiMath::Clamp(int((vec.x + 1.0f) * 0.5f * 255.0f), 0, 255),
+            DiMath::Clamp(int((vec.y + 1.0f) * 0.5f * 255.0f), 0, 255),
+            DiMath::Clamp(int((vec.z + 1.0f) * 0.5f * 255.0f), 0, 255));
         return v;
     }
 
@@ -301,7 +301,7 @@ namespace Demi
 
     void DiTerrainChunk::CorrectChunkPosition()
     {
-        DiVec2 pos = mParent->GetChunkCenterPos(mChunkIDX,mChunkIDY);
+        DiVec2 pos = mParent->GetChunkCenterPos(mChunkIDX, mChunkIDY);
         DiVec3 v3(pos.x,0,pos.y);
 
         SetPosition(v3);

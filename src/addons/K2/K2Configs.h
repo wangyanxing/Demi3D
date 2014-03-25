@@ -44,6 +44,16 @@ namespace Demi
         static DiTexturePtr GetTexture(const DiString& relPath);
 
         static DiQuat ConvertAngles(const DiVec3& eulerrot);
+        
+        /** Map the k2's shader to our shader file
+         */
+        static DiString GetShader(const DiString& shader);
+
+        static DiString TERRAIN_SHADER;
+
+        static DiString CLIFF_SHADER;
+
+        static DiString MESH_SHADER;
     };
 }
 

@@ -37,8 +37,8 @@ namespace Demi
         
         bool    LoadClip(const DiString& file, K2Anim* anim, DiK2ModelAsset* target);
 
-        DiMaterialPtr ParseMaterial(const DiString& matFile, const DiString& basePath, 
-            const DiString& name, bool needSkinning);
+        DiMaterialPtr ParseMaterial(const DiString& matFile,
+            const DiString& basePath, bool needSkinning);
 
         static  DiString GetK2MediaPath(const DiString& relativePath);
 
@@ -54,23 +54,23 @@ namespace Demi
         
         bool    CheckFourcc(char* hed, char* sig);
 
-        void    read_verts();
+        void    ReadVertices();
 
-        void    read_face(DiSubMesh* sub);
+        void    ReadFaces(DiSubMesh* sub);
 
-        void    read_nrml();
+        void    ReadNormals();
 
-        void    read_texc();
+        void    ReadUVs();
 
-        void    read_colr();
+        void    ReadVertColors();
 
-        void    read_lnk();
+        void    ReadBoneLinks();
 
-        void    read_sign();
+        void    ReadSigns();
 
-        void    read_tang();
+        void    ReadTangents();
 
-        void    read_surf();
+        void    ReadSurfaces();
     };
 }
 

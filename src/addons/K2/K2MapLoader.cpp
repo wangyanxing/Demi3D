@@ -56,7 +56,6 @@ namespace Demi
         
         mBuffer = DI_NEW float[w * h];
 
-
         if (asFloat)
         {
             for (int i = 0; i < w * h; ++i)
@@ -91,7 +90,19 @@ namespace Demi
             }
         }
     }
-    
+
+    void DiK2HeightMap::Load(uint32 width, uint32 height)
+    {
+        Unload();
+        mWidth = width;
+        mHeight = height;
+
+        mBuffer = DI_NEW float[width * height];
+
+        for (uint32 i = 0; i < width*height; i++)
+            mBuffer[i] = 0;
+    }
+
     void DiK2HeightMap::Unload()
     {
         if(mBuffer)

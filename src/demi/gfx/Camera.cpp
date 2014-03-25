@@ -17,7 +17,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-
     DiCamera::DiCamera( const DiString& name,DiSceneManager* sm)
         : DiFrustum(name),
         mOrientation(DiQuat::IDENTITY),
@@ -175,7 +174,7 @@ namespace Demi
             }
             else
             {
-                // Derive shortest arc to DI_NEW direction
+                // Derive shortest arc to new direction
                 rotQuat = axes[2].getRotationTo(zAdjustVec);
 
             }

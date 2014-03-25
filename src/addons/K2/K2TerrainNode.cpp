@@ -38,7 +38,7 @@ namespace Demi
         else
         {
             uint16 childSize = size / 2;
-            uint16 childOff     = childSize;
+            uint16 childOff = childSize;
 
             mChildren[0] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff, yoff);
             mChildren[1] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff + childOff, yoff);
@@ -46,7 +46,6 @@ namespace Demi
             mChildren[3] = DI_NEW(DiQuadNode)(terrain, this, childSize, xoff + childOff, yoff + childOff );
         }
 
-        mPosition = DiVec3::ZERO;
         mAABB.SetNull();
     }
 
@@ -75,9 +74,7 @@ namespace Demi
         if (!IsLeaf())
         {
             for (int i = 0; i < 4; ++i)
-            {
                 mChildren[i]->ResetBounds();
-            }
         }
     }
 
