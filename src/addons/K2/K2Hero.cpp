@@ -16,12 +16,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Game.h"
 #include "K2Clip.h"
 
+#include "CullNode.h"
 #include "GfxDriver.h"
+#include "SceneManager.h"
 
 namespace Demi
 {
     DiK2Hero::DiK2Hero(DiK2Game* game)
-        : mModel(nullptr)
+        : mNode(nullptr)
         , mGame(game)
     {
     }
@@ -31,23 +33,20 @@ namespace Demi
         Release();
     }
 
-    DiK2Model* DiK2Hero::LoadModel(const DiString& mdf)
+    DiK2ModelPtr DiK2Hero::LoadModel(const DiString& mdf)
     {
-        if (mModel)
-            DI_DELETE(mModel);
-
         DiSceneManager* sm = Driver->GetSceneManager();
+        mNode = sm->GetRootNode()->CreateChild();
 
-        mModel = DI_NEW DiK2Model(mdf);
-        mModel->CreateNode(sm);
+        mModel = make_shared<DiK2Model>(mdf);
         mModel->GetAnimation()->Play("idle");
+        mNode->AttachObject(mModel);
+
         return mModel;
     }
 
     void DiK2Hero::Release()
     {
-        if (mModel)
-            DI_DELETE(mModel);
     }
 
 }

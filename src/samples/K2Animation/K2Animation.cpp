@@ -21,8 +21,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Configs.h"
 #include "EnginePlugin.h"
 
-DiK2Model* k2md = nullptr;
-DiK2Model* k2md2 = nullptr;
+DiK2ModelPtr k2md = nullptr;
+DiK2ModelPtr k2md2 = nullptr;
 
 void InitScene()
 {
@@ -42,15 +42,17 @@ void InitScene()
     
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
     
-    k2md = DI_NEW DiK2Model("heroes/aluna/model.mdf");
-    k2md->CreateNode(sm);
-    k2md->GetNode()->Translate(-50, -50, 0);
+    DiCullNode* nd0 = sm->GetRootNode()->CreateChild();
+    k2md = make_shared<DiK2Model>("heroes/aluna/model.mdf");
+    nd0->AttachObject(k2md);
+    nd0->Translate(-50, -50, 0);
     k2md->GetAnimation()->Play("idle");
     
-    k2md2 = DI_NEW DiK2Model("items/couriers/panda/model.mdf");
-    //k2md2 = DI_NEW DiK2Model("heroes/javaras/model.mdf");
-    k2md2->CreateNode(sm);
-    k2md2->GetNode()->Translate(50, -50, 0);
+    DiCullNode* nd1 = sm->GetRootNode()->CreateChild();
+    k2md2 = make_shared<DiK2Model>("items/couriers/panda/model.mdf");
+    //k2md2 = make_shared<DiK2Model>("heroes/javaras/model.mdf");
+    nd1->AttachObject(k2md2);
+    nd1->Translate(50, -50, 0);
     k2md2->GetAnimation()->Play("idle");
     
     DemiDemo::GetApp()->GetInputManager()->registerKeyReleaseEvent("changeClip",
@@ -100,8 +102,6 @@ void InitScene()
 
 void UpdateScene()
 {
-    k2md->Update(DiBase::Driver->GetDeltaSecond());
-    k2md2->Update(DiBase::Driver->GetDeltaSecond());
 }
 
 int main(int argc, char *argv[])
@@ -110,9 +110,8 @@ int main(int argc, char *argv[])
 	app.SetInitCallback(InitScene);
 	app.SetUpdateCallback(UpdateScene);
     app.SetShutdownCallback([&](){
-        DI_DELETE k2md;
-        DI_DELETE k2md2;
-        
+        k2md.reset();
+        k2md2.reset();
         DiPlugin::UnloadPlugin("DiK2");
     });
 	app.Open();

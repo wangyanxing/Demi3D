@@ -31,13 +31,15 @@ namespace Demi
 
         void            Release();
 
-        DiK2Model*      LoadModel(const DiString& mdf);
+        DiK2ModelPtr    LoadModel(const DiString& mdf);
 
-        DiCullNode*     GetNode() { return mModel->GetNode(); }
+        DiCullNode*     GetNode() { return mNode; }
 
     private:
 
-        DiK2Model*      mModel;
+        DiK2ModelPtr    mModel;
+
+        DiCullNode*     mNode;
 
         DiK2Game*       mGame;
     };

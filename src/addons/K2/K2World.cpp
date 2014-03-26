@@ -51,8 +51,6 @@ namespace Demi
 
     void DiK2World::Unload()
     {
-        for (auto i = mModels.begin(); i != mModels.end(); ++i)
-            DI_DELETE (*i);
         mModels.clear();
         mTerrain->Unload();
     }
@@ -64,10 +62,12 @@ namespace Demi
         mRootNode->AttachObject(mTerrain);
     }
 
-    DiK2Model* DiK2World::AddModel(const DiString& mdf, const DiString& type, const Trans& trans)
+    DiK2ModelPtr DiK2World::AddModel(const DiString& mdf, const DiString& type, const Trans& trans)
     {
-        DiK2Model* md = DI_NEW DiK2Model(mdf);
-        DiCullNode* node = md->CreateNode(mRootNode);
+        DiK2ModelPtr md = make_shared<DiK2Model>(mdf);
+        DiCullNode* node = mRootNode->CreateChild();
+        node->AttachObject(md);
+
         mModels.push_back(md);
 
         node->SetPosition(trans.pos);
@@ -75,21 +75,21 @@ namespace Demi
         node->SetScale(trans.scale);
 
         if (type == "Prop_Tree")
-            ProcessTrees(md);
+            ProcessTrees(md, node);
         else if (DiString::StartsWith(type, "Prop_Cliff"))
-            ProcessCliff(md);
+            ProcessCliff(md, node);
 
         return md;
     }
 
-    void DiK2World::ProcessTrees(DiK2Model* model)
+    void DiK2World::ProcessTrees(DiK2ModelPtr model, DiCullNode* node)
     {
     }
 
-    void DiK2World::ProcessCliff(DiK2Model* model)
+    void DiK2World::ProcessCliff(DiK2ModelPtr model, DiCullNode* node)
     {
-        DiVec3 pos = model->GetNode()->GetPosition();
-        DiQuat rot = model->GetNode()->GetOrientation();
+        DiVec3 pos = node->GetPosition();
+        DiQuat rot = node->GetOrientation();
 
         DiVec2 worldSize = mTerrain->GetWorldSize();
 
@@ -123,11 +123,10 @@ namespace Demi
         DiTexturePtr textureNor = DiK2Configs::GetTexture(normal + "_rxgb");
         DiTexturePtr textureSpe = DiK2Configs::GetTexture(normal + "_s");
 
-        DiModelPtr md = model->GetMesh();
-        uint32 submodels = md->GetNumSubModels();
+        uint32 submodels = model->GetNumSubModels();
         for (uint32 i = 0; i < submodels; ++i)
         {
-            DiSubModel* sm = md->GetSubModel(i);
+            DiSubModel* sm = model->GetSubModel(i);
             auto material = sm->GetMaterial();
 
             auto newMat = material->Clone();

@@ -32,55 +32,19 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     DiK2Model::DiK2Model(const DiString& path)
-        : mAnimation(DI_NEW DiK2Animation())
-        , mNode(nullptr)
-        , mName(path)
+        : DiModel(path)
+        , mAnimation(DI_NEW DiK2Animation())
         , mSkeleton(nullptr)
     {
         Load(path);
+        Init();
+        PostLoad();
     }
 
     DiK2Model::~DiK2Model()
     {
         DI_DELETE mAnimation;
         DI_DELETE mSkeleton;
-    }
-
-    DiCullNode* DiK2Model::CreateNode(DiSceneManager* sm)
-    {
-        if (mNode)
-        {
-            mNode->DetachAllObjects();
-            DI_DELETE mNode;
-        }
-        mNode = sm->GetRootNode()->CreateChild();
-        mNode->AttachObject(mMesh);
-
-#ifdef ENABLE_K2_ANIM_DEBUGGER
-        if (!mDebugger)
-        {
-            mDebugger = make_shared<DiDebugHelper>();
-            DiMaterialPtr helpermat = DiMaterial::QuickCreate(
-                "basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
-            helpermat->SetDepthCheck(false);
-            mDebugger->SetMaterial(helpermat);
-        }
-        mNode->AttachObject(mDebugger);
-#endif
-
-        return mNode;
-    }
-
-    DiCullNode* DiK2Model::CreateNode(DiCullNode* parent)
-    {
-        if (mNode)
-        {
-            mNode->DetachAllObjects();
-            DI_DELETE mNode;
-        }
-        mNode = parent->CreateChild();
-        mNode->AttachObject(mMesh);
-        return mNode;
     }
 
     void DiK2Model::Load(const DiString& path)
@@ -92,53 +56,29 @@ namespace Demi
         mAnimation = DI_NEW DiK2Animation();
         mAsset->CreateClipInstance(mAnimation);
 
-        mMesh = make_shared<DiModel>(path, mAsset->GetMesh());
+        mMesh = mAsset->GetMesh();
 
         mSkeleton = DI_NEW DiK2Skeleton();
         mSkeleton->CreateBones(mAsset->GetBoneData());
+    }
 
-        for (uint32 i = 0; i < mMesh->GetNumSubModels(); ++i)
+    void DiK2Model::Update(DiCamera*)
+    {
+        float deltaTime = DiBase::Driver->GetDeltaSecond();
+
+        mAnimation->Update(deltaTime);
+        mSkeleton->Apply(mAnimation);
+        mSkeleton->CacheBoneMatrices();
+    }
+
+    void DiK2Model::PostLoad()
+    {
+        for (uint32 i = 0; i < GetNumSubModels(); ++i)
         {
-            DiSubModel* sm = mMesh->GetSubModel(i);
+            DiSubModel* sm = GetSubModel(i);
             sm->mBoneNum = mSkeleton->GetNumBones();
             sm->mBoneMatrices = mSkeleton->GetBoneMatrices();
         }
     }
 
-    void DiK2Model::Update(float deltaTime)
-    {
-        mAnimation->Update(deltaTime);
-        mSkeleton->Apply(mAnimation);
-        mSkeleton->CacheBoneMatrices();
-
-#ifdef ENABLE_K2_ANIM_DEBUGGER
-        _UpdateDebugger();
-#endif
-    }
-
-#ifdef ENABLE_K2_ANIM_DEBUGGER
-    void DiK2Model::_UpdateDebugger()
-    {
-        mDebugger->Clear();
-
-        uint32 numBones = mSkeleton->GetNumBones();
-        for (uint32 i = 0; i < numBones; ++i)
-        {
-            DiNode* n = mSkeleton->GetBone(i);
-            if (n->GetParent())
-            {
-                DiNode* p = n->GetParent();
-                mDebugger->AddLine(n->GetDerivedPosition(), p->GetDerivedPosition(), DiColor::Red);
-            }
-
-            DiVec3 pos = n->GetDerivedPosition();
-            DiAABB b;
-            DiVec3 minv = pos - DiVec3(0.1, 0.1, 0.1);
-            DiVec3 maxv = pos + DiVec3(0.1, 0.1, 0.1);
-            b.SetExtents(minv, maxv);
-
-            mDebugger->AddBoundingBox(b, DiColor::White);
-        }
-    }
-#endif
 }

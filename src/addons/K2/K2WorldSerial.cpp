@@ -143,7 +143,7 @@ namespace Demi
 
                 float scale = child.GetFloat("scale");
 
-                DiK2Model* k2md = world->AddModel(model, type, transform);
+                DiK2ModelPtr k2md = world->AddModel(model, type, transform);
 
                 uint32 size = world->GetNumModels();
             }

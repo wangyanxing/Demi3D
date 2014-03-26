@@ -48,10 +48,11 @@ namespace Demi
     struct K2KeyFrames;
     struct K2Anim;
 
+    typedef shared_ptr<DiK2Model>       DiK2ModelPtr;
     typedef shared_ptr<DiK2BonesData>   DiK2BonesDataPtr;
     typedef shared_ptr<DiK2ModelAsset>  DiK2ModelAssetPtr;
     typedef shared_ptr<DiTerrainDesc>   DiTerrainDescPtr;
-    typedef shared_ptr<DiTerrain>    DiTerrainPtr;
+    typedef shared_ptr<DiTerrain>       DiTerrainPtr;
 }
 
 #endif

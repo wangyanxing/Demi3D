@@ -40,17 +40,17 @@ namespace Demi
 
         /** add a map model (not NPCs or heroes)
          */
-        DiK2Model*      AddModel(const DiString& mdf, const DiString& type, const Trans& trans);
+        DiK2ModelPtr    AddModel(const DiString& mdf, const DiString& type, const Trans& trans);
 
         uint32          GetNumModels() const { return mModels.size(); }
 
-        DiK2Model*      GetModel(uint32 id) { return mModels[id]; }
+        DiK2ModelPtr    GetModel(uint32 id) { return mModels[id]; }
 
     private:
 
-        void            ProcessTrees(DiK2Model* model);
+        void            ProcessTrees(DiK2ModelPtr model, DiCullNode* node);
 
-        void            ProcessCliff(DiK2Model* model);
+        void            ProcessCliff(DiK2ModelPtr model, DiCullNode* node);
 
     private:
 
@@ -60,7 +60,7 @@ namespace Demi
 
         DiString        mName;
 
-        DiVector<DiK2Model*> mModels;
+        DiVector<DiK2ModelPtr> mModels;
 
 #ifdef _DEBUG_CLIFF_POS
         DiDebugHelperPtr mDebugger;

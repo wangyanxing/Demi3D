@@ -15,12 +15,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2Model_h__
 
 #include "K2Prerequisites.h"
+#include "Model.h"
 
 namespace Demi
 {
     /** Load a k2 mdf model
      */
-    class DEMI_K2_API DiK2Model : public DiBase
+    class DEMI_K2_API DiK2Model : public DiModel
     {
     public:
 
@@ -30,36 +31,17 @@ namespace Demi
 
     public:
 
-        DiModelPtr      GetMesh() { return mMesh; }
-
-        /** e.g. "heroes/aluna"
-         */
-        const DiString& GetName() const {return mName;}
-
         DiK2Animation*  GetAnimation() { return mAnimation; }
 
-        DiCullNode*     CreateNode(DiSceneManager* sm);
-
-        DiCullNode*     CreateNode(DiCullNode* parent);
-
-        DiCullNode*     GetNode() { return mNode; }
-
-        void            Update(float deltaTime);
+        void            Update(DiCamera*);
 
     private:
 
         void            Load(const DiString& path);
 
-#ifdef ENABLE_K2_ANIM_DEBUGGER
-        void            _UpdateDebugger();
-        /// for debugging purpose
-        DiDebugHelperPtr  mDebugger;
-#endif
+        void            PostLoad();
 
     private:
-
-        /// a Demi mesh
-        DiModelPtr        mMesh;
 
         /// the actual animation sets
         DiK2Animation*    mAnimation;
@@ -69,9 +51,6 @@ namespace Demi
         
         /// full path to this asset folder
         DiString          mName;
-
-        /// Scene node
-        DiCullNode*       mNode;
 
         /// the real data
         DiK2ModelAssetPtr mAsset;
