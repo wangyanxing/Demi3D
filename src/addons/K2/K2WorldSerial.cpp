@@ -122,7 +122,8 @@ namespace Demi
                 model.TrimLeft("/");
                 DiString type = child.GetAttribute("type");
 
-                if (type != "Prop_Cliff")
+                if (!DiString::StartsWith(type, "Prop_Cliff") && 
+                    !DiString::StartsWith(type, "Prop_Tree"))
                 {
                     child = child.GetNext();
                     continue;
@@ -145,7 +146,6 @@ namespace Demi
                 DiK2Model* k2md = world->AddModel(model, type, transform);
 
                 uint32 size = world->GetNumModels();
-                DI_DEBUG("Model[%d] %s", size-1, type.c_str());
             }
             child = child.GetNext();
         }

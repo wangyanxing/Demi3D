@@ -40,8 +40,8 @@ void InitScene()
     
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
-    world = DI_NEW DiK2World(sm);
-    world->Load("maps/tcli");
+    world = DI_NEW DiK2World();
+    world->Load("maps/te2");
 
     DiVec2 worldsize = world->GetTerrain()->GetWorldSize();
 

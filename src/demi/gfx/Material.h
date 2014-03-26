@@ -88,15 +88,9 @@ namespace Demi
 
         bool                        IsTransparent() const;
 
-        bool                        GetEnableVertColor() const { return mEnableVertColor; }
-
-        void                        SetEnableVertColor(bool val);
-
         void                        SetInstanceType(DiInstanceType val);
 
         DiInstanceType              GetEnableInstance() const {return mInstanceState;}
-
-        void                        SetExtraParams(DiCompileDesc& desc);
 
         void                        Bind() const;
 
@@ -115,6 +109,8 @@ namespace Demi
                                         const DiPair<DiString,DiString>& marco);
 
         DiMaterialPtr               Clone(const DiString& newname);
+
+        DiMaterialPtr               Clone();
 
         static DiMaterialPtr        QuickCreate(const DiString& vs, const DiString& ps, uint64 flag = 0);
                                     
@@ -163,8 +159,6 @@ namespace Demi
         bool                        mWireframe;
 
         bool                        mForceWireframe;
-
-        bool                        mEnableVertColor;
 
         DiInstanceType              mInstanceState;
 

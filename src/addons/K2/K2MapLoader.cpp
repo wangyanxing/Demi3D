@@ -146,6 +146,8 @@ namespace Demi
 
         Unload();
 
+        DiTimer timer;
+
         for (int l = 0; l < 2; l++)
         {
             mBuffer[l] = DI_NEW K2TileLayer[w * h];
@@ -170,6 +172,9 @@ namespace Demi
                 }
             }
         }
+
+        double loadingTime = timer.GetElapse();
+        DI_LOG("Loading time: %f", loadingTime);
     }
 
     void DiK2TileMap::Load(uint32 width, uint32 height)

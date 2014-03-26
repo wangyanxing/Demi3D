@@ -90,12 +90,6 @@ namespace Demi
             nd.SetValue(CullmodeToString(source->GetCullMode()).c_str());
         }
 
-        if (source->GetEnableVertColor())
-        {
-            DiXMLElement nd = rootNode.CreateChild("vertcolor");
-            nd.SetValue("true");
-        }
-
         if (source->GetDepthCheck() != DEFAULT_DEPTH_CHECK)
         {
             DiXMLElement nd = rootNode.CreateChild("depthCheck");
@@ -510,10 +504,6 @@ namespace Demi
         else if (tag == "wireframe")
         {
             target->SetWireframe(val.AsBool());
-        }
-        else if (tag == "vertcolor")
-        {
-            target->SetEnableVertColor(val.AsBool());
         }
         else if (tag == "blendMode")
         {

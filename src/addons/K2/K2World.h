@@ -22,7 +22,7 @@ namespace Demi
     {
     public:
 
-        DiK2World(DiSceneManager* sm);
+        DiK2World();
 
         ~DiK2World();
 
@@ -61,6 +61,10 @@ namespace Demi
         DiString        mName;
 
         DiVector<DiK2Model*> mModels;
+
+#ifdef _DEBUG_CLIFF_POS
+        DiDebugHelperPtr mDebugger;
+#endif
     };
 }
 

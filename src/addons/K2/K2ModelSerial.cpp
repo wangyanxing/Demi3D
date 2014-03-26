@@ -469,7 +469,7 @@ namespace Demi
         bool hasanim = target->GetAnimNums() > 0;
 
         // for now, we don't need animation on trees
-        if (!target->mTreeFile.empty())
+        if (target->mIsTree)
             hasanim = false;
 
         if (submesh)
@@ -855,15 +855,23 @@ namespace Demi
         // load textures
         if (shaderFlag & SHADER_FLAG_USE_MAP)
         {
-            DiString colorPath = basePath + "/";
-            colorPath += diffuseTex;
+            DiString colorPath;
+            if (!diffuseTex.empty() && diffuseTex[0] == '/')
+                colorPath = diffuseTex;
+            else
+                colorPath = basePath + "/" + diffuseTex;
+            
             DiTexturePtr tex = DiK2Configs::GetTexture(colorPath);
             if (tex)
                 sm->WriteTexture2D("map", colorPath);
         }
         if (shaderFlag & SHADER_FLAG_USE_NORMALMAP)
         {
-            DiString colorPath = basePath + "/" + normalTex;
+            DiString colorPath;
+            if (!normalTex.empty() && normalTex[0] == '/')
+                colorPath = normalTex;
+            else
+                colorPath = basePath + "/" + normalTex;
 
             DiTexturePtr normtex = DiK2Configs::GetTexture(colorPath + "_rxgb");
             if (normtex)

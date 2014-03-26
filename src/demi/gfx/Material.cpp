@@ -39,11 +39,10 @@ namespace Demi
         mWireframe       = false;
         mForceWireframe  = false;
         mBlendMode       = BLEND_REPLACE;
-        mEnableVertColor = false;
         mInstanceState   = INSTANCE_DISABLE;
         mShaderFlag      = 0;
-        mVertexShader    = NULL;
-        mPixelShader     = NULL;
+        mVertexShader    = nullptr;
+        mPixelShader     = nullptr;
         mShininess       = 16;
 
         if (Driver)
@@ -133,17 +132,6 @@ namespace Demi
             mShaderParameter->HasVariableType(DiShaderParameter::VARIABLE_SAMPLERCUBE);
     }
 
-    void DiMaterial::SetEnableVertColor( bool val )
-    {
-        if (mEnableVertColor != val)
-            mEnableVertColor = val;
-    }
-
-    void DiMaterial::SetExtraParams(DiCompileDesc& desc)
-    {
-        desc.AddMarco(DiMaterialDefine::PARAM_VERTEX_COLOR,mEnableVertColor?"1":"0");
-    }
-
     void DiMaterial::RecompileShader( DiShaderType type, const DiPair<DiString,DiString>& marco )
     {
         DiShaderProgram* shader = nullptr;
@@ -189,18 +177,48 @@ namespace Demi
     {
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateManualAsset<DiMaterial>(newname);
 
-        mat->LoadShader(mVertexShader->GetName(), mPixelShader->GetName());
+        mat->SetShaderFlag(mat->mShaderFlag);
+        mat->LoadShader(mVertexShader->GetName().ExtractBaseName(), 
+            mPixelShader->GetName().ExtractBaseName());
 
         mat->mCullMode        = mCullMode;
         mat->mDepthWrite      = mDepthWrite;
         mat->mDepthCheck      = mDepthCheck;
         mat->mWireframe       = mWireframe;
         mat->mForceWireframe  = mForceWireframe;
-        mat->mEnableVertColor = mEnableVertColor;
         mat->mBlendMode       = mBlendMode;
+        mat->mInstanceState   = mInstanceState;
+        mat->mOpacity         = mOpacity;
+        mat->mShininess       = mShininess;
+        mat->mAmbient         = mAmbient;
+        mat->mDiffuse         = mDiffuse;
+        mat->mSpecular        = mSpecular;
 
         mShaderParameter->CloneVarsTo(mat->GetShaderParameter());
         
+        return mat;
+    }
+
+    Demi::DiMaterialPtr DiMaterial::Clone()
+    {
+        DiMaterialPtr mat = QuickCreate(mVertexShader->GetName().ExtractBaseName(),
+            mPixelShader->GetName().ExtractBaseName(), mShaderFlag);
+
+        mat->mCullMode        = mCullMode;
+        mat->mDepthWrite      = mDepthWrite;
+        mat->mDepthCheck      = mDepthCheck;
+        mat->mWireframe       = mWireframe;
+        mat->mForceWireframe  = mForceWireframe;
+        mat->mBlendMode       = mBlendMode;
+        mat->mInstanceState   = mInstanceState;
+        mat->mOpacity         = mOpacity;
+        mat->mShininess       = mShininess;
+        mat->mAmbient         = mAmbient;
+        mat->mDiffuse         = mDiffuse;
+        mat->mSpecular        = mSpecular;
+
+        mShaderParameter->CloneVarsTo(mat->GetShaderParameter());
+
         return mat;
     }
 

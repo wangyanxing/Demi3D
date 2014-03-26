@@ -24,12 +24,24 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Model.h"
 #include "K2Configs.h"
 
+#include "DebugHelper.h"
+#include "ShaderManager.h"
+
 namespace Demi
 {
-    DiK2World::DiK2World(DiSceneManager* sm)
+    DiK2World::DiK2World()
         : mRootNode(nullptr)
     {
-        mRootNode = sm->GetRootNode()->CreateChild();
+        mRootNode = Driver->GetSceneManager()->GetRootNode()->CreateChild();
+
+#ifdef _DEBUG_CLIFF_POS
+        mDebugger = make_shared<DiDebugHelper>();
+        DiMaterialPtr helpermat = DiMaterial::QuickCreate(
+            "basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
+        helpermat->SetDepthCheck(false);
+        mDebugger->SetMaterial(helpermat);
+        mRootNode->AttachObject(mDebugger);
+#endif
     }
 
     DiK2World::~DiK2World()
@@ -64,7 +76,7 @@ namespace Demi
 
         if (type == "Prop_Tree")
             ProcessTrees(md);
-        else if (type == "Prop_Cliff")
+        else if (DiString::StartsWith(type, "Prop_Cliff"))
             ProcessCliff(md);
 
         return md;
@@ -77,7 +89,19 @@ namespace Demi
     void DiK2World::ProcessCliff(DiK2Model* model)
     {
         DiVec3 pos = model->GetNode()->GetPosition();
+        DiQuat rot = model->GetNode()->GetOrientation();
+
         DiVec2 worldSize = mTerrain->GetWorldSize();
+
+        DiTerrainDescPtr terDesc = mTerrain->GetDesc();
+
+        float cliffsize = terDesc->mCliffSize * terDesc->mGridSize / 2.0f;
+        DiVec3 transl(-cliffsize, 0, cliffsize);
+        pos += rot * transl;
+        
+#ifdef _DEBUG_CLIFF_POS
+        mDebugger->AddBoundingBox(pos, 1.5f, DiColor::Red);
+#endif
 
         DiTerrainDescPtr desc = mTerrain->GetDesc();
 
@@ -87,7 +111,7 @@ namespace Demi
         int gridSizeY = (CHUNK_GRID_SIZE * desc->mSizeY);
 
         int realGrid = gridx + gridy * gridSizeX;
-        DI_ASSERT(realGrid < gridSizeX * gridSizeY);
+        realGrid = DiMath::Clamp(realGrid, 0, gridSizeX*gridSizeY - 1);
         
         uint16 diftexid = desc->mTextureIDMap->GetBuffer(0)[realGrid].diffuseID;
         uint16 normtexid = desc->mTextureIDMap->GetBuffer(0)[realGrid].normalID;
@@ -105,10 +129,17 @@ namespace Demi
         {
             DiSubModel* sm = md->GetSubModel(i);
             auto material = sm->GetMaterial();
-            DiShaderParameter* shaderparam = material->GetShaderParameter();
+
+            auto newMat = material->Clone();
+            sm->SetMaterial(newMat);
+
+            //newMat->SetWireframe(true);
+
+            DiShaderParameter* shaderparam = newMat->GetShaderParameter();
             shaderparam->WriteTexture2D("terrainMap", textureDif);
             shaderparam->WriteTexture2D("terrainNormalMap", textureNor);
             shaderparam->WriteTexture2D("terrainSpecularMap", textureSpe);
+            shaderparam->WriteFloat("cliffUVScale", 1.0f / (terDesc->mTextureScale * terDesc->mGridSize));
         }
     }
 }

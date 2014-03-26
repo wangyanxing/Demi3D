@@ -25,7 +25,9 @@ struct VS_INPUT
 #endif
 };
 
-static float fWorldTextureProjection = 0.002;
+//static float fWorldTextureProjection = 0.002;
+
+uniform float cliffUVScale;
 
 struct VS_OUTPUT
 {
@@ -61,7 +63,7 @@ VS_OUTPUT vs_main( VS_INPUT In )
 
 	Out.Position  = mul(g_modelViewProjMatrix,objPos);
 	Out.Texcoord0.xy = In.Texcoord0.xy;
-    Out.Texcoord0.zw = mul(g_modelMatrix, objPos).xz * fWorldTextureProjection;
+    Out.Texcoord0.zw = mul(g_modelMatrix, objPos).xz * cliffUVScale;
 
     // world space normal
 	float4x4 model;

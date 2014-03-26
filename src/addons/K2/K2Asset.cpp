@@ -24,6 +24,7 @@ namespace Demi
 
     DiK2ModelAsset::DiK2ModelAsset(const DiString& name)
         : DiAsset(name)
+        , mIsTree(false)
     {
     }
 
@@ -59,9 +60,7 @@ namespace Demi
         
         DiString absPath = mdfFile.ExtractDirName();
 
-        DiString treeFile = absPath + "tree.tree";
-        if (DiPathLib::FileExisted(treeFile))
-            mTreeFile = treeFile;
+        mIsTree = DiString::StartsWith(mBaseFolder, "world/props/trees", false);
         
         DiString modelFile = absPath + mModelFile;
         serial.LoadModel(modelFile, this);

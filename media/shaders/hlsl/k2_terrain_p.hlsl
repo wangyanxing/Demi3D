@@ -49,6 +49,7 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 #else
 	half4 diffuse1 = diffuse0;
 #endif
+
 	half3 cDiffuseColor0 = diffuse0.rgb;
 	half3 cDiffuseColor1 = diffuse1.rgb;
 
@@ -59,7 +60,7 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
     cNormalmapColor0.rgb = tex2D(normalMap_0, In.Texcoord0).agb;
 	cNormalmapColor0.a = tex2D(specularMap_0, In.Texcoord0).g;
 #else
-	half4 cNormalmapColor0 = half3(0.5,0.5,1,1.0);
+    half4 cNormalmapColor0 = half4(0.5, 0.5, 1, 1.0);
 #endif
 
 #if _SHOW_LAYER_1
@@ -67,7 +68,7 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
     cNormalmapColor1.rgb = tex2D(normalMap_1, In.Texcoord0).agb;
 	cNormalmapColor1.a = tex2D(specularMap_1, In.Texcoord0).g;
 #else
-	half4 cNormalmapColor1 = half3(0.5,0.5,1,1.0);
+    half4 cNormalmapColor1 = half4(0.5, 0.5, 1, 1.0);
 #endif
 
 	half4 cNormalmapColor = lerp(cNormalmapColor0, cNormalmapColor1, fAlpha);
