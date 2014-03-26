@@ -11,13 +11,16 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiK2Pch_h__
-#define DiK2Pch_h__
+#include "K2Pch.h"
+#include "K2Property.h"
+#include "K2GameEntity.h"
 
-#include "MiscPch.h"
-#include "GfxPch.h"
-
-#include "K2GameDefines.h"
-#include "K2Coords.h"
-
-#endif
+namespace Demi
+{
+    void DiK2Property::setEntity(DiK2Entity* entity)
+    {
+        DI_ASSERT(entity);
+        mEntity = static_cast<DiK2GameEntity*>(entity);
+        onEntityReady();
+    }
+}

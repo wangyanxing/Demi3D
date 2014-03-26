@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2Game_h__
 
 #include "K2Prerequisites.h"
+#include "OIS.h"
 
 namespace Demi
 {
@@ -30,9 +31,21 @@ namespace Demi
 
         void        OpenWorld(const DiString& path);
 
+        DiK2World*  GetWorld(){ return mWorld; }
+
         void        SetHero(const DiString& model);
 
         void        Update();
+
+        void        KeyPressed(const OIS::KeyEvent &arg);
+
+        void        KeyReleased(const OIS::KeyEvent &arg);
+
+        void        MouseMoved(const OIS::MouseEvent& evt);
+
+        void        MousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+
+        void        MouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
 
     private:
 
@@ -42,7 +55,7 @@ namespace Demi
 
         DiK2World*  mWorld;
 
-        DiK2Hero*   mHero;
+        DiK2HeroEntity*   mHero;
 
         DiK2GameCamera* mCamera;
     };

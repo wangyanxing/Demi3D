@@ -11,37 +11,36 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiK2HeroEntity_h__
-#define DiK2HeroEntity_h__
+#ifndef DiK2GameEntity_h__
+#define DiK2GameEntity_h__
 
 #include "K2Prerequisites.h"
-#include "K2Model.h"
+#include "K2Entity.h"
+#include "K2GameDefines.h"
 
 namespace Demi
 {
-    class DEMI_K2_API DiK2HeroEntity : public DiBase
+    class DEMI_K2_API DiK2GameEntity : public DiK2Entity
     {
     public:
 
-        DiK2HeroEntity(DiK2Game* game);
+        DiK2GameEntity();
 
-        ~DiK2HeroEntity();
+        virtual ~DiK2GameEntity();
 
     public:
 
-        void            Release();
+        void    SetModel(const DiString& model);
 
-        DiK2ModelPtr    LoadModel(const DiString& mdf);
-
-        DiCullNode*     GetNode() { return mNode; }
+        void    Init(K2ObjTypes type);
 
     private:
 
-        DiK2ModelPtr    mModel;
+        DiK2RenderObject*   mRenderObj;
 
-        DiCullNode*     mNode;
+        K2ObjTypes       mType;
 
-        DiK2Game*       mGame;
+        DiString            mModel;
     };
 }
 

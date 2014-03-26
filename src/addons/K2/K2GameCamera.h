@@ -28,15 +28,17 @@ namespace Demi
 
     public:
 
-        void        SetTarget(DiK2Hero* hero) { mTarget = hero; }
+        void        SetTarget(DiK2HeroEntity* hero) { mTarget = hero; }
 
         void        Update();
+
+        DiCamera*   GetCamera() { return mCamera; }
 
     private:
 
         DiCamera*   mCamera;
 
-        DiK2Hero*   mTarget;
+        DiK2HeroEntity*   mTarget;
 
         float       mHeight;
     };

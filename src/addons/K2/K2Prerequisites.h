@@ -39,11 +39,18 @@ namespace Demi
     class DiK2VertexColorMap;
     class DiK2TileCliffMap;
     class DiK2HeightMap;
-    class DiK2Hero;
+    class DiK2HeroEntity;
     class DiK2Game;
     class DiK2GameCamera;
     class DiK2Input;
     class DiK2GameApp;
+    class DiK2Entity;
+    class DiK2EntityManager;
+    class DiK2GameEntity;
+    class DiK2Property;
+    class DiK2RenderObject;
+    class DiK2StaticObj;
+    class DiK2AnimatedObj;
 
     struct K2KeyFrames;
     struct K2Anim;

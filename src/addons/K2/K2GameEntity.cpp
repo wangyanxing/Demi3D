@@ -11,13 +11,29 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiK2Pch_h__
-#define DiK2Pch_h__
+#include "K2Pch.h"
+#include "K2GameEntity.h"
 
-#include "MiscPch.h"
-#include "GfxPch.h"
+namespace Demi
+{
 
-#include "K2GameDefines.h"
-#include "K2Coords.h"
+    DiK2GameEntity::DiK2GameEntity()
+    {
 
-#endif
+    }
+
+    DiK2GameEntity::~DiK2GameEntity()
+    {
+
+    }
+
+    void DiK2GameEntity::SetModel(const DiString& model)
+    {
+        mModel = model;
+    }
+
+    void DiK2GameEntity::Init(K2ObjTypes type)
+    {
+
+    }
+}

@@ -142,10 +142,9 @@ namespace Demi
                 transform.pos.x = worldSize.x - transform.pos.x;
 
                 float scale = child.GetFloat("scale");
+                transform.scale = DiVec3(scale, scale, scale);
 
-                DiK2ModelPtr k2md = world->AddModel(model, type, transform);
-
-                uint32 size = world->GetNumModels();
+                world->AddModel(model, type, transform);
             }
             child = child.GetNext();
         }

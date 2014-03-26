@@ -23,6 +23,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2WorldSerial.h"
 #include "K2Model.h"
 #include "K2Configs.h"
+#include "K2AnimatedObj.h"
+#include "K2StaticObj.h"
 
 #include "DebugHelper.h"
 #include "ShaderManager.h"
@@ -51,7 +53,6 @@ namespace Demi
 
     void DiK2World::Unload()
     {
-        mModels.clear();
         mTerrain->Unload();
     }
 
@@ -62,32 +63,35 @@ namespace Demi
         mRootNode->AttachObject(mTerrain);
     }
 
-    DiK2ModelPtr DiK2World::AddModel(const DiString& mdf, const DiString& type, const Trans& trans)
+    DiK2RenderObject* DiK2World::AddModel(const DiString& mdf, const DiString& type, const Trans& trans)
     {
-        DiK2ModelPtr md = make_shared<DiK2Model>(mdf);
-        DiCullNode* node = mRootNode->CreateChild();
-        node->AttachObject(md);
+        auto subtype = K2ObjSubTypes::FromString(type);
+        auto objtype = K2ObjSubTypes::GetObjType(subtype);
 
-        mModels.push_back(md);
+        DiK2RenderObject* renderObj = CreateRenderObject(objtype);
+        renderObj->LoadModel(mdf);
 
-        node->SetPosition(trans.pos);
-        node->SetOrientation(trans.rot);
-        node->SetScale(trans.scale);
+        renderObj->SetWorldPosition(trans.pos);
+        renderObj->SetRotation(trans.rot);
+        renderObj->SetScale(trans.scale);
 
-        if (type == "Prop_Tree")
-            ProcessTrees(md, node);
-        else if (DiString::StartsWith(type, "Prop_Cliff"))
-            ProcessCliff(md, node);
+        if (subtype == K2ObjSubTypes::SUB_STATIC_TREE)
+            ProcessTrees(renderObj);
+        else if (subtype == K2ObjSubTypes::SUB_STATIC_CLIFF)
+            ProcessCliff(renderObj);
 
-        return md;
+        return renderObj;
     }
 
-    void DiK2World::ProcessTrees(DiK2ModelPtr model, DiCullNode* node)
+    void DiK2World::ProcessTrees(DiK2RenderObject* renderObj)
     {
     }
 
-    void DiK2World::ProcessCliff(DiK2ModelPtr model, DiCullNode* node)
+    void DiK2World::ProcessCliff(DiK2RenderObject* renderObj)
     {
+        DiK2ModelPtr model = renderObj->GetModel();
+        DiCullNode* node = renderObj->GetNode();
+
         DiVec3 pos = node->GetPosition();
         DiQuat rot = node->GetOrientation();
 
@@ -140,5 +144,28 @@ namespace Demi
             shaderparam->WriteTexture2D("terrainSpecularMap", textureSpe);
             shaderparam->WriteFloat("cliffUVScale", 1.0f / (terDesc->mTextureScale * terDesc->mGridSize));
         }
+    }
+
+    DiK2RenderObject* DiK2World::CreateRenderObject(K2ObjTypes type)
+    {
+        DiK2RenderObject* ret = nullptr;
+        switch (type)
+        {
+        case INVALID_TYPE:
+            DI_WARNING("Invalid game object type");
+            return ret;
+            break;
+        case GAME_HERO:
+        case GAME_NPC:
+        case GAME_SCENE_ITEM:
+            ret = DI_NEW DiK2AnimatedObj();
+            break;
+        case GAME_STATIC:
+            ret = DI_NEW DiK2StaticObj();
+            break;
+        default:
+            break;
+        }
+        return ret;
     }
 }

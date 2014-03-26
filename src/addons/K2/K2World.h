@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2World_h__
 
 #include "K2Prerequisites.h"
+#include "K2GameDefines.h"
 
 namespace Demi
 {
@@ -30,37 +31,33 @@ namespace Demi
 
     public:
 
-        void            Unload();
+        void                Unload();
 
-        void            Load(const DiString& path);
+        void                Load(const DiString& path);
 
-        DiString        GetName() { return mName; }
+        DiString            GetName() { return mName; }
 
-        DiTerrainPtr    GetTerrain() { return mTerrain; }
+        DiTerrainPtr        GetTerrain() { return mTerrain; }
 
         /** add a map model (not NPCs or heroes)
          */
-        DiK2ModelPtr    AddModel(const DiString& mdf, const DiString& type, const Trans& trans);
+        DiK2RenderObject*   AddModel(const DiString& mdf, const DiString& type, const Trans& trans);
 
-        uint32          GetNumModels() const { return mModels.size(); }
-
-        DiK2ModelPtr    GetModel(uint32 id) { return mModels[id]; }
+        DiK2RenderObject*   CreateRenderObject( K2ObjTypes type );
 
     private:
 
-        void            ProcessTrees(DiK2ModelPtr model, DiCullNode* node);
+        void                ProcessTrees(DiK2RenderObject* obj);
 
-        void            ProcessCliff(DiK2ModelPtr model, DiCullNode* node);
+        void                ProcessCliff(DiK2RenderObject* obj);
 
     private:
 
-        DiTerrainPtr    mTerrain;
+        DiTerrainPtr        mTerrain;
 
-        DiCullNode*     mRootNode;
+        DiCullNode*         mRootNode;
 
-        DiString        mName;
-
-        DiVector<DiK2ModelPtr> mModels;
+        DiString            mName;
 
 #ifdef _DEBUG_CLIFF_POS
         DiDebugHelperPtr mDebugger;

@@ -12,41 +12,33 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "K2Pch.h"
-#include "K2Hero.h"
-#include "K2Game.h"
+#include "K2AnimatedObj.h"
 #include "K2Clip.h"
-
+#include "K2Model.h"
 #include "CullNode.h"
 #include "GfxDriver.h"
 #include "SceneManager.h"
 
 namespace Demi
 {
-    DiK2HeroEntity::DiK2HeroEntity(DiK2Game* game)
-        : mNode(nullptr)
-        , mGame(game)
+    DiK2AnimatedObj::DiK2AnimatedObj()
     {
     }
 
-    DiK2HeroEntity::~DiK2HeroEntity()
+    DiK2AnimatedObj::~DiK2AnimatedObj()
     {
-        Release();
     }
 
-    DiK2ModelPtr DiK2HeroEntity::LoadModel(const DiString& mdf)
+    DiK2ModelPtr DiK2AnimatedObj::LoadModel(const DiString& mdf)
     {
         DiSceneManager* sm = Driver->GetSceneManager();
         mNode = sm->GetRootNode()->CreateChild();
 
         mModel = make_shared<DiK2Model>(mdf);
-        mModel->GetAnimation()->Play("idle");
+        mModel->GetAnimation()->Play(K2_DEFAULT_ANIM);
         mNode->AttachObject(mModel);
 
         return mModel;
-    }
-
-    void DiK2HeroEntity::Release()
-    {
     }
 
 }

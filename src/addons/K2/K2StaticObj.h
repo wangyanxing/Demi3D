@@ -11,13 +11,27 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiK2Pch_h__
-#define DiK2Pch_h__
+#ifndef DiK2StaticObj_h__
+#define DiK2StaticObj_h__
 
-#include "MiscPch.h"
-#include "GfxPch.h"
+#include "K2Prerequisites.h"
+#include "K2RenderObjects.h"
 
-#include "K2GameDefines.h"
-#include "K2Coords.h"
+namespace Demi
+{
+    class DEMI_K2_API DiK2StaticObj : public DiK2RenderObject
+    {
+    public:
+
+        DiK2StaticObj();
+
+        virtual ~DiK2StaticObj();
+
+    public:
+
+        DiK2ModelPtr    LoadModel(const DiString& mdf);
+
+    };
+}
 
 #endif
