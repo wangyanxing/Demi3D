@@ -57,6 +57,8 @@ namespace Demi
             SUB_STATIC_MODEL,
             SUB_STATIC_CLIFF,
             SUB_STATIC_WATER,
+            SUB_STATIC_SCENERY,
+            SUB_STATIC_BUILDING,
 
             SUB_SCENE_ITEM,
 
@@ -64,8 +66,9 @@ namespace Demi
 
             SUB_HERO,
 
-            SUB_LOGIC_TRIGGER,
-            SUB_LOGIC_ENEMY_POINT,
+            SUB_LOGIC_TRIGGER_SPAWN_POINT,
+            SUB_LOGIC_ENTITY,
+            SUB_LOGIC_TELPORT,
         };
 
         static Type FromString(const DiString& str)
@@ -78,10 +81,33 @@ namespace Demi
                 table["Prop_Cliff2"] = SUB_STATIC_CLIFF;    // ramp
                 table["Prop_Water"]  = SUB_STATIC_WATER;
                 table["Prop_Static"] = SUB_STATIC_MODEL;
+                table["Prop_SpawnPoint"] = SUB_LOGIC_TRIGGER_SPAWN_POINT;
+                table["Prop_Scenery"] = SUB_STATIC_SCENERY;
             }
+
             auto it = table.find(str);
             if (it == table.end())
-                return SUB_SCENE_ITEM;
+            {
+                if (DiString::StartsWith(str, "Building_"))
+                {
+                    table[str] = SUB_STATIC_BUILDING;
+                    return SUB_STATIC_BUILDING;
+                }
+                else if (DiString::StartsWith(str, "Entity_"))
+                {
+                    table[str] = SUB_LOGIC_ENTITY;
+                    return SUB_LOGIC_ENTITY;
+                }
+                else if (DiString::StartsWith(str, "Teleport_"))
+                {
+                    table[str] = SUB_LOGIC_TELPORT;
+                    return SUB_LOGIC_TELPORT;
+                }
+                else
+                {
+                    return SUB_SCENE_ITEM;
+                }
+            }
             return it->second;
         }
 
@@ -93,6 +119,8 @@ namespace Demi
             case Demi::K2ObjSubTypes::SUB_STATIC_MODEL:
             case Demi::K2ObjSubTypes::SUB_STATIC_CLIFF:
             case Demi::K2ObjSubTypes::SUB_STATIC_WATER:
+            case Demi::K2ObjSubTypes::SUB_STATIC_SCENERY:
+            case Demi::K2ObjSubTypes::SUB_STATIC_BUILDING:
                 return GAME_STATIC;
             case Demi::K2ObjSubTypes::SUB_SCENE_ITEM:
                 return GAME_SCENE_ITEM;
@@ -100,8 +128,9 @@ namespace Demi
                 return GAME_NPC;
             case Demi::K2ObjSubTypes::SUB_HERO:
                 return GAME_HERO;
-            case Demi::K2ObjSubTypes::SUB_LOGIC_TRIGGER:
-            case Demi::K2ObjSubTypes::SUB_LOGIC_ENEMY_POINT:
+            case Demi::K2ObjSubTypes::SUB_LOGIC_TRIGGER_SPAWN_POINT:
+            case Demi::K2ObjSubTypes::SUB_LOGIC_ENTITY:
+            case Demi::K2ObjSubTypes::SUB_LOGIC_TELPORT:
                 return GAME_LOGIC;
             default:
                 return INVALID_TYPE;

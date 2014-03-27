@@ -19,7 +19,6 @@ float linstep(float min, float max, float v)
        }\
        objPos.w = 1.0; \
        objNormal = normalize(objNormal);\
-       objTangent = normalize(objTangent);
 
 #   define GET_SPACE_POS_NORMAL_TANGENT \
     for (int i = 0; i<4; i++){ \

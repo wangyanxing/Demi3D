@@ -54,7 +54,7 @@ namespace Demi
 
     void DiD3D9DepthBuffer::Release()
     {
-        DI_DEBUG("D3D9 depth/stencil buffer released: %x", (void*)mDepthBuffer);
+        //DI_DEBUG("D3D9 depth/stencil buffer released: %x", (void*)mDepthBuffer);
         SAFE_RELEASE(mDepthBuffer);
     }
 }

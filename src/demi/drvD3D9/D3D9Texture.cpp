@@ -183,11 +183,11 @@ namespace Demi
 
     void DiD3D9TextureDrv::Release()
     {
-        DI_DEBUG("D3D9 texture released: %x", (void*)mTexture);
+        //DI_DEBUG("D3D9 texture released: %x", (void*)mTexture);
         SAFE_RELEASE(mTexture);
         if (mD3DUsage & D3DUSAGE_DEPTHSTENCIL)
         {
-            DI_DEBUG("D3D9 depth/stencil buffer released: %x", (void*)mSurface);
+            //DI_DEBUG("D3D9 depth/stencil buffer released: %x", (void*)mSurface);
             SAFE_RELEASE(mSurface);
         }
     }
@@ -236,7 +236,7 @@ namespace Demi
             mTexture = nullptr;
             mSurface = DiD3D9Driver::CreateDepthStencil(width, height, d3dfmt);
             DI_ASSERT(mSurface);
-            DI_DEBUG("D3D9 Depth stencil buffer created: (%d,%d), ptr:%x", width, height, (void*)mSurface);
+            //DI_DEBUG("D3D9 Depth stencil buffer created: (%d,%d), ptr:%x", width, height, (void*)mSurface);
         }
         else
         {
@@ -247,14 +247,14 @@ namespace Demi
                 DI_ASSERT(tex2D);
                 tex2D->GetSurfaceLevel(0, &mSurface);
                 mTexture = tex2D;
-                DI_DEBUG("D3D9 2D texture created: (%d,%d), pool:%d, usage:%d, ptr:%x", width, height, mPool, mD3DUsage, (void*)tex2D);
+                //DI_DEBUG("D3D9 2D texture created: (%d,%d), pool:%d, usage:%d, ptr:%x", width, height, mPool, mD3DUsage, (void*)tex2D);
             }
             else if (mParent->GetTextureType() == TEXTURE_CUBE)
             {
                 DI_ASSERT(width == height);
                 IDirect3DCubeTexture9* texCUBE = DiD3D9Driver::CreateCubeTexture(width, numLevels,
                     mD3DUsage, d3dfmt, mPool);
-                DI_DEBUG("D3D9 cube texture created: (%d,%d), pool:%d, usage:%d, ptr:%x", width, width, mPool, mD3DUsage, (void*)texCUBE);
+                //DI_DEBUG("D3D9 cube texture created: (%d,%d), pool:%d, usage:%d, ptr:%x", width, width, mPool, mD3DUsage, (void*)texCUBE);
                 DI_ASSERT(texCUBE);
                 mTexture = texCUBE;
                 mSurface = nullptr;

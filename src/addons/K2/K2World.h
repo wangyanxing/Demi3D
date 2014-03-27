@@ -42,9 +42,14 @@ namespace Demi
 
         DiTerrainPtr        GetTerrain() { return mTerrain; }
 
+        /** From world serialization
+         */
+        void                ProcessWorldEntity(const DiString& mdf, const DiString& type, 
+                                const Trans& trans, int id, int team);
+
         /** add a map model (not NPCs or heroes)
          */
-        DiK2RenderObject*   AddRenderObj(const DiString& mdf, const DiString& type, const Trans& trans, int id);
+        DiK2RenderObject*   AddRenderObj(const DiString& mdf, K2ObjSubTypes::Type type, const Trans& trans, int id);
 
         /** Remove and delete
          */
@@ -78,6 +83,8 @@ namespace Demi
 #ifdef _DEBUG_CLIFF_POS
         DiDebugHelperPtr    mDebugger;
 #endif
+
+        DiMap<int, DiVec3>  mSpawnPoint;
     };
 }
 

@@ -121,16 +121,11 @@ namespace Demi
             if (child.CheckName("entity"))
             {
                 int id = child.GetInt("id");
+                int team = child.GetInt("team");
+
                 DiString model = child.GetAttribute("model");
                 model.TrimLeft("/");
                 DiString type = child.GetAttribute("type");
-
-                if (!DiString::StartsWith(type, "Prop_Cliff") && 
-                    !DiString::StartsWith(type, "Prop_Tree"))
-                {
-                    child = child.GetNext();
-                    continue;
-                }
 
                 DiVec3 angles = child.GetVector3("angles");
                 std::swap(angles.y, angles.z);
@@ -147,7 +142,8 @@ namespace Demi
                 float scale = child.GetFloat("scale");
                 transform.scale = DiVec3(scale, scale, scale);
 
-                world->AddRenderObj(model, type, transform, id);
+                world->ProcessWorldEntity(model, type, transform, id, team);
+
             }
             child = child.GetNext();
         }

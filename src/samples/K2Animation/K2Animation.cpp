@@ -42,19 +42,19 @@ void InitScene()
     
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
     
-    DiCullNode* nd0 = sm->GetRootNode()->CreateChild();
-    k2md = make_shared<DiK2Model>("heroes/aluna/model.mdf");
-    nd0->AttachObject(k2md);
-    nd0->Translate(-50, -50, 0);
-    k2md->GetAnimation()->Play("idle");
-    
     DiCullNode* nd1 = sm->GetRootNode()->CreateChild();
-    k2md2 = make_shared<DiK2Model>("items/couriers/panda/model.mdf");
+    k2md2 = make_shared<DiK2Model>("buildings/legion/well/model.mdf");
     //k2md2 = make_shared<DiK2Model>("heroes/javaras/model.mdf");
     nd1->AttachObject(k2md2);
     nd1->Translate(50, -50, 0);
     k2md2->GetAnimation()->Play("idle");
-    
+
+    DiCullNode* nd0 = sm->GetRootNode()->CreateChild();
+    k2md = make_shared<DiK2Model>("heroes/aluna/model.mdf");
+    // nd0->AttachObject(k2md);
+    // nd0->Translate(-50, -50, 0);
+    // k2md->GetAnimation()->Play("idle");
+
     DemiDemo::GetApp()->GetInputManager()->registerKeyReleaseEvent("changeClip",
           [&](const OIS::KeyEvent& e){
               switch (e.key)

@@ -59,7 +59,7 @@ namespace Demi
             &mD3D9DepthBuffer, NULL
             );
         DX9_CHKERR(h);
-        DI_DEBUG("D3D9 Depth stencil buffer created: (%d,%d), ptr:%x", mWidth, mHeight, mD3D9DepthBuffer);
+        //DI_DEBUG("D3D9 Depth stencil buffer created: (%d,%d), ptr:%x", mWidth, mHeight, mD3D9DepthBuffer);
 
         if (mD3D9DepthBuffer)
         {

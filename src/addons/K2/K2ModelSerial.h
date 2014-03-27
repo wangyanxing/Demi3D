@@ -50,6 +50,8 @@ namespace Demi
 
         DiSubMesh*  LoadMeshes(DiK2ModelAsset* target, DiMeshPtr mesh);
 
+        DiString    TryMaterialFile(const DiString& name, DiK2ModelAsset* target);
+
         bool    CheckFourcc(char* sig);
         
         bool    CheckFourcc(char* hed, char* sig);
@@ -71,6 +73,8 @@ namespace Demi
         void    ReadTangents();
 
         void    ReadSurfaces();
+
+        bool    mIgnoreSubMesh;
     };
 }
 

@@ -140,7 +140,6 @@ namespace Demi
         mInputMgr->UnregisterKeyPressEvent("App::KeyDown");
         mInputMgr->UnregisterKeyReleaseEvent("App::KeyUp");
 
-        //SAFE_DELETE(mGUIWrapper);
         SAFE_DELETE(mInputMgr);
 
         DiK2Configs::Shutdown();
@@ -178,9 +177,6 @@ namespace Demi
         mInputMgr->RegisterKeyPressEvent("App::KeyDown", std::bind(&DiK2GameApp::OnKeyPressed, this, _1));
         mInputMgr->RegisterKeyReleaseEvent("App::KeyUp", std::bind(&DiK2GameApp::OnKeyReleased, this, _1));
     
-        //mGUIWrapper = new MyGUI::DemiWrapper();
-        //mGUIWrapper->init("MyGUI_Core.xml");
-
         DiK2Configs::Init();
 
         mGame = DI_NEW DiK2Game();

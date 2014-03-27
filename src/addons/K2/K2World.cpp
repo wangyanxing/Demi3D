@@ -71,9 +71,8 @@ namespace Demi
         mRootNode->AttachObject(mTerrain);
     }
 
-    DiK2RenderObject* DiK2World::AddRenderObj(const DiString& mdf, const DiString& type, const Trans& trans, int id)
+    DiK2RenderObject* DiK2World::AddRenderObj(const DiString& mdf, K2ObjSubTypes::Type subtype, const Trans& trans, int id)
     {
-        auto subtype = K2ObjSubTypes::FromString(type);
         auto objtype = K2ObjSubTypes::GetObjType(subtype);
 
         DiK2RenderObject* renderObj = CreateRenderObject(objtype);
@@ -208,12 +207,28 @@ namespace Demi
 
     void DiK2World::OnKeyInput(const K2KeyEvent& event)
     {
-
     }
 
     void DiK2World::OnMouseInput(const K2MouseEvent& event)
     {
-
     }
 
+    void DiK2World::ProcessWorldEntity(const DiString& mdf, const DiString& type, 
+        const Trans& trans, int id, int team)
+    {
+        auto subtype = K2ObjSubTypes::FromString(type);
+
+        if (subtype == K2ObjSubTypes::SUB_STATIC_CLIFF || 
+            subtype == K2ObjSubTypes::SUB_STATIC_TREE  ||
+            subtype == K2ObjSubTypes::SUB_STATIC_MODEL ||
+            subtype == K2ObjSubTypes::SUB_STATIC_SCENERY)
+        {
+            // directly add to the scene
+            AddRenderObj(mdf, subtype, trans, id);
+        }
+        else if (subtype == K2ObjSubTypes::SUB_LOGIC_TRIGGER_SPAWN_POINT)
+        {
+            mSpawnPoint[team] = trans.pos;
+        }
+    }
 }

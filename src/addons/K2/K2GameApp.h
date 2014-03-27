@@ -67,8 +67,6 @@ namespace Demi
 
         DiAssetManager*     mAssetManager;
 
-        //MyGUI::DemiWrapper*   mGUIWrapper;
-
         DiK2Input*          mInputMgr;
 
         DiK2Game*           mGame;

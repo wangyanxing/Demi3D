@@ -81,7 +81,7 @@ namespace Demi
             srfDesc.Width, srfDesc.Height, dsfmt,
             srfDesc.MultiSampleType, srfDesc.MultiSampleQuality,
             TRUE, &depthBufferSurface, NULL);
-        DI_DEBUG("D3D9 Depth stencil buffer created: (%d,%d), ptr:%x", mWidth, mHeight, depthBufferSurface);
+        //DI_DEBUG("D3D9 Depth stencil buffer created: (%d,%d), ptr:%x", mWidth, mHeight, depthBufferSurface);
 
         DX9_CHKERR(hr);
 

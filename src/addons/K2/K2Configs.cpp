@@ -32,7 +32,11 @@ namespace Demi
             DiString honMediaPath = DiAssetManager::GetInstance().GetBasePath();
             honMediaPath += "../media_hon"; // default value
             honMediaPath.SimplifyPath();
+#if 0
             CommandMgr->RegisterString("k2_media_folder", honMediaPath, 0);
+#else
+            CommandMgr->RegisterString("k2_media_folder", "L:/Games/HON_res", 0);
+#endif
         }
 
         // register the asset type

@@ -149,6 +149,7 @@ namespace Demi
     //////////////////////////////////////////////////////////////////////////
 
     DiK2MdfSerial::DiK2MdfSerial()
+        :mIgnoreSubMesh(false)
     {
     }
 
@@ -313,10 +314,9 @@ namespace Demi
         {
             DiSubMesh* sub = LoadMeshes(target,mesh);
 
-            int stride = sub->GetVertexElements().GetStreamElementsSize(0);
-
             if (sub)
             {
+                int stride = sub->GetVertexElements().GetStreamElementsSize(0);
                 void* data = sub->CreateSourceData(0, gCurrentVerts.size(), stride);
                 memcpy(data, &gCurrentVerts[0], gCurrentVerts.size()*stride);
             }
@@ -408,26 +408,13 @@ namespace Demi
         gCurrentVerts.clear();
 
         // chunk size
-        ReadInt(mStream);
+        int chunksize = ReadInt(mStream);
 
-        ReadInt(mStream); // mesh index
-        ReadInt(mStream); // mesh mod
-        int vertics_count = ReadInt(mStream);
+        int meshid = ReadInt(mStream); // mesh index
+        int meshmod = ReadInt(mStream); // mesh mod
+        int vertNum = ReadInt(mStream);
 
-        DiSubMesh* submesh = nullptr;
-        if (vertics_count != 0)
-        {
-            submesh = mesh->CreateSubMesh();
-            submesh->SetVerticeNum(vertics_count);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_BLENDWEIGHT);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES);
-        }
-       
-        gCurrentVerts.resize(vertics_count);
+        gCurrentVerts.resize(vertNum);
 
         DiVec3 minBound, maxBound;
         minBound.x = ReadFloat(mStream);
@@ -444,7 +431,7 @@ namespace Demi
         }
         DiAABB bounds(minBound, maxBound);
 
-        ReadInt(mStream); //bone link
+        int bonelink = ReadInt(mStream); //bone link
 
         uint8 mesh_name_length = ReadByte(mStream);
         uint8 material_name_length = ReadByte(mStream);
@@ -452,11 +439,33 @@ namespace Demi
         DiString meshName = ReadString(mStream, mesh_name_length);
         ReadByte(mStream);
 
+        mIgnoreSubMesh = false;
+        if (vertNum == 0 || DiString::StartsWith(meshName, "_trisurf_") ||
+            DiString::StartsWith(meshName, "_invis_"))
+        {
+            mIgnoreSubMesh = true;
+        }
+
+        DiSubMesh* submesh = nullptr;
+        if (!mIgnoreSubMesh)
+        {
+            submesh = mesh->CreateSubMesh();
+            submesh->SetVerticeNum(vertNum);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_BLENDWEIGHT);
+            submesh->GetVertexElements().AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES);
+        }
+        
         DiString materialName = ReadString(mStream, material_name_length);
         ReadByte(mStream);
 
         DI_SERIAL_LOG("Mesh name: %s", meshName.c_str());
         DI_SERIAL_LOG("Material name: %s", materialName.c_str());
+
+        DI_LOG("MESH: %s [%d], mod[%d], bonelnk[%d], mat[%s]", meshName.c_str(), meshid, meshmod, bonelink, materialName.c_str());
         
         if(materialName.empty())
         {
@@ -474,11 +483,28 @@ namespace Demi
 
         if (submesh)
         {
-            DiString mateiralFile = target->GetBaseFolder() + "/" + materialName;
-            mateiralFile += ".material";
+            DiString materialFile = TryMaterialFile(materialName, target);
+            if (materialFile.empty())
+            {
+                DI_WARNING("No material founded: %s", target->GetBaseFolder().c_str());
+                submesh->SetMaterialName("defaultMat.mtl");
+            }
+            else
+            {
+                DI_LOG("Loading k2 material:%s", materialFile.c_str());
+                auto mat = ParseMaterial(materialFile, target->GetBaseFolder(), hasanim);
+                submesh->SetMaterialName(mat->GetName());
+            }
+        }
 
-            auto mat = ParseMaterial(mateiralFile, target->GetBaseFolder(), hasanim);
-            submesh->SetMaterialName(mat->GetName());
+        // manually setup the skinning weights
+        if (bonelink >= 0)
+        {
+            for (int i = 0; i < vertNum; i++)
+            {
+                gCurrentVerts[i].weights[0] = 1.0f;
+                gCurrentVerts[i].indices[0] = bonelink;
+            }
         }
 
         while (!mStream->Eof())
@@ -497,9 +523,15 @@ namespace Demi
             else if (CheckFourcc(hed, "colr"))
                 ReadVertColors();
             else if (CheckFourcc(hed, "lnk1"))
+            {
+                DI_WARNING("We don't support software skinning currently");
                 ReadBoneLinks();
+            }
             else if (CheckFourcc(hed, "lnk3"))
+            {
+                // hardware skinning
                 ReadBoneLinks();
+            }
             else if (CheckFourcc(hed, "sign"))
                 ReadSigns();
             else if (CheckFourcc(hed, "tang"))
@@ -508,7 +540,10 @@ namespace Demi
                 // start another turn
                 return submesh;
             else if (CheckFourcc(hed, "surf"))
+            {
+                // start another turn
                 ReadSurfaces();
+            }
             else
             {
                 DI_WARNING("K2 Model:Unknown data chunk tag: %c%c%c%c", hed[0], hed[1], hed[2], hed[3]);
@@ -523,6 +558,13 @@ namespace Demi
     {
         DI_SERIAL_LOG("------------verts-----------");
         int chunkSize = ReadInt(mStream);
+
+        if (mIgnoreSubMesh)
+        {
+            mStream->Skip(chunkSize);
+            return;
+        }
+
         int numverts = (chunkSize - 4) / 12;
         int meshindex = ReadInt(mStream);
         DI_SERIAL_LOG("mesh index:%d", meshindex);
@@ -547,6 +589,13 @@ namespace Demi
     {
         DI_SERIAL_LOG("-----------face------------");
         int chunkSize = ReadInt(mStream);
+
+        if (mIgnoreSubMesh)
+        {
+            mStream->Skip(chunkSize);
+            return;
+        }
+
         int meshindex = ReadInt(mStream);
         int numfaces = ReadInt(mStream);
         DI_SERIAL_LOG("face nums:%d", numfaces);
@@ -590,6 +639,12 @@ namespace Demi
         DI_SERIAL_LOG("-----------nrml------------");
         int chunkSize = ReadInt(mStream);
 
+        if (mIgnoreSubMesh)
+        {
+            mStream->Skip(chunkSize);
+            return;
+        }
+
         int numverts = (chunkSize - 4) / 12;
         DI_SERIAL_LOG("normal nums:%d", numverts);
 
@@ -619,6 +674,12 @@ namespace Demi
         DI_SERIAL_LOG("-----------texc------------");
         int chunkSize = ReadInt(mStream);
 
+        if (mIgnoreSubMesh)
+        {
+            mStream->Skip(chunkSize);
+            return;
+        }
+
         int numverts = (chunkSize - 4) / 8;
         DI_SERIAL_LOG("texc nums:%d", numverts);
 
@@ -642,6 +703,12 @@ namespace Demi
         DI_SERIAL_LOG("-----------colr------------");
         int chunkSize = ReadInt(mStream);
 
+        if (mIgnoreSubMesh)
+        {
+            mStream->Skip(chunkSize);
+            return;
+        }
+
         int numverts = (chunkSize - 4) / 4;
         DI_SERIAL_LOG("colr nums:%d", numverts);
         int meshindex = ReadInt(mStream);
@@ -657,22 +724,28 @@ namespace Demi
         DI_SERIAL_LOG("-----------lnk------------");
         int chunkSize = ReadInt(mStream);
 
+        if (mIgnoreSubMesh)
+        {
+            mStream->Skip(chunkSize);
+            return;
+        }
+
         int meshIndex = ReadInt(mStream);
         int vertNums = ReadInt(mStream);
 
         for (int i = 0; i < vertNums; i++)
         {
-            int num_weights = ReadInt(mStream);
+            int numWeights = ReadInt(mStream);
 
-            DI_ASSERT(num_weights <= 4);
+            DI_ASSERT(numWeights <= 4);
 
-            float* weights = new float[num_weights];
-            int* indexes = new int[num_weights];
+            float* weights = new float[numWeights];
+            int* indexes = new int[numWeights];
 
-            mStream->Read(weights, sizeof(float)*num_weights);
-            mStream->Read(indexes, sizeof(int)*num_weights);
+            mStream->Read(weights, sizeof(float)*numWeights);
+            mStream->Read(indexes, sizeof(int)*numWeights);
 
-            for (int w = 0; w < num_weights; ++w)
+            for (int w = 0; w < numWeights; ++w)
             {
                 gCurrentVerts[i].weights[w] = weights[w];
                 gCurrentVerts[i].indices[w] = indexes[w];
@@ -685,7 +758,7 @@ namespace Demi
 
     void DiK2MdfSerial::ReadSigns()
     {
-        // what's this
+        // what's this??
         DI_SERIAL_LOG("-----------sign------------");
         int chunkSize = ReadInt(mStream);
         mStream->Skip(chunkSize);
@@ -695,6 +768,12 @@ namespace Demi
     {
         DI_SERIAL_LOG("-----------tang------------");
         int chunkSize = ReadInt(mStream);
+
+        if (mIgnoreSubMesh)
+        {
+            mStream->Skip(chunkSize);
+            return;
+        }
 
         int numverts = (chunkSize - 4) / 12;
         DI_SERIAL_LOG("tang nums:%d", numverts);
@@ -724,7 +803,7 @@ namespace Demi
 
         int chunk_size = ReadInt(mStream);
 
-#if 0
+#if 1
         int surfindex = ReadInt(mStream);
         int num_planes = ReadInt(mStream);
         int num_points = ReadInt(mStream);
@@ -739,6 +818,8 @@ namespace Demi
         maxx = ReadFloat(mStream);
         maxy = ReadFloat(mStream);
         maxz = ReadFloat(mStream);
+
+        int flag = ReadInt(mStream);
 
         for (int i = 0; i < num_planes; ++i)
         {
@@ -771,6 +852,7 @@ namespace Demi
             int p2 = ReadInt(mStream);
             int p3 = ReadInt(mStream);
         }
+
 #else
         mStream->Skip(chunk_size);
 #endif
@@ -1011,4 +1093,22 @@ namespace Demi
         baseFolder += relativePath;
         return baseFolder;
     }
+
+    DiString DiK2MdfSerial::TryMaterialFile(const DiString& materialName, DiK2ModelAsset* target)
+    {
+        DiString mateiralFile = target->GetBaseFolder() + "/" + materialName;
+        mateiralFile += ".material";
+
+        if (!DiK2Configs::K2ArchiveExists(mateiralFile))
+        {
+            mateiralFile = target->GetBaseFolder() + "/material.material";
+            if (!DiK2Configs::K2ArchiveExists(mateiralFile))
+            {
+                mateiralFile.clear();
+            }
+        }
+
+        return mateiralFile;
+    }
+
 }
