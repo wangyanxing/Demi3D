@@ -37,6 +37,7 @@ void Demi::DiTerrainDesc::Release()
     SAFE_DELETE(mTextureIDMap);
     SAFE_DELETE(mColorMap);
     SAFE_DELETE(mTileCliffMap);
+    SAFE_DELETE(mVertBlockerMap);
 
     for (auto it = mFoliageLayers.begin(); it != mFoliageLayers.end(); ++it)
     {
@@ -57,6 +58,7 @@ Demi::DiTerrainDesc::DiTerrainDesc()
     mTextureIDMap   = nullptr;
     mColorMap       = nullptr;
     mTileCliffMap   = nullptr;
+    mVertBlockerMap = nullptr;
     mHeightMap      = nullptr;
 }
 

@@ -39,6 +39,7 @@ namespace Demi
     class DiK2VertexColorMap;
     class DiK2TileCliffMap;
     class DiK2HeightMap;
+    class DiK2VertexBlockerMap;
     class DiK2HeroEntity;
     class DiK2Game;
     class DiK2GameCamera;
@@ -60,6 +61,8 @@ namespace Demi
     typedef shared_ptr<DiK2ModelAsset>  DiK2ModelAssetPtr;
     typedef shared_ptr<DiTerrainDesc>   DiTerrainDescPtr;
     typedef shared_ptr<DiTerrain>       DiTerrainPtr;
+    typedef shared_ptr<DiK2GameEntity>  DiK2GameEntityPtr;
+    typedef shared_ptr<DiK2HeroEntity>  DiK2HeroEntityPtr;
 }
 
 #endif

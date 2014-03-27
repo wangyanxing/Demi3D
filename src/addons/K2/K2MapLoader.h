@@ -127,7 +127,7 @@ namespace Demi
         uint32* mBuffer;
     };
 
-    /** terrain water color map
+    /** terrain vertex cliff map
     */
     class DEMI_K2_API DiK2VertexCliffMap : public DiK2BaseMapLoader
     {
@@ -179,6 +179,33 @@ namespace Demi
     private:
 
         uint8* mBuffer;
+    };
+
+    /** terrain vertex blocker map
+    */
+    class DEMI_K2_API DiK2VertexBlockerMap : public DiK2BaseMapLoader
+    {
+    public:
+
+        DiK2VertexBlockerMap();
+
+        ~DiK2VertexBlockerMap();
+
+    public:
+
+        void    Load(DiDataStreamPtr data);
+
+        /** Load with original values
+        */
+        void    Load(uint32 width, uint32 height);
+
+        void    Unload();
+
+        uint8*  GetBuffer() { return mBuffer; }
+
+    private:
+
+        uint8*  mBuffer;
     };
 }
 

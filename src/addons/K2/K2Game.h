@@ -15,7 +15,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2Game_h__
 
 #include "K2Prerequisites.h"
-#include "OIS.h"
+#include "K2Input.h"
+#include "K2GameCamera.h"
 
 namespace Demi
 {
@@ -29,35 +30,41 @@ namespace Demi
 
     public:
 
-        void        OpenWorld(const DiString& path);
+        void                OpenWorld(const DiString& path);
 
-        DiK2World*  GetWorld(){ return mWorld; }
+        DiK2World*          GetWorld(){ return mWorld; }
 
-        void        SetHero(const DiString& model);
+        DiK2EntityManager*  GetEntityManager() { return mEntityMgr; }
 
-        void        Update();
+        void                SetHero(const DiString& model);
 
-        void        KeyPressed(const OIS::KeyEvent &arg);
+        void                Update();
 
-        void        KeyReleased(const OIS::KeyEvent &arg);
+        void                OnKeyInput(const K2KeyEvent& event);
 
-        void        MouseMoved(const OIS::MouseEvent& evt);
+        void                OnMouseInput(const K2MouseEvent& event);
 
-        void        MousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+        void                SetCamera(DiK2GameCamera::Style style);
 
-        void        MouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
-
-    private:
-
-        void        Init();
+        DiK2GameCamera*     GetCamera() { return mCamera; }
 
     private:
 
-        DiK2World*  mWorld;
+        void                Init();
 
-        DiK2HeroEntity*   mHero;
+    private:
 
-        DiK2GameCamera* mCamera;
+        typedef DiMap<DiK2GameCamera::Style, DiK2GameCamera*> Cameras;
+
+        Cameras             mCameraPool;
+
+        DiK2GameCamera*     mCamera;
+
+        DiK2World*          mWorld;
+
+        DiK2HeroEntity*     mHero;
+
+        DiK2EntityManager*  mEntityMgr;
     };
 }
 

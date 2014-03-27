@@ -115,6 +115,8 @@ namespace Demi
 
         DiK2TileCliffMap*   mTileCliffMap;
 
+        DiK2VertexBlockerMap* mVertBlockerMap;
+
         uint8*              mWaterMap;
 
         float*              mWaterHeightMap;

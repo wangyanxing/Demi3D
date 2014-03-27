@@ -15,32 +15,87 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2GameCamera_h__
 
 #include "K2Prerequisites.h"
+#include "K2Input.h"
 
 namespace Demi
 {
+    /** Fixed camera, base class
+     */
     class DEMI_K2_API DiK2GameCamera : public DiBase
     {
     public:
 
         DiK2GameCamera(DiCamera* camera);
 
-        ~DiK2GameCamera();
+        virtual ~DiK2GameCamera();
+
+        enum Style
+        {
+            Fixed_Style,
+            Free_Style,
+            Char_Style
+        };
 
     public:
 
-        void        SetTarget(DiK2HeroEntity* hero) { mTarget = hero; }
+        virtual void    Update(float dt){}
 
-        void        Update();
+        DiCamera*       GetCamera() { return mCamera; }
 
-        DiCamera*   GetCamera() { return mCamera; }
+        virtual void    OnKeyInput(const K2KeyEvent& event) {}
 
-    private:
+        virtual void    OnMouseInput(const K2MouseEvent& event) {}
 
-        DiCamera*   mCamera;
+        Style           GetStyle() { return mStyle; }
 
-        DiK2HeroEntity*   mTarget;
+    protected:
 
-        float       mHeight;
+        DiCamera*       mCamera;
+
+        float           mHeight;
+
+        Style           mStyle;
+    };
+
+    /** Free camera
+     */
+    class DEMI_K2_API DiK2FreeCamera : public DiK2GameCamera
+    {
+    public:
+
+        DiK2FreeCamera(DiCamera* camera);
+
+        virtual ~DiK2FreeCamera();
+
+    public:
+
+        virtual void    OnMouseInput(const K2MouseEvent& event);
+
+        virtual void    OnKeyInput(const K2KeyEvent& event);
+
+        virtual void    Update(float dt);
+
+    protected:
+
+        bool            mGoingForward;
+
+        bool            mGoingBack;
+
+        bool            mGoingLeft;
+
+        bool            mGoingRight;
+
+        bool            mGoingUp;
+
+        bool            mGoingDown;
+
+        bool            mFastMove;
+
+        bool            mMoving;
+
+        float           mTopSpeed;
+
+        DiVec3          mVelocity;
     };
 }
 

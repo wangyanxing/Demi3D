@@ -23,18 +23,18 @@ namespace Demi
      */
 #define DEF_DECLARE_PRIORITY(Property)      \
 public:                                     \
-    Property* get##Property()               \
+    DiK2##Property* Get##Property()         \
     {                                       \
         DI_ASSERT(m##Property);             \
         return m##Property;                 \
     }                                       \
-    const Property* get##Property() const   \
+    const DiK2##Property* Get##Property() const   \
     {                                       \
         DI_ASSERT(m##Property);             \
         return m##Property;                 \
     }                                       \
 private:                                    \
-    Property*  m##Property;                 
+    DiK2##Property*  m##Property;
 
 
     /** a base entity class
@@ -49,7 +49,7 @@ private:                                    \
         T* createProperty()
         {
             T* pComp = new T();
-            mPropertyMap[T::getStaticPropertyID()] = pComp;
+            mPropertyMap[T::GetStaticPropertyID()] = pComp;
             pComp->setEntity(this);
             pComp->activate();
             return pComp;
@@ -58,7 +58,7 @@ private:                                    \
         template<typename T>
         T* getProperty()
         {
-            auto it = mPropertyMap.find(T::getStaticPropertyID());
+            auto it = mPropertyMap.find(T::GetStaticPropertyID());
             DI_ASSERT(it != mPropertyMap.end());
             return dynamic_cast<T*>(it->second);
         }

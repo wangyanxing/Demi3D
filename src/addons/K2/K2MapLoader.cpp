@@ -257,6 +257,7 @@ namespace Demi
 
     DiK2VertexCliffMap::~DiK2VertexCliffMap()
     {
+        Unload();
     }
 
     void DiK2VertexCliffMap::Load(DiDataStreamPtr data)
@@ -306,6 +307,7 @@ namespace Demi
 
     DiK2TileCliffMap::~DiK2TileCliffMap()
     {
+        Unload();
     }
 
     void DiK2TileCliffMap::Load(DiDataStreamPtr data)
@@ -347,6 +349,57 @@ namespace Demi
             mBuffer = nullptr;
         }
     }
+
+    DiK2VertexBlockerMap::DiK2VertexBlockerMap()
+        : mBuffer(nullptr)
+    {
+    }
+
+    DiK2VertexBlockerMap::~DiK2VertexBlockerMap()
+    {
+        Unload();
+    }
+
+    void DiK2VertexBlockerMap::Load(DiDataStreamPtr data)
+    {
+        DI_LOG("Loading k2 vertex blocker map");
+
+        int w = 0, h = 0;
+        data->Read(&w, sizeof(int));
+        data->Read(&h, sizeof(int));
+
+        mWidth = w;
+        mHeight = h;
+
+        mBuffer = DI_NEW uint8[w * h];
+
+        for (int i = 0; i < w * h; ++i)
+        {
+            uint8 val = 0;
+            data->Read(&val, sizeof(uint8));
+            mBuffer[_ID] = val;
+        }
+    }
+
+    void DiK2VertexBlockerMap::Load(uint32 width, uint32 height)
+    {
+        Unload();
+        mWidth = width;
+        mHeight = height;
+        mBuffer = DI_NEW uint8[width*height];
+        for (uint32 i = 0; i < width*height; ++i)
+            mBuffer[i] = 0;
+    }
+
+    void DiK2VertexBlockerMap::Unload()
+    {
+        if (mBuffer)
+        {
+            DI_DELETE[] mBuffer;
+            mBuffer = nullptr;
+        }
+    }
+
 }
 
 #undef _ID

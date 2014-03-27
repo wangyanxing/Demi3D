@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "K2Prerequisites.h"
 #include "K2GameDefines.h"
+#include "K2Input.h"
 
 namespace Demi
 {
@@ -31,6 +32,8 @@ namespace Demi
 
     public:
 
+        void                Update(float dt);
+
         void                Unload();
 
         void                Load(const DiString& path);
@@ -41,9 +44,19 @@ namespace Demi
 
         /** add a map model (not NPCs or heroes)
          */
-        DiK2RenderObject*   AddModel(const DiString& mdf, const DiString& type, const Trans& trans);
+        DiK2RenderObject*   AddRenderObj(const DiString& mdf, const DiString& type, const Trans& trans, int id);
+
+        /** Remove and delete
+         */
+        bool                RemoveRenderObj(DiK2RenderObject*);
+
+        void                RemoveAllRenderObjs();
 
         DiK2RenderObject*   CreateRenderObject( K2ObjTypes type );
+
+        void                OnKeyInput(const K2KeyEvent& event);
+
+        void                OnMouseInput(const K2MouseEvent& event);
 
     private:
 
@@ -59,8 +72,11 @@ namespace Demi
 
         DiString            mName;
 
+        typedef DiSet<DiK2RenderObject*> RenderObjs;
+        RenderObjs          mRenderObjs;
+
 #ifdef _DEBUG_CLIFF_POS
-        DiDebugHelperPtr mDebugger;
+        DiDebugHelperPtr    mDebugger;
 #endif
     };
 }

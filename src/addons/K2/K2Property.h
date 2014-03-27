@@ -19,6 +19,18 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    #define DEFINE_PROPERTY_ID( Setting )   \
+    public:                                 \
+    enum ENUM_PROPERTY_ID {                 \
+        PropertyID = Setting                \
+    };                                      \
+    static ENUM_PROPERTY_ID_TYPE GetStaticPropertyID()\
+    { return (ENUM_PROPERTY_ID_TYPE)PropertyID; }\
+    ENUM_PROPERTY_ID_TYPE GetPropertyID()   \
+    { return (ENUM_PROPERTY_ID_TYPE)PropertyID; }
+
+    /** Property base class for game entities
+     */
     class DEMI_K2_API DiK2Property
     {
     protected:

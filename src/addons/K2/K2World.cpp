@@ -25,6 +25,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Configs.h"
 #include "K2AnimatedObj.h"
 #include "K2StaticObj.h"
+#include "K2GameCamera.h"
 
 #include "DebugHelper.h"
 #include "ShaderManager.h"
@@ -44,6 +45,7 @@ namespace Demi
         mDebugger->SetMaterial(helpermat);
         mRootNode->AttachObject(mDebugger);
 #endif
+
     }
 
     DiK2World::~DiK2World()
@@ -53,17 +55,23 @@ namespace Demi
 
     void DiK2World::Unload()
     {
+        DI_LOG("Unloading world");
+
+        RemoveAllRenderObjs();
+
         mTerrain->Unload();
     }
 
     void DiK2World::Load(const DiString& path)
     {
+        DI_LOG("Loading world: %s", path.c_str());
+
         DiK2WorldSerial serial;
         serial.Load(path,this);
         mRootNode->AttachObject(mTerrain);
     }
 
-    DiK2RenderObject* DiK2World::AddModel(const DiString& mdf, const DiString& type, const Trans& trans)
+    DiK2RenderObject* DiK2World::AddRenderObj(const DiString& mdf, const DiString& type, const Trans& trans, int id)
     {
         auto subtype = K2ObjSubTypes::FromString(type);
         auto objtype = K2ObjSubTypes::GetObjType(subtype);
@@ -166,6 +174,46 @@ namespace Demi
         default:
             break;
         }
+
+        if (!ret)
+            mRenderObjs.insert(ret);
+
         return ret;
     }
+
+    bool DiK2World::RemoveRenderObj(DiK2RenderObject* obj)
+    {
+        auto i = mRenderObjs.find(obj);
+        if (i == mRenderObjs.end())
+            return false;
+        
+        DI_DELETE obj;
+
+        mRenderObjs.erase(i);
+        return true;
+    }
+
+    void DiK2World::RemoveAllRenderObjs()
+    {
+        for (auto i = mRenderObjs.begin(); i != mRenderObjs.end(); ++i)
+        {
+            DI_DELETE *i;
+        }
+        mRenderObjs.clear();
+    }
+
+    void DiK2World::Update(float dt)
+    {
+    }
+
+    void DiK2World::OnKeyInput(const K2KeyEvent& event)
+    {
+
+    }
+
+    void DiK2World::OnMouseInput(const K2MouseEvent& event)
+    {
+
+    }
+
 }

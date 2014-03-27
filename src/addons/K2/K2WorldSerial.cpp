@@ -44,6 +44,9 @@ namespace Demi
         terrainDesc->mTileCliffMap = DI_NEW DiK2TileCliffMap();
         terrainDesc->mTileCliffMap->Load(DiK2Configs::GetDataStream(path + "/tilecliffmap", true));
 
+        terrainDesc->mVertBlockerMap = DI_NEW DiK2VertexBlockerMap();
+        terrainDesc->mVertBlockerMap->Load(DiK2Configs::GetDataStream(path + "/vertexblockermap", true));
+
         // load texture list
         LoadTextureList(path, terrainDesc);
 
@@ -144,7 +147,7 @@ namespace Demi
                 float scale = child.GetFloat("scale");
                 transform.scale = DiVec3(scale, scale, scale);
 
-                world->AddModel(model, type, transform);
+                world->AddRenderObj(model, type, transform, id);
             }
             child = child.GetNext();
         }

@@ -26,19 +26,23 @@ namespace Demi
 
         DiK2GameEntity();
 
-        virtual ~DiK2GameEntity();
+        virtual         ~DiK2GameEntity();
 
     public:
 
-        void    SetModel(const DiString& model);
+        void            SetModel(const DiString& model);
 
-        void    Init(K2ObjTypes type);
+        void            Init(K2ObjTypes type);
+
+        K2ObjTypes      GetType() const { return mType; }
+
+        virtual void    InitComponents(){}
 
     private:
 
         DiK2RenderObject*   mRenderObj;
 
-        K2ObjTypes       mType;
+        K2ObjTypes          mType;
 
         DiString            mModel;
     };

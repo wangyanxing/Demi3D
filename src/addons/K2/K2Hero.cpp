@@ -22,31 +22,22 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiK2HeroEntity::DiK2HeroEntity(DiK2Game* game)
-        : mNode(nullptr)
-        , mGame(game)
+    DiK2HeroEntity::DiK2HeroEntity()
     {
     }
 
     DiK2HeroEntity::~DiK2HeroEntity()
     {
-        Release();
     }
 
-    DiK2ModelPtr DiK2HeroEntity::LoadModel(const DiString& mdf)
+    void DiK2HeroEntity::OnKeyInput(const K2KeyEvent& event)
     {
-        DiSceneManager* sm = Driver->GetSceneManager();
-        mNode = sm->GetRootNode()->CreateChild();
 
-        mModel = make_shared<DiK2Model>(mdf);
-        mModel->GetAnimation()->Play("idle");
-        mNode->AttachObject(mModel);
-
-        return mModel;
     }
 
-    void DiK2HeroEntity::Release()
+    void DiK2HeroEntity::OnMouseInput(const K2MouseEvent& event)
     {
+
     }
 
 }

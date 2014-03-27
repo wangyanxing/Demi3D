@@ -79,7 +79,7 @@ static id mAppDelegate;
     mTimer = nil;
 
     // init the engine
-    Demi::DiK2GameApp::GetApp()->OpenImpl();
+    Demi::DiK2GameApp::Get()->OpenImpl();
     
     // rendering timer
     mTimer = [NSTimer scheduledTimerWithTimeInterval : (NSTimeInterval)(1.0f / 60.0f) * mLastFrameTime
@@ -112,9 +112,9 @@ static id mAppDelegate;
 
 -(void)render:(id)sender
 {
-    if (Demi::DiK2GameApp::GetApp() && Demi::DiK2GameApp::GetApp()->IsOpen())
+    if (Demi::DiK2GameApp::Get() && Demi::DiK2GameApp::Get()->IsOpen())
     {
-        Demi::DiK2GameApp::GetApp()->Update();
+        Demi::DiK2GameApp::Get()->Update();
     }
     else
     {

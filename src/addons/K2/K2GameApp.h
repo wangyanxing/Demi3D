@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Prerequisites.h"
 
 #include "OIS.h"
+#include "K2Game.h"
 
 namespace Demi
 {
@@ -30,43 +31,49 @@ namespace Demi
 
     public:
 
-        static DiK2GameApp* GetApp() { return sApp; }
+        static DiK2GameApp* Get() { return sApp; }
 
         static DiK2GameApp* sApp;
 
     public:
 
-        void              Update();
+        void                Update();
 
-        void              Close();
+        void                Close();
 
-        bool              IsOpen();
+        bool                IsOpen();
 
-        void              Open();
+        void                Open();
 
-        void              CloseEngine();
+        void                CloseEngine();
 
-        DiK2Input*        GetInputManager() { return mInputMgr; }
+        DiK2Input*          GetInputManager() { return mInputMgr; }
 
-        void              OnKeyPressed(const OIS::KeyEvent &arg);
+        void                OnKeyPressed(const OIS::KeyEvent &arg);
 
-        void              OnKeyReleased(const OIS::KeyEvent &arg);
+        void                OnKeyReleased(const OIS::KeyEvent &arg);
 
-        void              Run();
+        void                Run();
 
-        void              OpenImpl();
+        void                OpenImpl();
+
+        DiK2Game*           GetGame(){ return mGame; }
+
+        DiK2World*          GetWorld() { return mGame->GetWorld(); }
+
+        DiK2EntityManager*  GetEntityManager(){ return mGame->GetEntityManager(); }
 
     private:
 
-        DiAssetManager* mAssetManager;
+        DiAssetManager*     mAssetManager;
 
         //MyGUI::DemiWrapper*   mGUIWrapper;
 
-        DiK2Input*      mInputMgr;
+        DiK2Input*          mInputMgr;
 
-        DiK2Game*       mGame;
+        DiK2Game*           mGame;
 
-        bool            mQuit;
+        bool                mQuit;
     };
 }
 

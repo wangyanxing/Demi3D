@@ -24,8 +24,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "LogManager.h"
 
-#include "K2Game.h"
-
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   include "K2GameAppOSX.h"
 #endif
@@ -78,7 +76,7 @@ namespace Demi
     {
         DI_PROFILE_BEGIN_FRAME
 
-        mInputMgr->captureInput();
+        mInputMgr->Update();
 
         mGame->Update();
 
@@ -139,8 +137,8 @@ namespace Demi
 
     void DiK2GameApp::CloseEngine()
     {
-        mInputMgr->unregisterKeyPressEvent("App::KeyDown");
-        mInputMgr->unregisterKeyReleaseEvent("App::KeyUp");
+        mInputMgr->UnregisterKeyPressEvent("App::KeyDown");
+        mInputMgr->UnregisterKeyReleaseEvent("App::KeyUp");
 
         //SAFE_DELETE(mGUIWrapper);
         SAFE_DELETE(mInputMgr);
@@ -173,12 +171,12 @@ namespace Demi
         DI_ASSERT(ret);
 
         mInputMgr = new DiK2Input();
-        mInputMgr->createInput((size_t)(mMainHwnd));
+        mInputMgr->CreateInput((size_t)(mMainHwnd));
 
         using namespace std::placeholders;
 
-        mInputMgr->registerKeyPressEvent("App::KeyDown", std::bind(&DiK2GameApp::OnKeyPressed, this, _1));
-        mInputMgr->registerKeyReleaseEvent("App::KeyUp", std::bind(&DiK2GameApp::OnKeyReleased, this, _1));
+        mInputMgr->RegisterKeyPressEvent("App::KeyDown", std::bind(&DiK2GameApp::OnKeyPressed, this, _1));
+        mInputMgr->RegisterKeyReleaseEvent("App::KeyUp", std::bind(&DiK2GameApp::OnKeyReleased, this, _1));
     
         //mGUIWrapper = new MyGUI::DemiWrapper();
         //mGUIWrapper->init("MyGUI_Core.xml");
@@ -186,8 +184,8 @@ namespace Demi
         DiK2Configs::Init();
 
         mGame = DI_NEW DiK2Game();
-        mGame->OpenWorld("maps/te2");
-        mGame->SetHero("heroes/aluna/model.mdf");
+        mGame->OpenWorld("maps/test_entity");
+        //mGame->SetHero("heroes/aluna/model.mdf");
     }
 
     DiK2GameApp* DiK2GameApp::sApp = nullptr;

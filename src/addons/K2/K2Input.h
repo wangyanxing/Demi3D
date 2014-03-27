@@ -27,6 +27,31 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    struct DEMI_K2_API K2MouseEvent
+    {
+        enum Type
+        {
+            MOUSE_MOVE,
+            MOUSE_PRESS,
+            MOUSE_RELEASE
+        };
+        OIS::MouseState state;
+        OIS::MouseButtonID button;
+        Type type;
+    };
+
+    struct DEMI_K2_API K2KeyEvent
+    {
+        enum Type
+        {
+            KEY_PRESS,
+            KEY_RELEASE
+        };
+        OIS::KeyCode key;
+        uint32 text;
+        Type type;
+    };
+
     class DEMI_K2_API DiK2Input : public OIS::MouseListener, public OIS::KeyListener, public DiBase
     {
     public:
@@ -40,45 +65,55 @@ namespace Demi
         typedef std::function<void(const OIS::KeyEvent&)> KeyPressCallback;
         typedef std::function<void(const OIS::KeyEvent&)> KeyReleaseCallback;
 
-        void createInput(size_t _handle);
-        void destroyInput();
-        void captureInput();
-        void setInputViewSize(int _width, int _height);
+        void CreateInput(size_t _handle);
+        
+        void DestroyInput();
+        
+        void Update();
 
-        bool registerMouseMoveEvent(const DiString& name, MouseMoveCallback cb);
-        bool registerMousePressEvent(const DiString& name, MousePressCallback cb);
-        bool registerMouseReleaseEvent(const DiString& name, MouseReleaseCallback cb);
-        bool registerKeyPressEvent(const DiString& name, KeyPressCallback cb);
-        bool registerKeyReleaseEvent(const DiString& name, KeyReleaseCallback cb);
+        void SetInputViewSize(int _width, int _height);
 
-        bool unregisterMouseMoveEvent(const DiString& name);
-        bool unregisterMousePressEvent(const DiString& name);
-        bool unregisterMouseReleaseEvent(const DiString& name);
-        bool unregisterKeyPressEvent(const DiString& name);
-        bool unregisterKeyReleaseEvent(const DiString& name);
+        bool RegisterMouseMoveEvent(const DiString& name, MouseMoveCallback cb);
 
-#if 0
-        void injectMouseMove(int _absx, int _absy, int _absz);
-        void injectMousePress(int _absx, int _absy, MyGUI::MouseButton _id);
-        void injectMouseRelease(int _absx, int _absy, MyGUI::MouseButton _id);
-        void injectKeyPress(MyGUI::KeyCode _key, MyGUI::Char _text);
-        void injectKeyRelease(MyGUI::KeyCode _key);
-#endif
+        bool RegisterMousePressEvent(const DiString& name, MousePressCallback cb);
+        
+        bool RegisterMouseReleaseEvent(const DiString& name, MouseReleaseCallback cb);
+        
+        bool RegisterKeyPressEvent(const DiString& name, KeyPressCallback cb);
+        
+        bool RegisterKeyReleaseEvent(const DiString& name, KeyReleaseCallback cb);
 
-        void setMousePosition(int _x, int _y);
-        void updateCursorPosition();
+        bool UnregisterMouseMoveEvent(const DiString& name);
+        
+        bool UnregisterMousePressEvent(const DiString& name);
+        
+        bool UnregisterMouseReleaseEvent(const DiString& name);
+        
+        bool UnregisterKeyPressEvent(const DiString& name);
+        
+        bool UnregisterKeyReleaseEvent(const DiString& name);
 
-        OIS::Keyboard* getKeyboard() { return mKeyboard; }
-        OIS::Mouse* getMouse() { return mMouse; }
+        void SetMousePosition(int _x, int _y);
+
+        void UpdateCursorPosition();
+
+        OIS::Keyboard* GetKeyboard() { return mKeyboard; }
+
+        OIS::Mouse* GetMouse() { return mMouse; }
 
     private:
+
         bool mouseMoved(const OIS::MouseEvent& _arg);
+        
         bool mousePressed(const OIS::MouseEvent& _arg, OIS::MouseButtonID _id);
+        
         bool mouseReleased(const OIS::MouseEvent& _arg, OIS::MouseButtonID _id);
+        
         bool keyPressed(const OIS::KeyEvent& _arg);
+
         bool keyReleased(const OIS::KeyEvent& _arg);
 
-        void checkPosition();
+        void CheckPosition();
 
     private:
         OIS::InputManager* mInputManager;
@@ -94,7 +129,6 @@ namespace Demi
         int mCursorX;
         int mCursorY;
     };
-
 } 
 
 #endif

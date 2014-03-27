@@ -12,35 +12,40 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "K2Pch.h"
-#include "K2GameEntity.h"
-#include "K2World.h"
-#include "K2GameApp.h"
-#include "K2Game.h"
-#include "K2RenderObjects.h"
+#include "K2MoveProperty.h"
 
 namespace Demi
 {
-
-    DiK2GameEntity::DiK2GameEntity()
+    DiK2MoveProperty::DiK2MoveProperty()
     {
 
     }
 
-    DiK2GameEntity::~DiK2GameEntity()
+    DiK2MoveProperty::~DiK2MoveProperty()
     {
 
     }
 
-    void DiK2GameEntity::SetModel(const DiString& model)
+    void DiK2MoveProperty::update(float dt)
     {
-        mModel = model;
-        mRenderObj->LoadModel(mModel);
+
     }
 
-    void DiK2GameEntity::Init(K2ObjTypes type)
+    void DiK2MoveProperty::stop(bool bPassive /*= false*/)
     {
-        mType = type;
-        auto world = DiK2GameApp::Get()->GetWorld();
-        mRenderObj = world->CreateRenderObject(type);
+
     }
+
+    void DiK2MoveProperty::turnTo(const DiK2Pos& pos)
+    {
+
+    }
+
+    DiK2MoveProperty::WorldPosList DiK2MoveProperty::moveTo(const DiK2Pos& position,
+        float fRange /*= 0.0f*/, bool bPassive /*= false*/)
+    {
+        WorldPosList ret;
+        return ret;
+    }
+
 }

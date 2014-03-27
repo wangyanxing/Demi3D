@@ -11,31 +11,24 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiK2HeroEntity_h__
-#define DiK2HeroEntity_h__
-
-#include "K2Prerequisites.h"
+#include "K2Pch.h"
 #include "K2NPCEntity.h"
-#include "K2Input.h"
 
 namespace Demi
 {
-    class DEMI_K2_API DiK2HeroEntity : public DiK2NPCEntity
+    DiK2NPCEntity::DiK2NPCEntity()
     {
-    public:
 
-        DiK2HeroEntity();
+    }
 
-        ~DiK2HeroEntity();
+    DiK2NPCEntity::~DiK2NPCEntity()
+    {
 
-    public:
+    }
 
-        void        OnKeyInput(const K2KeyEvent& event);
+    void DiK2NPCEntity::InitComponents()
+    {
+        DiK2DynEntity::InitComponents();
+    }
 
-        void        OnMouseInput(const K2MouseEvent& event);
-
-    private:
-    };
 }
-
-#endif

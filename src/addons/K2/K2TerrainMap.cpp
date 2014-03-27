@@ -76,6 +76,8 @@ namespace Demi
             return false;
         }
 
+        DI_LOG("Loading terrain");
+
         mDesc = desc;
 
         uint32 vertSize = mDesc->GetVertNum(); 
@@ -148,6 +150,8 @@ namespace Demi
 
     void DiTerrain::Unload()
     {
+        DI_LOG("Unloading terrain");
+
         for (auto it = mChunks.begin(); it != mChunks.end(); ++it)
         {
             DiTerrainChunk* tc = *it;

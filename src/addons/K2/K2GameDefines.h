@@ -56,6 +56,7 @@ namespace Demi
             SUB_STATIC_TREE,
             SUB_STATIC_MODEL,
             SUB_STATIC_CLIFF,
+            SUB_STATIC_WATER,
 
             SUB_SCENE_ITEM,
 
@@ -73,8 +74,9 @@ namespace Demi
             if (table.empty())
             {
                 table["Prop_Tree"]   = SUB_STATIC_TREE;
-                table["Prop_Cliff"]  = SUB_STATIC_CLIFF;    // clif
+                table["Prop_Cliff"]  = SUB_STATIC_CLIFF;    // cliff
                 table["Prop_Cliff2"] = SUB_STATIC_CLIFF;    // ramp
+                table["Prop_Water"]  = SUB_STATIC_WATER;
                 table["Prop_Static"] = SUB_STATIC_MODEL;
             }
             auto it = table.find(str);
@@ -90,6 +92,7 @@ namespace Demi
             case Demi::K2ObjSubTypes::SUB_STATIC_TREE:
             case Demi::K2ObjSubTypes::SUB_STATIC_MODEL:
             case Demi::K2ObjSubTypes::SUB_STATIC_CLIFF:
+            case Demi::K2ObjSubTypes::SUB_STATIC_WATER:
                 return GAME_STATIC;
             case Demi::K2ObjSubTypes::SUB_SCENE_ITEM:
                 return GAME_SCENE_ITEM;
