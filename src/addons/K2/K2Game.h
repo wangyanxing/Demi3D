@@ -62,7 +62,7 @@ namespace Demi
 
         DiK2World*          mWorld;
 
-        DiK2HeroEntity*     mHero;
+        DiK2HeroEntityPtr   mHero;
 
         DiK2EntityManager*  mEntityMgr;
     };

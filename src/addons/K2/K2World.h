@@ -63,6 +63,10 @@ namespace Demi
 
         void                OnMouseInput(const K2MouseEvent& event);
 
+        /** id: usually team id
+         */
+        DiVec3              GetSpawnPoint(int id);
+
     private:
 
         void                ProcessTrees(DiK2RenderObject* obj);
@@ -85,6 +89,7 @@ namespace Demi
 #endif
 
         DiMap<int, DiVec3>  mSpawnPoint;
+
     };
 }
 

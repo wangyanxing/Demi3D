@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2Clip_h__
 
 #include "K2Prerequisites.h"
+#include "K2GameDefines.h"
 
 namespace Demi
 {
@@ -142,6 +143,10 @@ namespace Demi
 
         void        Play(const DiString& name);
 
+        void        Play(DiK2Clip* clip);
+
+        void        Play(K2PrefabClip::Clips clip);
+
         void        Update(float deltaTime);
 
         DiK2Clip*   AddClip(const DiString& name);
@@ -160,7 +165,10 @@ namespace Demi
 
         DiK2BonesData     mSkeleton;
         
-        DiStrHash<DiK2Clip*> mClips;
+        /// prefab clips
+        DiK2Clip*         mClips[K2PrefabClip::MAX_PREFAB_ANIM];
+
+        DiStrHash<DiK2Clip*> mExtraClips;
     };
 }
 

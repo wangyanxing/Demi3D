@@ -231,4 +231,13 @@ namespace Demi
             mSpawnPoint[team] = trans.pos;
         }
     }
+
+    Demi::DiVec3 DiK2World::GetSpawnPoint(int id)
+    {
+        auto i = mSpawnPoint.find(id);
+        if (i != mSpawnPoint.end())
+            return i->second;
+        return DiVec3::ZERO;
+    }
+
 }

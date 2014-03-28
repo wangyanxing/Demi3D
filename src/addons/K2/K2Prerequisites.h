@@ -52,6 +52,7 @@ namespace Demi
     class DiK2RenderObject;
     class DiK2StaticObj;
     class DiK2AnimatedObj;
+    class DiK2Attribute;
 
     struct K2KeyFrames;
     struct K2Anim;
@@ -63,6 +64,7 @@ namespace Demi
     typedef shared_ptr<DiTerrain>       DiTerrainPtr;
     typedef shared_ptr<DiK2GameEntity>  DiK2GameEntityPtr;
     typedef shared_ptr<DiK2HeroEntity>  DiK2HeroEntityPtr;
+    typedef shared_ptr<DiK2Attribute>   DiK2AttributePtr;
 }
 
 #endif

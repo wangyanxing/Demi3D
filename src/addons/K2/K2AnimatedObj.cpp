@@ -35,7 +35,7 @@ namespace Demi
         mNode = sm->GetRootNode()->CreateChild();
 
         mModel = make_shared<DiK2Model>(mdf);
-        mModel->GetAnimation()->Play(K2_DEFAULT_ANIM);
+        mModel->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
         mNode->AttachObject(mModel);
 
         return mModel;

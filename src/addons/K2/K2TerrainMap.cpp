@@ -80,8 +80,16 @@ namespace Demi
 
         mDesc = desc;
 
+        K2MapScale::GridSize = mDesc->mGridSize;
+
         uint32 vertSize = mDesc->GetVertNum(); 
         uint32 gridSize = mDesc->GetGridNum();
+
+        uint32 vertX = CHUNK_GRID_SIZE*mDesc->mSizeX + 1;
+        uint32 vertY = CHUNK_GRID_SIZE*mDesc->mSizeY + 1;
+
+        uint32 gridX = CHUNK_GRID_SIZE*mDesc->mSizeX;
+        uint32 gridY = CHUNK_GRID_SIZE*mDesc->mSizeY;
 
         if (mDesc->mHeightMap)
         {
@@ -97,20 +105,26 @@ namespace Demi
         else
         {
             mDesc->mHeightMap = DI_NEW DiK2HeightMap();
-            mDesc->mHeightMap->Load(CHUNK_GRID_SIZE*mDesc->mSizeX + 1, CHUNK_GRID_SIZE*mDesc->mSizeY + 1);
+            mDesc->mHeightMap->Load(vertX, vertY);
             mMaxHeight = mMinHeight = 0;
         }
 
         if (!mDesc->mColorMap)
         {
             mDesc->mColorMap = DI_NEW DiK2VertexColorMap();
-            mDesc->mColorMap->Load(CHUNK_GRID_SIZE*mDesc->mSizeX + 1, CHUNK_GRID_SIZE*mDesc->mSizeY + 1);
+            mDesc->mColorMap->Load(vertX, vertY);
         }
 
         if (!mDesc->mTileCliffMap)
         {
             mDesc->mTileCliffMap = DI_NEW DiK2TileCliffMap();
-            mDesc->mTileCliffMap->Load(CHUNK_GRID_SIZE*mDesc->mSizeX, CHUNK_GRID_SIZE*mDesc->mSizeY);
+            mDesc->mTileCliffMap->Load(gridX, gridY);
+        }
+
+        if (!mDesc->mVertBlockerMap)
+        {
+            mDesc->mVertBlockerMap = DI_NEW DiK2VertexBlockerMap();
+            mDesc->mVertBlockerMap->Load(vertX, vertY);
         }
 
         for (uint32 i = 0; i < TERRAIN_LAYER_NUM; i++)
@@ -118,7 +132,7 @@ namespace Demi
             if (!mDesc->mTextureIDMap)
             {
                 mDesc->mTextureIDMap = DI_NEW DiK2TileMap();
-                mDesc->mTextureIDMap->Load(CHUNK_GRID_SIZE*mDesc->mSizeX, CHUNK_GRID_SIZE*mDesc->mSizeY);
+                mDesc->mTextureIDMap->Load(gridX, gridY);
             }
         }
 
@@ -144,6 +158,21 @@ namespace Demi
 
         for (auto it = mChunks.begin(); it != mChunks.end(); ++it)
             (*it)->Load();
+
+        // load navigation map
+        mPathFinder.Init(NULL, vertX*DEF_CollisionGrid_Scale, vertY*DEF_CollisionGrid_Scale);
+        uint8* blockerBuffer = mDesc->mVertBlockerMap->GetBuffer();
+        for (uint32 x = 0; x < vertX; ++x)
+        {
+            for (uint32 y = 0; y < vertY; ++y)
+            {
+                uint8 block = blockerBuffer[x*vertX + y];
+                if (block > 0)
+                {
+                    mPathFinder.SetLevel(x, y, 15);
+                }
+            }
+        }
 
         return true;
     }

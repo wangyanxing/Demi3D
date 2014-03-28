@@ -29,20 +29,20 @@ namespace Demi
         auto itEnd = mPropertyMap.end();
         while (it != itEnd)
         {
-            it->second->deactivate();
+            it->second->Deactivate();
             DI_DELETE(it->second);
             it++;
         }
         mPropertyMap.clear();
     }
 
-    void DiK2Entity::update(float dt)
+    void DiK2Entity::Update(float dt)
     {
         auto it = mPropertyMap.begin();
         auto itEnd = mPropertyMap.end();
         while (it != itEnd)
         {
-            it->second->update(dt);
+            it->second->Update(dt);
             it++;
         }
     }

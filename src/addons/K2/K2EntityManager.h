@@ -23,9 +23,11 @@ namespace Demi
     class DEMI_K2_API K2AutoID
     {
     public:
-        static ObjID_t Gen(){ return sID++; }
-        static ObjID_t sID;
+        static K2ObjID Gen(){ return sID++; }
+        static K2ObjID sID;
     };
+
+#define AUTO_ID K2AutoID::Gen()
 
     /** Entity manager
      */
@@ -41,16 +43,18 @@ namespace Demi
 
         void                Update(float dt);
 
-        DiK2HeroEntityPtr   CreateHero(ObjID_t id);
+        /** usually the hero id is always 1
+         */
+        DiK2HeroEntityPtr   CreateHero(K2ObjID id);
 
-        ObjID_t             GetHeroID() const { return mHeroId; }
+        K2ObjID             GetHeroID() const { return mHeroId; }
 
     private:
 
-        typedef DiMap<ObjID_t, DiK2GameEntityPtr> EntityMap;
+        typedef DiMap<K2ObjID, DiK2GameEntityPtr> EntityMap;
         EntityMap           mEntities;
 
-        ObjID_t             mHeroId;
+        K2ObjID             mHeroId;
 
         DiK2HeroEntityPtr   mHeroEntity;
     };

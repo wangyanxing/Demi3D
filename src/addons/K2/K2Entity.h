@@ -39,53 +39,49 @@ private:                                    \
 
     /** a base entity class
      */
-    class DEMI_K2_API DiK2Entity
+    class DEMI_K2_API DiK2Entity : public DiBase
     {
     public:
 
         friend class DiK2EntityManager;
 
         template<typename T>
-        T* createProperty()
+        T* CreateProperty()
         {
-            T* pComp = new T();
+            T* pComp = DI_NEW T();
             mPropertyMap[T::GetStaticPropertyID()] = pComp;
-            pComp->setEntity(this);
-            pComp->activate();
+            pComp->SetEntity(this);
+            pComp->Activate();
             return pComp;
         }
 
         template<typename T>
-        T* getProperty()
+        T* GetProperty()
         {
             auto it = mPropertyMap.find(T::GetStaticPropertyID());
             DI_ASSERT(it != mPropertyMap.end());
             return dynamic_cast<T*>(it->second);
         }
 
-        virtual void initComponents()
-        {
-        }
+        virtual void InitComponents(){}
 
-        virtual void initAttribute()
-        {
-        }
+        virtual void InitAttribute(){}
 
         template<typename EntityType>
-        EntityType* getEntity()
+        EntityType* GetEntity()
         {
             return dynamic_cast<EntityType*>(this);
         }
 
-        ObjID_t getID() const { return mID; }
+        K2ObjID GetID() const { return mID; }
 
     protected:
-        void setID(ObjID_t id) { mID = id; }
+        void SetID(K2ObjID id) { mID = id; }
 
-        typedef DiMap< ENUM_PROPERTY_ID_TYPE, DiK2Property*> PropertyMap;
+        typedef DiMap< K2PropertyIDType, DiK2Property*> PropertyMap;
         PropertyMap mPropertyMap;
 
-        ObjID_t mID;
+        K2ObjID mID;
 
     public:
         
@@ -93,7 +89,7 @@ private:                                    \
         
         virtual ~DiK2Entity();
 
-        virtual void update(float dt);
+        virtual void Update(float dt);
     };
 }
 

@@ -11,31 +11,30 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiK2NPCEntity_h__
-#define DiK2NPCEntity_h__
+#ifndef DiK2Attribute_h__
+#define DiK2Attribute_h__
 
 #include "K2Prerequisites.h"
-#include "K2DynEntity.h"
 
 namespace Demi
 {
-    /** NPC entity
+    /** Attribute interface for entities
      */
-    class DEMI_K2_API DiK2NPCEntity : public DiK2DynEntity
+    class DEMI_K2_API DiK2Attribute
     {
     public:
 
-        DiK2NPCEntity();
+        virtual const K2ObjID   GetID() const = 0;
 
-        virtual         ~DiK2NPCEntity();
+        virtual const int       GetHP() const = 0;
 
-    public:
+        virtual const int       GetMaxHP() const = 0;
 
-        virtual void    InitComponents();
+        virtual const int       GetDirection() const = 0;
 
-        virtual void    InitAttribute();
+        virtual const float     GetMoveSpeed() const = 0;
 
-    private:
+        virtual void            Update(float dt) {}
     };
 }
 

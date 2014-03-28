@@ -30,7 +30,10 @@ namespace Demi
     void DiK2DynEntity::InitComponents()
     {
         DiK2GameEntity::InitComponents();
-        mMoveProperty = createProperty<DiK2MoveProperty>();
+
+        mMotionProperty = CreateProperty<DiK2MotionProperty>();
+        mStateProperty = CreateProperty<DiK2StateProperty>();
+        mMoveProperty = CreateProperty<DiK2MoveProperty>();
     }
 
 }

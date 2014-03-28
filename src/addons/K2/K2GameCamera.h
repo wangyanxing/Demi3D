@@ -31,30 +31,34 @@ namespace Demi
 
         enum Style
         {
-            Fixed_Style,
-            Free_Style,
-            Char_Style
+            STYLE_FIXED,
+            STYLE_FREE,
+            STYLE_CHARACTER
         };
 
     public:
 
-        virtual void    Update(float dt){}
+        virtual void        Update(float dt){}
 
-        DiCamera*       GetCamera() { return mCamera; }
+        DiCamera*           GetCamera() { return mCamera; }
 
-        virtual void    OnKeyInput(const K2KeyEvent& event) {}
+        virtual void        OnKeyInput(const K2KeyEvent& event) {}
 
-        virtual void    OnMouseInput(const K2MouseEvent& event) {}
+        virtual void        OnMouseInput(const K2MouseEvent& event) {}
 
-        Style           GetStyle() { return mStyle; }
+        Style               GetStyle() { return mStyle; }
+
+        void                SetTarget(DiK2RenderObject* target){ mTarget = target; }
 
     protected:
 
-        DiCamera*       mCamera;
+        DiCamera*           mCamera;
 
-        float           mHeight;
+        float               mHeight;
 
-        Style           mStyle;
+        Style               mStyle;
+
+        DiK2RenderObject*   mTarget;
     };
 
     /** Free camera
@@ -96,6 +100,25 @@ namespace Demi
         float           mTopSpeed;
 
         DiVec3          mVelocity;
+    };
+
+    /** Character camera
+     */
+    class DEMI_K2_API DiK2CharCamera : public DiK2GameCamera
+    {
+    public:
+
+        DiK2CharCamera(DiCamera* camera);
+
+        virtual ~DiK2CharCamera();
+
+    public:
+
+        virtual void    OnMouseInput(const K2MouseEvent& event);
+
+        virtual void    OnKeyInput(const K2KeyEvent& event);
+
+        virtual void    Update(float dt);
     };
 }
 

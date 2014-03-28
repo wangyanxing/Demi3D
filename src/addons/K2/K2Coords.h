@@ -21,7 +21,18 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    /** some global scale data
+     */
+    struct K2MapScale
+    {
+        static float GridSize;
+    };
+
+    __declspec(selectany) float K2MapScale::GridSize = 0;
+
+
     /** 2D plane coordinates
+        based on the vert number of the terrain
      */
     struct DiK2Pos
     {
@@ -31,27 +42,54 @@ namespace Demi
         DiK2Pos(void) : x(0.0f), z(0.0f) {}
         DiK2Pos(float fX, float fZ) : x(fX), z(fZ) {}
 
-        void Clear()
+        inline void Clear()
         {
             x = 0.0f;
             z = 0.0f;
         }
 
-        DiK2Pos& operator = (DiK2Pos const& rhs)
+        inline DiK2Pos& operator = (DiK2Pos const& rhs)
         {
             x = rhs.x;
             z = rhs.z;
             return *this;
         }
 
-        bool operator == (const DiK2Pos& rsh) const
+        inline bool operator == (const DiK2Pos& rsh) const
         {
             return DiMath::RealEqual(x, rsh.x) && DiMath::RealEqual(z, rsh.z);
         }
 
-        bool operator != (const DiK2Pos& Ref) const
+        inline bool operator != (const DiK2Pos& Ref) const
         {
             return !((*this) == Ref);
+        }
+
+        inline float Distance(const DiK2Pos& rhs) const
+        {
+            return DiMath::Sqrt(SquareDistance(rhs));
+        }
+
+        inline float SquareDistance(const DiK2Pos& rhs) const
+        {
+            double dx = x - rhs.x;
+            double dz = z - rhs.z;
+            return (float)(dx * dx + dz * dz);
+        }
+
+        inline void FromWorldPos(const DiVec3& worldPos)
+        {
+            x = worldPos.x / K2MapScale::GridSize;
+            z = worldPos.z / K2MapScale::GridSize;
+        }
+
+        inline DiVec3 ToWorldPos() const
+        {
+            DiVec3 ret;
+            ret.x = x * K2MapScale::GridSize;
+            ret.y = 0;
+            ret.z = z * K2MapScale::GridSize;
+            return ret;
         }
     };
 

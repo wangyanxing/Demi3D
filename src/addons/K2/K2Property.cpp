@@ -17,10 +17,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    void DiK2Property::setEntity(DiK2Entity* entity)
+    void DiK2Property::SetEntity(DiK2Entity* entity)
     {
         DI_ASSERT(entity);
         mEntity = static_cast<DiK2GameEntity*>(entity);
-        onEntityReady();
+        OnEntityReady();
     }
 }

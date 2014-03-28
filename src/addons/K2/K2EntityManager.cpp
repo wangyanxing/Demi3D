@@ -21,21 +21,21 @@ namespace Demi
     DiK2EntityManager::DiK2EntityManager()
         :mHeroId(INVALID_OBJ_ID)
     {
-
     }
 
     DiK2EntityManager::~DiK2EntityManager()
     {
     }
 
-    DiK2HeroEntityPtr DiK2EntityManager::CreateHero(ObjID_t id)
+    DiK2HeroEntityPtr DiK2EntityManager::CreateHero(K2ObjID id)
     {
         if (mHeroId == id && mHeroEntity)
             return mHeroEntity;
 
         mHeroEntity = make_shared<DiK2HeroEntity>();
-        mHeroEntity->initComponents();
-        mHeroEntity->setID(id);
+        mHeroEntity->InitComponents();
+        mHeroEntity->InitAttribute();
+        mHeroEntity->SetID(id);
         mHeroId = id;
         mEntities[id] = mHeroEntity;
         mHeroEntity->Init(GAME_HERO);
@@ -48,10 +48,10 @@ namespace Demi
         for (auto it = mEntities.begin(); it != itEnd; it++)
         {
             auto entity = it->second;
-            entity->update(dt);
+            entity->Update(dt);
         }
     }
 
-    Demi::ObjID_t K2AutoID::sID = 0;
+    Demi::K2ObjID K2AutoID::sID = 0;
 
 }

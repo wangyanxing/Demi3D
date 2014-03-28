@@ -18,7 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    enum ENUM_PROPERTY_ID_TYPE
+    enum K2PropertyIDType
     {
         /// dummy type
         PROPERTY_NONE = -1,

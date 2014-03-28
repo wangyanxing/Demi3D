@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Pch.h"
 #include "K2GameCamera.h"
 #include "K2Hero.h"
+#include "K2RenderObjects.h"
 
 #include "CullNode.h"
 
@@ -21,21 +22,15 @@ namespace Demi
 {
     DiK2GameCamera::DiK2GameCamera(DiCamera* camera)
         : mCamera(camera)
-        , mHeight(200)
-        , mStyle(Fixed_Style)
+        , mHeight(600)
+        , mStyle(STYLE_FIXED)
+        , mTarget(nullptr)
     {
     }
 
     DiK2GameCamera::~DiK2GameCamera()
     {
     }
-
-//         DiVec3 pos = mTarget->GetNode()->GetPosition();
-//         pos.y += mHeight;
-//         pos.z += mHeight;
-//         mCamera->SetPosition(pos);
-//         mCamera->LookAt(mTarget->GetNode()->GetPosition());
-
 
     DiK2FreeCamera::DiK2FreeCamera(DiCamera* camera)
         : DiK2GameCamera(camera)
@@ -50,7 +45,7 @@ namespace Demi
         , mTopSpeed(150)
         , mVelocity(DiVec3::ZERO)
     {
-        mStyle = Free_Style;
+        mStyle = STYLE_FREE;
     }
 
     DiK2FreeCamera::~DiK2FreeCamera()
@@ -150,4 +145,36 @@ namespace Demi
             mCamera->Move(mVelocity * dt);
     }
 
+
+    DiK2CharCamera::DiK2CharCamera(DiCamera* camera)
+        : DiK2GameCamera(camera)
+    {
+    }
+
+    DiK2CharCamera::~DiK2CharCamera()
+    {
+    }
+
+    void DiK2CharCamera::OnMouseInput(const K2MouseEvent& event)
+    {
+
+    }
+
+    void DiK2CharCamera::OnKeyInput(const K2KeyEvent& event)
+    {
+
+    }
+
+    void DiK2CharCamera::Update(float dt)
+    {
+        if (!mTarget)
+            return;
+
+        DiVec3 pos = mTarget->GetNode()->GetPosition();
+        pos.y += mHeight;
+        pos.z += mHeight;
+        mCamera->SetPosition(pos);
+        mCamera->LookAt(mTarget->GetNode()->GetPosition());
+
+    }
 }

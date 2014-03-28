@@ -24,10 +24,10 @@ namespace Demi
     enum ENUM_PROPERTY_ID {                 \
         PropertyID = Setting                \
     };                                      \
-    static ENUM_PROPERTY_ID_TYPE GetStaticPropertyID()\
-    { return (ENUM_PROPERTY_ID_TYPE)PropertyID; }\
-    ENUM_PROPERTY_ID_TYPE GetPropertyID()   \
-    { return (ENUM_PROPERTY_ID_TYPE)PropertyID; }
+    static K2PropertyIDType GetStaticPropertyID()\
+    { return (K2PropertyIDType)PropertyID; }\
+    K2PropertyIDType GetPropertyID()   \
+    { return (K2PropertyIDType)PropertyID; }
 
     /** Property base class for game entities
      */
@@ -51,19 +51,19 @@ namespace Demi
 
         virtual ~DiK2Property() {}
 
-        virtual ENUM_PROPERTY_ID_TYPE getPropertyID() { return PROPERTY_NONE; }
+        virtual K2PropertyIDType GetPropertyID() { return PROPERTY_NONE; }
 
     public:
 
         template< typename T >
-        const T* getEntity()  const
+        const T* GetEntity()  const
         {
             DI_ASSERT(mEntity);
             return dynamic_cast<T*>(mEntity);
         }
 
         template< typename T >
-        T* getEntity()
+        T* GetEntity()
         {
             DI_ASSERT(mEntity);
             return dynamic_cast<T*>(mEntity);
@@ -71,23 +71,23 @@ namespace Demi
 
     public:
 
-        virtual void update(float dt) {};
+        virtual void Update(float dt) {};
 
     public:
 
-        void activate()
+        void Activate()
         {
             mIsActive = ACTIVE_STATE;
-            onActivate();
+            OnActivate();
         }
 
-        void deactivate()
+        void Deactivate()
         {
             mIsActive = UNACTIVE_STATE;
-            onDeactivate();
+            OnDeactivate();
         }
 
-        bool isActive() const
+        bool IsActive() const
         {
             if (mIsActive == ACTIVE_STATE)
                 return true;
@@ -96,14 +96,14 @@ namespace Demi
         }
 
     protected:
-        virtual void onActivate() {}
-        virtual void onDeactivate() {}
-        virtual void onEntityReady() {}
+        virtual void OnActivate() {}
+        virtual void OnDeactivate() {}
+        virtual void OnEntityReady() {}
 
         friend class DiK2Entity;
         friend class DiK2GameEntity;
 
-        void setEntity(DiK2Entity*);
+        void SetEntity(DiK2Entity*);
 
     protected:
         DiK2GameEntity*     mEntity;

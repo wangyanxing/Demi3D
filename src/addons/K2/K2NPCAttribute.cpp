@@ -12,26 +12,42 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "K2Pch.h"
-#include "K2NPCEntity.h"
 #include "K2NPCAttribute.h"
 
 namespace Demi
 {
-    DiK2NPCEntity::DiK2NPCEntity()
+    DiK2NPCAttr::DiK2NPCAttr()
     {
     }
 
-    DiK2NPCEntity::~DiK2NPCEntity()
+    DiK2NPCAttr::~DiK2NPCAttr()
     {
     }
 
-    void DiK2NPCEntity::InitComponents()
+    const K2ObjID DiK2NPCAttr::GetID() const
     {
-        DiK2DynEntity::InitComponents();
+        return mNPCAttrs.OBjID;
+
     }
 
-    void DiK2NPCEntity::InitAttribute()
+    const int DiK2NPCAttr::GetHP() const
     {
-        SetAttribute<DiK2NPCAttr>();
+        return mNPCAttrs.HP;
     }
+
+    const int DiK2NPCAttr::GetMaxHP() const
+    {
+        return mNPCAttrs.MaxHP;
+    }
+
+    const int DiK2NPCAttr::GetDirection() const
+    {
+        return mNPCAttrs.Direction;
+    }
+
+    const float DiK2NPCAttr::GetMoveSpeed() const
+    {
+        return mNPCAttrs.MoveSpeed;
+    }
+
 }

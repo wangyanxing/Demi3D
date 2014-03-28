@@ -26,21 +26,40 @@ namespace Demi
 
         DiK2GameEntity();
 
-        virtual         ~DiK2GameEntity();
+        virtual ~DiK2GameEntity();
 
     public:
 
-        void            SetModel(const DiString& model);
+        void                SetModel(const DiString& model);
 
-        void            Init(K2ObjTypes type);
+        void                Init(K2ObjTypes type);
 
-        K2ObjTypes      GetType() const { return mType; }
+        DiK2RenderObject*   GetRenderObj() { return mRenderObj; }
 
-        virtual void    InitComponents(){}
+        K2ObjTypes          GetType() const { return mType; }
 
-    private:
+        virtual void        InitComponents(){}
+
+        template<typename T>
+        void                SetAttribute()
+        {
+            mAttribute = make_shared<T>();
+        }
+
+        DiK2AttributePtr    GetAttribute(){ return mAttribute; }
+
+        template<typename T>
+        std::shared_ptr<T>  GetAttribute()
+        {
+            DI_ASSERT(mAttribute);
+            return std::dynamic_pointer_cast<T>(mAttribute);
+        }
+
+    protected:
 
         DiK2RenderObject*   mRenderObj;
+
+        DiK2AttributePtr    mAttribute;
 
         K2ObjTypes          mType;
 

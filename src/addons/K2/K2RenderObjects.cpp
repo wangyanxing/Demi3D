@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2RenderObjects.h"
 #include "K2Game.h"
 #include "K2Clip.h"
+#include "K2Model.h"
 
 #include "CullNode.h"
 #include "GfxDriver.h"
@@ -48,8 +49,9 @@ namespace Demi
 
     void DiK2RenderObject::SetRotation(const float rotRad)
     {
+        mRotRadian = rotRad;
         mRotation.FromAngleAxis(DiRadian(rotRad), DiVec3::UNIT_Y);
-        mNode->SetOrientation(mRotRadian);
+        mNode->SetOrientation(mRotation);
     }
 
     void DiK2RenderObject::SetRotation(const DiQuat& quat)
@@ -61,12 +63,14 @@ namespace Demi
 
     void DiK2RenderObject::SetWorldPosition(const DiVec3& pos)
     {
+        mPosition.FromWorldPos(pos);
         mNode->SetPosition(pos);
     }
 
     void DiK2RenderObject::SetPosition(const DiK2Pos& pos)
     {
-        // TODO
+        mNode->SetPosition(pos.ToWorldPos());
+        mPosition = pos;
     }
 
     void DiK2RenderObject::SetScale(const DiVec3& scale)
@@ -75,4 +79,14 @@ namespace Demi
         mNode->SetScale(scale);
     }
 
+    void DiK2RenderObject::PlayClip(K2PrefabClip::Clips clip)
+    {
+        mModel->GetAnimation()->Play(clip);
+    }
+
+    void DiK2RenderObject::PlayClip(const DiString& clip)
+    {
+        mModel->GetAnimation()->Play(clip);
+
+    }
 }

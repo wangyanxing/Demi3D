@@ -22,36 +22,64 @@ namespace Demi
         : mSource(nullptr)
         , mTarget(nullptr)
         , mBlendElapsed(0)
-        , mBlendTime(0.2f)  // a default value
+        , mBlendTime(0.0f)  // a default value
     {
+        for (int i = 0; i < K2PrefabClip::MAX_PREFAB_ANIM; ++i)
+            mClips[i] = nullptr;
     }
 
     DiK2Animation::~DiK2Animation()
     {
+        for (int i = 0; i < K2PrefabClip::MAX_PREFAB_ANIM; ++i)
+        {
+            if (mClips[i])
+            {
+                DI_DELETE mClips[i];
+                mClips[i] = nullptr;
+            }
+        }
+
+        for (auto i = mExtraClips.begin(); i != mExtraClips.end(); ++i)
+        {
+            DI_DELETE i->second;
+        }
+        mExtraClips.clear();
     }
 
     void DiK2Animation::Play(const DiString& name)
     {
-        // TODO: make a queue or something
-        if (mSource && mTarget)
-            return;
-
-        auto it = mClips.find(name);
-        if (it == mClips.end())
+        auto it = mExtraClips.find(name);
+        if (it == mExtraClips.end())
         {
             DI_WARNING("Cannot find the animation: %s",name.c_str());
             return;
         }
 
         DiK2Clip* clip = it->second;
+        Play(clip);
+    }
+
+    void DiK2Animation::Play(DiK2Clip* clip)
+    {
+        if (mSource && mTarget)
+        {
+            mSource = clip;
+        }
+
         clip->Cleanup();
-        
+
         mBlendElapsed = 0;
-        
+
         if (!mSource)
             mSource = clip;
-        else if(clip != mSource)
+        else if (clip != mSource)
             mTarget = clip;
+    }
+
+    void DiK2Animation::Play(K2PrefabClip::Clips clip)
+    {
+        if (mClips[clip])
+            Play(mClips[clip]);
     }
 
     void DiK2Animation::Update(float deltaTime)
@@ -79,14 +107,22 @@ namespace Demi
 
     DiK2Clip* DiK2Animation::AddClip(const DiString& name)
     {
-        auto i = mClips.find(name);
-        if (i != mClips.end())
+        K2PrefabClip::Clips prefabClip = K2PrefabClip::FromString(name);
+        if (prefabClip == K2PrefabClip::MAX_PREFAB_ANIM)
         {
-            DI_DELETE i->second;
+            auto i = mExtraClips.find(name);
+            DI_ASSERT(i == mExtraClips.end());
+            DiK2Clip* c = DI_NEW DiK2Clip();
+            mExtraClips[name] = c;
+            return c;
         }
-        DiK2Clip* c = DI_NEW DiK2Clip();
-        mClips[name] = c;
-        return c;
+        else
+        {
+            DI_ASSERT(!mClips[prefabClip]);
+            DiK2Clip* c = DI_NEW DiK2Clip();
+            mClips[prefabClip] = c;
+            return c;
+        }
     }
 
     void DiK2Clip::Update(float deltaTime)

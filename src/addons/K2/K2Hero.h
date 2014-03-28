@@ -34,6 +34,8 @@ namespace Demi
 
         void        OnMouseInput(const K2MouseEvent& event);
 
+        void        InitAttribute();
+
     private:
     };
 }

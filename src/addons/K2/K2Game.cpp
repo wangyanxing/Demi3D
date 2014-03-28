@@ -20,6 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Input.h"
 #include "K2TerrainMap.h"
 #include "K2EntityManager.h"
+#include "K2RenderObjects.h"
 
 #include "DirectionalLight.h"
 #include "CullNode.h"
@@ -30,7 +31,6 @@ namespace Demi
 {
     DiK2Game::DiK2Game()
         : mWorld(nullptr)
-        , mHero(nullptr)
         , mEntityMgr(nullptr)
         , mCamera(nullptr)
     {
@@ -42,7 +42,6 @@ namespace Demi
         DI_DELETE mCamera;
         DI_DELETE mEntityMgr;
         DI_DELETE mWorld;
-        DI_DELETE mHero;
     }
 
     void DiK2Game::Update()
@@ -65,13 +64,13 @@ namespace Demi
 
     void DiK2Game::SetHero(const DiString& model)
     {
-        if (mHero)
-            DI_DELETE mHero;
+        mHero = GetEntityManager()->CreateHero(1);
+        mHero->SetModel(model);
+        DiVec3 spawnPoint = mWorld->GetSpawnPoint(0);
+        mHero->GetRenderObj()->SetWorldPosition(spawnPoint);
 
-        //mHero = DI_NEW DiK2HeroEntity(this);
-        //mHero->LoadModel(model);
-
-        //mCamera->SetTarget(mHero);
+        if (mCamera)
+            mCamera->SetTarget(mHero->GetRenderObj());
     }
 
     void DiK2Game::Init()
@@ -87,7 +86,7 @@ namespace Demi
         dirlight->SetColor(DiColor());
         dirlight->SetDirection(DiVec3(-0.5f, -0.866f, 0).normalisedCopy());
 
-        SetCamera(DiK2GameCamera::Free_Style);
+        SetCamera(DiK2GameCamera::STYLE_CHARACTER);
     }
 
     void DiK2Game::OnKeyInput(const K2KeyEvent& event)
@@ -123,36 +122,17 @@ namespace Demi
 
         switch (style)
         {
-        case Demi::DiK2GameCamera::Fixed_Style:
+        case Demi::DiK2GameCamera::STYLE_FIXED:
             mCamera = DI_NEW DiK2GameCamera(cam);
             break;
-        case Demi::DiK2GameCamera::Free_Style:
+        case Demi::DiK2GameCamera::STYLE_FREE:
             mCamera = DI_NEW DiK2FreeCamera(cam);
             break;
-        case Demi::DiK2GameCamera::Char_Style:
+        case Demi::DiK2GameCamera::STYLE_CHARACTER:
+            mCamera = DI_NEW DiK2CharCamera(cam);
             break;
         default:
             break;
         }
-    }
-
-//         if (id == OIS::MB_Left)
-//         {
-//             // click on map
-//             auto terrain = mWorld->GetTerrain();
-// 
-//             float screenPosX = float(evt.state.X.abs) / float(evt.state.width);
-//             float screenPosY = float(evt.state.Y.abs) / float(evt.state.height);
-// 
-//             screenPosX = DiMath::Clamp<float>(screenPosX, 0, 1);
-//             screenPosY = DiMath::Clamp<float>(screenPosY, 0, 1);
-// 
-//             DiRay ray = mCamera->GetCamera()->GetCameraToViewportRay(screenPosX, screenPosY);
-//             DiVec3 clickout;
-//             if (terrain->RayIntersects(ray, clickout))
-//             {
-//                 
-//             }
-//         }
-  
+    }  
 }

@@ -16,9 +16,20 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "K2Prerequisites.h"
 #include "K2Property.h"
+#include "K2PathFinder.h"
 
 namespace Demi
 {
+#define FUSE_PARAM          (0.3f)
+#define MAX_POS_NODE_NUMBER (MAX_PATH_NODE_NUMBER + 1)
+#define	MAX_SENDPOS	5
+#define	MAX_SENDPOSREM (MAX_SENDPOS - 1)
+        
+#define SUPERSONIC_SPEED   10.0f
+#define RUN_SPEED          1.5f
+
+    /** Moving and path finding property
+     */
     class DEMI_K2_API DiK2MoveProperty : public DiK2Property
     {
         DEFINE_PROPERTY_ID(PROPERTY_MOVE)
@@ -33,16 +44,45 @@ namespace Demi
 
         typedef DiVector<DiK2Pos> WorldPosList;
 
-        void            update(float dt);
+        void            Update(float dt);
 
-        void            stop(bool bPassive = false);
+        void            Stop(bool bPassive = false);
 
-        void            turnTo(const DiK2Pos& pos);
+        void            TurnTo(const DiK2Pos& pos);
 
-        WorldPosList    moveTo(const DiK2Pos& position, float fRange = 0.0f, bool bPassive = false);
+        void            MoveTo(const DiK2Pos& source, const DiK2Pos& target,
+                            float fRange = 0.0f);
 
     private:
 
+        DiK2Pos         GetIntersectionLineRound(const DiK2Pos& linePos1, const DiK2Pos& linePos2, 
+                            const DiK2Pos& roundCenter, float fRadius);
+
+        void            ModalityChange(K2ModalityType mod);
+
+    private:
+
+        DiK2Pos         mPosNode[MAX_POS_NODE_NUMBER];
+
+        int             mNumNode;
+
+        int             mNumCurTarget;
+
+        DiK2Pos         mTargetPosition;
+
+        K2WalkMode      mWalkMode;
+
+        K2ModalityType  mModality;
+
+        float           mCurrMoveDistance;
+
+        float           mDistance;
+
+        int             mTargetDirection;
+
+        float           mCurSpeed;
+
+        int32           mTumRate;
     };
 }
 

@@ -17,6 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Prerequisites.h"
 #include "K2TerrainDesc.h"
 #include "K2MapLoader.h"
+#include "K2PathFinder.h"
+
 #include "Material.h"
 #include "TransformUnit.h"
 
@@ -131,6 +133,8 @@ namespace Demi
         void                        LoadFoliageMap();
 
         virtual DiString&           GetType();
+
+        HeavyPathFinder&            GetPathFinder() { return mPathFinder; }
                 
     public:
 
@@ -192,6 +196,8 @@ namespace Demi
         float                       mMinHeight;
 
         DiQuadNode*                 mRoot;
+
+        HeavyPathFinder             mPathFinder;
     };
 }
 

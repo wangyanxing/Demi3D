@@ -17,6 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Prerequisites.h"
 #include "K2GameEntity.h"
 #include "K2MoveProperty.h"
+#include "K2StateProperty.h"
+#include "K2MotionProperty.h"
 
 namespace Demi
 {
@@ -24,7 +26,10 @@ namespace Demi
      */
     class DEMI_K2_API DiK2DynEntity : public DiK2GameEntity
     {
+        DEF_DECLARE_PRIORITY(MotionProperty);
+        DEF_DECLARE_PRIORITY(StateProperty);
         DEF_DECLARE_PRIORITY(MoveProperty);
+
 
     public:
 

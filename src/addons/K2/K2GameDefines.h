@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2GameDefines_h__
 
 #include "K2Prerequisites.h"
+#include "K2StateDefines.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #    define ATTR_NORETURN
@@ -26,11 +27,56 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    typedef uint32  ObjID_t;
+    typedef uint32  K2ObjID;
 
-    const ObjID_t   ATTR_UNUSED(INVALID_OBJ_ID) = 0xFFFFFFFF;
+    const K2ObjID   ATTR_UNUSED(INVALID_OBJ_ID) = 0xFFFFFFFF;
+    const int32     INVALID_INT_VALUE           = 0x7fffffff;
+    const float     INVALID_FLOAT_VALUE         = 1.7014117e+38f;
 
-    const DiString  K2_DEFAULT_ANIM = "idle";
+    enum K2WalkMode
+    {
+        ENUM_WALK_MODE_STOP = 0,
+        ENUM_WALK_MODE_WALK,
+    };
+
+    enum K2ModalityType
+    {
+        MODALITY_STAND = 0,
+        MODALITY_WALK = 1,
+        MODALITY_RUN = 2,
+        MODALITY_JUMP = 3,
+    };
+
+    /** general animation list
+     */
+    struct K2PrefabClip
+    {
+        enum Clips
+        {
+            ANIM_IDLE,
+            ANIM_PORTRAIT,
+            ANIM_WALK,
+            ANIM_DEATH,
+            ANIM_BORED,
+            ANIM_TAUNT,
+            ANIM_ITEM,
+            ANIM_KNOCK,
+
+            ANIM_ATTACK_1,
+            ANIM_ATTACK_2,
+            ANIM_ATTACK_3,
+            ANIM_ATTACK_4,
+
+            ANIM_ABILITY_1,
+            ANIM_ABILITY_2,
+            ANIM_ABILITY_3,
+            ANIM_ABILITY_4,
+
+            MAX_PREFAB_ANIM
+        };
+
+        static Clips FromString(const DiString& str);
+    }; 
 
     /** prime types
      */
@@ -71,72 +117,11 @@ namespace Demi
             SUB_LOGIC_TELPORT,
         };
 
-        static Type FromString(const DiString& str)
-        {
-            static DiStrHash<Type> table;
-            if (table.empty())
-            {
-                table["Prop_Tree"]   = SUB_STATIC_TREE;
-                table["Prop_Cliff"]  = SUB_STATIC_CLIFF;    // cliff
-                table["Prop_Cliff2"] = SUB_STATIC_CLIFF;    // ramp
-                table["Prop_Water"]  = SUB_STATIC_WATER;
-                table["Prop_Static"] = SUB_STATIC_MODEL;
-                table["Prop_SpawnPoint"] = SUB_LOGIC_TRIGGER_SPAWN_POINT;
-                table["Prop_Scenery"] = SUB_STATIC_SCENERY;
-            }
+        static Type FromString(const DiString& str);
 
-            auto it = table.find(str);
-            if (it == table.end())
-            {
-                if (DiString::StartsWith(str, "Building_"))
-                {
-                    table[str] = SUB_STATIC_BUILDING;
-                    return SUB_STATIC_BUILDING;
-                }
-                else if (DiString::StartsWith(str, "Entity_"))
-                {
-                    table[str] = SUB_LOGIC_ENTITY;
-                    return SUB_LOGIC_ENTITY;
-                }
-                else if (DiString::StartsWith(str, "Teleport_"))
-                {
-                    table[str] = SUB_LOGIC_TELPORT;
-                    return SUB_LOGIC_TELPORT;
-                }
-                else
-                {
-                    return SUB_SCENE_ITEM;
-                }
-            }
-            return it->second;
-        }
-
-        static K2ObjTypes GetObjType(Type t)
-        {
-            switch (t)
-            {
-            case Demi::K2ObjSubTypes::SUB_STATIC_TREE:
-            case Demi::K2ObjSubTypes::SUB_STATIC_MODEL:
-            case Demi::K2ObjSubTypes::SUB_STATIC_CLIFF:
-            case Demi::K2ObjSubTypes::SUB_STATIC_WATER:
-            case Demi::K2ObjSubTypes::SUB_STATIC_SCENERY:
-            case Demi::K2ObjSubTypes::SUB_STATIC_BUILDING:
-                return GAME_STATIC;
-            case Demi::K2ObjSubTypes::SUB_SCENE_ITEM:
-                return GAME_SCENE_ITEM;
-            case Demi::K2ObjSubTypes::SUB_NPC:
-                return GAME_NPC;
-            case Demi::K2ObjSubTypes::SUB_HERO:
-                return GAME_HERO;
-            case Demi::K2ObjSubTypes::SUB_LOGIC_TRIGGER_SPAWN_POINT:
-            case Demi::K2ObjSubTypes::SUB_LOGIC_ENTITY:
-            case Demi::K2ObjSubTypes::SUB_LOGIC_TELPORT:
-                return GAME_LOGIC;
-            default:
-                return INVALID_TYPE;
-            }
-        }
+        static K2ObjTypes GetObjType(Type t);
     };
+
 }
 
 #endif

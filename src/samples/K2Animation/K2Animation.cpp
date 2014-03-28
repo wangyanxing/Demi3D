@@ -19,6 +19,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Model.h"
 #include "K2Clip.h"
 #include "K2Configs.h"
+#include "K2GameDefines.h"
+
 #include "EnginePlugin.h"
 
 DiK2ModelPtr k2md = nullptr;
@@ -60,41 +62,12 @@ void InitScene()
               switch (e.key)
               {
                   case OIS::KC_1:
-                      k2md->GetAnimation()->Play("idle");
-                      k2md2->GetAnimation()->Play("idle");
+                      k2md->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
+                      k2md2->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
                       break;
                   case OIS::KC_2:
-                      k2md->GetAnimation()->Play("walk_1");
-                      k2md2->GetAnimation()->Play("walk_1");
-                      break;
-                  case OIS::KC_3:
-                      k2md->GetAnimation()->Play("death_1");
-                      k2md2->GetAnimation()->Play("death_1");
-                      break;
-                  case OIS::KC_4:
-                      k2md->GetAnimation()->Play("attack_1");
-                      k2md2->GetAnimation()->Play("portrait");
-                      break;
-                  case OIS::KC_5:
-                      k2md->GetAnimation()->Play("attack_2");
-                      k2md2->GetAnimation()->Play("bored_1");
-                      break;
-                  case OIS::KC_6:
-                      k2md->GetAnimation()->Play("attack_3");
-                      break;
-                  case OIS::KC_7:
-                      k2md->GetAnimation()->Play("ability_1");
-                      break;
-                  case OIS::KC_8:
-                      k2md->GetAnimation()->Play("ability_2");
-                      break;
-                  case OIS::KC_9:
-                      k2md->GetAnimation()->Play("ability_3");
-                      break;
-                  case OIS::KC_0:
-                      k2md->GetAnimation()->Play("ability_4");
-                      break;
-                  default:
+                      k2md->GetAnimation()->Play(K2PrefabClip::ANIM_WALK);
+                      k2md2->GetAnimation()->Play(K2PrefabClip::ANIM_WALK);
                       break;
               }
           });

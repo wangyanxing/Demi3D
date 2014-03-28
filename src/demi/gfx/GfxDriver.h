@@ -149,9 +149,9 @@ namespace Demi
 
         DiShaderEnvironment*        GetShaderEnvironment() const;
 
-        float                       GetDeltaSecond() { return mDeltaTime; }
+        double                      GetDeltaSecond() { return mDeltaTime; }
                                     
-        float                       GetElapsedSecond(){ return mElapsedTime; }
+        double                      GetElapsedSecond(){ return mElapsedTime; }
                                     
         unsigned long               GetFrameNum() const { return mFrameNum; }
 
@@ -224,9 +224,9 @@ namespace Demi
 
         DiTimer                     mTimer;
 
-        float                       mDeltaTime;
+        double                      mDeltaTime;
 
-        float                       mElapsedTime;
+        double                      mElapsedTime;
 
         unsigned long               mFrameNum;
 

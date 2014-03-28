@@ -307,7 +307,7 @@ namespace Demi
     {
         DI_PROFILE(Graphics_Update);
 
-        mDeltaTime = (float)mTimer.GetElapse();
+        mDeltaTime = mTimer.GetElapse();
         mElapsedTime += mDeltaTime;
         mTimer.Start();
         mFrameNum++;

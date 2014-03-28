@@ -11,8 +11,8 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiK2HeroEntity_h__
-#define DiK2HeroEntity_h__
+#ifndef DiK2RenderObject_h__
+#define DiK2RenderObject_h__
 
 #include "K2Prerequisites.h"
 
@@ -46,7 +46,7 @@ namespace Demi
 
         void                    SetPosition(const DiK2Pos& pos);
 
-        DiK2Pos                 GetPosition();
+        DiK2Pos                 GetPosition() { return mPosition; }
 
         void                    SetWorldPosition(const DiVec3& pos);
 
@@ -68,6 +68,10 @@ namespace Demi
 
         DiK2ModelPtr            GetModel() { return mModel; }
 
+        void                    PlayClip(K2PrefabClip::Clips clip);
+
+        void                    PlayClip(const DiString& clip);
+
     protected:
 
         DiK2ModelPtr            mModel;
@@ -83,6 +87,8 @@ namespace Demi
         float                   mRotRadian;
 
         DiVec3                  mScale;
+
+        DiK2Pos                 mPosition;
     };
 }
 

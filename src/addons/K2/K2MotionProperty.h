@@ -11,31 +11,35 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiK2NPCEntity_h__
-#define DiK2NPCEntity_h__
+#ifndef DiK2MotionProperty_h__
+#define DiK2MotionProperty_h__
 
 #include "K2Prerequisites.h"
-#include "K2DynEntity.h"
+#include "K2Property.h"
 
 namespace Demi
 {
-    /** NPC entity
+    /** state property
      */
-    class DEMI_K2_API DiK2NPCEntity : public DiK2DynEntity
+    class DEMI_K2_API DiK2MotionProperty : public DiK2Property
     {
-    public:
-
-        DiK2NPCEntity();
-
-        virtual         ~DiK2NPCEntity();
+        DEFINE_PROPERTY_ID(PROPERTY_MOTION)
 
     public:
 
-        virtual void    InitComponents();
+        DiK2MotionProperty();
 
-        virtual void    InitAttribute();
+        ~DiK2MotionProperty();
+
+    public:
+
+        void            Update(float dt);
+
+        void            ModalityChange(K2ModalityType mod);
 
     private:
+
+        K2ModalityType  mModality;
     };
 }
 

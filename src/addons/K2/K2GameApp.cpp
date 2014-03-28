@@ -181,7 +181,7 @@ namespace Demi
 
         mGame = DI_NEW DiK2Game();
         mGame->OpenWorld("maps/test_entity");
-        //mGame->SetHero("heroes/aluna/model.mdf");
+        mGame->SetHero("heroes/aluna/model.mdf");
     }
 
     DiK2GameApp* DiK2GameApp::sApp = nullptr;
