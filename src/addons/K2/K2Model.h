@@ -35,6 +35,8 @@ namespace Demi
 
         void            Update(DiCamera*);
 
+        void            UpdateAnimation(float delta);
+
     private:
 
         void            Load(const DiString& path);

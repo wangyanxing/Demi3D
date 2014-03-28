@@ -22,7 +22,8 @@ namespace Demi
     DiCullNode::DiCullNode(DiSceneManager* sm):
         DiNode(),
         mCreator(sm),
-        mCullUnit(nullptr)
+        mCullUnit(nullptr),
+        mIsCulled(false)
     {
         if(sm)
             mCullUnit = sm->GetSceneCuller()->CreateUnit(this);

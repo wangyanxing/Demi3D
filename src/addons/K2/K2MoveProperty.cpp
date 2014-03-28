@@ -38,7 +38,7 @@ namespace Demi
     {
         // test
         mCurSpeed = 7;
-        mTumRate = 400;
+        mTumRate = 600;
     }
 
     DiK2MoveProperty::~DiK2MoveProperty()

@@ -78,8 +78,6 @@ namespace Demi
 
         mInputMgr->Update();
 
-        mGame->Update();
-
         if (mMainHwnd)
             Driver->Render();
 
@@ -182,6 +180,10 @@ namespace Demi
         mGame = DI_NEW DiK2Game();
         mGame->OpenWorld("maps/test_entity");
         mGame->SetHero("heroes/aluna/model.mdf");
+
+        Driver->GetMainRenderWindow()->SetUpdateCallback([this](){
+            mGame->Update();
+        });
     }
 
     DiK2GameApp* DiK2GameApp::sApp = nullptr;

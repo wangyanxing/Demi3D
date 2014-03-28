@@ -111,6 +111,10 @@ namespace Demi
          */
         bool                    IsIn( DiAABB &box );
 
+        bool                    IsCulled() const { return mIsCulled; }
+
+        void                    SetCulled(bool val) { mIsCulled = val; }
+
     protected:
 
         void                    UpdateBounds();
@@ -128,6 +132,8 @@ namespace Demi
         DiAABB                  mLocalAABB;
         
         DiCullUnitPtr           mCullUnit;
+
+        bool                    mIsCulled;
     };
 }
 

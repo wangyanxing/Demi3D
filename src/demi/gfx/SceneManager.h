@@ -111,7 +111,7 @@ namespace Demi
         
         virtual ~DiSceneManager(void);
 
-        typedef DiMap<DiString, DiCullNode*> NodeList;
+        typedef DiSet<DiCullNode*> NodeList;
 
         friend class DiRenderPipeline;
         friend class DiOctree;
@@ -134,15 +134,7 @@ namespace Demi
 
         void                    DestroyNode(DiCullNode* node);
 
-        void                    DestroyNode(const DiString& name);
-
-        bool                    HasSceneNode(const DiString& name);
-
-        DiCullNode*             GetSceneNode(const DiString& name);
-
         uint32                  GetSceneNodeNums(void) const { return mSceneNodes.size(); }
-
-        bool                    RenameSceneNode(const DiString& oldName, const DiString& newName);
 
         /** Attach an object to the root node
          */
@@ -170,29 +162,12 @@ namespace Demi
 
         DiCamera*               GetCamera(void) const { return mCamera; }
 
-        //DiTerrainPtr            GetTerrain(void) const { return mTerrain; }
-
         const DiColor&          GetAmbientColor(void) const { return mAmbientColor; }
 
         /** Set the global ambient color
          */
         void                    SetAmbientColor(DiColor val) { mAmbientColor = val; }
 
-        bool                    LoadScene(const DiString& sceneName);
-
-        DiString                GetCurrentSceneName(void) const { return mCurrentScene; }
-
-        DiScenePtr              GetCurrentScene(void);
-
-        bool                    HasScene(void) const;
-
-        void                    UnloadScene(void);
-
-#if 0
-        void                    DestroyTerrain();
-
-        bool                    LoadTerrain(void);
-#endif
         DiRenderWindow*         GetRenderWindow(){return mParentWindow;}
 
         void                    PreUpdate();
@@ -251,7 +226,7 @@ namespace Demi
         
         RenderTargets&          GetExtraRenderTargets() {return mExtraRTs;}
 
-        /** Get the bouding box of the whole scene
+        /** Get the bounding box of the whole scene
          */
         const DiAABB&           GetBoundingBox() const { return mBox; }
         
@@ -275,13 +250,9 @@ namespace Demi
         
         RenderTargets           mExtraRTs;
         
-        //DiTerrainPtr            mTerrain;
-
         DiRenderPipeline*       mPipeline;
 
         DiColor                 mAmbientColor;
-
-        DiString                mCurrentScene;
 
         DiRenderWindow*         mParentWindow;
 
@@ -289,8 +260,6 @@ namespace Demi
         InstanceManagerVec      mDirtyInstanceManagers;
 
         InstanceManagerVec      mDirtyInstanceMgrsTmp;
-
-        typedef DiVector<DiCullNode*> ReentryNodes;
 
         DiAABB                  mBox;
 

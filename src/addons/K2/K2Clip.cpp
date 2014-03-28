@@ -22,7 +22,7 @@ namespace Demi
         : mSource(nullptr)
         , mTarget(nullptr)
         , mBlendElapsed(0)
-        , mBlendTime(0.0f)  // a default value
+        , mBlendTime(0.3f)  // a default value
     {
         for (int i = 0; i < K2PrefabClip::MAX_PREFAB_ANIM; ++i)
             mClips[i] = nullptr;
@@ -63,7 +63,8 @@ namespace Demi
     {
         if (mSource && mTarget)
         {
-            mSource = clip;
+            mSource = mTarget;
+            mTarget = clip;
         }
 
         clip->Cleanup();

@@ -45,7 +45,7 @@ namespace Demi
 
         DiK2Property()
             : mIsActive(UNACTIVE_STATE)
-            , mEntity(NULL)
+            , mEntity(nullptr)
         {
         }
 

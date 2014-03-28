@@ -87,6 +87,13 @@ namespace Demi
     void DiK2RenderObject::PlayClip(const DiString& clip)
     {
         mModel->GetAnimation()->Play(clip);
+    }
 
+    void DiK2RenderObject::Update(float dt)
+    {
+        if (!mNode->IsCulled())
+        {
+            mModel->UpdateAnimation(dt);
+        }
     }
 }

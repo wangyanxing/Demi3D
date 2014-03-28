@@ -164,6 +164,7 @@ namespace Demi
                 
                 if (vis)
                 {
+                    nodeUnit->mParent->SetCulled(false);
                     nodeUnit->mParent->ProcessVisibleObjects([=](DiTransUnitPtr tu)
                     {
                         if (!onlyShadowCaster || tu->GetShadowCastEnable())

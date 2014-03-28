@@ -64,11 +64,6 @@ namespace Demi
 
     void DiK2Model::Update(DiCamera*)
     {
-        float deltaTime = DiBase::Driver->GetDeltaSecond();
-
-        mAnimation->Update(deltaTime);
-        mSkeleton->Apply(mAnimation);
-        mSkeleton->CacheBoneMatrices();
     }
 
     void DiK2Model::PostLoad()
@@ -81,4 +76,10 @@ namespace Demi
         }
     }
 
+    void DiK2Model::UpdateAnimation(float delta)
+    {
+        mAnimation->Update(delta);
+        mSkeleton->Apply(mAnimation);
+        mSkeleton->CacheBoneMatrices();
+    }
 }

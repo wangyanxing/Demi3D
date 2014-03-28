@@ -38,6 +38,8 @@ namespace Demi
 
         K2ObjTypes          GetType() const { return mType; }
 
+        virtual void        Update(float dt);
+
         virtual void        InitComponents(){}
 
         template<typename T>

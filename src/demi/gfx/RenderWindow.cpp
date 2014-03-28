@@ -91,6 +91,9 @@ namespace Demi
         mSceneManager->Cull(mainCam);
         mSceneManager->GetMainVisibleObjects().UpdateAll(mainCam);
 
+        if (mUpdateCb)
+            mUpdateCb();
+
         // Shadow mapping pass
         rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
         auto& visLights = mSceneManager->GetVisibleLights();

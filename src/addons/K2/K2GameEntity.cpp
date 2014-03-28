@@ -43,4 +43,12 @@ namespace Demi
         auto world = DiK2GameApp::Get()->GetWorld();
         mRenderObj = world->CreateRenderObject(type);
     }
+
+    void DiK2GameEntity::Update(float dt)
+    {
+        DiK2Entity::Update(dt);
+
+        mRenderObj->Update(dt);
+    }
+
 }

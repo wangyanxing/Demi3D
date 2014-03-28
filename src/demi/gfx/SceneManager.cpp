@@ -256,7 +256,7 @@ namespace Demi
     //////////////////////////////////////////////////////////////////////////
 
     DiSceneManager::DiSceneManager(DiRenderWindow* parentWnd)
-        ://mTerrain(nullptr),
+        :
         mParentWindow(parentWnd),
         mCurrentRenderPass(GEOMETRY_PASS),
         mSkybox(nullptr),
@@ -298,114 +298,51 @@ namespace Demi
     DiCullNode* DiSceneManager::CreateNode()
     {
         DiCullNode* node = DI_NEW DiCullNode(this);
-        mSceneNodes[node->GetName()] = node;
+        mSceneNodes.insert(node);
         return node;
     }
 
     DiCullNode* DiSceneManager::CreateNode( const DiString& name )
     {
-        if (mSceneNodes.find(name) != mSceneNodes.end())
-        {
-            DI_WARNING("Cannot create node : %s, it is in the list already.",name.c_str());
-            return nullptr;
-        }
-
         DiCullNode* node = DI_NEW DiCullNode(this,name);
-        mSceneNodes[name] = node;
+        mSceneNodes.insert(node);
         return node;
     }
 
-    void DiSceneManager::DestroyNode( DiCullNode* node )
+    void DiSceneManager::DestroyNode(DiCullNode* node)
     {
-        //if (node)
-        //    RemoveOctreeNode( node );
-        
-        if(node)
-        {
-            mCuller->RemoveUnit(node->GetCullUnit());
-        }
-
-        DestroyNode(node->GetName());
-    }
-
-    void DiSceneManager::DestroyNode( const DiString& name )
-    {
-        auto i = mSceneNodes.find(name);
+        auto i = mSceneNodes.find(node);
 
         if (i == mSceneNodes.end())
         {
-            DI_ERROR("Cannot find the node %s",name.c_str());
+            DI_WARNING("Cannot find the node, failed to destory scene node");
         }
 
-        if(i->second)
-        {
-            mCuller->RemoveUnit(i->second->GetCullUnit());
-        }
+        if (*i)
+            mCuller->RemoveUnit((*i)->GetCullUnit());
 
-        DiNode* parentNode = i->second->GetParent();
+        DiNode* parentNode = (*i)->GetParent();
         if (parentNode)
         {
-            parentNode->RemoveChild(i->second);
+            parentNode->RemoveChild(*i);
         }
-        delete i->second;
+        DI_DELETE (*i);
         mSceneNodes.erase(i);
-    }
-
-    bool DiSceneManager::HasSceneNode( const DiString& name )
-    {
-        return (mSceneNodes.find(name) != mSceneNodes.end());
     }
 
     void DiSceneManager::ClearNodes()
     {
-        DI_INFO("Cleanning scene nodes..");
+        DI_LOG("Cleanning scene nodes [%d]..", mSceneNodes.size());
 
         mRootNode->RemoveAllChildren();
         mRootNode->DetachAllObjects();
 
         for (auto it = mSceneNodes.begin(); it != mSceneNodes.end(); ++it)
         {
-            SAFE_DELETE(it->second);
+            DI_DELETE (*it);
         }
         mSceneNodes.clear();
     }
-
-    bool DiSceneManager::LoadScene(const DiString& scene)
-    {
-        DI_INFO("Loading scene %s..", scene.c_str());
-
-        mCuller->LoadScene(scene);
-#if 0
-        DestroyTerrain();
-        mCurrentScene = scene;
-#endif
-        return true;
-    }
-
-#if 0
-    void DiSceneManager::DestroyTerrain()
-    {
-        if (!mTerrain)
-            return;
-        
-        DI_INFO("Releasing terrain..");
-
-        mRootNode->DetachObject(mTerrain);
-        mTerrain->Unload();
-    }
-
-    bool DiSceneManager::LoadTerrain()
-    {
-        if (!mCurrentScene.empty())
-        {
-            mTerrain = make_shared<DiTerrainMap>();
-            mTerrain->Load(mCurrentScene);
-            mRootNode->AttachObject(mTerrain);
-            return true;
-        }
-        return false;
-    }
-#endif
 
     void DiSceneManager::PreUpdate()
     {
@@ -413,6 +350,8 @@ namespace Demi
         mVisibleLights.Clear();
         mSkybox->Update();
         mRootNode->_Update(true, false);
+        for (auto i = mSceneNodes.begin(); i != mSceneNodes.end(); ++i)
+            (*i)->SetCulled(true);
     }
 
     void DiSceneManager::Cull(DiCamera* cam)
@@ -425,41 +364,6 @@ namespace Demi
         mBox.SetNull();
 
         mCuller->Cull(cam);
-    }
-
-    void DiSceneManager::UnloadScene()
-    {
-#if 0
-        DestroyTerrain();
-#endif
-        mCurrentScene.clear();
-    }
-
-    bool DiSceneManager::HasScene() const
-    {
-#if 0
-        return mTerrain != nullptr;
-#else
-        return false;
-#endif
-    }
-
-    DiScenePtr DiSceneManager::GetCurrentScene()
-    {
-        if (mCurrentScene.empty())
-            return nullptr;
-
-        return DiAssetManager::GetInstance(
-            ).GetAsset<DiScene>(mCurrentScene);
-    }
-
-    DiCullNode* DiSceneManager::GetSceneNode( const DiString& name )
-    {
-        auto it = mSceneNodes.find(name);
-        if (it != mSceneNodes.end())
-            return it->second;
-        else
-            return nullptr;
     }
 
     void DiSceneManager::DirtyInstanceManager( DiInstanceManager *dirtyManager )
@@ -713,26 +617,6 @@ namespace Demi
         return q;
     }
 #endif
-
-    bool DiSceneManager::RenameSceneNode( const DiString& oldName, const DiString& newName )
-    {
-        auto it = mSceneNodes.find(oldName);
-        if (it != mSceneNodes.end())
-        {
-            if (mSceneNodes.contains(newName))
-            {
-                return false;
-            }
-
-            DiCullNode* node = it->second;
-            DI_ASSERT(node);
-            node->SetName(newName);
-            mSceneNodes.erase(it);
-            mSceneNodes[newName] = node;
-            return true;
-        }
-        return false;
-    }
 
     DiCamera* DiSceneManager::CreateCamera( const DiString& name )
     {

@@ -81,6 +81,8 @@ namespace Demi
 
         void                    Closing();
 
+        void                    SetUpdateCallback(std::function<void(void)> val) { mUpdateCb = val; }
+
     protected:
 
         void                    Init();
@@ -124,6 +126,9 @@ namespace Demi
         DiWndHandle             mWndHandle;
 
         DiWindow*               mWindow;
+
+        std::function<void(void)> mUpdateCb;
+        
     };
 }
 
