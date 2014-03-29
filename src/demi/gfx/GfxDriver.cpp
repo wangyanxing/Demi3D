@@ -36,7 +36,8 @@ namespace Demi
         mClosing(false),
         mWndManager(nullptr),
         mNeedTextureFlipping(false),
-        mInvertVertexWinding(false)
+        mInvertVertexWinding(false),
+        mCaps(nullptr)
     {
         Driver = this;
         mCommandMgr = DI_NEW DiCommandManager();
@@ -49,6 +50,7 @@ namespace Demi
     {
         Driver = nullptr;
         mMainHwnd = nullptr;
+        SAFE_DELETE(mCaps);
         SAFE_DELETE(mMainWindow);
         SAFE_DELETE(mWndManager);
     }
@@ -276,6 +278,9 @@ namespace Demi
 
         if (mMainWindow)
             mMainWindow->SetParentRenderWnd(rw);
+
+        InitGfxCaps();
+        mCaps->LogCaps();
 
         NotifyDeviceLost();
 

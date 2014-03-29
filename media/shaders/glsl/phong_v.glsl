@@ -35,10 +35,7 @@ void main()
 #if defined( USE_NORMALMAP )
     GET_SPACE_POS_NORMAL_TANGENT(objPos, objNormal, objTangent);
 #else
-	//GET_SPACE_POS_NORMAL(objPos, objNormal);
-    vec4 objPos = vec4(Position.xyz,1.0);
-    vec3 objNormal = Normal;
-    vec3 objTangent = Tangent;
+	GET_SPACE_POS_NORMAL(objPos, objNormal);
 #endif
 	
 	gl_Position = g_modelViewProjMatrix * objPos;

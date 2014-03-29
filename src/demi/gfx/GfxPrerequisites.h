@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
+    class    DiLogger;
     class    DiArchive;
     class    DiFileArchive;
     class    DiZipArchive;
@@ -127,6 +128,7 @@ namespace Demi
     class    DiPostController;
     class    DiConsoleLogger;
     class    DiSimpleShape;
+    class    DiGfxCaps;
 
     class    DiBspNode;
     class    DiBspScene;

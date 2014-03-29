@@ -43,7 +43,7 @@ namespace Demi
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   define USE_OPEN_GL 1
 #else
-#   define USE_OPEN_GL 0
+#   define USE_OPEN_GL 1
 #endif
 
     DemiDemo::DemiDemo(DemoConfig config) :

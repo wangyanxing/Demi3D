@@ -11,10 +11,4 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#include "GfxPch.h"
-#include "Q3BspNode.h"
-#include "DataStream.h"
-
-namespace Demi
-{
-}
+#include "DrvGLES2Pch.h"

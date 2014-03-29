@@ -161,6 +161,35 @@ namespace Demi
         PF_G32R32F,
         PF_A32B32G32R32F,
 
+        /// PVRTC (PowerVR) RGB 2 bpp
+        PF_PVRTC_RGB2,
+        /// PVRTC (PowerVR) RGBA 2 bpp
+        PF_PVRTC_RGBA2,
+        /// PVRTC (PowerVR) RGB 4 bpp
+        PF_PVRTC_RGB4,
+        /// PVRTC (PowerVR) RGBA 4 bpp
+        PF_PVRTC_RGBA4,
+        /// PVRTC (PowerVR) Version 2, 2 bpp
+        PF_PVRTC2_2BPP,
+        /// PVRTC (PowerVR) Version 2, 4 bpp
+        PF_PVRTC2_4BPP,
+
+        /// ETC1 (Ericsson Texture Compression)
+        PF_ETC1_RGB8,
+        /// ETC2 (Ericsson Texture Compression)
+        PF_ETC2_RGB8,
+        /// ETC2 (Ericsson Texture Compression)
+        PF_ETC2_RGBA8,
+        /// ETC2 (Ericsson Texture Compression)
+        PF_ETC2_RGB8A1,
+
+        /// ATC (AMD_compressed_ATC_texture)
+        PF_ATC_RGB,
+        /// ATC (AMD_compressed_ATC_texture)
+        PF_ATC_RGBA_EXPLICIT_ALPHA,
+        /// ATC (AMD_compressed_ATC_texture)
+        PF_ATC_RGBA_INTERPOLATED_ALPHA,
+
         PIXEL_FORMAT_MAX
     };
 

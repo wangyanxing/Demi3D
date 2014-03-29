@@ -154,6 +154,10 @@ namespace Demi
         static uint32    GetMaxMipmaps(uint32 width, uint32 height, uint32 depth);
         
         static uint32    GetMaxMipmaps(uint32 width, uint32 height);
+
+        static bool      IsFloatingPoint(DiPixelFormat format);
+
+        static PixelComponentType GetComponentType(DiPixelFormat fmt);
         
         void*            data;
 

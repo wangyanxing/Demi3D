@@ -72,6 +72,8 @@ namespace Demi
 
         void                    PlayClip(const DiString& clip);
 
+        void                    _CreateDebugger();
+
     protected:
 
         DiK2ModelPtr            mModel;
@@ -89,6 +91,9 @@ namespace Demi
         DiVec3                  mScale;
 
         DiK2Pos                 mPosition;
+
+        // for debug
+        DiDebugHelperPtr        mDebugger;
     };
 }
 

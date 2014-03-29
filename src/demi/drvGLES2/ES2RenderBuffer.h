@@ -11,12 +11,26 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiQ3BspShaderLoader_h__
-#define DiQ3BspShaderLoader_h__
-
 namespace Demi
 {
-    
-}
+    class DI_GLES2_API DiGLRenderBuffer
+    {
+    public:
 
-#endif
+        DiGLRenderBuffer(GLenum format, uint32 width, uint32 height);
+
+        ~DiGLRenderBuffer();
+
+    public:
+
+        void    BindToFramebuffer(GLenum attachment);
+
+        GLenum  GetGLFormat() const { return mGLFormat; }
+
+    private:
+
+        GLuint  mRenderbufferID;
+
+        GLenum  mGLFormat;
+    };
+}

@@ -44,6 +44,8 @@ namespace Demi
 
         virtual void        InitExtensions();
 
+        virtual bool        SupportsPBuffers();
+
         /** For multi-monitors supporting
          */
         virtual uint8       GetDisplayMonitorCount() const

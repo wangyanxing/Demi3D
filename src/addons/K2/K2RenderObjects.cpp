@@ -17,9 +17,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Clip.h"
 #include "K2Model.h"
 
+#include "DebugHelper.h"
 #include "CullNode.h"
 #include "GfxDriver.h"
 #include "SceneManager.h"
+#include "ShaderManager.h"
 
 namespace Demi
 {
@@ -93,7 +95,21 @@ namespace Demi
     {
         if (!mNode->IsCulled())
         {
+#if 0
+            mDebugger->Clear();
+            mDebugger->AddBoundingBox(mNode->GetLocalAABB(), DiColor::Red);
+#endif
             mModel->UpdateAnimation(dt);
         }
+    }
+
+    void DiK2RenderObject::_CreateDebugger()
+    {
+        mDebugger = make_shared<DiDebugHelper>();
+        DiMaterialPtr helpermat = DiMaterial::QuickCreate(
+            "basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
+        helpermat->SetDepthCheck(false);
+        mDebugger->SetMaterial(helpermat);
+        mNode->AttachObject(mDebugger);
     }
 }

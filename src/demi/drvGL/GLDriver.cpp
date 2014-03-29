@@ -70,6 +70,17 @@ namespace Demi
 
         _InitMainContext(_CreateContext(wnd));
 
+        auto tokens = mGLUtil->GetGLVersion().Tokenize(".");
+        if (!tokens.empty())
+        {
+            mDriverVersion.major = tokens[0].AsInt();
+            if (tokens.size() > 1)
+                mDriverVersion.minor = tokens[1].AsInt();
+            if (tokens.size() > 2)
+                mDriverVersion.release = tokens[2].AsInt();
+        }
+        mDriverVersion.build = 0;
+
         mGLFBOManager = DI_NEW DiGLFBOManager(true);    // TODO: Check atimode
 
         return true;
@@ -580,4 +591,472 @@ namespace Demi
     {
         return DiPair<float, float>(-1.0f, 1.0f);
     }
+
+    DiGfxCaps* DiGLDriver::InitGfxCaps()
+    {
+        DiGfxCaps* rsc = DI_NEW DiGfxCaps();
+        mCaps = rsc;
+
+        rsc->setCategoryRelevant(CAPS_CATEGORY_GL, true);
+        rsc->setDriverVersion(mDriverVersion);
+        const char* deviceName = (const char*)glGetString(GL_RENDERER);
+        const char* vendorName = (const char*)glGetString(GL_VENDOR);
+        rsc->setDeviceName(deviceName);
+        rsc->setRenderSystemName(DRV_OPENGL);
+
+        // determine vendor
+        if (strstr(vendorName, "NVIDIA"))
+            rsc->setVendor(GPU_NVIDIA);
+        else if (strstr(vendorName, "ATI"))
+            rsc->setVendor(GPU_AMD);
+        else if (strstr(vendorName, "AMD"))
+            rsc->setVendor(GPU_AMD);
+        else if (strstr(vendorName, "Intel"))
+            rsc->setVendor(GPU_INTEL);
+        else if (strstr(vendorName, "S3"))
+            rsc->setVendor(GPU_S3);
+        else if (strstr(vendorName, "Matrox"))
+            rsc->setVendor(GPU_MATROX);
+        else if (strstr(vendorName, "3DLabs"))
+            rsc->setVendor(GPU_3DLABS);
+        else if (strstr(vendorName, "SiS"))
+            rsc->setVendor(GPU_SIS);
+        else
+            rsc->setVendor(GPU_UNKNOWN);
+
+        // Check for hardware mipmapping support.
+        if (GLEW_VERSION_1_4 || GLEW_SGIS_generate_mipmap)
+        {
+            bool disableAutoMip = false;
+#if OGRE_PLATFORM == OGRE_PLATFORM_APPLE || OGRE_PLATFORM == OGRE_PLATFORM_LINUX
+            // Apple & Linux ATI drivers have faults in hardware mipmap generation
+            if (rsc->getVendor() == GPU_AMD)
+                disableAutoMip = true;
+#endif
+            // The Intel 915G frequently corrupts textures when using hardware mip generation
+            // I'm not currently sure how many generations of hardware this affects,
+            // so for now, be safe.
+            if (rsc->getVendor() == GPU_INTEL)
+                disableAutoMip = true;
+
+            // SiS chipsets also seem to have problems with this
+            if (rsc->getVendor() == GPU_SIS)
+                disableAutoMip = true;
+
+            if (!disableAutoMip)
+                rsc->setCapability(RSC_AUTOMIPMAP);
+        }
+
+        // Check for blending support
+        if (GLEW_VERSION_1_3 ||
+            GLEW_ARB_texture_env_combine ||
+            GLEW_EXT_texture_env_combine)
+        {
+            rsc->setCapability(RSC_BLENDING);
+        }
+
+        // Check for Multitexturing support and set number of texture units
+        if (GLEW_VERSION_1_3 ||
+            GLEW_ARB_multitexture)
+        {
+            GLint units;
+            glGetIntegerv(GL_MAX_TEXTURE_UNITS, &units);
+
+            if (GLEW_ARB_fragment_program)
+            {
+                // Also check GL_MAX_TEXTURE_IMAGE_UNITS_ARB since NV at least
+                // only increased this on the FX/6x00 series
+                GLint arbUnits;
+                glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &arbUnits);
+                if (arbUnits > units)
+                    units = arbUnits;
+            }
+            rsc->setNumTextureUnits(std::min<uint16>(16, units));
+        }
+        else
+        {
+            // If no multitexture support then set one texture unit
+            rsc->setNumTextureUnits(1);
+        }
+
+        // Check for Anisotropy support
+        if (GLEW_EXT_texture_filter_anisotropic)
+        {
+            rsc->setCapability(RSC_ANISOTROPY);
+        }
+
+        // Check for DOT3 support
+        if (GLEW_VERSION_1_3 ||
+            GLEW_ARB_texture_env_dot3 ||
+            GLEW_EXT_texture_env_dot3)
+        {
+            rsc->setCapability(RSC_DOT3);
+        }
+
+        // Check for cube mapping
+        if (GLEW_VERSION_1_3 ||
+            GLEW_ARB_texture_cube_map ||
+            GLEW_EXT_texture_cube_map)
+        {
+            rsc->setCapability(RSC_CUBEMAPPING);
+        }
+
+
+        // Point sprites
+        if (GLEW_VERSION_2_0 || GLEW_ARB_point_sprite)
+        {
+            rsc->setCapability(RSC_POINT_SPRITES);
+        }
+        // Check for point parameters
+        if (GLEW_VERSION_1_4)
+        {
+            rsc->setCapability(RSC_POINT_EXTENDED_PARAMETERS);
+        }
+        if (GLEW_ARB_point_parameters)
+        {
+            rsc->setCapability(RSC_POINT_EXTENDED_PARAMETERS_ARB);
+        }
+        if (GLEW_EXT_point_parameters)
+        {
+            rsc->setCapability(RSC_POINT_EXTENDED_PARAMETERS_EXT);
+        }
+
+        // Check for hardware stencil support and set bit depth
+        GLint stencil;
+        glGetIntegerv(GL_STENCIL_BITS, &stencil);
+
+        if (stencil)
+        {
+            rsc->setCapability(RSC_HWSTENCIL);
+            rsc->setStencilBufferBitDepth(stencil);
+        }
+
+
+        if (GLEW_VERSION_1_5 || GLEW_ARB_vertex_buffer_object)
+        {
+            if (!GLEW_ARB_vertex_buffer_object)
+            {
+                rsc->setCapability(RSC_GL1_5_NOVBO);
+            }
+            rsc->setCapability(RSC_VBO);
+            rsc->setCapability(RSC_32BIT_INDEX);
+        }
+
+        if (GLEW_ARB_vertex_program)
+        {
+            rsc->setCapability(RSC_VERTEX_PROGRAM);
+
+            // Vertex Program Properties
+            rsc->setVertexProgramConstantBoolCount(0);
+            rsc->setVertexProgramConstantIntCount(0);
+
+            GLint floatConstantCount;
+            glGetProgramivARB(GL_VERTEX_PROGRAM_ARB, GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, &floatConstantCount);
+            rsc->setVertexProgramConstantFloatCount(floatConstantCount);
+
+            rsc->addShaderProfile("arbvp1");
+            if (GLEW_NV_vertex_program2_option)
+            {
+                rsc->addShaderProfile("vp30");
+            }
+
+            if (GLEW_NV_vertex_program3)
+            {
+                rsc->addShaderProfile("vp40");
+            }
+
+            if (GLEW_NV_vertex_program4)
+            {
+                rsc->addShaderProfile("gp4vp");
+                rsc->addShaderProfile("gpu_vp");
+            }
+        }
+
+        if (GLEW_NV_register_combiners2 &&
+            GLEW_NV_texture_shader)
+        {
+            rsc->setCapability(RSC_FRAGMENT_PROGRAM);
+            rsc->addShaderProfile("fp20");
+        }
+
+        // NFZ - check for ATI fragment shader support
+        if (GLEW_ATI_fragment_shader)
+        {
+            rsc->setCapability(RSC_FRAGMENT_PROGRAM);
+            // no boolean params allowed
+            rsc->setFragmentProgramConstantBoolCount(0);
+            // no integer params allowed
+            rsc->setFragmentProgramConstantIntCount(0);
+
+            // only 8 Vector4 constant floats supported
+            rsc->setFragmentProgramConstantFloatCount(8);
+
+            rsc->addShaderProfile("ps_1_4");
+            rsc->addShaderProfile("ps_1_3");
+            rsc->addShaderProfile("ps_1_2");
+            rsc->addShaderProfile("ps_1_1");
+        }
+
+        if (GLEW_ARB_fragment_program)
+        {
+            rsc->setCapability(RSC_FRAGMENT_PROGRAM);
+
+            // Fragment Program Properties
+            rsc->setFragmentProgramConstantBoolCount(0);
+            rsc->setFragmentProgramConstantIntCount(0);
+
+            GLint floatConstantCount;
+            glGetProgramivARB(GL_FRAGMENT_PROGRAM_ARB, GL_MAX_PROGRAM_LOCAL_PARAMETERS_ARB, &floatConstantCount);
+            rsc->setFragmentProgramConstantFloatCount(floatConstantCount);
+
+            rsc->addShaderProfile("arbfp1");
+            if (GLEW_NV_fragment_program_option)
+            {
+                rsc->addShaderProfile("fp30");
+            }
+
+            if (GLEW_NV_fragment_program2)
+            {
+                rsc->addShaderProfile("fp40");
+            }
+
+            if (GLEW_NV_fragment_program4)
+            {
+                rsc->addShaderProfile("gp4fp");
+                rsc->addShaderProfile("gpu_fp");
+            }
+        }
+
+        DiString shadingLangVersion = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+        auto tokens = shadingLangVersion.Tokenize(". ");
+        int shaderVersion = tokens[0].AsInt() * 100 + tokens[1].AsInt();
+
+        // NFZ - Check if GLSL is supported
+        if (GLEW_VERSION_2_0 ||
+            (GLEW_ARB_shading_language_100 &&
+            GLEW_ARB_shader_objects &&
+            GLEW_ARB_fragment_shader &&
+            GLEW_ARB_vertex_shader))
+        {
+            rsc->addShaderProfile("glsl");
+            if (shaderVersion >= 120)
+                rsc->addShaderProfile("glsl120");
+            if (shaderVersion >= 110)
+                rsc->addShaderProfile("glsl110");
+            if (shaderVersion >= 100)
+                rsc->addShaderProfile("glsl100");
+        }
+
+        // Check if geometry shaders are supported
+        if (GLEW_VERSION_2_0 &&
+            GLEW_EXT_geometry_shader4)
+        {
+            rsc->setCapability(RSC_GEOMETRY_PROGRAM);
+            rsc->addShaderProfile("nvgp4");
+
+            //Also add the CG profiles
+            rsc->addShaderProfile("gpu_gp");
+            rsc->addShaderProfile("gp4gp");
+
+            rsc->setGeometryProgramConstantBoolCount(0);
+            rsc->setGeometryProgramConstantIntCount(0);
+
+            GLint floatConstantCount = 0;
+            glGetIntegerv(GL_MAX_GEOMETRY_UNIFORM_COMPONENTS_EXT, &floatConstantCount);
+            rsc->setGeometryProgramConstantFloatCount(floatConstantCount);
+
+            GLint maxOutputVertices;
+            glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &maxOutputVertices);
+            rsc->setGeometryProgramNumOutputVertices(maxOutputVertices);
+        }
+
+        if (mGLUtil->CheckExtension("GL_ARB_get_program_binary"))
+        {
+            // states 3.0 here: http://developer.download.nvidia.com/opengl/specs/GL_ARB_get_program_binary.txt
+            // but not here: http://www.opengl.org/sdk/docs/man4/xhtml/glGetProgramBinary.xml
+            // and here states 4.1: http://www.geeks3d.com/20100727/opengl-4-1-allows-the-use-of-binary-shaders/
+            GLint formats;
+            glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &formats);
+
+            if (formats > 0)
+                rsc->setCapability(RSC_CAN_GET_COMPILED_SHADER_BUFFER);
+        }
+
+        if (GLEW_VERSION_3_3 || GLEW_ARB_instanced_arrays)
+        {
+            // states 3.3 here: http://www.opengl.org/sdk/docs/man3/xhtml/glVertexAttribDivisor.xml
+            rsc->setCapability(RSC_VERTEX_BUFFER_INSTANCE_DATA);
+        }
+
+        //Check if render to vertex buffer (transform feedback in OpenGL)
+        if (GLEW_VERSION_2_0 &&
+            GLEW_NV_transform_feedback)
+        {
+            rsc->setCapability(RSC_HWRENDER_TO_VERTEX_BUFFER);
+        }
+
+        // Check for texture compression
+        if (GLEW_VERSION_1_3 || GLEW_ARB_texture_compression)
+        {
+            rsc->setCapability(RSC_TEXTURE_COMPRESSION);
+
+            // Check for dxt compression
+            if (GLEW_EXT_texture_compression_s3tc)
+            {
+#if defined(__APPLE__) && defined(__PPC__)
+                // Apple on ATI & PPC has errors in DXT
+                if (mGLSupport->getGLVendor().find("ATI") == std::string::npos)
+#endif
+                    rsc->setCapability(RSC_TEXTURE_COMPRESSION_DXT);
+            }
+            // Check for vtc compression
+            if (GLEW_NV_texture_compression_vtc)
+            {
+                rsc->setCapability(RSC_TEXTURE_COMPRESSION_VTC);
+            }
+        }
+
+        // Scissor test is standard in GL 1.2 (is it emulated on some cards though?)
+        rsc->setCapability(RSC_SCISSOR_TEST);
+        // As are user clipping planes
+        rsc->setCapability(RSC_USER_CLIP_PLANES);
+
+        // 2-sided stencil?
+        if (GLEW_VERSION_2_0 || GLEW_EXT_stencil_two_side)
+        {
+            rsc->setCapability(RSC_TWO_SIDED_STENCIL);
+        }
+        // stencil wrapping?
+        if (GLEW_VERSION_1_4 || GLEW_EXT_stencil_wrap)
+        {
+            rsc->setCapability(RSC_STENCIL_WRAP);
+        }
+
+        // Check for hardware occlusion support
+        if (GLEW_VERSION_1_5 || GLEW_ARB_occlusion_query)
+        {
+            // Some buggy driver claim that it is GL 1.5 compliant and
+            // not support ARB_occlusion_query
+            if (!GLEW_ARB_occlusion_query)
+            {
+                rsc->setCapability(RSC_GL1_5_NOHWOCCLUSION);
+            }
+
+            rsc->setCapability(RSC_HWOCCLUSION);
+        }
+        else if (GLEW_NV_occlusion_query)
+        {
+            // Support NV extension too for old hardware
+            rsc->setCapability(RSC_HWOCCLUSION);
+        }
+
+        // UBYTE4 always supported
+        rsc->setCapability(RSC_VERTEX_FORMAT_UBYTE4);
+
+        // Infinite far plane always supported
+        rsc->setCapability(RSC_INFINITE_FAR_PLANE);
+
+        // Check for non-power-of-2 texture support
+        if (GLEW_ARB_texture_non_power_of_two)
+        {
+            rsc->setCapability(RSC_NON_POWER_OF_2_TEXTURES);
+        }
+
+        // Check for Float textures
+        if (GLEW_ATI_texture_float || GLEW_ARB_texture_float)
+        {
+            rsc->setCapability(RSC_TEXTURE_FLOAT);
+        }
+
+        // 3D textures should be supported by GL 1.2, which is our minimum version
+        rsc->setCapability(RSC_TEXTURE_1D);
+        rsc->setCapability(RSC_TEXTURE_3D);
+
+        // Check for framebuffer object extension
+        if (GLEW_EXT_framebuffer_object)
+        {
+            // Probe number of draw buffers
+            // Only makes sense with FBO support, so probe here
+            if (GLEW_VERSION_2_0 ||
+                GLEW_ARB_draw_buffers ||
+                GLEW_ATI_draw_buffers)
+            {
+                GLint buffers;
+                glGetIntegerv(GL_MAX_DRAW_BUFFERS_ARB, &buffers);
+                rsc->setNumMultiRenderTargets(std::min<int>(buffers, (GLint)MAX_MRT));
+                rsc->setCapability(RSC_MRT_DIFFERENT_BIT_DEPTHS);
+                if (!GLEW_VERSION_2_0)
+                {
+                    // Before GL version 2.0, we need to get one of the extensions
+                    if (GLEW_ARB_draw_buffers)
+                        rsc->setCapability(RSC_FBO_ARB);
+                    if (GLEW_ATI_draw_buffers)
+                        rsc->setCapability(RSC_FBO_ATI);
+                }
+                // Set FBO flag for all 3 'subtypes'
+                rsc->setCapability(RSC_FBO);
+
+            }
+            rsc->setCapability(RSC_HWRENDER_TO_TEXTURE);
+        }
+
+        // Check GLSupport for PBuffer support
+        if (mGLUtil->SupportsPBuffers())
+        {
+            // Use PBuffers
+            rsc->setCapability(RSC_HWRENDER_TO_TEXTURE);
+            rsc->setCapability(RSC_PBUFFER);
+        }
+
+        // Point size
+        if (GLEW_VERSION_1_4)
+        {
+            float ps;
+            glGetFloatv(GL_POINT_SIZE_MAX, &ps);
+            rsc->setMaxPointSize(ps);
+        }
+        else
+        {
+            GLint vSize[2];
+            glGetIntegerv(GL_POINT_SIZE_RANGE, vSize);
+            rsc->setMaxPointSize(vSize[1]);
+        }
+
+        // Vertex texture fetching
+        if (mGLUtil->CheckExtension("GL_ARB_vertex_shader"))
+        {
+            GLint vUnits;
+            glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS_ARB, &vUnits);
+            rsc->setNumVertexTextureUnits(static_cast<uint16>(vUnits));
+            if (vUnits > 0)
+            {
+                rsc->setCapability(RSC_VERTEX_TEXTURE_FETCH);
+            }
+            // GL always shares vertex and fragment texture units (for now?)
+            rsc->setVertexTextureUnitsShared(true);
+        }
+
+        // Mipmap LOD biasing?
+        if (GLEW_VERSION_1_4 || GLEW_EXT_texture_lod_bias)
+        {
+            rsc->setCapability(RSC_MIPMAP_LOD_BIAS);
+        }
+
+        // Alpha to coverage?
+        if (mGLUtil->CheckExtension("GL_ARB_multisample"))
+        {
+            // Alpha to coverage always 'supported' when MSAA is available
+            // although card may ignore it if it doesn't specifically support A2C
+            rsc->setCapability(RSC_ALPHA_TO_COVERAGE);
+        }
+
+        // Advanced blending operations
+        if (GLEW_VERSION_2_0)
+        {
+            rsc->setCapability(RSC_ADVANCED_BLEND_OPERATIONS);
+        }
+
+        return rsc;
+    }
+
 }

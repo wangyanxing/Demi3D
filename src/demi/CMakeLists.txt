@@ -10,5 +10,5 @@ add_subdirectory(drvD3D9)
 endif()
 
 add_subdirectory(drvGL)
-
+add_subdirectory(drvGLES2)
 add_subdirectory(demoFrame)

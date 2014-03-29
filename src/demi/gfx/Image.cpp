@@ -746,6 +746,18 @@ namespace Demi
         rgba[3] = des.abits;
     }
 
+    bool DiPixelBox::IsFloatingPoint(DiPixelFormat format)
+    {
+        const PixelFormatDescription &des = PixelFormatDescription::GetFormatDesc(format);
+        return (des.flags & PFF_FLOAT) > 0;
+    }
+
+    PixelComponentType DiPixelBox::GetComponentType(DiPixelFormat format)
+    {
+        const PixelFormatDescription &des = PixelFormatDescription::GetFormatDesc(format);
+        return des.componentType;
+    }
+
     DiMap<DiPixelFormat,PixelFormatDescription> PixelFormatDescription::s_kDescs;
 
     PixelFormatDescription PixelFormatDescription::GetFormatDesc( DiPixelFormat format )

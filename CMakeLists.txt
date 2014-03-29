@@ -32,6 +32,7 @@ project (DEMI)
 
 # Include necessary submodules
 set(CMAKE_MODULE_PATH "${DEMI_SOURCE_DIR}/cmake")
+set(DEMI_DEPENDENCIES_DIR "${DEMI_SOURCE_DIR}/external")
 
 if (CMAKE_BUILD_TYPE STREQUAL "")
   # CMake defaults to leaving CMAKE_BUILD_TYPE empty. This screws up
@@ -155,6 +156,7 @@ endif()
 
 # Dependencies
 include(Depends)
+include(FindOpenGLES2)
 
 set(DEMI_EXTERNAL_SRC_PATH "${DEMI_SOURCE_DIR}/external/src")
 

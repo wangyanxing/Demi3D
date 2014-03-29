@@ -22,6 +22,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RenderWindow.h"
 #include "ShaderProgram.h"
 #include "Win32/Win32Window.h"
+#include "Capabilities.h"
+#include "Image.h"
 
 #include "D3D9TypeMappings.h"
 #include "D3D9VertexBuffer.h"
@@ -33,11 +35,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "D3D9Shader.h"
 #include "D3D9DepthBuffer.h"
 #include "D3D9ShaderParam.h"
+#include "D3D9Device.h"
 
 namespace Demi
 {
     DiD3D9StateCache* DiD3D9Driver::StateCache = nullptr;
     IDirect3DDevice9* DiD3D9Driver::Device = nullptr;
+    IDirect3D9* DiD3D9Driver::D3D9 = nullptr;
 
     DiD3D9Driver::DiD3D9Driver()
         : mDevice(nullptr),
@@ -45,7 +49,9 @@ namespace Demi
         mBackBuffer(nullptr),
         mDepthBuffer(nullptr),
         mAdapter(0xFFFFFFFF),
-        mAdapterFormat(D3DFMT_UNKNOWN)
+        mAdapterFormat(D3DFMT_UNKNOWN),
+        mDeviceList(nullptr),
+        mActiveD3DDevice(nullptr)
     {
         memset(&mDeviceCaps, 0, sizeof(mDeviceCaps));
     }
@@ -94,10 +100,11 @@ namespace Demi
         DI_INFO("Direct3D9 object successfully initialized.");
         DI_ASSERT(!mDevice);
 
-        UINT adapter = (mAdapter == 0xffffffff) ? D3DADAPTER_DEFAULT : (UINT)mAdapter;
+        if (mAdapter == 0xffffffff)
+            mAdapter = D3DADAPTER_DEFAULT;
 
         D3DDISPLAYMODE adapterMode;
-        if (mD3D->GetAdapterDisplayMode(adapter, &adapterMode) != D3D_OK)
+        if (mD3D->GetAdapterDisplayMode(mAdapter, &adapterMode) != D3D_OK)
         {
             DI_WARNING("GetAdapterDisplayMode failed");
             ReleaseGfx();
@@ -114,22 +121,22 @@ namespace Demi
         mAdapterFormat = adapterFormat;
 
         D3DDEVTYPE rasterizer = D3DDEVTYPE_HAL;
-        HRESULT result = mD3D->CreateDevice(adapter, rasterizer, (HWND)wnd, D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE, &mMainParameters, &mDevice);
+        HRESULT result = mD3D->CreateDevice(mAdapter, rasterizer, (HWND)wnd, D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE, &mMainParameters, &mDevice);
         if (result != D3D_OK)
         {
-            DI_WARNING("Cannot create device hr:0x%x adap:0x%x rast:0x%x, try another params.", result, adapter, rasterizer);
+            DI_WARNING("Cannot create device hr:0x%x adap:0x%x rast:0x%x, try another params.", result, mAdapter, rasterizer);
 
             // Create the D3D device without puredevice
-            HRESULT result = mD3D->CreateDevice(adapter, rasterizer, (HWND)wnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &mMainParameters, &mDevice);
+            HRESULT result = mD3D->CreateDevice(mAdapter, rasterizer, (HWND)wnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &mMainParameters, &mDevice);
             if (result != D3D_OK)
             {
-                DI_WARNING("Cannot create device without puredevice hr:0x%x adap:0x%x rast:0x%x, try another params.", result, adapter, rasterizer);
+                DI_WARNING("Cannot create device without puredevice hr:0x%x adap:0x%x rast:0x%x, try another params.", result, mAdapter, rasterizer);
 
                 // Create the D3D device without puredevice and hardware
-                HRESULT result = mD3D->CreateDevice(adapter, rasterizer, (HWND)wnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &mMainParameters, &mDevice);
+                HRESULT result = mD3D->CreateDevice(mAdapter, rasterizer, (HWND)wnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &mMainParameters, &mDevice);
                 if (result != D3D_OK)
                 {
-                    DI_WARNING("Cannot create device without puredevice and hardware hr:0x%x adap:0x%x rast:0x%x", result, adapter, rasterizer);
+                    DI_WARNING("Cannot create device without puredevice and hardware hr:0x%x adap:0x%x rast:0x%x", result, mAdapter, rasterizer);
                     ReleaseGfx();
                     return false;
                 }
@@ -147,6 +154,29 @@ namespace Demi
 
         DI_ASSERT(!Device);
         Device = mDevice;
+
+        mDeviceList = DI_NEW D3D9DriverList();
+        // TODO multi-device
+        mActiveD3DDevice = nullptr;
+        for (uint32 j = 0; j < mDeviceList->count(); j++)
+        {
+            if (mDeviceList->item(j)->getAdapterNumber() == mAdapter)
+            {
+                mActiveD3DDevice = mDeviceList->item(j);
+                break;
+            }
+        }
+        if (!mActiveD3DDevice)
+        {
+            DI_WARNING("No active device detected");
+        }
+
+        // get driver version
+        mDriverVersion.major = HIWORD(mActiveD3DDevice->getAdapterIdentifier().DriverVersion.HighPart);
+        mDriverVersion.minor = LOWORD(mActiveD3DDevice->getAdapterIdentifier().DriverVersion.HighPart);
+        mDriverVersion.release = HIWORD(mActiveD3DDevice->getAdapterIdentifier().DriverVersion.LowPart);
+        mDriverVersion.build = LOWORD(mActiveD3DDevice->getAdapterIdentifier().DriverVersion.LowPart);
+
         return true;
     }
 
@@ -255,6 +285,8 @@ namespace Demi
         mWidth = width;
         mHeight = height;
 
+        DI_ASSERT(false);
+
         return true;
     }
 
@@ -284,6 +316,12 @@ namespace Demi
 
     void DiD3D9Driver::ReleaseGfx()
     {
+        if (mDeviceList)
+        {
+            DI_DELETE mDeviceList;
+            mDeviceList = nullptr;
+        }
+
         if (StateCache)
         {
             DI_DELETE StateCache;
@@ -309,6 +347,7 @@ namespace Demi
             Device = nullptr;
         }
 
+        mD3D = nullptr;
         DI_INFO("Direct3D9 stuff successfully released.");
     }
 
@@ -316,6 +355,7 @@ namespace Demi
     {
         DI_ASSERT(!mD3D);
         mD3D = Direct3DCreate9(D3D_SDK_VERSION);
+        D3D9 = mD3D;
         return true;
     }
 
@@ -922,4 +962,588 @@ namespace Demi
     {
         return DiPair<float, float>(0.0f, 1.0f);
     }
+
+    DiGfxCaps* DiD3D9Driver::InitGfxCaps()
+    {
+        DiGfxCaps* rsc = DI_NEW DiGfxCaps();
+        mCaps = rsc;
+
+        rsc->setRenderSystemName(DRV_DIRECT3D9);
+        rsc->setCategoryRelevant(CAPS_CATEGORY_D3D9, true);
+        rsc->setDriverVersion(mDriverVersion);
+        rsc->setDeviceName(mActiveD3DDevice->DriverDescription());
+
+        // Init caps to maximum.		
+        rsc->setNumTextureUnits(1024);
+        rsc->setCapability(RSC_ANISOTROPY);
+        rsc->setCapability(RSC_AUTOMIPMAP);
+        rsc->setCapability(RSC_DOT3);
+        rsc->setCapability(RSC_CUBEMAPPING);
+        rsc->setCapability(RSC_SCISSOR_TEST);
+        rsc->setCapability(RSC_TWO_SIDED_STENCIL);
+        rsc->setCapability(RSC_STENCIL_WRAP);
+        rsc->setCapability(RSC_HWOCCLUSION);
+        rsc->setCapability(RSC_USER_CLIP_PLANES);
+        rsc->setCapability(RSC_32BIT_INDEX);
+        rsc->setCapability(RSC_VERTEX_FORMAT_UBYTE4);
+        rsc->setCapability(RSC_TEXTURE_1D);
+        rsc->setCapability(RSC_TEXTURE_3D);
+        rsc->setCapability(RSC_NON_POWER_OF_2_TEXTURES);
+        rsc->setNonPOW2TexturesLimited(false);
+        rsc->setNumMultiRenderTargets(MAX_MRT);
+        rsc->setCapability(RSC_MRT_DIFFERENT_BIT_DEPTHS);
+        rsc->setCapability(RSC_POINT_SPRITES);
+        rsc->setCapability(RSC_POINT_EXTENDED_PARAMETERS);
+        rsc->setMaxPointSize(2.19902e+012f);
+        rsc->setCapability(RSC_MIPMAP_LOD_BIAS);
+        rsc->setCapability(RSC_PERSTAGECONSTANT);
+        rsc->setCapability(RSC_HWSTENCIL);
+        rsc->setStencilBufferBitDepth(8);
+        rsc->setCapability(RSC_ADVANCED_BLEND_OPERATIONS);
+        rsc->setCapability(RSC_RTT_SEPARATE_DEPTHBUFFER);
+        rsc->setCapability(RSC_RTT_MAIN_DEPTHBUFFER_ATTACHABLE);
+        rsc->setCapability(RSC_RTT_DEPTHBUFFER_RESOLUTION_LESSEQUAL);
+        rsc->setCapability(RSC_VERTEX_BUFFER_INSTANCE_DATA);
+        rsc->setCapability(RSC_CAN_GET_COMPILED_SHADER_BUFFER);
+
+        // currently we just care about the first device
+        IDirect3DDevice9* d3d9Device = Device;
+
+        IDirect3DSurface9* pSurf;
+
+        // Check for hardware stencil support
+        d3d9Device->GetDepthStencilSurface(&pSurf);
+
+        if (pSurf != NULL)
+        {
+            D3DSURFACE_DESC surfDesc;
+
+            pSurf->GetDesc(&surfDesc);
+            pSurf->Release();
+
+            if (surfDesc.Format != D3DFMT_D15S1 &&
+                surfDesc.Format != D3DFMT_D24S8 &&
+                surfDesc.Format != D3DFMT_D24X4S4 &&
+                surfDesc.Format != D3DFMT_D24FS8)
+                rsc->unsetCapability(RSC_HWSTENCIL);
+        }
+
+        // Check for hardware occlusion support
+        HRESULT hr = d3d9Device->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL);
+        if (FAILED(hr))
+            rsc->unsetCapability(RSC_HWOCCLUSION);
+
+        // Update RS caps using the minimum value found in adapter list.
+        for (unsigned int i = 0; i < mDeviceList->count(); ++i)
+        {
+            D3D9Driver* pCurDriver = mDeviceList->item(i);
+            const D3DCAPS9& rkCurCaps = pCurDriver->getD3D9DeviceCaps();
+
+            if (rkCurCaps.MaxSimultaneousTextures < rsc->getNumTextureUnits())
+            {
+                rsc->setNumTextureUnits(static_cast<uint16>(rkCurCaps.MaxSimultaneousTextures));
+            }
+
+            // Check for Anisotropy.
+            if (rkCurCaps.MaxAnisotropy <= 1)
+                rsc->unsetCapability(RSC_ANISOTROPY);
+
+            // Check automatic mipmap generation.
+            if ((rkCurCaps.Caps2 & D3DCAPS2_CANAUTOGENMIPMAP) == 0)
+                rsc->unsetCapability(RSC_AUTOMIPMAP);
+
+            // Check Dot product 3.
+            if ((rkCurCaps.TextureOpCaps & D3DTEXOPCAPS_DOTPRODUCT3) == 0)
+                rsc->unsetCapability(RSC_DOT3);
+
+            // Scissor test
+            if ((rkCurCaps.RasterCaps & D3DPRASTERCAPS_SCISSORTEST) == 0)
+                rsc->unsetCapability(RSC_SCISSOR_TEST);
+
+            // Two-sided stencil
+            if ((rkCurCaps.StencilCaps & D3DSTENCILCAPS_TWOSIDED) == 0)
+                rsc->unsetCapability(RSC_TWO_SIDED_STENCIL);
+
+            // stencil wrap
+            if ((rkCurCaps.StencilCaps & D3DSTENCILCAPS_INCR) == 0 ||
+                (rkCurCaps.StencilCaps & D3DSTENCILCAPS_DECR) == 0)
+                rsc->unsetCapability(RSC_STENCIL_WRAP);
+
+            // User clip planes
+            if (rkCurCaps.MaxUserClipPlanes == 0)
+                rsc->unsetCapability(RSC_USER_CLIP_PLANES);
+
+            // D3DFMT_INDEX32 type?
+            if (rkCurCaps.MaxVertexIndex <= 0xFFFF)
+                rsc->unsetCapability(RSC_32BIT_INDEX);
+
+            // UBYTE4 type?
+            if ((rkCurCaps.DeclTypes & D3DDTCAPS_UBYTE4) == 0)
+                rsc->unsetCapability(RSC_VERTEX_FORMAT_UBYTE4);
+
+            // Check cube map support.
+            if ((rkCurCaps.TextureCaps & D3DPTEXTURECAPS_CUBEMAP) == 0)
+                rsc->unsetCapability(RSC_CUBEMAPPING);
+
+            // 3D textures?
+            if ((rkCurCaps.TextureCaps & D3DPTEXTURECAPS_VOLUMEMAP) == 0)
+                rsc->unsetCapability(RSC_TEXTURE_3D);
+
+            if (rkCurCaps.TextureCaps & D3DPTEXTURECAPS_POW2)
+            {
+                // Conditional support for non POW2
+                if (rkCurCaps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL)
+                    rsc->setNonPOW2TexturesLimited(true);
+
+                // Only power of 2 supported.
+                else
+                    rsc->unsetCapability(RSC_NON_POWER_OF_2_TEXTURES);
+            }
+
+            // Number of render targets
+            if (rkCurCaps.NumSimultaneousRTs < rsc->getNumMultiRenderTargets())
+            {
+                rsc->setNumMultiRenderTargets(std::min((uint16)rkCurCaps.NumSimultaneousRTs, (uint16)MAX_MRT));
+            }
+
+            if ((rkCurCaps.PrimitiveMiscCaps & D3DPMISCCAPS_MRTINDEPENDENTBITDEPTHS) == 0)
+            {
+                rsc->unsetCapability(RSC_MRT_DIFFERENT_BIT_DEPTHS);
+            }
+
+            // Point sprites 
+            if (rkCurCaps.MaxPointSize <= 1.0f)
+            {
+                rsc->unsetCapability(RSC_POINT_SPRITES);
+                // sprites and extended parameters go together in D3D
+                rsc->unsetCapability(RSC_POINT_EXTENDED_PARAMETERS);
+            }
+
+            // Take the minimum point size.
+            if (rkCurCaps.MaxPointSize < rsc->getMaxPointSize())
+                rsc->setMaxPointSize(rkCurCaps.MaxPointSize);
+
+            // Mipmap LOD biasing?
+            if ((rkCurCaps.RasterCaps & D3DPRASTERCAPS_MIPMAPLODBIAS) == 0)
+                rsc->unsetCapability(RSC_MIPMAP_LOD_BIAS);
+
+
+            // Do we support per-stage src_manual constants?
+            // HACK - ATI drivers seem to be buggy and don't support per-stage constants properly?
+            // TODO: move this to RSC
+            if ((rkCurCaps.PrimitiveMiscCaps & D3DPMISCCAPS_PERSTAGECONSTANT) == 0)
+                rsc->unsetCapability(RSC_PERSTAGECONSTANT);
+
+            // Advanced blend operations? min max subtract rev 
+            if ((rkCurCaps.PrimitiveMiscCaps & D3DPMISCCAPS_BLENDOP) == 0)
+                rsc->unsetCapability(RSC_ADVANCED_BLEND_OPERATIONS);
+        }
+
+        // Blending between stages supported
+        rsc->setCapability(RSC_BLENDING);
+
+
+        // We always support compression, D3DX will decompress if device does not support
+        rsc->setCapability(RSC_TEXTURE_COMPRESSION);
+        rsc->setCapability(RSC_TEXTURE_COMPRESSION_DXT);
+
+        // We always support VBOs
+        rsc->setCapability(RSC_VBO);
+
+        ConvertVertexShaderCaps(rsc);
+
+        ConvertPixelShaderCaps(rsc);
+
+        // Adapter details
+        const D3DADAPTER_IDENTIFIER9& adapterID = mActiveD3DDevice->getAdapterIdentifier();
+
+        // determine vendor
+        // Full list of vendors here: http://www.pcidatabase.com/vendors.php?sort=id
+        switch (adapterID.VendorId)
+        {
+        case 0x10DE:
+            rsc->setVendor(GPU_NVIDIA);
+            break;
+        case 0x1002:
+            rsc->setVendor(GPU_AMD);
+            break;
+        case 0x163C:
+        case 0x8086:
+            rsc->setVendor(GPU_INTEL);
+            break;
+        case 0x5333:
+            rsc->setVendor(GPU_S3);
+            break;
+        case 0x3D3D:
+            rsc->setVendor(GPU_3DLABS);
+            break;
+        case 0x102B:
+            rsc->setVendor(GPU_MATROX);
+            break;
+        case 0x1039:
+            rsc->setVendor(GPU_SIS);
+            break;
+        default:
+            rsc->setVendor(GPU_UNKNOWN);
+            break;
+        };
+
+        // Infinite projection?
+        // We have no capability for this, so we have to base this on our
+        // experience and reports from users
+        // Non-vertex program capable hardware does not appear to support it
+        if (rsc->hasCapability(RSC_VERTEX_PROGRAM))
+        {
+            // GeForce4 Ti (and presumably GeForce3) does not
+            // render infinite projection properly, even though it does in GL
+            // So exclude all cards prior to the FX range from doing infinite
+            if (rsc->getVendor() != GPU_NVIDIA || // not nVidia
+                !((adapterID.DeviceId >= 0x200 && adapterID.DeviceId <= 0x20F) || //gf3
+                (adapterID.DeviceId >= 0x250 && adapterID.DeviceId <= 0x25F) || //gf4ti
+                (adapterID.DeviceId >= 0x280 && adapterID.DeviceId <= 0x28F) || //gf4ti
+                (adapterID.DeviceId >= 0x170 && adapterID.DeviceId <= 0x18F) || //gf4 go
+                (adapterID.DeviceId >= 0x280 && adapterID.DeviceId <= 0x28F)))  //gf4ti go
+            {
+                rsc->setCapability(RSC_INFINITE_FAR_PLANE);
+            }
+        }
+
+        // We always support rendertextures bigger than the frame buffer
+        rsc->setCapability(RSC_HWRENDER_TO_TEXTURE);
+
+        // Determine if any floating point texture format is supported
+        D3DFORMAT floatFormats[6] = { D3DFMT_R16F, D3DFMT_G16R16F,
+            D3DFMT_A16B16G16R16F, D3DFMT_R32F, D3DFMT_G32R32F,
+            D3DFMT_A32B32G32R32F };
+
+        DiD3D9RenderTarget* backTarget = static_cast<DiD3D9RenderTarget*>(GetMainRenderWindow()->GetRenderBuffer());
+        IDirect3DSurface9* bbSurf = backTarget->GetSurface();
+        D3DSURFACE_DESC bbSurfDesc;
+        bbSurf->GetDesc(&bbSurfDesc);
+
+        for (int i = 0; i < 6; ++i)
+        {
+            if (SUCCEEDED(mD3D->CheckDeviceFormat(mActiveD3DDevice->getAdapterNumber(),
+                D3DDEVTYPE_HAL, bbSurfDesc.Format,
+                0, D3DRTYPE_TEXTURE, floatFormats[i])))
+            {
+                rsc->setCapability(RSC_TEXTURE_FLOAT);
+                break;
+            }
+        }
+
+        // TODO: make convertVertex/Fragment fill in rsc
+        // TODO: update the below line to use rsc
+        // Vertex textures
+        if (rsc->isShaderProfileSupported("vs_3_0"))
+        {
+            // Run through all the texture formats looking for any which support
+            // vertex texture fetching. Must have at least one!
+            // All ATI Radeon up to X1n00 say they support vs_3_0, 
+            // but they support no texture formats for vertex texture fetch (cheaters!)
+            if (CheckVertexTextureFormats(bbSurf))
+            {
+                rsc->setCapability(RSC_VERTEX_TEXTURE_FETCH);
+                // always 4 vertex texture units in vs_3_0, and never shared
+                rsc->setNumVertexTextureUnits(4);
+                rsc->setVertexTextureUnitsShared(false);
+            }
+        }
+        else
+        {
+            //True HW Instancing is supported since Shader model 3.0 ATI has a nasty
+            //hack for enabling it in their SM 2.0 cards, but we don't (and won't) support it
+            rsc->unsetCapability(RSC_VERTEX_BUFFER_INSTANCE_DATA);
+        }
+
+        // Check alpha to coverage support
+        // this varies per vendor! But at least SM3 is required
+        if (rsc->isShaderProfileSupported("ps_3_0"))
+        {
+            // NVIDIA needs a separate check
+            if (rsc->getVendor() == GPU_NVIDIA)
+            {
+                if (mD3D->CheckDeviceFormat(
+                    D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_X8R8G8B8, 0, D3DRTYPE_SURFACE,
+                    (D3DFORMAT)MAKEFOURCC('A', 'T', 'O', 'C')) == S_OK)
+                {
+                    rsc->setCapability(RSC_ALPHA_TO_COVERAGE);
+                }
+
+            }
+            else if (rsc->getVendor() == GPU_AMD)
+            {
+                // There is no check on ATI, we have to assume SM3 == support
+                rsc->setCapability(RSC_ALPHA_TO_COVERAGE);
+            }
+
+            // no other cards have Dx9 hacks for alpha to coverage, as far as I know
+        }
+
+        rsc->addShaderProfile("hlsl");
+
+        return rsc;
+    }
+
+    D3D9DriverList* DiD3D9Driver::GetD3D9Devices()
+    {
+        if (!mDeviceList)
+            mDeviceList = DI_NEW D3D9DriverList();
+
+        return mDeviceList;
+    }
+
+    void DiD3D9Driver::ConvertVertexShaderCaps(DiGfxCaps* rsc) const
+    {
+        uint16 major = 0xFF;
+        uint16 minor = 0xFF;
+        D3DCAPS9 minVSCaps;
+
+        // Find the device with the lowest vertex shader caps.
+        for (unsigned int i = 0; i < mDeviceList->count(); ++i)
+        {
+            D3D9Driver* pCurDriver = mDeviceList->item(i);
+            const D3DCAPS9& rkCurCaps = pCurDriver->getD3D9DeviceCaps();
+            uint16 currMajor = static_cast<uint16>((rkCurCaps.VertexShaderVersion & 0x0000FF00) >> 8);
+            uint16 currMinor = static_cast<uint16>(rkCurCaps.VertexShaderVersion & 0x000000FF);
+
+            if (currMajor < major)
+            {
+                major = currMajor;
+                minor = currMinor;
+                minVSCaps = rkCurCaps;
+            }
+            else if (currMajor == major && currMinor < minor)
+            {
+                minor = currMinor;
+                minVSCaps = rkCurCaps;
+            }
+        }
+
+        // In case we didn't found any vertex shader support
+        // try the IDirect3DDevice9 caps instead of the IDirect3D9
+        // software vertex processing is reported there
+        if (major == 0 && minor == 0)
+        {
+            IDirect3DDevice9* lpD3DDevice9 = Device;
+            D3DCAPS9 d3dDeviceCaps9;
+            lpD3DDevice9->GetDeviceCaps(&d3dDeviceCaps9);
+            major = static_cast<uint16>((d3dDeviceCaps9.VertexShaderVersion & 0x0000FF00) >> 8);
+            minor = static_cast<uint16>(d3dDeviceCaps9.VertexShaderVersion & 0x000000FF);
+        }
+
+        bool vs2x = false;
+        bool vs2a = false;
+
+        // Special case detection for vs_2_x/a support
+        if (major >= 2)
+        {
+            if ((minVSCaps.VS20Caps.Caps & D3DVS20CAPS_PREDICATION) &&
+                (minVSCaps.VS20Caps.DynamicFlowControlDepth > 0) &&
+                (minVSCaps.VS20Caps.NumTemps >= 12))
+            {
+                vs2x = true;
+            }
+
+            if ((minVSCaps.VS20Caps.Caps & D3DVS20CAPS_PREDICATION) &&
+                (minVSCaps.VS20Caps.DynamicFlowControlDepth > 0) &&
+                (minVSCaps.VS20Caps.NumTemps >= 13))
+            {
+                vs2a = true;
+            }
+        }
+
+        // Populate max param count
+        switch (major)
+        {
+        case 1:
+            // No boolean params allowed
+            rsc->setVertexProgramConstantBoolCount(0);
+            // No integer params allowed
+            rsc->setVertexProgramConstantIntCount(0);
+            // float params, always 4D
+            rsc->setVertexProgramConstantFloatCount(static_cast<uint16>(minVSCaps.MaxVertexShaderConst));
+
+            break;
+        case 2:
+            // 16 boolean params allowed
+            rsc->setVertexProgramConstantBoolCount(16);
+            // 16 integer params allowed, 4D
+            rsc->setVertexProgramConstantIntCount(16);
+            // float params, always 4D
+            rsc->setVertexProgramConstantFloatCount(static_cast<uint16>(minVSCaps.MaxVertexShaderConst));
+            break;
+        case 3:
+            // 16 boolean params allowed
+            rsc->setVertexProgramConstantBoolCount(16);
+            // 16 integer params allowed, 4D
+            rsc->setVertexProgramConstantIntCount(16);
+            // float params, always 4D
+            rsc->setVertexProgramConstantFloatCount(static_cast<uint16>(minVSCaps.MaxVertexShaderConst));
+            break;
+        }
+
+        // populate syntax codes in program manager (no breaks in this one so it falls through)
+        switch (major)
+        {
+        case 3:
+            rsc->addShaderProfile("vs_3_0");
+        case 2:
+            if (vs2x)
+                rsc->addShaderProfile("vs_2_x");
+            if (vs2a)
+                rsc->addShaderProfile("vs_2_a");
+
+            rsc->addShaderProfile("vs_2_0");
+        case 1:
+            rsc->addShaderProfile("vs_1_1");
+            rsc->setCapability(RSC_VERTEX_PROGRAM);
+        }
+    }
+
+    void DiD3D9Driver::ConvertPixelShaderCaps(DiGfxCaps* rsc) const
+    {
+        uint16 major = 0xFF;
+        uint16 minor = 0xFF;
+        D3DCAPS9 minPSCaps;
+
+        // Find the device with the lowest pixel shader caps.
+        for (unsigned int i = 0; i < mDeviceList->count(); ++i)
+        {
+            D3D9Driver* pCurDriver = mDeviceList->item(i);
+            const D3DCAPS9& currCaps = pCurDriver->getD3D9DeviceCaps();
+            uint16 currMajor = static_cast<uint16>((currCaps.PixelShaderVersion & 0x0000FF00) >> 8);
+            uint16 currMinor = static_cast<uint16>(currCaps.PixelShaderVersion & 0x000000FF);
+
+            if (currMajor < major)
+            {
+                major = currMajor;
+                minor = currMinor;
+                minPSCaps = currCaps;
+            }
+            else if (currMajor == major && currMinor < minor)
+            {
+                minor = currMinor;
+                minPSCaps = currCaps;
+            }
+        }
+
+        bool ps2a = false;
+        bool ps2b = false;
+        bool ps2x = false;
+
+        // Special case detection for ps_2_x/a/b support
+        if (major >= 2)
+        {
+            if ((minPSCaps.PS20Caps.Caps & D3DPS20CAPS_NOTEXINSTRUCTIONLIMIT) &&
+                (minPSCaps.PS20Caps.NumTemps >= 32))
+            {
+                ps2b = true;
+            }
+
+            if ((minPSCaps.PS20Caps.Caps & D3DPS20CAPS_NOTEXINSTRUCTIONLIMIT) &&
+                (minPSCaps.PS20Caps.Caps & D3DPS20CAPS_NODEPENDENTREADLIMIT) &&
+                (minPSCaps.PS20Caps.Caps & D3DPS20CAPS_ARBITRARYSWIZZLE) &&
+                (minPSCaps.PS20Caps.Caps & D3DPS20CAPS_GRADIENTINSTRUCTIONS) &&
+                (minPSCaps.PS20Caps.Caps & D3DPS20CAPS_PREDICATION) &&
+                (minPSCaps.PS20Caps.NumTemps >= 22))
+            {
+                ps2a = true;
+            }
+
+            // Does this enough?
+            if (ps2a || ps2b)
+            {
+                ps2x = true;
+            }
+        }
+
+        switch (major)
+        {
+        case 1:
+            // no boolean params allowed
+            rsc->setFragmentProgramConstantBoolCount(0);
+            // no integer params allowed
+            rsc->setFragmentProgramConstantIntCount(0);
+            // float params, always 4D
+            // NB in ps_1_x these are actually stored as fixed point values,
+            // but they are entered as floats
+            rsc->setFragmentProgramConstantFloatCount(8);
+            break;
+        case 2:
+            // 16 boolean params allowed
+            rsc->setFragmentProgramConstantBoolCount(16);
+            // 16 integer params allowed, 4D
+            rsc->setFragmentProgramConstantIntCount(16);
+            // float params, always 4D
+            rsc->setFragmentProgramConstantFloatCount(32);
+            break;
+        case 3:
+            // 16 boolean params allowed
+            rsc->setFragmentProgramConstantBoolCount(16);
+            // 16 integer params allowed, 4D
+            rsc->setFragmentProgramConstantIntCount(16);
+            // float params, always 4D
+            rsc->setFragmentProgramConstantFloatCount(224);
+            break;
+        }
+
+        // populate syntax codes in program manager (no breaks in this one so it falls through)
+        switch (major)
+        {
+        case 3:
+            if (minor > 0)
+                rsc->addShaderProfile("ps_3_x");
+
+            rsc->addShaderProfile("ps_3_0");
+        case 2:
+            if (ps2x)
+                rsc->addShaderProfile("ps_2_x");
+            if (ps2a)
+                rsc->addShaderProfile("ps_2_a");
+            if (ps2b)
+                rsc->addShaderProfile("ps_2_b");
+
+            rsc->addShaderProfile("ps_2_0");
+        case 1:
+            if (major > 1 || minor >= 4)
+                rsc->addShaderProfile("ps_1_4");
+            if (major > 1 || minor >= 3)
+                rsc->addShaderProfile("ps_1_3");
+            if (major > 1 || minor >= 2)
+                rsc->addShaderProfile("ps_1_2");
+
+            rsc->addShaderProfile("ps_1_1");
+            rsc->setCapability(RSC_FRAGMENT_PROGRAM);
+        }
+    }
+
+    bool DiD3D9Driver::CheckVertexTextureFormats(IDirect3DSurface9* bbSurf) const
+    {
+        bool anySupported = false;
+
+        D3DSURFACE_DESC bbSurfDesc;
+        bbSurf->GetDesc(&bbSurfDesc);
+
+        for (uint32 ipf = static_cast<uint32>(PF_R8G8B8); ipf < static_cast<uint32>(PIXEL_FORMAT_MAX); ++ipf)
+        {
+            DiPixelFormat pf = (DiPixelFormat)ipf;
+
+            D3DFORMAT fmt = DiD3D9Mappings::D3D9FormatMapping[pf];
+
+            if (SUCCEEDED(mD3D->CheckDeviceFormat(
+                mActiveD3DDevice->getAdapterNumber(), D3DDEVTYPE_HAL, bbSurfDesc.Format,
+                D3DUSAGE_QUERY_VERTEXTEXTURE, D3DRTYPE_TEXTURE, fmt)))
+            {
+                // cool, at least one supported
+                anySupported = true;
+                char name[256];
+                DiPixelBox::FormatGetDisplayStr(pf, name, 256);
+                DI_LOG("D3D9: Vertex texture format supported: %s", name);
+            }
+        }
+
+        return anySupported;
+    }
+
 }

@@ -286,4 +286,9 @@ namespace Demi
     {
         return DI_NEW DiWin32Window();
     }
+
+    bool DiWin32GLUtil::SupportsPBuffers()
+    {
+        return WGLEW_GET_FUN(__WGLEW_ARB_pbuffer) != GL_FALSE;
+    }
 }

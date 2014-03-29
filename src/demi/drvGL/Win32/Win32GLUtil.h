@@ -43,6 +43,8 @@ namespace Demi
 
         DiWindow*       CreateNewWindow();
 
+        virtual bool    SupportsPBuffers();
+
     private:
 
         void            InitWGL();

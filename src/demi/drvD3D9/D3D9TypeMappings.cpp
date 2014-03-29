@@ -70,6 +70,19 @@ namespace Demi
         D3DFMT_R32F,
         D3DFMT_G32R32F,
         D3DFMT_A32B32G32R32F,
+        D3DFMT_UNKNOWN,       // PF_PVRTC_RGB2
+        D3DFMT_UNKNOWN,       // PF_PVRTC_RGBA2
+        D3DFMT_UNKNOWN,       // PF_PVRTC_RGB4
+        D3DFMT_UNKNOWN,       // PF_PVRTC_RGBA4
+        D3DFMT_UNKNOWN,       // PF_PVRTC2_2BPP
+        D3DFMT_UNKNOWN,       // PF_PVRTC2_4BPP
+        D3DFMT_UNKNOWN,       // PF_ETC1_RGB8,
+        D3DFMT_UNKNOWN,       // PF_ETC2_RGB8,
+        D3DFMT_UNKNOWN,       // PF_ETC2_RGBA8,
+        D3DFMT_UNKNOWN,       // PF_ETC2_RGB8A1,
+        D3DFMT_UNKNOWN,       // PF_ATC_RGB,
+        D3DFMT_UNKNOWN,       // PF_ATC_RGBA_EXPLICIT_ALPHA,
+        D3DFMT_UNKNOWN        // PF_ATC_RGBA_INTERPOLATED_ALPHA,
     };
 
     DiPixelFormat DiD3D9Mappings::ConvertPixFormat(D3DFORMAT d3dfmt)

@@ -135,6 +135,10 @@ namespace Demi
 
         DiPair<float, float>    GetDepthInputRange() const;
 
+        DiGfxCaps*              InitGfxCaps();
+
+        D3D9DriverList*         GetD3D9Devices();
+
     public:
 
         static IDirect3DVertexShader9*         CreateVertexShader(const DWORD* pFunction);
@@ -168,6 +172,12 @@ namespace Demi
 
         bool                    CreateDirect3D();
 
+        void                    ConvertVertexShaderCaps(DiGfxCaps* rsc) const;
+
+        void                    ConvertPixelShaderCaps(DiGfxCaps* rsc) const;
+
+        bool                    CheckVertexTextureFormats(IDirect3DSurface9* surface) const;
+
     private:
 
         D3DFORMAT               mAdapterFormat;
@@ -184,11 +194,17 @@ namespace Demi
 
         D3DCAPS9                mDeviceCaps;
 
+        D3D9DriverList*         mDeviceList;
+
+        D3D9Driver*             mActiveD3DDevice;
+
     public:
 
         static DiD3D9StateCache* StateCache;
 
         static IDirect3DDevice9* Device;
+
+        static IDirect3D9*       D3D9;
     };
 }
 

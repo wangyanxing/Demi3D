@@ -14,6 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiGfxDriver_h__
 #define DiGfxDriver_h__
 
+#include "Capabilities.h"
+
 namespace Demi
 {
     enum DiGfxDriverType
@@ -21,6 +23,7 @@ namespace Demi
         DRV_DIRECT3D9,
         DRV_DIRECT3D11,
         DRV_OPENGL,
+        DRV_OPENGL_ES2,
         DRV_NULL
     };
 
@@ -39,7 +42,7 @@ namespace Demi
     };
 
     /** Graphics driver class
-        The abstruct layer of the graphics APIs
+        The abstract layer of the graphics APIs
      */
     class DI_GFX_API DiGfxDriver : public DiBase
     {
@@ -173,6 +176,10 @@ namespace Demi
 
         virtual DiPair<float,float> GetDepthInputRange() const = 0;
 
+        virtual DiGfxCaps*          InitGfxCaps() = 0;
+
+        DiGfxCaps*                  GetGfxCaps() { return mCaps; }
+
     public:
 
         typedef DiVector<DiDepthBuffer*>            DepthBufferVec;
@@ -235,6 +242,10 @@ namespace Demi
         bool                        mNeedTextureFlipping;
 
         bool                        mInvertVertexWinding;
+
+        DiGfxCaps*                  mCaps;
+
+        DriverVersion               mDriverVersion;
     };
 }
 #endif // GfxDriver_h__

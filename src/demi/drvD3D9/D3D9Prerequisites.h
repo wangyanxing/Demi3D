@@ -19,6 +19,10 @@ namespace Demi
 {
     class DiD3D9StateCache;
     class DiD3D9Driver;
+    class D3D9VideoMode;
+    class D3D9VideoModeList;
+    class D3D9Driver;
+    class D3D9DriverList;
 }
 
 #endif

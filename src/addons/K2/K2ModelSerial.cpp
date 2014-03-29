@@ -297,8 +297,11 @@ namespace Demi
             minBound = g_trans_orit_quat * minBound;
             maxBound = g_trans_orit_quat * maxBound;
         }
-        DiAABB bounds(minBound, maxBound);
         
+        DiAABB bounds;
+        bounds.Merge(minBound);
+        bounds.Merge(maxBound);
+
         mesh->SetBounds(bounds);
 
         if (!LoadBones(target->GetBoneData(), num_bones))
@@ -429,7 +432,9 @@ namespace Demi
             minBound = g_trans_orit_quat * minBound;
             maxBound = g_trans_orit_quat * maxBound;
         }
-        DiAABB bounds(minBound, maxBound);
+        DiAABB bounds;
+        bounds.Merge(minBound);
+        bounds.Merge(maxBound);
 
         int bonelink = ReadInt(mStream); //bone link
 

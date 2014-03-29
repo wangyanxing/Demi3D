@@ -138,6 +138,20 @@ namespace Demi
         GL_LUMINANCE,                      // PF_R32F,
         GL_LUMINANCE_ALPHA,                // PF_G32R32F,
         GL_RGBA,                           // PF_A32B32G32R32F,
+
+        GL_NONE,                           // PF_PVRTC_RGB2
+        GL_NONE,                           // PF_PVRTC_RGBA2
+        GL_NONE,                           // PF_PVRTC_RGB4
+        GL_NONE,                           // PF_PVRTC_RGBA4
+        GL_NONE,                           // PF_PVRTC2_2BPP
+        GL_NONE,                           // PF_PVRTC2_4BPP
+        GL_NONE,                           // PF_ETC1_RGB8,
+        GL_NONE,                           // PF_ETC2_RGB8,
+        GL_NONE,                           // PF_ETC2_RGBA8,
+        GL_NONE,                           // PF_ETC2_RGB8A1,
+        GL_NONE,                           // PF_ATC_RGB,
+        GL_NONE,                           // PF_ATC_RGBA_EXPLICIT_ALPHA,
+        GL_NONE,                           // PF_ATC_RGBA_INTERPOLATED_ALPHA,
     };
 
     GLenum DiGLTypeMappings::GLInternalFormatMapping[PIXEL_FORMAT_MAX] =
@@ -159,6 +173,20 @@ namespace Demi
         GL_LUMINANCE32F_ARB,               // PF_R32F,
         GL_LUMINANCE_ALPHA32F_ARB,         // PF_G32R32F,
         GL_RGBA32F_ARB,                    // PF_A32B32G32R32F,
+
+        GL_NONE,                           // PF_PVRTC_RGB2
+        GL_NONE,                           // PF_PVRTC_RGBA2
+        GL_NONE,                           // PF_PVRTC_RGB4
+        GL_NONE,                           // PF_PVRTC_RGBA4
+        GL_NONE,                           // PF_PVRTC2_2BPP
+        GL_NONE,                           // PF_PVRTC2_4BPP
+        GL_NONE,                           // PF_ETC1_RGB8,
+        GL_NONE,                           // PF_ETC2_RGB8,
+        GL_NONE,                           // PF_ETC2_RGBA8,
+        GL_NONE,                           // PF_ETC2_RGB8A1,
+        GL_NONE,                           // PF_ATC_RGB,
+        GL_NONE,                           // PF_ATC_RGBA_EXPLICIT_ALPHA,
+        GL_NONE,                           // PF_ATC_RGBA_INTERPOLATED_ALPHA,
     };
 
     GLenum DiGLTypeMappings::GetGLTextureType(uint16 type)

@@ -160,17 +160,15 @@ namespace Demi
             (*it)->Load();
 
         // load navigation map
-        mPathFinder.Init(NULL, vertX*DEF_CollisionGrid_Scale, vertY*DEF_CollisionGrid_Scale);
+        mPathFinder.Init(nullptr, vertX*DEF_CollisionGrid_Scale, vertY*DEF_CollisionGrid_Scale);
         uint8* blockerBuffer = mDesc->mVertBlockerMap->GetBuffer();
         for (uint32 x = 0; x < vertX; ++x)
         {
             for (uint32 y = 0; y < vertY; ++y)
             {
-                uint8 block = blockerBuffer[x*vertX + y];
+                uint8 block = blockerBuffer[y*vertY + x];
                 if (block > 0)
-                {
                     mPathFinder.SetLevel(x, y, 15);
-                }
             }
         }
 

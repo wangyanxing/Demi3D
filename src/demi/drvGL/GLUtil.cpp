@@ -97,4 +97,9 @@ namespace Demi
             mExtensionList.insert(str.c_str());
         }
     }
+
+    bool DiGLUtil::SupportsPBuffers()
+    {
+        return (GLEW_ARB_pixel_buffer_object || GLEW_EXT_pixel_buffer_object) != GL_FALSE;
+    }
 }

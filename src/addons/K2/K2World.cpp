@@ -218,10 +218,11 @@ namespace Demi
     {
         auto subtype = K2ObjSubTypes::FromString(type);
 
-        if (subtype == K2ObjSubTypes::SUB_STATIC_CLIFF || 
-            subtype == K2ObjSubTypes::SUB_STATIC_TREE  ||
-            subtype == K2ObjSubTypes::SUB_STATIC_MODEL ||
-            subtype == K2ObjSubTypes::SUB_STATIC_SCENERY)
+        if (subtype == K2ObjSubTypes::SUB_STATIC_CLIFF
+            || subtype == K2ObjSubTypes::SUB_STATIC_TREE
+            //|| subtype == K2ObjSubTypes::SUB_STATIC_MODEL
+            //|| subtype == K2ObjSubTypes::SUB_STATIC_SCENERY
+            )
         {
             // directly add to the scene
             AddRenderObj(mdf, subtype, trans, id);

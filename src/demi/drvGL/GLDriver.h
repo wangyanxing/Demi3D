@@ -103,6 +103,8 @@ namespace Demi
 
         DiWindow*               CreateWnd();
 
+        DiGfxCaps*              InitGfxCaps();
+
         static DiString&        GetGlslVersion();
 
         static DiGLBufferManager* BufferMgr;

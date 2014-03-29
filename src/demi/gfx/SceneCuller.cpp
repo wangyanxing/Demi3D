@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxPch.h"
 #include "SceneCuller.h"
 #include "OctreeCuller.h"
-#include "Q3BspCuller.h"
 
 namespace Demi
 {
@@ -25,9 +24,11 @@ namespace Demi
             return DI_NEW DiOctreeCuller(sm);
         });
 
+#if 0
         Register("Bsp", [=]{
             return DI_NEW DiBspSceneCuller(sm);
         });
+#endif
     }
     
     void DiSceneCullerFactory::Register(const DiString& name,
