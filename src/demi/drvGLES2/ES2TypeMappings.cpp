@@ -27,11 +27,7 @@ namespace Demi
         GL_REPEAT,
         GL_MIRRORED_REPEAT,
         GL_CLAMP_TO_EDGE,
-#ifndef GL_ES_VERSION_2_0
-        GL_CLAMP,
-#else
         GL_CLAMP_TO_EDGE,
-#endif
         GL_NONE
     };
 

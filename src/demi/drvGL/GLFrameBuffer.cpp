@@ -345,9 +345,7 @@ namespace Demi
         {
             if (mProps[x].valid)
             {
-                char name[256];
-                DiPixelBox::FormatGetDisplayStr((DiPixelFormat)x, name, 256);
-                DI_INFO("Valid format for FBO targets: %s", name);
+                DI_INFO("Valid format for FBO targets: %s", DiPixelBox::GetPixelTypeName((DiPixelFormat)x).c_str());
             }
         }
     }

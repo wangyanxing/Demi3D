@@ -18,7 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    class DI_GLES2_API DiGLES2Context
+    class DI_GLES2_API DiGLES2Context : public DiBase
     {
     public:
 
@@ -32,7 +32,7 @@ namespace Demi
 
         virtual void            EndContext() = 0;
 
-        virtual void            Release() = 0;
+        virtual void            Release() {}
 
         virtual DiGLES2Context* Clone() const = 0;
 

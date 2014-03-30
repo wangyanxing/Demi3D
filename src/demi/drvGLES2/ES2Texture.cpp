@@ -210,22 +210,16 @@ namespace Demi
     {
         if (!mTextureID)
         {
-            glBindTexture(mGLTextureType, 0);
+            DiGLES2Driver::StateCache->bindGLTexture(mGLTextureType, 0);
         }
         else
         {
-            glEnable(mGLTextureType);
-            glActiveTexture(GL_TEXTURE0 + samplerIndex);
-            glBindTexture(mGLTextureType, mTextureID);
+            DiGLES2Driver::StateCache->setEnabled(mGLTextureType);
+            DiGLES2Driver::StateCache->activateGLTextureUnit(samplerIndex);
+            DiGLES2Driver::StateCache->bindGLTexture(mGLTextureType, mTextureID);
 
-            glTexParameteri(mGLTextureType, GL_TEXTURE_WRAP_S, DiGLTypeMappings::GLAddressMode[mParent->GetAddressingU()]);
-            glTexParameteri(mGLTextureType, GL_TEXTURE_WRAP_T, DiGLTypeMappings::GLAddressMode[mParent->GetAddressingV()]);
-
-            if (mParent->GetAddressingU() == AM_BORDER ||
-                mParent->GetAddressingV() == AM_BORDER)
-            {
-                glTexParameterfv(mGLTextureType, GL_TEXTURE_BORDER_COLOR, mParent->GetBorderColor().Ptr());
-            }
+            DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_WRAP_S, DiGLTypeMappings::GLAddressMode[mParent->GetAddressingU()]);
+            DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_WRAP_T, DiGLTypeMappings::GLAddressMode[mParent->GetAddressingV()]);
 
             DiFilterType filter = mParent->GetFilter();
             if (filter == FILTER_DEFAULT)
@@ -241,25 +235,25 @@ namespace Demi
             switch (filter)
             {
             case FILTER_NEAREST:
-                glTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                glTexParameteri(mGLTextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
                 break;
 
             case FILTER_BILINEAR:
                 if (mParent->GetNumLevels() < 2)
-                    glTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 else
-                    glTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-                glTexParameteri(mGLTextureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                    DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+                DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 break;
 
             case FILTER_ANISOTROPIC:
             case FILTER_TRILINEAR:
                 if (mParent->GetNumLevels() < 2)
-                    glTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 else
-                    glTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-                glTexParameteri(mGLTextureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                    DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 break;
 
             default:
@@ -324,12 +318,11 @@ namespace Demi
 
     void DiGLES2TextureDrv::Upload(const DiPixelBox &src, const DiBox &dst, uint32 level, uint32 surface)
     {
-        glBindTexture(mGLTextureType, mTextureID);
+        DiGLES2Driver::StateCache->bindGLBuffer(mGLTextureType, mTextureID);
         
         DiPixelFormat fmt = mParent->GetFormat();
         bool isCompressed = DiPixelBox::IsCompressedFormat(fmt);
-
-        unsigned dataType = DiGLTypeMappings::GetDataType(mGLFormat);
+        unsigned dataType = DiGLTypeMappings::GetDataType(fmt);
 
         GLenum faceType = GL_TEXTURE_2D;
         if (mGLTextureType == GL_TEXTURE_CUBE_MAP)
@@ -350,73 +343,46 @@ namespace Demi
             case GL_TEXTURE_CUBE_MAP:
                 if (dst.left == 0 && dst.top == 0)
                 {
-                    glCompressedTexImage2DARB(faceType, level,
+                    CHECK_GL_ERROR(glCompressedTexImage2D(faceType, level,
                         mGLFormat,
                         dst.GetWidth(),
                         dst.GetHeight(),
                         0,
                         size,
-                        src.data);
+                        src.data));
                 }
                 else
                 {
-                    glCompressedTexSubImage2DARB(faceType, level,
+                    CHECK_GL_ERROR(glCompressedTexSubImage2D(faceType, level,
                         dst.left, dst.top,
                         dst.GetWidth(), dst.GetHeight(),
                         mGLFormat, size,
-                        src.data);
+                        src.data));
                 }
                 break;
             }
         }
         else
         {
-            if (src.GetWidth() != src.rowPitch)
-                glPixelStorei(GL_UNPACK_ROW_LENGTH, src.rowPitch);
-
-            if (src.GetWidth() > 0 && src.GetHeight()*src.GetWidth() != src.slicePitch)
-                glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, (src.slicePitch / src.GetWidth()));
-
-            if (src.left > 0 || src.top > 0)
-                glPixelStorei(GL_UNPACK_SKIP_PIXELS, src.left + src.rowPitch * src.top);
-
             if ((src.GetWidth() * DiPixelBox::GetNumElemBytes(src.format)) & 3)
             {
                 // Standard alignment of 4 is not right
-                glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+                CHECK_GL_ERROR(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
             }
-
-            glGetError();
 
             switch (mGLTextureType) 
             {
             case GL_TEXTURE_2D:
             case GL_TEXTURE_CUBE_MAP:
-                if (dst.left == 0 && dst.top == 0)
-                {
-                    glTexImage2D(faceType, level, mGLFormat, dst.GetWidth(), dst.GetHeight(),
-                        0, mGLOriginFormat, dataType, src.data);
-                }
-                else
-                {
-                    glTexSubImage2D(faceType, level,
-                        dst.left, dst.top,
-                        dst.GetWidth(), dst.GetHeight(),
-                        mGLOriginFormat, dataType, src.data);
-                }
+                CHECK_GL_ERROR(glTexSubImage2D(faceType, level,
+                    dst.left, dst.top,
+                    dst.GetWidth(), dst.GetHeight(),
+                    mGLOriginFormat, dataType, src.data));
                 break;
             }
-
-            GLenum glErr = glGetError();
-            if (glErr != GL_NO_ERROR)
-                DI_WARNING("Uploading texture (surface %d, level %d): %s", surface, level, (const char*)gluErrorString(glErr));
         }
 
         // restore
-        glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-        if (GLEW_VERSION_1_2)
-        glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, 0);
-        glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
     }
 
@@ -443,27 +409,47 @@ namespace Demi
         
         if (isCompressed)
         {
-            glGetCompressedTexImageARB(faceType, level, data.data);
+            DI_WARNING("Compressed images cannot be downloaded by GL ES");
         }
         else
         {
-            if (data.GetWidth() != data.rowPitch)
-                glPixelStorei(GL_PACK_ROW_LENGTH, data.rowPitch);
-            if (data.GetHeight()*data.GetWidth() != data.slicePitch)
-                glPixelStorei(GL_PACK_IMAGE_HEIGHT, (data.slicePitch / data.GetWidth()));
-            if (data.left > 0 || data.top > 0)
-                glPixelStorei(GL_PACK_SKIP_PIXELS, data.left + data.rowPitch * data.top);
-            if ((data.GetWidth()*DiPixelBox::GetNumElemBytes(data.format)) & 3) {
+            if ((data.GetWidth()*DiPixelBox::GetNumElemBytes(data.format)) & 3) 
+            {
                 // Standard alignment of 4 is not right
-                glPixelStorei(GL_PACK_ALIGNMENT, 1);
+                CHECK_GL_ERROR(glPixelStorei(GL_PACK_ALIGNMENT, 1));
             }
-            // We can only get the entire texture
-            glGetTexImage(faceType, level, glfmt, glType, data.data);
+
+            GLint currentFBO = 0;
+            GLuint tempFBO = 0;
+            CHECK_GL_ERROR(glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currentFBO));
+            CHECK_GL_ERROR(glGenFramebuffers(1, &tempFBO));
+            CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, tempFBO));
+
+            DiPixelBox tempBox = DiPixelBox(data.GetWidth(), data.GetHeight(), PF_A8B8G8R8);
+            tempBox.data = DI_NEW uint8[mImageSize];
+
+            switch (mGLTextureType)
+            {
+            case GL_TEXTURE_2D:
+            case GL_TEXTURE_CUBE_MAP:
+                CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mTextureID, 0));
+                CHECK_GL_ERROR(glCheckFramebufferStatus(GL_FRAMEBUFFER));
+                CHECK_GL_ERROR(glReadPixels(0, 0, data.GetWidth(), data.GetHeight(),
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    tempBox.data));
+                break;
+            }
+
+            DiPixelBox::BulkPixelConversion(tempBox, data);
+
+            DI_DELETE[](uint8*) tempBox.data;
+            tempBox.data = 0;
+
             // Restore defaults
-            glPixelStorei(GL_PACK_ROW_LENGTH, 0);
-            glPixelStorei(GL_PACK_IMAGE_HEIGHT, 0);
-            glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
-            glPixelStorei(GL_PACK_ALIGNMENT, 4);
+            CHECK_GL_ERROR(glPixelStorei(GL_PACK_ALIGNMENT, 4));
+            CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, currentFBO));
+            CHECK_GL_ERROR(glDeleteFramebuffers(1, &tempFBO));
         }
     }
 
@@ -473,8 +459,7 @@ namespace Demi
         if (mGLTextureType == GL_TEXTURE_CUBE_MAP)
             faceType = GL_TEXTURE_CUBE_MAP_POSITIVE_X + surface;
 
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment,
-            faceType, mTextureID, level);
+        CHECK_GL_ERROR(glFramebufferTexture2D(GL_FRAMEBUFFER, attachment,
+            faceType, mTextureID, level));
     }
-
 }

@@ -11,17 +11,20 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
+#ifndef DiGLES2FrameBuffer_h__
+#define DiGLES2FrameBuffer_h__
+
 #include "Texture.h"
 
 namespace Demi
 {
-    class DI_GLES2_API DiGLFrameBuffer
+    class DI_GLES2_API DiGLES2FrameBuffer
     {
     public:
 
-        DiGLFrameBuffer();
+        DiGLES2FrameBuffer();
 
-        ~DiGLFrameBuffer();
+        ~DiGLES2FrameBuffer();
 
     public:
 
@@ -52,7 +55,7 @@ namespace Demi
 
     //////////////////////////////////////////////////////////////////////////
 
-    class DiGLES2FBOManager
+    class DI_GLES2_API DiGLES2FBOManager
     {
     public:
 
@@ -76,6 +79,8 @@ namespace Demi
 
         DiPixelFormat       GetSupportedAlternative(DiPixelFormat format);
 
+        void                CreateTempFramebuffer(DiPixelFormat pixFmt, GLuint internalFormat, GLuint fmt, GLenum dataType, GLuint &fb, GLuint &tid);
+
     private:
 
         struct FormatProperties
@@ -93,8 +98,60 @@ namespace Demi
 
         FormatProperties    mProps[PIXEL_FORMAT_MAX];
 
-        bool                mATIMode;
+        /** Stencil and depth renderbuffers of the same format are re-used between surfaces of the
+        same size and format. This can save a lot of memory when a large amount of rendertargets
+        are used.
+        */
+        struct RBFormat
+        {
+            RBFormat(GLenum inFormat, size_t inWidth, size_t inHeight, uint32 fsaa) :
+            format(inFormat), width(inWidth), height(inHeight), samples(fsaa)
+            {}
+            GLenum format;
+            size_t width;
+            size_t height;
+            uint32 samples;
+            // Overloaded comparison operator for usage in map
+            bool operator < (const RBFormat &other) const
+            {
+                if (format < other.format)
+                {
+                    return true;
+                }
+                else if (format == other.format)
+                {
+                    if (width < other.width)
+                    {
+                        return true;
+                    }
+                    else if (width == other.width)
+                    {
+                        if (height < other.height)
+                            return true;
+                        else if (height == other.height)
+                        {
+                            if (samples < other.samples)
+                                return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        };
+        struct RBRef
+        {
+            RBRef(){}
+            RBRef(DiGLES2RenderBuffer *inBuffer) :
+                buffer(inBuffer), refcount(1)
+            { }
+            DiGLES2RenderBuffer *buffer;
+            size_t refcount;
+        };
+        typedef DiMap<RBFormat, RBRef> RenderBufferMap;
+        RenderBufferMap mRenderBufferMap;
 
-        GLuint              mTempFBO;
+        GLuint mTempFBO;
     };
 }
+
+#endif

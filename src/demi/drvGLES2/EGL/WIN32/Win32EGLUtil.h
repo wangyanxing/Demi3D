@@ -11,51 +11,33 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
+#ifndef Win32EGLUtil_h__
+#define Win32EGLUtil_h__
 
-#ifndef Win32GLUtil_h__
-#define Win32GLUtil_h__
-
-#include "GLUtil.h"
+#include "EGLUtil.h"
 
 namespace Demi
 {
-    class DI_GLES2_API DiWin32GLUtil : public DiGLUtil
+    class DI_GLES2_API DiWin32EGLUtil : public DiEGLUtil
     {
     public:
 
-        DiWin32GLUtil();
+        DiWin32EGLUtil();
 
-        ~DiWin32GLUtil();
+        ~DiWin32EGLUtil();
 
     public:
 
-        void            InitExtensions();
+        virtual void SwitchMode(uint32& width, uint32& height, short& frequency);
 
-        static DiString TranslateWGLError();
+        //Moved getNativeDisplay to native class
+        NativeDisplayType GetNativeDisplay();
 
-        void*           GetProcAddress(const DiString& procname);
+        //This sets up the native variables then calls EGLSupport::getGLDisplay
+        EGLDisplay GetGLDisplay();
 
-        bool            SelectPixelFormat(HDC hdc, int colourDepth, int multisample, bool hwGamma);
-
-        void            SetMainHDC(HDC dc) { mHDC = dc; }
-
-        HDC             GetMainHDC() const { return mHDC; }
-
-        DiWindow*       CreateNewWindow();
-
-    private:
-
-        void            InitWGL();
-
-        DiVector<int>   mFSAALevels;
-
-        bool            mHasPixelFormatARB;
-
-        bool            mHasMultisample;
-
-        bool            mHasHardwareGamma;
-
-        HDC             mHDC;
+        DiWindow*  CreateNewWindow();
     };
 }
-#endif // Win32GLUtil_h__
+
+#endif

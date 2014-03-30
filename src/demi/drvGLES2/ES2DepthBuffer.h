@@ -11,37 +11,38 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiGLDepthBuffer_h__
-#define DiGLDepthBuffer_h__
+#ifndef DiGLES2DepthBuffer_h__
+#define DiGLES2DepthBuffer_h__
 
 #include "DepthBuffer.h"
 
 namespace Demi
 {
-    class DI_GLES2_API DiGLDepthBuffer : public DiDepthBuffer
+    class DI_GLES2_API DiGLES2DepthBuffer : public DiDepthBuffer
     {
     public:
 
-        DiGLDepthBuffer(uint16 poolId, uint32 width, uint32 height, DiGLContext* context, DiGLRenderBuffer* depth,
-            DiGLRenderBuffer* stencil, uint32 fsaa, uint32 multiSampleQuality, bool manual);
+        DiGLES2DepthBuffer(uint16 poolId, uint32 width, uint32 height, 
+            DiGLES2Context* context, DiGLES2RenderBuffer* depth,
+            DiGLES2RenderBuffer* stencil, uint32 fsaa, uint32 multiSampleQuality, bool manual);
 
-        ~DiGLDepthBuffer();
+        ~DiGLES2DepthBuffer();
 
     public:
 
-        DiGLRenderBuffer*   GetDepthBuffer() { return mDepthBuffer; }
+        DiGLES2RenderBuffer*   GetDepthBuffer() { return mDepthBuffer; }
 
-        DiGLRenderBuffer*   GetStencilBuffer() { return mStencilBuffer; }
+        DiGLES2RenderBuffer*   GetStencilBuffer() { return mStencilBuffer; }
 
-        DiGLContext*        GetGLContext() { return mContext; }
+        DiGLES2Context*        GetGLContext() { return mContext; }
 
     private:
 
-        DiGLRenderBuffer*   mDepthBuffer;
+        DiGLES2RenderBuffer*   mDepthBuffer;
 
-        DiGLRenderBuffer*   mStencilBuffer;
+        DiGLES2RenderBuffer*   mStencilBuffer;
 
-        DiGLContext*        mContext;
+        DiGLES2Context*        mContext;
     };
 }
 

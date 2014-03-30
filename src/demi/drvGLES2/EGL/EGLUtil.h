@@ -11,51 +11,76 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
+#ifndef DiEGLUtil_h__
+#define DiEGLUtil_h__
 
-#ifndef Win32GLUtil_h__
-#define Win32GLUtil_h__
-
-#include "GLUtil.h"
+#include "ES2Util.h"
 
 namespace Demi
 {
-    class DI_GLES2_API DiWin32GLUtil : public DiGLUtil
+    class DI_GLES2_API DiEGLUtil : public DiGLES2Util
     {
     public:
 
-        DiWin32GLUtil();
+        DiEGLUtil();
 
-        ~DiWin32GLUtil();
+        virtual         ~DiEGLUtil();
 
     public:
 
-        void            InitExtensions();
-
-        static DiString TranslateWGLError();
-
         void*           GetProcAddress(const DiString& procname);
 
-        bool            SelectPixelFormat(HDC hdc, int colourDepth, int multisample, bool hwGamma);
+        void            Start(void);
 
-        void            SetMainHDC(HDC dc) { mHDC = dc; }
+        void            Stop(void);
 
-        HDC             GetMainHDC() const { return mHDC; }
+        EGLDisplay      GetGLDisplay(void);
+        
+        void            SetGLDisplay(EGLDisplay val);
 
-        DiWindow*       CreateNewWindow();
+        virtual DiString GetDisplayName(void);
+        
+        EGLConfig*      ChooseGLConfig(const EGLint *attribList, EGLint *nElements);
+        
+        EGLConfig*      GetConfigs(EGLint *nElements);
+        
+        EGLBoolean      GetGLConfigAttrib(EGLConfig fbConfig, EGLint attribute, EGLint *value);
+        
+        ::EGLContext    CreateNewContext(EGLDisplay eglDisplay, ::EGLConfig glconfig, ::EGLContext shareList) const;
 
-    private:
+        ::EGLConfig     GetGLConfigFromContext(::EGLContext context);
 
-        void            InitWGL();
+        ::EGLConfig     GetGLConfigFromDrawable(::EGLSurface drawable,
+            unsigned int *w, unsigned int *h);
+        
+        ::EGLConfig     SelectGLConfig(const EGLint* minAttribs, const EGLint *maxAttribs);
 
-        DiVector<int>   mFSAALevels;
+        void            SwitchMode(void);
 
-        bool            mHasPixelFormatARB;
+        virtual void    SwitchMode(uint32& width, uint32& height, short& frequency) = 0;
 
-        bool            mHasMultisample;
+    protected:
 
-        bool            mHasHardwareGamma;
+        EGLDisplay mGLDisplay;
 
-        HDC             mHDC;
+        NativeDisplayType mNativeDisplay;
+
+        bool mIsExternalDisplay;
+
+        bool mRandr;
+        
+        typedef DiPair<uint32, uint32> ScreenSize;
+        typedef short Rate;
+        typedef DiPair<ScreenSize, Rate> VideoMode;
+        typedef DiVector<VideoMode> VideoModes;
+        
+        VideoModes  mVideoModes;
+        
+        VideoMode   mOriginalMode;
+        
+        VideoMode   mCurrentMode;
+
+        StringVec   mSampleLevels;
     };
 }
 #endif // Win32GLUtil_h__

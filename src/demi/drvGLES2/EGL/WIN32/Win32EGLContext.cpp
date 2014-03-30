@@ -16,7 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiWin32GLContext::DiWin32GLContext(DiWin32GLUtil* glutil, DiWndHandle wnd)
+    DiEGLContext::DiEGLContext(DiEGLUtil* glutil, DiWndHandle wnd)
         : mGLUtil(glutil)
     {
         InitFromHwnd((HWND)wnd);
@@ -24,7 +24,7 @@ namespace Demi
             glutil->SetMainHDC(mHDC);
     }
 
-    DiWin32GLContext::DiWin32GLContext(DiWin32GLUtil* glutil, HDC dc, HGLRC glrc)
+    DiEGLContext::DiEGLContext(DiEGLUtil* glutil, HDC dc, HGLRC glrc)
         : mGLUtil(glutil),
         mHDC(dc),
         mGLRc(glrc)
@@ -33,21 +33,21 @@ namespace Demi
             glutil->SetMainHDC(mHDC);
     }
 
-    DiWin32GLContext::~DiWin32GLContext()
+    DiEGLContext::~DiEGLContext()
     {
     }
 
-    void DiWin32GLContext::BeginContext()
+    void DiEGLContext::BeginContext()
     {
         wglMakeCurrent(mHDC, mGLRc);
     }
 
-    void DiWin32GLContext::EndContext()
+    void DiEGLContext::EndContext()
     {
         wglMakeCurrent(NULL, NULL);
     }
 
-    void DiWin32GLContext::Release()
+    void DiEGLContext::Release()
     {
         if (mGLRc)
         {
@@ -57,7 +57,7 @@ namespace Demi
         }
     }
 
-    DiGLContext* DiWin32GLContext::Clone() const
+    DiGLContext* DiEGLContext::Clone() const
     {
         HGLRC newCtx = wglCreateContext(mHDC);
 
@@ -73,17 +73,17 @@ namespace Demi
         
         if (!wglShareLists(mGLRc, newCtx))
         {
-            DiString errorMsg = DiWin32GLUtil::TranslateWGLError();
+            DiString errorMsg = DiEGLUtil::TranslateWGLError();
             wglDeleteContext(newCtx);
             DI_WARNING("Error calling wglShareLists : %s", errorMsg.c_str());
             return nullptr;
         }
 
         wglMakeCurrent(oldhdc, oldrc);
-        return DI_NEW DiWin32GLContext(mGLUtil, mHDC, newCtx);
+        return DI_NEW DiEGLContext(mGLUtil, mHDC, newCtx);
     }
 
-    void DiWin32GLContext::InitFromHwnd(HWND hwnd)
+    void DiEGLContext::InitFromHwnd(HWND hwnd)
     {
         HDC old_hdc = wglGetCurrentDC();
         HGLRC old_context = wglGetCurrentContext();
@@ -102,7 +102,7 @@ namespace Demi
         mGLRc = wglCreateContext(mHDC);
         if (!mGLRc)
         {
-            DI_INFO(DiWin32GLUtil::TranslateWGLError().c_str());
+            DI_INFO(DiEGLUtil::TranslateWGLError().c_str());
             DI_ERROR("Cannot create wgl context.");
             return;
         }

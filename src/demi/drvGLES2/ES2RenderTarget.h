@@ -11,23 +11,20 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiGLRenderTarget_h__
-#define DiGLRenderTarget_h__
-
+#ifndef DiGLES2RenderTarget_h__
+#define DiGLES2RenderTarget_h__
 
 #include "RenderTarget.h"
 
-#define GL_DEPTH24_STENCIL8_EXT 0x88F0
-
 namespace Demi
 {
-    class DI_GLES2_API DiGLRenderTarget : public DiRenderTarget
+    class DI_GLES2_API DiGLES2RenderTarget : public DiRenderTarget
     {
     public:
 
-        DiGLRenderTarget();
+        DiGLES2RenderTarget();
 
-        virtual                 ~DiGLRenderTarget();
+        virtual                 ~DiGLES2RenderTarget();
 
     public:
 
@@ -49,7 +46,7 @@ namespace Demi
 
         void                    PreBind();
 
-        virtual DiGLContext*    GetContext() { return nullptr; }
+        virtual DiGLES2Context* GetContext() { return nullptr; }
 
         virtual void            Init();
 
@@ -57,11 +54,11 @@ namespace Demi
 
         GLenum                  mGLFormat;
 
-        DiGLFrameBuffer*        mFrameBuffer;
+        DiGLES2FrameBuffer*     mFrameBuffer;
     };
 
 
-    class DI_GLES2_API DiGLWindowTarget : public DiGLRenderTarget
+    class DI_GLES2_API DiGLWindowTarget : public DiGLES2RenderTarget
     {
     public:
 
@@ -71,9 +68,9 @@ namespace Demi
 
     public:
 
-        void                    Create(DiWndHandle wnd, DiGLContext* context);
+        void                    Create(DiWndHandle wnd, DiGLES2Context* context);
 
-        DiGLContext*            GetContext() { return mContext; }
+        DiGLES2Context*         GetContext() { return mContext; }
 
         bool                    SwapBuffer();
 
@@ -83,7 +80,7 @@ namespace Demi
 
         DiWndHandle             mWnd;
 
-        DiGLContext*            mContext;
+        DiGLES2Context*         mContext;
     };
 }
 

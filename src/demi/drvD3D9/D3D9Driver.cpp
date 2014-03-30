@@ -1537,9 +1537,7 @@ namespace Demi
             {
                 // cool, at least one supported
                 anySupported = true;
-                char name[256];
-                DiPixelBox::FormatGetDisplayStr(pf, name, 256);
-                DI_LOG("D3D9: Vertex texture format supported: %s", name);
+                DI_LOG("D3D9: Vertex texture format supported: %s", DiPixelBox::GetPixelTypeName(pf).c_str());
             }
         }
 

@@ -263,7 +263,7 @@ namespace Demi
 
     DiRenderTarget* DiGLES2Driver::CreateRenderTarget()
     {
-        auto rt = DI_NEW DiGLRenderTarget();
+        auto rt = DI_NEW DiGLES2RenderTarget();
         rt->Init();
         return rt;
     }
@@ -433,7 +433,7 @@ namespace Demi
     {
         DiGLContext* ret = nullptr;
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-        ret = DI_NEW DiWin32GLContext(static_cast<DiWin32GLUtil*>(mGLUtil), wnd);
+        ret = DI_NEW DiEGLContext(static_cast<DiEGLUtil*>(mGLUtil), wnd);
         DI_INFO("Win32 GL context created.");
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
         //ret = DI_NEW DiOSXCocoaContext(static_cast<DiOSXGLUtil*>(mGLUtil), wnd);
@@ -443,11 +443,11 @@ namespace Demi
         return ret;
     }
 
-    DiGLUtil* DiGLES2Driver::_CreateGLUtil()
+    DiGLES2Util* DiGLES2Driver::_CreateGLUtil()
     {
-        DiGLUtil* ret = nullptr;
+        DiGLES2Util* ret = nullptr;
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-        ret = DI_NEW DiWin32GLUtil();
+        ret = DI_NEW DiEGLUtil();
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
         ret = DI_NEW DiOSXGLUtil();
 #endif
@@ -593,7 +593,12 @@ namespace Demi
         return DiPair<float, float>(-1.0f, 1.0f);
     }
 
-    DiGLUtil* DiGLES2Driver::GLUtil = nullptr;
+    void DiGLES2Driver::UnregisterContext(DiGLES2Context *context)
+    {
+        //TODO:
+    }
+
+    DiGLES2Util* DiGLES2Driver::GLUtil = nullptr;
     DiGLES2UniformCache* DiGLES2Driver::UniformCache = nullptr;
     DiGLES2StateCache* DiGLES2Driver::StateCache = nullptr;
 

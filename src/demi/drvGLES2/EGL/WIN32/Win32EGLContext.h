@@ -19,15 +19,15 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    class DI_GLES2_API DiWin32GLContext : public DiGLContext
+    class DI_GLES2_API DiEGLContext : public DiGLContext
     {
     public:
 
-        DiWin32GLContext(DiWin32GLUtil* util, DiWndHandle wnd);
+        DiEGLContext(DiEGLUtil* util, DiWndHandle wnd);
 
-        DiWin32GLContext(DiWin32GLUtil* util, HDC dc, HGLRC glrc);
+        DiEGLContext(DiEGLUtil* util, HDC dc, HGLRC glrc);
 
-        ~DiWin32GLContext();
+        ~DiEGLContext();
 
     public:
 
@@ -45,7 +45,7 @@ namespace Demi
 
     private:
 
-        DiWin32GLUtil*  mGLUtil;
+        DiEGLUtil*  mGLUtil;
 
         HDC             mHDC;
 

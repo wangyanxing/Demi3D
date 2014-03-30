@@ -10,32 +10,37 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
-#include "DrvGLPch.h"
-#include "GLRenderBuffer.h"
-#include "GLDriver.h"
-#include "GLRenderTarget.h"
-#include "GLTypeMappings.h"
+
+#include "DrvGLES2Pch.h"
+#include "ES2RenderBuffer.h"
+#include "GLES2Driver.h"
+#include "ES2RenderTarget.h"
+#include "ES2TypeMappings.h"
 
 namespace Demi
 {
-    DiGLRenderBuffer::DiGLRenderBuffer(GLenum format, uint32 width, uint32 height)
+    DiGLES2RenderBuffer::DiGLES2RenderBuffer(GLenum format, uint32 width, uint32 height)
         :mRenderbufferID(0),
         mGLFormat(format)
     {
-        glGenRenderbuffersEXT(1, &mRenderbufferID);
-        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mRenderbufferID);
-        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, format, width, height);
+        // Generate render buffer
+        CHECK_GL_ERROR(glGenRenderbuffers(1, &mRenderbufferID));
+
+        //TODO debug label
+
+        // Bind it to FBO
+        CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, mRenderbufferID));
+        CHECK_GL_ERROR(glRenderbufferStorage(GL_RENDERBUFFER, format, width, height));
     }
 
-    DiGLRenderBuffer::~DiGLRenderBuffer()
+    DiGLES2RenderBuffer::~DiGLES2RenderBuffer()
     {
-        glDeleteRenderbuffersEXT(1, &mRenderbufferID);
+        CHECK_GL_ERROR(glDeleteRenderbuffers(1, &mRenderbufferID));
     }
 
-    void DiGLRenderBuffer::BindToFramebuffer(GLenum attachment)
+    void DiGLES2RenderBuffer::BindToFramebuffer(GLenum attachment)
     {
-        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment,
-            GL_RENDERBUFFER_EXT, mRenderbufferID);
+        CHECK_GL_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachment, GL_RENDERBUFFER, mRenderbufferID));
     }
 
 }

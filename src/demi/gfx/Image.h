@@ -149,7 +149,7 @@ namespace Demi
 
         static void      BulkPixelConversion(const DiPixelBox &src, const DiPixelBox &dst);
 
-        static void      FormatGetDisplayStr( DiPixelFormat eFormat, char * pszStr, int nBufLen );
+        static DiString  GetPixelTypeName(DiPixelFormat eFormat);
         
         static uint32    GetMaxMipmaps(uint32 width, uint32 height, uint32 depth);
         

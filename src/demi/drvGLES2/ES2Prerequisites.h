@@ -21,7 +21,6 @@ namespace Demi
     class DiGLES2Driver;
     class DiGLES2Context;
     class DiGLES2Util;
-    class DiGLES2BufferManager;
     class DiGLES2TextureDrv;
     class DiGLES2FrameBuffer;
     class DiGLES2DepthBuffer;
@@ -33,8 +32,8 @@ namespace Demi
     class DiGLES2ShaderParam;
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-    class DiWin32GLUtil;
-    class DiWin32GLContext;
+    class DiEGLUtil;
+    class DiEGLContext;
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
     class DiOSXGLUtil;
     class DiOSXGLContext;

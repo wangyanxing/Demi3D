@@ -10,132 +10,71 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
-#include "DrvGLPch.h"
-#include "Win32GLContext.h"
-#include "Win32GLUtil.h"
+
+#include "DrvGLES2Pch.h"
+#include "EGLContext.h"
+#include "EGLUtil.h"
+#include "GLES2Driver.h"
 
 namespace Demi
 {
-    DiWin32GLContext::DiWin32GLContext(DiWin32GLUtil* glutil, DiWndHandle wnd)
-        : mGLUtil(glutil)
+    DiEGLContext::DiEGLContext(EGLDisplay eglDisplay, DiEGLUtil* util, ::EGLConfig glconfig, ::EGLSurface drawable)
+        :mGLUtil(util),
+        mContext(nullptr)
     {
-        InitFromHwnd((HWND)wnd);
-        if (!glutil->GetMainHDC())
-            glutil->SetMainHDC(mHDC);
+        DI_ASSERT(drawable);
+
+        DiEGLContext* mainContext = static_cast<DiEGLContext*>(static_cast<DiGLES2Driver*>(Driver)->GetMainContext());
+        ::EGLContext shareContext = (::EGLContext) 0;
+
+        if (mainContext)
+            shareContext = mainContext->mContext;
+
+        CreateInternalResources(eglDisplay, glconfig, drawable, shareContext);
     }
 
-    DiWin32GLContext::DiWin32GLContext(DiWin32GLUtil* glutil, HDC dc, HGLRC glrc)
-        : mGLUtil(glutil),
-        mHDC(dc),
-        mGLRc(glrc)
+    DiEGLContext::~DiEGLContext()
     {
-        if (!glutil->GetMainHDC())
-            glutil->SetMainHDC(mHDC);
+        DestroyInternalResources();
+
+        static_cast<DiGLES2Driver*>(Driver);
     }
 
-    DiWin32GLContext::~DiWin32GLContext()
+    void DiEGLContext::BeginContext()
     {
+        EGLBoolean ret = eglMakeCurrent(mEglDisplay,
+            mDrawable, mDrawable, mContext);
+
+        EGL_CHECK_ERROR
+     
+        if (!ret)
+            DI_WARNING("Fail to make context current");
     }
 
-    void DiWin32GLContext::BeginContext()
+    void DiEGLContext::EndContext()
     {
-        wglMakeCurrent(mHDC, mGLRc);
+        eglMakeCurrent(mEglDisplay, 0, 0, 0);
+        EGL_CHECK_ERROR
     }
 
-    void DiWin32GLContext::EndContext()
+    void DiEGLContext::CreateInternalResources(EGLDisplay eglDisplay, ::EGLConfig glconfig, ::EGLSurface drawable, ::EGLContext shareContext)
     {
-        wglMakeCurrent(NULL, NULL);
-    }
+        mDrawable = drawable;
+        mConfig = glconfig;
+        mEglDisplay = eglDisplay;
 
-    void DiWin32GLContext::Release()
-    {
-        if (mGLRc)
+        mContext = mGLUtil->CreateNewContext(mEglDisplay, mConfig, shareContext);
+
+        if (!mContext)
         {
-            wglDeleteContext(mGLRc);
-            mGLRc = NULL;
-            mHDC = NULL;
-        }
-    }
-
-    DiGLContext* DiWin32GLContext::Clone() const
-    {
-        HGLRC newCtx = wglCreateContext(mHDC);
-
-        if (!newCtx)
-        {
-            DI_WARNING("Error calling wglCreateContext");
-            return nullptr;
+            DI_WARNING("Unable to create a suitable EGLContext");
         }
 
-        HGLRC oldrc = wglGetCurrentContext();
-        HDC oldhdc = wglGetCurrentDC();
-        wglMakeCurrent(NULL, NULL);
-        
-        if (!wglShareLists(mGLRc, newCtx))
-        {
-            DiString errorMsg = DiWin32GLUtil::TranslateWGLError();
-            wglDeleteContext(newCtx);
-            DI_WARNING("Error calling wglShareLists : %s", errorMsg.c_str());
-            return nullptr;
-        }
+        BeginContext();
 
-        wglMakeCurrent(oldhdc, oldrc);
-        return DI_NEW DiWin32GLContext(mGLUtil, mHDC, newCtx);
-    }
-
-    void DiWin32GLContext::InitFromHwnd(HWND hwnd)
-    {
-        HDC old_hdc = wglGetCurrentDC();
-        HGLRC old_context = wglGetCurrentContext();
-
-        mHDC = GetDC(hwnd);
-
-        // select valid pixel format
-        // todo
-        bool formatOk = mGLUtil->SelectPixelFormat(mHDC, 32, 0, false); // TODO!
-        if (!formatOk)
-        {
-            DI_ERROR("Invalid pixel format!");
-            return;
-        }
-
-        mGLRc = wglCreateContext(mHDC);
-        if (!mGLRc)
-        {
-            DI_INFO(DiWin32GLUtil::TranslateWGLError().c_str());
-            DI_ERROR("Cannot create wgl context.");
-            return;
-        }
-
-        if (old_context && old_context != mGLRc)
-        {
-            // Share lists with old context
-            if (!wglShareLists(old_context, mGLRc))
-            {
-                DI_ERROR("Cannot share wgl lists");
-            }
-        }
-
-        if (!wglMakeCurrent(mHDC, mGLRc))
-        {
-            DI_ERROR("Failed to call wglMakeCurrent");
-        }
-
-        PFNWGLSWAPINTERVALEXTPROC _wglSwapIntervalEXT =
-            (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-
-        // TODO: VSYNC
-        //if (_wglSwapIntervalEXT)
-            //_wglSwapIntervalEXT(mVSync ? mVSyncInterval : 0);
-
-        if (old_context && old_context != mGLRc)
-        {
-            // Restore old context
-            if (!wglMakeCurrent(mHDC, mGLRc))
-            {
-                DI_ERROR("Failed to call wglMakeCurrent");
-            }
-        }
+        // Initialise GL3W
+        if (gleswInit())
+            DI_WARNING("Failed to initialize GL3W");
     }
 
 }

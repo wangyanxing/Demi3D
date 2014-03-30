@@ -95,11 +95,13 @@ namespace Demi
         // Create a new one if not existed
         DiGLShaderLinker*       GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps);
 
-        DiGLContext*            GetContext(DiWndHandle wnd);
+        DiGLES2Context*         GetContext(DiWndHandle wnd);
 
-        DiGLContext*            GetCurrentContext() { return mCurrentContext; }
-        
-        DiGLContext*            GetMainContext() { return mMainContext; }
+        DiGLES2Context*         GetCurrentContext() { return mCurrentContext; }
+
+        DiGLES2Context*         GetMainContext() { return mMainContext; }
+
+        void                    UnregisterContext(DiGLES2Context *context);
 
         DiWindow*               CreateWnd();
 
@@ -109,35 +111,33 @@ namespace Demi
 
         static DiString&            GetGlslVersion();
 
-        static DiGLBufferManager*   BufferMgr;
-
         static DiGLES2FBOManager*   FBOManager;
 
-        static DiGLUtil*            GLUtil;
+        static DiGLES2Util*            GLUtil;
 
     private:
 
-        DiGLContext*            _CreateContext(DiWndHandle wnd);
+        DiGLES2Context*         _CreateContext(DiWndHandle wnd);
 
-        DiGLUtil*               _CreateGLUtil();
+        DiGLES2Util*            _CreateGLUtil();
 
         bool                    _BindVertexBuffer(DiRenderUnit* unit);
 
-        void                    _InitMainContext(DiGLContext* context);
+        void                    _InitMainContext(DiGLES2Context* context);
 
     private:
 
         DiString                mWndClass;
 
-        DiGLContext*            mMainContext;
+        DiGLES2Context*         mMainContext;
 
-        DiGLContext*            mCurrentContext;
+        DiGLES2Context*         mCurrentContext;
         
-        typedef DiMap<DiWndHandle, DiGLContext*> ContextMap;
+        typedef DiMap<DiWndHandle, DiGLES2Context*> ContextMap;
 
         ContextMap              mContextMap;
 
-        DiGLUtil*               mGLUtil;
+        DiGLES2Util*            mGLUtil;
 
         bool                    mColourWrite[4];
 
@@ -145,9 +145,7 @@ namespace Demi
 
         uint32                  mStencilMask;
 
-        DiGLBufferManager*      mGLBufferManager;
-
-        DiGLES2FBOManager*         mGLFBOManager;
+        DiGLES2FBOManager*      mGLFBOManager;
 
         typedef DiMap<DiPair<DiShaderInstance*, DiShaderInstance*>, DiGLShaderLinker*> ProgramMap;
 

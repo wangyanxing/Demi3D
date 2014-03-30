@@ -10,27 +10,27 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
-#include "DrvGLPch.h"
-#include "GLRenderTarget.h"
-#include "GLDepthBuffer.h"
-#include "GLDriver.h"
-#include "GLTypeMappings.h"
-#include "GLFrameBuffer.h"
-#include "GLRenderBuffer.h"
-#include "GLContext.h"
+#include "DrvGLES2Pch.h"
+#include "ES2RenderTarget.h"
+#include "ES2DepthBuffer.h"
+#include "GLES2Driver.h"
+#include "ES2TypeMappings.h"
+#include "ES2FrameBuffer.h"
+#include "ES2RenderBuffer.h"
+#include "ES2Context.h"
 
 #include "Texture.h"
 #include "Window.h"
 
 namespace Demi
 {
-    DiGLRenderTarget::DiGLRenderTarget()
+    DiGLES2RenderTarget::DiGLES2RenderTarget()
         :mGLFormat(0),
         mFrameBuffer(nullptr)
     {
     }
 
-    DiGLRenderTarget::~DiGLRenderTarget()
+    DiGLES2RenderTarget::~DiGLES2RenderTarget()
     {
         if (mFrameBuffer)
         {
@@ -39,21 +39,29 @@ namespace Demi
         }
     }
 
-    bool DiGLRenderTarget::BindRenderTarget(uint8 mrtid)
+    bool DiGLES2RenderTarget::BindRenderTarget(uint8 mrtid)
     {
         if (mFrameBuffer)
             mFrameBuffer->Bind();
         else
-            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        {
+            // Old style context (window/pbuffer) or copying render texture
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+            // The screen buffer is 1 on iOS
+            CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, 1));
+#else
+            CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+#endif
+        }
         return true;
     }
 
-    bool DiGLRenderTarget::BindDepthStencil()
+    bool DiGLES2RenderTarget::BindDepthStencil()
     {
-        DiGLDepthBuffer *depthBuffer = static_cast<DiGLDepthBuffer*>(GetDepthBuffer());
+        DiGLES2DepthBuffer *depthBuffer = static_cast<DiGLES2DepthBuffer*>(GetDepthBuffer());
 
         if (GetDepthBufferPool() != DiDepthBuffer::POOL_NO_DEPTH &&
-            (!depthBuffer || depthBuffer->GetGLContext() != static_cast<DiGLDriver*>(Driver)->GetCurrentContext()))
+            (!depthBuffer || depthBuffer->GetGLContext() != static_cast<DiGLES2Driver*>(Driver)->GetCurrentContext()))
         {
             //Depth is automatically managed and there is no depth buffer attached to this RT
             //or the Current context doesn't match the one this Depth buffer was created with
@@ -62,19 +70,19 @@ namespace Demi
         return true;
     }
 
-    void DiGLRenderTarget::AttachSurface()
+    void DiGLES2RenderTarget::AttachSurface()
     {
         mGLFormat = DiGLTypeMappings::GetClosestGLInternalFormat(mParentTex->GetFormat());
 
         mFrameBuffer->AttachSurface(0, mParentTex);
     }
 
-    void DiGLRenderTarget::DetachSurface()
+    void DiGLES2RenderTarget::DetachSurface()
     {
         mFrameBuffer->DetarchSurface(0);
     }
 
-    DiDepthBuffer* DiGLRenderTarget::CreateDepthBuffer()
+    DiDepthBuffer* DiGLES2RenderTarget::CreateDepthBuffer()
     {
         DiDepthBuffer *ret = nullptr;
 
@@ -82,21 +90,21 @@ namespace Demi
             return ret;
 
         GLuint depthFormat, stencilFormat;
-        DiGLDriver::FBOManager->GetBestDepthStencil(mFrameBuffer->GetFormat(), &depthFormat, &stencilFormat);
+        DiGLES2Driver::FBOManager->GetBestDepthStencil(mFrameBuffer->GetFormat(), &depthFormat, &stencilFormat);
 
-        DiGLRenderBuffer* db = DI_NEW DiGLRenderBuffer(depthFormat, GetWidth(), GetHeight());
-        DiGLRenderBuffer* sb = db;
+        DiGLES2RenderBuffer* db = DI_NEW DiGLES2RenderBuffer(depthFormat, GetWidth(), GetHeight());
+        DiGLES2RenderBuffer* sb = db;
 
-        if (depthFormat != GL_DEPTH24_STENCIL8_EXT && sb)
+        if (depthFormat != GL_DEPTH24_STENCIL8_OES && sb)
         {
-            sb = DI_NEW DiGLRenderBuffer(stencilFormat, GetWidth(), GetHeight());
+            sb = DI_NEW DiGLES2RenderBuffer(stencilFormat, GetWidth(), GetHeight());
         }
 
-        auto context = static_cast<DiGLDriver*>(Driver)->GetCurrentContext();
-        return DI_NEW DiGLDepthBuffer(0, GetWidth(), GetHeight(), context, db, sb, 0, 0, false);
+        auto context = static_cast<DiGLES2Driver*>(Driver)->GetCurrentContext();
+        return DI_NEW DiGLES2DepthBuffer(0, GetWidth(), GetHeight(), context, db, sb, 0, 0, false);
     }
 
-    void DiGLRenderTarget::PreBind()
+    void DiGLES2RenderTarget::PreBind()
     {
         uint32 left   = uint32(mViewport.mLeft   * mWidth);
         uint32 top    = uint32(mViewport.mTop    * mHeight);
@@ -112,20 +120,30 @@ namespace Demi
         Driver->SetViewport(left, top, width, height);
     }
 
-    bool DiGLRenderTarget::IsCompatibleWith(DiDepthBuffer* db)
+    bool DiGLES2RenderTarget::IsCompatibleWith(DiDepthBuffer* db)
     {
         bool retVal = false;
 
-        if (mWidth != db->GetWidth() || mHeight != db->GetHeight() )
-            return retVal;
+        //Check standard stuff first.
+        if (Driver->GetGfxCaps()->hasCapability(RSC_RTT_DEPTHBUFFER_RESOLUTION_LESSEQUAL))
+        {
+            if (!DiRenderTarget::IsCompatibleWith(db))
+                return false;
+        }
+        else
+        {
+            if (mWidth != db->GetWidth() || mHeight != db->GetHeight())
+                return retVal;
+        }
 
-        DiGLDepthBuffer* gldb = static_cast<DiGLDepthBuffer*>(db);
-        DiGLRenderBuffer* glDepth = gldb->GetDepthBuffer();
-        DiGLRenderBuffer* glStencil = gldb->GetStencilBuffer();
+
+        DiGLES2DepthBuffer* gldb = static_cast<DiGLES2DepthBuffer*>(db);
+        DiGLES2RenderBuffer* glDepth = gldb->GetDepthBuffer();
+        DiGLES2RenderBuffer* glStencil = gldb->GetStencilBuffer();
 
         if (!mFrameBuffer)
         {
-            DiGLContext* dbContext = gldb->GetGLContext();
+            DiGLES2Context* dbContext = gldb->GetGLContext();
             if (!glDepth && !glStencil && dbContext == GetContext())
             {
                 retVal = true;
@@ -136,7 +154,7 @@ namespace Demi
             if (glDepth || glStencil)
             {
                 GLenum depthFormat, stencilFormat;
-                static_cast<DiGLDriver*>(Driver)->GetDepthStencilFormatFor(mFrameBuffer->GetFormat(),
+                static_cast<DiGLES2Driver*>(Driver)->GetDepthStencilFormatFor(mFrameBuffer->GetFormat(),
                                                                            &depthFormat, &stencilFormat);
 
                 bool bSameDepth = false;
@@ -161,7 +179,7 @@ namespace Demi
         return retVal;
     }
 
-    bool DiGLRenderTarget::AttachDepthBuffer(DiDepthBuffer *depthBuffer)
+    bool DiGLES2RenderTarget::AttachDepthBuffer(DiDepthBuffer *depthBuffer)
     {
         bool result;
         if ((result = DiRenderTarget::AttachDepthBuffer(depthBuffer)))
@@ -173,12 +191,12 @@ namespace Demi
         return result;
     }
 
-    void DiGLRenderTarget::Init()
+    void DiGLES2RenderTarget::Init()
     {
-        mFrameBuffer = DI_NEW DiGLFrameBuffer();
+        mFrameBuffer = DI_NEW DiGLES2FrameBuffer();
     }
 
-    void DiGLRenderTarget::DetachDepthBuffer()
+    void DiGLES2RenderTarget::DetachDepthBuffer()
     {
         if (mFrameBuffer)
             mFrameBuffer->DetachDepthBuffer();
@@ -195,16 +213,16 @@ namespace Demi
     {
     }
 
-    void DiGLWindowTarget::Create(DiWndHandle wnd, DiGLContext* context)
+    void DiGLWindowTarget::Create(DiWndHandle wnd, DiGLES2Context* context)
     {
         mWnd = wnd;
         mContext = context;
 
         Driver->GetWindowSize(wnd, mWidth, mHeight);
 
-        DiGLDepthBuffer *depthBuffer = DI_NEW DiGLDepthBuffer(DiDepthBuffer::POOL_DEFAULT, 
+        DiGLES2DepthBuffer *depthBuffer = DI_NEW DiGLES2DepthBuffer(DiDepthBuffer::POOL_DEFAULT, 
             mWidth, mHeight,
-            static_cast<DiGLDriver*>(Driver)->GetCurrentContext(), nullptr, nullptr,
+            static_cast<DiGLES2Driver*>(Driver)->GetCurrentContext(), nullptr, nullptr,
             0, 0, true);
 
         AttachDepthBuffer(depthBuffer);

@@ -11,8 +11,8 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef GLUtil_h__
-#define GLUtil_h__
+#ifndef DiGLES2Util_h__
+#define DiGLES2Util_h__
 
 namespace Demi
 {
@@ -20,21 +20,19 @@ namespace Demi
         the initialization of the GL environment and contexts
         as well as the extension managements
      */
-    class DI_GLES2_API DiGLUtil
+    class DI_GLES2_API DiGLES2Util
     {
     public:
 
-        DiGLUtil(){}
+        DiGLES2Util(){}
 
-        virtual             ~DiGLUtil(){}
+        virtual             ~DiGLES2Util(){}
 
     public:
 
         const DiString&     GetGLVendor() const { return mVendor; }
 
         const DiString&     GetGLVersion() const { return mVersion; }
-
-        bool                CheckMinGLVersion(const DiString& v) const;
 
         /** Check if a specific extension can be supported
          */
@@ -43,6 +41,10 @@ namespace Demi
         virtual void*       GetProcAddress(const DiString& procname) = 0;
 
         virtual void        InitExtensions();
+
+        virtual void        Start() = 0;
+
+        virtual void        Stop() = 0;
 
         /** For multi-monitors supporting
          */

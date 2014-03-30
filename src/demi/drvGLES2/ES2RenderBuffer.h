@@ -11,15 +11,18 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
+#ifndef DiGLES2RenderBuffer_h__
+#define DiGLES2RenderBuffer_h__
+
 namespace Demi
 {
-    class DI_GLES2_API DiGLRenderBuffer
+    class DI_GLES2_API DiGLES2RenderBuffer
     {
     public:
 
-        DiGLRenderBuffer(GLenum format, uint32 width, uint32 height);
+        DiGLES2RenderBuffer(GLenum format, uint32 width, uint32 height);
 
-        ~DiGLRenderBuffer();
+        ~DiGLES2RenderBuffer();
 
     public:
 
@@ -34,3 +37,5 @@ namespace Demi
         GLenum  mGLFormat;
     };
 }
+
+#endif

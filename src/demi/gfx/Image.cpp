@@ -703,33 +703,6 @@ namespace Demi
         }
         return count;
     }
-
-    void DiPixelBox::FormatGetDisplayStr( DiPixelFormat eFormat, char * pszStr, int nBufLen )
-    {
-        switch( eFormat )
-        {
-        case PF_R8G8B8         : strncpy( pszStr, "PF_R8G8B8",         nBufLen ); return;
-        case PIXEL_FORMAT_MAX  : strncpy( pszStr, "PF_MAX",            nBufLen ); return;
-        case PF_A8R8G8B8       : strncpy( pszStr, "PF_A8R8G8B8",       nBufLen ); return;
-        case PF_A8B8G8R8       : strncpy( pszStr, "PF_A8B8G8R8",       nBufLen ); return;
-        case PF_X8R8G8B8       : strncpy( pszStr, "PF_X8R8G8B8",       nBufLen ); return;
-        case PF_A8             : strncpy( pszStr, "PF_A8",             nBufLen ); return;
-        case PF_L8             : strncpy( pszStr, "PF_L8",             nBufLen ); return;
-        case PF_DXT1           : strncpy( pszStr, "PF_DXT1",           nBufLen ); return;
-        case PF_DXT2           : strncpy( pszStr, "PF_DXT2",           nBufLen ); return;
-        case PF_DXT3           : strncpy( pszStr, "PF_DXT3",           nBufLen ); return;
-        case PF_DXT4           : strncpy( pszStr, "PF_DXT4",           nBufLen ); return;
-        case PF_DXT5           : strncpy( pszStr, "PF_DXT5",           nBufLen ); return;
-        case PF_R16F           : strncpy( pszStr, "PF_R16F",           nBufLen ); return;
-        case PF_G16R16F        : strncpy( pszStr, "PF_G16R16F",        nBufLen ); return;
-        case PF_A16B16G16R16F  : strncpy( pszStr, "PF_A16B16G16R16F",  nBufLen ); return;
-        case PF_R32F           : strncpy( pszStr, "PF_R32F",           nBufLen ); return;
-        case PF_G32R32F        : strncpy( pszStr, "PF_G32R32F",        nBufLen ); return;
-        case PF_A32B32G32R32F  : strncpy( pszStr, "PF_A32B32G32R32F",  nBufLen ); return;
-        }
-        DI_WARNING( "Unsupported pixel format: %d", eFormat );
-        return;
-    }
     
     uint32 DiPixelBox::GetNumComponents( DiPixelFormat format )
     {
@@ -756,6 +729,48 @@ namespace Demi
     {
         const PixelFormatDescription &des = PixelFormatDescription::GetFormatDesc(format);
         return des.componentType;
+    }
+
+    DiString DiPixelBox::GetPixelTypeName(DiPixelFormat eFormat)
+    {
+        static DiVector<DiString> names;
+        if (names.empty())
+        {
+            names.resize(PIXEL_FORMAT_MAX);
+
+            names[PF_R8G8B8] = "PF_R8G8B8";
+            names[PF_A8R8G8B8] = "PF_A8R8G8B8";
+            names[PF_A8B8G8R8] = "PF_A8B8G8R8";
+            names[PF_X8R8G8B8] = "PF_X8R8G8B8";
+            names[PF_A8] = "PF_A8";
+            names[PF_L8] = "PF_L8";
+            names[PF_DXT1] = "PF_DXT1";
+            names[PF_DXT2] = "PF_DXT2";
+            names[PF_DXT3] = "PF_DXT3";
+            names[PF_DXT4] = "PF_DXT4";
+            names[PF_DXT5] = "PF_DXT5";
+            names[PF_R16F] = "PF_R16F";
+            names[PF_G16R16F] = "PF_G16R16F";
+            names[PF_A16B16G16R16F] = "PF_A16B16G16R16F";
+            names[PF_R32F] = "PF_R32F";
+            names[PF_G32R32F] = "PF_G32R32F";
+            names[PF_A32B32G32R32F] = "PF_A32B32G32R32F";
+            names[PF_PVRTC_RGB2] = "PF_PVRTC_RGB2";
+            names[PF_PVRTC_RGBA2] = "PF_PVRTC_RGBA2";
+            names[PF_PVRTC_RGB4] = "PF_PVRTC_RGB4";
+            names[PF_PVRTC_RGBA4] = "PF_PVRTC_RGBA4";
+            names[PF_PVRTC2_2BPP] = "PF_PVRTC2_2BPP";
+            names[PF_PVRTC2_4BPP] = "PF_PVRTC2_4BPP";
+            names[PF_ETC1_RGB8] = "PF_ETC1_RGB8";
+            names[PF_ETC2_RGB8] = "PF_ETC2_RGB8";
+            names[PF_ETC2_RGBA8] = "PF_ETC2_RGBA8";
+            names[PF_ETC2_RGB8A1] = "PF_ETC2_RGB8A1";
+            names[PF_ATC_RGB] = "PF_ATC_RGB";
+            names[PF_ATC_RGBA_EXPLICIT_ALPHA] = "PF_ATC_RGBA_EXPLICIT_ALPHA";
+            names[PF_ATC_RGBA_INTERPOLATED_ALPHA] = "PF_ATC_RGBA_INTERPOLATED_ALPHA";
+        }
+
+        return names[eFormat];
     }
 
     DiMap<DiPixelFormat,PixelFormatDescription> PixelFormatDescription::s_kDescs;

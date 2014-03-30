@@ -11,23 +11,20 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiWin32GLContext_h__
-#define DiWin32GLContext_h__
+#ifndef DiEGLContext_h__
+#define DiEGLContext_h__
 
-
-#include "GLContext.h"
+#include "ES2Context.h"
 
 namespace Demi
 {
-    class DI_GLES2_API DiWin32GLContext : public DiGLContext
+    class DI_GLES2_API DiEGLContext : public DiGLES2Context
     {
     public:
 
-        DiWin32GLContext(DiWin32GLUtil* util, DiWndHandle wnd);
+        DiEGLContext(EGLDisplay eglDisplay, DiEGLUtil* util, ::EGLConfig fbconfig, ::EGLSurface drawable);
 
-        DiWin32GLContext(DiWin32GLUtil* util, HDC dc, HGLRC glrc);
-
-        ~DiWin32GLContext();
+        ~DiEGLContext();
 
     public:
 
@@ -35,21 +32,25 @@ namespace Demi
 
         void            EndContext();
 
-        void            Release();
+        virtual DiGLES2Context* Clone() const = 0;
 
-        DiGLContext*    Clone() const;
+        virtual void    CreateInternalResources(EGLDisplay eglDisplay, ::EGLConfig glconfig, ::EGLSurface drawable, ::EGLContext shareContext);
+
+        virtual void    DestroyInternalResources();
+
+        EGLSurface      getDrawable() const { return mDrawable; }
 
     private:
 
-        void            InitFromHwnd(HWND hwnd);
+        DiEGLUtil*      mGLUtil;
 
-    private:
+        ::EGLConfig     mConfig;
 
-        DiWin32GLUtil*  mGLUtil;
+        ::EGLSurface    mDrawable;
 
-        HDC             mHDC;
+        ::EGLContext    mContext;
 
-        HGLRC           mGLRc;
+        EGLDisplay      mEglDisplay;
     };
 }
 
