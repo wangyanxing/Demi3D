@@ -136,7 +136,7 @@ namespace Demi
         bool isCompressed = DiPixelBox::IsCompressedFormat(fmt);
         if (!isCompressed)
         {
-            for (GLint mip = 0; mip <= numMipmaps; ++mip)
+            for (uint32 mip = 0; mip <= numMipmaps; ++mip)
             {
                 switch (mGLTextureType)
                 {
@@ -170,7 +170,7 @@ namespace Demi
             //TODO: is it necessary?
             uint8* tmpdata = new uint8[mImageSize];
             memset(tmpdata, 0, mImageSize);
-            for (GLint mip = 0; mip <= numMipmaps; ++mip)
+            for (uint32 mip = 0; mip <= numMipmaps; ++mip)
             {
                 switch (mGLTextureType)
                 {

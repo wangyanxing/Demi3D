@@ -10,11 +10,10 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
-#include "GfxPch.h"
 
-#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-
-#include "Win32Window.h"
+#include "DrvGLES2Pch.h"
+#include "Win32EGLWindow.h"
+#include "Win32EGLContext.h"
 #include "RenderWindow.h"
 #include "RenderTarget.h"
 #include "Command.h"
@@ -28,7 +27,7 @@ namespace Demi
 
     static INT_PTR CALLBACK windowProc(HWND hwnd, uint32 msg, WPARAM wParam, LPARAM lParam)
     {
-        DiWin32Window* window = (DiWin32Window*)LongToPtr(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+        DiWin32EGLWindow* window = (DiWin32EGLWindow*)LongToPtr(GetWindowLongPtr(hwnd, GWLP_USERDATA));
         DiRenderWindow* renderWnd = DiBase::Driver->FindRenderWindow(DiWndHandle(hwnd));
 
         if (window && window->DestroyingWindow())
@@ -50,9 +49,9 @@ namespace Demi
 
             break;
         case WM_ACTIVATE:
-	    {
+        {
             bool active = (LOWORD(wParam) != WA_INACTIVE);
-            if( active )
+            if (active)
             {
                 if (renderWnd)
                     renderWnd->GetRenderBuffer()->SetActive(true);
@@ -62,10 +61,9 @@ namespace Demi
                 if (renderWnd)
                     renderWnd->GetRenderBuffer()->SetActive(false);
             }
-		    break;
-	    }
-
-        // for command manager
+            break;
+        }
+    
         case WM_COPYDATA:
         {
             const char* str = (const char*)(((COPYDATASTRUCT*)lParam)->lpData);
@@ -103,19 +101,152 @@ namespace Demi
         return atom;
     }
 
-    DiWin32Window::DiWin32Window()
-        :mHDC(NULL)
+    //////////////////////////////////////////////////////////////////////////
+
+    DiWin32EGLWindow::DiWin32EGLWindow(DiWin32EGLUtil* util)
+        : DiEGLWindow(util)
     {
+        mGLSupport = util;
+        mNativeDisplay = util->GetNativeDisplay();
         mHandlingmsg = false;
         mDestroyWindow = false;
     }
 
-    DiWin32Window::~DiWin32Window()
+    DiWin32EGLWindow::~DiWin32EGLWindow()
     {
     }
 
-    bool DiWin32Window::Create(uint32& width, uint32& height,
-        const DiString& title, bool fullscreen)
+    bool DiWin32EGLWindow::Create(uint32& width, uint32& height, const DiString& title, bool fullscreen)
+    {
+        ::EGLContext eglContext = 0;
+        if (!mEglConfig)
+        {
+            uint32 samples = 0;
+            int minAttribs[] = 
+            {
+                EGL_LEVEL, 0,
+                EGL_DEPTH_SIZE, 16,
+                EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+                EGL_NATIVE_RENDERABLE, EGL_FALSE,
+                EGL_DEPTH_SIZE, EGL_DONT_CARE,
+                EGL_NONE
+            };
+
+            int maxAttribs[] = 
+            {
+                EGL_SAMPLES, samples,
+                EGL_STENCIL_SIZE, INT_MAX,
+                EGL_NONE
+            };
+
+            mEglConfig = mGLSupport->SelectGLConfig(minAttribs, maxAttribs);
+        }
+
+        bool ret = _Create(width, height, title, fullscreen);
+
+        mContext = CreateEGLContext();
+        mContext->BeginContext();
+        ::EGLSurface oldDrawableDraw = eglGetCurrentSurface(EGL_DRAW);
+        ::EGLSurface oldDrawableRead = eglGetCurrentSurface(EGL_READ);
+        ::EGLContext oldContext = eglGetCurrentContext();
+
+        int glConfigID;
+        mGLSupport->GetGLConfigAttrib(mEglConfig, EGL_CONFIG_ID, &glConfigID);
+
+        DI_WARNING("EGLWindow::create used FBConfigID = %d", glConfigID);
+        return ret;
+    }
+
+    void DiWin32EGLWindow::Update()
+    {
+        DI_ASSERT(mWndHandle);
+        if (IsOpen())
+        {
+            mHandlingmsg = true;
+            MSG msg;
+
+            while (IsOpen() && ::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+            {
+                ::TranslateMessage(&msg);
+                ::DispatchMessage(&msg);
+            }
+
+            mHandlingmsg = false;
+            if (mWndHandle && mDestroyWindow)
+            {
+                ::DestroyWindow((HWND)mWndHandle);
+                mWndHandle = nullptr;
+                mDestroyWindow = false;
+            }
+        }
+    }
+
+    bool DiWin32EGLWindow::Close()
+    {
+        if (mWndHandle)
+        {
+            if (mHandlingmsg)
+                mDestroyWindow = true;
+            else
+            {
+                ::DestroyWindow((HWND)mWndHandle);
+                mWndHandle = nullptr;
+            }
+        }
+
+        return true;
+    }
+
+    bool DiWin32EGLWindow::IsOpen()
+    {
+        return mWndHandle ? true : false;
+    }
+
+    void DiWin32EGLWindow::SetWindowSize(uint32 width, uint32 height)
+    {
+        bool fullscreen = false;
+        DI_ASSERT(mWndHandle);
+        if (mWndHandle)
+        {
+            RECT rect;
+            ::GetWindowRect((HWND)mWndHandle, &rect);
+            rect.right = (LONG)(rect.left + width);
+            rect.bottom = (LONG)(rect.top + height);
+            RECT oldrect = rect;
+            DWORD dwstyle = (fullscreen ? gFullscreenStyle : gWindowStyle);
+            ::AdjustWindowRect(&rect, dwstyle, 0);
+            ::MoveWindow((HWND)mWndHandle, (int)oldrect.left, (int)oldrect.top,
+                (int)(rect.right - rect.left), (int)(rect.bottom - rect.top), 1);
+        }
+    }
+
+    void DiWin32EGLWindow::GetWindowSize(uint32& width, uint32& height)
+    {
+        if (mWndHandle)
+        {
+            RECT rect;
+            GetClientRect((HWND)mWndHandle, &rect);
+            width = (uint32)(rect.right - rect.left);
+            height = (uint32)(rect.bottom - rect.top);
+        }
+    }
+
+    void DiWin32EGLWindow::GetTitle(char *title, uint32 maxLength) const
+    {
+        DI_ASSERT(mWndHandle);
+        if (mWndHandle)
+            GetWindowTextA((HWND)mWndHandle, title, maxLength);
+    }
+
+    void DiWin32EGLWindow::SetTitle(const char *title)
+    {
+        DI_ASSERT(mWndHandle);
+        if (mWndHandle)
+            ::SetWindowTextA((HWND)mWndHandle, title);
+    }
+
+    bool DiWin32EGLWindow::_Create(uint32& width, uint32& height, const DiString& title, bool fullscreen)
     {
         bool ok = false;
         DI_ASSERT(!mWndHandle);
@@ -157,101 +288,27 @@ namespace Demi
             DI_ERROR("RegisterRawInputDevices failed: %d", GetLastError());
         }
 
+        mNativeDisplay = GetDC(mWindow);
+        mEglDisplay = eglGetDisplay(mNativeDisplay);
+
+        // fallback for some emulations 
+        if (mEglDisplay == EGL_NO_DISPLAY)
+        {
+            mEglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+        }
+
+        eglInitialize(mEglDisplay, NULL, NULL);
+
+        eglBindAPI(EGL_OPENGL_ES_API);
+
+        mGLSupport->SetGLDisplay(mEglDisplay);
+        mEglSurface = CreateSurfaceFromWindow(mEglDisplay, mWindow);
+
         return ok;
     }
 
-    void DiWin32Window::Update()
+    DiEGLContext* DiWin32EGLWindow::CreateEGLContext() const
     {
-        DI_ASSERT(mWndHandle);
-        if (IsOpen())
-        {
-            mHandlingmsg = true;
-            MSG msg;
-
-            while (IsOpen() && ::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-            {
-                ::TranslateMessage(&msg);
-                ::DispatchMessage(&msg);
-            }
-
-            mHandlingmsg = false;
-            if (mWndHandle && mDestroyWindow)
-            {
-                ::DestroyWindow((HWND)mWndHandle);
-                mWndHandle = nullptr;
-                mDestroyWindow = false;
-            }
-        }
-    }
-
-    bool DiWin32Window::Close()
-    {
-        if (mWndHandle)
-        {
-            if (mHandlingmsg)
-                mDestroyWindow = true;
-            else
-            {
-                ::DestroyWindow((HWND)mWndHandle);
-                mWndHandle = nullptr;
-            }
-        }
-
-        return true;
-    }
-
-    bool DiWin32Window::IsOpen()
-    {
-        return mWndHandle ? true : false;
-    }
-
-    void DiWin32Window::SetWindowSize(uint32 width, uint32 height)
-    {
-        bool fullscreen = false;
-        DI_ASSERT(mWndHandle);
-        if (mWndHandle)
-        {
-            RECT rect;
-            ::GetWindowRect((HWND)mWndHandle, &rect);
-            rect.right = (LONG)(rect.left + width);
-            rect.bottom = (LONG)(rect.top + height);
-            RECT oldrect = rect;
-            DWORD dwstyle = (fullscreen ? gFullscreenStyle : gWindowStyle);
-            ::AdjustWindowRect(&rect, dwstyle, 0);
-            ::MoveWindow((HWND)mWndHandle, (int)oldrect.left, (int)oldrect.top,
-                (int)(rect.right - rect.left), (int)(rect.bottom - rect.top), 1);
-        }
-    }
-
-    void DiWin32Window::GetWindowSize(uint32& width, uint32& height)
-    {
-        if (mWndHandle)
-        {
-            RECT rect;
-            GetClientRect((HWND)mWndHandle, &rect);
-            width = (uint32)(rect.right - rect.left);
-            height = (uint32)(rect.bottom - rect.top);
-        }
-    }
-
-    void DiWin32Window::GetTitle(char *title, uint32 maxLength) const
-    {
-        DI_ASSERT(mWndHandle);
-        if (mWndHandle)
-            GetWindowTextA((HWND)mWndHandle, title, maxLength);
-    }
-
-    void DiWin32Window::SetTitle(const char *title)
-    {
-        DI_ASSERT(mWndHandle);
-        if (mWndHandle)
-            ::SetWindowTextA((HWND)mWndHandle, title);
-    }
-
-    void DiWin32Window::SwapBuffers()
-    {
-        ::SwapBuffers(mHDC);
+        return DI_NEW DiWin32EGLContext(mEglDisplay, mGLSupport, mEglConfig, mEglSurface);
     }
 }
-
-#endif

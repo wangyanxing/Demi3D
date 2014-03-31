@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DrvGLES2Pch.h"
 #include "ES2VertexBuffer.h"
 #include "GLES2Driver.h"
-#include "ES2BufferManager.h"
 #include "ES2TypeMappings.h"
 
 namespace Demi

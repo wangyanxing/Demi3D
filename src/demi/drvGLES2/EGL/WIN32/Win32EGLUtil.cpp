@@ -13,7 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "DrvGLES2Pch.h"
 #include "Win32EGLUtil.h"
-#include "Win32/Win32Window.h"
+#include "Win32EGLWindow.h"
 
 namespace Demi
 {
@@ -128,6 +128,6 @@ namespace Demi
 
     DiWindow* DiWin32EGLUtil::CreateNewWindow()
     {
-        return DI_NEW DiWin32Window();
+        return DI_NEW DiWin32EGLWindow(this);
     }
 }

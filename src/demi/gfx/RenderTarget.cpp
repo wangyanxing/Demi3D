@@ -132,4 +132,15 @@ namespace Demi
     {
         mDepthBuffer = nullptr;
     }
+
+    bool DiRenderTarget::IsCompatibleWith(DiDepthBuffer* db)
+    {
+        if (this->GetWidth() >= db->GetWidth() &&
+            this->GetHeight() >= db->GetHeight())
+        {
+            return true;
+        }
+        return false;
+    }
+
 }

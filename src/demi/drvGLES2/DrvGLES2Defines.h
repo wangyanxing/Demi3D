@@ -89,6 +89,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define _CRT_SECURE_NO_DEPRECATE
 #endif
 
+#if (DEMI_PLATFORM == DEMI_PLATFORM_IOS)
+#   define IF_IOS_VERSION_IS_GREATER_THAN(vers) \
+        if(static_cast<DiEAGL2Util*>(DiGLES2Driver::GLUtil)->GetCurrentOSVersion() >= vers)
+#else
+#   define IF_IOS_VERSION_IS_GREATER_THAN(vers)
+#endif
+
 #define ENABLE_GL_CHECK 0
 
 #if ENABLE_GL_CHECK

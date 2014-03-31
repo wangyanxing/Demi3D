@@ -37,7 +37,7 @@ namespace Demi
 
     private:
 
-        DiGLDriver*     mDriver;
+        DiGLES2Driver*  mDriver;
     };
 }
 

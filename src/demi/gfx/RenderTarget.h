@@ -101,7 +101,7 @@ namespace Demi
 
         virtual DiDepthBuffer*  CreateDepthBuffer() = 0;
 
-        virtual bool            IsCompatibleWith(DiDepthBuffer* db) = 0;
+        virtual bool            IsCompatibleWith(DiDepthBuffer* db);
 
         bool                    GetClearPerFrame() const { return mClearPerFrame; }
 

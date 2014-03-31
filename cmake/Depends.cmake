@@ -11,6 +11,10 @@ if(WIN32)
 	macro_log_feature(DirectX_FOUND "DirectX" "Support for the DirectX render system" "http://msdn.microsoft.com/en-us/directx/" FALSE "" "")
 endif()
 
+# Find OpenGL ES 2.x
+find_package(OpenGLES2)
+macro_log_feature(OPENGLES2_FOUND "OpenGL ES 2.x" "Support for the OpenGL ES 2.x render system" "http://www.khronos.org/opengles/" FALSE "" "")
+
 set(EXTERNAL_HOME "${DEMI_SOURCE_DIR}/external")
 
 #-------------------------------------------------------------------

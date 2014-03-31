@@ -25,10 +25,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "LogManager.h"
 
-//#include "MyGUI_DemiWrapper.h"
-//#include "MyGUI_MouseButton.h"
-//#include "MyGUI_InputManager.h"
-
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   include "ApplicationOSX.h"
 #endif
@@ -49,8 +45,6 @@ namespace Demi
     DemiDemo::DemiDemo(DemoConfig config) :
         mAssetManager(nullptr)
         , mInputMgr(nullptr)
-        //, mInfo(nullptr)
-        //, mGUIWrapper(nullptr)
         , mConfig(config)
         , mQuit(false)
     {
@@ -91,7 +85,6 @@ namespace Demi
         mInputMgr->captureInput();
         mCameraHelper->Update(Driver->GetDeltaSecond());
 
-        //mInfo->Update(mDriver->GetMainRenderWindow()->GetDeltaSecond());
         if (mMainHwnd)
             Driver->Render();
         
@@ -174,8 +167,6 @@ namespace Demi
         mInputMgr->unregisterMousePressEvent("App::MsDown");
         mInputMgr->unregisterMouseReleaseEvent("App::MsUp");
 
-        //SAFE_DELETE(mInfo);
-        //SAFE_DELETE(mGUIWrapper);
         SAFE_DELETE(mInputMgr);
         SAFE_DELETE(mCameraHelper);
         
@@ -214,11 +205,6 @@ namespace Demi
         mInputMgr->registerMouseMoveEvent("App::MsMove", std::bind(&DemiDemo::mouseMoved, this, _1));
         mInputMgr->registerMousePressEvent("App::MsDown", std::bind(&DemiDemo::mousePressed, this, _1, _2));
         mInputMgr->registerMouseReleaseEvent("App::MsUp", std::bind(&DemiDemo::mouseReleased, this, _1, _2));
-
-        //mGUIWrapper = new MyGUI::DemiWrapper();
-        //mGUIWrapper->init("MyGUI_Core.xml");
-
-        //mInfo = new DiInfo();
 
         DiCamera* cam = Driver->GetSceneManager()->GetCamera();
         mCameraHelper = new DiCameraHelper(cam);

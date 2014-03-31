@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Texture.h"
 #include "ShaderParam.h"
 #include "Capabilities.h"
+#include "GLES2Driver.h"
 #include "ES2FrameBuffer.h"
 #include "Image.h"
 
@@ -118,9 +119,17 @@ namespace Demi
     GLenum DiGLTypeMappings::GLFormatMapping[PIXEL_FORMAT_MAX] =
     {
         GL_RGB,                            // PF_R8G8B8,
-        GL_BGRA,                           // PF_A8R8G8B8,
-        GL_BGRA,                           // PF_A8B8G8R8,
-        GL_BGRA,                           // PF_X8R8G8B8,
+
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        GL_BGRA_EXT,                       // PF_A8R8G8B8,
+        GL_BGRA_EXT,                       // PF_A8B8G8R8,
+        GL_BGRA_EXT,                       // PF_X8R8G8B8,
+#else
+        GL_RGBA,
+        GL_RGBA,
+        GL_RGBA,
+#endif
+
         GL_ALPHA,                          // PF_A8,
         GL_LUMINANCE,                      // PF_L8,
 
@@ -224,10 +233,10 @@ namespace Demi
 
     GLenum DiGLTypeMappings::GLInternalFormatMapping[PIXEL_FORMAT_MAX] =
     {
-        GL_RGB8,                           // PF_R8G8B8,
-        GL_RGBA8,                          // PF_A8R8G8B8,
-        GL_RGBA8,                          // PF_A8B8G8R8,
-        GL_RGB8,                           // PF_X8R8G8B8,
+        GL_RGB,                            // PF_R8G8B8,
+        GL_RGBA,                           // PF_A8R8G8B8,
+        GL_RGBA,                           // PF_A8B8G8R8,
+        GL_RGB,                            // PF_X8R8G8B8,
         GL_ALPHA,                          // PF_A8,
         GL_LUMINANCE,                      // PF_L8,
 #if GL_EXT_texture_compression_dxt1
@@ -328,7 +337,6 @@ namespace Demi
         case GL_FLOAT_MAT4:
             return DiShaderParameter::VARIABLE_MAT4;
         case GL_SAMPLER_2D:
-        case GL_SAMPLER_2D_RECT_ARB:
             return DiShaderParameter::VARIABLE_SAMPLER2D;
         case GL_SAMPLER_CUBE:
             return DiShaderParameter::VARIABLE_SAMPLERCUBE;

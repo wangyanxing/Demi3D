@@ -92,8 +92,10 @@ namespace Demi
 
         void                    Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil = 0);
 
+        DiGfxCaps*              InitGfxCaps();
+
         // Create a new one if not existed
-        DiGLShaderLinker*       GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps);
+        DiGLES2ShaderLinker*    GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps);
 
         DiGLES2Context*         GetContext(DiWndHandle wnd);
 
@@ -113,11 +115,9 @@ namespace Demi
 
         static DiGLES2FBOManager*   FBOManager;
 
-        static DiGLES2Util*            GLUtil;
+        static DiGLES2Util*         GLUtil;
 
     private:
-
-        DiGLES2Context*         _CreateContext(DiWndHandle wnd);
 
         DiGLES2Util*            _CreateGLUtil();
 
@@ -147,11 +147,11 @@ namespace Demi
 
         DiGLES2FBOManager*      mGLFBOManager;
 
-        typedef DiMap<DiPair<DiShaderInstance*, DiShaderInstance*>, DiGLShaderLinker*> ProgramMap;
+        typedef DiMap<DiPair<DiShaderInstance*, DiShaderInstance*>, DiGLES2ShaderLinker*> ProgramMap;
 
         ProgramMap              mProgramMaps;
 
-        DiGLShaderLinker*       mCurrentProgram;
+        DiGLES2ShaderLinker*    mCurrentProgram;
 
     };
 }

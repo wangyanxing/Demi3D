@@ -77,4 +77,14 @@ namespace Demi
             DI_WARNING("Failed to initialize GL3W");
     }
 
+    void DiEGLContext::DestroyInternalResources()
+    {
+        EndContext();
+
+        eglDestroyContext(mEglDisplay, mContext);
+        EGL_CHECK_ERROR
+
+        mContext = NULL;
+    }
+
 }

@@ -67,6 +67,8 @@ namespace Demi
 
         void                GetBestDepthStencil(GLenum internalFormat, GLenum *depthFormat, GLenum *stencilFormat);
 
+        DiPixelFormat       GetSupportedAlternative(DiPixelFormat format);
+
     private:
 
         void                DetectFBOFormats();
@@ -76,8 +78,6 @@ namespace Demi
         bool                TryPackedFormat(GLenum packedFormat);
 
         bool                CheckFormat(DiPixelFormat format) { return mProps[format].valid; }
-
-        DiPixelFormat       GetSupportedAlternative(DiPixelFormat format);
 
         void                CreateTempFramebuffer(DiPixelFormat pixFmt, GLuint internalFormat, GLuint fmt, GLenum dataType, GLuint &fb, GLuint &tid);
 

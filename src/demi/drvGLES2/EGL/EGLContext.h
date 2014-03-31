@@ -40,7 +40,7 @@ namespace Demi
 
         EGLSurface      getDrawable() const { return mDrawable; }
 
-    private:
+    protected:
 
         DiEGLUtil*      mGLUtil;
 

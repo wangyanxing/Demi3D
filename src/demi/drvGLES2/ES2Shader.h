@@ -11,8 +11,8 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef GLShader_h__
-#define GLShader_h__
+#ifndef GLES2Shader_h__
+#define GLES2Shader_h__
 
 #include "GpuProgram.h"
 #include "VertexFormat.h"
@@ -35,13 +35,13 @@ namespace Demi
 
     //////////////////////////////////////////////////////////////////////////
 
-    class DiGLShaderInstance : public DiShaderInstance
+    class DiGLES2ShaderInstance : public DiShaderInstance
     {
     public:
 
-        DiGLShaderInstance(DiShaderType type, DiShaderProgram* prog);
+        DiGLES2ShaderInstance(DiShaderType type, DiShaderProgram* prog);
 
-        ~DiGLShaderInstance();
+        ~DiGLES2ShaderInstance();
 
     public:
 
@@ -49,9 +49,9 @@ namespace Demi
 
         void                Bind(const DiShaderEnvironment& shaderEnv);
 
-        void                LinkToProgramObject(const GLhandleARB programObject);
+        void                LinkToProgramObject(const GLuint programObject);
 
-        void                UnlinkToProgramObject(const GLhandleARB programObject);
+        void                UnlinkToProgramObject(const GLuint programObject);
 
         void                Release();
 
@@ -62,10 +62,7 @@ namespace Demi
 
     public:
 
-        static void         LogGLSLError(GLenum glErr, const DiString& errorTextPrefix,
-                                const GLhandleARB obj, const bool forceInfoLog = false);
-
-        static DiString     LogObjectInfo(const DiString& msg, const GLhandleARB obj);
+        static DiString     LogObjectInfo(const DiString& msg, const GLuint obj);
 
     private:
 
@@ -73,7 +70,9 @@ namespace Demi
 
         DiShaderProgram*    mShaderProgram;
 
-        GLhandleARB         mShaderHandle;
+        GLuint              mShaderHandle;
+
+        GLuint              mGLProgramHandle;
 
         DiShaderType        mType;
 
@@ -99,13 +98,13 @@ namespace Demi
 
     //////////////////////////////////////////////////////////////////////////
 
-    class DiGLShaderLinker
+    class DiGLES2ShaderLinker : public DiBase
     {
     public:
 
-        DiGLShaderLinker(DiGLShaderInstance* vs, DiGLShaderInstance* ps);
+        DiGLES2ShaderLinker(DiGLES2ShaderInstance* vs, DiGLES2ShaderInstance* ps);
 
-        ~DiGLShaderLinker();
+        ~DiGLES2ShaderLinker();
 
     public:
 
@@ -113,7 +112,7 @@ namespace Demi
 
         void                Bind();
 
-        void                LoadConstants(DiGLShaderParam* params);
+        void                LoadConstants(DiGLES2ShaderParam* params);
 
         DiGLShaderConstant* GetConstant(const DiString& constname);
 
@@ -123,7 +122,7 @@ namespace Demi
 
         bool                HasSampler(const DiString& samplername);
 
-        GLhandleARB         GetGLHandle() const { return mGLHandle; }
+        GLuint              GetGLHandle() const { return mGLHandle; }
 
     private:
 
@@ -139,11 +138,11 @@ namespace Demi
 
     private:
 
-        GLhandleARB         mGLHandle;
+        GLuint              mGLHandle;
 
-        DiGLShaderInstance* mVS;
+        DiGLES2ShaderInstance* mVS;
 
-        DiGLShaderInstance* mPS;
+        DiGLES2ShaderInstance* mPS;
 
         GLint               mLinked;
 

@@ -10,17 +10,19 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
-#include "DrvGLPch.h"
-#include "GLShader.h"
-#include "GLShaderParam.h"
-#include "GLDriver.h"
-#include "GLTypeMappings.h"
+
+#include "DrvGLES2Pch.h"
+#include "ES2Shader.h"
+#include "ES2ShaderParam.h"
+#include "GLES2Driver.h"
+#include "ES2Util.h"
+#include "ES2TypeMappings.h"
 #include "ShaderProgram.h"
 #include "AssetManager.h"
 
 namespace Demi
 {
-    DiGLShaderLinker::CustomAttribute DiGLShaderLinker::msCustomAttributes[] = 
+    DiGLES2ShaderLinker::CustomAttribute DiGLES2ShaderLinker::msCustomAttributes[] = 
     {
         CustomAttribute("Position",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_POSITION,        0)),
         CustomAttribute("BlendWeights", DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BLENDWEIGHT,     0)),
@@ -40,19 +42,20 @@ namespace Demi
         CustomAttribute("Binormal",     DiGLTypeMappings::GetFixedAttributeIndex(VERT_USAGE_BINORMAL,        0)),
     };
 
-    DiGLShaderInstance::DiGLShaderInstance(DiShaderType type, DiShaderProgram* prog) : DiShaderInstance(type)
+    DiGLES2ShaderInstance::DiGLES2ShaderInstance(DiShaderType type, DiShaderProgram* prog) : DiShaderInstance(type)
         , mShaderProgram(prog)
         , mShaderHandle(0)
+        , mGLProgramHandle(0)
         , mType(type)
         , mCompiled(0)
     {
     }
 
-    DiGLShaderInstance::~DiGLShaderInstance()
+    DiGLES2ShaderInstance::~DiGLES2ShaderInstance()
     {
     }
 
-    bool DiGLShaderInstance::Compile(const DiString& code)
+    bool DiGLES2ShaderInstance::Compile(const DiString& code)
     {
         if (code.empty())
             return false;
@@ -64,21 +67,39 @@ namespace Demi
         switch (mType)
         {
         case SHADER_VERTEX:
-            shaderType = GL_VERTEX_SHADER_ARB;
+            shaderType = GL_VERTEX_SHADER;
             break;
         case SHADER_PIXEL:
-            shaderType = GL_FRAGMENT_SHADER_ARB;
+            shaderType = GL_FRAGMENT_SHADER;
             break;
         default:
             DI_WARNING("Invalid shader type");
         }
-        mShaderHandle = glCreateShaderObjectARB(shaderType);
+        CHECK_GL_ERROR( mShaderHandle = glCreateShader(shaderType) );
+
+        if (DiGLES2Driver::GLUtil->CheckExtension("GL_EXT_debug_label"))
+        {
+            IF_IOS_VERSION_IS_GREATER_THAN(5.0)
+                glLabelObjectEXT(GL_SHADER_OBJECT_EXT, mShaderHandle, 0, mShaderProgram->GetShaderFileName().c_str());
+        }
+
+        if (Driver->GetGfxCaps()->hasCapability(RSC_SEPARATE_SHADER_OBJECTS))
+        {
+            CHECK_GL_ERROR(mGLProgramHandle = glCreateProgram());
+
+            if (DiGLES2Driver::GLUtil->CheckExtension("GL_EXT_debug_label"))
+            {
+                IF_IOS_VERSION_IS_GREATER_THAN(5.0)
+                    glLabelObjectEXT(GL_PROGRAM_OBJECT_EXT, mGLProgramHandle, 0, mShaderProgram->GetShaderFileName().c_str());
+            }
+        }
 
         const char *source = mProcessedShader.c_str();
-        glShaderSourceARB(mShaderHandle, 1, &source, NULL);
+        glShaderSource(mShaderHandle, 1, &source, NULL);
 
-        glCompileShaderARB(mShaderHandle);
-        glGetObjectParameterivARB(mShaderHandle, GL_OBJECT_COMPILE_STATUS_ARB, &mCompiled);
+        glCompileShader(mShaderHandle);
+
+        CHECK_GL_ERROR(glGetShaderiv(mShaderHandle, GL_COMPILE_STATUS, &mCompiled));
 
         if (!mCompiled)
         {
@@ -87,45 +108,28 @@ namespace Demi
             LogObjectInfo(msg, mShaderHandle);
             return false;
         }
-        return true;
+        return mCompiled == 1;
     }
 
-    void DiGLShaderInstance::Bind(const DiShaderEnvironment& shaderEnv)
+    void DiGLES2ShaderInstance::Bind(const DiShaderEnvironment& shaderEnv)
     {
     }
 
-    void DiGLShaderInstance::Release()
+    void DiGLES2ShaderInstance::Release()
     {
-        glDeleteObjectARB(mShaderHandle);
-    }
+        CHECK_GL_ERROR(glDeleteShader(mShaderHandle));
 
-    void DiGLShaderInstance::LogGLSLError(GLenum glErr, 
-        const DiString& errorTextPrefix, const GLhandleARB obj, 
-        const bool forceInfoLog)
-    {
-        bool errorsFound = false;
-        DiString msg = errorTextPrefix;
-
-        while (glErr != GL_NO_ERROR)
+        if (Driver->GetGfxCaps()->hasCapability(RSC_SEPARATE_SHADER_OBJECTS))
         {
-            const char* glerrStr = (const char*)gluErrorString(glErr);
-            if (glerrStr)
-            {
-                msg += DiString(glerrStr);
-            }
-            glErr = glGetError();
-            errorsFound = true;
+            CHECK_GL_ERROR(glDeleteProgram(mGLProgramHandle));
         }
 
-        if (errorsFound || forceInfoLog)
-        {
-            msg += LogObjectInfo(msg, obj);
-            DI_WARNING("GLSL error:");
-            DI_WARNING("%s", msg.c_str());
-        }
+        mShaderHandle = 0;
+        mGLProgramHandle = 0;
+        mCompiled = 0;
     }
 
-    DiString DiGLShaderInstance::LogObjectInfo(const DiString& msg, const GLhandleARB obj)
+    DiString DiGLES2ShaderInstance::LogObjectInfo(const DiString& msg, const GLuint obj)
     {
         DiString logMessage = msg;
 
@@ -133,29 +137,63 @@ namespace Demi
         {
             GLint infologLength = 0;
 
-            if (glIsProgram(obj))
-                glValidateProgram(obj);
+            if (glIsShader(obj))
+            {
+                CHECK_GL_ERROR(glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &infologLength));
+            }
+            else if (glIsProgram(obj))
+            {
+                CHECK_GL_ERROR(glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &infologLength));
+            }
+            else if (Driver->GetGfxCaps()->hasCapability(RSC_SEPARATE_SHADER_OBJECTS))
+            {
+                IF_IOS_VERSION_IS_GREATER_THAN(5.0)
+                {
+                    if (glIsProgramPipelineEXT(obj))
+                        CHECK_GL_ERROR(glGetProgramPipelineivEXT(obj, GL_INFO_LOG_LENGTH, &infologLength));
+                }
+            }
 
-            glGetObjectParameterivARB(obj, GL_OBJECT_INFO_LOG_LENGTH_ARB, &infologLength);
-
-            if (infologLength > 0)
+            if (infologLength > 1)
             {
                 GLint charsWritten = 0;
-                GLcharARB* infoLog = new GLcharARB[infologLength];
 
-                glGetInfoLogARB(obj, infologLength, &charsWritten, infoLog);
-                logMessage += DiString(infoLog);
+                char * infoLog = new char[infologLength];
+                infoLog[0] = 0;
 
-                DiLogManager::GetInstancePtr()->Output(LOG_LEVEL_WARNING, logMessage.c_str());
+                if (glIsShader(obj))
+                {
+                    CHECK_GL_ERROR(glGetShaderInfoLog(obj, infologLength, &charsWritten, infoLog));
+                }
+                else if (glIsProgram(obj))
+                {
+                    CHECK_GL_ERROR(glGetProgramInfoLog(obj, infologLength, &charsWritten, infoLog));
+                }
+                else if (Driver->GetGfxCaps()->hasCapability(RSC_SEPARATE_SHADER_OBJECTS))
+                {
+                    IF_IOS_VERSION_IS_GREATER_THAN(5.0)
+                    {
+                        if (glIsProgramPipelineEXT(obj))
+                            CHECK_GL_ERROR(glGetProgramPipelineInfoLogEXT(obj, infologLength, &charsWritten, infoLog));
+                    }
+                }
+
+                if (strlen(infoLog) > 0)
+                    logMessage += "\n" + DiString(infoLog);
 
                 delete[] infoLog;
+
+                if (logMessage.size() > 0)
+                {
+                    DI_LOG(logMessage.c_str());
+                }
             }
         }
-
+        
         return logMessage;
     }
 
-    void DiGLShaderInstance::LinkToProgramObject(const GLhandleARB programObject)
+    void DiGLES2ShaderInstance::LinkToProgramObject(const GLuint programObject)
     {
         if (!mShaderHandle)
         {
@@ -163,30 +201,22 @@ namespace Demi
             return;
         }
 
-        glAttachObjectARB(programObject, mShaderHandle);
-
-        GLenum glErr = glGetError();
-        if (glErr != GL_NO_ERROR)
-            LogGLSLError(glErr, "LinkToProgramObject error: ",programObject);
+        CHECK_GL_ERROR(glDetachShader(programObject, mShaderHandle));
     }
 
-    void DiGLShaderInstance::UnlinkToProgramObject(const GLhandleARB programObject)
+    void DiGLES2ShaderInstance::UnlinkToProgramObject(const GLuint programObject)
     {
-        glDetachObjectARB(programObject, mShaderHandle);
-
-        GLenum glErr = glGetError();
-        if (glErr != GL_NO_ERROR)
-            LogGLSLError(glErr, "UnlinkToProgramObject error: ", programObject);
+        CHECK_GL_ERROR(glDetachShader(programObject, mShaderHandle));
     }
 
-    void DiGLShaderInstance::PorcessShaders(const DiString& code)
+    void DiGLES2ShaderInstance::PorcessShaders(const DiString& code)
     {
         mProcessedShader.clear();
 
         // version
         // the #version should be the first statement on some platform
         mProcessedShader += "#version ";
-        mProcessedShader += DiGLDriver::GetGlslVersion();
+        mProcessedShader += DiGLES2Driver::GetGlslVersion();
         mProcessedShader += "\n";
 
         // defines
@@ -236,7 +266,7 @@ namespace Demi
         }
     }
 
-    DiGLShaderLinker::DiGLShaderLinker(DiGLShaderInstance* vs, DiGLShaderInstance* ps)
+    DiGLES2ShaderLinker::DiGLES2ShaderLinker(DiGLES2ShaderInstance* vs, DiGLES2ShaderInstance* ps)
         : mGLHandle(0)
         , mVS(vs)
         , mPS(ps)
@@ -244,42 +274,48 @@ namespace Demi
     {
     }
 
-    DiGLShaderLinker::~DiGLShaderLinker()
+    DiGLES2ShaderLinker::~DiGLES2ShaderLinker()
     {
-        glDeleteObjectARB(mGLHandle);
+        CHECK_GL_ERROR(glDeleteProgram(mGLHandle));
     }
 
-    void DiGLShaderLinker::Bind()
+    void DiGLES2ShaderLinker::Bind()
     {
         if (mLinked)
         {
-            glUseProgramObjectARB(mGLHandle);
-
-            GLenum glErr = glGetError();
-            if (glErr != GL_NO_ERROR)
-                DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", mGLHandle);
+            CHECK_GL_ERROR(glUseProgram(mGLHandle));
         }
     }
 
-    void DiGLShaderLinker::LoadConstants(DiGLShaderParam* params)
+    void DiGLES2ShaderLinker::LoadConstants(DiGLES2ShaderParam* params)
     {
         if (DiGLUniforms::msUniformFuncs.empty())
             DiGLUniforms::InitUniformFuncs();
 
+        char* uniformName = NULL;
+        GLint maxLength = 0;
+        CHECK_GL_ERROR(glGetProgramiv(mGLHandle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxLength));
+
+        // If the max length of active uniforms is 0, then there are 0 active.
+        // There won't be any to extract so we can return.
+        if (maxLength == 0)
+            return;
+
+        uniformName = new char[maxLength + 1];
+
         mSamplers.clear();
         GLint uniformCount = 0;
-        glUseProgramObjectARB(mGLHandle);
-        glGetObjectParameterivARB(mGLHandle, GL_OBJECT_ACTIVE_UNIFORMS_ARB, &uniformCount);
+        CHECK_GL_ERROR(glUseProgram(mGLHandle));
+        CHECK_GL_ERROR(glGetProgramiv(mGLHandle, GL_ACTIVE_UNIFORMS, &uniformCount));
         
-        char uniformName[256] = "";
         for (int index = 0; index < uniformCount; index++)
         {
             GLint arraySize = 0;
             GLenum glType = 0;
-            glGetActiveUniformARB(mGLHandle, index, 256, NULL,
-                &arraySize, &glType, uniformName);
+            CHECK_GL_ERROR(glGetActiveUniform(mGLHandle, index, 256, NULL,
+                &arraySize, &glType, uniformName));
 
-            GLint location = glGetUniformLocationARB(mGLHandle, uniformName);
+            GLint location = glGetUniformLocation(mGLHandle, uniformName);
             if (location >= 0)
             {
                 // Check for array index included in the name and strip it
@@ -309,8 +345,7 @@ namespace Demi
                     continue;
                 }
                 
-                if (glType == GL_SAMPLER_1D || glType == GL_SAMPLER_2D || glType == GL_SAMPLER_3D || 
-                    glType == GL_SAMPLER_CUBE || glType == GL_SAMPLER_1D_SHADOW || glType == GL_SAMPLER_2D_SHADOW)
+                if (glType == GL_SAMPLER_2D || glType == GL_SAMPLER_CUBE)
                 {
                     DiGLShaderSampler s;
                     s.location = location;
@@ -318,7 +353,7 @@ namespace Demi
                     s.unit = (uint32)mSamplers.size();
                     mSamplers[name] = s;
 
-                    glUniform1iARB(location, s.unit);
+                    CHECK_GL_ERROR(glUniform1i(location, s.unit));
                 }
                 else
                 {
@@ -339,9 +374,11 @@ namespace Demi
                 }
             }
         }
+
+        delete[] uniformName;
     }
 
-    DiGLShaderConstant* DiGLShaderLinker::GetConstant(const DiString& constname)
+    DiGLShaderConstant* DiGLES2ShaderLinker::GetConstant(const DiString& constname)
     {
         auto i = mConsts.find(constname);
         if (i != mConsts.end())
@@ -350,7 +387,7 @@ namespace Demi
             return nullptr;
     }
 
-    DiGLShaderSampler*  DiGLShaderLinker::GetSampler(const DiString& constname)
+    DiGLShaderSampler*  DiGLES2ShaderLinker::GetSampler(const DiString& constname)
     {
         auto i = mSamplers.find(constname);
         if (i != mSamplers.end())
@@ -359,31 +396,28 @@ namespace Demi
             return nullptr;
     }
 
-    bool DiGLShaderLinker::HasConstant(const DiString& constname)
+    bool DiGLES2ShaderLinker::HasConstant(const DiString& constname)
     {
         return mConsts.find(constname) != mConsts.end();
     }
 
-    bool DiGLShaderLinker::HasSampler(const DiString& samplername)
+    bool DiGLES2ShaderLinker::HasSampler(const DiString& samplername)
     {
         return mSamplers.find(samplername) != mSamplers.end();
     }
 
-    void DiGLShaderLinker::Link()
+    void DiGLES2ShaderLinker::Link()
     {
         if (!mLinked)
         {
             glGetError();
-            mGLHandle = glCreateProgramObjectARB();
+
+            CHECK_GL_ERROR(mGLHandle = glCreateProgram());
 
             // bind attribute
             size_t numAttribs = sizeof(msCustomAttributes) / sizeof(CustomAttribute);
             for (size_t i = 0; i < numAttribs; ++i)
-                glBindAttribLocationARB(mGLHandle, msCustomAttributes[i].attrib, msCustomAttributes[i].name.c_str());
-
-            GLenum glErr = glGetError();
-            if (glErr != GL_NO_ERROR)
-                DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", 0);
+                CHECK_GL_ERROR(glBindAttribLocation(mGLHandle, msCustomAttributes[i].attrib, msCustomAttributes[i].name.c_str()));
 
             // all shaders should be compiled before linking to program objects
             if (mVS)
@@ -392,16 +426,27 @@ namespace Demi
             if (mPS)
                 mPS->LinkToProgramObject(mGLHandle);
 
-            glLinkProgramARB(mGLHandle);
-            glGetObjectParameterivARB(mGLHandle, GL_OBJECT_LINK_STATUS_ARB, &mLinked);
+            CHECK_GL_ERROR(glLinkProgram(mGLHandle));
+            CHECK_GL_ERROR(glGetProgramiv(mGLHandle, GL_LINK_STATUS, &mLinked));
            
-            glErr = glGetError();
-            if (glErr != GL_NO_ERROR)
-                DiGLShaderInstance::LogGLSLError(glErr, "GLSL linking result: ", mGLHandle);
+            DiGLES2ShaderInstance::LogObjectInfo("GLSL linking result: ", mGLHandle);
 
-            glErr = glGetError();
-            if (glErr != GL_NO_ERROR)
-                DiGLShaderInstance::LogGLSLError(glErr, "Binding GLShaderLinker: ", mGLHandle);
+            if (Driver->GetGfxCaps()->hasCapability(RSC_SEPARATE_SHADER_OBJECTS))
+            {
+                IF_IOS_VERSION_IS_GREATER_THAN(5.0)
+                {
+                    if (glIsProgramPipelineEXT(mGLHandle))
+                        glValidateProgramPipelineEXT(mGLHandle);
+                }
+            }
+            else if (glIsProgram(mGLHandle))
+            {
+                glValidateProgram(mGLHandle);
+            }
+
+            DiGLES2ShaderInstance::LogObjectInfo("GLSL validation result: ", mGLHandle);
+
+            // TODO from binary codes
         }
     }
 
@@ -410,33 +455,34 @@ namespace Demi
     void DiGLUniforms::InitUniformFuncs()
     {
         msUniformFuncs["g_modelMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->modelMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_TRUE, env->modelMatrix[0]);
         };
 
         msUniformFuncs["g_viewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->viewMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_TRUE, env->viewMatrix[0]);
         };
 
         msUniformFuncs["g_projMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->projMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_TRUE, env->projMatrix[0]);
         };
 
         msUniformFuncs["g_modelViewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->modelViewMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_TRUE, env->modelViewMatrix[0]);
         };
 
         msUniformFuncs["g_modelViewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->modelViewProjMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_TRUE, env->modelViewProjMatrix[0]);
         };
 
         msUniformFuncs["g_viewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->viewProjMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_TRUE, env->viewProjMatrix[0]);
         };
 
         msUniformFuncs["g_texMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->texMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_TRUE, env->texMatrix[0]);
         };
 
+#if 0
         msUniformFuncs["g_boneMatrices"] = [](const DiShaderEnvironment* env, GLuint location) {
             glUniformMatrix3x4fv(location, env->numBones, GL_FALSE, (float*)(&env->boneMatrices));
         };
@@ -444,85 +490,86 @@ namespace Demi
         msUniformFuncs["g_modelMatrices"] = [](const DiShaderEnvironment* env, GLuint location) {
             glUniformMatrix3x4fv(location, env->numModelMatrices, GL_FALSE, (float*)(&env->modelMatrices));
         };
+#endif
 
         msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fvARB(location, 1, env->eyePosition.ptr());
+            glUniform3fv(location, 1, env->eyePosition.ptr());
         };
 
         msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fvARB(location, 1, env->eyePosition.ptr());
+            glUniform3fv(location, 1, env->eyePosition.ptr());
         };
 
         msUniformFuncs["g_eyeDirection"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fvARB(location, 1, env->eyeDirection.ptr());
+            glUniform3fv(location, 1, env->eyeDirection.ptr());
         };
 
         msUniformFuncs["g_farnearPlane"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform2fvARB(location, 1, env->farnearPlane.ptr());
+            glUniform2fv(location, 1, env->farnearPlane.ptr());
         };
 
         msUniformFuncs["g_time"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1fvARB(location, 1, &env->time);
+            glUniform1fv(location, 1, &env->time);
         };
-        
+
         msUniformFuncs["g_viewportSize"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, 1, env->viewportSize.ptr());
+            glUniform4fv(location, 1, env->viewportSize.ptr());
         };
 
         msUniformFuncs["g_globalAmbient"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, 1, env->globalAmbient.Ptr());
+            glUniform4fv(location, 1, env->globalAmbient.Ptr());
         };
 
         msUniformFuncs["g_ambientColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, 1, env->ambientColor.Ptr());
+            glUniform4fv(location, 1, env->ambientColor.Ptr());
         };
 
         msUniformFuncs["g_diffuseColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fvARB(location, 1, env->diffuseColor.Ptr());
+            glUniform3fv(location, 1, env->diffuseColor.Ptr());
         };
 
         msUniformFuncs["g_specularColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fvARB(location, 1, env->specularColor.Ptr());
+            glUniform3fv(location, 1, env->specularColor.Ptr());
         };
 
         msUniformFuncs["g_opacity"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1fvARB(location, 1, &env->opacity);
+            glUniform1fv(location, 1, &env->opacity);
         };
 
         msUniformFuncs["g_shininess"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1fvARB(location, 1, &env->shininess);
+            glUniform1fv(location, 1, &env->shininess);
         };
 
         msUniformFuncs["g_texelOffsets"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, 1, env->texelOffsets.ptr());
+            glUniform4fv(location, 1, env->texelOffsets.ptr());
         };
 
         msUniformFuncs["g_numDirLights"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1ivARB(location, 1, &env->numDirLights);
+            glUniform1iv(location, 1, &env->numDirLights);
         };
 
         msUniformFuncs["g_dirLightsColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, env->numDirLights, env->dirLightsColor[0].Ptr());
+            glUniform4fv(location, env->numDirLights, env->dirLightsColor[0].Ptr());
         };
 
         msUniformFuncs["g_dirLightsDir"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, env->numDirLights, env->dirLightsDir[0].ptr());
+            glUniform4fv(location, env->numDirLights, env->dirLightsDir[0].ptr());
         };
 
         msUniformFuncs["g_numPointLights"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1ivARB(location, 1, &env->numPointLights);
+            glUniform1iv(location, 1, &env->numPointLights);
         };
 
         msUniformFuncs["g_pointLightsColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, env->numPointLights, env->pointLightsColor[0].Ptr());
+            glUniform4fv(location, env->numPointLights, env->pointLightsColor[0].Ptr());
         };
 
         msUniformFuncs["g_pointLightsPosition"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, env->numPointLights, env->pointLightsPosition[0].ptr());
+            glUniform4fv(location, env->numPointLights, env->pointLightsPosition[0].ptr());
         };
 
         msUniformFuncs["g_pointLightsAttenuation"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, env->numPointLights, env->pointLightsAttenuation[0].ptr());
+            glUniform4fv(location, env->numPointLights, env->pointLightsAttenuation[0].ptr());
         };
 
         msUniformFuncs["g_hasSkyLight"] = [](const DiShaderEnvironment* env, GLuint location) {
@@ -530,15 +577,15 @@ namespace Demi
         };
 
         msUniformFuncs["g_skyLightColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, 1, env->skyLightColor.Ptr());
+            glUniform4fv(location, 1, env->skyLightColor.Ptr());
         };
 
         msUniformFuncs["g_groundColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fvARB(location, 1, env->groundColor.Ptr());
+            glUniform4fv(location, 1, env->groundColor.Ptr());
         };
 
         msUniformFuncs["g_skyLightDir"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fvARB(location, 1, env->skyLightDir.ptr());
+            glUniform3fv(location, 1, env->skyLightDir.ptr());
         };
     }
 }

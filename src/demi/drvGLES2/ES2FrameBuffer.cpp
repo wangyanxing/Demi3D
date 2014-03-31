@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ES2DepthBuffer.h"
 #include "ES2TypeMappings.h"
 #include "ES2RenderBuffer.h"
+#include "ES2Util.h"
 #include <sstream>
 
 #include "Image.h"
@@ -220,7 +221,6 @@ namespace Demi
     }
 
     DiGLES2FBOManager::DiGLES2FBOManager(bool atimode)
-        :mATIMode(atimode)
     {
         DI_ASSERT(!DiGLES2Driver::FBOManager);
         DiGLES2Driver::FBOManager = this;

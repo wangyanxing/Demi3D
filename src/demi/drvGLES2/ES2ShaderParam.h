@@ -11,22 +11,21 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiGLShaderParam_h__
-#define DiGLShaderParam_h__
-
+#ifndef DiGLES2ShaderParam_h__
+#define DiGLES2ShaderParam_h__
 
 #include "ShaderParam.h"
-#include "GLShader.h"
+#include "ES2Shader.h"
 
 namespace Demi
 {
-    class DI_GLES2_API DiGLShaderParam : public DiShaderParameter
+    class DI_GLES2_API DiGLES2ShaderParam : public DiShaderParameter
     {
     public:
 
-        DiGLShaderParam(DiMaterial& mat);
+        DiGLES2ShaderParam(DiMaterial& mat);
 
-        ~DiGLShaderParam();
+        ~DiGLES2ShaderParam();
 
     public:
 
@@ -45,7 +44,7 @@ namespace Demi
 
     private:
 
-        DiGLShaderLinker*   mShaderLinker;
+        DiGLES2ShaderLinker*   mShaderLinker;
         
         DiMap<GLuint, DiGLUniforms::BindingFunc> mBuiltinFuncs;
     };

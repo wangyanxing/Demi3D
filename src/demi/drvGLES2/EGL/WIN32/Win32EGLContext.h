@@ -11,45 +11,28 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DiWin32GLContext_h__
-#define DiWin32GLContext_h__
+#ifndef DiWin32EGLContext_h__
+#define DiWin32EGLContext_h__
 
-
-#include "GLContext.h"
+#include "EGLContext.h"
 
 namespace Demi
 {
-    class DI_GLES2_API DiEGLContext : public DiGLContext
+    class DI_GLES2_API DiWin32EGLContext : public DiEGLContext
     {
     public:
 
-        DiEGLContext(DiEGLUtil* util, DiWndHandle wnd);
+        DiWin32EGLContext(EGLDisplay eglDisplay, DiEGLUtil* util,
+            ::EGLConfig fbconfig, ::EGLSurface drawable);
 
-        DiEGLContext(DiEGLUtil* util, HDC dc, HGLRC glrc);
-
-        ~DiEGLContext();
+        ~DiWin32EGLContext();
 
     public:
 
-        void            BeginContext();
+        void                Release();
 
-        void            EndContext();
+        DiGLES2Context*     Clone() const;
 
-        void            Release();
-
-        DiGLContext*    Clone() const;
-
-    private:
-
-        void            InitFromHwnd(HWND hwnd);
-
-    private:
-
-        DiEGLUtil*  mGLUtil;
-
-        HDC             mHDC;
-
-        HGLRC           mGLRc;
     };
 }
 

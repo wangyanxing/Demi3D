@@ -45,15 +45,17 @@ namespace Demi
 
         DiSceneManager*         GetSceneManager() { return mSceneManager; }
 
-        DiPostEffectManager*    GetPostEffectManager() {return mPostEffectMgr;}
+        DiPostEffectManager*    GetPostEffectManager() { return mPostEffectMgr; }
 
-        DiRenderTarget*         GetRenderBuffer() {return mRenderBuffer;}
-        
-        DiRenderTarget*         GetSceneCanvas() {return mSceneCanvas;}
+        DiRenderTarget*         GetRenderBuffer() { return mRenderBuffer; }
 
-        DiGBuffer*              GetGBuffer() const {return mGBuffer;}
+        DiRenderTarget*         GetSceneCanvas() { return mSceneCanvas; }
+
+        DiGBuffer*              GetGBuffer() const { return mGBuffer; }
 
         DiTexturePtr            GetCanvasTexture() const { return mCanvasTexture; }
+
+        DiWindow*               GetWindow() { return mWindow; }
 
         void                    OnDeviceLost();
 

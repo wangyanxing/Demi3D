@@ -18,11 +18,11 @@
 #  EGL_INCLUDE_DIR  - the EGL include directory
 #  EGL_LIBRARIES    - Link these to use EGL
 
+
 IF (WIN32)
   IF (CYGWIN)
 
     FIND_PATH(OPENGLES2_INCLUDE_DIR GLES2/gl2.h )
-
     FIND_LIBRARY(OPENGLES2_gl_LIBRARY libGLESv2 )
 
   ELSE (CYGWIN)
@@ -30,9 +30,40 @@ IF (WIN32)
     IF(BORLAND)
       SET (OPENGLES2_gl_LIBRARY import32 CACHE STRING "OpenGL ES 2.x library for win32")
     ELSE(BORLAND)
-	  #MS compiler - todo - fix the following line:
-      SET (OPENGLES2_gl_LIBRARY ${DEMI_DEPENDENCIES_DIR}/lib/release/libGLESv2.lib CACHE STRING "OpenGL ES 2.x library for win32")
-      SET (EGL_egl_LIBRARY      ${DEMI_DEPENDENCIES_DIR}/lib/release/libEGL.lib CACHE STRING "EGL library for win32")	  
+        getenv_path(AMD_SDK_ROOT)
+        getenv_path(MALI_SDK_ROOT)
+
+        SET(POWERVR_SDK_PATH "D:/Imagination/PowerVR/GraphicsSDK/SDK_3.3/Builds")
+		
+        FIND_PATH(OPENGLES2_INCLUDE_DIR GLES2/gl2.h
+                        ${ENV_AMD_SDK_ROOT}/include
+                        ${ENV_MALI_SDK_ROOT}/include
+                        ${POWERVR_SDK_PATH}/Include
+                        "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/Include"
+        )
+
+        FIND_PATH(EGL_INCLUDE_DIR EGL/egl.h
+                        ${ENV_AMD_SDK_ROOT}/include
+                        ${ENV_MALI_SDK_ROOT}/include
+                        ${POWERVR_SDK_PATH}/Include
+                        "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/Include"
+        )
+
+        FIND_LIBRARY(OPENGLES2_gl_LIBRARY
+            NAMES libGLESv2
+            PATHS ${ENV_AMD_SDK_ROOT}/x86
+                  ${ENV_MALI_SDK_ROOT}/bin
+                  ${POWERVR_SDK_PATH}/Windows/x86_32/Lib
+                 "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/WindowsX86/Lib"
+        )
+
+        FIND_LIBRARY(EGL_egl_LIBRARY
+            NAMES libEGL
+            PATHS ${ENV_AMD_SDK_ROOT}/x86
+                  ${ENV_MALI_SDK_ROOT}/bin
+                  ${POWERVR_SDK_PATH}/Windows/x86_32/Lib
+                 "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/WindowsX86/Lib"
+        )
     ENDIF(BORLAND)
 
   ENDIF (CYGWIN)

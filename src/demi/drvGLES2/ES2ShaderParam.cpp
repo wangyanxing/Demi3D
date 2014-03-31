@@ -10,27 +10,28 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
-#include "DrvGLPch.h"
-#include "GLShaderParam.h"
-#include "GLShader.h"
-#include "GLDriver.h"
-#include "GLTypeMappings.h"
+
+#include "DrvGLES2Pch.h"
+#include "ES2ShaderParam.h"
+#include "ES2Shader.h"
+#include "GLES2Driver.h"
+#include "ES2TypeMappings.h"
 
 #include "Material.h"
 
 namespace Demi
 {
-    DiGLShaderParam::DiGLShaderParam(DiMaterial& mat)
+    DiGLES2ShaderParam::DiGLES2ShaderParam(DiMaterial& mat)
         : DiShaderParameter(mat)
         , mShaderLinker(nullptr)
     {
     }
 
-    DiGLShaderParam::~DiGLShaderParam()
+    DiGLES2ShaderParam::~DiGLES2ShaderParam()
     {
     }
 
-    void DiGLShaderParam::Bind() const
+    void DiGLES2ShaderParam::Bind() const
     {
         if (!mShaderLinker || !mShaderLinker->GetGLHandle())
             return;
@@ -75,50 +76,50 @@ namespace Demi
                 case DiShaderParameter::VARIABLE_FLOAT:
                     {
                         float val = any_cast<float>(data);
-                        glUniform1fvARB(location, 1, &val);
+                        glUniform1fv(location, 1, &val);
                         break;
                     }
                 case DiShaderParameter::VARIABLE_FLOAT2:
                     {
                         DiVec2 vec2 = any_cast<DiVec2>(data);
-                        glUniform2fvARB(location, 1, vec2.ptr());
+                        glUniform2fv(location, 1, vec2.ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_FLOAT3:
                     {
                         DiVec3 vec3 = any_cast<DiVec3>(data);
-                        glUniform3fvARB(location, 1, vec3.ptr());
+                        glUniform3fv(location, 1, vec3.ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_FLOAT4:
                     {
                         DiVec4 vec4 = any_cast<DiVec4>(data);
-                        glUniform4fvARB(location, 1, vec4.ptr());
+                        glUniform4fv(location, 1, vec4.ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_MAT4:
                     {
                         DiMat4 vec4 = any_cast<DiMat4>(data);
-                        glUniformMatrix4fvARB(location, 1, GL_TRUE, vec4[0]);
+                        glUniformMatrix4fv(location, 1, GL_TRUE, vec4[0]);
                         break;
                     }
                 case DiShaderParameter::VARIABLE_COLOR:
                     {
                         DiColor c = any_cast<DiColor>(data);
                         DiVec4 vec4(c.r,c.g,c.b,c.a);
-                        glUniform4fvARB(location, 1, vec4.ptr());
+                        glUniform4fv(location, 1, vec4.ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_FLOAT4_ARRAY:
                     {
                         DiPair<DiVec4*,uint32> v4Arr = any_cast<DiPair<DiVec4*,uint32>>(data);
-                        glUniform4fvARB(location, v4Arr.second, v4Arr.first->ptr());
+                        glUniform4fv(location, v4Arr.second, v4Arr.first->ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_SAMPLER2D:
                 case DiShaderParameter::VARIABLE_SAMPLERCUBE:
                     {
-                        glUniform1ivARB(location, 1, &samplerUnit);
+                        glUniform1iv(location, 1, &samplerUnit);
                         DiTexture* tex = any_cast<DiTexture*>(data);
                         tex->Bind((uint32)samplerUnit);
                     }
@@ -128,7 +129,7 @@ namespace Demi
         }
     }
 
-    void DiGLShaderParam::LoadParameters()
+    void DiGLES2ShaderParam::LoadParameters()
     {
         if (!mMaterial.GetVertexShader() || !mMaterial.GetPixelShader())
         {
@@ -136,10 +137,10 @@ namespace Demi
             return;
         }
 
-        DiGLShaderInstance* vs = static_cast<DiGLShaderInstance*>(mMaterial.GetVertexShader()->GetShader());
-        DiGLShaderInstance* ps = static_cast<DiGLShaderInstance*>(mMaterial.GetPixelShader()->GetShader());
+        DiGLES2ShaderInstance* vs = static_cast<DiGLES2ShaderInstance*>(mMaterial.GetVertexShader()->GetShader());
+        DiGLES2ShaderInstance* ps = static_cast<DiGLES2ShaderInstance*>(mMaterial.GetPixelShader()->GetShader());
 
-        auto gldriver = static_cast<DiGLDriver*>(Driver);
+        auto gldriver = static_cast<DiGLES2Driver*>(Driver);
         mShaderLinker = gldriver->GetShaderLinker(vs, ps);
         
         mShaderLinker->Link();
