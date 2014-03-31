@@ -75,17 +75,28 @@ namespace Demi
     {
         DI_INFO("OpenGL driver is intializing.");
 
-        DiRenderWindow* window = FindRenderWindow(wnd);
+        DiWindow* window = mWndManager->GetWindow(wnd);
 
         DiGLES2Context* context = nullptr;
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-        context = static_cast<DiEGLWindow*>(window->GetWindow())->GetContext();
+        context = static_cast<DiEGLWindow*>(window)->GetContext();
 #else
 
 #endif
         _InitMainContext(context);
 
-        mGLFBOManager = DI_NEW DiGLES2FBOManager(true);    // TODO: Check atimode
+        auto tokens = mGLUtil->GetGLVersion().Tokenize(".");
+        if (!tokens.empty())
+        {
+            mDriverVersion.major = tokens[0].AsInt();
+            if (tokens.size() > 1)
+                mDriverVersion.minor = tokens[1].AsInt();
+            if (tokens.size() > 2)
+                mDriverVersion.release = tokens[2].AsInt();
+        }
+        mDriverVersion.build = 0;
+
+        mGLFBOManager = DI_NEW DiGLES2FBOManager(true);
 
         return true;
     }
@@ -762,7 +773,7 @@ namespace Demi
 
     DiString& DiGLES2Driver::GetGlslVersion()
     {
-        static DiString version = "120";
+        static DiString version = "100";
         return version;
     }
 

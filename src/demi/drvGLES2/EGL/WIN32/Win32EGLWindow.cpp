@@ -154,7 +154,7 @@ namespace Demi
         int glConfigID;
         mGLSupport->GetGLConfigAttrib(mEglConfig, EGL_CONFIG_ID, &glConfigID);
 
-        DI_WARNING("EGLWindow::create used FBConfigID = %d", glConfigID);
+        DI_INFO("EGLWindow::create used FBConfigID = %d", glConfigID);
         return ret;
     }
 
@@ -265,6 +265,7 @@ namespace Demi
             winRect.right - winRect.left, winRect.bottom - winRect.top,
             0, 0, 0, 0);
         DI_ASSERT(mWndHandle);
+        mWindow = (NativeWindowType)mWndHandle;
 
         if (mWndHandle)
         {

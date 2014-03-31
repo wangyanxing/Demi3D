@@ -61,9 +61,7 @@ namespace Demi
                 mMesh->m32BitIndex ? IB_32BITS : IB_16BITS,
                 RU_WRITE_ONLY);
 
-            void* data = mIndexBuffer->Lock(0,size);
-            memcpy(data,mMesh->mIndexData,size);
-            mIndexBuffer->Unlock();
+            mIndexBuffer->WriteData(0, size, mMesh->mIndexData);
 
             mPrimitiveCount = mMesh->GetPrimitiveCount();
             mPrimitiveType  = mMesh->GetPrimitiveType();
@@ -77,9 +75,7 @@ namespace Demi
                 uint32 size = it->second.GetSize();
                 buf->SetStride(it->second.stride);
                 buf->Create(size, RU_WRITE_ONLY,it->first);
-                void* data = buf->Lock(0,size);
-                memcpy(data,it->second.data,size);
-                buf->Unlock();
+                buf->WriteData(0, size, it->second.data);
                 mSourceData.push_back(buf);
             }
 

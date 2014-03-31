@@ -108,9 +108,7 @@ namespace Demi
         unsigned short faces[6] = {0,1,2,2,1,3 };
         uint32 ibsize = 6*sizeof(uint16);
         mIndexBuffer->Create(ibsize);
-        void* data = mIndexBuffer->Lock(0,ibsize);
-        memcpy(data,faces,ibsize);
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, ibsize, faces);
     }
 
     void DiWaterMap::Load()

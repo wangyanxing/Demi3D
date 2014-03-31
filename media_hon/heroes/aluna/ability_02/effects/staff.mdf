@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<model name="" file="staff.model" type="K2" >
-<anim name="idle" clip="staff.clip" fps="360" loop="true"/>
-</model>

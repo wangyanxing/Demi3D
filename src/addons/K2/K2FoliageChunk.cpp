@@ -56,14 +56,12 @@ namespace Demi
         quadCount = grassCount;
 
         unsigned int maxUInt16 = std::numeric_limits<uint16>::max();
+        
         if(grassCount > maxUInt16)
-        {
             return;
-        }
         if(quadCount > maxUInt16)
-        {
             return;
-        }
+
         if (quadCount <= 0)
         {
             mVerticesNum = 0;
@@ -71,8 +69,8 @@ namespace Demi
             return;
         }
 
-        mVerticesNum        = 4 * quadCount;
-        mPrimitiveCount    = 2 * quadCount;
+        mVerticesNum    = 4 * quadCount;
+        mPrimitiveCount = 2 * quadCount;
 
         mVertexDecl = Driver->CreateVertexDeclaration();
         mVertexDecl->AddElement(0,VERT_TYPE_FLOAT3,    VERT_USAGE_POSITION);
@@ -88,7 +86,8 @@ namespace Demi
 
         DiVec2 chunkPos = mParent->mParent->GetTerrainMap()->GetChunkCenterPos(mParent->mChunkID.x,mParent->mChunkID.y);
 
-        float* pReal = static_cast<float*>(vb->Lock(0,size));
+        uint8* buffer = DI_NEW uint8[size];
+        float* pReal = static_cast<float*>((void*)buffer);
         
         float rndWidth    = mLayer->mDesc->mMaxWidth  - mLayer->mDesc->mMinWidth;
         float rndHeight = mLayer->mDesc->mMaxHeight - mLayer->mDesc->mMinHeight;
@@ -140,29 +139,24 @@ namespace Demi
             *pReal++ = 1.f; *pReal++ = 1.f;              //uv
 
             if (y1 < minY)
-            {
                 minY = y1;
-            }
             if (y2 < minY) 
-            {
                 minY = y2;
-            }
             if (y1 + scaleY > maxY) 
-            {
                 maxY = y1 + scaleY;
-            }
             if (y2 + scaleY > maxY) 
-            {
                 maxY = y2 + scaleY;
-            }
         }
 
-        vb->Unlock();
+        vb->WriteData(0, size, buffer);
+        DI_DELETE[] buffer;
 
         uint32 ibsize = 6 * quadCount * sizeof(uint16);
         mIndexBuffer = Driver->CreateIndexBuffer();
         mIndexBuffer->Create(ibsize);
-        uint16* pI = static_cast<uint16*>(mIndexBuffer->Lock(0,ibsize));
+        
+        buffer = DI_NEW uint8[ibsize];
+        uint16* pI = static_cast<uint16*>((void*)buffer);
 
         for (uint16 i = 0; i < quadCount; ++i)
         {
@@ -176,7 +170,8 @@ namespace Demi
             *pI++ = 2 + offset;
             *pI++ = 3 + offset;
         }
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, ibsize, buffer);
+        DI_DELETE[] buffer;
     }
 
     void DiFoliageLayerBatch::GenerateGrassCrossQuads( const float *grassPositions, unsigned int grassCount )
@@ -225,7 +220,8 @@ namespace Demi
 
         DiVec2 chunkPos = mParent->mParent->GetTerrainMap()->GetChunkCenterPos(mParent->mChunkID.x,mParent->mChunkID.y);
 
-        float* pReal = static_cast<float*>(vb->Lock(0,size));
+        uint8* buffer = DI_NEW uint8[size];
+        float* pReal = static_cast<float*>((void*)buffer);
 
         const float *posPtr = grassPositions;
         for (uint16 i = 0; i < grassCount; ++i)
@@ -329,12 +325,14 @@ namespace Demi
             }
         }
 
-        vb->Unlock();
+        vb->WriteData(0,size,buffer);
+        DI_DELETE[] buffer;
 
         uint32 ibsize = 6 * quadCount * sizeof(uint16);
         mIndexBuffer = Driver->CreateIndexBuffer();
         mIndexBuffer->Create(ibsize);
-        uint16* pI = static_cast<uint16*>(mIndexBuffer->Lock(0,ibsize));
+        buffer = DI_NEW uint8[ibsize];
+        uint16* pI = static_cast<uint16*>((void*)buffer);
 
         for (uint16 i = 0; i < quadCount; ++i)
         {
@@ -348,7 +346,8 @@ namespace Demi
             *pI++ = 2 + offset;
             *pI++ = 3 + offset;
         }
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, ibsize, buffer);
+        DI_DELETE[] buffer;
     }
 
     void DiFoliageLayerBatch::GenerateGrassSprite( const float *grassPositions, unsigned int grassCount )

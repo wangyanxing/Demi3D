@@ -180,9 +180,10 @@ namespace Demi
         DiString canvasName = "_canvas_" + mName;
         mCanvasTexture = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(canvasName);
         mCanvasTexture->SetDimensions(mWidth, mHeight);
-        mCanvasTexture->SetFormat(PF_X8R8G8B8);
+        mCanvasTexture->SetFormat(PF_A8R8G8B8);
         mCanvasTexture->SetResourceUsage(RU_NONE);
         mCanvasTexture->SetUsage(TU_RENDER_TARGET);
+        mCanvasTexture->SetAutoMipmap(false);
         mCanvasTexture->CreateTexture();
         mSceneCanvas = mCanvasTexture->GetRenderTarget();
         mCanvasTexture->SetAdaptedRT(mRenderBuffer);

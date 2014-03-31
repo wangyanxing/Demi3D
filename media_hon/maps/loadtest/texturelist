@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<texturelist>
-  <texture id="0" name="$checker"></texture>
-  <texture id="1" name="$flat_dull"></texture>
-  <texture id="2" name="/world/terrain/textures/g1_ground_d.tga"></texture>
-  <texture id="3" name="/world/terrain/textures/g1_ground_n.tga"></texture>
-</texturelist>

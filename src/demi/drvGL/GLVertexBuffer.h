@@ -46,6 +46,10 @@ namespace Demi
 
         GLuint      GetBufferId() const { return mBufferId; }
 
+        void        ReadData(uint32 offset, uint32 length, void* pDest);
+
+        void        WriteData(uint32 offset, uint32 length, const void* pSource, bool discardWholeBuffer = false);
+
     private:
 
         bool        SetData(const void* data);

@@ -107,4 +107,18 @@ namespace Demi
         if (mIndexBuffer)
             mIndexBuffer->Unlock();
     }
+
+    void DiD3D9IndexBuffer::ReadData(uint32 offset, uint32 length, void* pDest)
+    {
+        void* pSrc = Lock(offset, length, LOCK_READ_ONLY);
+        memcpy(pDest, pSrc, length);
+        Unlock();
+    }
+
+    void DiD3D9IndexBuffer::WriteData(uint32 offset, uint32 length, const void* pSource, bool discardWholeBuffer /*= false*/)
+    {
+        void* pDst = Lock(offset, length, discardWholeBuffer ? LOCK_DISCARD : LOCK_NORMAL);
+        memcpy(pDst, pSource, length);
+        Unlock();
+    }
 }

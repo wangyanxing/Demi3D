@@ -126,4 +126,32 @@ namespace Demi
 
         return true;
     }
+
+    void DiGLVertexBuffer::ReadData(uint32 offset, uint32 length, void* pDest)
+    {
+        glBindBufferARB(GL_ARRAY_BUFFER, mBufferId);
+        glGetBufferSubDataARB(GL_ARRAY_BUFFER_ARB, offset, length, pDest);
+    }
+
+    void DiGLVertexBuffer::WriteData(uint32 offset, uint32 length, const void* pSource, bool discardWholeBuffer /*= false*/)
+    {
+        glBindBufferARB(GL_ARRAY_BUFFER, mBufferId);
+
+        if (offset == 0 && length == mBufferSize)
+        {
+            glBufferDataARB(GL_ARRAY_BUFFER_ARB, mBufferSize, pSource,
+                DiGLTypeMappings::GetGLUsage(mResUsage));
+        }
+        else
+        {
+            if (discardWholeBuffer)
+            {
+                glBufferDataARB(GL_ARRAY_BUFFER_ARB, mBufferSize, NULL,
+                    DiGLTypeMappings::GetGLUsage(mResUsage));
+            }
+
+            // Now update the real buffer
+            glBufferSubDataARB(GL_ARRAY_BUFFER_ARB, offset, length, pSource);
+        }
+    }
 }

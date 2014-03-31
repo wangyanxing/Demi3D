@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ES2VertexBuffer.h"
 #include "GLES2Driver.h"
 #include "ES2TypeMappings.h"
+#include "ES2Util.h"
 
 namespace Demi
 {
@@ -128,6 +129,50 @@ namespace Demi
 
         mLockStart = 0;
         mLockSize = 0;
+    }
+
+    void DiGLES2VertexBuffer::ReadData(uint32 offset, uint32 length, void* pDest)
+    {
+        if (DiGLES2Driver::GLUtil->CheckExtension("GL_EXT_map_buffer_range") || gleswIsSupported(3, 0))
+        {
+            // Map the buffer range then copy out of it into our destination buffer
+            void* srcData;
+            CHECK_GL_ERROR(srcData = glMapBufferRangeEXT(GL_ARRAY_BUFFER, offset, length, GL_MAP_READ_BIT_EXT));
+            memcpy(pDest, srcData, length);
+
+            // Unmap the buffer since we are done.
+            GLboolean mapped;
+            CHECK_GL_ERROR(mapped = glUnmapBufferOES(GL_ARRAY_BUFFER));
+            if (!mapped)
+            {
+                DI_WARNING("Buffer data corrupted, please reload");
+            }
+        }
+        else
+        {
+            DI_WARNING("Read hardware buffer is not supported");
+        }
+    }
+
+    void DiGLES2VertexBuffer::WriteData(uint32 offset, uint32 length, const void* pSource, bool discardWholeBuffer /*= false*/)
+    {
+        DiGLES2Driver::StateCache->bindGLBuffer(GL_ARRAY_BUFFER, mBufferId);
+
+        if (offset == 0 && length == mBufferSize)
+        {
+            CHECK_GL_ERROR(glBufferData(GL_ARRAY_BUFFER, mBufferSize, pSource,
+                DiGLTypeMappings::GetGLUsage(mResUsage)));
+        }
+        else
+        {
+            if (discardWholeBuffer)
+            {
+                CHECK_GL_ERROR(glBufferData(GL_ARRAY_BUFFER, mBufferSize, NULL,
+                    DiGLTypeMappings::GetGLUsage(mResUsage)));
+            }
+
+            CHECK_GL_ERROR(glBufferSubData(GL_ARRAY_BUFFER, offset, length, pSource));
+        }
     }
 
 }

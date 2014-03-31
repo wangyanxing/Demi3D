@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ES2IndexBuffer.h"
 #include "GLES2Driver.h"
 #include "ES2TypeMappings.h"
+#include "ES2Util.h"
 
 namespace Demi
 {
@@ -138,4 +139,51 @@ namespace Demi
         mLockingOffset = 0;
         mLockingSize = 0;
     }
+
+    void DiGLES2IndexBuffer::ReadData(uint32 offset, uint32 length, void* pDest)
+    {
+        if (DiGLES2Driver::GLUtil->CheckExtension("GL_EXT_map_buffer_range") || gleswIsSupported(3, 0))
+        {
+            // Map the buffer range then copy out of it into our destination buffer
+            void* srcData;
+            CHECK_GL_ERROR(srcData = glMapBufferRangeEXT(GL_ELEMENT_ARRAY_BUFFER, offset, length, GL_MAP_READ_BIT_EXT));
+            memcpy(pDest, srcData, length);
+
+            // Unmap the buffer since we are done.
+            GLboolean mapped;
+            CHECK_GL_ERROR(mapped = glUnmapBufferOES(GL_ELEMENT_ARRAY_BUFFER));
+            if (!mapped)
+            {
+                DI_WARNING("Buffer data corrupted, please reload");
+            }
+        }
+        else
+        {
+            DI_WARNING("Reading hardware buffer is not supported");
+        }
+    }
+
+    void DiGLES2IndexBuffer::WriteData(uint32 offset, uint32 length,
+        const void* pSource, bool discardWholeBuffer /*= false*/)
+    {
+        DiGLES2Driver::StateCache->bindGLBuffer(GL_ELEMENT_ARRAY_BUFFER, mBufferId);
+
+        if (offset == 0 && length == mBufferSize)
+        {
+            CHECK_GL_ERROR(glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)mBufferSize, pSource,
+                DiGLTypeMappings::GetGLUsage(mResUsage)));
+        }
+        else
+        {
+            if (discardWholeBuffer)
+            {
+                CHECK_GL_ERROR(glBufferData(GL_ELEMENT_ARRAY_BUFFER, (GLsizeiptr)mBufferSize, NULL,
+                    DiGLTypeMappings::GetGLUsage(mResUsage)));
+            }
+
+            // Now update the real buffer
+            CHECK_GL_ERROR(glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, (GLintptr)offset, (GLsizeiptr)length, pSource));
+        }
+    }
+
 }

@@ -43,6 +43,10 @@ namespace Demi
 
         void        Unlock();
 
+        void        ReadData(uint32 offset, uint32 length, void* pDest);
+
+        void        WriteData(uint32 offset, uint32 length, const void* pSource, bool discardWholeBuffer = false);
+
     private:
 
         IDirect3DVertexBuffer9* mVertexBuffer;

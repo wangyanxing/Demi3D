@@ -96,7 +96,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   define IF_IOS_VERSION_IS_GREATER_THAN(vers)
 #endif
 
-#define ENABLE_GL_CHECK 0
+#define ENABLE_GL_CHECK 1
 
 #if ENABLE_GL_CHECK
 #define CHECK_GL_ERROR(glFunc) \
@@ -105,16 +105,16 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
         int e = glGetError(); \
         if (e != 0) \
         { \
-        const char * errorString = ""; \
-        switch (e) \
+            const char * errorString = ""; \
+            switch (e) \
             { \
-        case GL_INVALID_ENUM:       errorString = "GL_INVALID_ENUM";        break; \
-        case GL_INVALID_VALUE:      errorString = "GL_INVALID_VALUE";       break; \
-        case GL_INVALID_OPERATION:  errorString = "GL_INVALID_OPERATION";   break; \
-        case GL_OUT_OF_MEMORY:      errorString = "GL_OUT_OF_MEMORY";       break; \
-        default:                                                            break; \
+            case GL_INVALID_ENUM:       errorString = "GL_INVALID_ENUM";        break; \
+            case GL_INVALID_VALUE:      errorString = "GL_INVALID_VALUE";       break; \
+            case GL_INVALID_OPERATION:  errorString = "GL_INVALID_OPERATION";   break; \
+            case GL_OUT_OF_MEMORY:      errorString = "GL_OUT_OF_MEMORY";       break; \
+            default:                                                            break; \
             } \
-            DI_WARNING("OpenGL error 0x%04X %s in %s at line %i for %s\n", e, errorString, __PRETTY_FUNCTION__, __LINE__, #glFunc)); \
+            DI_WARNING("OpenGL error 0x%04X %s in %s at line %i for %s\n", e, errorString, __PRETTY_FUNCTION__, __LINE__, #glFunc); \
         } \
     }
 #else

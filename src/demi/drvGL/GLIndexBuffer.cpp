@@ -137,4 +137,32 @@ namespace Demi
         mLockingOffset = 0;
         mLockingSize = 0;
     }
+
+    void DiGLIndexBuffer::ReadData(uint32 offset, uint32 length, void* pDest)
+    {
+        glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, mBufferId);
+        glGetBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, offset, length, pDest);
+    }
+
+    void DiGLIndexBuffer::WriteData(uint32 offset, uint32 length, const void* pSource, bool discardWholeBuffer /*= false*/)
+    {
+        glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, mBufferId);
+
+        if (offset == 0 && length == mBufferSize)
+        {
+            glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, mBufferSize, pSource,
+                DiGLTypeMappings::GetGLUsage(mResUsage));
+        }
+        else
+        {
+            if (discardWholeBuffer)
+            {
+                glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, mBufferSize, NULL,
+                    DiGLTypeMappings::GetGLUsage(mResUsage));
+            }
+
+            // Now update the real buffer
+            glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, offset, length, pSource);
+        }
+    }
 }

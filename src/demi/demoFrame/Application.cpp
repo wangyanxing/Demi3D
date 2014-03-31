@@ -31,17 +31,30 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include <functional>
 
-namespace Demi
-{
-    const DiString gfxD3D9DrvLib = "DiDrvD3D9";
-    const DiString gfxGLDrvLib   = "DiDrvGL";
-    
+//////////////////////////////////////////////////////////////////////////
+#define DRV_DX9     0
+#define DRV_GL      1
+#define DRV_GL_ES2  2
+
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
-#   define USE_OPEN_GL 1
+#   define USE_DRV     DRV_GL
+#elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   define USE_DRV     DRV_GL_ES2
 #else
-#   define USE_OPEN_GL 1
+#   define USE_DRV     DRV_GL_ES2
 #endif
 
+#if USE_DRV == DRV_DX9
+const DiString gfxDrvLib = "DiDrvD3D9";
+#elif USE_DRV == DRV_GL
+const DiString gfxDrvLib = "DiDrvGL";
+#elif USE_DRV == DRV_GL_ES2
+const DiString gfxDrvLib = "DiDrvGLES2";
+#endif
+//////////////////////////////////////////////////////////////////////////
+
+namespace Demi
+{
     DemiDemo::DemiDemo(DemoConfig config) :
         mAssetManager(nullptr)
         , mInputMgr(nullptr)
@@ -58,11 +71,7 @@ namespace Demi
         DiLogManager* logmgr = DI_NEW DiLogManager();
         logmgr->Init(mConfig.logFile);
 
-#if USE_OPEN_GL
-        DiPlugin::LoadPlugin(gfxGLDrvLib);
-#else
-        DiPlugin::LoadPlugin(gfxD3D9DrvLib);
-#endif
+        DiPlugin::LoadPlugin(gfxDrvLib);
 
         mAssetManager = new DiAssetManager;
         mAssetManager->SetBasePath(mConfig.mediaPath);
@@ -172,11 +181,7 @@ namespace Demi
         
         Driver->Shutdown();
 
-#if USE_OPEN_GL
-        DiPlugin::UnloadPlugin(gfxGLDrvLib);
-#else
-        DiPlugin::UnloadPlugin(gfxD3D9DrvLib);
-#endif
+        DiPlugin::UnloadPlugin(gfxDrvLib);
 
         SAFE_DELETE(mAssetManager);
 

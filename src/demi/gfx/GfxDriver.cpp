@@ -271,16 +271,15 @@ namespace Demi
         mMainHwnd = wnd;
         InitGfx(mMainHwnd);
 
+        mCaps = InitGfxCaps();
+        mCaps->LogCaps();
+
         mPipeline = DI_NEW DiRenderPipeline();
         mShaderManager = DI_NEW DiShaderManager();
-
         DiRenderWindow* rw = CreateRenderWindow("main_wnd", wnd);
 
         if (mMainWindow)
             mMainWindow->SetParentRenderWnd(rw);
-
-        InitGfxCaps();
-        mCaps->LogCaps();
 
         NotifyDeviceLost();
 

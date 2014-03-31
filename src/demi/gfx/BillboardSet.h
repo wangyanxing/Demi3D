@@ -218,6 +218,8 @@ namespace Demi
 
         float*                           mLockPtr;
 
+        uint32                           mLockSize;
+
         DiVec3                           mVOffset[4];
         
         DiCamera*                        mCurrentCamera;

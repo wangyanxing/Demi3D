@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<materiallist>
-  <material name="/world/terrain/materials/default.material" id="0"></material>
-  <material name="/world/foliage/materials/default.material" id="1"></material>
-  <material name="/world/water/materials/default.material" id="2"></material>
-</materiallist>

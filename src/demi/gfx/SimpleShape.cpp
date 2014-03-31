@@ -27,7 +27,6 @@ namespace Demi
     DiSimpleShape::DiSimpleShape( const DiString& name )
         :DiTransformUnit(name)
     {
-
     }
 
     DiSimpleShape::~DiSimpleShape(void)
@@ -90,17 +89,21 @@ namespace Demi
 
         uint32 vbsize = mVerticesNum * sizeof(float) * (3 + 3 + 2);
         mSourceData[0]->Create(vbsize);
-        float* pVertex = (float*)mSourceData[0]->Lock(0,vbsize);
+        float* vBuffer = DI_NEW float[mVerticesNum * (3 + 3 + 2)];
+        float* pVertex = vBuffer;
 
         uint32 ibsize = mPrimitiveCount * 3 * sizeof(uint16);
         mIndexBuffer->Create(ibsize);
-        uint16* pIndices = (uint16*)mIndexBuffer->Lock(0,ibsize);
+        uint16* iBuffer = DI_NEW uint16[mPrimitiveCount * 3];
+        uint16* pIndices = iBuffer;
 
-        for( int ring = 0; ring <= NUM_RINGS; ring++ ) {
-            float r0 = SPHERE_RADIUS * sinf (ring * fDeltaRingAngle);
-            float y0 = SPHERE_RADIUS * cosf (ring * fDeltaRingAngle);
+        for( int ring = 0; ring <= NUM_RINGS; ring++ ) 
+        {
+            float r0 = SPHERE_RADIUS * sinf(ring * fDeltaRingAngle);
+            float y0 = SPHERE_RADIUS * cosf(ring * fDeltaRingAngle);
 
-            for(int seg = 0; seg <= NUM_SEGMENTS; seg++) {
+            for(int seg = 0; seg <= NUM_SEGMENTS; seg++) 
+            {
                 float x0 = r0 * sinf(seg * fDeltaSegAngle);
                 float z0 = r0 * cosf(seg * fDeltaSegAngle);
 
@@ -116,8 +119,8 @@ namespace Demi
                 *pVertex++ = (float) seg / (float) NUM_SEGMENTS;
                 *pVertex++ = (float) ring / (float) NUM_RINGS;
 
-                if (ring != NUM_RINGS) {
-                    
+                if (ring != NUM_RINGS) 
+                {
                     *pIndices++ = wVerticeIndex + NUM_SEGMENTS + 1;
                     *pIndices++ = wVerticeIndex;               
                     *pIndices++ = wVerticeIndex + NUM_SEGMENTS;
@@ -129,10 +132,12 @@ namespace Demi
             }; // end for seg
         }
         
-        mSourceData[0]->Unlock();
+        mSourceData[0]->WriteData(0, vbsize, vBuffer);
+        DI_DELETE[] vBuffer;
         mSourceData[0]->SetStride(8 * sizeof(float));
         
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, ibsize, iBuffer);
+        DI_DELETE[] iBuffer;
 
         mAABB.SetMaximum(SPHERE_RADIUS,SPHERE_RADIUS,SPHERE_RADIUS);
         mAABB.SetMinimum(-SPHERE_RADIUS,-SPHERE_RADIUS,-SPHERE_RADIUS);
@@ -172,13 +177,16 @@ namespace Demi
 
         uint32 vbsize = mVerticesNum * sizeof(float) * (3 + 3 + 2);
         mSourceData[0]->Create(vbsize);
-        float* pVertex = (float*)mSourceData[0]->Lock(0,vbsize);
+
+        float* vBuffer = DI_NEW float[mVerticesNum * (3 + 3 + 2)];
+        float* pVertex = vBuffer;
 
         DiVec3 center(0,0,0);
 
-        for ( int j = 0; j <= radialSegments; j++ ) {
-            for ( int i = 0; i <= tubularSegments; i++ ) {
-
+        for ( int j = 0; j <= radialSegments; j++ ) 
+        {
+            for ( int i = 0; i <= tubularSegments; i++ ) 
+            {
                 float u = i / (float)tubularSegments * arc;
                 float v = j / (float)radialSegments * DiMath::PI * 2;
 
@@ -207,15 +215,19 @@ namespace Demi
             }
         }
 
-        mSourceData[0]->Unlock();
+        mSourceData[0]->WriteData(0, vbsize, vBuffer);
+        DI_DELETE[] vBuffer;
         mSourceData[0]->SetStride((3 + 3 + 2) * sizeof(float));
         
         uint32 ibsize = mPrimitiveCount * 3 * sizeof(uint16);
         mIndexBuffer->Create(ibsize);
-        uint16* pIndices = (uint16*)mIndexBuffer->Lock(0,ibsize);
+        uint16* iBuffer = DI_NEW uint16[mPrimitiveCount * 3];
+        uint16* pIndices = iBuffer;
 
-        for ( uint16 j = 1; j <= radialSegments; j++ ) {
-            for ( uint16 i = 1; i <= tubularSegments; i++ ) {
+        for ( uint16 j = 1; j <= radialSegments; j++ ) 
+        {
+            for ( uint16 i = 1; i <= tubularSegments; i++ ) 
+            {
 
                 uint16 a = ( tubularSegments + 1 ) * j + i - 1;
                 uint16 b = ( tubularSegments + 1 ) * ( j - 1 ) + i - 1;
@@ -231,7 +243,8 @@ namespace Demi
             }
         }
 
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, ibsize, iBuffer);
+        DI_DELETE[] iBuffer;
 
         mAABB.SetMaximum(radius,radius,radius);
         mAABB.SetMinimum(-radius,-radius,-radius);
@@ -285,16 +298,12 @@ namespace Demi
 
         uint32 vbsize = 32*sizeof(float);
         mSourceData[0]->Create(vbsize);
-        void* data = mSourceData[0]->Lock(0,vbsize);
-        memcpy(data,vertices,vbsize);
-        mSourceData[0]->Unlock();
+        mSourceData[0]->WriteData(0, vbsize, vertices);
         mSourceData[0]->SetStride(8 * sizeof(float));
 
         uint32 ibsize = 6*sizeof(uint16);
         mIndexBuffer->Create(ibsize);
-        data = mIndexBuffer->Lock(0,ibsize);
-        memcpy(data,faces,ibsize);
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, ibsize, faces);
 
         mAABB.SetMaximum(sizeX,0,sizeY);
         mAABB.SetMinimum(-sizeX,0,-sizeY);
@@ -410,9 +419,7 @@ namespace Demi
 
         uint32 vbsize = NUM_VERTEX_ENTRIES*sizeof(float);
         mSourceData[0]->Create(vbsize);
-        void* data = mSourceData[0]->Lock(0,vbsize);
-        memcpy(data,vertices,vbsize);
-        mSourceData[0]->Unlock();
+        mSourceData[0]->WriteData(0, vbsize, vertices);
         mSourceData[0]->SetStride(NUM_ENTRIES_PER_VERTEX * sizeof(float));
 
         uint16 faces[NUM_INDICES] = 
@@ -433,9 +440,7 @@ namespace Demi
 
         uint32 ibsize = NUM_INDICES*sizeof(uint16);
         mIndexBuffer->Create(ibsize);
-        void* dataib = mIndexBuffer->Lock(0,ibsize);
-        memcpy(dataib,faces,ibsize);
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, ibsize, faces);
 
         mVerticesNum = NUM_VERTICES;
         mPrimitiveCount = NUM_INDICES / 3;
@@ -541,9 +546,7 @@ namespace Demi
 
         uint32 vbsize = STRIDE*NUM_VERTICES;
         mSourceData[0]->Create(vbsize);
-        void* data = mSourceData[0]->Lock(0,vbsize);
-        memcpy(data,vertices,vbsize);
-        mSourceData[0]->Unlock();
+        mSourceData[0]->WriteData(0, vbsize, vertices);
         mSourceData[0]->SetStride(STRIDE);
 
         uint16 faces[NUM_INDICES] = 
@@ -564,9 +567,7 @@ namespace Demi
 
         uint32 ibsize = NUM_INDICES*sizeof(uint16);
         mIndexBuffer->Create(ibsize);
-        void* dataib = mIndexBuffer->Lock(0,ibsize);
-        memcpy(dataib,faces,ibsize);
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, ibsize, faces);
 
         mVerticesNum = NUM_VERTICES;
         mPrimitiveCount = NUM_INDICES / 3;

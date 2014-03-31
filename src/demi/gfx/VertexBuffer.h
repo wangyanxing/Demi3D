@@ -56,6 +56,11 @@ namespace Demi
 
         virtual void            Unlock() = 0;
 
+        virtual void            ReadData(uint32 offset, uint32 length, void* pDest) = 0;
+
+        virtual void            WriteData(uint32 offset, uint32 length,
+                                    const void* pSource, bool discardWholeBuffer = false) = 0;
+
         DiInstanceState         GetInstanceState() const { return mInstance; }
 
         void                    SetInstanceState(DiInstanceState val) { mInstance = val; }

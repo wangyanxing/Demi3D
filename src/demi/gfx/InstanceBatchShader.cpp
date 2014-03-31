@@ -81,7 +81,7 @@ namespace Demi
         uint32 size = baseSubMesh->GetIndexSize()*baseSubMesh->GetIndexNum()*mInstancesPerBatch;
         mIndexBuffer->Create(size, use32BitId ? IB_32BITS : IB_16BITS, RU_WRITE_ONLY);
 
-        void* data = mIndexBuffer->Lock(0,size);
+        void* data = DI_NEW uint8[size];
 
         uint16 *thisBuf16 = static_cast<uint16*>(data);
         uint32 *thisBuf32 = static_cast<uint32*>(data);
@@ -97,25 +97,18 @@ namespace Demi
             {
                 uint32 originalVal;
                 if( baseSubMesh->GetUse32BitIndex() )
-                {
                     originalVal = *initBuf32++;
-                }
                 else
-                {
                     originalVal = *initBuf16++;
-                }
 
                 if( !use32BitId )
-                {
                     *thisBuf16++ = static_cast<uint16>(originalVal) + vertexOffset;
-                }
                 else
-                {
                     *thisBuf32++ = originalVal + vertexOffset;
-                }
             }
         }
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, size, data);
+        DI_DELETE[] static_cast<uint8*>(data);
 
         mPrimitiveCount = baseSubMesh->GetPrimitiveCount() * mInstancesPerBatch;
         mPrimitiveType  = baseSubMesh->GetPrimitiveType();
@@ -154,12 +147,8 @@ namespace Demi
             uint32 size = sd.GetSize() * mInstancesPerBatch;
             buf->SetStride(sd.stride);
             buf->Create(size,RU_WRITE_ONLY,sd.stream);
-            BYTE* data = (BYTE*)buf->Lock(0,size);
             for( size_t j=0; j < mInstancesPerBatch; ++j )
-            {
-                memcpy(data + sd.GetSize()*j,sd.data,sd.GetSize());
-            }
-            buf->Unlock();
+                buf->WriteData(sd.GetSize()*j, sd.GetSize(), sd.data);
             mSourceData.push_back(buf);
         }
 
@@ -169,7 +158,8 @@ namespace Demi
         uint32 size = baseSubMesh->GetVerticeNum() * stride * mInstancesPerBatch;
         buf->SetStride(stride);
         buf->Create(size, RU_WRITE_ONLY, lastStream);
-        char* thisBuf = static_cast<char*>(buf->Lock(0,size));
+        char* thisBufOrg = DI_NEW char[size];
+        char* thisBuf = thisBufOrg;
         for( size_t j=0; j < mInstancesPerBatch; ++j )
         {
             for( size_t k=0; k<baseSubMesh->GetVerticeNum(); ++k )
@@ -180,7 +170,8 @@ namespace Demi
                 *thisBuf++ = mInstancesPerBatch - j - 1;
             }
         }
-        buf->Unlock();
+        buf->WriteData(0, size, thisBufOrg);
+        DI_DELETE[] thisBufOrg;
         mSourceData.push_back(buf);
     }
 

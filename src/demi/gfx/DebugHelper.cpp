@@ -191,9 +191,7 @@ namespace Demi
             mSourceData[0]->Create(mVbSize);
         }
         
-        void* data = mSourceData[0]->Lock(0, vertSize);
-        ::memcpy(data,&mLines[0],vertSize);
-        mSourceData[0]->Unlock();
+        mSourceData[0]->WriteData(0, vertSize, &mLines[0]);
         
         mDirty = false;
     }

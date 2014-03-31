@@ -42,7 +42,9 @@ namespace Demi
         mExternalData(externalDataSource),
         mAutoUpdate(true),
         mBillboardDataChanged(true),
-        mNumVisibleBillboards(0)
+        mNumVisibleBillboards(0),
+        mLockPtr(nullptr),
+        mLockSize(0)
     {
         SetDefaultDimensions( 5, 5 );
         SetTextureStacksAndSlices( 1, 1 );
@@ -68,7 +70,9 @@ namespace Demi
         mExternalData(externalDataSource),
         mAutoUpdate(true),
         mBillboardDataChanged(true),
-        mNumVisibleBillboards(0)
+        mNumVisibleBillboards(0),
+        mLockPtr(nullptr),
+        mLockSize(0)
     {
         SetDefaultDimensions( 5, 5 );
         SetTextureStacksAndSlices( 1, 1 );
@@ -356,24 +360,25 @@ namespace Demi
 
         mNumVisibleBillboards = 0;
         DI_ASSERT(!mSourceData.empty());
+        DI_ASSERT(!mLockPtr);
 
         if (numBillboards)
         {
             numBillboards = DiMath::Min(mPoolSize, numBillboards);
 
             size_t billboardSize;
-            // �ĸ���ÿ��bb
-            billboardSize = mSourceData[0]->GetStride() * 4;
+            
+            billboardSize = mSourceData[0]->GetStride() * sizeof(float);
             
             DI_ASSERT (numBillboards * billboardSize <= mSourceData[0]->GetBufferSize());
 
-            mLockPtr = static_cast<float*>(
-                mSourceData[0]->Lock(0, numBillboards * billboardSize) );
+            mLockPtr = DI_NEW float[mSourceData[0]->GetStride() * numBillboards];
+            mLockSize = billboardSize*numBillboards;
         }
         else
         {
-            mLockPtr = static_cast<float*>(
-                mSourceData[0]->Lock(0,mSourceData[0]->GetBufferSize()) );
+            mLockPtr = DI_NEW float[mSourceData[0]->GetBufferSize() / sizeof(float)];
+            mLockSize = mSourceData[0]->GetBufferSize();
         }
     }
 
@@ -421,7 +426,11 @@ namespace Demi
 
     void DiBillboardSet::EndBillboards( void )
     {
-        mSourceData[0]->Unlock();
+        mSourceData[0]->WriteData(0, mLockSize, mLockPtr);
+        
+        DI_DELETE[] mLockPtr;
+        mLockPtr = nullptr;
+        mLockSize = 0;
     }
 
     void DiBillboardSet::SetBounds( const DiAABB& box )
@@ -929,7 +938,8 @@ namespace Demi
         uint32 indexCount = mPoolSize * 6;
         mIndexBuffer->Create(indexCount * 16, IB_16BITS, RU_WRITE_ONLY);
 
-        uint16* pIdx = static_cast<uint16*>(mIndexBuffer->Lock(0,indexCount * 16));
+        uint16* iBuffer = DI_NEW uint16[indexCount];
+        uint16* pIdx = iBuffer;
         for(size_t idx, idxOff, bboard = 0;
             bboard < mPoolSize;
             ++bboard )
@@ -945,7 +955,8 @@ namespace Demi
             pIdx[idx+5] = static_cast<unsigned short>(idxOff + 3);
         }
 
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, indexCount * sizeof(uint16), iBuffer);
+        DI_DELETE[] iBuffer;
 
         mBuffersCreated = true;
     }

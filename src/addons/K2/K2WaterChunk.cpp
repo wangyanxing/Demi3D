@@ -60,7 +60,7 @@ namespace Demi
             mSourceData.push_back(mVertexBuffer);
         }
 
-        void* buffer = mVertexBuffer->Lock(0,size);
+        uint8* buffer = DI_NEW uint8[size];
 
         DiIntVec3 n(128,255,128);
         DiIntVec3 t(255,128,128);
@@ -120,7 +120,8 @@ namespace Demi
         *st++ = (BYTE)t.z;
         *st++ = (BYTE)CHUNK_GRID_SIZE;
         
-        mVertexBuffer->Unlock();
+        mVertexBuffer->WriteData(0, size, buffer);
+        DI_DELETE[] buffer;
     }
 
     void DiWaterChunk::UpdateMaterial()

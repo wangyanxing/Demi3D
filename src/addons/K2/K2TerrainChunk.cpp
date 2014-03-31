@@ -119,8 +119,8 @@ namespace Demi
 
         int indicesSize = 16 * 6 * (gridsize - cliffTileNum);
 
-        void* bf = mIndexBuffer->Lock(0,indicesSize);
-        uint16* data = static_cast<uint16*>(bf);
+        uint8* bf = DI_NEW uint8[indicesSize];
+        uint16* data = static_cast<uint16*>((void*)bf);
 
         uint16 iboffset = 0;
         for (auto it = ids.begin(); it != ids.end(); ++it)
@@ -190,7 +190,8 @@ namespace Demi
             iboffset += (uint16)it->second.size() * 6;
         }
 
-        mIndexBuffer->Unlock();
+        mIndexBuffer->WriteData(0, indicesSize, bf);
+        DI_DELETE[] bf;
     }
 
     void DiTerrainChunk::BuildVertexBuffer()
@@ -205,8 +206,8 @@ namespace Demi
         mVertexBuffer->Create(size);
         mVertexBuffer->SetStride(vertSize);
 
-        void* buffer = mVertexBuffer->Lock(0,size);
-        uint8* base = (uint8*)buffer;
+        uint8* buffer = DI_NEW uint8[size];
+        uint8* base = buffer;
 
         for (uint32 i = 0; i < vertNum; i++)
         {
@@ -242,7 +243,8 @@ namespace Demi
             base += vertSize;
         }
         
-        mVertexBuffer->Unlock();
+        mVertexBuffer->WriteData(0, size, buffer);
+        DI_DELETE[] buffer;
 
         ResetBounds();
     }
@@ -353,8 +355,8 @@ namespace Demi
         uint32 lockSize = (vertexEnd-vertexBegin+1) * vertSize;
         uint32 offset = vertexBegin * vertSize;
 
-        void* buffer = mVertexBuffer->Lock(offset,lockSize);
-        BYTE* base = (BYTE*)buffer;
+        uint8* buffer = DI_NEW uint8[lockSize];
+        uint8* base = buffer;
 
         for (uint32 i = vertexBegin; i<=vertexEnd; i++)
         {
@@ -387,7 +389,8 @@ namespace Demi
             base += vertSize;
         }
 
-        mVertexBuffer->Unlock();
+        mVertexBuffer->WriteData(offset, lockSize, buffer);
+        DI_DELETE[] buffer;
 
         ResetBounds();
     }

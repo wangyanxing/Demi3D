@@ -137,7 +137,7 @@ namespace Demi
         uint32 vertSize = (3 + 2) * sizeof(float) + sizeof(ARGB);
 
         mSourceData[0]->Create(mVerticesNum*vertSize);
-        void* lockedData = mSourceData[0]->Lock(0,mVerticesNum*vertSize);
+        uint8* lockedData = DI_NEW uint8[mVerticesNum*vertSize];
 
         uint32 w = (uint32)(rt->GetWidth() * rt->GetViewport().mWidth);
         uint32 h = (uint32)(rt->GetHeight() * rt->GetViewport().mHeight);
@@ -250,7 +250,8 @@ namespace Demi
             }
         }
 
-        mSourceData[0]->Unlock();
+        mSourceData[0]->WriteData(0, mVerticesNum*vertSize, lockedData);
+        DI_DELETE[] lockedData;
         mSourceData[0]->SetStride(vertSize);
     }
 

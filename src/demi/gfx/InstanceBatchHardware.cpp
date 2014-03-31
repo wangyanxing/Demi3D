@@ -125,9 +125,7 @@ namespace Demi
             uint32 size = sd.GetSize();
             buf->SetStride(sd.stride);
             buf->Create(size,RU_WRITE_ONLY,sd.stream);
-            BYTE* data = (BYTE*)buf->Lock(0,size);
-            memcpy(data,sd.data,sd.GetSize());
-            buf->Unlock();
+            buf->WriteData(0, size, sd.data);
             buf->SetInstanceState(SOURCE_INSTANCE_INDEX);
             buf->SetInstanceNum(mInstancesPerBatch);
             mSourceData.push_back(buf);
@@ -155,9 +153,7 @@ namespace Demi
                 baseSubMesh->GetUse32BitIndex() ? IB_32BITS : IB_16BITS,
                 RU_WRITE_ONLY);
 
-            void* data = mIndexBuffer->Lock(0,size);
-            memcpy(data,baseSubMesh->GetIndexData(),size);
-            mIndexBuffer->Unlock();
+            mIndexBuffer->WriteData(0, size, baseSubMesh->GetIndexData());
 
             mPrimitiveCount = baseSubMesh->GetPrimitiveCount();
             mPrimitiveType  = baseSubMesh->GetPrimitiveType();

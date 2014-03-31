@@ -28,42 +28,31 @@ IF (WIN32)
   ELSE (CYGWIN)
 
     IF(BORLAND)
-      SET (OPENGLES2_gl_LIBRARY import32 CACHE STRING "OpenGL ES 2.x library for win32")
+		SET (OPENGLES2_gl_LIBRARY import32 CACHE STRING "OpenGL ES 2.x library for win32")
     ELSE(BORLAND)
         getenv_path(AMD_SDK_ROOT)
         getenv_path(MALI_SDK_ROOT)
-
-        SET(POWERVR_SDK_PATH "D:/Imagination/PowerVR/GraphicsSDK/SDK_3.3/Builds")
+		
+		set(POWERVR_PATH "${DEMI_SOURCE_DIR}/external/PowerVR")
 		
         FIND_PATH(OPENGLES2_INCLUDE_DIR GLES2/gl2.h
-                        ${ENV_AMD_SDK_ROOT}/include
-                        ${ENV_MALI_SDK_ROOT}/include
-                        ${POWERVR_SDK_PATH}/Include
-                        "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/Include"
+                        ${POWERVR_PATH}/include
         )
 
         FIND_PATH(EGL_INCLUDE_DIR EGL/egl.h
-                        ${ENV_AMD_SDK_ROOT}/include
-                        ${ENV_MALI_SDK_ROOT}/include
-                        ${POWERVR_SDK_PATH}/Include
-                        "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/Include"
+                        ${POWERVR_PATH}/include
         )
 
         FIND_LIBRARY(OPENGLES2_gl_LIBRARY
-            NAMES libGLESv2
-            PATHS ${ENV_AMD_SDK_ROOT}/x86
-                  ${ENV_MALI_SDK_ROOT}/bin
-                  ${POWERVR_SDK_PATH}/Windows/x86_32/Lib
-                 "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/WindowsX86/Lib"
+            NAMES libGLESv2_x86_32
+            PATHS ${POWERVR_PATH}/lib
         )
 
         FIND_LIBRARY(EGL_egl_LIBRARY
-            NAMES libEGL
-            PATHS ${ENV_AMD_SDK_ROOT}/x86
-                  ${ENV_MALI_SDK_ROOT}/bin
-                  ${POWERVR_SDK_PATH}/Windows/x86_32/Lib
-                 "C:/Imagination Technologies/PowerVR Insider SDK/OGLES2_WINDOWS_X86EMULATION_2.10/Builds/OGLES2/WindowsX86/Lib"
+            NAMES libEGL_x86_32
+            PATHS ${POWERVR_PATH}/lib
         )
+		
     ENDIF(BORLAND)
 
   ENDIF (CYGWIN)

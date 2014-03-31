@@ -136,7 +136,7 @@ namespace Demi
         bool isCompressed = DiPixelBox::IsCompressedFormat(fmt);
         if (!isCompressed)
         {
-            for (uint32 mip = 0; mip <= numMipmaps; ++mip)
+            for (uint32 mip = 0; mip < numMipmaps; ++mip)
             {
                 switch (mGLTextureType)
                 {
