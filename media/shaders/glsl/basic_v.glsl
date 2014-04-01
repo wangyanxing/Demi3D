@@ -15,10 +15,12 @@ varying   vec4	vColor;
 
 #if defined( USE_MAP ) 
 attribute vec2  Texcoord0;
+varying vec2 vTexCoord0;
 #endif
 
 #if defined( USE_LIGHTMAP )
 attribute vec2  Texcoord1;
+varying vec2 vTexCoord1;
 #endif
 
 void main()
@@ -32,10 +34,10 @@ void main()
 #endif
 	
 #if defined( USE_MAP ) 
-	gl_TexCoord[0].xy = Texcoord0;
+	vTexCoord0.xy = Texcoord0;
 #endif
 
 #if defined( USE_LIGHTMAP ) 
-	gl_TexCoord[1].xy = Texcoord1;
+	vTexCoord1.xy = Texcoord1;
 #endif
 }

@@ -405,10 +405,10 @@ namespace Demi
 
     uint32 DiGLTypeMappings::OptionalPO2(uint32 value)
     {
-        if (Driver->GetGfxCaps()->hasCapability(RSC_NON_POWER_OF_2_TEXTURES))
+        //if (Driver->GetGfxCaps()->hasCapability(RSC_NON_POWER_OF_2_TEXTURES))
             return value;
-        else
-            return DiMath::FirstPO2From(value);
+        //else
+        //    return DiMath::FirstPO2From(value);
     }
 
     DiPixelFormat DiGLTypeMappings::GetNativeFormat(DiTextureType ttype, 

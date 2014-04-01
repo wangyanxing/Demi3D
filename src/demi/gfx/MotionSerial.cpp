@@ -37,10 +37,10 @@ namespace Demi
     void DiMotionSerializer::ExportMotion( const DiMotionPtr pMotion, DiDataStreamPtr stream )
     {
         char sign[4];
-        sign[0] = 'M';
-        sign[1] = '3';
-        sign[2] = 'G';
-        sign[3] = 'M';
+        sign[0] = 'D';
+        sign[1] = 'i';
+        sign[2] = 'M';
+        sign[3] = 'o';
         stream->Write(sign,4);
 
         uint16 version = MOTION_SERIAL_VERSION_NUM - 1;

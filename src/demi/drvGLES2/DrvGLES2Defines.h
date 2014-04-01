@@ -96,7 +96,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   define IF_IOS_VERSION_IS_GREATER_THAN(vers)
 #endif
 
-#define ENABLE_GL_CHECK 1
+#define ENABLE_GL_CHECK 0
 
 #if ENABLE_GL_CHECK
 #define CHECK_GL_ERROR(glFunc) \

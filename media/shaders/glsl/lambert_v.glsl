@@ -6,6 +6,7 @@ attribute vec3  Normal;
 
 #if defined( USE_MAP ) 
 attribute vec2  Texcoord0;
+varying vec4 vTexCoord0;
 #endif
 
 #if defined( SKINNED )
@@ -33,7 +34,7 @@ void main()
 #endif
 	
 #if defined( USE_MAP ) 
-	gl_TexCoord[0] = vec4(Texcoord0,0.0,0.0);
+	vTexCoord0 = vec4(Texcoord0,0.0,0.0);
 #endif
 
 	// world space normal

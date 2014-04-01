@@ -1,7 +1,8 @@
 
 uniform samplerCube environmentTexture;
+varying vec3 vTexCoord0;
 
 void main()
 {
-	gl_FragColor = textureCube(environmentTexture, gl_TexCoord[0].xyz);
+	gl_FragColor = textureCube(environmentTexture, vTexCoord0.xyz);
 }

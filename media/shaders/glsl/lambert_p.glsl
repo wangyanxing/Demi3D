@@ -6,6 +6,7 @@ varying vec3 vPosWorld;
 
 #if defined( USE_COLOR )
 varying vec4 vColor;
+varying vec4 vTexCoord0;
 #endif
 
 #ifdef USE_MAP
@@ -37,7 +38,7 @@ void ComputeSurfaceDataFromGeometry() {
 	gSurface.positionWorld = vPosWorld;
 	
 	#ifdef USE_MAP
-		gSurface.albedo = texture2D( map, gl_TexCoord[0].xy );
+		gSurface.albedo = texture2D( map, vTexCoord0.xy );
 		#ifdef GAMMA_INPUT
 			gSurface.albedo.rgb *= gSurface.albedo.rgb;
 		#endif
@@ -73,7 +74,7 @@ void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd,
         directionToLight /= distanceToLight;
 		
 		float NdotL = dot(gSurface.normal, normalize(directionToLight));
-		if (NdotL > 0.0f) {
+		if (NdotL > 0.0) {
 			vec3 litDiffuse = color.rgb * color.a * NdotL * attenuation;
 			lit += gSurface.albedo.rgb * litDiffuse;
 		}

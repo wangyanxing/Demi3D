@@ -5,6 +5,7 @@
 // Created by inigo quilez - iq/2013
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 
+varying vec2 vTexCoord0;
 
 void main(void)
 {

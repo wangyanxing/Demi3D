@@ -123,7 +123,7 @@ namespace Demi
             name.Format("_shad_tex_%d", st++);
             mShadowTextures[i] = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(name);
             mShadowTextures[i]->SetDimensions(1024, 1024);
-            mShadowTextures[i]->SetFormat(PF_R32F);
+            mShadowTextures[i]->SetFormat(PF_G32R32F);
             mShadowTextures[i]->SetUsage(TU_RENDER_TARGET);
             mShadowTextures[i]->SetAddressing(AM_CLAMP);
             mShadowTextures[i]->CreateTexture();

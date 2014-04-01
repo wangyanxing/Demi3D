@@ -35,7 +35,4 @@ void main()
 
 	// Final colour
 	gl_FragColor = mix(refractionColour, reflectionColour, fresnel);
-	
-	
-	//gl_FragColor = texture2D(reflectMap,  final);
 }

@@ -6,10 +6,12 @@ varying vec4 vColor;
 
 #ifdef USE_MAP
 uniform sampler2D map;
+varying vec2 vTexCoord0;
 #endif
 
 #ifdef USE_LIGHTMAP
 uniform sampler2D lightMap;
+varying vec2 vTexCoord1;
 #endif
 
 void main()
@@ -17,7 +19,7 @@ void main()
 	gl_FragColor = vec4( g_diffuseColor, g_opacity );
 	
 #ifdef USE_MAP
-	vec4 texelColor = texture2D( map, gl_TexCoord[0].xy );
+	vec4 texelColor = texture2D( map, vTexCoord0.xy );
 	#ifdef GAMMA_INPUT
 		texelColor.xyz *= texelColor.xyz;
 	#endif
@@ -29,7 +31,7 @@ void main()
 #endif
 
 #ifdef USE_LIGHTMAP
-	gl_FragColor = gl_FragColor * texture2D( lightMap, gl_TexCoord[1].xy );
+	gl_FragColor = gl_FragColor * texture2D( lightMap, vTexCoord1.xy );
 #endif
 	
 #ifdef USE_COLOR

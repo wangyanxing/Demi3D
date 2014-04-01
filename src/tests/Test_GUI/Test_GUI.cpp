@@ -28,6 +28,16 @@ void InitScene()
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(0, -0.3f, -0.4).normalisedCopy());
     //dirlight->SetShadowCastEnable(true);
+
+    // visbile mesh for the point light
+    DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>("lightSphere");
+    lightSphere->CreateSphere(1, 16, 8);
+    DiMaterialPtr m = DiMaterial::QuickCreate("phong_v", "phong_p");
+    m->SetDiffuse(DiColor(1, 0.8f, 0));
+    lightSphere->SetMaterial(m);
+
+    DiCullNode* nd = sm->GetRootNode()->CreateChild();
+    nd->AttachObject(lightSphere);
 }
 
 void UpdateScene()

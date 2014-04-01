@@ -16,8 +16,13 @@ uniform mat4    g_modelViewProjMatrix;
 uniform mat4    g_viewProjMatrix;
 uniform mat4    g_texViewProjMatrix;
 
+#ifdef DI_GLES2
+uniform vec4    g_boneMatrices[MAX_BONES * 3];
+uniform vec4    g_modelMatrices[MAX_MODEL_MATS * 3];
+#else
 uniform mat3x4  g_boneMatrices[MAX_BONES];
 uniform mat3x4  g_modelMatrices[MAX_MODEL_MATS];
+#endif
 
 uniform vec3    g_eyePosition;
 uniform vec3    g_eyeDirection;

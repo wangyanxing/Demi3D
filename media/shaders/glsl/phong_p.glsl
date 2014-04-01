@@ -19,6 +19,7 @@ varying vec4 vColor;
 #endif
 
 #ifdef USE_MAP
+varying vec4 vTexCoord0;
 uniform sampler2D map;
 #endif
 
@@ -52,14 +53,14 @@ void ComputeSurfaceDataFromGeometry()
 	gSurface.positionWorld = vPosWorld;
     
 #ifdef USE_SPECULARMAP
-    gSurface.specularAmount = texture2D( specularMap, gl_TexCoord[0].xy ).rgb * g_specularColor.rgb;
+    gSurface.specularAmount = texture2D( specularMap, vTexCoord0.xy ).rgb * g_specularColor.rgb;
 #else
     gSurface.specularAmount = g_specularColor.rgb;
 #endif
     
 #if defined( USE_NORMALMAP )
     vec4 normMapColor;
-    vec4 nmTex = texture2D(normalMap, gl_TexCoord[0].xy);
+    vec4 nmTex = texture2D(normalMap, vTexCoord0.xy);
     normMapColor.rgb = nmTex.agb;
     gSurface.specularAmount *= nmTex.g;
     vec3 texNormal = vec3(normMapColor.rgb * 2.0f - 1.0f);
@@ -70,7 +71,7 @@ void ComputeSurfaceDataFromGeometry()
 #endif
 	
 #ifdef USE_MAP
-	gSurface.albedo = texture2D( map, gl_TexCoord[0].xy );
+	gSurface.albedo = texture2D( map, vTexCoord0.xy );
 	#ifdef GAMMA_INPUT
 		gSurface.albedo.rgb *= gSurface.albedo.rgb;
 	#endif

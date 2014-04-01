@@ -50,7 +50,7 @@ namespace Demi
     {
         va_list argList;
         va_start(argList, fmtString);
-        char buf[4096]; // an 4 kByte buffer
+        static char buf[40960]; // an 4 kByte buffer
         // need to use non-CRT thread safe function under Win32
         SAFE_VSPRINTF(buf, sizeof(buf), fmtString, argList);
 
@@ -64,7 +64,7 @@ namespace Demi
     void __cdecl
     DiString::FormatArgList(const char* fmtString, va_list argList)
     {
-        char buf[4096]; // an 4 kByte buffer
+        static char buf[40960]; // an 4 kByte buffer
         // need to use non-CRT thread safe function under Win32
         SAFE_VSPRINTF(buf, sizeof(buf), fmtString, argList);
         //*this = buf;

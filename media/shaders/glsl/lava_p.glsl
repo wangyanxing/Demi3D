@@ -9,11 +9,12 @@ uniform vec3  fogColor;
 uniform sampler2D texture1;
 uniform sampler2D texture2;
 
-varying   vec4  vPosition;
+varying vec4  vPosition;
+varying vec2  vTexCoord0;
 
 void main()
 {			
-	vec2 vUv = gl_TexCoord[0].xy;
+	vec2 vUv = vTexCoord0.xy;
 	vec2 position = -1.0 + 2.0 * vUv;
 
 	vec4 noise = texture2D( texture1, vUv );

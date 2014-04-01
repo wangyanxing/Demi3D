@@ -201,7 +201,7 @@ namespace Demi
             return;
         }
 
-        CHECK_GL_ERROR(glDetachShader(programObject, mShaderHandle));
+        CHECK_GL_ERROR(glAttachShader(programObject, mShaderHandle));
     }
 
     void DiGLES2ShaderInstance::UnlinkToProgramObject(const GLuint programObject)
@@ -218,6 +218,12 @@ namespace Demi
         mProcessedShader += "#version ";
         mProcessedShader += DiGLES2Driver::GetGlslVersion();
         mProcessedShader += "\n";
+
+        mProcessedShader += "#define DI_GLES2\n";
+
+        // precious
+        mProcessedShader += "precision mediump int;\n";
+        mProcessedShader += "precision mediump float;\n";
 
         // defines
         for (auto i = mCompileDesc.marcos.begin(); i != mCompileDesc.marcos.end(); ++i)

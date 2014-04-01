@@ -214,7 +214,6 @@ namespace Demi
         }
         else
         {
-            DiGLES2Driver::StateCache->setEnabled(mGLTextureType);
             DiGLES2Driver::StateCache->activateGLTextureUnit(samplerIndex);
             DiGLES2Driver::StateCache->bindGLTexture(mGLTextureType, mTextureID);
 
@@ -318,7 +317,7 @@ namespace Demi
 
     void DiGLES2TextureDrv::Upload(const DiPixelBox &src, const DiBox &dst, uint32 level, uint32 surface)
     {
-        DiGLES2Driver::StateCache->bindGLBuffer(mGLTextureType, mTextureID);
+        DiGLES2Driver::StateCache->bindGLTexture(mGLTextureType, mTextureID);
         
         DiPixelFormat fmt = mParent->GetFormat();
         bool isCompressed = DiPixelBox::IsCompressedFormat(fmt);
