@@ -36,7 +36,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   include "Win32/Win32EGLContext.h"
 #   include "Win32/Win32EGLUtil.h"
 #   include "Win32/Win32EGLWindow.h"
-#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+#elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   include "EAGL/EAGLES2Context.h"
+#   include "EAGL/EAGL2Util.h"
+#   include "EAGL/EAGL2Window.h"
 #endif
 
 // Convenience macro from ARB_vertex_buffer_object spec
@@ -80,7 +83,7 @@ namespace Demi
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         context = static_cast<DiEGLWindow*>(window)->GetContext();
 #else
-
+        context = static_cast<DiEAGL2Window*>(window)->GetContext();
 #endif
         _InitMainContext(context);
 
@@ -650,6 +653,7 @@ namespace Demi
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         ret = DI_NEW DiWin32EGLUtil();
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        ret = DI_NEW DiEAGL2Util();
 #endif
         return ret;
     }

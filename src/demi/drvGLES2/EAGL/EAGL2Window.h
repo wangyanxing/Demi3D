@@ -80,15 +80,9 @@ namespace Demi
 			
             void InitNativeCreatedWindow();
 			
-            void CreateNativeWindow(int &left, int &top, uint &width, uint &height, String &title);
+            void CreateNativeWindow(int &left, int &top, uint &width, uint &height, DiString &title);
 			
             void Reposition(int left, int top);
-			
-            void Resize(uint32 width, uint32 height);
-
-            void OnMoveOrResize();
-        
-            void Update();
 
 	public:
             DiEAGL2Window(DiEAGL2Util* glsupport);
@@ -98,7 +92,9 @@ namespace Demi
             bool Create(uint32& width, uint32& height,
                                    const DiString& title, bool fullscreen);
 
-			virtual void SetFullscreen(bool fullscreen, uint width, uint height);
+			void SetFullscreen(bool fullscreen, uint width, uint height);
+        
+            DiEAGLES2Context* GetContext() {return mContext;}
         
             void Destroy(void);
         
@@ -115,6 +111,18 @@ namespace Demi
             void GetWindowSize(uint32& width, uint32& height);
         
             void SwapBuffers();
+        
+            void OnMoveOrResize();
+        
+            void Update();
+        
+            void Resize(uint32 width, uint32 height);
+        
+            void GetTitle(char *title, uint32 maxLength) const;
+        
+            void SetTitle(const char *title);
+        
+            bool Close();
         
             bool IsOpen();
         

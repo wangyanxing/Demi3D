@@ -92,7 +92,7 @@ namespace Demi
 	{
 	}
     
-	void DiEAGL2Window::Resize(unsigned int width, unsigned int height)
+	void DiEAGL2Window::Resize(uint32 width, uint32 height)
 	{
         if(!mWindow) return;
 
@@ -122,6 +122,11 @@ namespace Demi
         
         mContext->CreateFramebuffer();
 	}
+    
+    bool DiEAGL2Window::IsOpen()
+    {
+        return mWindow ? true : false;
+    }
     
     void DiEAGL2Window::SetWindowSize(uint32 width, uint32 height)
     {
@@ -172,7 +177,7 @@ namespace Demi
     
         DI_ASSERT(mView);
         
-        [mView setMWindowName:mName];
+        [mView setMWindow : this];
 
         DI_ASSERT([mView.layer isKindOfClass:[CAEAGLLayer class]]);
         
@@ -239,11 +244,26 @@ namespace Demi
         [pool release];
     }
     
+    void DiEAGL2Window::GetTitle(char *title, uint32 maxLength) const
+    {
+        DI_ASSERT_FAIL; //todo
+    }
+    
+    void DiEAGL2Window::SetTitle(const char *title)
+    {
+        DI_ASSERT_FAIL; //todo
+    }
+    
+    bool DiEAGL2Window::Close()
+    {
+        return true;
+    }
+    
     bool DiEAGL2Window::Create(uint32& width, uint32& height,
                                const DiString& title, bool fullscreen)
     {
-        short frequency = 0;
-        bool vsync = false;
+        //short frequency = 0;
+        //bool vsync = false;
         
         mIsFullScreen = false;
         mWidth = width;

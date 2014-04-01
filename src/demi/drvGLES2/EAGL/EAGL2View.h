@@ -25,10 +25,10 @@ using namespace Demi;
 
 @interface EAGL2View : UIView
 {
-    DiString mWindowName;
+    DiEAGL2Window* mWindow;
 }
 
-@property (nonatomic,assign) DiString mWindowName;
+@property (nonatomic,assign) DiEAGL2Window* mWindow;
 
 @end
 

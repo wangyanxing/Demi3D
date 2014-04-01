@@ -50,10 +50,12 @@ namespace Demi
             float GetCurrentOSVersion(void) { return mCurrentOSVersion; }
         
             void* GetProcAddress(const DiString& name);
-
-            DiWindow * NewWindow(const DiString& name,
-                                        uint32 width, uint32 height,
-                                        bool fullScreen);
+        
+            DiWindow*  CreateNewWindow();
+        
+            void GetTitle(char *title, uint32 maxLength) const;
+        
+            void SetTitle(const char *title);
 
 #ifdef __OBJC__
             bool portraitIsSupported(void);
@@ -62,7 +64,7 @@ namespace Demi
 
             DiEAGLES2Context * CreateNewContext(CFDictionaryRef &glconfig, CAEAGLLayer *drawable, EAGLSharegroup *group) const;
         
-            CFDictionaryRef GetGLConfigFromContext(DiEAGLES2Context context);
+            CFDictionaryRef GetGLConfigFromContext(DiEAGLES2Context* context);
         
             CFDictionaryRef GetGLConfigFromDrawable(CAEAGLLayer *drawable, unsigned int *w, unsigned int *h);
 #endif

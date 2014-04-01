@@ -12,9 +12,8 @@
 ***********************************************************************/
 
 #include "EAGL2View.h"
-
 #include "Camera.h"
-#include "RenderWindow.h"
+#include "EAGL2Window.h"
 
 #import <QuartzCore/QuartzCore.h>
 #import <UIKit/UIWindow.h>
@@ -24,7 +23,7 @@ using namespace Demi;
 
 @implementation EAGL2View
 
-@synthesize mWindowName;
+@synthesize mWindow;
 
 - (NSString *)description
 {
@@ -72,9 +71,7 @@ using namespace Demi;
         return;
 
     // Get the window using the name that we saved
-    RenderWindow *window = static_cast<RenderWindow *>(Root::getSingleton().getRenderSystem()->getRenderTarget(mWindowName));
-
-    if(window != NULL)
+    if(mWindow != NULL)
     {
         // Get the window size and initialize temp variables
         unsigned int w = 0, h = 0;
@@ -96,14 +93,9 @@ using namespace Demi;
         height = h;
 
         // Resize the window
-        window->resize(width, height);
+        mWindow->Resize(width, height);
         
-        // After rotation the aspect ratio of the viewport has changed, update that as well.
-        if(window->getNumViewports() > 0)
-        {
-            Ogre::Viewport *viewPort = window->getViewport(0);
-            viewPort->getCamera()->setAspectRatio((Real) width / (Real) height);
-        }
+        // TODO: Aspect ratio
     }
 }
 

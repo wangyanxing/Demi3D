@@ -15,8 +15,8 @@
 #include "GLES2Driver.h"
 #include "EAGLES2Context.h"
 #include "EAGL2Util.h"
-#include "DiEAGL2Window.h"
-#include "macUtils.h"
+#include "EAGL2Window.h"
+
 
 #import  <UIKit/UIScreen.h>
 
@@ -119,13 +119,9 @@ namespace Demi
         return glConfig;
     }
     
-    DiWindow * DiEAGL2Util::NewWindow(const DiString &name,
-                                        uint32 width, uint32 height,
-                                        bool fullScreen)
+    DiWindow*  DiEAGL2Util::CreateNewWindow()
     {
-        DiDiEAGL2Window *window = DI_NEW DiDiEAGL2Window(this);
-        window->create(name, width, height, fullScreen, miscParams);
-
+        DiEAGL2Window *window = DI_NEW DiEAGL2Window(this);
         return window;
     }
 

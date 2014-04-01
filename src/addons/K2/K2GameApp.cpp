@@ -26,6 +26,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   include "K2GameAppOSX.h"
+#elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   include "K2GameAppIOS.h"
 #endif
 
 namespace Demi

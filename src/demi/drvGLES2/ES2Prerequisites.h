@@ -40,6 +40,7 @@ namespace Demi
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
     class DiEAGL2Util;
     class DiEAGLES2Context;
+    class DiEAGL2Window;
 #endif
 }
 

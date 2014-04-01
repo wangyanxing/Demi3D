@@ -16,11 +16,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "OIS.h"
 
-// namespace MyGUI
-// {
-//     class DemiWrapper;
-// }
-
 namespace Demi
 {
     struct DemoConfig

@@ -83,9 +83,7 @@ namespace Demi
         if(![mContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(id<EAGLDrawable>) mDrawable])
         {
             glGetError();
-            OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR,
-                        "Failed to bind the drawable to a renderbuffer object",
-                        __FUNCTION__);
+            DI_WARNING("Failed to bind the drawable to a renderbuffer object");
             return false;
         }
 
@@ -149,7 +147,7 @@ namespace Demi
         return true;
     }
 
-    void DiEAGLES2Context::destroyFramebuffer()
+    void DiEAGLES2Context::DestroyFramebuffer()
     {
         CHECK_GL_ERROR(glDeleteFramebuffers(1, &mViewFramebuffer));
         mViewFramebuffer = 0;
