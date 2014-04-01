@@ -67,7 +67,7 @@ namespace Demi
         if (!fp)
         {
             DI_WARNING("Cannot open the file: %s", full.c_str());
-            return false;
+            return nullptr;
         }
         DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
         return data;

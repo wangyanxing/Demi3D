@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef GLES2Shader_h__
 #define GLES2Shader_h__
 
+#include "ES2Prerequisites.h"
 #include "GpuProgram.h"
 #include "VertexFormat.h"
 #include <functional>

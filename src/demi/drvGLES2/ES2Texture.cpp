@@ -122,7 +122,6 @@ namespace Demi
         DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType,
             GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        GLenum glErr = GL_NO_ERROR;
         mImageSize = DiPixelBox::ComputeImageByteSize(width, height, fmt);
         mGLFormat = DiGLTypeMappings::GetClosestGLInternalFormat(fmt);
         if (mGLFormat == GL_NONE)

@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiGfxBase_h__
 #define DiGfxBase_h__
 
+#include "GfxDefines.h"
 
 namespace Demi
 {

@@ -28,9 +28,6 @@ namespace Demi
         static float GridSize;
     };
 
-    __declspec(selectany) float K2MapScale::GridSize = 0;
-
-
     /** 2D plane coordinates
         based on the vert number of the terrain
      */

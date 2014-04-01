@@ -15,6 +15,7 @@
 #define MacUtils_h__
 
 #include "MiscPrerequisites.h"
+#include "str.h"
 
 #include <CoreFoundation/CoreFoundation.h>
 

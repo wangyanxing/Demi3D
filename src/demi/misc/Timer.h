@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiTimer_h__
 #define DiTimer_h__
 
-
 #include <time.h>
 
 namespace Demi 
@@ -39,7 +38,7 @@ namespace Demi
         int64                   mTicksPerSec;
         static LARGE_INTEGER    mFrequent;
         
-#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS
         
         struct timeval          mStart;
 		clock_t                 mZeroClock;

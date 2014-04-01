@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef GLES2Texture_h__
 #define GLES2Texture_h__
 
+#include "ES2Prerequisites.h"
 #include "Texture.h"
 
 namespace Demi

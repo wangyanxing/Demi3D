@@ -1,4 +1,21 @@
 
+#-------------------------------------------------------------------
+# Configure settings and install targets
+if(APPLE)
+  macro(set_xcode_property targ xc_prop_name xc_prop_val)
+    set_property( TARGET ${targ} PROPERTY XCODE_ATTRIBUTE_${xc_prop_name} ${xc_prop_val} )
+  endmacro(set_xcode_property)
+
+  set(MIN_IOS_VERSION "6.0")
+
+  if(NOT DEMI_BUILD_PLATFORM_ANDROID AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
+    set(PLATFORM_NAME "macosx")
+  elseif(DEMI_BUILD_PLATFORM_APPLE_IOS)
+    set(PLATFORM_NAME "$(PLATFORM_NAME)")
+  endif()
+endif()
+#-------------------------------------------------------------------
+
 # add a new library target
 # usage: demi_add_library(TARGETNAME LIBTYPE SOURCE_FILES [SEPARATE SOURCE_FILES])
 MACRO(DI_ADD_LIBRARY TARGETNAME)
@@ -11,10 +28,15 @@ MACRO(DI_ADD_LIBRARY TARGETNAME)
   if (DEMI_STATIC)
     # add static prefix, if compiling static version
     set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${PLUGINNAME}Static)
+    set_target_properties(${TARGETNAME} PROPERTIES COMPILE_DEFINITIONS DEMI_STATIC_API)
 
     if(DEMI_BUILD_PLATFORM_APPLE_IOS)
-      set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
-      set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
+	    set_xcode_property( ${TARGETNAME} IPHONEOS_DEPLOYMENT_TARGET ${MIN_IOS_VERSION} )
+	    set_property( TARGET ${TARGETNAME} PROPERTY XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
+	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
+	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
+	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
+	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
     endif(DEMI_BUILD_PLATFORM_APPLE_IOS)
   else (DEMI_STATIC)
     if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
@@ -59,6 +81,9 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
           COMPILE_FLAGS "-F${DEMI_FRAMEWORK_PATH}"
           LINK_FLAGS "-F${DEMI_FRAMEWORK_PATH}"
         )
+      else()
+        set_xcode_property( ${TARGETNAME} IPHONEOS_DEPLOYMENT_TARGET ${MIN_IOS_VERSION} )
+        set_property( TARGET ${TARGETNAME} PROPERTY XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
       endif()
     endif(NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
 	
@@ -105,6 +130,7 @@ MACRO(DI_CONFIG_CORE_LIB TARGETNAME PREFIX_HEADER)
 	if (APPLE)
 	  if (DEMI_BUILD_PLATFORM_APPLE_IOS)
 		set_target_properties(${TARGETNAME} PROPERTIES INSTALL_NAME_DIR ${TARGETNAME})
+		set_target_properties(${TARGETNAME} PROPERTIES COMPILE_DEFINITIONS DEMI_STATIC_API)
 	  else ()
 		#set_target_properties(${TARGETNAME} PROPERTIES FRAMEWORK TRUE)
 		## Set the INSTALL_PATH so that Frameworks can be local

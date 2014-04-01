@@ -141,17 +141,11 @@ namespace Demi
 
         bool                    mColourWrite[4];
 
-        bool                    mDepthWrite;
-
-        uint32                  mStencilMask;
-
         DiGLES2FBOManager*      mGLFBOManager;
 
         typedef DiMap<DiPair<DiShaderInstance*, DiShaderInstance*>, DiGLES2ShaderLinker*> ProgramMap;
 
         ProgramMap              mProgramMaps;
-
-        DiGLES2ShaderLinker*    mCurrentProgram;
 
     };
 }

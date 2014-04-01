@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiGLES2ShaderParam_h__
 #define DiGLES2ShaderParam_h__
 
+#include "ES2Prerequisites.h"
 #include "ShaderParam.h"
 #include "ES2Shader.h"
 

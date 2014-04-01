@@ -61,7 +61,7 @@ namespace Demi
         return (double)elapse64 / (double)mTicksPerSec;
     }
 
-#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS
     
 #include <sys/time.h>
     

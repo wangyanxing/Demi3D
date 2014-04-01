@@ -11,16 +11,10 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef DrvGLES2Pch_h__
-#define DrvGLES2Pch_h__
+#include "K2Pch.h"
+#include "K2Coords.h"
 
-#include "GfxPch.h"
-
-#include "ES2Prerequisites.h"
-#include "DrvGLES2Defines.h"
-#include "ES2StateCache.h"
-#include "ES2UniformCache.h"
-
-#include "../Demi.h"
-
-#endif
+namespace Demi
+{
+    float K2MapScale::GridSize = 0;
+}

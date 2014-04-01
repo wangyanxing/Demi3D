@@ -25,10 +25,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ES2ShaderParam.h"
 #include "ES2StateCache.h"
 #include "ES2UniformCache.h"
+#include "ES2Util.h"
 #include "Capabilities.h"
 
 #include "RenderWindow.h"
 #include "RenderUnit.h"
+#include "Window.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #   include "Win32/Win32EGLContext.h"
@@ -47,11 +49,8 @@ namespace Demi
     DiGLES2Driver::DiGLES2Driver()
         :mMainContext(nullptr),
         mGLUtil(nullptr),
-        mDepthWrite(true), 
-        mStencilMask(0xFFFFFFFF),
         mCurrentContext(nullptr),
-        mGLFBOManager(nullptr),
-        mCurrentProgram(nullptr)
+        mGLFBOManager(nullptr)
     {
         mColourWrite[0] = mColourWrite[1] = mColourWrite[2] = mColourWrite[3] = true;
         mGLUtil = _CreateGLUtil();

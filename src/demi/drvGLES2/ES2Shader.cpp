@@ -20,6 +20,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ShaderProgram.h"
 #include "AssetManager.h"
 
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   include "EAGL2Util.h"
+#endif
+
 namespace Demi
 {
     DiGLES2ShaderLinker::CustomAttribute DiGLES2ShaderLinker::msCustomAttributes[] = 

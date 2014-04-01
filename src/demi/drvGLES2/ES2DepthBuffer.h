@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiGLES2DepthBuffer_h__
 #define DiGLES2DepthBuffer_h__
 
+#include "ES2Prerequisites.h"
 #include "DepthBuffer.h"
 
 namespace Demi

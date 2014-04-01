@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiSIMDUtil_h__
 #define DiSIMDUtil_h__
 
+#if DEMI_PLATFORM != DEMI_PLATFORM_IOS
 
 #include <xmmintrin.h>
 
@@ -39,7 +40,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
         r3 = _mm_movehl_ps(tmp3, tmp2);                         /* r03 r13 r23 r33 */   \
     }
 
-// 4x3������ת��
 #define __MM_TRANSPOSE4x3_PS(v0, v1, v2)                                                \
     {                                                                                   \
         __m128 tmp0, tmp1, tmp2;                                                        \
@@ -57,7 +57,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
         v2 = _mm_shuffle_ps(tmp1, tmp0, _MM_SHUFFLE(3,2,3,1));  /* r02 r12 r22 r32 */   \
     }
 
-// 3x4������ת��
+
 #define __MM_TRANSPOSE3x4_PS(v0, v1, v2)                                                \
     {                                                                                   \
         __m128 tmp0, tmp1, tmp2;                                                        \
@@ -160,6 +160,9 @@ namespace Demi
 #else 
 #    define __MT_CHECK_STACK_ALIGNED_FOR_SSE()
 #endif 
+    
 }
+
+#endif
 
 #endif

@@ -15,7 +15,7 @@ elseif (APPLE)
 set (DI_K2_PLATFORM_SPEC ""
   )
   set(DI_K2_PLATFORM_LIBS ${Carbon_LIBRARY_FWK} ${Cocoa_LIBRARY_FWK} ${IOKit_LIBRARY_FWK} ${CoreVideo_LIBRARY_FWK})
-  set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/K2App.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
+  set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/K2GameApp.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
 # source files

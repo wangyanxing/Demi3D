@@ -14,9 +14,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiTransformUnit_h__
 #define DiTransformUnit_h__
 
-
 #include "RenderBatchGroup.h"
 #include "XMLElement.h"
+#include "axisAlignedBox.h"
+#include "sphere.h"
 
 namespace Demi 
 {

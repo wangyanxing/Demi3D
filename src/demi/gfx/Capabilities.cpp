@@ -22,9 +22,11 @@ http://www.ogre3d.org/
 
 namespace Demi
 {
-    static char* _BoolToStr(bool v)
+    static const char* _BoolToStr(bool v)
     {
-        return v ? "true" : "false";
+        static DiString truestr  = "true";
+        static DiString falsestr = "false";
+        return v ? truestr.c_str() : falsestr.c_str();
     }
 
 	DiGfxCaps::DiGfxCaps()

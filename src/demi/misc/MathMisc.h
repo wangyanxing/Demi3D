@@ -11,10 +11,11 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 **********************************************************************/
 
-#ifndef DiMath_Misc_h
-#define DiMath_Misc_h
+#ifndef DiMathMisc_h
+#define DiMathMisc_h
 
 #include "MiscPrerequisites.h"
+#include "Assert.h"
 #include "Vec.h"
 #include "Pair.h"
 #include "List.h"

@@ -19,18 +19,17 @@ namespace Demi
 
     extern DiOptimisedUtil* GetOptimisedUtilGeneral(void);
 
+#if DEMI_PLATFORM != DEMI_PLATFORM_IOS
     extern DiOptimisedUtil* GetOptimisedUtilSSE(void);
+#endif
 
     DiOptimisedUtil* DiOptimisedUtil::DetectImplementation( void )
     {
-        if(false)
-         {
-             return GetOptimisedUtilSSE();
-         }
-         else
-        {
-            return GetOptimisedUtilGeneral();
-        }
+#if DEMI_PLATFORM != DEMI_PLATFORM_IOS
+        return GetOptimisedUtilSSE();
+#else
+        return GetOptimisedUtilGeneral();
+#endif
     }
 
     DiOptimisedUtil* DiOptimisedUtil::GetInstance( void )

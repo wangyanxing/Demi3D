@@ -34,6 +34,13 @@ namespace Demi
     class DI_MISC_API DiThread {};
 }
 
+#elif (DEMI_PLATFORM == DEMI_PLATFORM_IOS)
+
+namespace Demi
+{
+    class DI_MISC_API DiThread {};
+}
+
 #else
 
 #   error "The thread lib is not supported on this platform yet."

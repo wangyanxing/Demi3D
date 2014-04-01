@@ -1,11 +1,17 @@
-#
-# Copyright (c) 2013-2014 the Demi3D project.
-#
+
+# Most of the CMAKE scripts used in Demi3D were adapted from OGRE3D
 
 # Set minimum version
 cmake_minimum_required (VERSION 2.8.3)
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
 cmake_policy(SET CMP0003 NEW)
+
+# CMake 2.8.2 has a bug that creates unusable Xcode projects when using ARCHS_STANDARD_32_BIT
+# to specify both armv6 and armv7.
+if(DEMI_BUILD_PLATFORM_APPLE_IOS AND (CMAKE_VERSION VERSION_EQUAL 2.8.2) AND (CMAKE_GENERATOR STREQUAL "Xcode"))
+	message(FATAL_ERROR "CMake 2.8.2 cannot create compatible Xcode projects for iOS, please download the latest version or an older release from http://www.cmake.org/files/")
+endif()
+
 
 if(WIN32)
   # This seems to break Xcode projects so definitely don't enable on Apple builds
@@ -21,6 +27,10 @@ if (APPLE)
   set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvm.clang.1_0")
   set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
   set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+  
+  if (DEMI_BUILD_PLATFORM_APPLE_IOS)
+    set(DEMI_STATIC TRUE)
+  endif ()
 endif ()
 
 if (WIN32)
@@ -145,7 +155,7 @@ if ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
 endif ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
 
 # determine system endianess
-if (MSVC)
+if (MSVC OR ANDROID)
   # This doesn't work on VS 2010
   # MSVC only builds for intel anyway
   set(DEMI_TEST_BIG_ENDIAN FALSE)
@@ -173,33 +183,57 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DEMI_SOURCE_DIR}/bin")
 # Set up iOS overrides.
 if (DEMI_BUILD_PLATFORM_APPLE_IOS)
   # Set build variables
-  set(CMAKE_OSX_SYSROOT iphoneos)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET "")
-  set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework CoreGraphics -framework QuartzCore -framework UIKit")
   set(XCODE_ATTRIBUTE_SDKROOT iphoneos)
+  if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+    execute_process(COMMAND xcodebuild -version -sdk "${XCODE_ATTRIBUTE_SDKROOT}" Path | head -n 1 OUTPUT_VARIABLE CMAKE_OSX_SYSROOT)
+    string(REGEX REPLACE "(\r?\n)+$" "" CMAKE_OSX_SYSROOT "${CMAKE_OSX_SYSROOT}")
+  else()
+    set(CMAKE_OSX_SYSROOT iphoneos)
+  endif()
+  set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework CoreGraphics -framework QuartzCore -framework UIKit")
   set(XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
   set(XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
   set(XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
+  set(DEMI_BUILD_RENDERSYSTEM_GLES2 TRUE CACHE BOOL "Forcing OpenGL ES 2 RenderSystem for iOS" FORCE)
   set(DEMI_STATIC TRUE CACHE BOOL "Forcing static build for iOS" FORCE)
   set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.yourcompany.\${PRODUCT_NAME:rfc1034identifier}")
   add_definitions(-mno-thumb)
 
-  set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_BIT})
-  # armv7 only
-  #set(CMAKE_OSX_ARCHITECTURES ${ARCHS_UNIVERSAL_IPHONE_OS})
+  set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_INCLUDING_64_BIT)")
+  string (REPLACE "-msse" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+elseif (ANDROID)
+  set(TargetPlatform "Android")
+  set(DEMI_PLATFORM OGRE_PLATFORM_ANDROID)
+  set(DEMI_CONFIG_ENABLE_VIEWPORT_ORIENTATIONMODE FALSE CACHE BOOL "Disable viewport orientation Android" FORCE)
 
-  remove_definitions(-msse)
+  set(DEMI_BUILD_RENDERSYSTEM_GLES2 TRUE CACHE BOOL "Forcing OpenGL ES 2 RenderSystem for Android" FORCE)
+  set(DEMI_STATIC TRUE CACHE BOOL "Forcing static build for Android" FORCE)
 elseif (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
 
   # Set 10.5 as the base SDK by default
   set(XCODE_ATTRIBUTE_SDKROOT macosx)
-  set(CMAKE_OSX_SYSROOT macosx)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7)
-
-  if (NOT CMAKE_OSX_ARCHITECTURES)
-    set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_64_BIT})
+  
+  if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+    execute_process(COMMAND xcodebuild -version -sdk "${XCODE_ATTRIBUTE_SDKROOT}" Path | head -n 1 OUTPUT_VARIABLE CMAKE_OSX_SYSROOT)
+    string(REGEX REPLACE "(\r?\n)+$" "" CMAKE_OSX_SYSROOT "${CMAKE_OSX_SYSROOT}")
+  else()
+    set(CMAKE_OSX_SYSROOT macosx)
   endif()
-
+  
+  if (NOT CMAKE_OSX_ARCHITECTURES)
+      set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7)
+      if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+        set(CMAKE_OSX_ARCHITECTURES "${ARCHS_STANDARD_64_BIT}")
+      else()
+        set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_64_BIT)")
+      endif()
+  endif()
+  
+  # 10.7 is the minimum for libc++ support
+  set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7)
+  
+  set(DEMI_BUILD_RENDERSYSTEM_GLES2 FALSE)
+  
 endif ()
 
 # Building configuration

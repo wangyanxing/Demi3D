@@ -14,6 +14,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiGLES2Util_h__
 #define DiGLES2Util_h__
 
+#include "ES2Prerequisites.h"
+#include "Str.h"
+#include "Set.h"
+
 namespace Demi
 {
     /** OpenGL utilities class which is responsible for

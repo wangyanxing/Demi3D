@@ -14,6 +14,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef ES2Prerequisites_h__
 #define ES2Prerequisites_h__
 
+#include "MiscPrerequisites.h"
+#include "GfxPrerequisites.h"
+
 namespace Demi
 {
     class DiGLES2StateCache;
@@ -35,8 +38,8 @@ namespace Demi
     class DiEGLUtil;
     class DiEGLContext;
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
-    class DiOSXGLUtil;
-    class DiOSXGLContext;
+    class DiEAGL2Util;
+    class DiEAGLES2Context;
 #endif
 }
 

@@ -14,8 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiGfxPrerequisites_h__
 #define DiGfxPrerequisites_h__
 
-
 #include "CommonEnum.h"
+#include "Str.h"
 
 namespace Demi 
 {

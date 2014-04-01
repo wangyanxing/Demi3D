@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef ES2TypeMapping_h__
 #define ES2TypeMapping_h__
 
+#include "ES2Prerequisites.h"
 #include "ShaderParam.h"
 
 namespace Demi

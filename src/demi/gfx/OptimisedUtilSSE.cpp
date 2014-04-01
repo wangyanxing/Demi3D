@@ -14,6 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "OptimisedUtil.h"
 #include "SIMDUtil.h"
 
+#if DEMI_PLATFORM != DEMI_PLATFORM_IOS
+
 namespace Demi
 {
     class  DiOptimisedUtilSSE : public DiOptimisedUtil
@@ -83,3 +85,5 @@ namespace Demi
         return &s_kOptimisedUtilSSE;
     }
 }
+
+#endif

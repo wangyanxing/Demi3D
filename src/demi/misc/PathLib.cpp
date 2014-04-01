@@ -14,7 +14,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MiscPch.h"
 #include "PathLib.h"
 
-#include <io.h>
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+#   include <io.h>
+#else
+#   include <unistd.h>
+#endif
 
 namespace Demi
 {
@@ -35,7 +39,7 @@ namespace Demi
 
 #define _SLASH "\\"
 
-#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS
 #   include <mach-o/dyld.h>
     
     const DiString& _GetAppFileName()

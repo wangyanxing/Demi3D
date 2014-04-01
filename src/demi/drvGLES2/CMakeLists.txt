@@ -17,17 +17,15 @@ if (WIN32)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/EGL/Win32)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/EGL)
 elseif (APPLE)
-  set (DI_GLES2_PLATFORM_SPEC
-    
-    )
-  set (DI_GLES2_PLATFORM_LIBS ${Cocoa_LIBRARY_FWK})	
+  file(GLOB DI_GLES2_PLATFORM_SPEC "EAGL/*.h" "EAGL/*.mm")
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/EAGL)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} 
 				    ${CMAKE_CURRENT_SOURCE_DIR}/GLES2
 					${OPENGLES2_INCLUDE_DIR} ${EGL_INCLUDE_DIR}
-					${DEMI_DEPENDENCIES_DIR}/include)
+					${DEMI_DEPENDENCIES_DIR}/include
+					${iOSSDK_INCLUDE_DIR})
 
 if (DEMI_BUILD_PLATFORM_APPLE_IOS)
     set_source_files_properties(gles2w.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
