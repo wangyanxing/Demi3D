@@ -59,12 +59,20 @@ namespace Demi
         void                    ManualStop();
 
         bool                    Update(float elapsed);
-
+        
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        void                    OnMouseMove(const OIS::MultiTouchEvent& evt);
+        
+        void                    OnMouseDown(const OIS::MultiTouchEvent& evt);
+        
+        void                    OnMouseUp(const OIS::MultiTouchEvent& evt);
+#else
         void                    OnMouseMove(const OIS::MouseEvent& evt);
 
         void                    OnMouseDown(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
 
         void                    OnMouseUp(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+#endif
 
         void                    OnKeyDown(const OIS::KeyEvent& evt);
 

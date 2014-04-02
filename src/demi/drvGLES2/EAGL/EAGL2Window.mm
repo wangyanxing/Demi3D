@@ -58,6 +58,11 @@ namespace Demi
 
         mContext = NULL;
     }
+    
+    void DiEAGL2Window::Update()
+    {
+        
+    }
 
     void DiEAGL2Window::Destroy(void)
     {
@@ -163,6 +168,7 @@ namespace Demi
         }
         
         DI_ASSERT(mWindow);
+        mWndHandle = mWindow;
         
         // Set up the view
         if(!mUsingExternalView)
@@ -200,6 +206,8 @@ namespace Demi
         
         if(mViewController.view != mView)
             mViewController.view = mView;
+        
+        mWndViewHandle = mViewController.view;
 
         CFDictionaryRef dict;   // TODO: Dummy dictionary for now
         if(eaglLayer)

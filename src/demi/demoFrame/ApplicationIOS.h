@@ -93,7 +93,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     mDate = [[NSDate alloc] init];
     mLastFrameTime = DISPLAYLINK_FRAME_INTERVAL; // Reset the timer
     
-    mDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(renderOneFrame:)];
+    mDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
     [mDisplayLink setFrameInterval:mLastFrameTime];
     [mDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
@@ -111,7 +111,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 {
     // NSTimeInterval is a simple typedef for double
     NSTimeInterval currentFrameTime = -[mDate timeIntervalSinceNow];
-    NSTimeInterval differenceInSeconds = currentFrameTime - mLastFrameTime;
+    //NSTimeInterval differenceInSeconds = currentFrameTime - mLastFrameTime;
     mLastFrameTime = currentFrameTime;
     
     dispatch_async(dispatch_get_main_queue(), ^(void)

@@ -174,19 +174,23 @@ namespace Demi
     {
         return mStyle;
     }
-
+    
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+    void DiCameraHelper::OnMouseMove(const OIS::MultiTouchEvent& evt)
+#else
     void DiCameraHelper::OnMouseMove(const OIS::MouseEvent& evt)
+#endif
     {
         if (!mEnabled)
             return;
-
+        
         mMousePos.x = evt.state.X.abs;
         mMousePos.y = evt.state.Y.abs;
-
+        
         if (mStyle == CS_ORBIT)
         {
             float dist = (mCamera->GetPosition() - mTarget).length();
-
+            
             if (mOrbiting)
             {
                 mCamera->SetPosition(mTarget);
@@ -216,6 +220,24 @@ namespace Demi
             mCamera->Pitch(DiDegree(-evt.state.Y.rel * 0.15f));
         }
     }
+    
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+    void DiCameraHelper::OnMouseDown(const OIS::MultiTouchEvent& evt)
+    {
+        if (mStyle == CS_ORBIT)
+        {
+            mOrbiting = true;
+        }
+    }
+    
+    void DiCameraHelper::OnMouseUp(const OIS::MultiTouchEvent& evt)
+    {
+        if (mStyle == CS_ORBIT)
+        {
+            mOrbiting = false;
+        }
+    }
+#else
 
     void DiCameraHelper::OnMouseDown(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
@@ -248,6 +270,7 @@ namespace Demi
                 mMoving = false;
         }
     }
+#endif
 
     void DiCameraHelper::OnKeyDown(const OIS::KeyEvent& evt)
     {

@@ -17,6 +17,12 @@ endif()
 find_package(OpenGLES2)
 macro_log_feature(OPENGLES2_FOUND "OpenGL ES 2.x" "Support for the OpenGL ES 2.x render system" "http://www.khronos.org/opengles/" FALSE "" "")
 
+if (NOT OPENGLES2_FOUND)
+  MESSAGE(STATUS "Could not find dependency: GLES2 ")
+else()
+  MESSAGE(STATUS "Found dependency: GLES2 ")
+endif()
+
 set(EXTERNAL_HOME "${DEMI_SOURCE_DIR}/external")
 
 if(DEMI_BUILD_PLATFORM_APPLE_IOS)

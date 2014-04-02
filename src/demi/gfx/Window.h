@@ -23,8 +23,11 @@ namespace Demi
     {
     public:
 
-        DiWindow() : mWndHandle(nullptr), mDestroyWindow(false), 
-                     mParentWnd(nullptr), mVSync(false){}
+        DiWindow() : mWndHandle(nullptr),
+                     mWndViewHandle(nullptr),
+                     mDestroyWindow(false),
+                     mParentWnd(nullptr),
+                     mVSync(false){}
 
         virtual             ~DiWindow() {}
 
@@ -50,6 +53,8 @@ namespace Demi
         DiRenderWindow*     GetParentRenderWnd() { return mParentWnd; }
 
         DiWndHandle         GetWndHandle() { return mWndHandle; }
+        
+        DiWndViewHandle     GetWndViewHandle() { return mWndViewHandle; }
 
         virtual void        SetWindowSize(uint32 width, uint32 height) = 0;
 
@@ -66,6 +71,8 @@ namespace Demi
     protected:
 
         DiWndHandle         mWndHandle;
+        
+        DiWndViewHandle     mWndViewHandle;
 
         DiRenderWindow*     mParentWnd;
 

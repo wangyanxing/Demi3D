@@ -90,12 +90,20 @@ namespace Demi
         void              keyPressed(const OIS::KeyEvent &arg);
 
         void              keyReleased(const OIS::KeyEvent &arg);
+        
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        void              mouseMoved(const OIS::MultiTouchEvent& evt);
 
+        void              mousePressed(const OIS::MultiTouchEvent& evt);
+
+        void              mouseReleased(const OIS::MultiTouchEvent& evt);
+#else
         void              mouseMoved(const OIS::MouseEvent& evt);
-
+        
         void              mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
-
+        
         void              mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+#endif
 
         void              Run();
 

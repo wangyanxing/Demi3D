@@ -22,6 +22,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Info.h"
 #include "EnginePlugin.h"
 #include "GfxDriver.h"
+#include "Window.h"
 #include "Command.h"
 #include "LogManager.h"
 
@@ -164,21 +165,42 @@ namespace Demi
     {
         mCameraHelper->OnKeyUp(evt);
     }
-
+    
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+    
+    void DemiDemo::mouseMoved(const OIS::MultiTouchEvent& evt)
+    {
+        mCameraHelper->OnMouseMove(evt);
+    }
+    
+    void DemiDemo::mousePressed(const OIS::MultiTouchEvent& evt)
+    {
+        mCameraHelper->OnMouseDown(evt);
+    }
+    
+    void DemiDemo::mouseReleased(const OIS::MultiTouchEvent& evt)
+    {
+        mCameraHelper->OnMouseUp(evt);
+    }
+    
+#else
+    
     void DemiDemo::mouseMoved(const OIS::MouseEvent& evt)
     {
         mCameraHelper->OnMouseMove(evt);
     }
-
+    
     void DemiDemo::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
         mCameraHelper->OnMouseDown(evt, id);
     }
-
+    
     void DemiDemo::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
         mCameraHelper->OnMouseUp(evt, id);
     }
+    
+#endif
 
     void DemiDemo::CloseEngine()
     {
@@ -221,19 +243,27 @@ namespace Demi
         bool ret = Driver->Init(mConfig.windowWidth, mConfig.windowHeight, mConfig.windowTitle, mConfig.fullScreen);
         DI_ASSERT(ret);
 
-        mInputMgr = new DiInputManager();
-        mInputMgr->createInput((size_t)(mMainHwnd));
+        mInputMgr = DI_NEW DiInputManager();
+        
+        DiWindow* wnd = Driver->GetMainRenderWindow()->GetWindow();
+        mInputMgr->createInput(wnd->GetWndHandle(), wnd->GetWndViewHandle());
         
         using namespace std::placeholders;
 
         mInputMgr->registerKeyPressEvent("App::KeyDown", std::bind(&DemiDemo::keyPressed, this, _1));
         mInputMgr->registerKeyReleaseEvent("App::KeyUp", std::bind(&DemiDemo::keyReleased, this, _1));
         mInputMgr->registerMouseMoveEvent("App::MsMove", std::bind(&DemiDemo::mouseMoved, this, _1));
-        mInputMgr->registerMousePressEvent("App::MsDown", std::bind(&DemiDemo::mousePressed, this, _1, _2));
-        mInputMgr->registerMouseReleaseEvent("App::MsUp", std::bind(&DemiDemo::mouseReleased, this, _1, _2));
+        
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        mInputMgr->registerMousePressEvent("App::MsDown", std::bind(&DemiDemo::mousePressed, this, _1));
+        mInputMgr->registerMouseReleaseEvent("App::MsUp", std::bind(&DemiDemo::mouseReleased, this, _1));
+#else
+        mInputMgr->registerMousePressEvent("App::MsDown", std::bind(&DemiDemo::mousePressed, this, _1,_2));
+        mInputMgr->registerMouseReleaseEvent("App::MsUp", std::bind(&DemiDemo::mouseReleased, this, _1,_2));
+#endif
 
         DiCamera* cam = Driver->GetSceneManager()->GetCamera();
-        mCameraHelper = new DiCameraHelper(cam);
+        mCameraHelper = DI_NEW DiCameraHelper(cam);
 
         if (mInitCallback)
             mInitCallback();

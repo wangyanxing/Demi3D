@@ -163,6 +163,7 @@ namespace Demi
     {
         DI_ASSERT(hwnd);
         mWndHandle = hwnd;
+        mWindow = Driver->GetWindowManager()->GetWindow(hwnd);
 
         Init();
     }

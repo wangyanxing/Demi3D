@@ -144,7 +144,7 @@ namespace Demi
         DI_DELETE mGLFBOManager;
         mGLFBOManager = nullptr;
 
-        DI_INFO("OpenGL stuff successfully released.");
+        DI_INFO("OpenGLES2 stuff successfully released.");
     }
 
     void DiGLES2Driver::ConvertProjectionMatrix(const DiMat4& matrix, DiMat4& dest)
@@ -654,7 +654,7 @@ namespace Demi
         DiGLES2Util* ret = nullptr;
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         ret = DI_NEW DiWin32EGLUtil();
-#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+#elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
         ret = DI_NEW DiEAGL2Util();
 #endif
         return ret;

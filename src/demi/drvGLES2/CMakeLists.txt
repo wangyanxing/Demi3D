@@ -19,6 +19,7 @@ if (WIN32)
 elseif (APPLE)
   file(GLOB DI_GLES2_PLATFORM_SPEC "EAGL/*.h" "EAGL/*.mm")
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/EAGL)
+  link_directories(${OPENGLES2_LIBRARY_PATH})
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} 
