@@ -43,7 +43,7 @@ target_link_libraries(DemoFramework DiMisc DiGfx ${OIS_LIBRARIES} ${DI_DEMO_PLAT
 if(NOT ${DEMI_FRAMEWORK_PATH} STREQUAL "")
   set_target_properties(DemoFramework PROPERTIES
     COMPILE_FLAGS "-F${DEMI_FRAMEWORK_PATH}"
-    LINK_FLAGS "-F${DEMI_FRAMEWORK_PATH} -framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo"
+    LINK_FLAGS "-F${DEMI_FRAMEWORK_PATH} -framework IOKit -framework Cocoa -framework Carbon -framework CoreVideo"
   )
 endif()
 

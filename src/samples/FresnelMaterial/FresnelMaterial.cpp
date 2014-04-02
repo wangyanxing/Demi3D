@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     DemiDemo app( DemoConfig("Demi3D Sample - Fresnel Material", 800, 600));
 	app.SetInitCallback(InitScene);
 	app.SetUpdateCallback(UpdateScene);
-    app.Open();
+    app.Open(argc, argv);
 
 	return 0;
 }

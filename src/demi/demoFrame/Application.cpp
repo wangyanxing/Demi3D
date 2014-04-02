@@ -125,7 +125,7 @@ namespace Demi
         return mMainHwnd ? true : false;
     }
 
-    void DemiDemo::Open()
+    void DemiDemo::Open(int argc, char *argv[])
     {
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
         NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
@@ -141,7 +141,10 @@ namespace Demi
 #elif DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         OpenImpl();
         Run();
-
+#elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+        UIApplicationMain(argc, argv, @"UIApplication", @"AppDelegate");
+        [pool release];
 #else
         DI_WARNING("Unsupported platform, quiting");
 #endif

@@ -32,8 +32,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     NSTimeInterval mLastFrameTime;
 }
 
-- (void)go;
-- (void)renderOneFrame:(id)sender;
+- (void)open;
+- (void)render:(id)sender;
 
 @property (nonatomic) NSTimeInterval mLastFrameTime;
 

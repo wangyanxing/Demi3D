@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 {
     DemiDemo app( DemoConfig("Demi3D Sample - Car", 1500, 800));
 	app.SetInitCallback(InitScene);
-	app.Open();
+	app.Open(argc, argv);
 
 	return 0;
 }

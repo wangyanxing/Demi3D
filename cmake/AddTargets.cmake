@@ -72,10 +72,14 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
   
   add_executable(${TARGETNAME} ${_WIN32} ${_OSX} ${ARGN})
   
+  set(DEMI_BIN_NAME ${TARGETNAME})
+  
   if (DEMI_STATIC)
     # add static prefix, if compiling static version
     set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGETNAME}Static)
     set_target_properties(${TARGETNAME} PROPERTIES COMPILE_DEFINITIONS DEMI_STATIC_API)
+  
+    set(DEMI_BIN_NAME ${TARGETNAME}Static)
 	
 	if (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
 		target_link_libraries(${TARGETNAME} DiDrvGL)
@@ -99,9 +103,9 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
         endif()
 	    
   	    set (DEMI_SAMPLE_PATH 
-  	    	${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${TARGETNAME}.app)
+  	    	${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${DEMI_BIN_NAME}.app)
   	    set (DEMI_SAMPLE_BIN_PATH 
-  	    	${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${TARGETNAME}.app/Contents/MacOS)
+  	    	${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${DEMI_BIN_NAME}.app/Contents/MacOS)
 	    	
   	    add_custom_command(TARGET ${TARGETNAME} POST_BUILD
   	    	COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/media ${DEMI_SAMPLE_PATH}/
@@ -122,7 +126,7 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
 	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
 	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
 		
-		set(DEMI_SAMPLE_CONTENTS_PATH ${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${TARGETNAME}.app)
+		set(DEMI_SAMPLE_CONTENTS_PATH ${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${DEMI_BIN_NAME}.app)
 	    #add_custom_command(TARGET ${TARGETNAME} POST_BUILD
 	    #  COMMAND ditto ${OGRE_SOURCE_DIR}/Samples/Common/misc/*.png ${OGRE_SAMPLE_CONTENTS_PATH}/
 	    #  COMMAND ditto ${OGRE_BINARY_DIR}/bin/*.cfg ${OGRE_SAMPLE_CONTENTS_PATH}/

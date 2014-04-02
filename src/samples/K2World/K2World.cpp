@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
         DI_UNINSTALL_PLUGIN(DiK2);
 
     });
-	app.Open();
+	app.Open(argc, argv);
     
 	return 0;
 }

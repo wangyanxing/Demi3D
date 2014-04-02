@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
         k2md2.reset();
         DI_UNINSTALL_PLUGIN(DiK2);
     });
-	app.Open();
+	app.Open(argc, argv);
     
 	return 0;
 }

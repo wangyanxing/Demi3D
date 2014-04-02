@@ -1,9 +1,11 @@
 
 include(FindPkgMacros)
 
+if(NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
 # Find OpenGL
 find_package(OpenGL)
 macro_log_feature(OPENGL_FOUND "OpenGL" "Support for the OpenGL render system" "http://www.opengl.org/" FALSE "" "")
+endif()
 
 # Find DirectX
 if(WIN32)

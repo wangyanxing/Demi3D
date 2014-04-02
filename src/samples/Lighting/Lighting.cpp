@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
     DemiDemo app( DemoConfig("Demi3D Sample - Basic Lighting"));
 	app.SetInitCallback(InitScene);
 	app.SetUpdateCallback(UpdateScene);
-	app.Open();
+	app.Open(argc, argv);
 
 	return 0;
 }

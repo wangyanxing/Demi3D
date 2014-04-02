@@ -40,7 +40,7 @@ target_link_libraries(DiK2 DiMisc DiGfx ${OIS_LIBRARIES} ${DI_K2_PLATFORM_LIBS})
 if(NOT ${DI_K2_PATH} STREQUAL "")
   set_target_properties(DiK2 PROPERTIES
     COMPILE_FLAGS "-F${DI_K2_PATH}"
-    LINK_FLAGS "-F${DI_K2_PATH} -framework IOKit -framework Cocoa -framework Carbon -framework OpenGL -framework CoreVideo"
+    LINK_FLAGS "-F${DI_K2_PATH} -framework IOKit -framework Cocoa -framework Carbon -framework CoreVideo"
   )
 endif()
 

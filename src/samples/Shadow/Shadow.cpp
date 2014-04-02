@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
 {
     DemiDemo app(DemoConfig("Demi3D Sample - Shadow", 800, 600));
     app.SetInitCallback(InitScene);
-    app.Open();
+    app.Open(argc, argv);
 
     return 0;
 }
