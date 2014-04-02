@@ -75,35 +75,48 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
     # On OS X, create .app bundle
     set_property(TARGET ${TARGETNAME} PROPERTY MACOSX_BUNDLE TRUE)
     if (NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
-      # Add the path where the Demi3D framework was found
-      if(${DEMI_FRAMEWORK_PATH})
-        set_target_properties(${TARGETNAME} PROPERTIES
-          COMPILE_FLAGS "-F${DEMI_FRAMEWORK_PATH}"
-          LINK_FLAGS "-F${DEMI_FRAMEWORK_PATH}"
-        )
-      else()
-        set_xcode_property( ${TARGETNAME} IPHONEOS_DEPLOYMENT_TARGET ${MIN_IOS_VERSION} )
-        set_property( TARGET ${TARGETNAME} PROPERTY XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
-      endif()
-    endif(NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
-	
-	set (DEMI_SAMPLE_PATH 
-		${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${TARGETNAME}.app)
-	set (DEMI_SAMPLE_BIN_PATH 
-		${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${TARGETNAME}.app/Contents/MacOS)
+        # Add the path where the Demi3D framework was found
+        if(${DEMI_FRAMEWORK_PATH})
+          set_target_properties(${TARGETNAME} PROPERTIES
+            COMPILE_FLAGS "-F${DEMI_FRAMEWORK_PATH}"
+            LINK_FLAGS "-F${DEMI_FRAMEWORK_PATH}"
+          )
+        endif()
+	    
+  	    set (DEMI_SAMPLE_PATH 
+  	    	${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${TARGETNAME}.app)
+  	    set (DEMI_SAMPLE_BIN_PATH 
+  	    	${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${TARGETNAME}.app/Contents/MacOS)
+	    	
+  	    add_custom_command(TARGET ${TARGETNAME} POST_BUILD
+  	    	COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/media ${DEMI_SAMPLE_PATH}/
+  	    	COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/media_hon ${DEMI_SAMPLE_PATH}/
+  	    	)
+  	    add_custom_command(TARGET ${TARGETNAME} POST_BUILD
+  	    	COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DiMisc.dylib ${DEMI_SAMPLE_BIN_PATH}/
+  	    	COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DiGfx.dylib ${DEMI_SAMPLE_BIN_PATH}/
+  	    	COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DiDrvGL.dylib ${DEMI_SAMPLE_BIN_PATH}/
+  	    	COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DemoFramework.dylib ${DEMI_SAMPLE_BIN_PATH}/
+  	    	COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DiK2.dylib ${DEMI_SAMPLE_BIN_PATH}/
+  	    	)		
+    else()
+	    set_xcode_property( ${TARGETNAME} IPHONEOS_DEPLOYMENT_TARGET ${MIN_IOS_VERSION} )
+	    set_property( TARGET ${TARGETNAME} PROPERTY XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
+	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
+	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
+	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
+	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
 		
-	add_custom_command(TARGET ${TARGETNAME} POST_BUILD
-		COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/media ${DEMI_SAMPLE_PATH}/
-		COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/media_hon ${DEMI_SAMPLE_PATH}/
-		)
-	add_custom_command(TARGET ${TARGETNAME} POST_BUILD
-		COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DiMisc.dylib ${DEMI_SAMPLE_BIN_PATH}/
-		COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DiGfx.dylib ${DEMI_SAMPLE_BIN_PATH}/
-		COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DiDrvGL.dylib ${DEMI_SAMPLE_BIN_PATH}/
-		COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DemoFramework.dylib ${DEMI_SAMPLE_BIN_PATH}/
-		COMMAND ln ARGS -s -f ${DEMI_SOURCE_DIR}/lib/$(CONFIGURATION)/DiK2.dylib ${DEMI_SAMPLE_BIN_PATH}/
-		)		
-
+		set(DEMI_SAMPLE_CONTENTS_PATH ${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${TARGETNAME}.app)
+	    #add_custom_command(TARGET ${TARGETNAME} POST_BUILD
+	    #  COMMAND ditto ${OGRE_SOURCE_DIR}/Samples/Common/misc/*.png ${OGRE_SAMPLE_CONTENTS_PATH}/
+	    #  COMMAND ditto ${OGRE_BINARY_DIR}/bin/*.cfg ${OGRE_SAMPLE_CONTENTS_PATH}/
+	    #)
+	    add_custom_command(TARGET ${TARGETNAME} POST_BUILD
+          COMMAND mkdir ARGS -p ${OGRE_BINARY_DIR}/lib/$(CONFIGURATION)/
+	      COMMAND ditto ${DEMI_SOURCE_DIR}/media ${DEMI_SAMPLE_CONTENTS_PATH}/media
+	    )
+    endif(NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
 	
   endif (APPLE)
   

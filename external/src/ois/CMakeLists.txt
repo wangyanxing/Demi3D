@@ -61,7 +61,7 @@ if (WIN32)
 	list(APPEND OIS_PLATFORM_SOURCES src/win32/Win32JoyStick.old.cpp)
   endif ()
 elseif (APPLE)
-  if(OGRE_BUILD_PLATFORM_APPLE_IOS)
+  if(DEMI_BUILD_PLATFORM_APPLE_IOS)
     set(OIS_PLATFORM_HEADERS
       includes/iphone/iPhoneAccelerometer.h
       includes/iphone/iPhoneHelpers.h
@@ -164,8 +164,9 @@ endif ()
 if (APPLE)
  set_target_properties(OIS PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
 
- if(OGRE_BUILD_PLATFORM_APPLE_IOS)
-  set_target_properties(OIS PROPERTIES XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET "5.0")
+ if(DEMI_BUILD_PLATFORM_APPLE_IOS)
+  set_target_properties(OIS PROPERTIES IPHONEOS_DEPLOYMENT_TARGET MIN_IOS_VERSION )
+  set_target_properties(OIS PROPERTIES XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
   set_target_properties(OIS PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
  endif()
 endif()

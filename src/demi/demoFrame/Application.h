@@ -25,7 +25,11 @@ namespace Demi
         , windowHeight(height)
         , fullScreen(false)
         , windowTitle(title)
-        , mediaPath("../../Media")
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        , mediaPath("media")
+#else
+        , mediaPath("../../media")
+#endif
         , logFile("Demi.log")
         , sceneType("Octree")
         {

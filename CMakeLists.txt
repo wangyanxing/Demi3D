@@ -50,6 +50,15 @@ if (CMAKE_BUILD_TYPE STREQUAL "")
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: None (CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif ()
 
+if (DEMI_BUILD_PLATFORM_APPLE_IOS)
+set(DEMI_BUILD_ZLIB FALSE)
+endif()
+
+if(XCODE_VERSION VERSION_LESS 5.0.0)
+  set(MIN_IOS_VERSION "5.0")
+else()
+  set(MIN_IOS_VERSION "6.0")
+endif()
 
 # determine if we are compiling for a 32 or 64bit plartform
 include(CheckTypeSize)

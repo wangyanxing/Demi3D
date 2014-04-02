@@ -64,7 +64,12 @@ namespace Demi
 #endif
 
         mAssetManager = new DiAssetManager;
-        mAssetManager->SetBasePath("../../Media");
+        
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        mAssetManager->SetBasePath("media");
+#else
+        mAssetManager->SetBasePath("../../media");
+#endif
 
         CommandMgr->RegisterString("scene_type", "Octree", 0, "Scene manager type");
     }

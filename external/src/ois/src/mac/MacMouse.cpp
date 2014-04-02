@@ -94,7 +94,7 @@ void MacMouse::_initialize()
 	
 	if(win)
 	{
-		Rect clipRect = {0,0,0,0};
+		Rect clipRect = {0, 0, 0, 0};
 		GetWindowBounds(win, kWindowContentRgn, &clipRect);
 		
 		CGPoint warpPoint;
@@ -303,7 +303,7 @@ void MacMouse::_mouseCallback( EventRef theEvent )
 				
 				if(win)
 				{
-					Rect clipRect = {0,0,0,0};
+					Rect clipRect = {0, 0, 0, 0};
 					GetWindowBounds(win, kWindowContentRgn, &clipRect);
 					
 					CGPoint warpPoint;

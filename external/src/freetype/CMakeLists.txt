@@ -92,7 +92,14 @@ add_library(freetype STATIC ${freetype_SOURCES})
 
 if (APPLE)
  set_target_properties(freetype PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
+
+ if(DEMI_BUILD_PLATFORM_APPLE_IOS)
+  set_target_properties(freetype PROPERTIES IPHONEOS_DEPLOYMENT_TARGET MIN_IOS_VERSION )
+  set_target_properties(freetype PROPERTIES XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET[arch=arm64] "7.0" )
+  set_target_properties(freetype PROPERTIES XCODE_ATTRIBUTE_GCC_THUMB_SUPPORT "NO")
+ endif()
 endif()
+
 
 set(FREETYPE_FT2BUILD_INCLUDE_DIR "${freetype_SOURCE_DIR}/include" CACHE PATH "" FORCE)
 set(FREETYPE_INCLUDE_DIR "${freetype_SOURCE_DIR}/include/freetype" CACHE PATH "" FORCE)

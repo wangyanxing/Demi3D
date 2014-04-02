@@ -1,8 +1,8 @@
-#
-# Copyright (c) 2013-2014 the Demi3D project.
-#
-
-cmake_minimum_required (VERSION 2.8.6)
+if (APPLE AND NOT ANDROID)
+  cmake_minimum_required(VERSION 2.8.8)
+else()
+  cmake_minimum_required(VERSION 2.6)
+endif ()
 
 project (DemiExternal)
 
@@ -13,14 +13,27 @@ if (WIN32)
   add_definitions(-DWINVER=0x0500)
 endif ()
 
-if (APPLE)
-  # Set 10.5 as the base SDK by default
+if (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
+  # Set build variables
+  set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
+  set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
+  set(XCODE_ATTRIBUTE_SDKROOT iphoneos)
+  set(CMAKE_OSX_SYSROOT iphoneos)
+  if(XCODE_VERSION VERSION_LESS 5.0)
+    set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_32_BIT)")
+  else()
+    set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_INCLUDING_64_BIT)")
+  endif()
+  add_definitions(-DHAVE_UNISTD_H=1)
+elseif (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
+  # Set 10.7 as the base SDK by default
   set(CMAKE_OSX_DEPLOYMENT_TARGET 10.7)
 
   if (NOT CMAKE_OSX_ARCHITECTURES)
     set(CMAKE_OSX_ARCHITECTURES ${ARCHS_STANDARD_32_64_BIT})
   endif()
 endif ()
+
 
 if (NOT APPLE)
   # Create debug libraries with _d postfix
@@ -35,7 +48,7 @@ else ()
   set(DI_EXTERNAL_PLATFORM_X64 FALSE)
 endif ()
 
-if (APPLE)
+if (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
   include(CMakeForceCompiler)
   CMAKE_FORCE_C_COMPILER(clang GNU)
   CMAKE_FORCE_CXX_COMPILER(clang++ GNU)
@@ -58,8 +71,14 @@ endif ()
 
 
 # Specify build paths
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/bin")
+if (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/lib_ios")
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/lib_ios")
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/bin_ios")
+else()
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/lib")
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/lib")
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${DemiExternal_SOURCE_DIR}/bin")
+endif()
 
 add_subdirectory(src)
