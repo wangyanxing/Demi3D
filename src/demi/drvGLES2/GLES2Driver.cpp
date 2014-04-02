@@ -359,6 +359,8 @@ namespace Demi
             rsc->setCapability(RSC_VERTEX_BUFFER_INSTANCE_DATA);
         }
 
+        rsc->LogCaps();
+
         return rsc;
     }
 

@@ -37,6 +37,8 @@ namespace Demi
 
         bool                    InitGfx(uint16 width, uint16 height, bool fullscreen);
 
+        void                    PostInit();
+
         void                    ReleaseGfx();
 
         bool                    IsDeviceLost();
@@ -135,7 +137,7 @@ namespace Demi
 
         DiPair<float, float>    GetDepthInputRange() const;
 
-        DiGfxCaps*              InitGfxCaps();
+        DiGfxCaps*              InitGfxCaps(){ return nullptr; }
 
         D3D9DriverList*         GetD3D9Devices();
 
@@ -166,6 +168,8 @@ namespace Demi
         LPDIRECT3D9             mD3D;
 
     private:
+
+        DiGfxCaps*              InitGfxCapsImpl();
 
         bool                    GetPresentParameter(D3DPRESENT_PARAMETERS &parameters,
                                     D3DFORMAT &adapterFormat, const D3DDISPLAYMODE &adapterMode);

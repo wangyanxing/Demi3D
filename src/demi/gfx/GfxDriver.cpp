@@ -272,7 +272,6 @@ namespace Demi
         InitGfx(mMainHwnd);
 
         mCaps = InitGfxCaps();
-        mCaps->LogCaps();
 
         mPipeline = DI_NEW DiRenderPipeline();
         mShaderManager = DI_NEW DiShaderManager();
@@ -282,6 +281,8 @@ namespace Demi
             mMainWindow->SetParentRenderWnd(rw);
 
         NotifyDeviceLost();
+
+        PostInit();
 
         return true;
     }

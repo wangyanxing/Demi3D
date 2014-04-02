@@ -20,6 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Clip.h"
 #include "K2Configs.h"
 #include "K2GameDefines.h"
+#include "K2Plugin.h"
 
 #include "EnginePlugin.h"
 
@@ -28,8 +29,8 @@ DiK2ModelPtr k2md2 = nullptr;
 
 void InitScene()
 {
-    DiPlugin::LoadPlugin("DiK2");
-    
+    DI_INSTALL_PLUGIN(DiK2);
+   
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     
     DiDirLightPtr dirlight;
@@ -85,7 +86,7 @@ int main(int argc, char *argv[])
     app.SetShutdownCallback([&](){
         k2md.reset();
         k2md2.reset();
-        DiPlugin::UnloadPlugin("DiK2");
+        DI_UNINSTALL_PLUGIN(DiK2);
     });
 	app.Open();
     

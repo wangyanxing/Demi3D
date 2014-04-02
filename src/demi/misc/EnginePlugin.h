@@ -14,29 +14,41 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiEnginePlugin_h__
 #define DiEnginePlugin_h__
 
-
 namespace Demi
 {
     class DI_MISC_API DiPlugin
     {
     public:
 
+#ifndef DEMI_STATIC_API
         DiPlugin(){}
 
-        virtual                 ~DiPlugin(){}
+        virtual         ~DiPlugin(){}
 
     public:
 
         virtual const DiString& GetName() const = 0;
 
-        virtual void            Install() = 0;
+        virtual void    Install() = 0;
 
-        virtual void            Uninstall() = 0;
+        virtual void    Uninstall() = 0;
 
-        static void             LoadPlugin(const DiString& pgName);
+        static void     LoadPlugin(const DiString& pgName);
 
-        static void             UnloadPlugin(const DiString& pgName);
+        static void     UnloadPlugin(const DiString& pgName);
+#endif
     };
+
+#ifdef DEMI_STATIC_API
+#   define DI_PLUGIN static
+#   define DI_INSTALL_PLUGIN(plugin) plugin##Plugin::Install()
+#   define DI_UNINSTALL_PLUGIN(plugin) plugin##Plugin::Uninstall()
+#else
+#   define DI_PLUGIN
+#   define DI_INSTALL_PLUGIN(plugin) DiPlugin::LoadPlugin(#plugin)
+#   define DI_UNINSTALL_PLUGIN(plugin) DiPlugin::UnloadPlugin(#plugin)
+#endif
+
 }
 
 #endif

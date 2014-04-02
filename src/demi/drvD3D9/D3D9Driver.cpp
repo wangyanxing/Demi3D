@@ -963,7 +963,7 @@ namespace Demi
         return DiPair<float, float>(0.0f, 1.0f);
     }
 
-    DiGfxCaps* DiD3D9Driver::InitGfxCaps()
+    DiGfxCaps* DiD3D9Driver::InitGfxCapsImpl()
     {
         DiGfxCaps* rsc = DI_NEW DiGfxCaps();
         mCaps = rsc;
@@ -1282,6 +1282,8 @@ namespace Demi
 
         rsc->addShaderProfile("hlsl");
 
+        rsc->LogCaps();
+
         return rsc;
     }
 
@@ -1544,4 +1546,8 @@ namespace Demi
         return anySupported;
     }
 
+    void DiD3D9Driver::PostInit()
+    {
+        InitGfxCapsImpl();
+    }
 }

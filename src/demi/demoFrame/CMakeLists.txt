@@ -25,6 +25,18 @@ endif()
 DI_ADD_LIBRARY(DemoFramework ${DI_DEMO_FRAME_HEADERS} ${DI_DEMO_FRAME_SRCS} )
 DI_CONFIG_CORE_LIB(DemoFramework "${CMAKE_CURRENT_SOURCE_DIR}/DemoPch.h")
 
+if (DEMI_STATIC)
+	if (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGL)
+	elseif (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGLES2)
+	elseif (WIN32)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvD3D9)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGLES2)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGL)
+	endif()
+endif()
+
 include_directories(${OIS_INCLUDE_DIRS})
 target_link_libraries(DemoFramework DiMisc DiGfx ${OIS_LIBRARIES} ${DI_DEMO_PLATFORM_LIBS})
 

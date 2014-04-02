@@ -17,8 +17,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiK2Plugin* plugin = nullptr;
-
     const DiString& DiK2Plugin::GetName() const
     {
         static DiString name = "K2Plugin";
@@ -39,6 +37,8 @@ namespace Demi
         DI_LOG("K2 Plugin unloaded");
     }
 
+#ifndef DEMI_STATIC_API
+    DiK2Plugin* plugin = nullptr;
     extern "C" void DEMI_K2_API PluginBegin() throw()
     {
         plugin = DI_NEW DiK2Plugin();
@@ -50,4 +50,5 @@ namespace Demi
         plugin->Uninstall();
         DI_DELETE plugin;
     }
+#endif
 }

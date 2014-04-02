@@ -31,9 +31,9 @@ namespace Demi
 
         const DiString& GetName() const;
 
-        void  Install();
+        DI_PLUGIN void  Install();
 
-        void  Uninstall();
+        DI_PLUGIN void  Uninstall();
     };
 }
 

@@ -27,7 +27,7 @@ MACRO(DI_ADD_LIBRARY TARGETNAME)
 
   if (DEMI_STATIC)
     # add static prefix, if compiling static version
-    set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${PLUGINNAME}Static)
+    set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGETNAME}Static)
     set_target_properties(${TARGETNAME} PROPERTIES COMPILE_DEFINITIONS DEMI_STATIC_API)
 
     if(DEMI_BUILD_PLATFORM_APPLE_IOS)
@@ -69,7 +69,22 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
     set(_OSX "MACOSX_BUNDLE")
     list(REMOVE_AT ARGN ${_OSX_IDX})
   endif ()
+  
   add_executable(${TARGETNAME} ${_WIN32} ${_OSX} ${ARGN})
+  
+  if (DEMI_STATIC)
+    # add static prefix, if compiling static version
+    set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGETNAME}Static)
+    set_target_properties(${TARGETNAME} PROPERTIES COMPILE_DEFINITIONS DEMI_STATIC_API)
+	
+	if (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
+		target_link_libraries(${TARGETNAME} DiDrvGL)
+	elseif (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
+		target_link_libraries(${TARGETNAME} DiDrvGLES2)
+	elseif (WIN32)
+		target_link_libraries(${TARGETNAME} DiDrvD3D9 DiDrvGL DiDrvGLES2)
+	endif()
+  endif()
 
   if (APPLE)
     # On OS X, create .app bundle

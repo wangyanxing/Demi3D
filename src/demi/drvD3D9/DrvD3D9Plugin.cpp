@@ -16,31 +16,40 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    const DiString& DiD3D9Plugin::GetName() const
+    const DiString& DiDrvD3D9Plugin::GetName() const
     {
         static DiString plugin = "DrvD3D9";
         return plugin;
     }
 
-    void DiD3D9Plugin::Install()
+    void DiDrvD3D9Plugin::Install()
     {
         DI_ASSERT(!mDriver);
         DI_ASSERT(!DiBase::Driver);
         mDriver = DI_NEW DiD3D9Driver();
     }
 
-    void DiD3D9Plugin::Uninstall()
+    void DiDrvD3D9Plugin::Uninstall()
     {
         DI_ASSERT(mDriver);
         DI_DELETE mDriver;
         mDriver = nullptr;
     }
 
-    DiD3D9Plugin* plugin = nullptr;
+    DiDrvD3D9Plugin::DiDrvD3D9Plugin()
+    {
+#ifndef DEMI_STATIC_API
+        mDriver = nullptr;
+#endif
+    }
+
+#ifndef DEMI_STATIC_API
+
+    DiDrvD3D9Plugin* plugin = nullptr;
 
     extern "C" void DI_D3D9DRV_API PluginBegin() throw()
     {
-        plugin = DI_NEW DiD3D9Plugin();
+        plugin = DI_NEW DiDrvD3D9Plugin();
         plugin->Install();
     }
 
@@ -49,4 +58,8 @@ namespace Demi
         plugin->Uninstall();
         DI_DELETE plugin;
     }
+
+#else
+    DiD3D9Driver* DiDrvD3D9Plugin::mDriver = nullptr;
+#endif
 }

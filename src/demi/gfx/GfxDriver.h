@@ -70,6 +70,8 @@ namespace Demi
 
         virtual bool                Init(uint32 w, uint32 h, const DiString& title, bool fullscreen = false);
 
+        virtual void                PostInit(){}
+
         virtual void                Shutdown(bool destroyWindows = true);
 
         virtual void                Render(DiRenderWindow* render = nullptr);

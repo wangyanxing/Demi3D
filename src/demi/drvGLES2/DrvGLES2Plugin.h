@@ -19,25 +19,25 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    class DI_GLES2_API DiGLES2Plugin : public DiPlugin
+    class DI_GLES2_API DiDrvGLES2Plugin : public DiPlugin
     {
     public:
 
-        DiGLES2Plugin() : mDriver(nullptr){}
+        DiDrvGLES2Plugin();
 
-        ~DiGLES2Plugin(){}
+        ~DiDrvGLES2Plugin(){}
 
     public:
 
         const DiString& GetName() const;
 
-        void            Install();
+        DI_PLUGIN void  Install();
 
-        void            Uninstall();
+        DI_PLUGIN void  Uninstall();
 
     private:
 
-        DiGLES2Driver*  mDriver;
+        DI_PLUGIN DiGLES2Driver* mDriver;
     };
 }
 

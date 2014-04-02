@@ -30,17 +30,30 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   include "K2GameAppIOS.h"
 #endif
 
-namespace Demi
-{
-    const DiString gfxD3D9DrvLib = "DiDrvD3D9";
-    const DiString gfxGLDrvLib = "DiDrvGL";
+#define DRV_DX9     0
+#define DRV_GL      1
+#define DRV_GL_ES2  2
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
-#   define USE_OPEN_GL 1
+#   define USE_DRV     DRV_GL
+#elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   define USE_DRV     DRV_GL_ES2
 #else
-#   define USE_OPEN_GL 0
+#   define USE_DRV     DRV_DX9
 #endif
 
+#ifdef DEMI_STATIC_API
+#   if USE_DRV == DRV_DX9
+#       include "DrvD3D9Plugin.h"
+#   elif USE_DRV == DRV_GL
+#       include "DrvGLPlugin.h"
+#   elif USE_DRV == DRV_GL_ES2
+#       include "DrvGLES2Plugin.h"
+#   endif
+#endif
+
+namespace Demi
+{
     DiK2GameApp::DiK2GameApp()
         :mAssetManager(nullptr)
         , mInputMgr(nullptr)
@@ -57,10 +70,12 @@ namespace Demi
         DiLogManager* logmgr = DI_NEW DiLogManager();
         logmgr->Init("Game.log");
 
-#if USE_OPEN_GL
-        DiPlugin::LoadPlugin(gfxGLDrvLib);
-#else
-        DiPlugin::LoadPlugin(gfxD3D9DrvLib);
+#if USE_DRV == DRV_DX9
+        DI_INSTALL_PLUGIN(DiDrvD3D9);
+#elif USE_DRV == DRV_GL
+        DI_INSTALL_PLUGIN(DiDrvGL);
+#elif USE_DRV == DRV_GL_ES2
+        DI_INSTALL_PLUGIN(DiDrvGLES2);
 #endif
 
         mAssetManager = new DiAssetManager;
@@ -151,10 +166,12 @@ namespace Demi
 
         Driver->Shutdown();
 
-#if USE_OPEN_GL
-        DiPlugin::UnloadPlugin(gfxGLDrvLib);
-#else
-        DiPlugin::UnloadPlugin(gfxD3D9DrvLib);
+#if USE_DRV == DRV_DX9
+        DI_UNINSTALL_PLUGIN(DiDrvD3D9);
+#elif USE_DRV == DRV_GL
+        DI_UNINSTALL_PLUGIN(DiDrvGL);
+#elif USE_DRV == DRV_GL_ES2
+        DI_UNINSTALL_PLUGIN(DiDrvGLES2);
 #endif
 
         SAFE_DELETE(mAssetManager);

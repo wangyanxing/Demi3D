@@ -14,6 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "EnginePlugin.h"
 #include "DynamicLib.h"
 
+#ifndef DEMI_STATIC_API
+
 namespace Demi
 {
     typedef void(*DLL_START_PLUGIN)(void);
@@ -67,3 +69,5 @@ namespace Demi
         endFunc();
     }
 }
+
+#endif

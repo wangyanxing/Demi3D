@@ -17,31 +17,39 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    const DiString& DiGLES2Plugin::GetName() const
+    const DiString& DiDrvGLES2Plugin::GetName() const
     {
         static DiString plugin = "DrvGLES2";
         return plugin;
     }
 
-    void DiGLES2Plugin::Install()
+    void DiDrvGLES2Plugin::Install()
     {
         DI_ASSERT(!mDriver);
         DI_ASSERT(!DiBase::Driver);
         mDriver = DI_NEW DiGLES2Driver();
     }
 
-    void DiGLES2Plugin::Uninstall()
+    void DiDrvGLES2Plugin::Uninstall()
     {
         DI_ASSERT(mDriver);
         DI_DELETE mDriver;
         mDriver = nullptr;
     }
 
-    DiGLES2Plugin* plugin = nullptr;
+    DiDrvGLES2Plugin::DiDrvGLES2Plugin()
+    {
+#ifndef DEMI_STATIC_API
+        mDriver = nullptr;
+#endif
+    }
+
+#ifndef DEMI_STATIC_API
+    DiDrvGLES2Plugin* plugin = nullptr;
 
     extern "C" void DI_GLES2_API PluginBegin() throw()
     {
-        plugin = DI_NEW DiGLES2Plugin();
+        plugin = DI_NEW DiDrvGLES2Plugin();
         plugin->Install();
     }
 
@@ -50,4 +58,7 @@ namespace Demi
         plugin->Uninstall();
         DI_DELETE plugin;
     }
+#else
+    DiGLES2Driver* DiDrvGLES2Plugin::mDriver = nullptr;
+#endif
 }

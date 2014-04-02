@@ -1056,6 +1056,8 @@ namespace Demi
             rsc->setCapability(RSC_ADVANCED_BLEND_OPERATIONS);
         }
 
+        rsc->LogCaps();
+
         return rsc;
     }
 

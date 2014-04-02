@@ -22,6 +22,18 @@ endif()
 DI_ADD_LIBRARY(DiK2 ${DI_K2_HEADERS} ${DI_K2_SRCS} )
 DI_CONFIG_CORE_LIB(DiK2 "${CMAKE_CURRENT_SOURCE_DIR}/K2Pch.h")
 
+if (DEMI_STATIC)
+	if (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGL)
+	elseif (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGLES2)
+	elseif (WIN32)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvD3D9)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGLES2)
+		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGL)
+	endif()
+endif()
+
 include_directories(${OIS_INCLUDE_DIRS})
 target_link_libraries(DiK2 DiMisc DiGfx ${OIS_LIBRARIES} ${DI_K2_PLATFORM_LIBS})
 

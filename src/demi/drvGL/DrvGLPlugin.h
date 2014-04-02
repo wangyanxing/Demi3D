@@ -14,30 +14,30 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiDrvGLPlugin_h__
 #define DiDrvGLPlugin_h__
 
-
+#include "GLPrerequisites.h"
 #include "EnginePlugin.h"
 
 namespace Demi
 {
-    class DI_GLDRV_API DiGLPlugin : public DiPlugin
+    class DI_GLDRV_API DiDrvGLPlugin : public DiPlugin
     {
     public:
 
-        DiGLPlugin() : mDriver(nullptr){}
+        DiDrvGLPlugin();
 
-        ~DiGLPlugin(){}
+        ~DiDrvGLPlugin(){}
 
     public:
 
         const DiString& GetName() const;
 
-        void            Install();
+        DI_PLUGIN void  Install();
 
-        void            Uninstall();
+        DI_PLUGIN void  Uninstall();
 
     private:
 
-        DiGLDriver*     mDriver;
+        DI_PLUGIN DiGLDriver* mDriver;
     };
 }
 

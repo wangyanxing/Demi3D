@@ -22,12 +22,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2World.h"
 #include "K2Configs.h"
 #include "K2TerrainMap.h"
+#include "K2Plugin.h"
 
 DiK2World* world = nullptr;
 
 void InitScene()
 {
-    DiPlugin::LoadPlugin("DiK2");
+    DI_INSTALL_PLUGIN(DiK2);
     
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     sm->SetAmbientColor(DiColor(0.3f, 0.3f, 0.3f));
@@ -61,7 +62,8 @@ int main(int argc, char *argv[])
 	app.SetInitCallback(InitScene);
 	app.SetUpdateCallback(UpdateScene);
     app.SetShutdownCallback([&](){
-        DiPlugin::UnloadPlugin("DiK2");
+        DI_UNINSTALL_PLUGIN(DiK2);
+
     });
 	app.Open();
     

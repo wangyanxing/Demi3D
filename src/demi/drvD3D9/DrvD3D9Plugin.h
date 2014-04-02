@@ -14,30 +14,31 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiDrvD3D9Plugin_h__
 #define DiDrvD3D9Plugin_h__
 
-
+#include "D3D9Prerequisites.h"
+#include "DrvD3D9Defines.h"
 #include "EnginePlugin.h"
 
 namespace Demi
 {
-    class DI_D3D9DRV_API DiD3D9Plugin : public DiPlugin
+    class DI_D3D9DRV_API DiDrvD3D9Plugin : public DiPlugin
     {
     public:
 
-        DiD3D9Plugin() : mDriver(nullptr){}
+        DiDrvD3D9Plugin();
 
-        ~DiD3D9Plugin(){}
+        ~DiDrvD3D9Plugin(){}
 
     public:
 
         const DiString& GetName() const;
 
-        void            Install();
+        DI_PLUGIN void  Install();
 
-        void            Uninstall();
+        DI_PLUGIN void  Uninstall();
 
     private:
 
-        DiD3D9Driver*   mDriver;
+        DI_PLUGIN DiD3D9Driver* mDriver;
     };
 }
 
