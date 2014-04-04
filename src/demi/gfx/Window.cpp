@@ -39,4 +39,9 @@ namespace Demi
         auto i = mWnds.find(handle);
         return i == mWnds.end() ? nullptr : i->second;
     }
+
+    DiWindow::~DiWindow()
+    {
+    }
+
 }

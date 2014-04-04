@@ -10,8 +10,9 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "DrvD3D9Pch.h"
-#include"D3D9TypeMappings.h"
+#include "D3D9TypeMappings.h"
 
 namespace Demi
 {
@@ -82,7 +83,8 @@ namespace Demi
         D3DFMT_UNKNOWN,       // PF_ETC2_RGB8A1,
         D3DFMT_UNKNOWN,       // PF_ATC_RGB,
         D3DFMT_UNKNOWN,       // PF_ATC_RGBA_EXPLICIT_ALPHA,
-        D3DFMT_UNKNOWN        // PF_ATC_RGBA_INTERPOLATED_ALPHA,
+        D3DFMT_UNKNOWN,       // PF_ATC_RGBA_INTERPOLATED_ALPHA,
+        D3DFMT_UNKNOWN        // PF_DEPTH
     };
 
     DiPixelFormat DiD3D9Mappings::ConvertPixFormat(D3DFORMAT d3dfmt)

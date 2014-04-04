@@ -86,7 +86,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 
 // Defines for extensions that were made core in OpenGL ES 3
-#if OGRE_NO_GLES3_SUPPORT == 0
+#if 0
 #   ifndef GL_OES_mapbuffer
 #       define GL_WRITE_ONLY_OES GL_MAP_WRITE_BIT
 #       define glUnmapBufferOES glUnmapBuffer

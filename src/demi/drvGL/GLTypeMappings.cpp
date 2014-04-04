@@ -23,11 +23,7 @@ namespace Demi
         GL_REPEAT,
         GL_MIRRORED_REPEAT,
         GL_CLAMP_TO_EDGE,
-#ifndef GL_ES_VERSION_2_0
         GL_CLAMP,
-#else
-        GL_CLAMP_TO_EDGE,
-#endif
         GL_NONE
     };
 
@@ -152,6 +148,7 @@ namespace Demi
         GL_NONE,                           // PF_ATC_RGB,
         GL_NONE,                           // PF_ATC_RGBA_EXPLICIT_ALPHA,
         GL_NONE,                           // PF_ATC_RGBA_INTERPOLATED_ALPHA,
+        GL_NONE,                           // PF_DEPTH
     };
 
     GLenum DiGLTypeMappings::GLInternalFormatMapping[PIXEL_FORMAT_MAX] =
@@ -187,6 +184,7 @@ namespace Demi
         GL_NONE,                           // PF_ATC_RGB,
         GL_NONE,                           // PF_ATC_RGBA_EXPLICIT_ALPHA,
         GL_NONE,                           // PF_ATC_RGBA_INTERPOLATED_ALPHA,
+        GL_NONE,                           // PF_DEPTH
     };
 
     GLenum DiGLTypeMappings::GetGLTextureType(uint16 type)
@@ -228,7 +226,6 @@ namespace Demi
 
     GLenum DiGLTypeMappings::GetExternalFormat(GLenum format)
     {
-#ifndef GL_ES_VERSION_2_0
         if (format == GL_DEPTH_COMPONENT16 || format == GL_DEPTH_COMPONENT24 || format == GL_DEPTH_COMPONENT32)
             return GL_DEPTH_COMPONENT;
         else if (format == GL_DEPTH24_STENCIL8_EXT)
@@ -245,14 +242,10 @@ namespace Demi
             return GL_RGB;
         else
             return format;
-#else
-        return format;
-#endif
     }
 
     GLenum DiGLTypeMappings::GetDataType(GLenum format)
     {
-#ifndef GL_ES_VERSION_2_0
         if (format == GL_DEPTH24_STENCIL8_EXT)
             return GL_UNSIGNED_INT_24_8_EXT;
         else if (format == GL_RG16 || format == GL_RGBA16)
@@ -262,14 +255,6 @@ namespace Demi
             return GL_FLOAT;
         else
             return GL_UNSIGNED_BYTE;
-#else
-        if (format == GL_DEPTH_COMPONENT || format == GL_DEPTH_COMPONENT24_OES)
-            return GL_UNSIGNED_INT;
-        else if (format == GL_DEPTH_COMPONENT16)
-            return GL_UNSIGNED_SHORT;
-        else
-            return GL_UNSIGNED_BYTE;
-#endif
     }
 
     GLenum DiGLTypeMappings::GetClosestGLInternalFormat(DiPixelFormat fmt, bool hwGamma /*= false*/)

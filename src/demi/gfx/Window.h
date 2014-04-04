@@ -29,7 +29,7 @@ namespace Demi
                      mParentWnd(nullptr),
                      mVSync(false){}
 
-        virtual             ~DiWindow() {}
+        virtual             ~DiWindow();
 
     public:
 

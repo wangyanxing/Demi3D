@@ -51,7 +51,6 @@ namespace Demi
         Driver = nullptr;
         mMainHwnd = nullptr;
         SAFE_DELETE(mCaps);
-        SAFE_DELETE(mMainWindow);
         SAFE_DELETE(mWndManager);
     }
 
