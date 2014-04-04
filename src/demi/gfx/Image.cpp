@@ -768,6 +768,7 @@ namespace Demi
             names[PF_ATC_RGB] = "PF_ATC_RGB";
             names[PF_ATC_RGBA_EXPLICIT_ALPHA] = "PF_ATC_RGBA_EXPLICIT_ALPHA";
             names[PF_ATC_RGBA_INTERPOLATED_ALPHA] = "PF_ATC_RGBA_INTERPOLATED_ALPHA";
+            names[PF_DEPTH] = "PF_DEPTH";
         }
 
         return names[eFormat];
@@ -1026,7 +1027,19 @@ namespace Demi
                 s_kDescs[format] = desc;
                 return desc;
             }
-            break;
+        case PF_DEPTH:
+            {
+                PixelFormatDescription desc =
+                {
+                    4,
+                    PFF_DEPTH,
+                    PCT_FLOAT16, 1,
+                    16, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
         default:
             DI_WARNING("Unsupported pixel format: %d", format);
             break;

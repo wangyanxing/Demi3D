@@ -66,7 +66,7 @@ namespace Demi
 
     public:
 
-        void                GetBestDepthStencil(GLenum internalFormat, GLenum *depthFormat, GLenum *stencilFormat);
+        void                GetBestDepthStencil(DiPixelFormat internalFormat, GLenum *depthFormat, GLenum *stencilFormat);
 
         DiPixelFormat       GetSupportedAlternative(DiPixelFormat format);
 

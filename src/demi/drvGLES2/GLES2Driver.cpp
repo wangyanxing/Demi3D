@@ -121,12 +121,12 @@ namespace Demi
 
     void DiGLES2Driver::BeginFrame()
     {
-        glEnable(GL_SCISSOR_TEST);
+        StateCache->setEnabled(GL_SCISSOR_TEST);
     }
     
     void DiGLES2Driver::EndFrame()
     {
-        glDisable(GL_SCISSOR_TEST);
+        StateCache->setDisabled(GL_SCISSOR_TEST);
     }
 
     void DiGLES2Driver::ReleaseGfx()

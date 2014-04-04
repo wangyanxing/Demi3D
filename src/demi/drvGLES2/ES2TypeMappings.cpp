@@ -227,8 +227,10 @@ namespace Demi
 #else
         GL_NONE,
         GL_NONE,
-        GL_NONE
+        GL_NONE,
 #endif
+        GL_DEPTH_COMPONENT
+        
     };
 
     GLenum DiGLTypeMappings::GLInternalFormatMapping[PIXEL_FORMAT_MAX] =
@@ -303,8 +305,10 @@ namespace Demi
 #else
         GL_NONE,
         GL_NONE,
-        GL_NONE
+        GL_NONE,
 #endif
+        
+        GL_DEPTH_COMPONENT
 
     };
 
@@ -384,6 +388,8 @@ namespace Demi
 #if (GL_OES_texture_float)
             return GL_FLOAT;
 #endif
+        case PF_DEPTH:
+            return GL_UNSIGNED_INT;
         default:
             return 0;
         }

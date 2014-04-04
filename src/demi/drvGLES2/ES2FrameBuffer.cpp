@@ -119,8 +119,13 @@ namespace Demi
                     DI_WARNING("All color buffers in a frame buffer object should exactly in same format");
                     return;
                 }
+                
                 DiGLES2TextureDrv* td = static_cast<DiGLES2TextureDrv*>(mColorBuffer[x]->GetTextureDriver());
-                td->BindToFrameBuffer(GL_COLOR_ATTACHMENT0 + x, 0, 0);
+                
+                if(GetFormat() == PF_DEPTH)
+                    td->BindToFrameBuffer(GL_DEPTH_ATTACHMENT,0,0);
+                else
+                    td->BindToFrameBuffer(GL_COLOR_ATTACHMENT0+x,0,0);
             }
             else
             {
@@ -131,11 +136,14 @@ namespace Demi
 
         GLenum bufs[MAX_MRT];
         GLsizei n = 0;
-        for (size_t x = 0; x < MAX_MRT; ++x)
+        for (uint32 x = 0; x < MAX_MRT; ++x)
         {
             if (mColorBuffer[x])
             {
-                bufs[x] = GL_COLOR_ATTACHMENT0 + x;
+                if (GetFormat() == PF_DEPTH)
+                    bufs[x] = GL_DEPTH_ATTACHMENT;
+                else
+                    bufs[x] = GL_COLOR_ATTACHMENT0 + x;
                 // Keep highest used buffer + 1
                 n = x + 1;
             }
@@ -439,14 +447,14 @@ namespace Demi
         return status == GL_FRAMEBUFFER_COMPLETE;
     }
 
-    void DiGLES2FBOManager::GetBestDepthStencil(GLenum internalFormat, GLenum *depthFormat, GLenum *stencilFormat)
+    void DiGLES2FBOManager::GetBestDepthStencil(DiPixelFormat internalFormat, GLenum *depthFormat, GLenum *stencilFormat)
     {
         const FormatProperties &props = mProps[internalFormat];
         // Decide what stencil and depth formats to use
         // [best supported for internal format]
         size_t bestmode = 0;
         int bestscore = -1;
-        bool requestDepthOnly = internalFormat == GL_DEPTH_COMPONENT;
+        bool requestDepthOnly = internalFormat == PF_DEPTH;
         for (size_t mode = 0; mode < props.modes.size(); mode++)
         {
             int desirability = 0;
@@ -530,10 +538,10 @@ namespace Demi
             glBindTexture(GL_TEXTURE_2D, tid);
 
             // Set some default parameters
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            DiGLES2Driver::StateCache->setTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            DiGLES2Driver::StateCache->setTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            DiGLES2Driver::StateCache->setTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            DiGLES2Driver::StateCache->setTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, PROBE_SIZE, PROBE_SIZE, 0, fmt, dataType, 0);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, tid, 0);

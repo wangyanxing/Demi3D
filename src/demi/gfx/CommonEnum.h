@@ -191,6 +191,8 @@ namespace Demi
         PF_ATC_RGBA_EXPLICIT_ALPHA,
         /// ATC (AMD_compressed_ATC_texture)
         PF_ATC_RGBA_INTERPOLATED_ALPHA,
+        
+        PF_DEPTH,
 
         PIXEL_FORMAT_MAX
     };
