@@ -138,6 +138,8 @@ namespace Demi
         static CustomAttribute msCustomAttributes[];
 
     private:
+        
+        GLuint              mGLProgramPipelineHandle;
 
         GLuint              mGLHandle;
 

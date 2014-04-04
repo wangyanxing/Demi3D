@@ -373,7 +373,7 @@ namespace Demi
         case PF_R16F:
         case PF_G16R16F:
         case PF_A16B16G16R16F:
-#if (GL_OES_texture_half_float && OGRE_PLATFORM != OGRE_PLATFORM_NACL) || (OGRE_NO_GLES3_SUPPORT == 0)
+#if (GL_OES_texture_half_float)
             return GL_HALF_FLOAT_OES;
 #else
             return 0;
@@ -381,7 +381,7 @@ namespace Demi
         case PF_R32F:
         case PF_G32R32F:
         case PF_A32B32G32R32F:
-#if (GL_OES_texture_float && OGRE_PLATFORM != OGRE_PLATFORM_NACL) || (OGRE_NO_GLES3_SUPPORT == 0)
+#if (GL_OES_texture_float)
             return GL_FLOAT;
 #endif
         default:

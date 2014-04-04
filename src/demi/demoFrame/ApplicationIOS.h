@@ -21,6 +21,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
+#import  <UIKit/UIScreen.h>
+
 // Defaulting to 2 means that we run at 30 frames per second. For 60 frames, use a value of 1.
 // 30 FPS is usually sufficient and results in lower power consumption.
 #define DISPLAYLINK_FRAME_INTERVAL 2

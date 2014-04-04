@@ -486,7 +486,7 @@ namespace Demi
 
     void DiGLES2Driver::CreateWindowTarget(DiRenderTarget*& outRT, DiWndHandle wnd)
     {
-        auto wt = DI_NEW DiGLWindowTarget();
+        auto wt = DI_NEW DiGLES2WindowTarget();
         wt->Create(wnd, mCurrentContext);
         outRT = wt;
     }
@@ -758,7 +758,7 @@ namespace Demi
             return it->second;
 
         // create a new one
-        DiGLES2ShaderLinker* ret = new DiGLES2ShaderLinker(static_cast<DiGLES2ShaderInstance*>(vs),
+        DiGLES2ShaderLinker* ret = DI_NEW DiGLES2ShaderLinker(static_cast<DiGLES2ShaderInstance*>(vs),
             static_cast<DiGLES2ShaderInstance*>(ps));
 
         mProgramMaps[p] = ret;

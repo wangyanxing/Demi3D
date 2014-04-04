@@ -59,13 +59,13 @@ namespace Demi
     };
 
 
-    class DI_GLES2_API DiGLWindowTarget : public DiGLES2RenderTarget
+    class DI_GLES2_API DiGLES2WindowTarget : public DiGLES2RenderTarget
     {
     public:
 
-        DiGLWindowTarget();
+        DiGLES2WindowTarget();
 
-        ~DiGLWindowTarget();
+        ~DiGLES2WindowTarget();
 
     public:
 

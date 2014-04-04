@@ -278,6 +278,7 @@ namespace Demi
 
     DiGLES2ShaderLinker::DiGLES2ShaderLinker(DiGLES2ShaderInstance* vs, DiGLES2ShaderInstance* ps)
         : mGLHandle(0)
+        , mGLProgramPipelineHandle(0)
         , mVS(vs)
         , mPS(ps)
         , mLinked(0)
@@ -286,6 +287,7 @@ namespace Demi
 
     DiGLES2ShaderLinker::~DiGLES2ShaderLinker()
     {
+        //CHECK_GL_ERROR(glDeleteProgramPipelinesEXT(1, &mGLProgramPipelineHandle));
         CHECK_GL_ERROR(glDeleteProgram(mGLHandle));
     }
 
@@ -465,31 +467,31 @@ namespace Demi
     void DiGLUniforms::InitUniformFuncs()
     {
         msUniformFuncs["g_modelMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_TRUE, env->modelMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_FALSE, env->modelMatrix.transpose()[0]);
         };
 
         msUniformFuncs["g_viewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_TRUE, env->viewMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_FALSE, env->viewMatrix.transpose()[0]);
         };
 
         msUniformFuncs["g_projMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_TRUE, env->projMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_FALSE, env->projMatrix.transpose()[0]);
         };
 
         msUniformFuncs["g_modelViewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_TRUE, env->modelViewMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_FALSE, env->modelViewMatrix.transpose()[0]);
         };
 
         msUniformFuncs["g_modelViewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_TRUE, env->modelViewProjMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_FALSE, env->modelViewProjMatrix.transpose()[0]);
         };
 
         msUniformFuncs["g_viewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_TRUE, env->viewProjMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_FALSE, env->viewProjMatrix.transpose()[0]);
         };
 
         msUniformFuncs["g_texMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_TRUE, env->texMatrix[0]);
+            glUniformMatrix4fv(location, 1, GL_FALSE, env->texMatrix.transpose()[0]);
         };
 
 #if 0

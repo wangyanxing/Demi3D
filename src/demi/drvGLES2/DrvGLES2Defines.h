@@ -84,6 +84,107 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   define GL_FILL    0x1B02
 #endif
 
+
+// Defines for extensions that were made core in OpenGL ES 3
+#if OGRE_NO_GLES3_SUPPORT == 0
+#   ifndef GL_OES_mapbuffer
+#       define GL_WRITE_ONLY_OES GL_MAP_WRITE_BIT
+#       define glUnmapBufferOES glUnmapBuffer
+#   endif
+
+#   ifndef GL_OES_texture_half_float
+#       define GL_HALF_FLOAT_OES GL_HALF_FLOAT
+#   endif
+
+#   ifndef GL_OES_rgb8_rgba8
+#       define GL_RGB8_OES GL_RGB8
+#       define GL_RGBA8_OES GL_RGBA8
+#   endif
+
+#   ifndef GL_EXT_texture_rg
+#       define GL_RG8_EXT GL_RG8
+#       define GL_RED_EXT GL_RED
+#       define GL_RG_EXT GL_RG
+#       define GL_R8_EXT GL_R8
+#   endif
+
+#   ifndef GL_EXT_texture_storage
+#       define GL_R16F_EXT GL_R16F
+#       define GL_R32F_EXT GL_R32F
+#       define GL_RG16F_EXT GL_RG16F
+#       define GL_RG32F_EXT GL_RG32F
+#       define GL_RGB16F_EXT GL_RGB16F
+#       define GL_RGB32F_EXT GL_RGB32F
+#       define GL_RGBA16F_EXT GL_RGBA16F
+#       define GL_RGBA32F_EXT GL_RGBA32F
+#       define GL_DEPTH_COMPONENT32_OES GL_DEPTH_COMPONENT32F
+#       endif
+
+#ifndef GL_EXT_blend_minmax
+#define GL_MIN_EXT GL_MIN
+#define GL_MAX_EXT GL_MAX
+#endif
+
+#ifndef GL_OES_depth24
+#define GL_DEPTH_COMPONENT24_OES GL_DEPTH_COMPONENT24
+#endif
+
+#ifndef GL_OES_packed_depth_stencil
+#define GL_DEPTH24_STENCIL8_OES GL_DEPTH24_STENCIL8
+#endif
+
+#ifndef GL_APPLE_texture_max_level
+#define GL_TEXTURE_MAX_LEVEL_APPLE GL_TEXTURE_MAX_LEVEL
+#endif
+
+#ifndef GL_APPLE_framebuffer_multisample
+#define GL_MAX_SAMPLES_APPLE GL_MAX_SAMPLES
+#define glRenderbufferStorageMultisampleAPPLE glRenderbufferStorageMultisample
+#endif
+
+#ifndef GL_EXT_occlusion_query_boolean
+#define GL_ANY_SAMPLES_PASSED_EXT GL_ANY_SAMPLES_PASSED
+#define GL_QUERY_RESULT_EXT GL_QUERY_RESULT
+#define GL_QUERY_RESULT_AVAILABLE_EXT GL_QUERY_RESULT_AVAILABLE
+#define glGenQueriesEXT glGenQueries
+#define glDeleteQueriesEXT glDeleteQueries
+#define glBeginQueryEXT glBeginQuery
+#define glEndQueryEXT glEndQuery
+#define glGetQueryObjectuivEXT glGetQueryObjectuiv
+#endif
+
+#ifndef GL_EXT_map_buffer_range
+#define GL_MAP_WRITE_BIT_EXT GL_MAP_WRITE_BIT
+#define GL_MAP_FLUSH_EXPLICIT_BIT_EXT GL_MAP_FLUSH_EXPLICIT_BIT
+#define GL_MAP_INVALIDATE_RANGE_BIT_EXT GL_MAP_INVALIDATE_RANGE_BIT
+#define GL_MAP_UNSYNCHRONIZED_BIT_EXT GL_MAP_UNSYNCHRONIZED_BIT
+#define GL_MAP_READ_BIT_EXT GL_MAP_READ_BIT
+#define glMapBufferRangeEXT glMapBufferRange
+#define glFlushMappedBufferRangeEXT glFlushMappedBufferRange
+#endif
+
+#ifndef GL_APPLE_sync
+#define GL_SYNC_GPU_COMMANDS_COMPLETE_APPLE GL_SYNC_GPU_COMMANDS_COMPLETE
+#define GL_SYNC_FLUSH_COMMANDS_BIT_APPLE GL_SYNC_FLUSH_COMMANDS_BIT
+#define GL_TIMEOUT_IGNORED_APPLE GL_TIMEOUT_IGNORED
+#define GL_WAIT_FAILED_APPLE GL_WAIT_FAILED
+#define glFenceSyncAPPLE glFenceSync
+#define glClientWaitSyncAPPLE glClientWaitSync
+#define glDeleteSyncAPPLE glDeleteSync
+#endif
+
+#define GL_PROGRAM_BINARY_LENGTH_OES GL_PROGRAM_BINARY_LENGTH
+#define glProgramBinaryOES glProgramBinary
+#define glGetProgramBinaryOES glGetProgramBinary
+
+#define glDrawElementsInstancedEXT glDrawElementsInstanced
+#define glDrawArraysInstancedEXT glDrawArraysInstanced
+#define glVertexAttribDivisorEXT glVertexAttribDivisor
+#define glBindVertexArrayOES glBindVertexArray
+#define glGenVertexArraysOES glGenVertexArrays
+#define glDeleteVertexArraysOES glDeleteVertexArrays
+#endif
+
 /// Lots of generated code in here which triggers the new VC CRT security warnings
 #if !defined( _CRT_SECURE_NO_DEPRECATE )
 #define _CRT_SECURE_NO_DEPRECATE

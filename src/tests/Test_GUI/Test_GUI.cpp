@@ -31,8 +31,8 @@ void InitScene()
 
     // visbile mesh for the point light
     DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>("lightSphere");
-    lightSphere->CreateSphere(1, 16, 8);
-    DiMaterialPtr m = DiMaterial::QuickCreate("phong_v", "phong_p");
+    lightSphere->CreateSphere(5, 16, 8);
+    DiMaterialPtr m = DiMaterial::QuickCreate("basic_v", "basic_p");
     m->SetDiffuse(DiColor(1, 0.8f, 0));
     lightSphere->SetMaterial(m);
 

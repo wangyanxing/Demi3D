@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
 {
     DemiDemo app( DemoConfig("Demi3D Sample - Hierarchy"));
 	app.SetInitCallback(InitScene);
-	//app.SetUpdateCallback(UpdateScene);
+    app.SetUpdateCallback(UpdateScene);
 	app.Open(argc, argv);
 
 	return 0;

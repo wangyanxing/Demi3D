@@ -21,6 +21,7 @@
 
 #import <UIKit/UIWindow.h>
 #import <UIKit/UIGraphics.h>
+#import <UIKit/UIScreen.h>
 
 namespace Demi
 {
@@ -158,13 +159,17 @@ namespace Demi
         // to assume that external handles are either not being used or are invalid and
         // we can create our own.
         NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    
+        CGRect screenBounds = [[UIScreen mainScreen] bounds];
+        mContentScalingFactor = [[UIScreen mainScreen] scale];
         
-        uint w = mWidth, h = mHeight;
-
+        mWidth = screenBounds.size.width;
+        mHeight = screenBounds.size.height;
+        
         // Set us up with an external window, or create our own.
         if(!mIsExternal)
         {
-            mWindow = [[[UIWindow alloc] initWithFrame:CGRectMake(0, 0, w, h)] retain];
+            mWindow = [[[UIWindow alloc] initWithFrame : screenBounds] retain];
         }
         
         DI_ASSERT(mWindow);
@@ -173,7 +178,7 @@ namespace Demi
         // Set up the view
         if(!mUsingExternalView)
         {
-            mView = [[EAGL2View alloc] initWithFrame:CGRectMake(0, 0, w, h)];
+            mView = [[EAGL2View alloc] initWithFrame : screenBounds];
             mView.opaque = YES;
 
             // Use the default scale factor of the screen
@@ -247,7 +252,9 @@ namespace Demi
         mContext->CreateFramebuffer();
         
         
-        DI_LOG("iOS Window created[%d,%d]",w,h);
+        DI_LOG("iOS Window created: %d x %d", mWidth,mHeight);
+        DI_LOG("Backbuffer size: %d x %d, scale factor: %g", mContext->mBackingWidth, mContext->mBackingHeight,
+               mContentScalingFactor);
         
         [pool release];
     }
@@ -289,6 +296,8 @@ namespace Demi
 		mActive = true;
 		mVisible = true;
 		mClosed = false;
+        
+        return true;
     }
 
     void DiEAGL2Window::SwapBuffers()
@@ -301,17 +310,15 @@ namespace Demi
         unsigned int buffers = DiGLES2Driver::StateCache->getDiscardBuffers();
         
         if(buffers & CLEAR_COLOR)
-        {
             attachments[attachmentCount++] = GL_COLOR_ATTACHMENT0;
-        }
+        
         if(buffers & CLEAR_DEPTH)
-        {
             attachments[attachmentCount++] = GL_DEPTH_ATTACHMENT;
-        }
+        
         if(buffers & CLEAR_STENCIL)
-        {
             attachments[attachmentCount++] = GL_STENCIL_ATTACHMENT;
-        }
+        
+#if 0
         if(mContext->mIsMultiSampleSupported && mContext->mNumSamples > 0)
         {
             CHECK_GL_ERROR(glDisable(GL_SCISSOR_TEST));
@@ -321,6 +328,7 @@ namespace Demi
             CHECK_GL_ERROR(glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER_APPLE, attachmentCount, attachments));
         }
         else
+#endif
         {
             CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, mContext->mViewFramebuffer));
             CHECK_GL_ERROR(glDiscardFramebufferEXT(GL_FRAMEBUFFER, attachmentCount, attachments));

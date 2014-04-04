@@ -33,11 +33,8 @@ namespace Demi
 
         mDrawable = [drawable retain];
 
-#if OGRE_NO_GLES3_SUPPORT == 0
-        NSUInteger renderingAPI = kEAGLRenderingAPIOpenGLES3;
-#else
         NSUInteger renderingAPI = kEAGLRenderingAPIOpenGLES2;
-#endif
+
         // If the group argument is not NULL, then we assume that an externally created EAGLSharegroup
         // is to be used and a context is created using that group.
         if(group)
@@ -120,9 +117,7 @@ namespace Demi
             if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
                 glGetError();
-                OGRE_EXCEPT(Exception::ERR_RENDERINGAPI_ERROR,
-                            "Failed to make a complete FSAA framebuffer object",
-                            __FUNCTION__);
+                DI_WARNING("Failed to make a complete FSAA framebuffer object");
                 return false;
             }
         }

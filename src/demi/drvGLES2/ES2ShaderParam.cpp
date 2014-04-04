@@ -100,7 +100,8 @@ namespace Demi
                 case DiShaderParameter::VARIABLE_MAT4:
                     {
                         DiMat4 vec4 = any_cast<DiMat4>(data);
-                        glUniformMatrix4fv(location, 1, GL_TRUE, vec4[0]);
+                        vec4.transpose(vec4);
+                        glUniformMatrix4fv(location, 1, GL_FALSE, vec4[0]);
                         break;
                     }
                 case DiShaderParameter::VARIABLE_COLOR:

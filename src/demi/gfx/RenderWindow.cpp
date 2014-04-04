@@ -23,6 +23,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "ConsoleVariable.h"
 
+//#define DISABLE_POST
+
 namespace Demi 
 {
     DiRenderWindow* DiRenderWindow::ActiveWindow = nullptr;
@@ -120,7 +122,12 @@ namespace Demi
         rp->ClearGroup();
         mSceneManager->GetMainVisibleObjects().AddToBatch(rp);
         rp->SetCurrentPass(DiRenderPipeline::P_LIGHTING_PASS);
+        
+#ifndef DISABLE_POST
         rp->Render(mSceneManager, mainCam, mSceneCanvas);
+#else
+        rp->Render(mSceneManager, mainCam, mRenderBuffer);
+#endif
 
         // Process the extra render targets
         rp->SetCurrentPass(DiRenderPipeline::P_CUSTOM_RTT_PASS);
@@ -140,8 +147,10 @@ namespace Demi
                 it->postUpdateCallback(it->rt);
         }
         
+#ifndef DISABLE_POST
         // Post filters
         rp->RenderPost(mSceneManager, mainCam);
+#endif
 
         mFrameNumber++;
         ActiveRenderWindow = nullptr;
@@ -186,6 +195,7 @@ namespace Demi
         mCanvasTexture->SetUsage(TU_RENDER_TARGET);
         mCanvasTexture->SetAutoMipmap(false);
         mCanvasTexture->CreateTexture();
+        mCanvasTexture->SetAddressing(AM_CLAMP);
         mSceneCanvas = mCanvasTexture->GetRenderTarget();
         mCanvasTexture->SetAdaptedRT(mRenderBuffer);
         mCanvasTexture->SetViewportScale(DiVec2::UNIT_SCALE);

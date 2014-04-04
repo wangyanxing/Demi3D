@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "PostEffectPass.h"
 #include "AssetManager.h"
@@ -58,7 +59,7 @@ namespace Demi
         mTexture->SetResourceUsage(RU_NONE);
         mTexture->SetUsage(TU_RENDER_TARGET);
         mTexture->CreateTexture();
-        mTexture->SetAddressing(AM_BORDER);
+        mTexture->SetAddressing(AM_CLAMP);
         mRenderTarget = mTexture->GetRenderTarget();
         if (mRenderTarget)
         {

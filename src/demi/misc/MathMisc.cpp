@@ -858,7 +858,7 @@ namespace Demi
         DiMat3 rot;
         orientation.ToRotationMatrix(rot);
 
-        // Make the translation relative to DI_NEW axes
+        // Make the translation relative to new axes
         DiMat3 rotT = rot.Transpose();
         DiVec3 trans = -rotT * position;
 

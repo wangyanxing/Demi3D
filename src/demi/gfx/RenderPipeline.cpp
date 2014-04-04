@@ -266,7 +266,7 @@ namespace Demi
         {
             mShaderEnv->modelMatrix.setIdentity();
             mShaderEnv->modelViewMatrix = mShaderEnv->viewMatrix * mShaderEnv->modelMatrix;
-            mShaderEnv->modelViewProjMatrix = mShaderEnv->projMatrix * mShaderEnv->modelViewMatrix;    
+            mShaderEnv->modelViewProjMatrix = mShaderEnv->projMatrix * mShaderEnv->modelViewMatrix;
 
             material->Bind();
             Driver->RenderGeometry(batch);

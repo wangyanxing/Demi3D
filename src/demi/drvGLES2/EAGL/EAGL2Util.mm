@@ -17,7 +17,6 @@
 #include "EAGL2Util.h"
 #include "EAGL2Window.h"
 
-
 #import  <UIKit/UIScreen.h>
 
 namespace Demi

@@ -204,17 +204,17 @@ namespace Demi
         DiRenderTarget::DetachDepthBuffer();
     }
 
-    DiGLWindowTarget::DiGLWindowTarget()
+    DiGLES2WindowTarget::DiGLES2WindowTarget()
         : mWnd(nullptr)
         , mContext(nullptr)
     {
     }
 
-    DiGLWindowTarget::~DiGLWindowTarget()
+    DiGLES2WindowTarget::~DiGLES2WindowTarget()
     {
     }
 
-    void DiGLWindowTarget::Create(DiWndHandle wnd, DiGLES2Context* context)
+    void DiGLES2WindowTarget::Create(DiWndHandle wnd, DiGLES2Context* context)
     {
         mWnd = wnd;
         mContext = context;
@@ -229,7 +229,7 @@ namespace Demi
         AttachDepthBuffer(depthBuffer);
     }
 
-    bool DiGLWindowTarget::SwapBuffer()
+    bool DiGLES2WindowTarget::SwapBuffer()
     {
         DiWindow* wnd = Driver->GetWindowManager()->GetWindow(mWnd);
         if(wnd)
@@ -241,7 +241,7 @@ namespace Demi
             return false;
     }
 
-    void DiGLWindowTarget::Init()
+    void DiGLES2WindowTarget::Init()
     {
     }
 }
