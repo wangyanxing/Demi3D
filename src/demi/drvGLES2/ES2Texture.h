@@ -72,6 +72,8 @@ namespace Demi
         GLuint        mTextureID;
 
         uint32        mImageSize;
+        
+        uint32        mFinalMipmaps;
     };
 }
 #endif // GLTexture_h__

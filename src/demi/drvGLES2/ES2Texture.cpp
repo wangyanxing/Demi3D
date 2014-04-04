@@ -30,7 +30,8 @@ namespace Demi
         mTextureID(0),
         mImageSize(0),
         mBuffer(nullptr),
-        mCurrentLockFlag(LOCK_NORMAL)
+        mCurrentLockFlag(LOCK_NORMAL),
+        mFinalMipmaps(0)
     {
         mParent = parent;
     }
@@ -108,6 +109,8 @@ namespace Demi
         // glGenerateMipmap require all mip levels to be prepared. So override how many this texture has.
         if (mParent->IsAutoMipmap() && genMipmap && numMipmaps)
             numMipmaps = maxMips;
+        
+        mFinalMipmaps = numMipmaps;
 
         if (DiGLES2Driver::GLUtil->CheckExtension("GL_APPLE_texture_max_level") || gleswIsSupported(3, 0))
             DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MAX_LEVEL_APPLE, numMipmaps);
@@ -295,6 +298,12 @@ namespace Demi
         AllocateBuffer();
         Upload(srcBox, dst, level, surface);
         DeallocateBuffer();
+        
+        // generate the mipmap if needed
+        if (mFinalMipmaps > 1 && mParent->IsAutoMipmap())
+        {
+            CHECK_GL_ERROR(glGenerateMipmap(mGLTextureType));
+        }
     }
 
     void DiGLES2TextureDrv::AllocateBuffer()

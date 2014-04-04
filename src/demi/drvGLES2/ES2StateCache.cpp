@@ -188,7 +188,7 @@ namespace Demi
     // TODO: Store as high/low bits of a GLuint, use vector instead of map for TexParameteriMap
     void DiGLES2StateCache::setTexParameteri(GLenum target, GLenum pname, GLint param)
     {
-#ifdef ENABLE_GLES2_SATECACHE
+#if 0
         // Check if we have a map entry for this texture id. If not, create a blank one and insert it.
         auto it = mTexUnitsMap.find(mLastBoundTexID);
         if (it == mTexUnitsMap.end())
