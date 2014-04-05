@@ -50,6 +50,13 @@ namespace Demi
         {
             DI_WARNING("Unable to create a suitable EAGLContext");
         }
+        
+#ifdef __IPHONE_7_1
+        IF_IOS_VERSION_IS_GREATER_THAN(7.1)
+        {
+            [mContext setMultiThreaded:YES];
+        }
+#endif
     }
 
     DiEAGLES2Context::~DiEAGLES2Context()
@@ -73,6 +80,9 @@ namespace Demi
 
         CHECK_GL_ERROR(glGenFramebuffers(1, &mViewFramebuffer));
         CHECK_GL_ERROR(glGenRenderbuffers(1, &mViewRenderbuffer));
+        
+        CHECK_GL_ERROR(glLabelObjectEXT(GL_BUFFER_OBJECT_EXT, mViewFramebuffer, 0, "View Framebuffer"));
+        CHECK_GL_ERROR(glLabelObjectEXT(GL_BUFFER_OBJECT_EXT, mViewRenderbuffer, 0, "View Renderbuffer"));
         
         CHECK_GL_ERROR(glBindFramebuffer(GL_FRAMEBUFFER, mViewFramebuffer));
         CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, mViewRenderbuffer));
@@ -125,6 +135,7 @@ namespace Demi
 #endif
         {
             CHECK_GL_ERROR(glGenRenderbuffers(1, &mDepthRenderbuffer));
+            CHECK_GL_ERROR(glLabelObjectEXT(GL_BUFFER_OBJECT_EXT, mDepthRenderbuffer,0,"Depth Renderbuffer"));
             CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, mDepthRenderbuffer));
             CHECK_GL_ERROR(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, mBackingWidth, mBackingHeight));
             CHECK_GL_ERROR(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepthRenderbuffer));

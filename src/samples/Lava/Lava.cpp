@@ -33,7 +33,10 @@ void AddMeshes()
 	shaderParam->WriteTexture2D("texture2","lavatile.jpg");
 
 	DiSimpleShapePtr model = make_shared<DiSimpleShape>();
-	model->CreateTorus(16,8,32,32);
+	//model->CreateTorus(16,8,32,32);
+    model->CreateSphere(15);
+    m0->SetWireframe(true);
+    //model->CreateBox(25);
 	model->SetMaterial(m0);
 	node = sm->GetRootNode()->CreateChild();
 	node->AttachObject(model);
@@ -42,10 +45,11 @@ void AddMeshes()
 void SetupPostEffects()
 {
 	DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
-	DiPostEffect* bloom = peMgr->GetEffect("Bloom");
-	if (bloom)
+	DiPostEffect* bloom = peMgr->GetEffect("Gray");
+    if (bloom)
 		bloom->SetEnable(true);
 
+    /*
 	DiPostEffect* effectFilm = peMgr->CreatePostEffect("Film");
     effectFilm->SetEnable(true);
 
@@ -56,6 +60,7 @@ void SetupPostEffects()
 	passFilm->SetInput("nIntensity",0.35f);
 	passFilm->SetInput("sIntensity",0.95f);
 	passFilm->SetInput("sCount",2048);
+     */
 }
 
 void InitScene()
@@ -68,7 +73,7 @@ void InitScene()
 
 	AddMeshes();
 
-	//SetupPostEffects();
+	SetupPostEffects();
 }
 
 void UpdateScene()

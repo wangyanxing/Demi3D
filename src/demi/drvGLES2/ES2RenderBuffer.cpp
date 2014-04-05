@@ -17,6 +17,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ES2RenderTarget.h"
 #include "ES2TypeMappings.h"
 
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   include "EAGL2Util.h"
+#endif
+
 namespace Demi
 {
     DiGLES2RenderBuffer::DiGLES2RenderBuffer(GLenum format, uint32 width, uint32 height)
@@ -26,7 +30,13 @@ namespace Demi
         // Generate render buffer
         CHECK_GL_ERROR(glGenRenderbuffers(1, &mRenderbufferID));
 
-        //TODO debug label
+        if (DiGLES2Driver::GLUtil->CheckExtension("GL_EXT_debug_label"))
+        {
+            DiString name;
+            name.SetInt(mRenderbufferID);
+            IF_IOS_VERSION_IS_GREATER_THAN(5.0)
+            glLabelObjectEXT(GL_PROGRAM_OBJECT_EXT, mRenderbufferID, 0, name.c_str());
+        }
 
         // Bind it to FBO
         CHECK_GL_ERROR(glBindRenderbuffer(GL_RENDERBUFFER, mRenderbufferID));

@@ -14,7 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DrvGLES2Pch.h"
 #include "ES2StateCache.h"
 
-#define ENABLE_GLES2_SATECACHE
+//#define ENABLE_GLES2_SATECACHE
 
 namespace Demi
 {

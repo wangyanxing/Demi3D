@@ -120,16 +120,15 @@ namespace Demi
     void DiPostEffectManager::CreateDefaultEffects()
     {
         //////////////////////////////////////////////////////////////////////////
-        /*
-          DiPostEffect* effectGray = CreatePostEffect("Gray");
-          effectGray->SetEnable(true);
-          DiPostEffectPass* passGray = effectGray->CreatePass("output");
-          passGray->BuildTexture(1,D3DFMT_A8R8G8B8);
-          passGray->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,"post_gray_p");
-          passGray->SetInput("image",INPUT_PREV_EFFECT);
-          passGray->SetInput("grayRate",1.0f);
-          */
-
+        
+        DiPostEffect* effectGray = CreatePostEffect("Gray");
+        effectGray->SetEnable(false);
+        DiPostEffectPass* passGray = effectGray->CreatePass("output");
+        passGray->BuildTexture(1,PF_A8R8G8B8);
+        passGray->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,"post_gray_p");
+        passGray->SetInput("image",INPUT_PREV_EFFECT);
+        passGray->SetInput("grayRate",1.0f);
+        
         //////////////////////////////////////////////////////////////////////////
         
         DiPostEffect* effect = CreatePostEffect("Bloom");

@@ -127,6 +127,10 @@ namespace Demi
     void DiGLES2Driver::EndFrame()
     {
         StateCache->setDisabled(GL_SCISSOR_TEST);
+        
+#if DEMI_PLATFORM == DEI_PLATFORM_IOS
+        
+#endif
     }
 
     void DiGLES2Driver::ReleaseGfx()
@@ -368,6 +372,8 @@ namespace Demi
     {
         if (!_BindVertexBuffer(unit))
             return false;
+        
+        GLenum polyMode = StateCache->getPolygonMode();
 
         GLint primType;
         switch (unit->mPrimitiveType)
@@ -397,7 +403,7 @@ namespace Demi
 
         if (!unit->mIndexBuffer)
         {
-            CHECK_GL_ERROR(glDrawArrays(primType, 0, unit->mVerticesNum));
+            CHECK_GL_ERROR(glDrawArrays(polyMode==GL_FILL?primType:polyMode, 0, unit->mVerticesNum));
         }
         else
         {
@@ -408,7 +414,7 @@ namespace Demi
             void* pBufferData = nullptr;
             pBufferData = VBO_BUFFER_OFFSET(unit->mIndexOffset * indexSize);
 
-            CHECK_GL_ERROR(glDrawElements(primType, unit->mIndexBuffer->GetMaxIndices(), indexType, pBufferData));
+            CHECK_GL_ERROR(glDrawElements(polyMode==GL_FILL?primType:polyMode, unit->mIndexBuffer->GetMaxIndices(), indexType, pBufferData));
         }
 
         return true;
@@ -534,6 +540,8 @@ namespace Demi
             StateCache->setDisabled(GL_DEPTH_TEST);
 
         StateCache->setDepthMask(mat->GetDepthWrite() ? GL_TRUE : GL_FALSE);
+        
+        StateCache->setDepthFunc(GL_LEQUAL);
 
         // blending mode
         switch(mat->GetBlendMode())
