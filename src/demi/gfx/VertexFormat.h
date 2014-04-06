@@ -27,7 +27,9 @@ namespace Demi
         VERT_USAGE_TANGENT  ,      
         VERT_USAGE_BINORMAL ,     
         VERT_USAGE_COLOR    ,
-        VERT_USAGE_SECONDARY_COLOR
+        VERT_USAGE_SECONDARY_COLOR,
+
+        MAX_VERT_USAGE
     };
 
     enum DiVertexType

@@ -58,23 +58,6 @@ namespace Demi
 
         uint32      mLockSize;
     };
-
-    class DI_GLES2_API DiGLES2VertexDeclaration : public DiVertexDeclaration
-    {
-    public:
-
-        DiGLES2VertexDeclaration() {}
-
-        ~DiGLES2VertexDeclaration(){ Release(); }
-
-    public:
-
-        void        Bind(){}
-
-        void        Release(){ mVertexElements.ClearElements(); }
-
-        void        Create(){}
-    };
 }
 
 #endif

@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GLES2Driver.h"
 #include "ES2RenderTarget.h"
 #include "ES2TypeMappings.h"
+#include "ES2Util.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
 #   include "EAGL2Util.h"

@@ -63,7 +63,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   include <EGL/egl.h>
 
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
-
+#   define GLES2_USE_PIPELINE
 #elif DEMI_PLATFORM == DEMI_PLATFORM_ANDROID
 
 #endif
@@ -234,5 +234,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #else
 #define EGL_CHECK_ERROR {}
 #endif
+
 
 #endif // DrvGLDefines_h__

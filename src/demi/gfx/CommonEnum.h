@@ -23,6 +23,7 @@ namespace Demi
 #define MAX_BONE_NUM            75
 #define MAX_WORLD_MATS          75    
 #define MAX_TEXTURE_LAYERS      16
+#define MAX_UV_SETS             8    
 #define MAX_LIGHTS              8    
 #define MAX_MRT                 4
     

@@ -95,7 +95,11 @@ namespace Demi
         DiGfxCaps*              InitGfxCaps();
 
         // Create a new one if not existed
+#ifdef GLES2_USE_PIPELINE
+        DiGLES2ShaderPipeline*  GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps);
+#else
         DiGLES2ShaderLinker*    GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps);
+#endif
 
         DiGLES2Context*         GetContext(DiWndHandle wnd);
 
@@ -143,10 +147,17 @@ namespace Demi
 
         DiGLES2FBOManager*      mGLFBOManager;
 
+#ifdef GLES2_USE_PIPELINE
+        typedef DiMap<DiPair<DiShaderInstance*, DiShaderInstance*>, DiGLES2ShaderPipeline*> ProgramMap;
+#else
         typedef DiMap<DiPair<DiShaderInstance*, DiShaderInstance*>, DiGLES2ShaderLinker*> ProgramMap;
+#endif
 
         ProgramMap              mProgramMaps;
 
+        DiVector<GLuint>        mRenderAttribsBound;
+
+        DiVector<GLuint>        mRenderInstanceAttribsBound;
     };
 }
 

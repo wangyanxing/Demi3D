@@ -54,12 +54,26 @@ namespace Demi
 
         void                UnlinkToProgramObject(const GLuint programObject);
 
+        DiShaderProgram*    GetShaderProgram() { return mShaderProgram; }
+
         void                Release();
+
+        GLuint              GetShaderHandle() { return mShaderHandle; }
 
         DiShaderType        GetType()
         {
             return mType;
         }
+
+        /** Return the programs link status
+        Only used when programs are linked separately with GL_EXT_separate_shader_objects.
+        */
+        GLint               IsLinked(void) { return mLinked; }
+
+        /** Set the programs link status
+        Only used when programs are linked separately with GL_EXT_separate_shader_objects.
+        */
+        void                SetLinked(GLint flag) { mLinked = flag; }
 
     public:
 
@@ -80,6 +94,8 @@ namespace Demi
         GLint               mCompiled;
 
         DiString            mProcessedShader;
+
+        GLint               mLinked;
     };
 
     //////////////////////////////////////////////////////////////////////////
