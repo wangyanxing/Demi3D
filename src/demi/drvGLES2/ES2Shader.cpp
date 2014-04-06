@@ -52,6 +52,7 @@ namespace Demi
         , mGLProgramHandle(0)
         , mType(type)
         , mCompiled(0)
+        , mLinked(0)
     {
     }
 

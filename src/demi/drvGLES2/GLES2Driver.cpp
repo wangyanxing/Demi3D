@@ -26,6 +26,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ES2StateCache.h"
 #include "ES2UniformCache.h"
 #include "ES2Util.h"
+#include "ES2ShaderPipeline.h"
+#include "ES2VertexDeclaration.h"
 #include "Capabilities.h"
 
 #include "RenderWindow.h"
@@ -417,6 +419,10 @@ namespace Demi
             CHECK_GL_ERROR(glDrawElements(polyMode==GL_FILL?primType:polyMode, unit->mIndexBuffer->GetMaxIndices(), indexType, pBufferData));
         }
 
+        for (auto ai = mRenderAttribsBound.begin(); ai != mRenderAttribsBound.end(); ++ai)
+            StateCache->setVertexAttribDisabled(*ai);
+        mRenderAttribsBound.clear();
+
         return true;
     }
 
@@ -685,10 +691,6 @@ namespace Demi
         if (!unit->mPrimitiveCount)
             return false;
 
-        // yes it's ugly now, should be fixed later
-        static bool attriIndex[16];
-        for (auto i = 0; i < 16; i++) attriIndex[i] = false;
-
         DiVertexElements& elements = unit->mVertexDecl->GetElements();
 
         for (auto it = unit->mSourceData.begin(); it != unit->mSourceData.end(); ++it)
@@ -708,7 +710,6 @@ namespace Demi
                 auto gltype  = DiGLTypeMappings::GetGLType((DiVertexType)i->Type);
 
                 GLint attrib = DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
-                attriIndex[attrib] = true;
 
                 uint16 count = elements.GetElementTypeCount((DiVertexType)i->Type);
 
@@ -718,14 +719,9 @@ namespace Demi
 
                 CHECK_GL_ERROR(glVertexAttribPointer(attrib, count, gltype, normalised, stride, pBufferData));
                 StateCache->setVertexAttribEnabled(attrib);
+                mRenderAttribsBound.push_back(attrib);
             }
         }
-
-        for (auto i = 0; i < 16; i++)
-            if (!attriIndex[i]) 
-            {
-                StateCache->setVertexAttribDisabled(i);
-            }
 
         return true;
     }
@@ -754,9 +750,28 @@ namespace Demi
 
     void DiGLES2Driver::BindShaders(DiShaderProgram* vs, DiShaderProgram* ps)
     {
-        DiGLES2ShaderLinker* prog = GetShaderLinker(vs->GetShader(), ps->GetShader());
+        auto* prog = GetShaderLinker(vs->GetShader(), ps->GetShader());
         prog->Bind();
     }
+
+#ifdef GLES2_USE_PIPELINE
+
+    DiGLES2ShaderPipeline* DiGLES2Driver::GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps)
+    {
+        auto p = DiPair<DiShaderInstance*, DiShaderInstance*>(vs, ps);
+        auto it = mProgramMaps.find(p);
+        if (it != mProgramMaps.end())
+            return it->second;
+
+        // create a new one
+        DiGLES2ShaderPipeline* ret = DI_NEW DiGLES2ShaderPipeline(static_cast<DiGLES2ShaderInstance*>(vs),
+            static_cast<DiGLES2ShaderInstance*>(ps));
+
+        mProgramMaps[p] = ret;
+        return ret;
+    }
+
+#else
 
     DiGLES2ShaderLinker* DiGLES2Driver::GetShaderLinker(DiShaderInstance* vs, DiShaderInstance* ps)
     {
@@ -772,6 +787,8 @@ namespace Demi
         mProgramMaps[p] = ret;
         return ret;
     }
+
+#endif
 
     DiShaderParameter* DiGLES2Driver::CreateShaderParams(DiMaterial& mat)
     {

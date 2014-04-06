@@ -122,7 +122,7 @@ namespace Demi
 
     void DiGLES2IndexBuffer::Unlock()
     {
-        DiGLES2Driver::StateCache->bindGLBuffer(GL_ARRAY_BUFFER, mBufferId);
+        DiGLES2Driver::StateCache->bindGLBuffer(GL_ELEMENT_ARRAY_BUFFER, mBufferId);
 
         if (mResUsage & RU_WRITE_ONLY)
         {

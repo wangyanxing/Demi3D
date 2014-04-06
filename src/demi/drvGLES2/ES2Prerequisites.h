@@ -33,6 +33,9 @@ namespace Demi
     class DiGLES2GpuVariable;
     class DiGLES2ShaderLinker;
     class DiGLES2ShaderParam;
+    class DiGLES2ShaderInstance;
+    class DiGLES2ShaderPipeline;
+    class DiGLES2VertexDeclaration;
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
     class DiEGLUtil;

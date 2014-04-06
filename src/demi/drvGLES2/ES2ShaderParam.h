@@ -45,7 +45,11 @@ namespace Demi
 
     private:
 
+#ifdef GLES2_USE_PIPELINE
+        DiGLES2ShaderPipeline* mShaderLinker;
+#else
         DiGLES2ShaderLinker*   mShaderLinker;
+#endif
         
         DiMap<GLuint, DiGLUniforms::BindingFunc> mBuiltinFuncs;
     };

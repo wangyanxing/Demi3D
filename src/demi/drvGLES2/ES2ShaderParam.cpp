@@ -16,8 +16,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ES2Shader.h"
 #include "GLES2Driver.h"
 #include "ES2TypeMappings.h"
-
 #include "Material.h"
+
+#ifdef GLES2_USE_PIPELINE
+#   include "ES2ShaderPipeline.h"
+#endif
 
 namespace Demi
 {
