@@ -122,6 +122,7 @@ namespace Demi
     void DiGLES2Driver::BeginFrame()
     {
         StateCache->setEnabled(GL_SCISSOR_TEST);
+        StateCache->setDisabled(GL_DITHER);
     }
     
     void DiGLES2Driver::EndFrame()
@@ -129,7 +130,7 @@ namespace Demi
         StateCache->setDisabled(GL_SCISSOR_TEST);
         
 #if DEMI_PLATFORM == DEI_PLATFORM_IOS
-        
+        // msaa
 #endif
     }
 
