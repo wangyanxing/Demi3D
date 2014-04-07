@@ -119,6 +119,7 @@ namespace Demi
 
     void DiPostEffectManager::CreateDefaultEffects()
     {
+        return;
         //////////////////////////////////////////////////////////////////////////
         
         DiPostEffect* effectGray = CreatePostEffect("Gray");

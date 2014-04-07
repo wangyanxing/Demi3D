@@ -6,15 +6,15 @@
 	   for (int i = 0; i < 4; i++)    \
 	       _blend += g_boneMatrices[int(BlendIndices[i])] * BlendWeights[i]; \
 	   vec4 objPos = vec4((vec4(Position,1.0) * _blend).xyz, 1.0); \
-	   vec3 objNormal = normalize((vec4(Normal, 0.0) * _blend).xyz);
+	   vec3 objNormal = normalize((vec4(Normal.xyz, 0.0) * _blend).xyz);
 
 #   define GET_SPACE_POS_NORMAL_TANGENT(p, n, t) \
         mat3x4 _blend = mat3x4(0.0);   \
         for (int i = 0; i < 4; i++)    \
             _blend += g_boneMatrices[int(BlendIndices[i])] * BlendWeights[i]; \
         vec4 objPos = vec4((vec4(Position,1.0) * _blend).xyz, 1.0); \
-        vec3 objNormal = normalize((vec4(Normal, 0.0) * _blend).xyz);\
-        vec3 objTangent = normalize((vec4(Tangent, 0.0) * _blend).xyz);\
+        vec3 objNormal = normalize((vec4(Normal.xyz, 0.0) * _blend).xyz);\
+        vec3 objTangent = normalize((vec4(Tangent.xyz, 0.0) * _blend).xyz);\
 
 #   define GET_SPACE_POS(p) \
 	   vec4 objPos = vec4(0.0);\
@@ -25,12 +25,12 @@
 
 #   define GET_SPACE_POS_NORMAL(p, n) \
        vec4 objPos = vec4(Position.xyz,1.0);\
-       vec3 objNormal = Normal;
+       vec3 objNormal = Normal.xyz;
 
 #   define GET_SPACE_POS_NORMAL_TANGENT(p, n, t) \
         vec4 objPos = vec4(Position.xyz,1.0);\
-        vec3 objNormal = Normal; \
-        vec3 objTangent = Tangent;
+        vec3 objNormal = Normal.xyz; \
+        vec3 objTangent = Tangent.xyz;
 
 #   define GET_SPACE_POS(p) \
        vec4 objPos = vec4(Position.xyz,1.0);

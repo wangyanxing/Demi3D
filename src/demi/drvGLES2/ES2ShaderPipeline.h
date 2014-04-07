@@ -22,15 +22,10 @@ namespace Demi
 {
     struct DiGLES2ShaderConstant
     {
+        GLuint program;
         GLint  location;
         GLenum type;
-    };
-
-    struct DiGLES2ShaderSampler
-    {
-        GLint  location;
-        GLenum type;
-        uint32 unit;
+        uint32 unit; // for samplers
     };
 
     class DI_GLES2_API DiGLES2ShaderPipeline : public DiBase
@@ -40,7 +35,16 @@ namespace Demi
         DiGLES2ShaderPipeline(DiGLES2ShaderInstance* vs, DiGLES2ShaderInstance* ps);
 
         ~DiGLES2ShaderPipeline();
-
+        
+        enum AttributeResult
+        {
+            /// A value to define the case we didn't look for the attributes since the contractor
+            NULL_CUSTOM_ATTRIBUTES_INDEX = -2,
+            /// A value to define the attribute has not been found (this is also the result when glGetAttribLocation fails)
+            NOT_FOUND_CUSTOM_ATTRIBUTES_INDEX = -1
+            
+        };
+        
     public:
 
         GLuint                 GetGLHandle() const { return mGLProgramPipelineHandle; }
@@ -50,12 +54,12 @@ namespace Demi
         void                   Link();
 
         GLint                  GetAttributeIndex(DiVertexUsage semantic, uint32 index);
-
+        
         void                   LoadConstants(DiGLES2ShaderParam* params);
 
         DiGLES2ShaderConstant* GetConstant(const DiString& constname);
 
-        DiGLES2ShaderSampler*  GetSampler(const DiString& constname);
+        DiGLES2ShaderConstant* GetSampler(const DiString& constname);
 
         bool                   HasConstant(const DiString& constname);
 
@@ -63,8 +67,10 @@ namespace Demi
 
     protected:
 
-        DiVertexUsage          GetAttributeSemanticEnum(DiString type);
+        DiVertexUsage          GetAttributeSemanticEnum(const DiString& type);
 
+        uint32                 GetAttributeTecoordID(const DiString& type);
+        
         const char*            GetAttributeSemanticString(DiVertexUsage semantic);
 
         void                   _LoadContant(DiGLES2ShaderInstance* shader, DiGLES2ShaderParam* params);
@@ -83,11 +89,6 @@ namespace Demi
 
         GLint   mCustomAttributesIndexes[MAX_VERT_USAGE][MAX_UV_SETS];
 
-        /// A value to define the case we didn't look for the attributes since the contractor
-#define NULL_CUSTOM_ATTRIBUTES_INDEX -2
-        /// A value to define the attribute has not been found (this is also the result when glGetAttribLocation fails)
-#define NOT_FOUND_CUSTOM_ATTRIBUTES_INDEX -1
-
         DiGLES2ShaderInstance*  mVS;
 
         DiGLES2ShaderInstance*  mPS;
@@ -95,14 +96,13 @@ namespace Demi
         GLint                   mLinked;
 
         typedef DiStrHash<DiVertexUsage> SemanticToStringMap;
-        SemanticToStringMap mSemanticTypeMap;
+        static SemanticToStringMap mSemanticTypeMap;
 
-        typedef DiStrHash<DiGLES2ShaderConstant> Consts;
-        typedef DiStrHash<DiGLES2ShaderSampler> Samplers;
+        typedef DiStrHash<DiGLES2ShaderConstant*> Consts;
 
         Consts                  mConsts;
 
-        Samplers                mSamplers;
+        Consts                  mSamplers;
     };
 }
 

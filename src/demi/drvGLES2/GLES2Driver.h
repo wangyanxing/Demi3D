@@ -137,6 +137,8 @@ namespace Demi
 
         DiGLES2Context*         mCurrentContext;
         
+        DiGLES2ShaderPipeline*  mActiveShaderPipeline;
+        
         typedef DiMap<DiWndHandle, DiGLES2Context*> ContextMap;
 
         ContextMap              mContextMap;

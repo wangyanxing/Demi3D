@@ -58,17 +58,18 @@ namespace Demi
                 GLuint location = 0;
                 int samplerUnit = 0;
 
+                DiGLES2ShaderConstant* constant = nullptr;
                 if (i == VARIABLE_SAMPLER2D || i == VARIABLE_SAMPLERCUBE)
                 {
-                    auto sampler = mShaderLinker->GetSampler(it->first);
-                    if (!sampler)
+                    constant = mShaderLinker->GetSampler(it->first);
+                    if (!constant)
                         continue;
-                    location = sampler->location;
-                    samplerUnit = (int)sampler->unit;
+                    location = constant->location;
+                    samplerUnit = (int)constant->unit;
                 }
                 else
                 {
-                    auto constant = mShaderLinker->GetConstant(it->first);
+                    constant = mShaderLinker->GetConstant(it->first);
                     if (!constant)
                         continue;
                     location = constant->location;
@@ -79,51 +80,51 @@ namespace Demi
                 case DiShaderParameter::VARIABLE_FLOAT:
                     {
                         float val = any_cast<float>(data);
-                        glUniform1fv(location, 1, &val);
+                        GL_UNIFORM_1FV(constant, 1, &val);
                         break;
                     }
                 case DiShaderParameter::VARIABLE_FLOAT2:
                     {
                         DiVec2 vec2 = any_cast<DiVec2>(data);
-                        glUniform2fv(location, 1, vec2.ptr());
+                        GL_UNIFORM_2FV(constant, 1, vec2.ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_FLOAT3:
                     {
                         DiVec3 vec3 = any_cast<DiVec3>(data);
-                        glUniform3fv(location, 1, vec3.ptr());
+                        GL_UNIFORM_3FV(constant, 1, vec3.ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_FLOAT4:
                     {
                         DiVec4 vec4 = any_cast<DiVec4>(data);
-                        glUniform4fv(location, 1, vec4.ptr());
+                        GL_UNIFORM_4FV(constant, 1, vec4.ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_MAT4:
                     {
                         DiMat4 vec4 = any_cast<DiMat4>(data);
                         vec4.transpose(vec4);
-                        glUniformMatrix4fv(location, 1, GL_FALSE, vec4[0]);
+                        GL_UNIFORM_MAT4FV(constant, 1, vec4[0]);
                         break;
                     }
                 case DiShaderParameter::VARIABLE_COLOR:
                     {
                         DiColor c = any_cast<DiColor>(data);
                         DiVec4 vec4(c.r,c.g,c.b,c.a);
-                        glUniform4fv(location, 1, vec4.ptr());
+                        GL_UNIFORM_4FV(constant, 1, vec4.ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_FLOAT4_ARRAY:
                     {
                         DiPair<DiVec4*,uint32> v4Arr = any_cast<DiPair<DiVec4*,uint32>>(data);
-                        glUniform4fv(location, v4Arr.second, v4Arr.first->ptr());
+                        GL_UNIFORM_4FV(constant, v4Arr.second, v4Arr.first->ptr());
                         break;
                     }
                 case DiShaderParameter::VARIABLE_SAMPLER2D:
                 case DiShaderParameter::VARIABLE_SAMPLERCUBE:
                     {
-                        glUniform1iv(location, 1, &samplerUnit);
+                        GL_UNIFORM_1IV(constant, 1, &samplerUnit);
                         DiTexture* tex = any_cast<DiTexture*>(data);
                         tex->Bind((uint32)samplerUnit);
                     }

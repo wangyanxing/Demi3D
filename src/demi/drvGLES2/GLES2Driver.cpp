@@ -55,7 +55,8 @@ namespace Demi
         :mMainContext(nullptr),
         mGLUtil(nullptr),
         mCurrentContext(nullptr),
-        mGLFBOManager(nullptr)
+        mGLFBOManager(nullptr),
+        mActiveShaderPipeline(nullptr)
     {
         mColourWrite[0] = mColourWrite[1] = mColourWrite[2] = mColourWrite[3] = true;
         mGLUtil = _CreateGLUtil();
@@ -694,6 +695,7 @@ namespace Demi
 
         DiVertexElements& elements = unit->mVertexDecl->GetElements();
 
+        // sources
         for (auto it = unit->mSourceData.begin(); it != unit->mSourceData.end(); ++it)
         {
             DiGLES2VertexBuffer* vb = static_cast<DiGLES2VertexBuffer*>(*it);
@@ -710,7 +712,14 @@ namespace Demi
 
                 auto gltype  = DiGLTypeMappings::GetGLType((DiVertexType)i->Type);
 
-                GLint attrib = DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
+                GLint attrib = -1;
+                
+                if (mActiveShaderPipeline)
+                    attrib = mActiveShaderPipeline->GetAttributeIndex((DiVertexUsage)i->Usage, i->UsageIndex);
+                
+                if(attrib < 0)
+                    continue;
+                //DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
 
                 uint16 count = elements.GetElementTypeCount((DiVertexType)i->Type);
 
@@ -753,6 +762,7 @@ namespace Demi
     {
         auto* prog = GetShaderLinker(vs->GetShader(), ps->GetShader());
         prog->Bind();
+        mActiveShaderPipeline = prog;
     }
 
 #ifdef GLES2_USE_PIPELINE

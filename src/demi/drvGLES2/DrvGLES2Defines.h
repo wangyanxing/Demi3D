@@ -185,6 +185,23 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define glDeleteVertexArraysOES glDeleteVertexArrays
 #endif
 
+////////////////////////////////////
+#define GL_UNIFORM_MAT3FV(c, num, val) glProgramUniformMatrix3fvEXT(c->program, c->location, num, GL_FALSE, val)
+#define GL_UNIFORM_MAT4FV(c, num, val) glProgramUniformMatrix4fvEXT(c->program, c->location, num, GL_FALSE, val)
+
+#define GL_UNIFORM_1FV(c, num, val) glProgramUniform1fvEXT(c->program, c->location, num, val)
+#define GL_UNIFORM_2FV(c, num, val) glProgramUniform2fvEXT(c->program, c->location, num, val)
+#define GL_UNIFORM_3FV(c, num, val) glProgramUniform3fvEXT(c->program, c->location, num, val)
+#define GL_UNIFORM_4FV(c, num, val) glProgramUniform4fvEXT(c->program, c->location, num, val)
+
+#define GL_UNIFORM_1I(c, val) glProgramUniform1iEXT(c->program, c->location, val)
+
+#define GL_UNIFORM_1IV(c, num, val) glProgramUniform1ivEXT(c->program, c->location, num, val)
+#define GL_UNIFORM_2IV(c, num, val) glProgramUniform2ivEXT(c->program, c->location, num, val)
+#define GL_UNIFORM_3IV(c, num, val) glProgramUniform3ivEXT(c->program, c->location, num, val)
+#define GL_UNIFORM_4IV(c, num, val) glProgramUniform4ivEXT(c->program, c->location, num, val)
+////////////////////////////////////
+
 /// Lots of generated code in here which triggers the new VC CRT security warnings
 #if !defined( _CRT_SECURE_NO_DEPRECATE )
 #define _CRT_SECURE_NO_DEPRECATE

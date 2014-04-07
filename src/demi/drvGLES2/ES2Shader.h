@@ -59,6 +59,8 @@ namespace Demi
         void                Release();
 
         GLuint              GetShaderHandle() { return mShaderHandle; }
+        
+        GLuint              GetProgramHandle() { return mGLProgramHandle; }
 
         DiShaderType        GetType()
         {
@@ -104,7 +106,7 @@ namespace Demi
     {
     public:
 
-        typedef std::function<void(const DiShaderEnvironment*, GLuint)> BindingFunc;
+        typedef std::function<void(const DiShaderEnvironment*, DiGLES2ShaderConstant*)> BindingFunc;
 
         typedef DiStrHash<BindingFunc> UniformFuncs;
 
@@ -155,8 +157,6 @@ namespace Demi
 
     private:
         
-        GLuint              mGLProgramPipelineHandle;
-
         GLuint              mGLHandle;
 
         DiGLES2ShaderInstance* mVS;

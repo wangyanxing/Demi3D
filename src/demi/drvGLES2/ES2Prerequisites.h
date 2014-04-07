@@ -36,6 +36,7 @@ namespace Demi
     class DiGLES2ShaderInstance;
     class DiGLES2ShaderPipeline;
     class DiGLES2VertexDeclaration;
+    struct DiGLES2ShaderConstant;
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
     class DiEGLUtil;

@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ES2TypeMappings.h"
 #include "ShaderProgram.h"
 #include "AssetManager.h"
+#include "ES2ShaderPipeline.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
 #   include "EAGL2Util.h"
@@ -279,7 +280,6 @@ namespace Demi
 
     DiGLES2ShaderLinker::DiGLES2ShaderLinker(DiGLES2ShaderInstance* vs, DiGLES2ShaderInstance* ps)
         : mGLHandle(0)
-        , mGLProgramPipelineHandle(0)
         , mVS(vs)
         , mPS(ps)
         , mLinked(0)
@@ -349,7 +349,7 @@ namespace Demi
                     // check if we already have this global uniform
                     if (DiGLUniforms::msUniformFuncs.find(name) != DiGLUniforms::msUniformFuncs.end())
                     {
-                        params->AddBuiltinParam(location, DiGLUniforms::msUniformFuncs[name]);
+                        params->AddBuiltinParam(DiGLUniforms::msUniformFuncs[name],nullptr);
                     }
                     else
                     {
@@ -467,138 +467,134 @@ namespace Demi
 
     void DiGLUniforms::InitUniformFuncs()
     {
-        msUniformFuncs["g_modelMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_FALSE, env->modelMatrix.transpose()[0]);
+        msUniformFuncs["g_modelMatrix"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_MAT4FV(c, 1, env->modelMatrix.transpose()[0]);
         };
 
-        msUniformFuncs["g_viewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_FALSE, env->viewMatrix.transpose()[0]);
+        msUniformFuncs["g_viewMatrix"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_MAT4FV(c, 1, env->viewMatrix.transpose()[0]);
         };
 
-        msUniformFuncs["g_projMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_FALSE, env->projMatrix.transpose()[0]);
+        msUniformFuncs["g_projMatrix"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_MAT4FV(c, 1, env->projMatrix.transpose()[0]);
         };
 
-        msUniformFuncs["g_modelViewMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_FALSE, env->modelViewMatrix.transpose()[0]);
+        msUniformFuncs["g_modelViewMatrix"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_MAT4FV(c, 1, env->modelViewMatrix.transpose()[0]);
         };
 
-        msUniformFuncs["g_modelViewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_FALSE, env->modelViewProjMatrix.transpose()[0]);
+        msUniformFuncs["g_modelViewProjMatrix"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_MAT4FV(c, 1, env->modelViewProjMatrix.transpose()[0]);
         };
 
-        msUniformFuncs["g_viewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_FALSE, env->viewProjMatrix.transpose()[0]);
+        msUniformFuncs["g_viewProjMatrix"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_MAT4FV(c, 1, env->viewProjMatrix.transpose()[0]);
         };
 
-        msUniformFuncs["g_texMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix4fv(location, 1, GL_FALSE, env->texMatrix.transpose()[0]);
+        msUniformFuncs["g_texMatrix"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_MAT4FV(c, 1, env->texMatrix.transpose()[0]);
         };
 
 #if 0
-        msUniformFuncs["g_boneMatrices"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix3x4fv(location, env->numBones, GL_FALSE, (float*)(&env->boneMatrices));
+        msUniformFuncs["g_boneMatrices"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            glUniformMatrix3x4fv(c->location, env->numBones, GL_FALSE, (float*)(&env->boneMatrices));
         };
 
-        msUniformFuncs["g_modelMatrices"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniformMatrix3x4fv(location, env->numModelMatrices, GL_FALSE, (float*)(&env->modelMatrices));
+        msUniformFuncs["g_modelMatrices"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            glUniformMatrix3x4fv(c->location, env->numModelMatrices, GL_FALSE, (float*)(&env->modelMatrices));
         };
 #endif
 
-        msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fv(location, 1, env->eyePosition.ptr());
+        msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_3FV(c, 1, env->eyePosition.ptr());
         };
 
-        msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fv(location, 1, env->eyePosition.ptr());
+        msUniformFuncs["g_eyeDirection"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_3FV(c, 1, env->eyeDirection.ptr());
         };
 
-        msUniformFuncs["g_eyeDirection"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fv(location, 1, env->eyeDirection.ptr());
+        msUniformFuncs["g_farnearPlane"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_2FV(c, 1, env->farnearPlane.ptr());
         };
 
-        msUniformFuncs["g_farnearPlane"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform2fv(location, 1, env->farnearPlane.ptr());
+        msUniformFuncs["g_time"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_1FV(c, 1, &env->time);
         };
 
-        msUniformFuncs["g_time"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1fv(location, 1, &env->time);
+        msUniformFuncs["g_viewportSize"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, 1, env->viewportSize.ptr());
         };
 
-        msUniformFuncs["g_viewportSize"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, 1, env->viewportSize.ptr());
+        msUniformFuncs["g_globalAmbient"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, 1, env->globalAmbient.Ptr());
         };
 
-        msUniformFuncs["g_globalAmbient"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, 1, env->globalAmbient.Ptr());
+        msUniformFuncs["g_ambientColor"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, 1, env->ambientColor.Ptr());
         };
 
-        msUniformFuncs["g_ambientColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, 1, env->ambientColor.Ptr());
+        msUniformFuncs["g_diffuseColor"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_3FV(c, 1, env->diffuseColor.Ptr());
         };
 
-        msUniformFuncs["g_diffuseColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fv(location, 1, env->diffuseColor.Ptr());
+        msUniformFuncs["g_specularColor"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_3FV(c, 1, env->specularColor.Ptr());
         };
 
-        msUniformFuncs["g_specularColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fv(location, 1, env->specularColor.Ptr());
+        msUniformFuncs["g_opacity"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_1FV(c, 1, &env->opacity);
         };
 
-        msUniformFuncs["g_opacity"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1fv(location, 1, &env->opacity);
+        msUniformFuncs["g_shininess"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_1FV(c, 1, &env->shininess);
         };
 
-        msUniformFuncs["g_shininess"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1fv(location, 1, &env->shininess);
+        msUniformFuncs["g_texelOffsets"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, 1, env->texelOffsets.ptr());
         };
 
-        msUniformFuncs["g_texelOffsets"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, 1, env->texelOffsets.ptr());
+        msUniformFuncs["g_numDirLights"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_1I(c, env->numDirLights);
         };
 
-        msUniformFuncs["g_numDirLights"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1iv(location, 1, &env->numDirLights);
+        msUniformFuncs["g_dirLightsColor"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, env->numDirLights, env->dirLightsColor[0].Ptr());
         };
 
-        msUniformFuncs["g_dirLightsColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, env->numDirLights, env->dirLightsColor[0].Ptr());
+        msUniformFuncs["g_dirLightsDir"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, env->numDirLights, env->dirLightsDir[0].ptr());
         };
 
-        msUniformFuncs["g_dirLightsDir"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, env->numDirLights, env->dirLightsDir[0].ptr());
+        msUniformFuncs["g_numPointLights"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_1I(c, env->numPointLights);
         };
 
-        msUniformFuncs["g_numPointLights"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1iv(location, 1, &env->numPointLights);
+        msUniformFuncs["g_pointLightsColor"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, env->numPointLights, env->pointLightsColor[0].Ptr());
         };
 
-        msUniformFuncs["g_pointLightsColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, env->numPointLights, env->pointLightsColor[0].Ptr());
+        msUniformFuncs["g_pointLightsPosition"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, env->numPointLights, env->pointLightsPosition[0].ptr());
         };
 
-        msUniformFuncs["g_pointLightsPosition"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, env->numPointLights, env->pointLightsPosition[0].ptr());
+        msUniformFuncs["g_pointLightsAttenuation"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, env->numPointLights, env->pointLightsAttenuation[0].ptr());
         };
 
-        msUniformFuncs["g_pointLightsAttenuation"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, env->numPointLights, env->pointLightsAttenuation[0].ptr());
+        msUniformFuncs["g_hasSkyLight"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_1I(c, (env->hasSkyLight ? 1 : 0));
         };
 
-        msUniformFuncs["g_hasSkyLight"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform1i(location, env->hasSkyLight ? 1 : 0);
+        msUniformFuncs["g_skyLightColor"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, 1, env->skyLightColor.Ptr());
         };
 
-        msUniformFuncs["g_skyLightColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, 1, env->skyLightColor.Ptr());
+        msUniformFuncs["g_groundColor"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_4FV(c, 1, env->groundColor.Ptr());
         };
 
-        msUniformFuncs["g_groundColor"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform4fv(location, 1, env->groundColor.Ptr());
-        };
-
-        msUniformFuncs["g_skyLightDir"] = [](const DiShaderEnvironment* env, GLuint location) {
-            glUniform3fv(location, 1, env->skyLightDir.ptr());
+        msUniformFuncs["g_skyLightDir"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
+            GL_UNIFORM_3FV(c, 1, env->skyLightDir.ptr());
         };
     }
 }
