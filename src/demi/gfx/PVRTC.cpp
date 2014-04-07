@@ -250,7 +250,7 @@ namespace Demi
             
             mWidth = header.width;
             mHeight = header.height;
-            mMipmaps = static_cast<ushort>(header.numMipmaps);
+            mMipmaps = static_cast<uint16>(header.numMipmaps);
         }
         
         // Calculate total size from number of mipmaps, faces and size

@@ -34,6 +34,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #           define DI_GLES2_API
 #       endif
 #   endif
+// use shader pipeline
+#   define GLES2_USE_PIPELINE
 #endif
 
 #ifndef GL_GLEXT_PROTOTYPES
@@ -62,10 +64,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   include <GLES2/gl2ext.h>
 #   include <EGL/egl.h>
 
-#elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
-#   define GLES2_USE_PIPELINE
 #elif DEMI_PLATFORM == DEMI_PLATFORM_ANDROID
-
+// use shader pipeline
+#   define GLES2_USE_PIPELINE
 #endif
 
 // Apple doesn't define this in their extension.  We'll do it just for convenience.
@@ -83,6 +84,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef GL_FILL
 #   define GL_FILL    0x1B02
 #endif
+
 
 
 // Defines for extensions that were made core in OpenGL ES 3
@@ -186,20 +188,37 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #endif
 
 ////////////////////////////////////
-#define GL_UNIFORM_MAT3FV(c, num, val) glProgramUniformMatrix3fvEXT(c->program, c->location, num, GL_FALSE, val)
-#define GL_UNIFORM_MAT4FV(c, num, val) glProgramUniformMatrix4fvEXT(c->program, c->location, num, GL_FALSE, val)
+#ifdef GLES2_USE_PIPELINE
+#   define GL_UNIFORM_MAT3FV(c, num, val) glProgramUniformMatrix3fvEXT(c->program, c->location, num, GL_FALSE, val)
+#   define GL_UNIFORM_MAT4FV(c, num, val) glProgramUniformMatrix4fvEXT(c->program, c->location, num, GL_FALSE, val)
 
-#define GL_UNIFORM_1FV(c, num, val) glProgramUniform1fvEXT(c->program, c->location, num, val)
-#define GL_UNIFORM_2FV(c, num, val) glProgramUniform2fvEXT(c->program, c->location, num, val)
-#define GL_UNIFORM_3FV(c, num, val) glProgramUniform3fvEXT(c->program, c->location, num, val)
-#define GL_UNIFORM_4FV(c, num, val) glProgramUniform4fvEXT(c->program, c->location, num, val)
+#   define GL_UNIFORM_1FV(c, num, val) glProgramUniform1fvEXT(c->program, c->location, num, val)
+#   define GL_UNIFORM_2FV(c, num, val) glProgramUniform2fvEXT(c->program, c->location, num, val)
+#   define GL_UNIFORM_3FV(c, num, val) glProgramUniform3fvEXT(c->program, c->location, num, val)
+#   define GL_UNIFORM_4FV(c, num, val) glProgramUniform4fvEXT(c->program, c->location, num, val)
 
-#define GL_UNIFORM_1I(c, val) glProgramUniform1iEXT(c->program, c->location, val)
+#   define GL_UNIFORM_1I(c, val) glProgramUniform1iEXT(c->program, c->location, val)
 
-#define GL_UNIFORM_1IV(c, num, val) glProgramUniform1ivEXT(c->program, c->location, num, val)
-#define GL_UNIFORM_2IV(c, num, val) glProgramUniform2ivEXT(c->program, c->location, num, val)
-#define GL_UNIFORM_3IV(c, num, val) glProgramUniform3ivEXT(c->program, c->location, num, val)
-#define GL_UNIFORM_4IV(c, num, val) glProgramUniform4ivEXT(c->program, c->location, num, val)
+#   define GL_UNIFORM_1IV(c, num, val) glProgramUniform1ivEXT(c->program, c->location, num, val)
+#   define GL_UNIFORM_2IV(c, num, val) glProgramUniform2ivEXT(c->program, c->location, num, val)
+#   define GL_UNIFORM_3IV(c, num, val) glProgramUniform3ivEXT(c->program, c->location, num, val)
+#   define GL_UNIFORM_4IV(c, num, val) glProgramUniform4ivEXT(c->program, c->location, num, val)
+#else
+#   define GL_UNIFORM_MAT3FV(c, num, val) glUniformMatrix3fv(c->location, num, GL_FALSE, val)
+#   define GL_UNIFORM_MAT4FV(c, num, val) glUniformMatrix4fv(c->location, num, GL_FALSE, val)
+
+#   define GL_UNIFORM_1FV(c, num, val) glUniform1fv(c->location, num, val)
+#   define GL_UNIFORM_2FV(c, num, val) glUniform2fv(c->location, num, val)
+#   define GL_UNIFORM_3FV(c, num, val) glUniform3fv(c->location, num, val)
+#   define GL_UNIFORM_4FV(c, num, val) glUniform4fv(c->location, num, val)
+
+#   define GL_UNIFORM_1I(c, val) glUniform1i(c->location, val)
+
+#   define GL_UNIFORM_1IV(c, num, val) glUniform1iv(c->location, num, val)
+#   define GL_UNIFORM_2IV(c, num, val) glUniform2iv(c->location, num, val)
+#   define GL_UNIFORM_3IV(c, num, val) glUniform3iv(c->location, num, val)
+#   define GL_UNIFORM_4IV(c, num, val) glUniform4iv(c->location, num, val)
+#endif
 ////////////////////////////////////
 
 /// Lots of generated code in here which triggers the new VC CRT security warnings

@@ -15,19 +15,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiES2ShaderPipeline_h__
 
 #include "ES2Prerequisites.h"
+#include "ES2Shader.h"
 #include "GpuProgram.h"
 #include "VertexFormat.h"
 
 namespace Demi
 {
-    struct DiGLES2ShaderConstant
-    {
-        GLuint program;
-        GLint  location;
-        GLenum type;
-        uint32 unit; // for samplers
-    };
-
     class DI_GLES2_API DiGLES2ShaderPipeline : public DiBase
     {
     public:

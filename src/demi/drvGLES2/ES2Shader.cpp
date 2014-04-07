@@ -288,8 +288,16 @@ namespace Demi
 
     DiGLES2ShaderLinker::~DiGLES2ShaderLinker()
     {
-        //CHECK_GL_ERROR(glDeleteProgramPipelinesEXT(1, &mGLProgramPipelineHandle));
         CHECK_GL_ERROR(glDeleteProgram(mGLHandle));
+
+        for (auto i = mConsts.begin(); i != mConsts.end(); ++i)
+        {
+            DI_DELETE i->second;
+        }
+        for (auto i = mSamplers.begin(); i != mSamplers.end(); ++i)
+        {
+            DI_DELETE i->second;
+        }
     }
 
     void DiGLES2ShaderLinker::Bind()
@@ -343,13 +351,18 @@ namespace Demi
                     name = name.substr(0, pos);
                 }
 
+                DiGLES2ShaderConstant* constant = DI_NEW DiGLES2ShaderConstant();
+                constant->program = 0; // we don't need it here
+                constant->location = location;
+                constant->type = glType;
+
                 // built-in uniforms
                 if (!strncmp(uniformName, "g_", 2))
                 {
                     // check if we already have this global uniform
                     if (DiGLUniforms::msUniformFuncs.find(name) != DiGLUniforms::msUniformFuncs.end())
                     {
-                        params->AddBuiltinParam(DiGLUniforms::msUniformFuncs[name],nullptr);
+                        params->AddBuiltinParam(DiGLUniforms::msUniformFuncs[name], constant);
                     }
                     else
                     {
@@ -357,23 +370,19 @@ namespace Demi
                     }
                     continue;
                 }
+
                 
                 if (glType == GL_SAMPLER_2D || glType == GL_SAMPLER_CUBE)
                 {
-                    DiGLShaderSampler s;
-                    s.location = location;
-                    s.type = glType;
-                    s.unit = (uint32)mSamplers.size();
-                    mSamplers[name] = s;
+                    constant->unit = (uint32)mSamplers.size();
+                    mSamplers[name] = constant;
 
-                    CHECK_GL_ERROR(glUniform1i(location, s.unit));
+                    CHECK_GL_ERROR(glUniform1i(location, constant->unit));
                 }
                 else
                 {
-                    DiGLShaderConstant p;
-                    p.location = location;
-                    p.type = glType;
-                    mConsts[name] = p;
+                    constant->unit = 0;
+                    mConsts[name] = constant;
                 }
 
                 auto demitype = DiGLTypeMappings::ConvertGLShaderConstType(glType);
@@ -391,20 +400,20 @@ namespace Demi
         delete[] uniformName;
     }
 
-    DiGLShaderConstant* DiGLES2ShaderLinker::GetConstant(const DiString& constname)
+    DiGLES2ShaderConstant* DiGLES2ShaderLinker::GetConstant(const DiString& constname)
     {
         auto i = mConsts.find(constname);
         if (i != mConsts.end())
-            return &(i->second);
+            return i->second;
         else
             return nullptr;
     }
 
-    DiGLShaderSampler*  DiGLES2ShaderLinker::GetSampler(const DiString& constname)
+    DiGLES2ShaderConstant*  DiGLES2ShaderLinker::GetSampler(const DiString& constname)
     {
         auto i = mSamplers.find(constname);
         if (i != mSamplers.end())
-            return &(i->second);
+            return i->second;
         else
             return nullptr;
     }
@@ -444,15 +453,7 @@ namespace Demi
            
             DiGLES2ShaderInstance::LogObjectInfo("GLSL linking result: ", mGLHandle);
 
-            if (Driver->GetGfxCaps()->hasCapability(RSC_SEPARATE_SHADER_OBJECTS))
-            {
-                IF_IOS_VERSION_IS_GREATER_THAN(5.0)
-                {
-                    if (glIsProgramPipelineEXT(mGLHandle))
-                        glValidateProgramPipelineEXT(mGLHandle);
-                }
-            }
-            else if (glIsProgram(mGLHandle))
+            if (glIsProgram(mGLHandle))
             {
                 glValidateProgram(mGLHandle);
             }

@@ -21,20 +21,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    struct DiGLShaderConstant
+    struct DiGLES2ShaderConstant
     {
+        GLuint program;
         GLint  location;
         GLenum type;
+        uint32 unit; // for samplers
     };
-
-    struct DiGLShaderSampler
-    {
-        GLint  location;
-        GLenum type;
-        uint32 unit;
-    };
-
-    //////////////////////////////////////////////////////////////////////////
 
     class DiGLES2ShaderInstance : public DiShaderInstance
     {
@@ -127,21 +120,21 @@ namespace Demi
 
     public:
 
-        void                Link();
+        void                   Link();
 
-        void                Bind();
+        void                   Bind();
 
-        void                LoadConstants(DiGLES2ShaderParam* params);
+        void                   LoadConstants(DiGLES2ShaderParam* params);
 
-        DiGLShaderConstant* GetConstant(const DiString& constname);
+        DiGLES2ShaderConstant* GetConstant(const DiString& constname);
 
-        DiGLShaderSampler*  GetSampler(const DiString& constname);
+        DiGLES2ShaderConstant* GetSampler(const DiString& constname);
 
-        bool                HasConstant(const DiString& constname);
+        bool                   HasConstant(const DiString& constname);
 
-        bool                HasSampler(const DiString& samplername);
+        bool                   HasSampler(const DiString& samplername);
 
-        GLuint              GetGLHandle() const { return mGLHandle; }
+        GLuint                 GetGLHandle() const { return mGLHandle; }
 
     private:
 
@@ -165,8 +158,8 @@ namespace Demi
 
         GLint               mLinked;
 
-        typedef DiStrHash<DiGLShaderConstant> Consts;
-        typedef DiStrHash<DiGLShaderSampler> Samplers;
+        typedef DiStrHash<DiGLES2ShaderConstant*> Consts;
+        typedef DiStrHash<DiGLES2ShaderConstant*> Samplers;
 
         Consts              mConsts;
 

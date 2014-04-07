@@ -761,7 +761,9 @@ namespace Demi
     {
         auto* prog = GetShaderLinker(vs->GetShader(), ps->GetShader());
         prog->Bind();
+#ifdef GLES2_USE_PIPELINE
         mActiveShaderPipeline = prog;
+#endif
     }
 
 #ifdef GLES2_USE_PIPELINE
