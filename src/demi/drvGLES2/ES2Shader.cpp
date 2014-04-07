@@ -228,8 +228,8 @@ namespace Demi
         mProcessedShader += "#define DI_GLES2\n";
 
         // precious
-        mProcessedShader += "precision mediump int;\n";
-        mProcessedShader += "precision mediump float;\n";
+        mProcessedShader += "precision highp int;\n";
+        mProcessedShader += "precision highp float;\n";
 
         // defines
         for (auto i = mCompileDesc.marcos.begin(); i != mCompileDesc.marcos.end(); ++i)

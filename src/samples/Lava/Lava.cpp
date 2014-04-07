@@ -29,13 +29,17 @@ void AddMeshes()
 	shaderParam->WriteFloat("fogDensity",0.45f);
 	shaderParam->WriteFloat2("uvScale",DiVec2(3,1));
 	shaderParam->WriteFloat3("fogColor",DiVec3(0,0,0));
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+	shaderParam->WriteTexture2D("texture1","cloud.pvr");
+	shaderParam->WriteTexture2D("texture2","lavatile.pvr");
+#else
 	shaderParam->WriteTexture2D("texture1","cloud.png");
 	shaderParam->WriteTexture2D("texture2","lavatile.jpg");
+#endif
 
 	DiSimpleShapePtr model = make_shared<DiSimpleShape>();
-	//model->CreateTorus(16,8,32,32);
-    model->CreateSphere(15);
-    m0->SetWireframe(true);
+	model->CreateTorus(16,8,32,32);
+    //model->CreateSphere(15);
     //model->CreateBox(25);
 	model->SetMaterial(m0);
 	node = sm->GetRootNode()->CreateChild();
@@ -45,22 +49,13 @@ void AddMeshes()
 void SetupPostEffects()
 {
 	DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
-	DiPostEffect* bloom = peMgr->GetEffect("Gray");
+	DiPostEffect* bloom = peMgr->GetEffect("Bloom");
     if (bloom)
 		bloom->SetEnable(true);
-
-    /*
-	DiPostEffect* effectFilm = peMgr->CreatePostEffect("Film");
-    effectFilm->SetEnable(true);
-
-  	DiPostEffectPass* passFilm = effectFilm->CreatePass("output");
- 	passFilm->SetQuadScale(1);
-  	passFilm->BuildMaterial("screenquad_v","post_film_p");
-	passFilm->SetInput("image",INPUT_PREV_EFFECT);
-	passFilm->SetInput("nIntensity",0.35f);
-	passFilm->SetInput("sIntensity",0.95f);
-	passFilm->SetInput("sCount",2048);
-     */
+    
+	DiPostEffect* film = peMgr->GetEffect("Film");
+    if (film)
+		film->SetEnable(true);
 }
 
 void InitScene()

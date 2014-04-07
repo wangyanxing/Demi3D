@@ -119,7 +119,6 @@ namespace Demi
 
     void DiPostEffectManager::CreateDefaultEffects()
     {
-        return;
         //////////////////////////////////////////////////////////////////////////
         
         DiPostEffect* effectGray = CreatePostEffect("Gray");
@@ -129,6 +128,17 @@ namespace Demi
         passGray->BuildMaterial(DiMaterialDefine::SCREEN_QUAD_VERT_SHADER,"post_gray_p");
         passGray->SetInput("image",INPUT_PREV_EFFECT);
         passGray->SetInput("grayRate",1.0f);
+        
+        DiPostEffect* effectFilm = CreatePostEffect("Film");
+        effectFilm->SetEnable(false);
+        DiPostEffectPass* passFilm = effectFilm->CreatePass("output");
+        passFilm->BuildTexture(1,PF_A8R8G8B8);
+        passFilm->SetQuadScale(1);
+        passFilm->BuildMaterial("screenquad_v","post_film_p");
+        passFilm->SetInput("image",INPUT_PREV_EFFECT);
+        passFilm->SetInput("nIntensity",0.35f);
+        passFilm->SetInput("sIntensity",0.95f);
+        passFilm->SetInput("sCount",2048);
         
         //////////////////////////////////////////////////////////////////////////
         

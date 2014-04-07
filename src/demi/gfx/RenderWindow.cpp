@@ -23,7 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "ConsoleVariable.h"
 
-#define DISABLE_POST
+//#define DISABLE_POST
 
 namespace Demi 
 {

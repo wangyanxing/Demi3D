@@ -9,7 +9,11 @@ varying vec2 vTexCoord0;
 
 void main(void)
 {
+#ifdef DI_GLES2
+	vec2 p = (g_viewportSize.xy - 2.0*gl_FragCoord.xy) / min(g_viewportSize.y,g_viewportSize.x);
+#else
 	vec2 p = (2.0*gl_FragCoord.xy - g_viewportSize.xy) / min(g_viewportSize.y,g_viewportSize.x);
+#endif
 	
 	p.y -= 0.25;
 

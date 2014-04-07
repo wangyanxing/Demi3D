@@ -25,5 +25,5 @@ void main()
 	cResult += origin.rgb * vec3( sc.x, sc.y, sc.x ) * sIntensity;
 	cResult = origin.rgb + clamp( nIntensity, 0.0,1.0 ) * ( cResult - origin.rgb );
 	
-    gl_FragColor =  vec4( cResult, origin.a );
+    gl_FragColor =  vec4( cResult.rgb, origin.a );
 }

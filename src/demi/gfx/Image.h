@@ -43,6 +43,8 @@ namespace Demi
     protected:
 
         void            ParseDDS(DiTexture* texture);
+        
+        void            ParsePVR(DiTexture* texture);
 
         void            ParseOthers(DiTexture* texture);
 
@@ -117,7 +119,9 @@ namespace Demi
 
     public:
 
-        static uint32    ComputeImageByteSize(uint32 width, uint32 height,DiPixelFormat DiPixelFormat);
+        static uint32    ComputeImageByteSize(uint32 width, uint32 height,DiPixelFormat format);
+        
+        static uint32    ComputeImageByteSize(uint32 mips, uint32 surfaces, uint32 width, uint32 height,DiPixelFormat format);
 
         static uint32    GetLevelDimension(uint32 dimension, uint32 level);
 

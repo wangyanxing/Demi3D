@@ -52,7 +52,14 @@ namespace Demi
             mSemanticTypeMap.insert(SemanticToStringMap::value_type("BlendIndices", VERT_USAGE_BLENDINDICES));
             mSemanticTypeMap.insert(SemanticToStringMap::value_type("Tangent", VERT_USAGE_TANGENT));
             mSemanticTypeMap.insert(SemanticToStringMap::value_type("Binormal", VERT_USAGE_BINORMAL));
-            mSemanticTypeMap.insert(SemanticToStringMap::value_type("Texcoord", VERT_USAGE_TEXCOORD));
+            mSemanticTypeMap.insert(SemanticToStringMap::value_type("Texcoord0", VERT_USAGE_TEXCOORD));
+            mSemanticTypeMap.insert(SemanticToStringMap::value_type("Texcoord1", VERT_USAGE_TEXCOORD));
+            mSemanticTypeMap.insert(SemanticToStringMap::value_type("Texcoord2", VERT_USAGE_TEXCOORD));
+            mSemanticTypeMap.insert(SemanticToStringMap::value_type("Texcoord3", VERT_USAGE_TEXCOORD));
+            mSemanticTypeMap.insert(SemanticToStringMap::value_type("Texcoord4", VERT_USAGE_TEXCOORD));
+            mSemanticTypeMap.insert(SemanticToStringMap::value_type("Texcoord5", VERT_USAGE_TEXCOORD));
+            mSemanticTypeMap.insert(SemanticToStringMap::value_type("Texcoord6", VERT_USAGE_TEXCOORD));
+            mSemanticTypeMap.insert(SemanticToStringMap::value_type("Texcoord7", VERT_USAGE_TEXCOORD));
         }
     }
 
@@ -192,6 +199,7 @@ namespace Demi
         GLint res = mCustomAttributesIndexes[semantic][index];
 		if (res == NULL_CUSTOM_ATTRIBUTES_INDEX)
 		{
+#if 0
             GLuint handle = mVS->GetProgramHandle();
 			const char * attString = GetAttributeSemanticString(semantic);
 			GLint attrib;
@@ -208,6 +216,7 @@ namespace Demi
 			// Update mCustomAttributesIndexes with the index we found (or didn't find)
 			mCustomAttributesIndexes[semantic-1][index] = attrib;
 			res = attrib;
+#endif
 		}
         
 		return res;
@@ -215,23 +224,16 @@ namespace Demi
 
     DiVertexUsage DiGLES2ShaderPipeline::GetAttributeSemanticEnum(const DiString& type)
     {
-        DiVertexUsage semantic = mSemanticTypeMap[type];
-        if (semantic >= 0)
+        auto it = mSemanticTypeMap.find(type);
+        if (it != mSemanticTypeMap.end())
         {
-            return semantic;
+            return it->second;
         }
         else
         {
-            if (DiString::StartsWith(type, "Texcoord"))
-            {
-                return VERT_USAGE_TEXCOORD;
-            }
-            else
-            {
-                DI_WARNING("Missing attribute!");
-                DI_ASSERT_FAIL;
-                return (DiVertexUsage)0;
-            }
+            DI_WARNING("Missing attribute!");
+            DI_ASSERT_FAIL;
+            return (DiVertexUsage)0;
         }
     }
     

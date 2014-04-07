@@ -355,7 +355,7 @@ namespace Demi
                         dst.GetWidth(),
                         dst.GetHeight(),
                         0,
-                        size,
+                        (GLsizei)size,
                         src.data));
                 }
                 else
@@ -363,7 +363,7 @@ namespace Demi
                     CHECK_GL_ERROR(glCompressedTexSubImage2D(faceType, level,
                         dst.left, dst.top,
                         dst.GetWidth(), dst.GetHeight(),
-                        mGLFormat, size,
+                        mGLFormat, (GLsizei)size,
                         src.data));
                 }
                 break;

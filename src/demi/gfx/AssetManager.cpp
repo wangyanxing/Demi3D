@@ -51,6 +51,7 @@ namespace Demi
         imageExts.push_back("jpg");
         imageExts.push_back("tga");
         imageExts.push_back("dds");
+        imageExts.push_back("pvr");
         imageExts.push_back("png");
         
         RegisterAssetType("Texture",imageExts,[](const DiString& name){

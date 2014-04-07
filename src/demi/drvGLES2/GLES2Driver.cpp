@@ -413,7 +413,7 @@ namespace Demi
         {
             unit->mIndexBuffer->Bind();
             GLenum indexType = unit->mIndexBuffer->GetType() == IB_16BITS ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
-            uint32 indexSize = unit->mIndexBuffer->GetType() == IB_16BITS ? sizeof(unsigned short) : sizeof(unsigned int);
+            uint32 indexSize = unit->mIndexBuffer->GetType() == IB_16BITS ? 16 : 32;
 
             void* pBufferData = nullptr;
             pBufferData = VBO_BUFFER_OFFSET(unit->mIndexOffset * indexSize);
@@ -719,7 +719,6 @@ namespace Demi
                 
                 if(attrib < 0)
                     continue;
-                //DiGLTypeMappings::GetFixedAttributeIndex(i->Usage, i->UsageIndex);
 
                 uint16 count = elements.GetElementTypeCount((DiVertexType)i->Type);
 

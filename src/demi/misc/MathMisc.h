@@ -527,9 +527,9 @@ namespace Demi
                 def.right <= right && def.bottom <= bottom);
         }
         
-        size_t    GetWidth() const { return right-left; }
+        uint32  GetWidth() const { return right-left; }
 
-        size_t    GetHeight() const { return bottom-top; }
+        uint32  GetHeight() const { return bottom-top; }
     };
     
     template< typename T >

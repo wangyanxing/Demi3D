@@ -73,6 +73,8 @@ namespace Demi
         DiString matname = mPassName + "_m";
         mMaterial = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(matname);
         mMaterial->SetCullMode(CULL_NONE);
+        mMaterial->SetDepthCheck(false);
+        mMaterial->SetDepthWrite(false);
 
         mMaterial->LoadShader(vpshader,fpshader);
     }

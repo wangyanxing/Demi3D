@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "Image.h"
 #include "AssetManager.h"
@@ -17,10 +18,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "nv_dds.h"
 #include "stb_image.h"
 #include "stb_image_write.h"
+#include "PVRTC.h"
 
 namespace Demi 
 {
-    static uint32 ComputeCompressedDimension(uint32 dimension)
+    static uint32 ComputeDDSDimension(uint32 dimension)
     {
         if(dimension < 4)
             dimension = 4;
@@ -128,6 +130,10 @@ namespace Demi
         {
             ParseDDS(texture);
         }
+        else if(DiPVRTC::CheckHead(head.c_str()))
+        {
+            ParsePVR(texture);
+        }
         else
         {
             //tga/bmp/jpg/png/hdr..
@@ -135,6 +141,47 @@ namespace Demi
         }
 
         return true;
+    }
+    
+    void DiImage::ParsePVR(DiTexture* texture)
+    {
+        DI_INFO("Loading pvr image : %s", mImageData->GetName().c_str());
+     
+        DiPVRTC pvr;
+        bool ok = pvr.Load(mImageData);
+        DI_ASSERT(ok);
+        
+        if(ok)
+        {
+            if(texture)
+            {
+                texture->Release();
+                texture->SetTextureType(pvr.IsCubeMap() ? TEXTURE_CUBE : TEXTURE_2D);
+                texture->SetDimensions(pvr.mWidth, pvr.mHeight);
+                texture->SetFormat(pvr.mFormat);
+                texture->SetResourceUsage(RU_WRITE_ONLY);
+                texture->SetNumLevels(pvr.mMipmaps);
+                
+                if (texture->GetNumLevels() > 1)
+                    texture->SetAutoMipmap(false);
+                
+                texture->CreateTexture();
+                DiTextureDrv* texDrv = texture->GetTextureDriver();
+                
+                int faces = pvr.mNumFaces;
+                DI_ASSERT(faces == 1 || faces == 6);
+                
+                for (int f = 0; f < faces; f++)
+                {
+                    for (uint32 i = 0; i < texture->GetNumLevels(); i++)
+                    {
+                        auto pixbox = pvr.GetPixelBox(f, i);
+                        texDrv->CopyFromMemory(pixbox, i, f);
+                    }
+                }
+            }
+
+        }
     }
 
     void DiImage::ParseDDS(DiTexture* texture)
@@ -208,7 +255,7 @@ namespace Demi
 
     uint8* DiImage::_LoadImage(int& width, int& height, int& components)
     {
-        size_t size = mImageData->Size();
+        int size = (int)mImageData->Size();
         shared_ptr<uint8> buffer(DI_NEW uint8[size], [](uint8 *p) { DI_DELETE[] p; });
         mImageData->Read(buffer.get(), size);
         uint8* data = buffer.get();
@@ -341,6 +388,18 @@ namespace Demi
         size_t pixelOffset = pixelSize * (z * slicePitch + y * rowPitch + x);
         PackColour(cv, format, (unsigned char *)data + pixelOffset);
     }
+    
+    uint32 DiPixelBox::ComputeImageByteSize(uint32 mipmaps, uint32 surfaces, uint32 width, uint32 height,DiPixelFormat format)
+    {
+        uint32 size = 0;
+        for(size_t mip=0; mip<=mipmaps; ++mip)
+        {
+            size += ComputeImageByteSize(width, height, format) * surfaces;
+            if(width!=1) width /= 2;
+            if(height!=1) height /= 2;
+        }
+        return size;
+    }
 
     uint32 DiPixelBox::ComputeImageByteSize( uint32 width, uint32 height, DiPixelFormat format )
     {
@@ -349,16 +408,39 @@ namespace Demi
         switch(format)
         {
         case PF_DXT1:
-            width   = ComputeCompressedDimension(width);
-            height  = ComputeCompressedDimension(height);
+            width   = ComputeDDSDimension(width);
+            height  = ComputeDDSDimension(height);
             size    = ComputeImageByteSize(width, height, PF_A8R8G8B8) / 8;
             break;
         case PF_DXT3:
         case PF_DXT5:
-            width   = ComputeCompressedDimension(width);
-            height  = ComputeCompressedDimension(height);
+            width   = ComputeDDSDimension(width);
+            height  = ComputeDDSDimension(height);
             size    = ComputeImageByteSize(width, height, PF_A8R8G8B8) / 4;
             break;
+        // Size calculations from the PVRTC OpenGL extension spec
+        // http://www.khronos.org/registry/gles/extensions/IMG/IMG_texture_compression_pvrtc.txt
+        // Basically, 32 bytes is the minimum texture size.  Smaller textures are padded up to 32 bytes
+        case PF_PVRTC_RGB2:
+        case PF_PVRTC_RGBA2:
+        case PF_PVRTC2_2BPP:
+            return (std::max((int)width, 16) * std::max((int)height, 8) * 2 + 7) / 8;
+        case PF_PVRTC_RGB4:
+        case PF_PVRTC_RGBA4:
+        case PF_PVRTC2_4BPP:
+            return (std::max((int)width, 8) * std::max((int)height, 8) * 4 + 7) / 8;
+            
+        case PF_ETC1_RGB8:
+        case PF_ETC2_RGB8:
+        case PF_ETC2_RGBA8:
+        case PF_ETC2_RGB8A1:
+            return ((width * height) >> 1);
+        case PF_ATC_RGB:
+            return ((width + 3) / 4) * ((height + 3) / 4) * 8;
+        case PF_ATC_RGBA_EXPLICIT_ALPHA:
+        case PF_ATC_RGBA_INTERPOLATED_ALPHA:
+            return ((width + 3) / 4) * ((height + 3) / 4) * 16;
+
         default:
             size    = GetNumElemBytes(format) * numPixels;
         }
@@ -378,16 +460,8 @@ namespace Demi
 
     bool DiPixelBox::IsCompressedFormat( DiPixelFormat fmt )
     {
-        if (fmt == PF_DXT1 ||
-            fmt == PF_DXT2 ||
-            fmt == PF_DXT3 ||
-            fmt == PF_DXT4 ||
-            fmt == PF_DXT5
-            )
-        {
-            return true;
-        }
-        return false;
+        const PixelFormatDescription &des = PixelFormatDescription::GetFormatDesc(fmt);
+        return (des.flags & PFF_COMPRESSED) > 0;
     }
 
     uint32 DiPixelBox::GetFormatNumBlocks( uint32 dimension, DiPixelFormat fmt )
@@ -1035,6 +1109,175 @@ namespace Demi
                     PFF_DEPTH,
                     PCT_FLOAT16, 1,
                     16, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_PVRTC_RGB2:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED,
+                    PCT_BYTE, 3,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_PVRTC_RGBA2:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_PVRTC_RGB4:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED,
+                    PCT_BYTE, 3,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_PVRTC_RGBA4:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_PVRTC2_2BPP:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_PVRTC2_4BPP:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_ETC1_RGB8:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED,
+                    PCT_BYTE, 3,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_ETC2_RGB8:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED,
+                    PCT_BYTE, 3,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_ETC2_RGBA8:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_ETC2_RGB8A1:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_ATC_RGB:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED,
+                    PCT_BYTE, 3,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_ATC_RGBA_EXPLICIT_ALPHA:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+        case PF_ATC_RGBA_INTERPOLATED_ALPHA:
+            {
+                PixelFormatDescription desc =
+                {
+                    0,
+                    PFF_COMPRESSED | PFF_HASALPHA,
+                    PCT_BYTE, 4,
+                    0, 0, 0, 0,
                     0, 0, 0, 0, 0, 0, 0, 0
                 };
                 s_kDescs[format] = desc;
