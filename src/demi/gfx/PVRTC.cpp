@@ -119,16 +119,7 @@ namespace Demi
     
     DiPixelBox DiPVRTC::GetPixelBox(uint32 face, uint32 mipmap)
     {
-        // Image data is arranged as:
-		// face 0, top level (mip 0)
-		// face 0, mip 1
-		// face 0, mip 2
-		// face 1, top level (mip 0)
-		// face 1, mip 1
-		// face 1, mip 2
-		// etc
-        
-		if(mipmap > mMipmaps)
+        if(mipmap > mMipmaps)
         {
             DI_WARNING("Mipmap index out of range");
         }
@@ -143,27 +134,29 @@ namespace Demi
 		// Figure out the offsets
         uint32 width = mWidth;
         uint32 height = mHeight;
-		size_t fullFaceSize = 0;
-		size_t finalFaceSize = 0;
 		uint32 finalWidth = 0, finalHeight = 0;
         
-		for(size_t mip=0; mip <= mMipmaps; ++mip)
+        uint32 mipOffset = 0;
+        uint32 lastLevelSize = 0;
+        
+		for(uint32 mip = 0; mip < mMipmaps; ++mip)
         {
-			if (mip == mipmap)
-			{
-				finalFaceSize = fullFaceSize;
-				finalWidth = width;
-				finalHeight = height;
-			}
-            fullFaceSize += DiPixelBox::ComputeImageByteSize(width, height, mFormat);
+            mipOffset += lastLevelSize * mNumFaces;
+            lastLevelSize = DiPixelBox::ComputeImageByteSize(width, height, mFormat);
+            if (mip == mipmap)
+            {
+                mipOffset += face * lastLevelSize;
+                finalWidth = width;
+                finalHeight = height;
+                break;
+            }
             
             /// Half size in each dimension
             if(width!=1) width /= 2;
             if(height!=1) height /= 2;
         }
-		// Advance pointer by number of full faces, plus mip offset into
-		offset += face * fullFaceSize;
-		offset += finalFaceSize;
+        offset += mipOffset;
+
 		// Return subface as pixelbox
 		DiPixelBox src(finalWidth, finalHeight, mFormat, offset);
 		return src;
@@ -331,12 +324,12 @@ namespace Demi
         // All mips for a surface, then each face
         for(size_t mip = 0; mip <= mMipmaps; ++mip)
 		{
+            size_t pvrSize = DiPixelBox::ComputeImageByteSize(w, h, mFormat);
             for(size_t surface = 0; surface < header.numSurfaces; ++surface)
             {
                 for(size_t i = 0; i < mNumFaces; ++i)
                 {
                     // Load directly
-                    size_t pvrSize = DiPixelBox::ComputeImageByteSize(w, h, mFormat);
                     stream->Read(destPtr, pvrSize);
                     destPtr = static_cast<void*>(static_cast<uint8*>(destPtr) + pvrSize);
                 }

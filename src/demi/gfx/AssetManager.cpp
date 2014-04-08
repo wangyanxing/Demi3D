@@ -107,34 +107,42 @@ namespace Demi
 
     DiAssetPtr DiAssetManager::LoadAsset(const DiString& path, const DiString& type, bool ignoreError)
     {
+        DiString filepath = path;
         DiAssetPtr asset;
-        DiString extension = path.GetFileExtension();
+        DiString extension = filepath.GetFileExtension();
         extension.ToLower();
+        
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        if(extension == "dds")
+        {
+            filepath = filepath.ExtractBaseName() + ".pvr";
+        }
+#endif
 
         // if we have an extension loader, use it
         if(!extension.empty() && mExtensionLoaders.find(extension) != mExtensionLoaders.end())
         {
-            DiDataStreamPtr buf = OpenArchive(path,ignoreError);
+            DiDataStreamPtr buf = OpenArchive(filepath,ignoreError);
 
             auto it = mExtensionLoaders.find(extension);
             if(buf)
             {
-                asset = it->second(path);
+                asset = it->second(filepath);
                 asset->Load(buf);
             }
             else
-                DI_WARNING("Cannot load the asset :%s", path.c_str());
+                DI_WARNING("Cannot load the asset :%s", filepath.c_str());
         }
         // otherwise we just call Load() without parameter
         else {
             auto it = mAssetLoaders.find(type);
             if (it != mAssetLoaders.end())
             {
-                asset = it->second(path);
+                asset = it->second(filepath);
                 asset->Load();
             }
             else
-                DI_WARNING("Cannot load the asset :%s", path.c_str());
+                DI_WARNING("Cannot load the asset :%s", filepath.c_str());
         }
 
         if(asset && !asset->LoadingComplete())
@@ -143,8 +151,8 @@ namespace Demi
         }
         if(asset)
         {
-            DI_ASSERT(mAssets.find(path) == mAssets.end());
-            mAssets[path] = asset;
+            //DI_ASSERT(mAssets.find(filepath) == mAssets.end());
+            mAssets[filepath] = asset;
         }
         return asset;
     }

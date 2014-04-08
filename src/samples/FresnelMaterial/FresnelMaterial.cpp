@@ -22,7 +22,7 @@ void AddMeshes()
 
 	sphereMeshes.reserve(numMeshes);
 
-	for(int i = 0; i < numMeshes; i++) 
+	for(int i = 0; i < numMeshes; i++)
     {
 
 		DiCullNode* cullnode = sm->GetRootNode()->CreateChild();

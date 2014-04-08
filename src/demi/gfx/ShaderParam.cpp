@@ -117,12 +117,18 @@ namespace Demi
     DiTexturePtr DiShaderParameter::WriteTexture2D( const DiString& name, 
         const DiString& textureName )
     {
+        DiString texfile = textureName;
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        if(texfile.CheckFileExtension("dds"))
+            texfile = texfile.ExtractBaseName() + ".pvr";
+#endif
+        
         DiAssetManager& assetMgr = DiAssetManager::GetInstance();
-        DiTexturePtr textureAsset = assetMgr.GetAsset<DiTexture>(textureName);
+        DiTexturePtr textureAsset = assetMgr.GetAsset<DiTexture>(texfile);
 
         if (!textureAsset)
         {
-            DI_WARNING("Failed to load the texture2D resource : %s",textureName.c_str());
+            DI_WARNING("Failed to load the texture2D resource : %s",texfile.c_str());
             return DiTexturePtr();
         }
 
@@ -161,12 +167,18 @@ namespace Demi
     DiTexturePtr DiShaderParameter::WriteTextureCUBE( const DiString& name, 
         const DiString& textureName )
     {
+        DiString texfile = textureName;
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        if(texfile.CheckFileExtension("dds"))
+            texfile = texfile.ExtractBaseName() + ".pvr";
+#endif
+        
         DiAssetManager& assetMgr = DiAssetManager::GetInstance();
-        DiTexturePtr textureAsset = assetMgr.GetAsset<DiTexture>(textureName);
+        DiTexturePtr textureAsset = assetMgr.GetAsset<DiTexture>(texfile);
 
         if (!textureAsset)
         {
-            DI_WARNING("Failed to load the textureCUBE resource : %s",textureName.c_str());
+            DI_WARNING("Failed to load the textureCUBE resource : %s",texfile.c_str());
             return DiTexturePtr();
         }
 
