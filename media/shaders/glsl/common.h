@@ -1,6 +1,11 @@
 
-#define MAX_BONES           75
-#define MAX_MODEL_MATS      75
+#ifdef DI_GLES2
+#   define MAX_BONES        32
+#   define MAX_MODEL_MATS   32
+#else
+#   define MAX_BONES        75
+#   define MAX_MODEL_MATS   75
+#endif
 
 #define MAX_LIGHTS          8
 

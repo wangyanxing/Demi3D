@@ -19,6 +19,7 @@ target_link_libraries(${TARGETNAME} DemoFramework DiMisc DiGfx DiK2 ${OIS_LIBRAR
 
 ENDMACRO(DI_ADD_SAMPLE)
 
+
 MACRO(DI_ADD_TEST TARGETNAME)
 
 project(${TARGETNAME})

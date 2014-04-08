@@ -73,10 +73,10 @@ namespace Demi
         char sign[4];
         stream->Read(sign,4);
 
-        if (sign[0] == 'M' &&
-            sign[1] == '3' &&
-            sign[2] == 'G' &&
-            sign[3] == 'M')
+        if (sign[0] == 'D' &&
+            sign[1] == 'i' &&
+            sign[2] == 'M' &&
+            sign[3] == 'o')
         {
             uint16 version;
             stream->Read(&version,sizeof(uint16));
