@@ -217,28 +217,55 @@ namespace Demi
             float* pos = (float*)base;
             *pos++ = vec.y;
 
-            ARGB* color = (ARGB*)(pos);
-            *color++ = mParent->GetColor(mChunkIDX,mChunkIDY,i);
-
             uint8 tileIDx, tileIDy;
             tileIDx = (uint8)(i % ((uint32)CHUNK_GRID_SIZE + 1));
             tileIDy = (uint8)(i / ((uint32)CHUNK_GRID_SIZE + 1));
 
             DiVec3 normal,tangent;
             mParent->GetNormalTangent(mChunkIDX,mChunkIDY,i,normal,tangent);
-            DiIntVec3 n = PackVector(normal);
-            DiIntVec3 t = PackVector(tangent);
+            
+            if(Driver->GetDriverType() == DRV_DIRECT3D9 || Driver->GetDriverType() == DRV_DIRECT3D11)
+            {
+                DiIntVec3 n = PackVector(normal);
+                DiIntVec3 t = PackVector(tangent);
 
-            uint8* st = (uint8*)(color);
-            *st++ = (uint8)n.x;
-            *st++ = (uint8)n.y;
-            *st++ = (uint8)n.z;
-            *st++ = tileIDx;
+                uint8* st = (uint8*)(pos);
+                *st++ = (uint8)n.x;
+                *st++ = (uint8)n.y;
+                *st++ = (uint8)n.z;
+                *st++ = tileIDx;
 
-            *st++ = (uint8)t.x;
-            *st++ = (uint8)t.y;
-            *st++ = (uint8)t.z;
-            *st++ = tileIDy;
+                *st++ = (uint8)t.x;
+                *st++ = (uint8)t.y;
+                *st++ = (uint8)t.z;
+                *st++ = tileIDy;
+                
+                ARGB* color = (ARGB*)(st);
+                *color++ = mParent->GetColor(mChunkIDX,mChunkIDY,i);
+            }
+            else
+            {
+                DiColor col;
+                col.SetAsARGB(mParent->GetColor(mChunkIDX,mChunkIDY,i));
+                DiVec3& n = normal;
+                DiVec3& t = tangent;
+                
+                float* st = (float*)(pos);
+                *st++ = n.x;
+                *st++ = n.y;
+                *st++ = n.z;
+                *st++ = (float)tileIDx;
+                
+                *st++ = t.x;
+                *st++ = t.y;
+                *st++ = t.z;
+                *st++ = (float)tileIDy;
+                
+                *st++ = col.r;
+                *st++ = col.b;
+                *st++ = col.g;
+                *st++ = col.a;
+            }
 
             base += vertSize;
         }
