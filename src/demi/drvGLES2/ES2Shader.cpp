@@ -496,15 +496,13 @@ namespace Demi
             GL_UNIFORM_MAT4FV(c, 1, env->texMatrix.transpose()[0]);
         };
 
-#if 0
         msUniformFuncs["g_boneMatrices"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
-            glUniformMatrix3x4fv(c->location, env->numBones, GL_FALSE, (float*)(&env->boneMatrices));
+            GL_UNIFORM_4FV(c, env->numBones*3, (float*)(&env->boneMatrices));
         };
 
         msUniformFuncs["g_modelMatrices"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
-            glUniformMatrix3x4fv(c->location, env->numModelMatrices, GL_FALSE, (float*)(&env->modelMatrices));
+            GL_UNIFORM_4FV(c, env->numModelMatrices*3, (float*)(&env->modelMatrices));
         };
-#endif
 
         msUniformFuncs["g_eyePosition"] = [](const DiShaderEnvironment* env, DiGLES2ShaderConstant* c) {
             GL_UNIFORM_3FV(c, 1, env->eyePosition.ptr());

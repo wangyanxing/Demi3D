@@ -20,12 +20,26 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi 
 {
 
-#define MAX_BONE_NUM            75
-#define MAX_WORLD_MATS          75    
-#define MAX_TEXTURE_LAYERS      16
-#define MAX_UV_SETS             8    
-#define MAX_LIGHTS              8    
-#define MAX_MRT                 4
+// ES2.0's limitation
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   define MAX_BONE_NUM     32
+#   define MAX_WORLD_MATS   32
+#else
+#   define MAX_BONE_NUM     75
+#   define MAX_WORLD_MATS   75
+#endif
+    
+#define MAX_TEXTURE_LAYERS  16
+    
+#define MAX_UV_SETS         8    
+    
+#define MAX_LIGHTS          8
+    
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+#   define MAX_MRT          1
+#else
+#   define MAX_MRT          4
+#endif
     
     /** widely used
      */

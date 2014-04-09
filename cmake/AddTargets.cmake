@@ -76,10 +76,13 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
   
   if (DEMI_STATIC)
     # add static prefix, if compiling static version
-    set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGETNAME}Static)
+	if (NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
+		set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGETNAME}Static)
+		set(DEMI_BIN_NAME ${TARGETNAME}Static)
+	else ()
+		set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGETNAME})		
+	endif()
     set_target_properties(${TARGETNAME} PROPERTIES COMPILE_DEFINITIONS DEMI_STATIC_API)
-  
-    set(DEMI_BIN_NAME ${TARGETNAME}Static)
 	
 	if (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
 		target_link_libraries(${TARGETNAME} DiDrvGL)
@@ -93,7 +96,11 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
 
   if (APPLE)
     # On OS X, create .app bundle
+	set(MACOSX_BUNDLE_EXENAME ${DEMI_BIN_NAME})
     set_property(TARGET ${TARGETNAME} PROPERTY MACOSX_BUNDLE TRUE)
+	set_property(TARGET ${TARGETNAME} PROPERTY MACOSX_BUNDLE_INFO_PLIST ${DEMI_SOURCE_DIR}/cmake/iosres/Info.plist)
+    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH "NO")
+	
     if (NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
         # Add the path where the Demi3D framework was found
         if(${DEMI_FRAMEWORK_PATH})
@@ -126,14 +133,14 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
 	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_UNROLL_LOOPS "YES")
 	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer")
 	    set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER "YES")
+        set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
 		
 		set(DEMI_SAMPLE_CONTENTS_PATH ${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${DEMI_BIN_NAME}.app)
-	    #add_custom_command(TARGET ${TARGETNAME} POST_BUILD
-	    #  COMMAND ditto ${OGRE_SOURCE_DIR}/Samples/Common/misc/*.png ${OGRE_SAMPLE_CONTENTS_PATH}/
-	    #  COMMAND ditto ${OGRE_BINARY_DIR}/bin/*.cfg ${OGRE_SAMPLE_CONTENTS_PATH}/
-	    #)
 	    add_custom_command(TARGET ${TARGETNAME} POST_BUILD
-          COMMAND mkdir ARGS -p ${OGRE_BINARY_DIR}/lib/$(CONFIGURATION)/
+           COMMAND ditto ${DEMI_SOURCE_DIR}/cmake/iosres/*.png ${DEMI_SAMPLE_CONTENTS_PATH}/
+	    #  COMMAND ditto ${OGRE_BINARY_DIR}/bin/*.cfg ${OGRE_SAMPLE_CONTENTS_PATH}/
+	    )
+	    add_custom_command(TARGET ${TARGETNAME} POST_BUILD
 	      COMMAND ditto ${DEMI_SOURCE_DIR}/media ${DEMI_SAMPLE_CONTENTS_PATH}/media
 	    )
     endif(NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
