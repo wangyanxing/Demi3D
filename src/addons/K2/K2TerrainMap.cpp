@@ -200,9 +200,20 @@ namespace Demi
 
         mVertexDecl = Driver->CreateVertexDeclaration();
         mVertexDecl->AddElement(0, VERT_TYPE_FLOAT1, VERT_USAGE_POSITION);
-        mVertexDecl->AddElement(0, VERT_TYPE_COLOR,  VERT_USAGE_COLOR);
-        mVertexDecl->AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_TEXCOORD, 0);
-        mVertexDecl->AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_TEXCOORD, 1);
+
+        if(Driver->GetDriverType() == DRV_DIRECT3D9 || Driver->GetDriverType() == DRV_DIRECT3D11)
+        {
+            mVertexDecl->AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_TEXCOORD, 0);
+            mVertexDecl->AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_TEXCOORD, 1);
+            mVertexDecl->AddElement(0, VERT_TYPE_COLOR,  VERT_USAGE_COLOR);
+        }
+        else
+        {
+            mVertexDecl->AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_TEXCOORD, 0);
+            mVertexDecl->AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_TEXCOORD, 1);
+            mVertexDecl->AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_TEXCOORD, 2);
+        }
+        
         mVertexDecl->Create();
     }
     
