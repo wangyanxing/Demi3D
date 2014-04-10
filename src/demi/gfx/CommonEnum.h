@@ -14,8 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiCommonEnum_h__
 #define DiCommonEnum_h__
 
-#include "vector3.h"
-#include "quaternion.h"
+#include "math/vector3.h"
+#include "math/quaternion.h"
 
 namespace Demi 
 {
@@ -295,6 +295,13 @@ namespace Demi
         /// Pulse Width Modulation. Works like WFT_SQUARE, except the high to low transition is controlled by duty cycle. 
         /// With a duty cycle of 50% (0.5) will give the same output as WFT_SQUARE.
         WFT_PWM
+    };
+
+    enum SceneMemoryMgrTypes
+    {
+        SCENE_DYNAMIC = 0,
+        SCENE_STATIC,
+        NUM_SCENE_MEMORY_MANAGER_TYPES
     };
 }
 

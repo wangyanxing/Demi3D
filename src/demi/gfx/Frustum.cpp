@@ -12,7 +12,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 #include "GfxPch.h"
 #include "Frustum.h"
-#include "sphere.h"
+#include "math/sphere.h"
 #include "CullNode.h"
 #include "GfxDriver.h"
 

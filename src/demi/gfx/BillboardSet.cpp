@@ -523,7 +523,7 @@ namespace Demi
 
         if (mParentNode)
         {
-            mParentNode->NeedUpdate();
+            //mParentNode->NeedUpdate();
         }
     }
 

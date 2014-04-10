@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiBone_h__
 #define DiBone_h__
 
-
 #include "Node.h"
 
 namespace Demi

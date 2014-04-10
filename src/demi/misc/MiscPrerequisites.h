@@ -42,6 +42,10 @@ namespace Demi
     class    DiDynamicAttributeFactory;
     class    DiDynamicAttribute;
 
+    struct   Transform;
+    struct   BoneTransform;
+    struct   ObjectData;
+
     class    DiXMLFile;
     class    DiXMLElement;
     class    DiXmlNodeInterface;

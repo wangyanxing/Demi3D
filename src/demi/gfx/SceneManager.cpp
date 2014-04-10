@@ -272,16 +272,24 @@ namespace Demi
         
         DiString sceneType = CommandMgr->GetConsoleVar("scene_type")->GetString();
 
+        mNodeMemoryManager[SCENE_STATIC]._setTwin(SCENE_STATIC, &mNodeMemoryManager[SCENE_DYNAMIC]);
+        mNodeMemoryManager[SCENE_DYNAMIC]._setTwin(SCENE_DYNAMIC, &mNodeMemoryManager[SCENE_STATIC]);
+
         mCuller = mCullerFactory->CreateSceneCuller(sceneType);
-        mRootNode = DI_NEW DiCullNode(this,"_root");
+
+        for (auto i = 0; i < NUM_SCENE_MEMORY_MANAGER_TYPES; ++i)
+        {
+            mRootNode[i] = DI_NEW DiCullNode(Id::generateNewId<DiNode>(), this,
+                &mNodeMemoryManager[sceneType], nullptr);
+            mRootNode[i]->SetName("RootNode");
+            mRootNode[i]->GetDerivedPositionUpdated();
+        }
         
         mSkybox = DI_NEW DiSkybox(this);
     }
 
     DiSceneManager::~DiSceneManager(void)
     {
-        //DestroyTerrain();
-
         ClearNodes();
         DestroyCamera("_sm_camera");
         
@@ -295,24 +303,33 @@ namespace Demi
         mCullerFactory = nullptr;
     }
 
-    DiCullNode* DiSceneManager::CreateNode()
+    DiCullNode* DiSceneManager::CreateNode(SceneMemoryMgrTypes typ)
     {
-        DiCullNode* node = DI_NEW DiCullNode(this);
+        DiCullNode* node = DI_NEW DiCullNode(Id::generateNewId<DiNode>(), this,
+            &mNodeMemoryManager[typ], nullptr);
         mSceneNodes.insert(node);
         return node;
     }
 
-    DiCullNode* DiSceneManager::CreateNode( const DiString& name )
+    DiCullNode* DiSceneManager::CreateNode(const DiString& name, SceneMemoryMgrTypes typ)
     {
-        DiCullNode* node = DI_NEW DiCullNode(this,name);
+        DiCullNode* node = DI_NEW DiCullNode(Id::generateNewId<DiNode>(), this,
+            &mNodeMemoryManager[typ], nullptr);
+        node->SetName(name);
         mSceneNodes.insert(node);
+        return node;
+    }
+
+    DiCullNode* DiSceneManager::CreateNode(DiCullNode* parent, SceneMemoryMgrTypes type)
+    {
+        DiCullNode* node = DI_NEW DiCullNode(Id::generateNewId<DiNode>(), this,
+            &mNodeMemoryManager[type], parent);
         return node;
     }
 
     void DiSceneManager::DestroyNode(DiCullNode* node)
     {
         auto i = mSceneNodes.find(node);
-
         if (i == mSceneNodes.end())
         {
             DI_WARNING("Cannot find the node, failed to destory scene node");
@@ -334,8 +351,11 @@ namespace Demi
     {
         DI_LOG("Cleanning scene nodes [%d]..", mSceneNodes.size());
 
-        mRootNode->RemoveAllChildren();
-        mRootNode->DetachAllObjects();
+        for (int i = 0; i < NUM_SCENE_MEMORY_MANAGER_TYPES; ++i)
+        {
+            mRootNode[i]->RemoveAllChildren();
+            mRootNode[i]->DetachAllObjects();
+        }
 
         for (auto it = mSceneNodes.begin(); it != mSceneNodes.end(); ++it)
         {
@@ -349,7 +369,9 @@ namespace Demi
         UpdateDirtyInstanceManagers();
         mVisibleLights.Clear();
         mSkybox->Update();
-        mRootNode->_Update(true, false);
+        
+        //mRootNode->_Update(true, false);
+
         for (auto i = mSceneNodes.begin(); i != mSceneNodes.end(); ++i)
             (*i)->SetCulled(true);
     }
@@ -678,14 +700,14 @@ namespace Demi
         }
     }
 
-    void DiSceneManager::AttachObject(DiTransUnitPtr obj)
+    void DiSceneManager::AttachObject(DiTransUnitPtr obj, SceneMemoryMgrTypes type )
     {
-        mRootNode->AttachObject(obj);
+        mRootNode[type]->AttachObject(obj);
     }
 
-    void DiSceneManager::DetachObject(DiTransUnitPtr obj)
+    void DiSceneManager::DetachObject(DiTransUnitPtr obj, SceneMemoryMgrTypes type )
     {
-        mRootNode->DetachObject(obj);
+        mRootNode[type]->DetachObject(obj);
     }
 
     void DiSceneManager::AddExtraRenderTarget(DiRenderTarget* rt, DiCamera* camera,

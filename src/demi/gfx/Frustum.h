@@ -17,12 +17,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "GfxPrerequisites.h"
 #include "TransformUnit.h"
-#include "vector2.h"
-#include "vector3.h"
-#include "plane.h"
-#include "matrix4.h"
-#include "sphere.h"
-#include "AxisAlignedBox.h"
+#include "math/vector2.h"
+#include "math/vector3.h"
+#include "math/plane.h"
+#include "math/matrix4.h"
+#include "math/sphere.h"
+#include "math/axisAlignedBox.h"
 #include "planeBoundedVolume.h"
 
 namespace Demi 

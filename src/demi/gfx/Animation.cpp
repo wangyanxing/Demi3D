@@ -14,8 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Animation.h"
 #include "Skeleton.h"
 #include "Bone.h"
-#include "AttachSet.h"
-#include "AttachNode.h"
 
 namespace Demi
 {
@@ -187,33 +185,7 @@ namespace Demi
         }
     }
 
-    void DiAnimation::ApplyAttachSet( DiAttachSet* attachset, DiTimeIndex& timeIndex, float weight, float scale )
-    {
-        AttachClips::iterator i;
-        for (i = mAttachClips.begin(); i != mAttachClips.end(); ++i)
-        {
-            DiAttachNode * an = attachset->GetAttachNode(i->first);
-            i->second->ApplyToNode(an, timeIndex, weight, scale);
-        }
-    }
-
-    void DiAnimation::ApplyAttachSet( DiAttachSet* attachset, DiTimeIndex& timeIndex, float weight, const DiClipController::AttachBlendMask& blendMask, float scale )
-    {
-        AttachClips::iterator i;
-        for (i = mAttachClips.begin(); i != mAttachClips.end(); ++i)
-        {
-            DiAttachNode * an = attachset->GetAttachNode(i->first);
-
-            DiClipController::AttachBlendMask::const_iterator itAttach = blendMask.find(an->GetAttachName());
-            if(itAttach == blendMask.end())
-                continue;
-
-            float fBlend = itAttach->second;
-            i->second->ApplyToNode(an, timeIndex, fBlend * weight, scale);
-        }
-    }
-
-    Demi::DiTimeIndex DiAnimation::GetTimeIndex( float timePos ) const
+    DiTimeIndex DiAnimation::GetTimeIndex( float timePos ) const
     {
         if (mKeyFrameTimesDirty)
         {
@@ -299,18 +271,6 @@ namespace Demi
         }
     }
 
-    void DiAnimation::NodeClipAttachToAttachSet( DiAttachSet* attachset )
-    {
-        AttachClips::iterator it;
-        AttachClips::iterator itEnd = mAttachClips.end();
-        for (it = mAttachClips.begin(); it != itEnd; ++it)
-        {
-            DiNodeClip* nc = it->second;
-            DiString strName = it->first;
-            DiAttachNode* pkAttachNode = attachset->GetAttachNode(strName);
-            nc->SetTargetNode(pkAttachNode);
-        }
-    }
 
     DiAnimation::RotationInterMode DiAnimation::DEFAULT_ROTATION_INTER_MODE = DiAnimation::RIM_LINEAR;
     DiAnimation::InterMode DiAnimation::DEFAULT_INTER_MODE = DiAnimation::IM_LINEAR;

@@ -17,7 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #  define WIN32_LEAN_AND_MEAN
 #  if !defined(NOMINMAX) && defined(_MSC_VER)
-#    define NOMINMAX // required to stop windows.h messing up std::min
+#    define NOMINMAX // required to stop windows.h messing up DiMath::Min
 #  endif
 #  include <windows.h>
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS

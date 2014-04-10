@@ -197,7 +197,7 @@ namespace Demi
         /// Return a Vector2 attribute, or default if missing.
         DiVec2 GetVector2(const DiString& name) const;
 
-        /// Return a Vector3 attribute, or default if missing.
+        /// Return a DiVec3 attribute, or default if missing.
         DiVec3 GetVector3(const DiString& name) const;
 
         /// Return a Vector4 attribute, or default if missing.

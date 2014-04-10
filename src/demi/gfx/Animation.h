@@ -107,12 +107,6 @@ namespace Demi
         void                ApplySkeleton(DiSkeleton* skeleton, DiTimeIndex& timeIndex, float weight,
                                         const DiClipController::BoneBlendMask * blendMask, float scale);
 
-        void                ApplyAttachSet(DiAttachSet* attachset, DiTimeIndex& timeIndex, float weight, float scale);
-
-        void                ApplyAttachSet(DiAttachSet* attachset, DiTimeIndex& timeIndex, float weight,
-                                        const DiClipController::AttachBlendMask& blendMask, float scale);
-
-
         NodeClipsIterator    GetNodeClipsIterator()const;
 
         AttachClipsIterator  GetAttachClipsIterator() const;

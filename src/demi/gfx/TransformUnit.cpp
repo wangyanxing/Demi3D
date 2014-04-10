@@ -20,6 +20,7 @@ namespace Demi
         : mQueryFlags(sDefaultQueryFlags)
         , mVisibilityFlags(sDefaultVisibilityFlags)
         , mShadowCastEnable(false)
+        , mObjectMemoryManager(nullptr)
     {
         mParentNode = NULL;
         mGroupType = BATCH_MODEL;
@@ -28,6 +29,7 @@ namespace Demi
     }
 
     DiTransformUnit::DiTransformUnit( const DiString& name )
+        :mObjectMemoryManager(nullptr)
     {
         mParentNode = NULL;
         mName = name;
@@ -89,25 +91,6 @@ namespace Demi
     {
         DiCullNode* cn = dynamic_cast<DiCullNode*>(mParentNode);
         return cn;
-    }
-
-    void DiTransformUnit::Save( DiXMLElement node )
-    {
-        node.SetAttribute("type",GetType());
-
-        if (!mVisible)
-            node.SetBool("visible", mVisible);
-        if (mVisibilityFlags != sDefaultVisibilityFlags)
-            node.SetUInt("visibleFlag", mVisibilityFlags);
-    }
-
-    void DiTransformUnit::Load( DiXMLElement node )
-    {
-        if (node.HasAttribute("visible"))
-            mVisible = node.GetBool("visible");
-
-        if (node.HasAttribute("visibleFlag"))
-            mVisibilityFlags = node.GetUint("visibleFlag");
     }
 
     const DiSphere& DiTransformUnit::GetWorldBoundingSphere( bool derive /*= false*/ ) const

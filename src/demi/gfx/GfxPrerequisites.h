@@ -129,9 +129,8 @@ namespace Demi
     class    DiConsoleLogger;
     class    DiSimpleShape;
     class    DiGfxCaps;
-
-    class    DiBspNode;
-    class    DiBspScene;
+    class    NodeMemoryManager;
+    class    ObjectMemoryManager;
     
     typedef shared_ptr<DiOctree>            DiOctreePtr;
     typedef shared_ptr<DiOctreeCullUnit>    DiOctreeCullUnitPtr;

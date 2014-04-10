@@ -12,7 +12,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 #include "MiscPch.h"
 #include "DataStream.h"
-#include "MathMisc.h"
+#include "math/mathMisc.h"
 #include <fstream>
 
 namespace Demi 

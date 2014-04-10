@@ -15,13 +15,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiTransformUnit_h__
 
 #include "RenderBatchGroup.h"
-#include "XMLElement.h"
-#include "axisAlignedBox.h"
-#include "sphere.h"
+#include "Id.h"
+#include "math/axisAlignedBox.h"
+#include "math/sphere.h"
+#include "ObjectData.h"
 
 namespace Demi 
 {
-    class DI_GFX_API DiTransformUnit : public DiBase, public enable_shared_from_this<DiTransformUnit>
+    class DI_GFX_API DiTransformUnit : public DiBase, public IdObject, public enable_shared_from_this<DiTransformUnit>
     {
     public:
 
@@ -68,10 +69,6 @@ namespace Demi
         virtual void            NotifyCurrentCamera(DiCamera*){}
 
         virtual DiString&       GetType() = 0;
-
-        virtual void            Save(DiXMLElement node);
-
-        virtual void            Load(DiXMLElement node);
 
         virtual void            SetQueryFlags(uint32 flags) { mQueryFlags = flags; }
 
@@ -130,6 +127,11 @@ namespace Demi
         static uint32           sDefaultQueryFlags;
 
         static uint32           sDefaultVisibilityFlags;
+
+        ObjectMemoryManager*    mObjectMemoryManager;
+
+        /// All the object data needed in SoA form
+        ObjectData              mObjectData;
     };
 
 }

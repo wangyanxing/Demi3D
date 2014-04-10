@@ -14,12 +14,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiStr_h__
 #define DiStr_h__
 
-#include "vector2.h"
-#include "vector3.h"
-#include "vector4.h"
-#include "quaternion.h"
-#include "matrix3.h"
-#include "matrix4.h"
+#include "math/vector2.h"
+#include "math/vector3.h"
+#include "math/vector4.h"
+#include "math/quaternion.h"
+#include "math/matrix3.h"
+#include "math/matrix4.h"
 #include "color.h"
 
 #include "vec.h"

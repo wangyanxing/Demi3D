@@ -15,7 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiTransPlane_h__
 
 
-#include "plane.h"
+#include "math/plane.h"
 #include "TransformUnit.h"
 
 namespace Demi

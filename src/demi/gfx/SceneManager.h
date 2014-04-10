@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SkyLight.h"
 #include "Scene.h"
 #include "Octree.h"
+#include "NodeMemoryManager.h"
 
 namespace Demi 
 {
@@ -128,9 +129,11 @@ namespace Demi
 
     public:
 
-        DiCullNode*             CreateNode(void);
+        DiCullNode*             CreateNode(SceneMemoryMgrTypes typ = SCENE_DYNAMIC);
 
-        DiCullNode*             CreateNode(const DiString& name);
+        DiCullNode*             CreateNode(const DiString& name, SceneMemoryMgrTypes typ = SCENE_DYNAMIC);
+
+        DiCullNode*             CreateNode(DiCullNode* parent, SceneMemoryMgrTypes type = SCENE_DYNAMIC);
 
         void                    DestroyNode(DiCullNode* node);
 
@@ -138,13 +141,13 @@ namespace Demi
 
         /** Attach an object to the root node
          */
-        void                    AttachObject(DiTransUnitPtr obj);
+        void                    AttachObject(DiTransUnitPtr obj, SceneMemoryMgrTypes type = SCENE_DYNAMIC);
 
         /** Detach an object to the root node
         */
-        void                    DetachObject(DiTransUnitPtr obj);
+        void                    DetachObject(DiTransUnitPtr obj, SceneMemoryMgrTypes type = SCENE_DYNAMIC);
 
-        DiCullNode*             GetRootNode(void){ return mRootNode; }
+        DiCullNode*             GetRootNode(SceneMemoryMgrTypes sceneType = SCENE_DYNAMIC){ return mRootNode[sceneType]; }
 
         DiCamera*               CreateCamera(const DiString& name);
 
@@ -238,7 +241,7 @@ namespace Demi
 
     protected:
 
-        DiCullNode*             mRootNode;
+        DiCullNode*             mRootNode[NUM_SCENE_MEMORY_MANAGER_TYPES];
 
         NodeList                mSceneNodes;
 
@@ -278,6 +281,8 @@ namespace Demi
         DiSceneCuller*          mCuller;
         
         DiSceneCullerFactory*   mCullerFactory;
+
+        NodeMemoryManager       mNodeMemoryManager[NUM_SCENE_MEMORY_MANAGER_TYPES];
 
     public:
 

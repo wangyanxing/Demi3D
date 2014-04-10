@@ -30,11 +30,16 @@ if (APPLE)
   
   if (DEMI_BUILD_PLATFORM_APPLE_IOS)
     set(DEMI_STATIC TRUE)
+	set(DEMI_SIMD_NEON TRUE)
+  else()
+    set(DEMI_SIMD_NEON FALSE)
+	set(DEMI_SIMD_SSE2 TRUE)
   endif ()
 endif ()
 
 if (WIN32)
   add_definitions(-DWINVER=0x0500)
+  set(DEMI_SIMD_SSE2 TRUE)
 endif ()
 
 # Set project name

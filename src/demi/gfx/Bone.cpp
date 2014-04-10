@@ -21,7 +21,6 @@ namespace Demi
         mCreator(creator),
         mHandle(handle)
     {
-        mNodeType = NT_BONENODE;
     }
 
     DiBone::DiBone( DiSkeleton* creator, uint32 handle, const DiString& name )
@@ -29,7 +28,6 @@ namespace Demi
         mCreator(creator),
         mHandle(handle)
     {
-        mNodeType = NT_BONENODE;
     }
 
     DiBone::~DiBone()

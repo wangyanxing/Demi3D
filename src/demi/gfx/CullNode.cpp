@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "CullNode.h"
 #include "TransformUnit.h"
@@ -19,23 +20,23 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiCullNode::DiCullNode(DiSceneManager* sm):
-        DiNode(),
-        mCreator(sm),
-        mCullUnit(nullptr),
-        mIsCulled(false)
+    DiCullNode::DiCullNode(IdType id, DiSceneManager* sm, NodeMemoryManager *nodeMemoryManager, DiCullNode *parent)
+        : DiNode(id, nodeMemoryManager, parent)
+        , mCreator(sm)
+        , mCullUnit(nullptr)
+        , mIsCulled(false)
     {
-        if(sm)
-            mCullUnit = sm->GetSceneCuller()->CreateUnit(this);
+
     }
 
-    DiCullNode::DiCullNode( DiSceneManager* sm,const DiString& name ):
-        DiNode(name),
-        mCreator(sm),
-        mCullUnit(nullptr)
+    DiCullNode::DiCullNode(const Transform &transformPtrs)
+        : DiNode(transformPtrs)
+        , mCreator(nullptr)
+        , mCullUnit(nullptr)
+        , mIsCulled(false)
+
     {
-        if(sm)
-            mCullUnit = sm->GetSceneCuller()->CreateUnit(this);
+
     }
 
     DiCullNode::~DiCullNode(void)
@@ -75,14 +76,14 @@ namespace Demi
 
         mObjects.push_back(obj);
 
-        NeedUpdate();
+        //NeedUpdate();
     }
 
     void DiCullNode::AttachSilently(DiTransUnitPtr obj)
     {
         mObjects.push_back(obj);
         
-        NeedUpdate();
+        //NeedUpdate();
     }
 
     uint32 DiCullNode::NumAttachedObjects( void ) const
@@ -116,7 +117,7 @@ namespace Demi
             ObjectMap::iterator i = mObjects.begin() + index;
             mObjects.erase(i);
 
-            NeedUpdate();
+            //NeedUpdate();
 
             return ret;
 
@@ -144,7 +145,7 @@ namespace Demi
             obj->NotifyAttached(nullptr);
         }
 
-        NeedUpdate();
+        //NeedUpdate();
     }
     
     void DiCullNode::DetachAllObjects( void )
@@ -159,7 +160,7 @@ namespace Demi
         }
         mObjects.clear();
 
-        NeedUpdate();
+        //NeedUpdate();
     }
 
     void DiCullNode::ProcessVisibleObjects(std::function<void(DiTransUnitPtr)> func)
@@ -235,7 +236,7 @@ namespace Demi
         return newNode;
     }
 
-    DiCullNode* DiCullNode::CreateChild( const DiString& name )
+    DiCullNode* DiCullNode::CreateChild(const DiString& name, SceneMemoryMgrTypes sceneType )
     {
         DiCullNode* newNode = mCreator->CreateNode(name);
         this->AddChild(newNode);
@@ -282,25 +283,11 @@ namespace Demi
         }
     }
 
-    DiNode* DiCullNode::RemoveChild( uint32 index )
+    void DiCullNode::RemoveChild( DiNode* child )
     {
-        DiCullNode *on = static_cast<DiCullNode* >( DiNode::RemoveChild( index ) );
-        on->RemoveNodeAndChildren();
-        return on; 
-    }
-
-    DiNode* DiCullNode::RemoveChild( const DiString & name )
-    {
-        DiCullNode *on = static_cast<DiCullNode*>( DiNode::RemoveChild(  name ) );
-        on -> RemoveNodeAndChildren( ); 
-        return on; 
-    }
-
-    DiNode* DiCullNode::RemoveChild( DiNode* child )
-    {
-        DiCullNode *on = static_cast<DiCullNode*>( DiNode::RemoveChild( child ) );
+        DiCullNode *on = static_cast<DiCullNode*>(child);
+        DiNode::RemoveChild(child);
         on -> RemoveNodeAndChildren(); 
-        return on; 
     }
 
     void DiCullNode::RemoveAllChildren( void )
@@ -312,22 +299,67 @@ namespace Demi
             on->RemoveNodeAndChildren();
         }
         mChildren.clear();
-        mChildrenToUpdate.clear();
+        //mChildrenToUpdate.clear();
     }
 
     void DiCullNode::_Update( bool updateChildren, bool parentHasChanged )
     {
-        DiNode::_Update(updateChildren, parentHasChanged);
+        //DiNode::_Update(updateChildren, parentHasChanged);
         UpdateBounds();
     }
 
-    DiCullNode::ObjectIterator DiCullNode::GetAttachedObjectIterator()
+    void DiCullNode::CallMemoryChangeListeners(void)
     {
-        return ObjectIterator(mObjects.begin(), mObjects.end());
+
     }
 
-    DiCullNode::ConstObjectIterator DiCullNode::GetAttachedObjectIterator() const
+    bool DiCullNode::SetStatic(bool bStatic)
     {
-        return ConstObjectIterator(mObjects.begin(), mObjects.end());
+        bool retVal = DiNode::SetStatic(bStatic);
+        bool ourCurrentStatus = IsStatic();
+
+        if (retVal)
+        {
+            if (mCreator && bStatic)
+                mCreator->NotifyStaticDirty(this);
+
+            //Now apply the same state to all our attachments.
+            auto itor = mObjects.begin();
+            auto end = mObjects.end();
+
+            while (itor != end)
+            {
+                DiTransUnitPtr obj = *itor;
+                if (obj->IsStatic() != ourCurrentStatus)
+                {
+                    bool result = obj->SetStatic(bStatic);
+                    if (!result)
+                    {
+                        DI_WARNING("Calling SceneNode::setStatic but attachment ID: %d, named %s can't switch after creation."
+                            " This object must be created in the given state before making the node switch", obj->getId(), obj->getName().c_str());
+                    }
+                }
+                ++itor;
+            }
+        }
+
+        return retVal;
+    }
+
+    void DiCullNode::NotifyStaticDirty(void) const
+    {
+
+    }
+
+    void DiCullNode::SetCachedTransformOutOfDate(void)
+    {
+        DiNode::SetCachedTransformOutOfDate();
+
+    }
+
+    DiNode* DiCullNode::CreateChildImpl(SceneMemoryMgrTypes sceneType)
+    {
+        assert(mCreator);
+        return mCreator->CreateNode(this, sceneType);
     }
 }

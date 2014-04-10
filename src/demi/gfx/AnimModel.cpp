@@ -15,7 +15,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "AssetManager.h"
 #include "GfxDriver.h"
 #include "Skeleton.h"
-#include "AttachSet.h"
 #include "CullNode.h"
 #include "ClipController.h"
 #include "Animation.h"
@@ -31,8 +30,6 @@ namespace Demi
         :DiModel(name,modelName),
         mSkeleton(NULL),
         mRefSkeleton(false),
-        mAttachSet(NULL),
-        mRefAttachSet(false),
         mBoneMatrices(NULL),
         mRefBoneMatrics(false),
         mNumBoneMatrices(0),
@@ -53,8 +50,6 @@ namespace Demi
         :DiModel(name,model),
         mSkeleton(NULL),
         mRefSkeleton(false),
-        mAttachSet(NULL),
-        mRefAttachSet(false),
         mBoneMatrices(NULL),
         mRefBoneMatrics(false),
         mNumBoneMatrices(0),
@@ -68,62 +63,11 @@ namespace Demi
         Init();
     }
 
-    DiAnimModel::DiAnimModel( const DiString& name, const DiString& modelName,const DiString& motionName,
-                            DiSkeletonInstance * pkSkeleton,DiAttachSetInstance * pkAttachSet,DiMat4 * pkBoneMatrics,
-                            DiClipControllerSet* pkClipSet)
-        :DiModel(name,modelName),
-        mSkeleton(pkSkeleton),
-        mRefSkeleton(true),
-        mAttachSet(pkAttachSet),
-        mRefAttachSet(true),
-        mBoneMatrices(pkBoneMatrics),
-        mRefBoneMatrics(true),
-        mNumBoneMatrices(0),
-        mClipSet(pkClipSet),
-        mRefClipSet(true),
-        mLastUpdateBonesFrame(std::numeric_limits<uint64>::max()),
-        mLastUpdateAnimFrame(std::numeric_limits<uint64>::max()),
-        mAutoUpdateAnims(true),
-        mHardwareSkining(false),
-        mSpeed(1.0f)
-    {
-        mMotion = DiAssetManager::GetInstance().GetAsset<DiMotion>(motionName);
-
-        Init();
-    }
-
-    DiAnimModel::DiAnimModel( const DiString& name,DiMeshPtr model,DiMotionPtr motion,
-                              DiSkeletonInstance * pkSkeleton,DiAttachSetInstance * pkAttachSet,
-                              DiMat4 * pkBoneMatrics,DiClipControllerSet* pkClipSet)
-        :DiModel(name,model),
-        mSkeleton(pkSkeleton),
-        mRefSkeleton(true),
-        mAttachSet(pkAttachSet),
-        mRefAttachSet(true),
-        mBoneMatrices(pkBoneMatrics),
-        mRefBoneMatrics(true),
-        mNumBoneMatrices(0),
-        mClipSet(pkClipSet),
-        mRefClipSet(true),
-        mLastUpdateBonesFrame(std::numeric_limits<uint64>::max()),
-        mLastUpdateAnimFrame(std::numeric_limits<uint64>::max()),
-        mMotion(motion),
-        mSpeed(1.0f)
-    {
-        Init();
-    }
-
-
     DiAnimModel::~DiAnimModel()
     {
         if(!mRefSkeleton)
         {
             SAFE_DELETE(mSkeleton);
-        }
-
-        if(!mRefAttachSet)
-        {
-            SAFE_DELETE(mAttachSet);
         }
 
         if(!mRefClipSet)
@@ -180,17 +124,6 @@ namespace Demi
                     (*it)->mBoneNum = mNumBoneMatrices;
                     (*it)->mBoneMatrices = mBoneMatrices;
                 }
-            }
-
-            if (mMotion->GetAttachSet())
-            {
-                if(!mAttachSet)
-                {
-                    mAttachSet    = DI_NEW DiAttachSetInstance(mMotion->GetAttachSet(),mSkeleton);
-                    mRefAttachSet = false;
-                }
-
-                mMotion->AssociateNodeAnimToAttachSet(mAttachSet);
             }
 
             if(!mClipSet)

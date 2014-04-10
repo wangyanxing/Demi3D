@@ -15,7 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Memory.h"
 #include "LogManager.h"
 #include "ShaderParam.h"
-#include "MathMisc.h"
+#include "math/mathMisc.h"
 #include "Texture.h"
 #include "GfxDriver.h"
 #include "MaterialSerial.h"

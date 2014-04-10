@@ -70,6 +70,16 @@ namespace Demi
             return this->begin() + idx;
         }
     };
+
+    template<typename T>
+    typename T::iterator efficientVectorRemove(T& container, typename T::iterator& iterator)
+    {
+        const size_t idx = iterator - container.begin();
+        *iterator = container.back();
+        container.pop_back();
+
+        return container.begin() + idx;
+    }
 }
 
 #endif

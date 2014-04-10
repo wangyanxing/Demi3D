@@ -1,8 +1,8 @@
 /**********************************************************************
 This source file is a part of Demi3D
-   __  ___  __  __  __
-  |  \|_ |\/||   _)|  \ 
-  |__/|__|  ||  __)|__/ 
+__  ___  __  __  __
+|  \|_ |\/||   _)|  \
+|__/|__|  ||  __)|__/
 
 Copyright (c) 2013-2014 Demi team
 https://github.com/wangyanxing/Demi3D
@@ -11,239 +11,345 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
+/// This file is adapted from Ogre 2.0 (unstable version)
+
 #ifndef DiNode_h__
 #define DiNode_h__
 
+#include "Id.h"
+#include "Math/Array/Transform.h"
 
 namespace Demi
 {
-    class DI_GFX_API DiNode : public DiBase
+    class DI_GFX_API DiNode : public DiBase, public IdObject
     {
     public:
 
+        /** Enumeration denoting the spaces which a transform can be relative to.
+        */
         enum TransformSpace
         {
+            /// Transform is relative to the local space
             TS_LOCAL,
+            /// Transform is relative to the space of the parent node
             TS_PARENT,
+            /// Transform is relative to world space
             TS_WORLD
         };
+        typedef DiVector<DiNode*> NodeVec;
 
-        enum NodeType
+        /** Listener which gets called back on DiNode events.
+        */
+        class DI_GFX_API Listener
         {
-            NT_NODEBASE,
-            NT_BONENODE,
-            NT_ATTACHNODE,
+        public:
+            Listener() {}
+            virtual ~Listener() {}
+
+            /** Called when a node gets updated.
+            @remarks
+            Note that this happens when the node's derived update happens,
+            not every time a method altering it's state occurs. There may
+            be several state-changing calls but only one of these calls,
+            when the node graph is fully updated.
+            */
+            virtual void NodeUpdated(const DiNode*) {}
+
+            virtual void NodeDestroyed(const DiNode*) {}
+
+            virtual void NodeAttached(const DiNode*) {}
+
+            virtual void NodeDetached(const DiNode*) {}
         };
 
-        typedef DiVector<DiNode*> Children;
-        friend class DiSceneManager;
+    protected:
+        /// Depth level in the hierarchy tree (0: Root node, 1: Child of root, etc)
+        uint16 mDepthLevel;
+        /// Pointer to parent node
+        DiNode* mParent;
+        /// Collection of pointers to direct children; hashmap for efficiency
+        NodeVec mChildren;
+        /// All the transform data needed in SoA form
+        Transform mTransform;
+
+        /// Friendly name of this node, can be empty
+        DiString mName;
+
+        /// Only available internally - notification of parent. Can't be null
+        void SetParent(DiNode* parent);
+
+        void UnsetParent(void);
+
+        /// Notification from parent that we need to migrate to a different depth level
+        void ParentDepthLevelChanged(void);
+
+        /** Triggers the node to update it's combined transforms.
+        @par
+        This method is called internally by Ogre to ask the node
+        to update it's complete transformation based on it's parents
+        derived transform.
+        */
+        void UpdateFromParent(void);
+
+        /** Class-specific implementation of _updateFromParent.
+        @remarks
+        Splitting the implementation of the update away from the update call
+        itself allows the detail to be overridden without disrupting the
+        general sequence of updateFromParent (e.g. raising events)
+        */
+        virtual void UpdateFromParentImpl(void);
+
+        /** Internal method for creating a new child node - must be overridden per subclass. */
+        virtual DiNode* CreateChildImpl(SceneMemoryMgrTypes sceneType) = 0;
+
+#ifndef NDEBUG
+        mutable bool mCachedTransformOutOfDate;
+#endif
+
+        /** DiNode listener - only one allowed (no list) for size & performance reasons. */
+        Listener* mListener;
+
+        /// The memory manager used to allocate the Transform.
+        NodeMemoryManager *mNodeMemoryManager;
 
     public:
+        /** Index in the vector holding this node reference (could be our parent node, or a global array
+        tracking all created nodes to avoid memory leaks). Used for O(1) removals.
+        @remarks
+        It is the parent (or our creator) the one that sets this value, not ourselves. Do NOT modify
+        it manually.
+        */
+        size_t mGlobalIndex;
+        /// @copydoc mGlobalIndex
+        size_t mParentIndex;
 
-        DiNode();
+        /** Constructor, should only be called by parent, not directly.
+        @remarks
+        Parent pointer can be null.
+        */
+        DiNode(IdType id, NodeMemoryManager *nodeMemoryManager, DiNode *parent);
 
-        DiNode(const DiString& name);
+        /** Don't use this constructor unless you know what you're doing.
+        @See NodeMemoryManager::mDummyNode
+        */
+        DiNode(const Transform &transformPtrs);
 
-        virtual                  ~DiNode();  
+        virtual ~DiNode();
 
-    public:
+        /** Sets a custom name for this node. Doesn't have to be unique */
+        void SetName(const DiString &name)  { mName = name; }
 
-        const DiString&          GetName(void) const;
+        /** Returns the name of the node. */
+        const DiString& GetName(void) const  { return mName; }
 
-        DiNode*                  GetParent(void) const;
+        /** Gets this node's parent (NULL if this is the root). */
+        DiNode* GetParent(void) const;
 
-        inline    NodeType       GetNodeType(void) const {return mNodeType;}
+        /// Checks whether this node is static. @See setStatic
+        bool IsStatic() const;
 
-        const DiQuat&            GetOrientation() const;
+        /** Turns this DiNode into static or dynamic
+        @remarks
+        Switching between dynamic and static has some overhead and forces to update all
+        static scene when converted to static. So don't do it frequently.
+        Static objects are not updated every frame, only when requested explicitly. Use
+        this feature if you plan to have this object unaltered for a very long times
+        @par
+        Changing this attribute to a node will cause to switch the attribute to all
+        attached entities (but not children or parent nodes; it's perfectly valid
+        and useful to have dynamic children of a static parent; although the opposite
+        (static children, dynamic parent) is probably a bug.
+        @return
+        True if setStatic made an actual change. False otherwise. Can fail because the
+        object was already static/dynamic, or because switching is not supported
+        */
+        virtual bool SetStatic(bool bStatic);
 
-        void                     SetOrientation( const DiQuat& q );
+        /// Returns how deep in the hierarchy we are (eg. 0 -> root node, 1 -> child of root)
+        uint16 GetDepthLevel() const  { return mDepthLevel; }
 
-        void                     SetOrientation( float w, float x, float y, float z);
+        /// Returns a direct access to the Transform state
+        Transform& GetTransform()    { return mTransform; }
 
-        void                     ResetOrientation(void);
+        /// Called by SceneManager when it is telling we're a static node being dirty
+        virtual void NotifyStaticDirty(void) const {}
 
-        void                     SetPosition(const DiVec3& pos);
+        /** Returns a quaternion representing the nodes orientation.
+        @remarks
+        Don't call this function too often, as we need to convert from SoA
+        */
+        DiQuat GetOrientation() const;
 
-        void                     SetPosition(float x, float y, float z);
+        void SetOrientation(DiQuat q);
 
-        const DiVec3&            GetPosition(void) const;
+        void SetOrientation(float w, float x, float y, float z);
 
-        void                     SetScale(const DiVec3& scale);
+        void ResetOrientation(void);
 
-        void                     SetScale(float x, float y, float z);
+        /** Sets the position of the node relative to it's parent.
+        @remarks
+        Don't call this function too often, as we need to convert to SoA
+        */
+        void SetPosition(const DiVec3& pos);
 
-        void                     SetScale(float unit)
-        {
-            SetScale(unit,unit,unit);
-        }
+        /** Sets the position of the node relative to it's parent.
+        @remarks
+        Don't call this function too often, as we need to convert to SoA
+        */
+        void SetPosition(float x, float y, float z);
 
-        const DiVec3&            GetScale(void) const;
+        /** Gets the position of the node relative to it's parent.
+        @remarks
+        Don't call this function too often, as we need to convert from SoA
+        */
+        DiVec3 GetPosition(void) const;
 
-        void                     SetInheritOrientation(bool inherit);
+        void SetScale(const DiVec3& scale);
 
-        bool                     GetInheritOrientation(void) const;
+        void SetScale(float x, float y, float z);
 
-        void                     SetInheritScale(bool inherit);
+        DiVec3 GetScale(void) const;
 
-        bool                     GetInheritScale(void) const;
+        void SetInheritOrientation(bool inherit);
 
-        void                     Scale(const DiVec3& scale);
+        bool GetInheritOrientation(void) const;
 
-        void                     Scale(float x, float y, float z);
+        void SetInheritScale(bool inherit);
 
-        void                     Translate(const DiVec3& d, TransformSpace relativeTo = TS_LOCAL);
+        bool GetInheritScale(void) const;
 
-        void                     Translate(float x, float y, float z, TransformSpace relativeTo = TS_LOCAL);
+        void Scale(const DiVec3& scale);
 
-        void                     Translate(const DiMat3& axes, const DiVec3& move, TransformSpace relativeTo = TS_LOCAL);
+        void Scale(float x, float y, float z);
 
-        void                     Translate(const DiMat3& axes, float x, float y, float z, TransformSpace relativeTo = TS_LOCAL);
+        void Translate(const DiVec3& d, TransformSpace relativeTo = TS_PARENT);
 
-        void                     Roll(const DiRadian& angle, TransformSpace relativeTo = TS_LOCAL);
+        void Translate(float x, float y, float z, TransformSpace relativeTo = TS_PARENT);
 
-        void                     Pitch(const DiRadian& angle, TransformSpace relativeTo = TS_LOCAL);
+        void Translate(const DiMat3& axes, const DiVec3& move, TransformSpace relativeTo = TS_PARENT);
 
-        void                     Yaw(const DiRadian& angle, TransformSpace relativeTo = TS_LOCAL);
+        void Translate(const DiMat3& axes, float x, float y, float z, TransformSpace relativeTo = TS_PARENT);
 
-        void                     Rotate(const DiVec3& axis, const DiRadian& angle, TransformSpace relativeTo = TS_LOCAL);
+        /** Rotate the node around the Z-axis.
+        */
+        void Roll(const DiRadian& angle, TransformSpace relativeTo = TS_LOCAL);
 
-        void                     Rotate(const DiQuat& q, TransformSpace relativeTo = TS_LOCAL);
+        /** Rotate the node around the X-axis.
+        */
+        void Pitch(const DiRadian& angle, TransformSpace relativeTo = TS_LOCAL);
 
-        DiMat3                   GetLocalAxes(void) const;
+        /** Rotate the node around the Y-axis.
+        */
+        void Yaw(const DiRadian& angle, TransformSpace relativeTo = TS_LOCAL);
 
-        virtual DiNode*          CreateChild(
-            const DiVec3& translate = DiVec3::ZERO, 
-            const DiQuat& rotate = DiQuat::IDENTITY );
+        /** Rotate the node around an arbitrary axis.
+        */
+        void Rotate(const DiVec3& axis, const DiRadian& angle, TransformSpace relativeTo = TS_LOCAL);
 
-        virtual DiNode*          CreateChild(const DiString& name, const DiVec3& translate = DiVec3::ZERO,
+        /** Rotate the node around an aritrary axis using a Quarternion.
+        */
+        void Rotate(const DiQuat& q, TransformSpace relativeTo = TS_LOCAL);
+
+        /** Gets a matrix whose columns are the local axes based on
+        the nodes orientation relative to it's parent. */
+        DiMat3 GetLocalAxes(void) const;
+
+        virtual DiNode* CreateChild(
+            SceneMemoryMgrTypes sceneType = SCENE_DYNAMIC,
+            const DiVec3& translate = DiVec3::ZERO,
             const DiQuat& rotate = DiQuat::IDENTITY);
 
-        size_t                   GetChildrenNum() const
+        void AddChild(DiNode* child);
+
+        /** Reports the number of child nodes under this one.
+        */
+        size_t NumChildren(void) const      { return mChildren.size(); }
+
+        /** Gets a pointer to a child node. */
+        DiNode* GetChild(size_t index)                { return mChildren[index]; }
+
+        const DiNode* GetChild(size_t index) const    { return mChildren[index]; }
+
+        virtual void RemoveChild(DiNode* child);
+
+        virtual void RemoveAllChildren(void);
+
+        void SetDerivedPosition(const DiVec3& pos);
+
+        void SetDerivedOrientation(const DiQuat& q);
+
+        DiQuat GetDerivedOrientation(void) const;
+
+        DiQuat GetDerivedOrientationUpdated(void);
+
+        DiVec3 GetDerivedPosition(void) const;
+
+        DiVec3 GetDerivedPositionUpdated(void);
+
+        DiVec3 GetDerivedScale(void) const;
+
+        DiVec3 GetDerivedScaleUpdated(void);
+
+        FORCEINLINE const DiMat4& GetFullTransform(void) const
         {
-            return mChildren.size();
+            DI_ASSERT(!mCachedTransformOutOfDate);
+            return mTransform.mDerivedTransform[mTransform.mIndex];
         }
 
-        void                     AddChild(DiNode* child);
+        /** @See _getDerivedScaleUpdated remarks. @See _getFullTransform */
+        const DiMat4& GetFullTransformUpdated(void);
 
-        inline DiNode*           GetChild(unsigned short index)
-        {
-            return mChildren[index];
-        }
+        /** Sets a listener for this DiNode.
+        @remarks
+        Note for size and performance reasons only one listener per node is
+        allowed.
+        */
+        virtual void SetListener(Listener* listener) { mListener = listener; }
 
-        virtual DiNode*          RemoveChild(unsigned short index);
-                                 
-        virtual DiNode*          RemoveChild(DiNode* child);
-                                 
-        virtual void             RemoveAllChildren(void);
-                                 
-        void                     ChangeParent(DiNode* newparent);
+        /** Gets the current listener for this DiNode.
+        */
+        Listener* GetListener(void) const { return mListener; }
 
-        void                     SetDerivedPosition(const DiVec3& pos);
+        /** @See SceneManager::updateAllTransforms()
+        @remarks
+        We don't pass by reference on purpose (avoid implicit aliasing)
+        */
+        static void UpdateAllTransforms(const size_t numNodes, Transform t);
 
-        void                     SetDerivedOrientation(const DiQuat& q);
+        /** Gets the local position, relative to this node, of the given world-space position */
+        DiVec3 ConvertWorldToLocalPosition(const DiVec3 &worldPos);
 
-        const DiQuat&            GetDerivedOrientation(void) const;
+        /** Gets the world position of a point in the node local space
+        useful for simple transforms that don't require a child node.*/
+        DiVec3 ConvertLocalToWorldPosition(const DiVec3 &localPos);
 
-        const DiVec3&            GetDerivedPosition(void) const;
+        /** Gets the local orientation, relative to this node, of the given world-space orientation */
+        DiQuat ConvertWorldToLocalOrientation(const DiQuat &worldOrientation);
 
-        const DiVec3&            GetDerivedScale(void) const;
+        /** Gets the world orientation of an orientation in the node local space
+        useful for simple transforms that don't require a child node.*/
+        DiQuat ConvertLocalToWorldOrientation(const DiQuat &localOrientation);
 
-        const DiMat4&            GetFullTransform(void) const;
+        /** Helper function, get the squared view depth.  */
+        virtual float GetSquaredViewDepth(const DiCamera* cam) const;
 
-        void                     SetName(const DiString& newName);
+        /** Manually set the mNodeMemoryManager to a null ptr.
+        @remarks
+        DiNode doesn't follow the rule of three. This function is useful when you make multiple
+        hard copies but only the destructor must release the mTransform only slots once.
+        */
+        void SetNullNodeMemoryManager(void) { mNodeMemoryManager = nullptr; }
 
-        virtual void             _Update(bool updateChildren, bool parentHasChanged);
+        /** Internal use, notifies all attached objects that our memory pointers
+        (i.e. Transform) may have changed (e.g. during cleanups, change of parent, etc)
+        */
+        virtual void CallMemoryChangeListeners(void) = 0;
 
-        void                     SetInitialState(void);
+#ifndef NDEBUG
+        virtual void SetCachedTransformOutOfDate(void);
 
-        void                     ResetToInitialState(void);
-
-        const DiVec3&            GetInitialPosition(void) const;
-
-        DiVec3                   ConvertWorldToLocalPosition( const DiVec3 &worldPos );
-
-        DiVec3                   ConvertLocalToWorldPosition( const DiVec3 &localPos );
-
-        DiQuat                   ConvertWorldToLocalOrientation( const DiQuat &worldOrientation );
-
-        DiQuat                   ConvertLocalToWorldOrientation( const DiQuat &localOrientation );
-
-        const DiQuat&            GetInitialOrientation(void) const;
-
-        const DiVec3&            GetInitialScale(void) const;
-
-        virtual void             NeedUpdate(bool forceParentUpdate = false);
-
-        void                     RequestUpdate(DiNode* child, bool forceParentUpdate = false);
-
-        void                     CancelUpdate(DiNode* child);
-        
-        uint64                   GetLastUpdateFrameNumber() const {return mLastUpdateFrame;}
-
-        static void              QueueNeedUpdate(DiNode* n);
-
-        static void              ProcessQueuedUpdates(void);
-
-    protected:
-
-        void                    SetParent(DiNode* parent);
-
-        void                    _UpdateFromParent(void) const;
-
-    protected:
-
-        DiNode*                 mParent;
-
-        NodeType                mNodeType;
-
-        Children                mChildren;
-
-        typedef DiSet<DiNode*>  ChildUpdateSet;
-
-        mutable ChildUpdateSet  mChildrenToUpdate;
-
-        mutable bool            mNeedParentUpdate;
-
-        mutable bool            mNeedChildUpdate;
-
-        mutable bool            mParentNotified ;
-
-        mutable bool            mQueuedForUpdate;
-
-        DiString                mName;
-
-        DiQuat                  mOrientation;
-
-        DiVec3                  mPosition;
-
-        DiVec3                  mScale;
-
-        bool                    mInheritOrientation;
-
-        bool                    mInheritScale;
-
-        mutable DiQuat          mDerivedOrientation;
-                                
-        mutable DiVec3          mDerivedPosition;
-                                
-        mutable DiVec3          mDerivedScale;
-                                
-        DiVec3                  mInitialPosition;
-                                
-        DiQuat                  mInitialOrientation;
-                                
-        DiVec3                  mInitialScale;
-                                
-        mutable DiMat4          mCachedTransform;
-
-        mutable bool            mCachedTransformOutOfDate;
-
-        typedef DiVector<DiNode*> QueuedUpdates;
-
-        static QueuedUpdates    sQueuedUpdates;
-        
-        /// record the frame# of the last update
-        uint64                  mLastUpdateFrame;
+        bool IsCachedTransformOutOfDate(void) const { return mCachedTransformOutOfDate; }
+#endif
     };
 }
 

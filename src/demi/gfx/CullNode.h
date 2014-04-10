@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef CullNode_h__
 #define CullNode_h__
 
+#include "GfxPrerequisites.h"
 #include "Node.h"
 #include "SceneCuller.h"
 #include <functional>
@@ -24,17 +25,17 @@ namespace Demi
     {
     public:
         
-        DiCullNode(DiSceneManager* sm);
+        DiCullNode(IdType id, DiSceneManager* sm, 
+            NodeMemoryManager *nodeMemoryManager,
+            DiCullNode *parent);
 
-        DiCullNode(DiSceneManager* sm,const DiString& name);
+        DiCullNode(const Transform &transformPtrs);
 
         ~DiCullNode(void);
 
     public:
 
-        typedef DiVector<DiTransUnitPtr>         ObjectMap;
-        typedef DiVectorIterator<ObjectMap>      ObjectIterator;
-        typedef DiConstVectorIterator<ObjectMap> ConstObjectIterator;
+        typedef DiVector<DiTransUnitPtr> ObjectMap;
 
         friend class DiSceneManager;
 
@@ -44,20 +45,25 @@ namespace Demi
 
         DiCullNode*             CreateChild();
 
-        DiCullNode*             CreateChild(const DiString& name);
+        DiCullNode*             CreateChild(const DiString& name, SceneMemoryMgrTypes sceneType = SCENE_DYNAMIC);
 
         DiNode*                 CreateChild(const DiVec3& inTranslate, const DiQuat& inRotate);
 
         DiNode*                 CreateChild(const DiString& name,
                                      const DiVec3& inTranslate, const DiQuat& inRotate);
 
-        DiNode*                 RemoveChild( uint32 index );
+        /** Internal method for creating a new child node - must be overridden per subclass. */
+        DiNode*                 CreateChildImpl(SceneMemoryMgrTypes sceneType);
 
-        DiNode*                 RemoveChild( const DiString & name );
-
-        DiNode*                 RemoveChild( DiNode* child);
+        void                    RemoveChild( DiNode* child);
 
         void                    RemoveAllChildren(void);
+
+        virtual bool            SetStatic(bool bStatic);
+
+        virtual void            NotifyStaticDirty(void) const;
+
+        virtual void            CallMemoryChangeListeners(void);
 
         /** Attach the object and notify
          */
@@ -80,12 +86,6 @@ namespace Demi
         void                    DetachObject(DiTransUnitPtr obj);
 
         void                    DetachAllObjects(void);
-
-        /** Get an external iterator wrapper
-         */
-        ObjectIterator          GetAttachedObjectIterator();
-
-        ConstObjectIterator     GetAttachedObjectIterator() const;
 
         void                    ProcessVisibleObjects(std::function<void(DiTransUnitPtr)> func);
 
@@ -114,6 +114,10 @@ namespace Demi
         bool                    IsCulled() const { return mIsCulled; }
 
         void                    SetCulled(bool val) { mIsCulled = val; }
+
+#ifndef NDEBUG
+        virtual void            SetCachedTransformOutOfDate(void);
+#endif
 
     protected:
 

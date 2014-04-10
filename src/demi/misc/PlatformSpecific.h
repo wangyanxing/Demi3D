@@ -20,6 +20,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DEMI_PLATFORM_LINUX   4
 #define DEMI_PLATFORM_ANDROID 5
 
+#define DEMI_CPU_UNKNOWN    0
+#define DEMI_CPU_X86        1
+#define DEMI_CPU_PPC        2
+#define DEMI_CPU_ARM        3
+#define DEMI_CPU_MIPS       4
+
 #define DEMI_BUILD_32         1
 #define DEMI_BUILD_64         2
 
@@ -46,6 +52,92 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #else
 #error "Demi3D doesn't support this compiler at this moment."
 #endif
+
+#if (defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))) || \
+    (defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__)))
+#   define DEMI_CPU DEMI_CPU_X86
+
+#elif DEMI_PLATFORM == DEMI_PLATFORM_APPLE && defined(__BIG_ENDIAN__)
+#   define DEMI_CPU DEMI_CPU_PPC
+#elif DEMI_PLATFORM == DEMI_PLATFORM_APPLE
+#   define DEMI_CPU DEMI_CPU_X86
+#elif DEMI_PLATFORM == DEMI_PLATFORM_APPLE_IOS && (defined(__i386__) || defined(__x86_64__))
+#   define DEMI_CPU DEMI_CPU_X86
+#elif defined(__arm__) || defined(_M_ARM) || defined(__arm64__) || defined(_aarch64_)
+#   define DEMI_CPU DEMI_CPU_ARM
+#elif defined(__mips64) || defined(__mips64_)
+#   define DEMI_CPU DEMI_CPU_MIPS
+#else
+#   define DEMI_CPU DEMI_CPU_UNKNOWN
+#endif
+
+//////////////////////////////////////////////////////////////////////////
+// SIMD
+
+#define DEMI_USE_SIMD 1
+#define DEMI_DOUBLE_PRECISION 0
+#define DEMI_RESTRICT_ALIASING 1
+
+#define DEMI_MALLOC_SIMD DiAlignedMemory::Allocate
+#define DEMI_FREE_SIMD DiAlignedMemory::Deallocate
+
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   define DEMI_ALIGNED_DECL(type, var, alignment)  __declspec(align(alignment)) type var
+
+#elif (DEMI_COMPILER == DEMI_COMPILER_GNUC) || (DEMI_COMPILER == DEMI_COMPILER_CLANG)
+#   define DEMI_ALIGNED_DECL(type, var, alignment)  type var __attribute__((__aligned__(alignment)))
+
+#else
+#   define DEMI_ALIGNED_DECL(type, var, alignment)  type var
+#endif
+
+#if DEMI_CPU == DEMI_CPU_X86
+#   define DEMI_SIMD_ALIGNMENT  16
+
+#else
+#   define DEMI_SIMD_ALIGNMENT  16
+#endif
+
+#define DEMI_SIMD_ALIGNED_DECL(type, var)   DEMI_ALIGNED_DECL(type, var, DEMI_SIMD_ALIGNMENT)
+
+#if DEMI_USE_SIMD == 1
+#if   DEMI_DOUBLE_PRECISION == 0 && DEMI_CPU == DEMI_CPU_X86 && DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   define __DEMI_HAVE_SSE  1
+#elif DEMI_DOUBLE_PRECISION == 0 && DEMI_CPU == DEMI_CPU_X86 && (DEMI_COMPILER == DEMI_COMPILER_GNUC || DEMI_COMPILER == DEMI_COMPILER_CLANG) && \
+    DEMI_PLATFORM != DEMI_PLATFORM_IOS
+#   define __DEMI_HAVE_SSE  1
+#endif
+
+/* Define whether or not Ogre compiled with NEON support.
+*/
+#if DEMI_DOUBLE_PRECISION == 0 && DEMI_CPU == DEMI_CPU_ARM && (DEMI_COMPILER == DEMI_COMPILER_GNUC || DEMI_COMPILER == DEMI_COMPILER_CLANG) && defined(__ARM_NEON__)
+#   define __DEMI_HAVE_NEON  1
+#endif
+#endif
+
+#ifndef __DEMI_HAVE_SSE
+#   define __DEMI_HAVE_SSE  0
+#endif
+
+#if DEMI_USE_SIMD == 0 || !defined(__DEMI_HAVE_NEON)
+#   define __DEMI_HAVE_NEON  0
+#endif
+
+#ifndef DEMI_RESTRICT_ALIASING
+#   define DEMI_RESTRICT_ALIASING 0
+#endif
+
+#if DEMI_RESTRICT_ALIASING != 0
+#   if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#       define RESTRICT_ALIAS __restrict   //MSVC
+#   else
+#       define RESTRICT_ALIAS __restrict__ //GCC... and others?
+#   endif
+#       else
+#   define RESTRICT_ALIAS
+#endif
+
+//////////////////////////////////////////////////////////////////////////
 
 #if (DEMI_COMPILER == DEMI_COMPILER_MSVC)
 #   if DEMI_COMPILER_VER <= 1500
