@@ -82,7 +82,7 @@ namespace Demi
         TERRAIN_LAYER_NUM = 2, 
         CHUNK_GRID_SIZE = 32,  
         WATER_MAP_SIZE = 512,  
-        FOLIAGE_DENSITY_MAP_SIZE    = 512, 
+        FOLIAGE_DENSITY_MAP_SIZE = 512, 
         CLIFF_SIZE = 128
     };
     

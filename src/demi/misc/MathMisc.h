@@ -621,8 +621,8 @@ namespace Demi
     };
     
     
-    typedef TRect<float>    DiFloatRect;
-    typedef TRect<long>     DiRect;
+    typedef TRect<float>   DiFloatRect;
+    typedef TRect<int>     DiRect;
 }
 
 #endif

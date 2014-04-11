@@ -351,10 +351,10 @@ namespace Demi
         realrect.bottom -= pos.z;
 
         DiIntVec2 vertId;
-        long left   = long(realrect.left / mParent->mDesc->mGridSize);
-        long right  = long(realrect.right / mParent->mDesc->mGridSize);
-        long top    = long(realrect.top / mParent->mDesc->mGridSize);
-        long bottom = long(realrect.bottom / mParent->mDesc->mGridSize);
+        int left   = int(realrect.left / mParent->mDesc->mGridSize);
+        int right  = int(realrect.right / mParent->mDesc->mGridSize);
+        int top    = int(realrect.top / mParent->mDesc->mGridSize);
+        int bottom = int(realrect.bottom / mParent->mDesc->mGridSize);
         vertId.x = left + top * CHUNK_GRID_SIZE;
         vertId.y = right + bottom * CHUNK_GRID_SIZE;
 

@@ -23,10 +23,8 @@ varying vec3 vTerrainBinormal;
 #if defined( USE_COLOR )
 varying vec4 vColor;
 #endif
-#if defined( USE_MAP )
-varying vec4 vTexCoord0;
-#endif
 
+varying vec4 vTexcoord0;
 varying vec3 vNormal;
 varying vec3 vViewDir;
 varying vec3 vPosWorld;
@@ -71,10 +69,10 @@ void ComputeSurfaceDataFromGeometry()
     cTerrainNormalmapColor.a = texture2D(terrainSpecularMap, vTexcoord0.zw).g;
 #   endif
 
-    gSurface.specularAmount.rgb = mix(cTerrainNormalmapColor.a, cCliffNormalmapColor.a, cliffDiffuse.a);
+    gSurface.specularAmount.rgb = vec3(mix(cTerrainNormalmapColor.a, cCliffNormalmapColor.a, cliffDiffuse.a));
 
-    vec3 vTexNormalCliff = vec3(cCliffNormalmapColor.rgb * 2.0f - 1.0f);
-    vec3 vTexNormalTerrain = vec3(cTerrainNormalmapColor.rgb * 2.0f - 1.0f);
+    vec3 vTexNormalCliff = vec3(cCliffNormalmapColor.rgb * 2.0 - 1.0);
+    vec3 vTexNormalTerrain = vec3(cTerrainNormalmapColor.rgb * 2.0 - 1.0);
 
     mat3 rotCliff = mat3(vTangent, vBinormal, vNormal);
     mat3 rotTerrain = mat3(vTerrainTangent, vTerrainBinormal, vNormal);
@@ -119,8 +117,8 @@ void AccumulatePhong(vec3 normal,
 void AccumulateDirLight(vec3 dir, vec4 color, 
     inout vec3 diffuse, inout vec3 specular) {
 
-    vec3 litDiffuse = vec3(0.0f, 0.0f, 0.0f);
-    vec3 litSpecular = vec3(0.0f, 0.0f, 0.0f);
+    vec3 litDiffuse = vec3(0.0, 0.0, 0.0);
+    vec3 litSpecular = vec3(0.0, 0.0, 0.0);
 	
     AccumulatePhong(gSurface.normal, normalize(-dir), normalize(gSurface.viewDirWorld),
         color.rgb * color.a, litDiffuse, litSpecular);
@@ -135,12 +133,12 @@ void AccumulatePointLight(vec3 position, float attenBegin, float attenEnd, vec4 
     vec3 directionToLight = position - gSurface.positionWorld;
     float distanceToLight = length(directionToLight);
 	
-    vec3 litDiffuse = vec3(0.0f, 0.0f, 0.0f);
-    vec3 litSpecular = vec3(0.0f, 0.0f, 0.0f);
+    vec3 litDiffuse = vec3(0.0, 0.0, 0.0);
+    vec3 litSpecular = vec3(0.0, 0.0, 0.0);
 	
     if (distanceToLight < attenEnd) {
 		float attenuation = linstep(attenEnd, attenBegin, distanceToLight);
-        directionToLight *= rcp(distanceToLight);
+        directionToLight /= distanceToLight;
 		
         AccumulatePhong(gSurface.normal, directionToLight, normalize(gSurface.viewDirWorld),
 			attenuation * color.rgb * color.a, litDiffuse, litSpecular);
@@ -159,20 +157,22 @@ void main()
 #endif
 
     vec3 vDiffuse = g_globalAmbient.rgb;
-    vec3 vSpecular = vec3(0.0f, 0.0f, 0.0f);
+    vec3 vSpecular = vec3(0.0, 0.0, 0.0);
 	
 	for(int i = 0; i < g_numDirLights; i++){
-        AccumulateDirLight(g_dirLightsDir[i], g_dirLightsColor[i], 
+        AccumulateDirLight(g_dirLightsDir[i].xyz, g_dirLightsColor[i],
             vDiffuse, vSpecular);
 	}
 	
+#if 0
 	for(int i = 0; i < g_numPointLights; i++){
-		AccumulatePointLight(g_pointLightsPosition[i], 
+		AccumulatePointLight(g_pointLightsPosition[i].xyz,
             g_pointLightsAttenuation[i].x, g_pointLightsAttenuation[i].y,
             g_pointLightsColor[i], vDiffuse, vSpecular);
 	}
+#endif
 
-    vec3 vFinalColor = gSurface.albedo * vDiffuse + vSpecular;
+    vec3 vFinalColor = gSurface.albedo.rgb * vDiffuse + vSpecular;
 	
     gl_FragColor.rgb = vFinalColor;
     gl_FragColor.a = gSurface.albedo.a * g_opacity;
@@ -180,6 +180,4 @@ void main()
 #ifdef GAMMA_OUTPUT
 	gl_FragColor.rgb = sqrt( gl_FragColor.xyz );
 #endif
-
-	return Out;
 }

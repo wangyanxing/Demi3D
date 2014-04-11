@@ -102,7 +102,7 @@ namespace Demi
         DiVec3 pos = node->GetPosition();
         DiQuat rot = node->GetOrientation();
 
-        DiVec2 worldSize = mTerrain->GetWorldSize();
+        //DiVec2 worldSize = mTerrain->GetWorldSize();
 
         DiTerrainDescPtr terDesc = mTerrain->GetDesc();
 
@@ -152,8 +152,8 @@ namespace Demi
 
             DiShaderParameter* shaderparam = newMat->GetShaderParameter();
             shaderparam->WriteTexture2D("terrainMap", textureDif);
-            shaderparam->WriteTexture2D("terrainNormalMap", textureNor);
 #if DEMI_PLATFORM != DEMI_PLATFORM_IOS
+            shaderparam->WriteTexture2D("terrainNormalMap", textureNor);
             shaderparam->WriteTexture2D("terrainSpecularMap", textureSpe);
 #endif
             shaderparam->WriteFloat("cliffUVScale", 1.0f / (terDesc->mTextureScale * terDesc->mGridSize));

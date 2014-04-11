@@ -1,13 +1,11 @@
 
 #include "common.h"
+#include "transform.h"
 
 attribute vec3  Position;
 attribute vec3  Normal;
 
-#if defined( USE_MAP )
 attribute vec2  Texcoord0;
-varying vec4 vTexCoord0;
-#endif
 
 #if defined( USE_NORMALMAP )
 attribute vec4 Tangent;
@@ -23,6 +21,7 @@ attribute vec4  Color;
 varying   vec4	vColor;
 #endif
 
+varying vec4 vTexcoord0;
 varying vec3 vNormal;
 varying vec3 vViewDir;
 varying vec3 vPosWorld;
@@ -31,13 +30,10 @@ uniform float cliffUVScale;
 
 void main()
 {
-	vec4 objPos = 0.0;
-	vec3 objNormal = 0.0;
 #if defined( USE_NORMALMAP )
-    vec3 objTangent = 0.0;
-    GET_SPACE_POS_NORMAL_TANGENT
+    GET_SPACE_POS_NORMAL_TANGENT(objPos,objNormal,objTangent);
 #else
-    GET_SPACE_POS_NORMAL
+    GET_SPACE_POS_NORMAL(objPos,objNormal);
 #endif
 	
 	gl_Position = g_modelViewProjMatrix * objPos;
@@ -47,8 +43,8 @@ void main()
 
     // world space normal
 	vec4 model;
-    vNormal    = (g_modelMatrix * objNormal).xyz;
-	vPosWorld  = g_modelMatrix * objPos;
+    vNormal    = (g_modelMatrix * vec4(objNormal,1.0)).xyz;
+	vPosWorld  = (g_modelMatrix * objPos).xyz;
     vViewDir   = g_eyePosition - vPosWorld;
 
 #if defined( USE_NORMALMAP )

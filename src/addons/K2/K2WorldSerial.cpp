@@ -125,6 +125,7 @@ namespace Demi
 
                 DiString model = child.GetAttribute("model");
                 model.TrimLeft("/");
+                model.ToLower();
                 DiString type = child.GetAttribute("type");
 
                 DiVec3 angles = child.GetVector3("angles");

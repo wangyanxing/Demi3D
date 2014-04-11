@@ -23,6 +23,8 @@ namespace Demi
     public:
 
         DiK2BaseMapLoader() : mWidth(0), mHeight(0) {}
+        
+        virtual ~DiK2BaseMapLoader(){}
 
         virtual void Load(DiDataStreamPtr data) = 0;
 
