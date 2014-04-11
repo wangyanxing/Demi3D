@@ -5,4 +5,5 @@
 [Bb]uild*/
 ![Cc]make/*.cmake
 [Mm]edia_hon*
+[Mm]edia_ios*
 [Ee]xternal/lib_ios/

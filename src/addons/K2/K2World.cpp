@@ -131,8 +131,13 @@ namespace Demi
         DiString normal = desc->mTextureTable[normtexid];
 
         DiTexturePtr textureDif = DiK2Configs::GetTexture(diffuse);
+        
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        DiTexturePtr textureNor = DiK2Configs::GetTexture(normal);
+#else
         DiTexturePtr textureNor = DiK2Configs::GetTexture(normal + "_rxgb");
         DiTexturePtr textureSpe = DiK2Configs::GetTexture(normal + "_s");
+#endif
 
         uint32 submodels = model->GetNumSubModels();
         for (uint32 i = 0; i < submodels; ++i)
@@ -148,7 +153,9 @@ namespace Demi
             DiShaderParameter* shaderparam = newMat->GetShaderParameter();
             shaderparam->WriteTexture2D("terrainMap", textureDif);
             shaderparam->WriteTexture2D("terrainNormalMap", textureNor);
+#if DEMI_PLATFORM != DEMI_PLATFORM_IOS
             shaderparam->WriteTexture2D("terrainSpecularMap", textureSpe);
+#endif
             shaderparam->WriteFloat("cliffUVScale", 1.0f / (terDesc->mTextureScale * terDesc->mGridSize));
         }
     }

@@ -960,13 +960,19 @@ namespace Demi
             else
                 colorPath = basePath + "/" + normalTex;
 
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+            DiTexturePtr normtex = DiK2Configs::GetTexture(colorPath);
+            if (normtex)
+                sm->WriteTexture2D("normalMap", normtex);
+#else
             DiTexturePtr normtex = DiK2Configs::GetTexture(colorPath + "_rxgb");
             if (normtex)
                 sm->WriteTexture2D("normalMap", normtex);
-
+            
             DiTexturePtr spectex = DiK2Configs::GetTexture(colorPath + "_s");
             if (spectex)
                 sm->WriteTexture2D("specularMap", spectex);
+#endif
         }
 
         return mat;

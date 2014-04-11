@@ -12,13 +12,17 @@
 #if _SHOW_LAYER_0
 uniform sampler2D diffuseMap_0;
 uniform sampler2D normalMap_0;
-uniform sampler2D specularMap_0;
+#   ifndef DI_GLES2
+        uniform sampler2D specularMap_0;
+#   endif
 #endif
 
 #if _SHOW_LAYER_1
 uniform sampler2D diffuseMap_1;
 uniform sampler2D normalMap_1;
-uniform sampler2D specularMap_1;
+#   ifndef DI_GLES2
+        uniform sampler2D specularMap_1;
+#   endif
 #endif
 
 varying vec4 vPosition;
@@ -52,23 +56,31 @@ void main()
 
 #if _SHOW_LAYER_0
 	vec4 cNormalmapColor0;
-    cNormalmapColor0.rgb = texture2D(normalMap_0, vTexcoord0).agb;
-	cNormalmapColor0.a = texture2D(specularMap_0, vTexcoord0).g;
+#   ifdef DI_GLES2
+        cNormalmapColor0 = texture2D(normalMap_0, vTexcoord0);
+#   else
+        cNormalmapColor0.rgb = texture2D(normalMap_0, vTexcoord0).agb;
+        cNormalmapColor0.a = texture2D(specularMap_0, vTexcoord0).g;
+#   endif
 #else
     vec4 cNormalmapColor0 = vec4(0.5, 0.5, 1, 1.0);
 #endif
 
 #if _SHOW_LAYER_1
 	vec4 cNormalmapColor1;
-    cNormalmapColor1.rgb = texture2D(normalMap_1, vTexcoord0).agb;
-	cNormalmapColor1.a = texture2D(specularMap_1, vTexcoord0).g;
+#   ifdef DI_GLES2
+        cNormalmapColor1 = texture2D(normalMap_1, vTexcoord0);
+#   else
+        cNormalmapColor1.rgb = texture2D(normalMap_1, vTexcoord0).agb;
+        cNormalmapColor1.a = texture2D(specularMap_1, vTexcoord0).g;
+#   endif
 #else
     vec4 cNormalmapColor1 = vec4(0.5, 0.5, 1, 1.0);
 #endif
 
 	vec4 cNormalmapColor = mix(cNormalmapColor0, cNormalmapColor1, fAlpha);
 	vec3 texNormal = vec3(cNormalmapColor.rgb * 2.0 - 1.0);
-    mat3x3 rot = mat3x3(vTangent, vBinormal, vNormal);
+    mat3 rot = mat3(vTangent, vBinormal, vNormal);
 	vec3 vNormal = normalize(texNormal * rot);
 	
 	vec3 vDiffuse = g_globalAmbient.rgb;

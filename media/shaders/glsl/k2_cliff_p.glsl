@@ -8,7 +8,11 @@ uniform sampler2D terrainMap;
 uniform sampler2D normalMap;
 uniform sampler2D specularMap;
 uniform sampler2D terrainNormalMap;
+
+#   ifndef DI_GLES2
 uniform sampler2D terrainSpecularMap;
+#   endif
+
 
 varying vec3 vTangent;
 varying vec3 vBinormal;
@@ -50,21 +54,30 @@ void ComputeSurfaceDataFromGeometry()
     gSurface.albedo.a = 1.0;
 
 #if defined( USE_NORMALMAP )
+    
+#   ifdef DI_GLES2
+    vec4 cCliffNormalmapColor;
+    cCliffNormalmapColor = texture2D(normalMap, vTexcoord0.xy);
+
+    vec4 cTerrainNormalmapColor;
+    cTerrainNormalmapColor = texture2D(terrainNormalMap, vTexcoord0.zw);
+#   else
     vec4 cCliffNormalmapColor;
     cCliffNormalmapColor.rgb = texture2D(normalMap, vTexcoord0.xy).agb;
     cCliffNormalmapColor.a = texture2D(specularMap, vTexcoord0.xy).g;
-
+    
     vec4 cTerrainNormalmapColor;
     cTerrainNormalmapColor.rgb = texture2D(terrainNormalMap, vTexcoord0.zw).agb;
     cTerrainNormalmapColor.a = texture2D(terrainSpecularMap, vTexcoord0.zw).g;
+#   endif
 
     gSurface.specularAmount.rgb = mix(cTerrainNormalmapColor.a, cCliffNormalmapColor.a, cliffDiffuse.a);
 
     vec3 vTexNormalCliff = vec3(cCliffNormalmapColor.rgb * 2.0f - 1.0f);
     vec3 vTexNormalTerrain = vec3(cTerrainNormalmapColor.rgb * 2.0f - 1.0f);
 
-    mat3x3 rotCliff = mat3x3(vTangent, vBinormal, vNormal);
-    mat3x3 rotTerrain = mat3x3(vTerrainTangent, vTerrainBinormal, vNormal);
+    mat3 rotCliff = mat3(vTangent, vBinormal, vNormal);
+    mat3 rotTerrain = mat3(vTerrainTangent, vTerrainBinormal, vNormal);
     vec3 vNormalTerrain = vTexNormalTerrain * rotTerrain;
     vec3 vNormalCliff = vTexNormalCliff * rotCliff;
     gSurface.normal = normalize(mix(vNormalTerrain, vNormalCliff, cliffDiffuse.a));

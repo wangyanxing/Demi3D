@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "K2Pch.h"
 #include "VertexBuffer.h"
 #include "VertexDeclaration.h"
@@ -343,14 +344,14 @@ namespace Demi
 
         DiVec3 pos;
         mChunkTransform.getTrans(pos);
-        realrect.left    -= pos.x;
-        realrect.right    -= pos.x;
+        realrect.left   -= pos.x;
+        realrect.right  -= pos.x;
         realrect.top    -= pos.z;
         realrect.bottom -= pos.z;
 
         DiIntVec2 vertId;
-        long left    = long(realrect.left / mParent->mDesc->mGridSize);
-        long right    = long(realrect.right / mParent->mDesc->mGridSize);
+        long left   = long(realrect.left / mParent->mDesc->mGridSize);
+        long right  = long(realrect.right / mParent->mDesc->mGridSize);
         long top    = long(realrect.top / mParent->mDesc->mGridSize);
         long bottom = long(realrect.bottom / mParent->mDesc->mGridSize);
         vertId.x = left + top * CHUNK_GRID_SIZE;
@@ -365,10 +366,10 @@ namespace Demi
         DiVec3 pos;
         mChunkTransform.getTrans(pos);
         float halfGrid = mParent->mDesc->mGridSize / 2;
-        rect.left    = pos.x - halfGrid;
+        rect.left   = pos.x - halfGrid;
         rect.top    = pos.z - halfGrid;
-        rect.right    = pos.x + halfGrid;
-        rect.bottom    = pos.z + halfGrid;
+        rect.right  = pos.x + halfGrid;
+        rect.bottom = pos.z + halfGrid;
         return rect;
     }
 
@@ -468,10 +469,10 @@ namespace Demi
     DiRect DiTerrainChunk::GetGridRect()
     {
         DiRect rect;
-        rect.left     = mChunkIDX * CHUNK_GRID_SIZE;
-        rect.top      = mChunkIDY * CHUNK_GRID_SIZE;
-        rect.right    = rect.left + CHUNK_GRID_SIZE - 1;
-        rect.bottom = rect.top    + CHUNK_GRID_SIZE - 1;
+        rect.left   = mChunkIDX * CHUNK_GRID_SIZE;
+        rect.top    = mChunkIDY * CHUNK_GRID_SIZE;
+        rect.right  = rect.left + CHUNK_GRID_SIZE - 1;
+        rect.bottom = rect.top  + CHUNK_GRID_SIZE - 1;
 
         return rect;
     }

@@ -30,7 +30,11 @@ namespace Demi
         if (!CommandMgr->HasCommand("k2_media_folder"))
         {
             DiString honMediaPath = DiAssetManager::GetInstance().GetBasePath();
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+            honMediaPath += "../media_ios"; // default value
+#else
             honMediaPath += "../media_hon"; // default value
+#endif
             honMediaPath.SimplifyPath();
 #if 1
             CommandMgr->RegisterString("k2_media_folder", honMediaPath, 0);
@@ -82,7 +86,12 @@ namespace Demi
         DiString full = GetK2MediaPath(relPath);
 
         DiString tgaFile = full + ".tga";
+        
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        DiString ddsFile = full + ".pvr";
+#else
         DiString ddsFile = full + ".dds";
+#endif
 
         FILE* fp = NULL;
 
