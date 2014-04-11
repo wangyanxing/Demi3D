@@ -95,7 +95,7 @@ namespace Demi
         uint32 cliffTileNum = 0;
 
         // we should get rid of the cliff tiles
-        for (uint32 i = 0; i < gridsize; i++)
+        for (uint16 i = 0; i < gridsize; i++)
         {
             uint32 realGridID = mParent->GetRealGridId(mChunkIDX, mChunkIDY, i);
             
@@ -118,7 +118,7 @@ namespace Demi
             ids[bytes].push_back(i);
         }
 
-        int indicesSize = 16 * 6 * (gridsize - cliffTileNum);
+        int indicesSize = sizeof(uint16) * 6 * (gridsize - cliffTileNum);
 
         uint8* bf = DI_NEW uint8[indicesSize];
         uint16* data = static_cast<uint16*>((void*)bf);
@@ -129,19 +129,20 @@ namespace Demi
             DiTerrainBatch* batch   = DI_NEW DiTerrainBatch(this);
             batch->mIndexOffset     = iboffset;
             batch->mVertexDecl      = mParent->mVertexDecl;
-            batch->mPrimitiveCount  = it->second.size() * 2;
+            batch->mPrimitiveCount  = (uint32)it->second.size() * 2;
             batch->mPrimitiveType   = PT_TRIANGLELIST;
             batch->mIndexBuffer     = mIndexBuffer;
             batch->mSourceData.push_back(mVertexBuffer);
             batch->mVertexOffset    = 0;
             batch->mVerticesNum     = (CHUNK_GRID_SIZE + 1) * (CHUNK_GRID_SIZE + 1);
             batch->mMaterial        = mParent->GetMaterial(it->first);
+            
             if (!mParent->GetTextureTable().empty())
             {
                 batch->mDiffuseTexture[0] = mParent->GetTextureTable()[it->first.diffuse0];
                 batch->mDiffuseTexture[1] = mParent->GetTextureTable()[it->first.diffuse1];
-                batch->mNormalTexture[0] = mParent->GetTextureTable()[it->first.normal0];
-                batch->mNormalTexture[1] = mParent->GetTextureTable()[it->first.normal1];
+                batch->mNormalTexture[0]  = mParent->GetTextureTable()[it->first.normal0];
+                batch->mNormalTexture[1]  = mParent->GetTextureTable()[it->first.normal1];
             }
             mBatches.push_back(batch);
 
@@ -318,7 +319,7 @@ namespace Demi
         mIndexBuffer = Driver->CreateIndexBuffer();
 
         int indicesNums = (CHUNK_GRID_SIZE)*(CHUNK_GRID_SIZE)*6;
-        int indicesSize = 16 * indicesNums;
+        int indicesSize = sizeof(uint16) * indicesNums;
 
         mIndexBuffer->Create(indicesSize);
     }

@@ -413,7 +413,7 @@ namespace Demi
         {
             unit->mIndexBuffer->Bind();
             GLenum indexType = unit->mIndexBuffer->GetType() == IB_16BITS ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
-            uint32 indexSize = unit->mIndexBuffer->GetType() == IB_16BITS ? 16 : 32;
+            uint32 indexSize = unit->mIndexBuffer->GetType() == IB_16BITS ? 2 : 4;
 
             void* pBufferData = nullptr;
             pBufferData = VBO_BUFFER_OFFSET(unit->mIndexOffset * indexSize);

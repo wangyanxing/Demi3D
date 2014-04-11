@@ -80,17 +80,23 @@ void main()
 
 	vec4 cNormalmapColor = mix(cNormalmapColor0, cNormalmapColor1, fAlpha);
 	vec3 texNormal = vec3(cNormalmapColor.rgb * 2.0 - 1.0);
+    
     mat3 rot = mat3(vTangent, vBinormal, vNormal);
-	vec3 vNormal = normalize(texNormal * rot);
+    
+#ifdef DI_GLES2
+	vec3 finalNormal = normalize(vNormal);
+#else
+    vec3 finalNormal = normalize(texNormal * rot);
+#endif
 	
 	vec3 vDiffuse = g_globalAmbient.rgb;
 	vec3 vSpecular = vec3(0.0, 0.0, 0.0);
 	
 	for (int i = 0; i < g_numDirLights; ++i)
 	{
-		float NdotL = clamp(dot(vNormal, -g_dirLightsDir[i].xyz),0.0,1.0); //152
+		float NdotL = clamp(dot(finalNormal, -g_dirLightsDir[i].xyz),0.0,1.0); //152
 		vec3 halfVec = normalize(-g_dirLightsDir[i].xyz + normalize(vViewDir));
-		float dotHalf = clamp(dot(vNormal, halfVec),0.0,1.0);
+		float dotHalf = clamp(dot(finalNormal, halfVec),0.0,1.0);
 		float specWeight = clamp(pow(dotHalf, g_shininess),0.0,1.0);
 
 		vDiffuse += g_dirLightsColor[i].xyz * NdotL;
