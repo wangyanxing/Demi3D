@@ -1,5 +1,5 @@
 
 namespace Demi
 {
-$pfile "misc.pkg"
+$pfile "bindscript/misc.pkg"
 }

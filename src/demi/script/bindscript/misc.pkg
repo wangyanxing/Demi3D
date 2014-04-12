@@ -1,6 +1,24 @@
-$cfile "../../misc/math/vector2.h"
-$cfile "../../misc/math/vector3.h"
-$cfile "../../misc/math/vector4.h"
+$cfile "../misc/math/vector2.h"
+$cfile "../misc/math/vector3.h"
+$cfile "../misc/math/vector4.h"
+$cfile "../misc/math/quaternion.h"
+$cfile "../misc/math/matrix3.h"
+$cfile "../misc/math/MathMisc.h"
+$cfile "../misc/LogManager.h"
+	
+enum LogLevel
+{        
+    LOG_LEVEL_ERROR   = 0,
+    LOG_LEVEL_WARNING = 1,
+    LOG_LEVEL_LOG     = 2,
+    LOG_LEVEL_DEBUG   = 3,
+};
+
+class DiLogManager
+{
+	static DiLogManager& GetInstance();
+	void Output(LogLevel level, const char* log);
+};
 
 class DiVec2
 {
@@ -16,6 +34,8 @@ class DiVec2
 
 	float length () const;
 	float squaredLength () const;
+	
+	float x, y;
 };
 
 class DiVec3
@@ -39,6 +59,8 @@ class DiVec3
 
 	float length () const;
 	float squaredLength () const;
+	
+	float x, y, z;
 };
 
 class DiVec4
@@ -46,11 +68,91 @@ class DiVec4
 	DiVec4();
 	DiVec4(const float, const float, const float, const float);
 
-	DiVec4 operator + (const DiVec4& vec) const;
-    DiVec4 operator - (const DiVec4& vec) const;
-    DiVec4 operator * (const DiVec4& vec) const;
+	DiVec4 operator + (const DiVec4& vec)   const;
+    DiVec4 operator - (const DiVec4& vec)   const;
+    DiVec4 operator * (const DiVec4& vec)   const;
 	DiVec4 operator * (const float fScalar) const;
-    bool operator  == (const DiVec4& vec) const;
+    bool   operator  == (const DiVec4& vec) const;
 
 	float dotProduct(const DiVec4& vec) const;
+	
+	float w, x, y, z;
+};
+
+class DiRadian
+{
+public:
+    explicit DiRadian ( float  );
+    DiRadian ( const DiDegree& d );
+
+    float valueDegrees() const;
+    float valueRadians() const;
+    float valueAngleUnits() const;
+
+    const DiRadian& operator + () const;
+    DiRadian operator + ( const DiRadian& r ) const;
+    DiRadian operator + ( const DiDegree& d ) const;
+    DiRadian operator - () const;
+    DiRadian operator - ( const DiRadian& r ) const;
+    DiRadian operator - ( const DiDegree& d ) const;
+    DiRadian operator * ( float f ) const;
+    DiRadian operator * ( const DiRadian& f ) const;
+    DiRadian operator / ( float f ) const;
+
+    bool operator <  ( const DiRadian& r ) const;
+    bool operator <= ( const DiRadian& r ) const;
+    bool operator == ( const DiRadian& r ) const;
+};
+
+class DiDegree
+{
+public:
+    DiDegree ( float d );
+    DiDegree ( const DiRadian& r );
+
+    float valueDegrees() const { return mDeg; }
+    float valueRadians() const; // see bottom of this file
+    float valueAngleUnits() const;
+
+    const DiDegree& operator + () const;
+    DiDegree operator + ( const DiDegree& d ) const;
+    DiDegree operator + ( const DiRadian& r ) const;
+    DiDegree operator - () const;
+    DiDegree operator - ( const DiDegree& d ) const;
+    DiDegree operator - ( const DiRadian& r ) const;
+    DiDegree operator * ( float f ) const;
+    DiDegree operator * ( const DiDegree& f );
+    DiDegree operator / ( float f ) const;
+
+    bool operator <  ( const DiDegree& d ) const;
+    bool operator <= ( const DiDegree& d ) const;
+    bool operator == ( const DiDegree& d ) const;
+};
+
+class DiMat3
+{
+	DiMat3();
+	DiMat3 (float fEntry00, float fEntry01, float fEntry02,
+	        float fEntry10, float fEntry11, float fEntry12,
+	        float fEntry20, float fEntry21, float fEntry22);
+	
+	DiMat3 Transpose () const;
+	bool Inverse (DiMat3& rkInverse, float fTolerance) const;
+	DiMat3 Inverse (float fTolerance) const;
+	void setIdentity();
+};
+
+class DiQuat
+{
+	DiQuat ();
+	DiQuat (float fW,float fX, float fY, float fZ);
+	
+	void FromAxes (const DiVec3* akAxis);
+	void FromAxes (const DiVec3& xAxis, const DiVec3& yAxis, const DiVec3& zAxis);
+	
+	DiVec3 xAxis(void) const;
+	DiVec3 yAxis(void) const;
+	DiVec3 zAxis(void) const;
+	
+	float w, x, y, z;
 };
