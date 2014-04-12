@@ -810,7 +810,7 @@ namespace Demi
 
         int chunk_size = ReadInt(mStream);
 
-#if 1
+#if 0
         int surfindex = ReadInt(mStream);
         int num_planes = ReadInt(mStream);
         int num_points = ReadInt(mStream);

@@ -169,7 +169,7 @@ namespace Demi
         
         DiClipController*     GetClipController(const DiString& name) const;
                               
-        uint32                  GetClipNums() const {return mClipControllers.size();}
+        uint32                  GetClipNums() const {return (uint32)mClipControllers.size();}
                               
         bool                  HasClipController(const DiString& name) const;
                               

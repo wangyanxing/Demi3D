@@ -73,7 +73,7 @@ namespace Demi
 
         void                ProcessCliff(DiK2RenderObject* obj);
 
-    private:
+    public:
 
         DiTerrainPtr        mTerrain;
 

@@ -51,7 +51,7 @@ namespace Demi
 
         SubMeshIterator         GetSubMeshs();
 
-        uint32                  GetNumSubMeshes() const { return mSubMeshList.size(); }
+        uint32                  GetNumSubMeshes() const { return (uint32)mSubMeshList.size(); }
 
         DiSubMesh*              GetSubMesh(int id){return mSubMeshList[id];}
 

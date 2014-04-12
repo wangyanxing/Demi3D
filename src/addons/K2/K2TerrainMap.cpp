@@ -83,7 +83,7 @@ namespace Demi
         K2MapScale::GridSize = mDesc->mGridSize;
 
         uint32 vertSize = mDesc->GetVertNum(); 
-        uint32 gridSize = mDesc->GetGridNum();
+        //uint32 gridSize = mDesc->GetGridNum();
 
         uint32 vertX = CHUNK_GRID_SIZE*mDesc->mSizeX + 1;
         uint32 vertY = CHUNK_GRID_SIZE*mDesc->mSizeY + 1;
@@ -641,10 +641,12 @@ namespace Demi
 
         DiTexturePtr textureDif0 = DiK2Configs::GetTexture(texl0Dif);
         DiTexturePtr textureDif1 = DiK2Configs::GetTexture(texl1Dif);
+        params->WriteTexture2D("diffuseMap_0", textureDif0);
+        params->WriteTexture2D("diffuseMap_1", textureDif1);
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-        DiTexturePtr textureNorm0 = DiK2Configs::GetTexture(texl0Norm);
-        DiTexturePtr textureNorm1 = DiK2Configs::GetTexture(texl1Norm);
+        //DiTexturePtr textureNorm0 = DiK2Configs::GetTexture(texl0Norm);
+        //DiTexturePtr textureNorm1 = DiK2Configs::GetTexture(texl1Norm);
 #else
         DiTexturePtr textureNorm0 = DiK2Configs::GetTexture(texl0Norm + "_rxgb");
         DiTexturePtr textureNorm1 = DiK2Configs::GetTexture(texl1Norm + "_rxgb");
@@ -653,11 +655,9 @@ namespace Demi
         DiTexturePtr textureSpec1 = DiK2Configs::GetTexture(texl1Norm + "_s");
         params->WriteTexture2D("specularMap_0", textureSpec0);
         params->WriteTexture2D("specularMap_1", textureSpec1);
-#endif
-        params->WriteTexture2D("diffuseMap_0", textureDif0);
-        params->WriteTexture2D("diffuseMap_1", textureDif1);
         params->WriteTexture2D("normalMap_0", textureNorm0);
         params->WriteTexture2D("normalMap_1", textureNorm1);
+#endif
         
         mat->SetCullMode(CULL_CCW);
 
@@ -984,13 +984,6 @@ namespace Demi
 
         pos.x = idx * mDesc->mGridSize * CHUNK_GRID_SIZE;
         pos.y = idy * mDesc->mGridSize * CHUNK_GRID_SIZE;
-
-        float wholeSizeX = mDesc->mGridSize * mDesc->mSizeX * CHUNK_GRID_SIZE;
-        float wholeSizeY = mDesc->mGridSize * mDesc->mSizeY * CHUNK_GRID_SIZE;
-
-        //pos.x -= wholeSizeX/2;
-        //pos.y -= wholeSizeY/2;
-
         return pos;
     }
 

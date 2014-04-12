@@ -44,7 +44,7 @@ void InitScene()
     world = DI_NEW DiK2World();
     world->Load("maps/test_entity");
 
-    DiVec2 worldsize = world->GetTerrain()->GetWorldSize();
+    DiVec2 worldsize = world->mTerrain->GetWorldSize();
 
     auto cameraHelper = DemiDemo::GetApp()->GetCameraHelper();
     cameraHelper->SetStyle(CS_FREELOOK);

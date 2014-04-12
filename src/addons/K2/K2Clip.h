@@ -52,7 +52,7 @@ namespace Demi
 
         DiNode*         GetRootBone() { return mRootNode; }
 
-        uint32          GetNumBones() const { return mBones.size(); }
+        uint32          GetNumBones() const { return (uint32)mBones.size(); }
 
         DiMat4*         GetBoneMatrices() { return mBoneMatrices; }
 

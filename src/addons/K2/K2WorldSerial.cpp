@@ -137,7 +137,7 @@ namespace Demi
                 transform.pos = child.GetVector3("position");
                 std::swap(transform.pos.y, transform.pos.z);
 
-                DiVec2 worldSize = world->GetTerrain()->GetWorldSize();
+                DiVec2 worldSize = world->mTerrain->GetWorldSize();
                 transform.pos.x = worldSize.x - transform.pos.x;
 
                 float scale = child.GetFloat("scale");

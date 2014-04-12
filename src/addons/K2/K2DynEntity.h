@@ -26,9 +26,9 @@ namespace Demi
      */
     class DEMI_K2_API DiK2DynEntity : public DiK2GameEntity
     {
-        DEF_DECLARE_PRIORITY(MotionProperty);
-        DEF_DECLARE_PRIORITY(StateProperty);
-        DEF_DECLARE_PRIORITY(MoveProperty);
+        DEF_DECLARE_PRIORITY(MotionProperty)
+        DEF_DECLARE_PRIORITY(StateProperty)
+        DEF_DECLARE_PRIORITY(MoveProperty)
 
 
     public:
