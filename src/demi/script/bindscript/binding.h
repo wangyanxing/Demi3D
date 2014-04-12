@@ -1,6 +1,6 @@
 /*
 ** Lua binding: ScriptMain
-** Generated automatically by tolua++-1.0.92 on 04/14/14 17:23:16.
+** Generated automatically by tolua++-1.0.92 on Sat Apr 12 00:03:31 2014.
 */
 
 #ifndef __cplusplus
