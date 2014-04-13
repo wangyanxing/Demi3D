@@ -152,8 +152,8 @@ namespace Demi
 
             DiShaderParameter* shaderparam = newMat->GetShaderParameter();
             shaderparam->WriteTexture2D("terrainMap", textureDif);
-#if DEMI_PLATFORM != DEMI_PLATFORM_IOS
             shaderparam->WriteTexture2D("terrainNormalMap", textureNor);
+#if DEMI_PLATFORM != DEMI_PLATFORM_IOS
             shaderparam->WriteTexture2D("terrainSpecularMap", textureSpe);
 #endif
             shaderparam->WriteFloat("cliffUVScale", 1.0f / (terDesc->mTextureScale * terDesc->mGridSize));

@@ -3,11 +3,11 @@
 
 uniform sampler2D diffuseMap_0;
 uniform sampler2D diffuseMap_1;
+uniform sampler2D normalMap_0;
+uniform sampler2D normalMap_1;
 
 #ifndef DI_GLES2
-uniform sampler2D normalMap_0;
 uniform sampler2D specularMap_0;
-uniform sampler2D normalMap_1;
 uniform sampler2D specularMap_1;
 #endif
 
@@ -27,9 +27,9 @@ void main()
 
 	vec3 cDiffuseColor = mix(diffuse0.rgb, diffuse1.rgb, fAlpha) * vColor0.rgb;
 
-    float specularValue = 0.3;
 #ifdef DI_GLES2
-	vec3 finalNormal = normalize(vNormal);
+    vec4 cNormalmapColor0 = texture2D(normalMap_0, vTexcoord0);
+    vec4 cNormalmapColor1 = texture2D(normalMap_1, vTexcoord0);
 #else
     vec4 cNormalmapColor0;
     cNormalmapColor0.rgb = texture2D(normalMap_0, vTexcoord0).agb;
@@ -38,14 +38,15 @@ void main()
     vec4 cNormalmapColor1;
     cNormalmapColor1.rgb = texture2D(normalMap_1, vTexcoord0).agb;
     cNormalmapColor1.a = texture2D(specularMap_1, vTexcoord0).g;
+#endif
     
 	vec4 cNormalmapColor = mix(cNormalmapColor0, cNormalmapColor1, fAlpha);
 	vec3 texNormal = vec3(cNormalmapColor.rgb * 2.0 - 1.0);
     
     mat3 rot = mat3(vTangent, vBinormal, vNormal);
     vec3 finalNormal = normalize(texNormal * rot);
-    specularValue = cNormalmapColor.a;
-#endif
+    float specularValue = cNormalmapColor.a;
+
 	
 	vec3 vDiffuse = g_globalAmbient.rgb;
 	vec3 vSpecular = vec3(0.0, 0.0, 0.0);
@@ -63,6 +64,6 @@ void main()
 
     vec3 vFinalColor = cDiffuseColor.rgb * vDiffuse + vSpecular;
 
-    gl_FragColor.rgb = vec3(vTexcoord0.xy,0.0);
+    gl_FragColor.rgb = vFinalColor.rgb;
     gl_FragColor.a = 1.0;
 }

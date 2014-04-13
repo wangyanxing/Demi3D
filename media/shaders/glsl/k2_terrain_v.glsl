@@ -23,13 +23,13 @@ void main()
 	vec3 vWorldPos	= (g_modelMatrix * vPosition).xyz;
 	vTexcoord0      = vTile * v_WorldSizes.y;
 	
-    vec4 normal     = vec4(Texcoord0.xyz,1.0);
-	vec4 tangent 	= vec4(Texcoord1.xyz,1.0);
+    vec4 normal     = vec4(Texcoord0.xyz,0.0);
+	vec4 tangent 	= vec4(Texcoord1.xyz,0.0);
 	vec3 binormal   = cross(tangent.xyz, normal.xyz);
 
 	vNormal         = (g_modelMatrix * normal).xyz;
 	vTangent        = (g_modelMatrix * tangent).xyz;
-	vBinormal       = (g_modelMatrix * vec4(binormal,1.0)).xyz;
+	vBinormal       = (g_modelMatrix * vec4(binormal,0.0)).xyz;
 
 	gl_Position     = g_modelViewProjMatrix * vPosition;
 	vColor0         = Texcoord2; // vertex color
