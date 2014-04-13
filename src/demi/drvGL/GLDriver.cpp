@@ -146,26 +146,33 @@ namespace Demi
         if (!_BindVertexBuffer(unit))
             return false;
 
-        GLint primType;
+        GLint primType = 0;
+        GLint indicesCount = 0;
         switch (unit->mPrimitiveType)
         {
         case PT_POINTLIST:
             primType = GL_POINTS;
+            indicesCount = unit->mPrimitiveCount;
             break;
         case PT_LINELIST:
             primType = GL_LINES;
+            indicesCount = unit->mPrimitiveCount * 2;
             break;
         case PT_LINESTRIP:
             primType = GL_LINE_STRIP;
+            indicesCount = unit->mPrimitiveCount + 1;
             break;
         case PT_TRIANGLELIST:
             primType = GL_TRIANGLES;
+            indicesCount = unit->mPrimitiveCount * 3;
             break;
         case PT_TRIANGLESTRIP:
             primType = GL_TRIANGLE_STRIP;
+            indicesCount = unit->mPrimitiveCount + 2;
             break;
         case PT_TRIANGLEFAN:
             primType = GL_TRIANGLE_FAN;
+            indicesCount = unit->mPrimitiveCount + 2;
             break;
         default:
             primType = GL_TRIANGLES;
@@ -182,10 +189,9 @@ namespace Demi
             GLenum indexType = unit->mIndexBuffer->GetType() == IB_16BITS ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
             uint32 indexSize = unit->mIndexBuffer->GetType() == IB_16BITS ? sizeof(unsigned short) : sizeof(unsigned int);
 
-            void* pBufferData = nullptr;
-            pBufferData = VBO_BUFFER_OFFSET(unit->mIndexOffset * indexSize);
+            void* pBufferData = VBO_BUFFER_OFFSET(unit->mIndexOffset * indexSize);
 
-            glDrawElements(primType, unit->mIndexBuffer->GetMaxIndices(), indexType, pBufferData);
+            glDrawElements(primType, indicesCount, indexType, pBufferData);
         }
 
 #if 0

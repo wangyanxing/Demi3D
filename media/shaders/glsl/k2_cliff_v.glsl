@@ -4,7 +4,6 @@
 
 attribute vec3  Position;
 attribute vec3  Normal;
-
 attribute vec2  Texcoord0;
 
 #if defined( USE_NORMALMAP )
@@ -14,11 +13,6 @@ varying vec3 vTangent;
 varying vec3 vBinormal;
 varying vec3 vTerrainTangent;
 varying vec3 vTerrainBinormal;
-#endif
-
-#if defined( USE_COLOR )
-attribute vec4  Color;
-varying   vec4	vColor;
 #endif
 
 varying vec4 vTexcoord0;
@@ -42,10 +36,9 @@ void main()
     vTexcoord0.zw = (g_modelMatrix * objPos).xz * cliffUVScale;
 
     // world space normal
-	vec4 model;
-    vNormal    = (g_modelMatrix * vec4(objNormal,1.0)).xyz;
-	vPosWorld  = (g_modelMatrix * objPos).xyz;
-    vViewDir   = g_eyePosition - vPosWorld;
+    vNormal   = (g_modelMatrix * vec4(objNormal,0.0)).xyz;
+	vPosWorld = (g_modelMatrix * objPos).xyz;
+    vViewDir  = g_eyePosition - vPosWorld;
 
 #if defined( USE_NORMALMAP )
     vTangent = (g_modelMatrix * vec4(objTangent.xyz, 0.0)).xyz;

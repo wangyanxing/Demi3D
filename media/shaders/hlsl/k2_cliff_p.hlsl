@@ -162,11 +162,13 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
             vDiffuse, vSpecular);
 	}
 	
+#if 0
 	for(int i = 0; i < g_numPointLights; i++){
 		AccumulatePointLight(g_pointLightsPosition[i], 
             g_pointLightsAttenuation[i].x, g_pointLightsAttenuation[i].y,
             g_pointLightsColor[i], vDiffuse, vSpecular);
 	}
+#endif
 
     float3 vFinalColor = gSurface.albedo * vDiffuse + vSpecular;
 	

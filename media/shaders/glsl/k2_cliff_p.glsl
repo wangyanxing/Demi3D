@@ -13,16 +13,11 @@ uniform sampler2D terrainNormalMap;
 uniform sampler2D terrainSpecularMap;
 #   endif
 
-
 varying vec3 vTangent;
 varying vec3 vBinormal;
 varying vec3 vTerrainTangent;
 varying vec3 vTerrainBinormal;
 #endif 
-
-#if defined( USE_COLOR )
-varying vec4 vColor;
-#endif
 
 varying vec4 vTexcoord0;
 varying vec3 vNormal;
@@ -48,17 +43,14 @@ void ComputeSurfaceDataFromGeometry()
 
     vec4 cliffDiffuse = texture2D(map, vTexcoord0.xy);
     vec4 terrainDiffuse = texture2D(terrainMap, vTexcoord0.zw);
-    gSurface.albedo.rgb = mix(terrainDiffuse.rgb, cliffDiffuse.rgb, cliffDiffuse.a)/* * vColor*/;
+    gSurface.albedo.rgb = mix(terrainDiffuse.rgb, cliffDiffuse.rgb, cliffDiffuse.a);
     gSurface.albedo.a = 1.0;
 
 #if defined( USE_NORMALMAP )
     
 #   ifdef DI_GLES2
-    vec4 cCliffNormalmapColor;
-    cCliffNormalmapColor = texture2D(normalMap, vTexcoord0.xy);
-
-    vec4 cTerrainNormalmapColor;
-    cTerrainNormalmapColor = texture2D(terrainNormalMap, vTexcoord0.zw);
+    vec4 cCliffNormalmapColor = texture2D(normalMap, vTexcoord0.xy);
+    vec4 cTerrainNormalmapColor = texture2D(terrainNormalMap, vTexcoord0.zw);
 #   else
     vec4 cCliffNormalmapColor;
     cCliffNormalmapColor.rgb = texture2D(normalMap, vTexcoord0.xy).agb;
@@ -157,7 +149,7 @@ void main()
 #endif
 
     vec3 vDiffuse = g_globalAmbient.rgb;
-    vec3 vSpecular = vec3(0.0, 0.0, 0.0);
+    vec3 vSpecular = vec3(0.0);
 	
 	for(int i = 0; i < g_numDirLights; i++){
         AccumulateDirLight(g_dirLightsDir[i].xyz, g_dirLightsColor[i],

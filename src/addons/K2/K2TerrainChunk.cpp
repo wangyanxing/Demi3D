@@ -213,7 +213,7 @@ namespace Demi
 
         for (uint32 i = 0; i < vertNum; i++)
         {
-            DiVec3 vec = mParent->GetPosition(mChunkIDX,mChunkIDY,i);
+            DiVec3 vec = mParent->GetPosition(mChunkIDX, mChunkIDY, i);
             mQuadNode->GetBounds().Merge(vec);
 
             float* pos = (float*)base;
@@ -318,8 +318,7 @@ namespace Demi
 
         mIndexBuffer = Driver->CreateIndexBuffer();
 
-        int indicesNums = (CHUNK_GRID_SIZE)*(CHUNK_GRID_SIZE)*6;
-        int indicesSize = sizeof(uint16) * indicesNums;
+        int indicesSize = sizeof(uint16)* (CHUNK_GRID_SIZE)* (CHUNK_GRID_SIZE)* 6;
 
         mIndexBuffer->Create(indicesSize);
     }

@@ -379,26 +379,33 @@ namespace Demi
         
         GLenum polyMode = StateCache->getPolygonMode();
 
-        GLint primType;
+        GLint primType = 0;
+        GLint indicesCount = 0;
         switch (unit->mPrimitiveType)
         {
         case PT_POINTLIST:
             primType = GL_POINTS;
+            indicesCount = unit->mPrimitiveCount;
             break;
         case PT_LINELIST:
             primType = GL_LINES;
+            indicesCount = unit->mPrimitiveCount * 2;
             break;
         case PT_LINESTRIP:
             primType = GL_LINE_STRIP;
+            indicesCount = unit->mPrimitiveCount + 1;
             break;
         case PT_TRIANGLELIST:
             primType = GL_TRIANGLES;
+            indicesCount = unit->mPrimitiveCount * 3;
             break;
         case PT_TRIANGLESTRIP:
             primType = GL_TRIANGLE_STRIP;
+            indicesCount = unit->mPrimitiveCount + 2;
             break;
         case PT_TRIANGLEFAN:
             primType = GL_TRIANGLE_FAN;
+            indicesCount = unit->mPrimitiveCount + 2;
             break;
         default:
             primType = GL_TRIANGLES;
@@ -418,7 +425,7 @@ namespace Demi
             void* pBufferData = nullptr;
             pBufferData = VBO_BUFFER_OFFSET(unit->mIndexOffset * indexSize);
 
-            CHECK_GL_ERROR(glDrawElements(polyMode==GL_FILL?primType:polyMode, unit->mIndexBuffer->GetMaxIndices(), indexType, pBufferData));
+            CHECK_GL_ERROR(glDrawElements(polyMode == GL_FILL ? primType : polyMode, indicesCount, indexType, pBufferData));
         }
 
         for (auto ai = mRenderAttribsBound.begin(); ai != mRenderAttribsBound.end(); ++ai)

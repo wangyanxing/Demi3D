@@ -20,7 +20,7 @@ varying vec4 vColor;
 #endif
 
 #ifdef USE_MAP
-varying vec4 vTexCoord0;
+varying vec4 vTexcoord0;
 uniform sampler2D map;
 #endif
 
@@ -68,7 +68,7 @@ void ComputeSurfaceDataFromGeometry()
 #endif
 	
 #ifdef USE_MAP
-	gSurface.albedo = texture2D( map, vTexCoord0.xy );
+	gSurface.albedo = texture2D( map, vTexcoord0.xy );
 	#ifdef GAMMA_INPUT
 		gSurface.albedo.rgb *= gSurface.albedo.rgb;
 	#endif

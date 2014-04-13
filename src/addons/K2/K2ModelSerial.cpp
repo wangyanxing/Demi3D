@@ -915,13 +915,11 @@ namespace Demi
                                 diffuseTex = samplers.GetAttribute("texture").ExtractBaseName();
                                 shaderFlag |= SHADER_FLAG_USE_MAP;
                             }
-#if DEMI_PLATFORM != DEMI_PLATFORM_IOS
                             else if (samplers.GetAttribute("name") == "normalmap")
                             {
                                 normalTex = samplers.GetAttribute("texture").ExtractBaseName();
                                 shaderFlag |= SHADER_FLAG_USE_NORMALMAP;
                             }
-#endif
                             // we don't care about their team map for now
                         }
 

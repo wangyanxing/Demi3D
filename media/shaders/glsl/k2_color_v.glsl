@@ -9,7 +9,7 @@ attribute vec3	Tangent;
 
 #if defined( USE_MAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
 attribute vec2  Texcoord0;
-varying vec4 vTexCoord0;
+varying vec4 vTexcoord0;
 #endif
 
 #if defined( SKINNED )
@@ -46,7 +46,7 @@ void main()
 #endif
 	
 #if defined( USE_MAP ) 
-	vTexCoord0 = vec4(Texcoord0,0.0,0.0);
+	vTexcoord0 = vec4(Texcoord0,0.0,0.0);
 #endif
 
 	// world space normal

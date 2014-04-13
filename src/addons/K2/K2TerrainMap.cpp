@@ -638,21 +638,21 @@ namespace Demi
         DiString texl1Dif = dif1.empty() ? dif0 : dif1;
         DiString texl1Norm = norm1.empty() ? norm0 : norm1;
 
-
         DiTexturePtr textureDif0 = DiK2Configs::GetTexture(texl0Dif);
         DiTexturePtr textureDif1 = DiK2Configs::GetTexture(texl1Dif);
         params->WriteTexture2D("diffuseMap_0", textureDif0);
         params->WriteTexture2D("diffuseMap_1", textureDif1);
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-        //DiTexturePtr textureNorm0 = DiK2Configs::GetTexture(texl0Norm);
-        //DiTexturePtr textureNorm1 = DiK2Configs::GetTexture(texl1Norm);
+        DiTexturePtr textureNorm0 = DiK2Configs::GetTexture(texl0Norm);
+        DiTexturePtr textureNorm1 = DiK2Configs::GetTexture(texl1Norm);
 #else
         DiTexturePtr textureNorm0 = DiK2Configs::GetTexture(texl0Norm + "_rxgb");
         DiTexturePtr textureNorm1 = DiK2Configs::GetTexture(texl1Norm + "_rxgb");
         
         DiTexturePtr textureSpec0 = DiK2Configs::GetTexture(texl0Norm + "_s");
         DiTexturePtr textureSpec1 = DiK2Configs::GetTexture(texl1Norm + "_s");
+
         params->WriteTexture2D("specularMap_0", textureSpec0);
         params->WriteTexture2D("specularMap_1", textureSpec1);
         params->WriteTexture2D("normalMap_0", textureNorm0);
@@ -660,7 +660,6 @@ namespace Demi
 #endif
         
         mat->SetCullMode(CULL_CCW);
-
         return mat;
     }
 
