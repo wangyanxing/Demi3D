@@ -148,8 +148,6 @@ namespace Demi
             auto newMat = material->Clone();
             sm->SetMaterial(newMat);
 
-            //newMat->SetWireframe(true);
-
             DiShaderParameter* shaderparam = newMat->GetShaderParameter();
             shaderparam->WriteTexture2D("terrainMap", textureDif);
             shaderparam->WriteTexture2D("terrainNormalMap", textureNor);

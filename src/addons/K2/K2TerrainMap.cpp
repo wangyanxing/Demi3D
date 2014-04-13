@@ -655,9 +655,10 @@ namespace Demi
 
         params->WriteTexture2D("specularMap_0", textureSpec0);
         params->WriteTexture2D("specularMap_1", textureSpec1);
+#endif
+        
         params->WriteTexture2D("normalMap_0", textureNorm0);
         params->WriteTexture2D("normalMap_1", textureNorm1);
-#endif
         
         mat->SetCullMode(CULL_CCW);
         return mat;

@@ -123,6 +123,8 @@ namespace Demi
             texfile = texfile.ExtractBaseName() + ".pvr";
 #endif
         
+        //DI_LOG("Writing 2d texture name: %s, %s [%x]", name.c_str(), textureName.c_str(),this);
+        
         DiAssetManager& assetMgr = DiAssetManager::GetInstance();
         DiTexturePtr textureAsset = assetMgr.GetAsset<DiTexture>(texfile);
 
@@ -150,6 +152,7 @@ namespace Demi
     void DiShaderParameter::WriteTexture2D( const DiString& name,DiTexturePtr textureAsset )
     {
         DI_ASSERT(textureAsset);
+        //DI_LOG("Writing 2d texture: %s, %x [%x]", name.c_str(), textureAsset.get(),this);
 
         auto it = mShaderParams[VARIABLE_SAMPLER2D].find(name);
         if (it != mShaderParams[VARIABLE_SAMPLER2D].end())

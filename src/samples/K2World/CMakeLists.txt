@@ -5,8 +5,8 @@
 DI_ADD_SAMPLE(Sample_K2World)
 
 # Copy hon resources
-##if (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
-if (FALSE)
+if (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
+#if (FALSE)
     add_custom_command(TARGET Sample_K2World POST_BUILD
       COMMAND ditto ${DEMI_SOURCE_DIR}/media_ios ${DEMI_SAMPLE_CONTENTS_PATH}/media_ios
     )
