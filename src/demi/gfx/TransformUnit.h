@@ -16,8 +16,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "RenderBatchGroup.h"
 #include "XMLElement.h"
-#include "axisAlignedBox.h"
-#include "sphere.h"
+#include "math/axisAlignedBox.h"
+#include "math/sphere.h"
 
 namespace Demi 
 {

@@ -20,7 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PathLib.h"
 #include "Texture.h"
 #include "PathLib.h"
-#include "euler.h"
+#include "math/euler.h"
 
 namespace Demi
 {

@@ -15,7 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2Coords_h__
 
 #include "K2Prerequisites.h"
-#include "MathMisc.h"
+#include "math/MathMisc.h"
 
 #pragma pack( push, 1 )
 

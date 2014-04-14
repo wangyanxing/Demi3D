@@ -12,8 +12,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 #include "GfxPch.h"
 #include "RenderUnit.h"
-#include "MathMisc.h"
-#include "matrix4.h"
+#include "math/MathMisc.h"
+#include "math/matrix4.h"
 #include "AssetManager.h"
 #include "Material.h"
 #include "ShaderParam.h"

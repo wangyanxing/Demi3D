@@ -14,7 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RenderPipeline.h"
 #include "GpuProgram.h"
 #include "PostEffectManager.h"
-#include "MathMisc.h"
+#include "math/MathMisc.h"
 #include "RenderUnit.h"
 #include "Material.h"
 #include "ShaderParam.h"

@@ -15,7 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiAnimationClip_h__
 
 
-#include "Spline.h"
+#include "math/spline.h"
 #include "RotationSpline.h"
 
 namespace Demi

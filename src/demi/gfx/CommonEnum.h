@@ -14,8 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiCommonEnum_h__
 #define DiCommonEnum_h__
 
-#include "vector3.h"
-#include "quaternion.h"
+#include "math/vector3.h"
+#include "math/quaternion.h"
 
 namespace Demi 
 {
