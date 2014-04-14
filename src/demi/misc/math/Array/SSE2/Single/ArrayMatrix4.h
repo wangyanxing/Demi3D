@@ -51,7 +51,7 @@ namespace Demi
     class DI_MISC_API ArrayMatrix4
     {
     public:
-        Arrayfloat       mChunkBase[16];
+        ArrayFloat       mChunkBase[16];
 
         ArrayMatrix4() {}
         ArrayMatrix4( const ArrayMatrix4 &copy )
@@ -203,7 +203,7 @@ namespace Demi
     class DI_MISC_API SimpleMat4
     {
     public:
-        Arrayfloat       mChunkBase[4];
+        ArrayFloat       mChunkBase[4];
 
         /// Assumes src is aligned
         void load( const DiMat4 &src )

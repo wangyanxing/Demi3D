@@ -35,7 +35,7 @@ namespace Demi
         DiNewBone();
         virtual ~DiNewBone();
 
-        void _initialize(IdType id, BoneMemoryManager *boneMemoryManager,
+        void _initialize(uint32 id, BoneMemoryManager *boneMemoryManager,
             DiNewBone *parent, ArrayMatrixAf4x3 const * RESTRICT_ALIAS reverseBind);
         void _deinitialize(void);
 
@@ -93,7 +93,6 @@ namespace Demi
 
         FORCEINLINE const SimpleMatrixAf4x3& _getLocalSpaceTransform(void) const
         {
-            DI_ASSERT(!mCachedTransformOutOfDate);
             return mTransform.mDerivedTransform[mTransform.mIndex];
         }
 

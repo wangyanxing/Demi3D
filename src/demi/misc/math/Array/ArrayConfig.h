@@ -25,7 +25,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
             #define ARRAY_PACKED_REALS 2
             namespace Demi 
             {
-                typedef __m128d Arrayfloat;
+                typedef __m128d ArrayFloat;
             }
         #else
             #include <xmmintrin.h>
@@ -33,7 +33,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
             #define ARRAY_PACKED_REALS 4
             namespace Demi 
             {
-                typedef __m128 Arrayfloat;
+                typedef __m128 ArrayFloat;
                 typedef __m128 ArrayMaskR;
 
                 #define ARRAY_REAL_ZERO _mm_setzero_ps()
@@ -63,7 +63,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
         ///r = -(a * b) + c
         #define _mm_nmsub_ps( a, b, c )     _mm_sub_ps( c, _mm_mul_ps( a, b ) )
 
-        /// Does not convert, just cast Arrayfloat to ArrayInt
+        /// Does not convert, just cast ArrayFloat to ArrayInt
         #define CastfloatToInt( x )          _mm_castps_si128( x )
         #define CastIntTofloat( x )          _mm_castsi128_ps( x )
         /// Input must be 16-byte aligned
@@ -78,7 +78,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
             #define ARRAY_PACKED_REALS 4
             namespace Demi 
             {
-                typedef float32x4_t Arrayfloat;
+                typedef float32x4_t ArrayFloat;
                 typedef float32x4_t ArrayMaskR;
 
                 #define ARRAY_REAL_ZERO vdupq_n_f32( 0.0f )
@@ -120,7 +120,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
         ///r = -(a * b) + c
         #define _mm_nmsub_ps( a, b, c )     vmlsq_f32( c, a, b )
 
-        /// Does not convert, just cast Arrayfloat to ArrayInt
+        /// Does not convert, just cast ArrayFloat to ArrayInt
         #define CastfloatToInt( x )          vreinterpretq_s32_f32( x )
         #define CastIntTofloat( x )          vreinterpretq_f32_s32( x )
         /// Input must be 16-byte aligned
@@ -136,7 +136,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     #define ARRAY_PACKED_REALS 1
     namespace Demi 
     {
-        typedef float Arrayfloat;
+        typedef float ArrayFloat;
         typedef DiRadian ArrayRadian;
         typedef DiRadian ArrayRadian;
         typedef uint32 ArrayInt;

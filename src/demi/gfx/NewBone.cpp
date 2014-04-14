@@ -17,7 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     DiNewBone::DiNewBone() :
-        IdObject(0),
+        //IdObject(0),
         mReverseBind(0),
         mTransform(BoneTransform()),
 
@@ -35,12 +35,12 @@ namespace Demi
         DI_ASSERT(!mInitialized && "Must call _deinitialize() before destructor!");
     }
     
-    void DiNewBone::_initialize(IdType id, BoneMemoryManager *boneMemoryManager,
+    void DiNewBone::_initialize(uint32 id, BoneMemoryManager *boneMemoryManager,
         DiNewBone *parent, ArrayMatrixAf4x3 const * RESTRICT_ALIAS reverseBind)
     {
         DI_ASSERT(!mInitialized);
 
-        this->_setId(id);
+        //this->_setId(id);
         mReverseBind = reverseBind;
         mParent = parent;
         mBoneMemoryManager = boneMemoryManager;

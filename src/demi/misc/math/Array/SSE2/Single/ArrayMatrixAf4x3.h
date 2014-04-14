@@ -51,7 +51,7 @@ namespace Demi
     class DI_MISC_API ArrayMatrixAf4x3
     {
     public:
-        Arrayfloat       mChunkBase[12];
+        ArrayFloat       mChunkBase[12];
 
         ArrayMatrixAf4x3() {}
         ArrayMatrixAf4x3( const ArrayMatrixAf4x3 &copy )
@@ -168,10 +168,10 @@ namespace Demi
     class DI_MISC_API SimpleMatrixAf4x3
     {
     public:
-        Arrayfloat       mChunkBase[3];
+        ArrayFloat       mChunkBase[3];
 
         SimpleMatrixAf4x3() {}
-        SimpleMatrixAf4x3( Arrayfloat row0, Arrayfloat row1, Arrayfloat row2 )
+        SimpleMatrixAf4x3( ArrayFloat row0, ArrayFloat row1, ArrayFloat row2 )
         {
             mChunkBase[0] = row0;
             mChunkBase[1] = row1;

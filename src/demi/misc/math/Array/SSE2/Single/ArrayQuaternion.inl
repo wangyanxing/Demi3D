@@ -32,8 +32,8 @@ namespace Demi
 #define DEFINE_OPERATION( leftClass, rightClass, op, op_func )\
     inline ArrayQuaternion operator op ( const leftClass &lhs, const rightClass &rhs )\
     {\
-        const Arrayfloat * RESTRICT_ALIAS lhsChunkBase = lhs.mChunkBase;\
-        const Arrayfloat * RESTRICT_ALIAS rhsChunkBase = rhs.mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS lhsChunkBase = lhs.mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS rhsChunkBase = rhs.mChunkBase;\
         return ArrayQuaternion(\
                 op_func( lhsChunkBase[0], rhsChunkBase[0] ),\
                 op_func( lhsChunkBase[1], rhsChunkBase[1] ),\
@@ -63,8 +63,8 @@ namespace Demi
 #define DEFINE_UPDATE_OPERATION( leftClass, op, op_func )\
     inline void ArrayQuaternion::operator op ( const leftClass &a )\
     {\
-        Arrayfloat * RESTRICT_ALIAS chunkBase = mChunkBase;\
-        const Arrayfloat * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
         chunkBase[0] = op_func( chunkBase[0], aChunkBase[0] );\
         chunkBase[1] = op_func( chunkBase[1], aChunkBase[1] );\
         chunkBase[2] = op_func( chunkBase[2], aChunkBase[2] );\
@@ -86,8 +86,8 @@ namespace Demi
     DEFINE_OPERATION( ArrayQuaternion, ArrayQuaternion, -, _mm_sub_ps );
 
     // * Multiplication (scalar only)
-    DEFINE_L_OPERATION( Arrayfloat, ArrayQuaternion, *, _mm_mul_ps );
-    DEFINE_R_OPERATION( ArrayQuaternion, Arrayfloat, *, _mm_mul_ps );
+    DEFINE_L_OPERATION( ArrayFloat, ArrayQuaternion, *, _mm_mul_ps );
+    DEFINE_R_OPERATION( ArrayQuaternion, ArrayFloat, *, _mm_mul_ps );
 
     // Update operations
     // +=
@@ -97,7 +97,7 @@ namespace Demi
     DEFINE_UPDATE_OPERATION(            ArrayQuaternion,        -=, _mm_sub_ps );
 
     // *=
-    DEFINE_UPDATE_R_OPERATION(          Arrayfloat,          *=, _mm_mul_ps );
+    DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          *=, _mm_mul_ps );
 
     // Notes: This operator doesn't get inlined. The generated instruction count is actually high so
     // the compiler seems to be clever in not inlining. There is no gain in doing a "mul()" equivalent
@@ -137,16 +137,16 @@ namespace Demi
                     _mm_mul_ps( lhs.mChunkBase[2], rhs.mChunkBase[1] ) ) ) );
     }
     
-    inline ArrayQuaternion ArrayQuaternion::Slerp( Arrayfloat fT, const ArrayQuaternion &rkP,
+    inline ArrayQuaternion ArrayQuaternion::Slerp( ArrayFloat fT, const ArrayQuaternion &rkP,
                                                         const ArrayQuaternion &rkQ /*, bool shortestPath*/ )
     {
-        Arrayfloat fCos = rkP.Dot( rkQ );
+        ArrayFloat fCos = rkP.Dot( rkQ );
         /* Clamp fCos to [-1; 1] range */
         fCos = _mm_min_ps( MathlibSSE2::ONE, _mm_max_ps( MathlibSSE2::NEG_ONE, fCos ) );
         
         /* Invert the rotation for shortest path? */
         /* m = fCos < 0.0f ? -1.0f : 1.0f; */
-        Arrayfloat m = MathlibSSE2::Cmov4( MathlibSSE2::NEG_ONE, MathlibSSE2::ONE,
+        ArrayFloat m = MathlibSSE2::Cmov4( MathlibSSE2::NEG_ONE, MathlibSSE2::ONE,
                                             _mm_cmplt_ps( fCos, _mm_setzero_ps() ) /*&& shortestPath*/ );
         ArrayQuaternion rkT(
                         _mm_mul_ps( rkQ.mChunkBase[0], m ),
@@ -154,7 +154,7 @@ namespace Demi
                         _mm_mul_ps( rkQ.mChunkBase[2], m ),
                         _mm_mul_ps( rkQ.mChunkBase[3], m ) );
         
-        Arrayfloat fSin = _mm_sqrt_ps( _mm_sub_ps( MathlibSSE2::ONE, _mm_mul_ps( fCos, fCos ) ) );
+        ArrayFloat fSin = _mm_sqrt_ps( _mm_sub_ps( MathlibSSE2::ONE, _mm_mul_ps( fCos, fCos ) ) );
         
         /* ATan2 in original DiQuat is slightly absurd, because fSin was derived from
            fCos (hence never negative) which makes ACos a better replacement. ACos is much
@@ -162,15 +162,15 @@ namespace Demi
            NaNs make it slower (whether clamping the input outweights the benefit is
            arguable). We use ACos4 to avoid implementing ATan2_4.
         */
-        Arrayfloat fAngle = MathlibSSE2::ACos4( fCos );
+        ArrayFloat fAngle = MathlibSSE2::ACos4( fCos );
 
         // mask = Abs( fCos ) < 1-epsilon
-        Arrayfloat mask    = _mm_cmplt_ps( MathlibSSE2::Abs4( fCos ), MathlibSSE2::OneMinusEpsilon );
-        Arrayfloat fInvSin = MathlibSSE2::InvNonZero4( fSin );
-        Arrayfloat oneSubT = _mm_sub_ps( MathlibSSE2::ONE, fT );
+        ArrayFloat mask    = _mm_cmplt_ps( MathlibSSE2::Abs4( fCos ), MathlibSSE2::OneMinusEpsilon );
+        ArrayFloat fInvSin = MathlibSSE2::InvNonZero4( fSin );
+        ArrayFloat oneSubT = _mm_sub_ps( MathlibSSE2::ONE, fT );
         // fCoeff1 = Sin( fT * fAngle ) * fInvSin
-        Arrayfloat fCoeff0 = _mm_mul_ps( MathlibSSE2::Sin4( _mm_mul_ps( oneSubT, fAngle ) ), fInvSin );
-        Arrayfloat fCoeff1 = _mm_mul_ps( MathlibSSE2::Sin4( _mm_mul_ps( fT, fAngle ) ), fInvSin );
+        ArrayFloat fCoeff0 = _mm_mul_ps( MathlibSSE2::Sin4( _mm_mul_ps( oneSubT, fAngle ) ), fInvSin );
+        ArrayFloat fCoeff1 = _mm_mul_ps( MathlibSSE2::Sin4( _mm_mul_ps( fT, fAngle ) ), fInvSin );
         // fCoeff1 = mask ? fCoeff1 : fT; (switch to lerp when rkP & rkQ are too close->fSin=0, or 180°)
         fCoeff0 = MathlibSSE2::CmovRobust( fCoeff0, oneSubT, mask );
         fCoeff1 = MathlibSSE2::CmovRobust( fCoeff1, fT, mask );
@@ -190,12 +190,12 @@ namespace Demi
         return rkT;
     }
     
-    inline ArrayQuaternion ArrayQuaternion::nlerpShortest( Arrayfloat fT, const ArrayQuaternion &rkP,
+    inline ArrayQuaternion ArrayQuaternion::nlerpShortest( ArrayFloat fT, const ArrayQuaternion &rkP,
                                                             const ArrayQuaternion &rkQ )
     {
         //Flip the sign of rkQ when p.dot( q ) < 0 to get the shortest path
-        Arrayfloat signMask = _mm_set1_ps( -0.0f );
-        Arrayfloat sign = _mm_and_ps( signMask, rkP.Dot( rkQ ) );
+        ArrayFloat signMask = _mm_set1_ps( -0.0f );
+        ArrayFloat sign = _mm_and_ps( signMask, rkP.Dot( rkQ ) );
         ArrayQuaternion tmpQ = ArrayQuaternion( _mm_xor_ps( rkQ.mChunkBase[0], sign ),
                                                 _mm_xor_ps( rkQ.mChunkBase[1], sign ),
                                                 _mm_xor_ps( rkQ.mChunkBase[2], sign ),
@@ -211,7 +211,7 @@ namespace Demi
         return retVal;
     }
     
-    inline ArrayQuaternion ArrayQuaternion::nlerp( Arrayfloat fT, const ArrayQuaternion &rkP,
+    inline ArrayQuaternion ArrayQuaternion::nlerp( ArrayFloat fT, const ArrayQuaternion &rkP,
                                                         const ArrayQuaternion &rkQ )
     {
         ArrayQuaternion retVal(
@@ -243,7 +243,7 @@ namespace Demi
         ArrayVector3 uuv    = qVec.crossProduct( uv );
 
         // uv = uv * (2.0f * w)
-        Arrayfloat w2 = _mm_add_ps( inQ.mChunkBase[0], inQ.mChunkBase[0] );
+        ArrayFloat w2 = _mm_add_ps( inQ.mChunkBase[0], inQ.mChunkBase[0] );
         uv.mChunkBase[0] = _mm_mul_ps( uv.mChunkBase[0], w2 );
         uv.mChunkBase[1] = _mm_mul_ps( uv.mChunkBase[1], w2 );
         uv.mChunkBase[2] = _mm_mul_ps( uv.mChunkBase[2], w2 );
@@ -269,13 +269,13 @@ namespace Demi
         // The quaternion representing the rotation is
         //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
 
-        Arrayfloat fHalfAngle( _mm_mul_ps( rfAngle.valueRadians(), MathlibSSE2::HALF ) );
+        ArrayFloat fHalfAngle( _mm_mul_ps( rfAngle.valueRadians(), MathlibSSE2::HALF ) );
 
-        Arrayfloat fSin;
+        ArrayFloat fSin;
         MathlibSSE2::SinCos4( fHalfAngle, fSin, mChunkBase[0] );
 
-        Arrayfloat * RESTRICT_ALIAS chunkBase = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS rkAxisChunkBase = rkAxis.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS rkAxisChunkBase = rkAxis.mChunkBase;
 
         chunkBase[1] = _mm_mul_ps( fSin, rkAxisChunkBase[0] ); //x = fSin*rkAxis.x;
         chunkBase[2] = _mm_mul_ps( fSin, rkAxisChunkBase[1] ); //y = fSin*rkAxis.y;
@@ -286,20 +286,20 @@ namespace Demi
     {
         // The quaternion representing the rotation is
         //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
-        Arrayfloat sqLength = _mm_add_ps( _mm_add_ps(
+        ArrayFloat sqLength = _mm_add_ps( _mm_add_ps(
                                 _mm_mul_ps( mChunkBase[1], mChunkBase[1] ), //(x * x +
                                 _mm_mul_ps( mChunkBase[2], mChunkBase[2] ) ),   //y * y) +
                                 _mm_mul_ps( mChunkBase[3], mChunkBase[3] ) );   //z * z )
 
-        Arrayfloat mask      = _mm_cmpgt_ps( sqLength, _mm_setzero_ps() ); //mask = sqLength > 0
+        ArrayFloat mask      = _mm_cmpgt_ps( sqLength, _mm_setzero_ps() ); //mask = sqLength > 0
 
         //sqLength = sqLength > 0 ? sqLength : 1; so that invSqrt doesn't give NaNs or Infs
         //when 0 (to avoid using CmovRobust just to select the non-nan results)
         sqLength = MathlibSSE2::Cmov4( sqLength, MathlibSSE2::ONE,
                                         _mm_cmpgt_ps( sqLength, MathlibSSE2::FLOAT_MIN ) );
-        Arrayfloat fInvLength = MathlibSSE2::InvSqrtNonZero4( sqLength );
+        ArrayFloat fInvLength = MathlibSSE2::InvSqrtNonZero4( sqLength );
 
-        const Arrayfloat acosW = MathlibSSE2::ACos4( mChunkBase[0] );
+        const ArrayFloat acosW = MathlibSSE2::ACos4( mChunkBase[0] );
         rfAngle = MathlibSSE2::Cmov4( //sqLength > 0 ? (2 * ACos(w)) : 0
                     _mm_add_ps( acosW, acosW ),
                     _mm_setzero_ps(), mask );
@@ -314,14 +314,14 @@ namespace Demi
     
     inline ArrayVector3 ArrayQuaternion::xAxis( void ) const
     {
-        Arrayfloat fTy  = _mm_add_ps( mChunkBase[2], mChunkBase[2] );        // 2 * y
-        Arrayfloat fTz  = _mm_add_ps( mChunkBase[3], mChunkBase[3] );        // 2 * z
-        Arrayfloat fTwy = _mm_mul_ps( fTy, mChunkBase[0] );                  // fTy*w;
-        Arrayfloat fTwz = _mm_mul_ps( fTz, mChunkBase[0] );                  // fTz*w;
-        Arrayfloat fTxy = _mm_mul_ps( fTy, mChunkBase[1] );                  // fTy*x;
-        Arrayfloat fTxz = _mm_mul_ps( fTz, mChunkBase[1] );                  // fTz*x;
-        Arrayfloat fTyy = _mm_mul_ps( fTy, mChunkBase[2] );                  // fTy*y;
-        Arrayfloat fTzz = _mm_mul_ps( fTz, mChunkBase[3] );                  // fTz*z;
+        ArrayFloat fTy  = _mm_add_ps( mChunkBase[2], mChunkBase[2] );        // 2 * y
+        ArrayFloat fTz  = _mm_add_ps( mChunkBase[3], mChunkBase[3] );        // 2 * z
+        ArrayFloat fTwy = _mm_mul_ps( fTy, mChunkBase[0] );                  // fTy*w;
+        ArrayFloat fTwz = _mm_mul_ps( fTz, mChunkBase[0] );                  // fTz*w;
+        ArrayFloat fTxy = _mm_mul_ps( fTy, mChunkBase[1] );                  // fTy*x;
+        ArrayFloat fTxz = _mm_mul_ps( fTz, mChunkBase[1] );                  // fTz*x;
+        ArrayFloat fTyy = _mm_mul_ps( fTy, mChunkBase[2] );                  // fTy*y;
+        ArrayFloat fTzz = _mm_mul_ps( fTz, mChunkBase[3] );                  // fTz*z;
 
         return ArrayVector3(
                 _mm_sub_ps( MathlibSSE2::ONE, _mm_add_ps( fTyy, fTzz ) ),
@@ -331,15 +331,15 @@ namespace Demi
     
     inline ArrayVector3 ArrayQuaternion::yAxis( void ) const
     {
-        Arrayfloat fTx  = _mm_add_ps( mChunkBase[1], mChunkBase[1] );        // 2 * x
-        Arrayfloat fTy  = _mm_add_ps( mChunkBase[2], mChunkBase[2] );        // 2 * y
-        Arrayfloat fTz  = _mm_add_ps( mChunkBase[3], mChunkBase[3] );        // 2 * z
-        Arrayfloat fTwx = _mm_mul_ps( fTx, mChunkBase[0] );                  // fTx*w;
-        Arrayfloat fTwz = _mm_mul_ps( fTz, mChunkBase[0] );                  // fTz*w;
-        Arrayfloat fTxx = _mm_mul_ps( fTx, mChunkBase[1] );                  // fTx*x;
-        Arrayfloat fTxy = _mm_mul_ps( fTy, mChunkBase[1] );                  // fTy*x;
-        Arrayfloat fTyz = _mm_mul_ps( fTz, mChunkBase[2] );                  // fTz*y;
-        Arrayfloat fTzz = _mm_mul_ps( fTz, mChunkBase[3] );                  // fTz*z;
+        ArrayFloat fTx  = _mm_add_ps( mChunkBase[1], mChunkBase[1] );        // 2 * x
+        ArrayFloat fTy  = _mm_add_ps( mChunkBase[2], mChunkBase[2] );        // 2 * y
+        ArrayFloat fTz  = _mm_add_ps( mChunkBase[3], mChunkBase[3] );        // 2 * z
+        ArrayFloat fTwx = _mm_mul_ps( fTx, mChunkBase[0] );                  // fTx*w;
+        ArrayFloat fTwz = _mm_mul_ps( fTz, mChunkBase[0] );                  // fTz*w;
+        ArrayFloat fTxx = _mm_mul_ps( fTx, mChunkBase[1] );                  // fTx*x;
+        ArrayFloat fTxy = _mm_mul_ps( fTy, mChunkBase[1] );                  // fTy*x;
+        ArrayFloat fTyz = _mm_mul_ps( fTz, mChunkBase[2] );                  // fTz*y;
+        ArrayFloat fTzz = _mm_mul_ps( fTz, mChunkBase[3] );                  // fTz*z;
 
         return ArrayVector3(
                 _mm_sub_ps( fTxy, fTwz ),
@@ -349,15 +349,15 @@ namespace Demi
     
     inline ArrayVector3 ArrayQuaternion::zAxis( void ) const
     {
-        Arrayfloat fTx  = _mm_add_ps( mChunkBase[1], mChunkBase[1] );        // 2 * x
-        Arrayfloat fTy  = _mm_add_ps( mChunkBase[2], mChunkBase[2] );        // 2 * y
-        Arrayfloat fTz  = _mm_add_ps( mChunkBase[3], mChunkBase[3] );        // 2 * z
-        Arrayfloat fTwx = _mm_mul_ps( fTx, mChunkBase[0] );                  // fTx*w;
-        Arrayfloat fTwy = _mm_mul_ps( fTy, mChunkBase[0] );                  // fTy*w;
-        Arrayfloat fTxx = _mm_mul_ps( fTx, mChunkBase[1] );                  // fTx*x;
-        Arrayfloat fTxz = _mm_mul_ps( fTz, mChunkBase[1] );                  // fTz*x;
-        Arrayfloat fTyy = _mm_mul_ps( fTy, mChunkBase[2] );                  // fTy*y;
-        Arrayfloat fTyz = _mm_mul_ps( fTz, mChunkBase[2] );                  // fTz*y;
+        ArrayFloat fTx  = _mm_add_ps( mChunkBase[1], mChunkBase[1] );        // 2 * x
+        ArrayFloat fTy  = _mm_add_ps( mChunkBase[2], mChunkBase[2] );        // 2 * y
+        ArrayFloat fTz  = _mm_add_ps( mChunkBase[3], mChunkBase[3] );        // 2 * z
+        ArrayFloat fTwx = _mm_mul_ps( fTx, mChunkBase[0] );                  // fTx*w;
+        ArrayFloat fTwy = _mm_mul_ps( fTy, mChunkBase[0] );                  // fTy*w;
+        ArrayFloat fTxx = _mm_mul_ps( fTx, mChunkBase[1] );                  // fTx*x;
+        ArrayFloat fTxz = _mm_mul_ps( fTz, mChunkBase[1] );                  // fTz*x;
+        ArrayFloat fTyy = _mm_mul_ps( fTy, mChunkBase[2] );                  // fTy*y;
+        ArrayFloat fTyz = _mm_mul_ps( fTz, mChunkBase[2] );                  // fTz*y;
 
         return ArrayVector3(
                 _mm_add_ps( fTxz, fTwy ),
@@ -365,7 +365,7 @@ namespace Demi
                 _mm_sub_ps( MathlibSSE2::ONE, _mm_add_ps( fTxx, fTyy ) ) );
     }
     
-    inline Arrayfloat ArrayQuaternion::Dot( const ArrayQuaternion& rkQ ) const
+    inline ArrayFloat ArrayQuaternion::Dot( const ArrayQuaternion& rkQ ) const
     {
         return
         _mm_add_ps( _mm_add_ps( _mm_add_ps(
@@ -375,7 +375,7 @@ namespace Demi
             _mm_mul_ps( mChunkBase[3], rkQ.mChunkBase[3] ) );   //  z * vec.z
     }
     
-    inline Arrayfloat ArrayQuaternion::Norm( void ) const
+    inline ArrayFloat ArrayQuaternion::Norm( void ) const
     {
         return
         _mm_add_ps( _mm_add_ps( _mm_add_ps(
@@ -387,7 +387,7 @@ namespace Demi
     
     inline void ArrayQuaternion::normalise( void )
     {
-        Arrayfloat sqLength = _mm_add_ps( _mm_add_ps( _mm_add_ps(
+        ArrayFloat sqLength = _mm_add_ps( _mm_add_ps( _mm_add_ps(
             _mm_mul_ps( mChunkBase[0], mChunkBase[0] ) ,    //((w * w   +
             _mm_mul_ps( mChunkBase[1], mChunkBase[1] ) ),   //  x * x ) +
             _mm_mul_ps( mChunkBase[2], mChunkBase[2] ) ), //  y * y ) +
@@ -399,7 +399,7 @@ namespace Demi
         //generating the nans could impact performance in some architectures
         sqLength = MathlibSSE2::Cmov4( sqLength, MathlibSSE2::ONE,
                                         _mm_cmpgt_ps( sqLength, MathlibSSE2::FLOAT_MIN ) );
-        Arrayfloat invLength = MathlibSSE2::InvSqrtNonZero4( sqLength );
+        ArrayFloat invLength = MathlibSSE2::InvSqrtNonZero4( sqLength );
         mChunkBase[0] = _mm_mul_ps( mChunkBase[0], invLength ); //w * invLength
         mChunkBase[1] = _mm_mul_ps( mChunkBase[1], invLength ); //x * invLength
         mChunkBase[2] = _mm_mul_ps( mChunkBase[2], invLength ); //y * invLength
@@ -408,7 +408,7 @@ namespace Demi
     
     inline ArrayQuaternion ArrayQuaternion::Inverse( void ) const
     {
-        Arrayfloat fNorm = _mm_add_ps( _mm_add_ps( _mm_add_ps(
+        ArrayFloat fNorm = _mm_add_ps( _mm_add_ps( _mm_add_ps(
             _mm_mul_ps( mChunkBase[0], mChunkBase[0] ) ,    //((w * w   +
             _mm_mul_ps( mChunkBase[1], mChunkBase[1] ) ),   //  x * x ) +
             _mm_mul_ps( mChunkBase[2], mChunkBase[2] ) ), //  y * y ) +
@@ -417,8 +417,8 @@ namespace Demi
         //Will return a zero DiQuat if original is zero length (DiQuat's behavior)
         fNorm = MathlibSSE2::Cmov4( fNorm, MathlibSSE2::ONE,
                                     _mm_cmpgt_ps( fNorm, MathlibSSE2::fEpsilon ) );
-        Arrayfloat invNorm    = MathlibSSE2::Inv4( fNorm );
-        Arrayfloat negInvNorm = _mm_mul_ps( invNorm, MathlibSSE2::NEG_ONE );
+        ArrayFloat invNorm    = MathlibSSE2::Inv4( fNorm );
+        ArrayFloat negInvNorm = _mm_mul_ps( invNorm, MathlibSSE2::NEG_ONE );
 
         return ArrayQuaternion(
             _mm_mul_ps( mChunkBase[0], invNorm ),       //w * invNorm
@@ -442,16 +442,16 @@ namespace Demi
         // exp(q) = cos(A)+sin(A)*(x*i+y*j+z*k).  If sin(A) is near zero,
         // use exp(q) = cos(A)+A*(x*i+y*j+z*k) since A/sin(A) has limit 1.
 
-        Arrayfloat fAngle = _mm_sqrt_ps( _mm_add_ps( _mm_add_ps(                     //sqrt(
+        ArrayFloat fAngle = _mm_sqrt_ps( _mm_add_ps( _mm_add_ps(                     //sqrt(
                                 _mm_mul_ps( mChunkBase[1], mChunkBase[1] ),     //(x * x +
                                 _mm_mul_ps( mChunkBase[2], mChunkBase[2] ) ),       //y * y) +
                                 _mm_mul_ps( mChunkBase[3], mChunkBase[3] ) ) ); //z * z )
 
-        Arrayfloat w, fSin;
+        ArrayFloat w, fSin;
         MathlibSSE2::SinCos4( fAngle, fSin, w );
 
         //coeff = Abs(fSin) >= msEpsilon ? (fSin / fAngle) : 1.0f;
-        Arrayfloat coeff = MathlibSSE2::CmovRobust( _mm_div_ps( fSin, fAngle ), MathlibSSE2::ONE,
+        ArrayFloat coeff = MathlibSSE2::CmovRobust( _mm_div_ps( fSin, fAngle ), MathlibSSE2::ONE,
                                 _mm_cmpge_ps( MathlibSSE2::Abs4( fSin ), MathlibSSE2::fEpsilon ) );
         return ArrayQuaternion(
             w,                                          //cos( fAngle )
@@ -466,11 +466,11 @@ namespace Demi
         // log(q) = A*(x*i+y*j+z*k).  If sin(A) is near zero, use log(q) =
         // sin(A)*(x*i+y*j+z*k) since sin(A)/A has limit 1.
 
-        Arrayfloat fAngle    = MathlibSSE2::ACos4( mChunkBase[0] );
-        Arrayfloat fSin      = MathlibSSE2::Sin4( fAngle );
+        ArrayFloat fAngle    = MathlibSSE2::ACos4( mChunkBase[0] );
+        ArrayFloat fSin      = MathlibSSE2::Sin4( fAngle );
 
         //mask = DiMath::Abs(w) < 1.0 && DiMath::Abs(fSin) >= msEpsilon
-        Arrayfloat mask = _mm_and_ps(
+        ArrayFloat mask = _mm_and_ps(
                             _mm_cmplt_ps( MathlibSSE2::Abs4( mChunkBase[0] ), MathlibSSE2::ONE ),
                             _mm_cmpge_ps( MathlibSSE2::Abs4( fSin ), MathlibSSE2::fEpsilon ) );
 
@@ -478,7 +478,7 @@ namespace Demi
         //Unlike Exp(), we can use InvNonZero4 (which is faster) instead of div because we know for
         //sure CMov will copy the 1 instead of the NaN when fSin is close to zero, guarantee we might
         //not have in Exp()
-        Arrayfloat coeff = MathlibSSE2::CmovRobust( _mm_mul_ps( fAngle, MathlibSSE2::InvNonZero4( fSin ) ),
+        ArrayFloat coeff = MathlibSSE2::CmovRobust( _mm_mul_ps( fAngle, MathlibSSE2::InvNonZero4( fSin ) ),
                                                     MathlibSSE2::ONE, mask );
 
         return ArrayQuaternion(
@@ -497,7 +497,7 @@ namespace Demi
         ArrayVector3 uuv    = qVec.crossProduct( uv );
 
         // uv = uv * (2.0f * w)
-        Arrayfloat w2 = _mm_add_ps( mChunkBase[0], mChunkBase[0] );
+        ArrayFloat w2 = _mm_add_ps( mChunkBase[0], mChunkBase[0] );
         uv.mChunkBase[0] = _mm_mul_ps( uv.mChunkBase[0], w2 );
         uv.mChunkBase[1] = _mm_mul_ps( uv.mChunkBase[1], w2 );
         uv.mChunkBase[2] = _mm_mul_ps( uv.mChunkBase[2], w2 );
@@ -520,8 +520,8 @@ namespace Demi
     
     inline void ArrayQuaternion::Cmov4( ArrayMaskR mask, const ArrayQuaternion &replacement )
     {
-        Arrayfloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
         aChunkBase[0] = MathlibSSE2::Cmov4( aChunkBase[0], bChunkBase[0], mask );
         aChunkBase[1] = MathlibSSE2::Cmov4( aChunkBase[1], bChunkBase[1], mask );
         aChunkBase[2] = MathlibSSE2::Cmov4( aChunkBase[2], bChunkBase[2], mask );

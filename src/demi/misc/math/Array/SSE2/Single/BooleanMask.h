@@ -50,10 +50,10 @@ namespace Demi
             NUM_MASKS           =16
         };
     private:
-        static const Arrayfloat mMasks[NUM_MASKS];
+        static const ArrayFloat mMasks[NUM_MASKS];
     public:
-        inline static Arrayfloat getMask( bool x, bool y, bool z, bool w );
-        inline static Arrayfloat getMask( bool booleans[ARRAY_PACKED_REALS] );
+        inline static ArrayFloat getMask( bool x, bool y, bool z, bool w );
+        inline static ArrayFloat getMask( bool booleans[ARRAY_PACKED_REALS] );
 
         /// Returns true if alls bit in mask0[i] and mask1[i] are set.
         inline static bool allBitsSet( bool mask0[4], bool mask1[4] );
@@ -63,7 +63,7 @@ namespace Demi
             @See IS_SET_MASK_X & co. to read the mask, since the result may need
             byteswapping in some architectures (i.e. SSE2)
         */
-        inline static uint32 getScalarMask( Arrayfloat mask );
+        inline static uint32 getScalarMask( ArrayFloat mask );
 
         inline static uint32 getScalarMask( ArrayInt mask );
     };

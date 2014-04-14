@@ -28,17 +28,17 @@ namespace Demi
 {
     class ArrayRadian
     {
-        Arrayfloat mRad;
+        ArrayFloat mRad;
 
     public:
-        explicit ArrayRadian ( Arrayfloat r ) : mRad( r ) {}
+        explicit ArrayRadian ( ArrayFloat r ) : mRad( r ) {}
         //ArrayDiRadian ( const ArrayDegree& d );
-        ArrayRadian& operator = ( const Arrayfloat &f )      { mRad = f; return *this; }
+        ArrayRadian& operator = ( const ArrayFloat &f )      { mRad = f; return *this; }
         ArrayRadian& operator = ( const ArrayRadian &r )    { mRad = r.mRad; return *this; }
         //ArrayDiRadian& operator = ( const ArrayDegree& d );
 
-        //Arrayfloat valueDegrees() const; // see bottom of this file
-        Arrayfloat valueRadians() const                      { return mRad; }
+        //ArrayFloat valueDegrees() const; // see bottom of this file
+        ArrayFloat valueRadians() const                      { return mRad; }
 
         inline const ArrayRadian& operator + () const;
         inline ArrayRadian operator + ( const ArrayRadian& r ) const;
@@ -50,42 +50,42 @@ namespace Demi
         //inline ArrayDiRadian operator - ( const ArrayDegree& d ) const;
         inline ArrayRadian& operator -= ( const ArrayRadian& r );
         //inline ArrayDiRadian& operator -= ( const ArrayDegree& d );
-        inline ArrayRadian operator * ( Arrayfloat f ) const;
+        inline ArrayRadian operator * ( ArrayFloat f ) const;
         inline ArrayRadian operator * ( const ArrayRadian& f ) const;
-        inline ArrayRadian& operator *= ( Arrayfloat f );
-        inline ArrayRadian operator / ( Arrayfloat f ) const;
-        inline ArrayRadian& operator /= ( Arrayfloat f );
+        inline ArrayRadian& operator *= ( ArrayFloat f );
+        inline ArrayRadian operator / ( ArrayFloat f ) const;
+        inline ArrayRadian& operator /= ( ArrayFloat f );
 
-        inline Arrayfloat operator <  ( const ArrayRadian& r ) const;
-        inline Arrayfloat operator <= ( const ArrayRadian& r ) const;
-        inline Arrayfloat operator == ( const ArrayRadian& r ) const;
-        inline Arrayfloat operator != ( const ArrayRadian& r ) const;
-        inline Arrayfloat operator >= ( const ArrayRadian& r ) const;
-        inline Arrayfloat operator >  ( const ArrayRadian& r ) const;
+        inline ArrayFloat operator <  ( const ArrayRadian& r ) const;
+        inline ArrayFloat operator <= ( const ArrayRadian& r ) const;
+        inline ArrayFloat operator == ( const ArrayRadian& r ) const;
+        inline ArrayFloat operator != ( const ArrayRadian& r ) const;
+        inline ArrayFloat operator >= ( const ArrayRadian& r ) const;
+        inline ArrayFloat operator >  ( const ArrayRadian& r ) const;
     };
 
     class DI_MISC_API MathlibSSE2
     {
     public:
-        static const Arrayfloat HALF;        //0.5f, 0.5f, 0.5f, 0.5f
-        static const Arrayfloat ONE;         //1.0f, 1.0f, 1.0f, 1.0f
-        static const Arrayfloat THREE;       //3.0f, 3.0f, 3.0f, 3.0f
-        static const Arrayfloat NEG_ONE;     //-1.0f, -1.0f, -1.0f, -1.0f
-        static const Arrayfloat PI;          //PI, PI, PI, PI
-        static const Arrayfloat TWO_PI;      //2*PI, 2*PI, 2*PI, 2*PI
-        static const Arrayfloat ONE_DIV_2PI; //1 / 2PI, 1 / 2PI, 1 / 2PI, 1 / 2PI
-        static const Arrayfloat fEpsilon;    //1e-6f, 1e-6f, 1e-6f, 1e-6f
-        static const Arrayfloat fSqEpsilon;  //1e-12f, 1e-12f, 1e-12f, 1e-12f
-        static const Arrayfloat OneMinusEpsilon;//1 - 1e-6f, 1 - 1e-6f, 1 - 1e-6f, 1 - 1e-6f
-        static const Arrayfloat fDeg2Rad;    //Math::fDeg2Rad, Math::fDeg2Rad, Math::fDeg2Rad, Math::fDeg2Rad
-        static const Arrayfloat fRad2Deg;    //Math::fRad2Deg, Math::fRad2Deg, Math::fRad2Deg, Math::fRad2Deg
-        static const Arrayfloat FLOAT_MIN;   //FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN
-        static const Arrayfloat SIGN_MASK;   //0x80000000, 0x80000000, 0x80000000, 0x80000000
+        static const ArrayFloat HALF;        //0.5f, 0.5f, 0.5f, 0.5f
+        static const ArrayFloat ONE;         //1.0f, 1.0f, 1.0f, 1.0f
+        static const ArrayFloat THREE;       //3.0f, 3.0f, 3.0f, 3.0f
+        static const ArrayFloat NEG_ONE;     //-1.0f, -1.0f, -1.0f, -1.0f
+        static const ArrayFloat PI;          //PI, PI, PI, PI
+        static const ArrayFloat TWO_PI;      //2*PI, 2*PI, 2*PI, 2*PI
+        static const ArrayFloat ONE_DIV_2PI; //1 / 2PI, 1 / 2PI, 1 / 2PI, 1 / 2PI
+        static const ArrayFloat fEpsilon;    //1e-6f, 1e-6f, 1e-6f, 1e-6f
+        static const ArrayFloat fSqEpsilon;  //1e-12f, 1e-12f, 1e-12f, 1e-12f
+        static const ArrayFloat OneMinusEpsilon;//1 - 1e-6f, 1 - 1e-6f, 1 - 1e-6f, 1 - 1e-6f
+        static const ArrayFloat fDeg2Rad;    //Math::fDeg2Rad, Math::fDeg2Rad, Math::fDeg2Rad, Math::fDeg2Rad
+        static const ArrayFloat fRad2Deg;    //Math::fRad2Deg, Math::fRad2Deg, Math::fRad2Deg, Math::fRad2Deg
+        static const ArrayFloat FLOAT_MIN;   //FLT_MIN, FLT_MIN, FLT_MIN, FLT_MIN
+        static const ArrayFloat SIGN_MASK;   //0x80000000, 0x80000000, 0x80000000, 0x80000000
         //INFINITE is taken in Windows, INFINITY by C99 (bloody macros). A joke on Infinite Tea
-        static const Arrayfloat INFINITEA;   //Inf, Inf, Inf, Inf
-        static const Arrayfloat MAX_NEG;     //Max negative number (x4)
-        static const Arrayfloat MAX_POS;     //Max negative number (x4)
-        static const Arrayfloat LAST_AFFINE_COLUMN;//0, 0, 0, 1
+        static const ArrayFloat INFINITEA;   //Inf, Inf, Inf, Inf
+        static const ArrayFloat MAX_NEG;     //Max negative number (x4)
+        static const ArrayFloat MAX_POS;     //Max negative number (x4)
+        static const ArrayFloat LAST_AFFINE_COLUMN;//0, 0, 0, 1
 
         /** Returns the absolute values of each 4 floats
             @param
@@ -93,7 +93,7 @@ namespace Demi
             @return
                 abs( a )
         */
-        static inline Arrayfloat Abs4( Arrayfloat a )
+        static inline ArrayFloat Abs4( ArrayFloat a )
         {
             return _mm_andnot_ps( _mm_set1_ps( -0.0f ), a );
         }
@@ -118,20 +118,20 @@ namespace Demi
                     else
                         arg2[i];
         */
-        static inline Arrayfloat Cmov4( Arrayfloat arg1, Arrayfloat arg2, ArrayMaskR mask )
+        static inline ArrayFloat Cmov4( ArrayFloat arg1, ArrayFloat arg2, ArrayMaskR mask )
         {
             assert( _mm_movemask_ps( _mm_cmpeq_ps( arg1, arg1 ) ) == 0x0f &&
                     _mm_movemask_ps( _mm_cmpeq_ps( arg2, arg2 ) ) == 0x0f &&
                     "Passing NaN values to CMov4" );
 #ifndef  NDEBUG
-            Arrayfloat newNan1 = _mm_mul_ps( arg1, _mm_setzero_ps() ); //+-Inf * 0 = nan
-            Arrayfloat newNan2 = _mm_mul_ps( arg2, _mm_setzero_ps() ); //+-Inf * 0 = nan
+            ArrayFloat newNan1 = _mm_mul_ps( arg1, _mm_setzero_ps() ); //+-Inf * 0 = nan
+            ArrayFloat newNan2 = _mm_mul_ps( arg2, _mm_setzero_ps() ); //+-Inf * 0 = nan
             assert( _mm_movemask_ps( _mm_cmpeq_ps( newNan1, newNan1 ) ) == 0x0f &&
                     _mm_movemask_ps( _mm_cmpeq_ps( newNan2, newNan2 ) ) == 0x0f &&
                     "Passing +/- Infinity values to CMov4" );
 #endif
 
-            Arrayfloat t = _mm_sub_ps( arg1, arg2 );             // t = arg1 - arg2
+            ArrayFloat t = _mm_sub_ps( arg1, arg2 );             // t = arg1 - arg2
             return _mm_add_ps( arg2, _mm_and_ps( t, mask ) );   // r = arg2 + (t & mask)
         }
 
@@ -179,7 +179,7 @@ namespace Demi
         @return
             r[i] = a[i] & b[i];
         */
-        static inline Arrayfloat And( Arrayfloat a, Arrayfloat b )
+        static inline ArrayFloat And( ArrayFloat a, ArrayFloat b )
         {
             return _mm_and_ps( a, b );
         }
@@ -272,7 +272,7 @@ namespace Demi
             return _mm_cmpge_ps( a, b );
         }
 
-        static inline Arrayfloat SetAll( float val )
+        static inline ArrayFloat SetAll( float val )
         {
             return _mm_set_ps1( val );
         }
@@ -286,19 +286,19 @@ namespace Demi
         @return
             r[i] = a[i] == Inf ? 0xffffffff : 0;
         */
-        static inline Arrayfloat isInfinity( Arrayfloat a )
+        static inline ArrayFloat isInfinity( ArrayFloat a )
         {
             return _mm_cmpeq_ps( a, MathlibSSE2::INFINITEA );
         }
 
         /// Returns the maximum value between a and b
-        static inline Arrayfloat Max( Arrayfloat a, Arrayfloat b )
+        static inline ArrayFloat Max( ArrayFloat a, ArrayFloat b )
         {
             return _mm_max_ps( a, b );
         }
 
         /// Returns the minimum value between a and b
-        static inline Arrayfloat Min( Arrayfloat a, Arrayfloat b )
+        static inline ArrayFloat Min( ArrayFloat a, ArrayFloat b )
         {
             return _mm_min_ps( a, b );
         }
@@ -307,10 +307,10 @@ namespace Demi
         @return
             r[0] = min( a[0], a[1], a[2], a[3] )
         */
-        static inline float CollapseMin( Arrayfloat a )
+        static inline float CollapseMin( ArrayFloat a )
         {
             float r;
-            Arrayfloat t0 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 2, 3, 2, 3 ) );
+            ArrayFloat t0 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 2, 3, 2, 3 ) );
             t0 = _mm_min_ps( a, t0 );
             a = _mm_shuffle_ps( t0, t0, _MM_SHUFFLE( 1, 1, 0, 0 ) );
             t0 = _mm_min_ps( a, t0 );
@@ -322,10 +322,10 @@ namespace Demi
         @return
             r[0] = max( a[0], a[1], a[2], a[3] )
         */
-        static inline float CollapseMax( Arrayfloat a )
+        static inline float CollapseMax( ArrayFloat a )
         {
             float r;
-            Arrayfloat t0 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 2, 3, 2, 3 ) );
+            ArrayFloat t0 = _mm_shuffle_ps( a, a, _MM_SHUFFLE( 2, 3, 2, 3 ) );
             t0 = _mm_max_ps( a, t0 );
             a = _mm_shuffle_ps( t0, t0, _MM_SHUFFLE( 1, 1, 0, 0 ) );
             t0 = _mm_max_ps( a, t0 );
@@ -354,11 +354,11 @@ namespace Demi
             @return
                 1 / x (packed as 4 floats)
         */
-        static inline Arrayfloat Inv4( Arrayfloat val )
+        static inline ArrayFloat Inv4( ArrayFloat val )
         {
-            Arrayfloat inv = _mm_rcp_ps( val );
-            Arrayfloat twoRcp    = _mm_add_ps( inv, inv );                   //2 * rcp( f )
-            Arrayfloat rightSide= _mm_mul_ps( val, _mm_mul_ps( inv, inv ) ); //f * rcp( f ) * rcp( f )
+            ArrayFloat inv = _mm_rcp_ps( val );
+            ArrayFloat twoRcp    = _mm_add_ps( inv, inv );                   //2 * rcp( f )
+            ArrayFloat rightSide= _mm_mul_ps( val, _mm_mul_ps( inv, inv ) ); //f * rcp( f ) * rcp( f )
             rightSide = _mm_and_ps( rightSide, _mm_cmpneq_ps( val, _mm_setzero_ps() ) ); //Nuke this NaN
             return _mm_sub_ps( twoRcp, rightSide );
         }
@@ -385,11 +385,11 @@ namespace Demi
             @return
                 1 / x (packed as 4 floats)
         */
-        static inline Arrayfloat InvNonZero4( Arrayfloat val )
+        static inline ArrayFloat InvNonZero4( ArrayFloat val )
         {
-            Arrayfloat inv = _mm_rcp_ps( val );
-            Arrayfloat twoRcp    = _mm_add_ps( inv, inv );                   //2 * rcp( f )
-            Arrayfloat rightSide= _mm_mul_ps( val, _mm_mul_ps( inv, inv ) ); //f * rcp( f ) * rcp( f )
+            ArrayFloat inv = _mm_rcp_ps( val );
+            ArrayFloat twoRcp    = _mm_add_ps( inv, inv );                   //2 * rcp( f )
+            ArrayFloat rightSide= _mm_mul_ps( val, _mm_mul_ps( inv, inv ) ); //f * rcp( f ) * rcp( f )
             return _mm_sub_ps( twoRcp, rightSide );
         }
 
@@ -411,12 +411,12 @@ namespace Demi
             @return
                 1 / sqrt( x ) (packed as 4 floats)
         */
-        static inline Arrayfloat InvSqrt4( Arrayfloat f )
+        static inline ArrayFloat InvSqrt4( ArrayFloat f )
         {
-            Arrayfloat invSqrt   = _mm_rsqrt_ps( f );
+            ArrayFloat invSqrt   = _mm_rsqrt_ps( f );
 
-            Arrayfloat halfInvSqrt= _mm_mul_ps( HALF, invSqrt );                     //0.5 * rsqrt( f )
-            Arrayfloat rightSide  = _mm_mul_ps( invSqrt, _mm_mul_ps( f, invSqrt ) ); //f * rsqrt( f ) * rsqrt( f )
+            ArrayFloat halfInvSqrt= _mm_mul_ps( HALF, invSqrt );                     //0.5 * rsqrt( f )
+            ArrayFloat rightSide  = _mm_mul_ps( invSqrt, _mm_mul_ps( f, invSqrt ) ); //f * rsqrt( f ) * rsqrt( f )
             rightSide = _mm_and_ps( rightSide, _mm_cmpneq_ps( f, _mm_setzero_ps() ) );//Nuke this NaN
             return _mm_mul_ps( halfInvSqrt, _mm_sub_ps( THREE, rightSide ) );       //halfInvSqrt*(3 - rightSide)
         }
@@ -441,12 +441,12 @@ namespace Demi
             @return
                 1 / sqrt( x ) (packed as 4 floats)
         */
-        static inline Arrayfloat InvSqrtNonZero4( Arrayfloat f )
+        static inline ArrayFloat InvSqrtNonZero4( ArrayFloat f )
         {
-            Arrayfloat invSqrt = _mm_rsqrt_ps( f );
+            ArrayFloat invSqrt = _mm_rsqrt_ps( f );
 
-            Arrayfloat halfInvSqrt= _mm_mul_ps( HALF, invSqrt );                     //0.5 * rsqrt( f )
-            Arrayfloat rightSide  = _mm_mul_ps( invSqrt, _mm_mul_ps( f, invSqrt ) ); //f * rsqrt( f ) * rsqrt( f )
+            ArrayFloat halfInvSqrt= _mm_mul_ps( HALF, invSqrt );                     //0.5 * rsqrt( f )
+            ArrayFloat rightSide  = _mm_mul_ps( invSqrt, _mm_mul_ps( f, invSqrt ) ); //f * rsqrt( f ) * rsqrt( f )
             return _mm_mul_ps( halfInvSqrt, _mm_sub_ps( THREE, rightSide ) );       //halfInvSqrt*(3 - rightSide)
         }
 
@@ -458,7 +458,7 @@ namespace Demi
             @return
                 The fractional part of x. i.e. 0.57
         */
-        static inline Arrayfloat Modf4( Arrayfloat x, Arrayfloat &outIntegral );
+        static inline ArrayFloat Modf4( ArrayFloat x, ArrayFloat &outIntegral );
 
         /** Returns the arccos of x
             @param x
@@ -466,7 +466,7 @@ namespace Demi
             @return
                 arccos( x ) (packed as 4 floats)
         */
-        static inline Arrayfloat ACos4( Arrayfloat x );
+        static inline ArrayFloat ACos4( ArrayFloat x );
 
         /** Returns the sine of x
             @param x
@@ -474,7 +474,7 @@ namespace Demi
             @return
                 sin( x ) (packed as 4 floats)
         */
-        static Arrayfloat Sin4( Arrayfloat x );
+        static ArrayFloat Sin4( ArrayFloat x );
 
         /** Returns the cosine of x
             @param x
@@ -482,7 +482,7 @@ namespace Demi
             @return
                 cos( x ) (packed as 4 floats)
         */
-        static Arrayfloat Cos4( Arrayfloat x );
+        static ArrayFloat Cos4( ArrayFloat x );
 
         /** Calculates the cosine & sine of x. Use this function if you need to calculate
             both, as it is faster than calling Cos4 & Sin4 together.
@@ -493,23 +493,23 @@ namespace Demi
             @param outCos
                 Output value, cos( x ) (packed as 4 floats)
         */
-        static void SinCos4( Arrayfloat x, Arrayfloat &outSin, Arrayfloat &outCos );
+        static void SinCos4( ArrayFloat x, ArrayFloat &outSin, ArrayFloat &outCos );
     };
 
 #if DEMI_COMPILER != DEMI_COMPILER_CLANG && DEMI_COMPILER != DEMI_COMPILER_GNUC
-//  inline Arrayfloat operator - ( Arrayfloat l )                 { return _mm_xor_ps( l, MathlibSSE2::SIGN_MASK ); }
-//  inline Arrayfloat operator + ( Arrayfloat l, float r )         { return _mm_add_ps( l, _mm_set1_ps( r ) ); }
-//  inline Arrayfloat operator + ( float l, Arrayfloat r )         { return _mm_add_ps( _mm_set1_ps( l ), r ); }
-    inline Arrayfloat operator + ( Arrayfloat l, Arrayfloat r )    { return _mm_add_ps( l, r ); }
-//  inline Arrayfloat operator - ( Arrayfloat l, float r )         { return _mm_sub_ps( l, _mm_set1_ps( r ) ); }
-//  inline Arrayfloat operator - ( float l, Arrayfloat r )         { return _mm_sub_ps( _mm_set1_ps( l ), r ); }
-    inline Arrayfloat operator - ( Arrayfloat l, Arrayfloat r )    { return _mm_sub_ps( l, r ); }
-//  inline Arrayfloat operator * ( Arrayfloat l, float r )         { return _mm_mul_ps( l, _mm_set1_ps( r ) ); }
-//  inline Arrayfloat operator * ( float l, Arrayfloat r )         { return _mm_mul_ps( _mm_set1_ps( l ), r ); }
-    inline Arrayfloat operator * ( Arrayfloat l, Arrayfloat r )    { return _mm_mul_ps( l, r ); }
-//  inline Arrayfloat operator / ( Arrayfloat l, float r )         { return _mm_div_ps( l, _mm_set1_ps( r ) ); }
-//  inline Arrayfloat operator / ( float l, Arrayfloat r )         { return _mm_div_ps( _mm_set1_ps( l ), r ); }
-    inline Arrayfloat operator / ( Arrayfloat l, Arrayfloat r )    { return _mm_div_ps( l, r ); }
+//  inline ArrayFloat operator - ( ArrayFloat l )                 { return _mm_xor_ps( l, MathlibSSE2::SIGN_MASK ); }
+//  inline ArrayFloat operator + ( ArrayFloat l, float r )         { return _mm_add_ps( l, _mm_set1_ps( r ) ); }
+//  inline ArrayFloat operator + ( float l, ArrayFloat r )         { return _mm_add_ps( _mm_set1_ps( l ), r ); }
+    inline ArrayFloat operator + ( ArrayFloat l, ArrayFloat r )    { return _mm_add_ps( l, r ); }
+//  inline ArrayFloat operator - ( ArrayFloat l, float r )         { return _mm_sub_ps( l, _mm_set1_ps( r ) ); }
+//  inline ArrayFloat operator - ( float l, ArrayFloat r )         { return _mm_sub_ps( _mm_set1_ps( l ), r ); }
+    inline ArrayFloat operator - ( ArrayFloat l, ArrayFloat r )    { return _mm_sub_ps( l, r ); }
+//  inline ArrayFloat operator * ( ArrayFloat l, float r )         { return _mm_mul_ps( l, _mm_set1_ps( r ) ); }
+//  inline ArrayFloat operator * ( float l, ArrayFloat r )         { return _mm_mul_ps( _mm_set1_ps( l ), r ); }
+    inline ArrayFloat operator * ( ArrayFloat l, ArrayFloat r )    { return _mm_mul_ps( l, r ); }
+//  inline ArrayFloat operator / ( ArrayFloat l, float r )         { return _mm_div_ps( l, _mm_set1_ps( r ) ); }
+//  inline ArrayFloat operator / ( float l, ArrayFloat r )         { return _mm_div_ps( _mm_set1_ps( l ), r ); }
+    inline ArrayFloat operator / ( ArrayFloat l, ArrayFloat r )    { return _mm_div_ps( l, r ); }
 #endif
 }
 
