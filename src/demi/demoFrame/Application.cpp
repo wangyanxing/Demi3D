@@ -25,6 +25,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Window.h"
 #include "Command.h"
 #include "LogManager.h"
+#include "ScriptPlugin.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   include "ApplicationOSX.h"
@@ -85,6 +86,8 @@ namespace Demi
 #elif USE_DRV == DRV_GL_ES2
         DI_INSTALL_PLUGIN(DiDrvGLES2);
 #endif
+
+        DI_INSTALL_PLUGIN(DiScript);
 
         mAssetManager = new DiAssetManager;
         mAssetManager->SetBasePath(mConfig.mediaPath);
@@ -217,6 +220,8 @@ namespace Demi
         SAFE_DELETE(mCameraHelper);
         
         Driver->Shutdown();
+
+        DI_UNINSTALL_PLUGIN(DiScript);
 
 #if USE_DRV == DRV_DX9
         DI_UNINSTALL_PLUGIN(DiDrvD3D9);

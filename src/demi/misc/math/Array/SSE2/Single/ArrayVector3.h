@@ -44,10 +44,10 @@ namespace Demi
     class DI_MISC_API ArrayVector3
     {
     public:
-        Arrayfloat       mChunkBase[3];
+        ArrayFloat       mChunkBase[3];
 
         ArrayVector3() {}
-        ArrayVector3( Arrayfloat chunkX, Arrayfloat chunkY, Arrayfloat chunkZ )
+        ArrayVector3( ArrayFloat chunkX, ArrayFloat chunkY, ArrayFloat chunkZ )
         {
             mChunkBase[0] = chunkX;
             mChunkBase[1] = chunkY;
@@ -104,7 +104,7 @@ namespace Demi
             //Store the actual result in a tmp variable and copy. We don't
             //do mChunkBase[1] = mChunkBase[0]; because of a potential LHS
             //depending on how smart the compiler was
-            Arrayfloat tmp = _mm_set1_ps( fScalar );
+            ArrayFloat tmp = _mm_set1_ps( fScalar );
             mChunkBase[0] = tmp;
             mChunkBase[1] = tmp;
             mChunkBase[2] = tmp;
@@ -120,63 +120,63 @@ namespace Demi
         inline friend ArrayVector3 operator + ( float fScalar, const ArrayVector3 &rhs );
         inline friend ArrayVector3 operator + ( const ArrayVector3 &lhs, float fScalar );
 
-        inline friend ArrayVector3 operator + ( Arrayfloat fScalar, const ArrayVector3 &rhs );
-        inline friend ArrayVector3 operator + ( const ArrayVector3 &lhs, Arrayfloat fScalar );
+        inline friend ArrayVector3 operator + ( ArrayFloat fScalar, const ArrayVector3 &rhs );
+        inline friend ArrayVector3 operator + ( const ArrayVector3 &lhs, ArrayFloat fScalar );
 
         inline friend ArrayVector3 operator - ( const ArrayVector3 &lhs, const ArrayVector3 &rhs );
         inline friend ArrayVector3 operator - ( float fScalar, const ArrayVector3 &rhs );
         inline friend ArrayVector3 operator - ( const ArrayVector3 &lhs, float fScalar );
 
-        inline friend ArrayVector3 operator - ( Arrayfloat fScalar, const ArrayVector3 &rhs );
-        inline friend ArrayVector3 operator - ( const ArrayVector3 &lhs, Arrayfloat fScalar );
+        inline friend ArrayVector3 operator - ( ArrayFloat fScalar, const ArrayVector3 &rhs );
+        inline friend ArrayVector3 operator - ( const ArrayVector3 &lhs, ArrayFloat fScalar );
 
         inline friend ArrayVector3 operator * ( const ArrayVector3 &lhs, const ArrayVector3 &rhs );
         inline friend ArrayVector3 operator * ( float fScalar, const ArrayVector3 &rhs );
         inline friend ArrayVector3 operator * ( const ArrayVector3 &lhs, float fScalar );
 
-        inline friend ArrayVector3 operator * ( Arrayfloat fScalar, const ArrayVector3 &rhs );
-        inline friend ArrayVector3 operator * ( const ArrayVector3 &lhs, Arrayfloat fScalar );
+        inline friend ArrayVector3 operator * ( ArrayFloat fScalar, const ArrayVector3 &rhs );
+        inline friend ArrayVector3 operator * ( const ArrayVector3 &lhs, ArrayFloat fScalar );
 
         inline friend ArrayVector3 operator / ( const ArrayVector3 &lhs, const ArrayVector3 &rhs );
         inline friend ArrayVector3 operator / ( float fScalar, const ArrayVector3 &rhs );
         inline friend ArrayVector3 operator / ( const ArrayVector3 &lhs, float fScalar );
 
-        inline friend ArrayVector3 operator / ( Arrayfloat fScalar, const ArrayVector3 &rhs );
-        inline friend ArrayVector3 operator / ( const ArrayVector3 &lhs, Arrayfloat fScalar );
+        inline friend ArrayVector3 operator / ( ArrayFloat fScalar, const ArrayVector3 &rhs );
+        inline friend ArrayVector3 operator / ( const ArrayVector3 &lhs, ArrayFloat fScalar );
 
         inline void operator += ( const ArrayVector3 &a );
         inline void operator += ( const float fScalar );
-        inline void operator += ( const Arrayfloat fScalar );
+        inline void operator += ( const ArrayFloat fScalar );
 
         inline void operator -= ( const ArrayVector3 &a );
         inline void operator -= ( const float fScalar );
-        inline void operator -= ( const Arrayfloat fScalar );
+        inline void operator -= ( const ArrayFloat fScalar );
 
         inline void operator *= ( const ArrayVector3 &a );
         inline void operator *= ( const float fScalar );
-        inline void operator *= ( const Arrayfloat fScalar );
+        inline void operator *= ( const ArrayFloat fScalar );
 
         inline void operator /= ( const ArrayVector3 &a );
         inline void operator /= ( const float fScalar );
-        inline void operator /= ( const Arrayfloat fScalar );
+        inline void operator /= ( const ArrayFloat fScalar );
 
         /// @copydoc DiVec3::length()
-        inline Arrayfloat length() const;
+        inline ArrayFloat length() const;
 
         /// @copydoc DiVec3::squaredLength()
-        inline Arrayfloat squaredLength() const;
+        inline ArrayFloat squaredLength() const;
 
         /// @copydoc DiVec3::distance()
-        inline Arrayfloat distance( const ArrayVector3& rhs ) const;
+        inline ArrayFloat distance( const ArrayVector3& rhs ) const;
 
         /// @copydoc DiVec3::squaredDistance()
-        inline Arrayfloat squaredDistance( const ArrayVector3& rhs ) const;
+        inline ArrayFloat squaredDistance( const ArrayVector3& rhs ) const;
 
         /// @copydoc DiVec3::dotProduct()
-        inline Arrayfloat dotProduct( const ArrayVector3& vec ) const;
+        inline ArrayFloat dotProduct( const ArrayVector3& vec ) const;
 
         /// @copydoc DiVec3::absDotProduct()
-        inline Arrayfloat absDotProduct( const ArrayVector3& vec ) const;
+        inline ArrayFloat absDotProduct( const ArrayVector3& vec ) const;
 
         /// Unlike DiVec3::normalise(), this function does not return the length of the vector
         /// because such value was not cached and was never available @see DiVec3::normalise()
@@ -195,10 +195,10 @@ namespace Demi
         inline void makeCeil( const ArrayVector3& cmp );
 
         /// Returns the smallest value between x, y, z; min( x, y, z )
-        inline Arrayfloat getMinComponent() const;
+        inline ArrayFloat getMinComponent() const;
 
         /// Returns the biggest value between x, y, z; max( x, y, z )
-        inline Arrayfloat getMaxComponent() const;
+        inline ArrayFloat getMaxComponent() const;
 
         /** Converts the vector to (sign(x), sign(y), sign(z))
         @remarks
@@ -272,7 +272,7 @@ namespace Demi
                 i.e. a = Cmov4( a, b )
                 If this vector hasn't been assigned yet any value and want to
                 decide between two ArrayVector3s, i.e. a = Cmov4( b, c ) then
-                @see Cmov4( const ArrayVector3 &arg1, const ArrayVector3 &arg2, Arrayfloat mask );
+                @see Cmov4( const ArrayVector3 &arg1, const ArrayVector3 &arg2, ArrayFloat mask );
                 instead.
             @param
                 Vectors to be used as replacement if the mask is zero.
@@ -294,7 +294,7 @@ namespace Demi
                 i.e. a = CmovRobust( a, b )
                 If this vector hasn't been assigned yet any value and want to
                 decide between two ArrayVector3s, i.e. a = Cmov4( b, c ) then
-                @see Cmov4( const ArrayVector3 &arg1, const ArrayVector3 &arg2, Arrayfloat mask );
+                @see Cmov4( const ArrayVector3 &arg1, const ArrayVector3 &arg2, ArrayFloat mask );
                 instead.
             @param
                 Vectors to be used as replacement if the mask is zero.
@@ -311,7 +311,7 @@ namespace Demi
                 If mask param contains anything other than 0's or 0xffffffff's
                 the result is undefined.
                 If you wanted to do a = cmov4( a, b ), then consider using the update version
-                @see Cmov4( Arrayfloat mask, const ArrayVector3 &replacement );
+                @see Cmov4( ArrayFloat mask, const ArrayVector3 &replacement );
                 instead.
             @param
                 First array of Vectors

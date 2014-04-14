@@ -46,11 +46,11 @@ namespace Demi
     class DI_MISC_API ArrayQuaternion
     {
     public:
-        Arrayfloat       mChunkBase[4];
+        ArrayFloat       mChunkBase[4];
 
         ArrayQuaternion() {}
-        ArrayQuaternion( const Arrayfloat &chunkW, const Arrayfloat &chunkX,
-                                const Arrayfloat &chunkY, const Arrayfloat &chunkZ )
+        ArrayQuaternion( const ArrayFloat &chunkW, const ArrayFloat &chunkX,
+                                const ArrayFloat &chunkY, const ArrayFloat &chunkZ )
         {
             mChunkBase[0] = chunkW;
             mChunkBase[1] = chunkX;
@@ -107,11 +107,11 @@ namespace Demi
 
         inline friend ArrayQuaternion operator + ( const ArrayQuaternion &lhs, const ArrayQuaternion &rhs );
         inline friend ArrayQuaternion operator - ( const ArrayQuaternion &lhs, const ArrayQuaternion &rhs );
-        inline friend ArrayQuaternion operator * ( const ArrayQuaternion &lhs, Arrayfloat scalar );
-        inline friend ArrayQuaternion operator * ( Arrayfloat scalar, const ArrayQuaternion &lhs );
+        inline friend ArrayQuaternion operator * ( const ArrayQuaternion &lhs, ArrayFloat scalar );
+        inline friend ArrayQuaternion operator * ( ArrayFloat scalar, const ArrayQuaternion &lhs );
         inline void operator += ( const ArrayQuaternion &a );
         inline void operator -= ( const ArrayQuaternion &a );
-        inline void operator *= ( const Arrayfloat fScalar );
+        inline void operator *= ( const ArrayFloat fScalar );
 
         /// @copydoc DiQuat::xAxis
         inline ArrayVector3 xAxis( void ) const;
@@ -121,10 +121,10 @@ namespace Demi
         inline ArrayVector3 zAxis( void ) const;
 
         /// @copydoc DiQuat::Dot
-        inline Arrayfloat Dot( const ArrayQuaternion& rkQ ) const;
+        inline ArrayFloat Dot( const ArrayQuaternion& rkQ ) const;
 
         /// @copydoc DiQuat::Norm
-        inline Arrayfloat Norm( void ) const; //Returns the squared length, doesn't modify
+        inline ArrayFloat Norm( void ) const; //Returns the squared length, doesn't modify
 
         /// Unlike DiQuat::normalise(), this function does not return the length of the vector
         /// because such value was not cached and was never available @see DiQuat::normalise()
@@ -161,19 +161,19 @@ namespace Demi
         /// @See DiQuat::Slerp
         /// @remarks
         ///     shortestPath is always true
-        static inline ArrayQuaternion Slerp( Arrayfloat fT, const ArrayQuaternion &rkP,
+        static inline ArrayQuaternion Slerp( ArrayFloat fT, const ArrayQuaternion &rkP,
                                                 const ArrayQuaternion &rkQ );
 
         /// @See DiQuat::nlerp
         /// @remarks
         ///     shortestPath is always true
-        static inline ArrayQuaternion nlerpShortest( Arrayfloat fT, const ArrayQuaternion& rkP, 
+        static inline ArrayQuaternion nlerpShortest( ArrayFloat fT, const ArrayQuaternion& rkP, 
                                                     const ArrayQuaternion& rkQ );
 
         /// @See DiQuat::nlerp
         /// @remarks
         ///     shortestPath is always false
-        static inline ArrayQuaternion nlerp( Arrayfloat fT, const ArrayQuaternion& rkP, 
+        static inline ArrayQuaternion nlerp( ArrayFloat fT, const ArrayQuaternion& rkP, 
                                                 const ArrayQuaternion& rkQ );
 
         /** Conditional move update. @See MathlibSSE2::Cmov4
@@ -187,7 +187,7 @@ namespace Demi
                 i.e. a = Cmov4( a, b )
                 If this vector hasn't been assigned yet any value and want to
                 decide between two ArrayQuaternions, i.e. a = Cmov4( b, c ) then
-                @see Cmov4( const ArrayQuaternion &arg1, const ArrayQuaternion &arg2, Arrayfloat mask );
+                @see Cmov4( const ArrayQuaternion &arg1, const ArrayQuaternion &arg2, ArrayFloat mask );
                 instead.
             @param
                 Vectors to be used as replacement if the mask is zero.
@@ -204,7 +204,7 @@ namespace Demi
                 If mask param contains anything other than 0's or 0xffffffff's
                 the result is undefined.
                 If you wanted to do a = cmov4( a, b ), then consider using the update version
-                @see Cmov4( Arrayfloat mask, const ArrayQuaternion &replacement );
+                @see Cmov4( ArrayFloat mask, const ArrayQuaternion &replacement );
                 instead.
             @param
                 First array of Vectors

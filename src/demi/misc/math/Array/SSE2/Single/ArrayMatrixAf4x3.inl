@@ -36,9 +36,9 @@ namespace Demi
     ///     particularly of the update operations ( a *= b )
     ///     This function will assert if DEMI_RESTRICT_ALIASING is enabled and any of the
     ///     given pointers point to the same location
-    FORCEINLINE void concatArrayMatAf4x3( Arrayfloat * RESTRICT_ALIAS outChunkBase,
-                                        const Arrayfloat * RESTRICT_ALIAS lhsChunkBase,
-                                        const Arrayfloat * RESTRICT_ALIAS rhsChunkBase )
+    FORCEINLINE void concatArrayMatAf4x3( ArrayFloat * RESTRICT_ALIAS outChunkBase,
+                                        const ArrayFloat * RESTRICT_ALIAS lhsChunkBase,
+                                        const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
 #if DEMI_RESTRICT_ALIASING != 0
         assert( outChunkBase != lhsChunkBase && outChunkBase != rhsChunkBase &&
@@ -91,22 +91,22 @@ namespace Demi
     }
 
     /// Update version
-    FORCEINLINE void concatArrayMatAf4x3( Arrayfloat * RESTRICT_ALIAS lhsChunkBase,
-                                        const Arrayfloat * RESTRICT_ALIAS rhsChunkBase )
+    FORCEINLINE void concatArrayMatAf4x3( ArrayFloat * RESTRICT_ALIAS lhsChunkBase,
+                                        const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
 #if DEMI_RESTRICT_ALIASING != 0
         assert( lhsChunkBase != rhsChunkBase &&
                 "Re-strict aliasing rule broken. Compile without DEMI_RESTRICT_ALIASING" );
 #endif
-        Arrayfloat lhs0 = lhsChunkBase[0];
+        ArrayFloat lhs0 = lhsChunkBase[0];
         lhsChunkBase[0] =   _mm_madd_ps(    lhsChunkBase[0], rhsChunkBase[0],
                             _mm_madd_ps(    lhsChunkBase[1], rhsChunkBase[4],
                             _mm_mul_ps(     lhsChunkBase[2], rhsChunkBase[8] ) ) );
-        Arrayfloat lhs1 = lhsChunkBase[1];
+        ArrayFloat lhs1 = lhsChunkBase[1];
         lhsChunkBase[1] =   _mm_madd_ps(    lhs0, rhsChunkBase[1],
                             _mm_madd_ps(    lhsChunkBase[1], rhsChunkBase[5],
                             _mm_mul_ps(     lhsChunkBase[2], rhsChunkBase[9] ) ) );
-        Arrayfloat lhs2 = lhsChunkBase[2];
+        ArrayFloat lhs2 = lhsChunkBase[2];
         lhsChunkBase[2] =   _mm_madd_ps(    lhs0, rhsChunkBase[2],
                             _mm_madd_ps(    lhs1, rhsChunkBase[6],
                             _mm_mul_ps(     lhsChunkBase[2], rhsChunkBase[10] ) ) );
@@ -201,20 +201,20 @@ namespace Demi
     
     inline void ArrayMatrixAf4x3::fromQuaternion( const ArrayQuaternion &q )
     {
-        Arrayfloat * RESTRICT_ALIAS chunkBase = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS qChunkBase = q.mChunkBase;
-        Arrayfloat fTx  = _mm_add_ps( qChunkBase[1], qChunkBase[1] );        // 2 * x
-        Arrayfloat fTy  = _mm_add_ps( qChunkBase[2], qChunkBase[2] );        // 2 * y
-        Arrayfloat fTz  = _mm_add_ps( qChunkBase[3], qChunkBase[3] );        // 2 * z
-        Arrayfloat fTwx = _mm_mul_ps( fTx, qChunkBase[0] );                  // fTx*w;
-        Arrayfloat fTwy = _mm_mul_ps( fTy, qChunkBase[0] );                  // fTy*w;
-        Arrayfloat fTwz = _mm_mul_ps( fTz, qChunkBase[0] );                  // fTz*w;
-        Arrayfloat fTxx = _mm_mul_ps( fTx, qChunkBase[1] );                  // fTx*x;
-        Arrayfloat fTxy = _mm_mul_ps( fTy, qChunkBase[1] );                  // fTy*x;
-        Arrayfloat fTxz = _mm_mul_ps( fTz, qChunkBase[1] );                  // fTz*x;
-        Arrayfloat fTyy = _mm_mul_ps( fTy, qChunkBase[2] );                  // fTy*y;
-        Arrayfloat fTyz = _mm_mul_ps( fTz, qChunkBase[2] );                  // fTz*y;
-        Arrayfloat fTzz = _mm_mul_ps( fTz, qChunkBase[3] );                  // fTz*z;
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS qChunkBase = q.mChunkBase;
+        ArrayFloat fTx  = _mm_add_ps( qChunkBase[1], qChunkBase[1] );        // 2 * x
+        ArrayFloat fTy  = _mm_add_ps( qChunkBase[2], qChunkBase[2] );        // 2 * y
+        ArrayFloat fTz  = _mm_add_ps( qChunkBase[3], qChunkBase[3] );        // 2 * z
+        ArrayFloat fTwx = _mm_mul_ps( fTx, qChunkBase[0] );                  // fTx*w;
+        ArrayFloat fTwy = _mm_mul_ps( fTy, qChunkBase[0] );                  // fTy*w;
+        ArrayFloat fTwz = _mm_mul_ps( fTz, qChunkBase[0] );                  // fTz*w;
+        ArrayFloat fTxx = _mm_mul_ps( fTx, qChunkBase[1] );                  // fTx*x;
+        ArrayFloat fTxy = _mm_mul_ps( fTy, qChunkBase[1] );                  // fTy*x;
+        ArrayFloat fTxz = _mm_mul_ps( fTz, qChunkBase[1] );                  // fTz*x;
+        ArrayFloat fTyy = _mm_mul_ps( fTy, qChunkBase[2] );                  // fTy*y;
+        ArrayFloat fTyz = _mm_mul_ps( fTz, qChunkBase[2] );                  // fTz*y;
+        ArrayFloat fTzz = _mm_mul_ps( fTz, qChunkBase[3] );                  // fTz*z;
 
         chunkBase[0] = _mm_sub_ps( MathlibSSE2::ONE, _mm_add_ps( fTyy, fTzz ) );
         chunkBase[1] = _mm_sub_ps( fTxy, fTwz );
@@ -230,9 +230,9 @@ namespace Demi
     inline void ArrayMatrixAf4x3::makeTransform( const ArrayVector3 &position, const ArrayVector3 &scale,
                                              const ArrayQuaternion &orientation )
     {
-        Arrayfloat * RESTRICT_ALIAS chunkBase            = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS posChunkBase   = position.mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS scaleChunkBase = scale.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS chunkBase            = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS posChunkBase   = position.mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS scaleChunkBase = scale.mChunkBase;
         this->fromQuaternion( orientation );
         chunkBase[0] = _mm_mul_ps( chunkBase[0], scaleChunkBase[0] );   //m00 * scale.x
         chunkBase[1] = _mm_mul_ps( chunkBase[1], scaleChunkBase[1] );   //m01 * scale.y
@@ -252,18 +252,18 @@ namespace Demi
     
     inline void ArrayMatrixAf4x3::setToInverse(void)
     {
-        Arrayfloat m10 = mChunkBase[4], m11 = mChunkBase[5], m12 = mChunkBase[6];
-        Arrayfloat m20 = mChunkBase[8], m21 = mChunkBase[9], m22 = mChunkBase[10];
+        ArrayFloat m10 = mChunkBase[4], m11 = mChunkBase[5], m12 = mChunkBase[6];
+        ArrayFloat m20 = mChunkBase[8], m21 = mChunkBase[9], m22 = mChunkBase[10];
 
-        Arrayfloat t00 = _mm_nmsub_ps( m21, m12, _mm_mul_ps( m22, m11 ) ); //m22 * m11 - m21 * m12;
-        Arrayfloat t10 = _mm_nmsub_ps( m22, m10, _mm_mul_ps( m20, m12 ) ); //m20 * m22 - m22 * m10;
-        Arrayfloat t20 = _mm_nmsub_ps( m20, m11, _mm_mul_ps( m21, m10 ) ); //m21 * m10 - m20 * m11;
+        ArrayFloat t00 = _mm_nmsub_ps( m21, m12, _mm_mul_ps( m22, m11 ) ); //m22 * m11 - m21 * m12;
+        ArrayFloat t10 = _mm_nmsub_ps( m22, m10, _mm_mul_ps( m20, m12 ) ); //m20 * m22 - m22 * m10;
+        ArrayFloat t20 = _mm_nmsub_ps( m20, m11, _mm_mul_ps( m21, m10 ) ); //m21 * m10 - m20 * m11;
 
-        Arrayfloat m00 = mChunkBase[0], m01 = mChunkBase[1], m02 = mChunkBase[2];
+        ArrayFloat m00 = mChunkBase[0], m01 = mChunkBase[1], m02 = mChunkBase[2];
 
         //det = m00 * t00 + m01 * t10 + m02 * t20
-        Arrayfloat det   = _mm_madd_ps( m00, t00, _mm_madd_ps( m01, t10,  _mm_mul_ps( m02, t20 ) ) );
-        Arrayfloat invDet= _mm_div_ps( MathlibSSE2::ONE, det ); //High precision division
+        ArrayFloat det   = _mm_madd_ps( m00, t00, _mm_madd_ps( m01, t10,  _mm_mul_ps( m02, t20 ) ) );
+        ArrayFloat invDet= _mm_div_ps( MathlibSSE2::ONE, det ); //High precision division
 
         t00 = _mm_mul_ps( t00, invDet );
         t10 = _mm_mul_ps( t10, invDet );
@@ -273,26 +273,26 @@ namespace Demi
         m01 = _mm_mul_ps( m01, invDet );
         m02 = _mm_mul_ps( m02, invDet );
 
-        Arrayfloat r00 = t00;
-        Arrayfloat r01 = _mm_nmsub_ps( m01, m22, _mm_mul_ps( m02, m21 ) ); //m02 * m21 - m01 * m22;
-        Arrayfloat r02 = _mm_nmsub_ps( m02, m11, _mm_mul_ps( m01, m12 ) ); //m01 * m12 - m02 * m11;
+        ArrayFloat r00 = t00;
+        ArrayFloat r01 = _mm_nmsub_ps( m01, m22, _mm_mul_ps( m02, m21 ) ); //m02 * m21 - m01 * m22;
+        ArrayFloat r02 = _mm_nmsub_ps( m02, m11, _mm_mul_ps( m01, m12 ) ); //m01 * m12 - m02 * m11;
 
-        Arrayfloat r10 = t10;
-        Arrayfloat r11 = _mm_nmsub_ps( m02, m20, _mm_mul_ps( m00, m22 ) ); //m00 * m22 - m02 * m20;
-        Arrayfloat r12 = _mm_nmsub_ps( m00, m12, _mm_mul_ps( m02, m10 ) ); //m02 * m10 - m00 * m12;
+        ArrayFloat r10 = t10;
+        ArrayFloat r11 = _mm_nmsub_ps( m02, m20, _mm_mul_ps( m00, m22 ) ); //m00 * m22 - m02 * m20;
+        ArrayFloat r12 = _mm_nmsub_ps( m00, m12, _mm_mul_ps( m02, m10 ) ); //m02 * m10 - m00 * m12;
 
-        Arrayfloat r20 = t20;
-        Arrayfloat r21 = _mm_nmsub_ps( m00, m21, _mm_mul_ps( m01, m20 ) ); //m01 * m20 - m00 * m21;
-        Arrayfloat r22 = _mm_nmsub_ps( m01, m10, _mm_mul_ps( m00, m11 ) ); //m00 * m11 - m01 * m10;
+        ArrayFloat r20 = t20;
+        ArrayFloat r21 = _mm_nmsub_ps( m00, m21, _mm_mul_ps( m01, m20 ) ); //m01 * m20 - m00 * m21;
+        ArrayFloat r22 = _mm_nmsub_ps( m01, m10, _mm_mul_ps( m00, m11 ) ); //m00 * m11 - m01 * m10;
 
-        Arrayfloat m03 = mChunkBase[3], m13 = mChunkBase[7], m23 = mChunkBase[11];
+        ArrayFloat m03 = mChunkBase[3], m13 = mChunkBase[7], m23 = mChunkBase[11];
 
         //r03 = (r00 * m03 + r01 * m13 + r02 * m23)
         //r13 = (r10 * m03 + r11 * m13 + r12 * m23)
         //r23 = (r20 * m03 + r21 * m13 + r22 * m23)
-        Arrayfloat r03 = _mm_madd_ps( r00, m03, _mm_madd_ps( r01, m13, _mm_mul_ps( r02, m23 ) ) );
-        Arrayfloat r13 = _mm_madd_ps( r10, m03, _mm_madd_ps( r11, m13, _mm_mul_ps( r12, m23 ) ) );
-        Arrayfloat r23 = _mm_madd_ps( r20, m03, _mm_madd_ps( r21, m13, _mm_mul_ps( r22, m23 ) ) );
+        ArrayFloat r03 = _mm_madd_ps( r00, m03, _mm_madd_ps( r01, m13, _mm_mul_ps( r02, m23 ) ) );
+        ArrayFloat r13 = _mm_madd_ps( r10, m03, _mm_madd_ps( r11, m13, _mm_mul_ps( r12, m23 ) ) );
+        ArrayFloat r23 = _mm_madd_ps( r20, m03, _mm_madd_ps( r21, m13, _mm_mul_ps( r22, m23 ) ) );
 
         r03 = _mm_mul_ps( r03, MathlibSSE2::NEG_ONE ); //r03 = -r03
         r13 = _mm_mul_ps( r13, MathlibSSE2::NEG_ONE ); //r13 = -r13
@@ -316,18 +316,18 @@ namespace Demi
     
     inline void ArrayMatrixAf4x3::setToInverseDegeneratesAsIdentity(void)
     {
-        Arrayfloat m10 = mChunkBase[4], m11 = mChunkBase[5], m12 = mChunkBase[6];
-        Arrayfloat m20 = mChunkBase[8], m21 = mChunkBase[9], m22 = mChunkBase[10];
+        ArrayFloat m10 = mChunkBase[4], m11 = mChunkBase[5], m12 = mChunkBase[6];
+        ArrayFloat m20 = mChunkBase[8], m21 = mChunkBase[9], m22 = mChunkBase[10];
 
-        Arrayfloat t00 = _mm_nmsub_ps( m21, m12, _mm_mul_ps( m22, m11 ) ); //m22 * m11 - m21 * m12;
-        Arrayfloat t10 = _mm_nmsub_ps( m22, m10, _mm_mul_ps( m20, m12 ) ); //m20 * m22 - m22 * m10;
-        Arrayfloat t20 = _mm_nmsub_ps( m20, m11, _mm_mul_ps( m21, m10 ) ); //m21 * m10 - m20 * m11;
+        ArrayFloat t00 = _mm_nmsub_ps( m21, m12, _mm_mul_ps( m22, m11 ) ); //m22 * m11 - m21 * m12;
+        ArrayFloat t10 = _mm_nmsub_ps( m22, m10, _mm_mul_ps( m20, m12 ) ); //m20 * m22 - m22 * m10;
+        ArrayFloat t20 = _mm_nmsub_ps( m20, m11, _mm_mul_ps( m21, m10 ) ); //m21 * m10 - m20 * m11;
 
-        Arrayfloat m00 = mChunkBase[0], m01 = mChunkBase[1], m02 = mChunkBase[2];
+        ArrayFloat m00 = mChunkBase[0], m01 = mChunkBase[1], m02 = mChunkBase[2];
 
         //det = m00 * t00 + m01 * t10 + m02 * t20
-        Arrayfloat det   = _mm_madd_ps( m00, t00, _mm_madd_ps( m01, t10,  _mm_mul_ps( m02, t20 ) ) );
-        Arrayfloat invDet= _mm_div_ps( MathlibSSE2::ONE, det ); //High precision division
+        ArrayFloat det   = _mm_madd_ps( m00, t00, _mm_madd_ps( m01, t10,  _mm_mul_ps( m02, t20 ) ) );
+        ArrayFloat invDet= _mm_div_ps( MathlibSSE2::ONE, det ); //High precision division
 
         //degenerateMask = Abs( det ) < fEpsilon;
         ArrayMaskR degenerateMask = _mm_cmplt_ps( MathlibSSE2::Abs4( det ), MathlibSSE2::fEpsilon );
@@ -340,26 +340,26 @@ namespace Demi
         m01 = _mm_mul_ps( m01, invDet );
         m02 = _mm_mul_ps( m02, invDet );
 
-        Arrayfloat r00 = t00;
-        Arrayfloat r01 = _mm_nmsub_ps( m01, m22, _mm_mul_ps( m02, m21 ) ); //m02 * m21 - m01 * m22;
-        Arrayfloat r02 = _mm_nmsub_ps( m02, m11, _mm_mul_ps( m01, m12 ) ); //m01 * m12 - m02 * m11;
+        ArrayFloat r00 = t00;
+        ArrayFloat r01 = _mm_nmsub_ps( m01, m22, _mm_mul_ps( m02, m21 ) ); //m02 * m21 - m01 * m22;
+        ArrayFloat r02 = _mm_nmsub_ps( m02, m11, _mm_mul_ps( m01, m12 ) ); //m01 * m12 - m02 * m11;
 
-        Arrayfloat r10 = t10;
-        Arrayfloat r11 = _mm_nmsub_ps( m02, m20, _mm_mul_ps( m00, m22 ) ); //m00 * m22 - m02 * m20;
-        Arrayfloat r12 = _mm_nmsub_ps( m00, m12, _mm_mul_ps( m02, m10 ) ); //m02 * m10 - m00 * m12;
+        ArrayFloat r10 = t10;
+        ArrayFloat r11 = _mm_nmsub_ps( m02, m20, _mm_mul_ps( m00, m22 ) ); //m00 * m22 - m02 * m20;
+        ArrayFloat r12 = _mm_nmsub_ps( m00, m12, _mm_mul_ps( m02, m10 ) ); //m02 * m10 - m00 * m12;
 
-        Arrayfloat r20 = t20;
-        Arrayfloat r21 = _mm_nmsub_ps( m00, m21, _mm_mul_ps( m01, m20 ) ); //m01 * m20 - m00 * m21;
-        Arrayfloat r22 = _mm_nmsub_ps( m01, m10, _mm_mul_ps( m00, m11 ) ); //m00 * m11 - m01 * m10;
+        ArrayFloat r20 = t20;
+        ArrayFloat r21 = _mm_nmsub_ps( m00, m21, _mm_mul_ps( m01, m20 ) ); //m01 * m20 - m00 * m21;
+        ArrayFloat r22 = _mm_nmsub_ps( m01, m10, _mm_mul_ps( m00, m11 ) ); //m00 * m11 - m01 * m10;
 
-        Arrayfloat m03 = mChunkBase[3], m13 = mChunkBase[7], m23 = mChunkBase[11];
+        ArrayFloat m03 = mChunkBase[3], m13 = mChunkBase[7], m23 = mChunkBase[11];
 
         //r03 = (r00 * m03 + r01 * m13 + r02 * m23)
         //r13 = (r10 * m03 + r11 * m13 + r12 * m23)
         //r13 = (r20 * m03 + r21 * m13 + r22 * m23)
-        Arrayfloat r03 = _mm_madd_ps( r00, m03, _mm_madd_ps( r01, m13, _mm_mul_ps( r02, m23 ) ) );
-        Arrayfloat r13 = _mm_madd_ps( r10, m03, _mm_madd_ps( r11, m13, _mm_mul_ps( r12, m23 ) ) );
-        Arrayfloat r23 = _mm_madd_ps( r20, m03, _mm_madd_ps( r21, m13, _mm_mul_ps( r22, m23 ) ) );
+        ArrayFloat r03 = _mm_madd_ps( r00, m03, _mm_madd_ps( r01, m13, _mm_mul_ps( r02, m23 ) ) );
+        ArrayFloat r13 = _mm_madd_ps( r10, m03, _mm_madd_ps( r11, m13, _mm_mul_ps( r12, m23 ) ) );
+        ArrayFloat r23 = _mm_madd_ps( r20, m03, _mm_madd_ps( r21, m13, _mm_mul_ps( r22, m23 ) ) );
 
         r03 = _mm_mul_ps( r03, MathlibSSE2::NEG_ONE ); //r03 = -r03
         r13 = _mm_mul_ps( r13, MathlibSSE2::NEG_ONE ); //r13 = -r13
@@ -437,7 +437,7 @@ namespace Demi
             (dst2) = _mm_shuffle_ps(tmp2, tmp3, 0x88);              \
             (dst3) = _mm_shuffle_ps(tmp2, tmp3, 0xDD);              \
         }
-        register Arrayfloat m0, m1, m2, m3;
+        register ArrayFloat m0, m1, m2, m3;
 
         _MM_TRANSPOSE4_SRC_DST_PS(
                             this->mChunkBase[0], this->mChunkBase[1],

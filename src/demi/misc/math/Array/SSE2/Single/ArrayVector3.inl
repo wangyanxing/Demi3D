@@ -24,7 +24,7 @@ namespace Demi
         Note that for scalars (i.e. floats) we use DEFINE_L_SCALAR_OPERATION/DEFINE_R_SCALAR_OPERATION
         depending on whether the scalar is on the left or right side of the operation
         (i.e. 2 * a vs a * 2)
-        And for Arrayfloat scalars we use DEFINE_L_OPERATION/DEFINE_R_OPERATION
+        And for ArrayFloat scalars we use DEFINE_L_OPERATION/DEFINE_R_OPERATION
 
         As for division, we use specific scalar versions to increase performance (calculate
         the inverse of the scalar once, then multiply) as well as placing asserts in
@@ -50,8 +50,8 @@ namespace Demi
 #define DEFINE_OPERATION( leftClass, rightClass, op, op_func )\
     inline ArrayVector3 operator op ( const leftClass &lhs, const rightClass &rhs )\
     {\
-        const Arrayfloat * RESTRICT_ALIAS lhsChunkBase = lhs.mChunkBase;\
-        const Arrayfloat * RESTRICT_ALIAS rhsChunkBase = rhs.mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS lhsChunkBase = lhs.mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS rhsChunkBase = rhs.mChunkBase;\
         return ArrayVector3(\
                 op_func( lhsChunkBase[0], rhsChunkBase[0] ),\
                 op_func( lhsChunkBase[1], rhsChunkBase[1] ),\
@@ -60,7 +60,7 @@ namespace Demi
 #define DEFINE_L_SCALAR_OPERATION( leftType, rightClass, op, op_func )\
     inline ArrayVector3 operator op ( const leftType fScalar, const rightClass &rhs )\
     {\
-        Arrayfloat lhs = _mm_set1_ps( fScalar );\
+        ArrayFloat lhs = _mm_set1_ps( fScalar );\
         return ArrayVector3(\
                 op_func( lhs, rhs.mChunkBase[0] ),\
                 op_func( lhs, rhs.mChunkBase[1] ),\
@@ -69,7 +69,7 @@ namespace Demi
 #define DEFINE_R_SCALAR_OPERATION( leftClass, rightType, op, op_func )\
     inline ArrayVector3 operator op ( const leftClass &lhs, const rightType fScalar )\
     {\
-        Arrayfloat rhs = _mm_set1_ps( fScalar );\
+        ArrayFloat rhs = _mm_set1_ps( fScalar );\
         return ArrayVector3(\
                 op_func( lhs.mChunkBase[0], rhs ),\
                 op_func( lhs.mChunkBase[1], rhs ),\
@@ -95,7 +95,7 @@ namespace Demi
 #define DEFINE_L_SCALAR_DIVISION( leftType, rightClass, op, op_func )\
     inline ArrayVector3 operator op ( const leftType fScalar, const rightClass &rhs )\
     {\
-        Arrayfloat lhs = _mm_set1_ps( fScalar );\
+        ArrayFloat lhs = _mm_set1_ps( fScalar );\
         return ArrayVector3(\
                 op_func( lhs, rhs.mChunkBase[0] ),\
                 op_func( lhs, rhs.mChunkBase[1] ),\
@@ -106,7 +106,7 @@ namespace Demi
     {\
         assert( fScalar != 0.0 );\
         float fInv = 1.0f / fScalar;\
-        Arrayfloat rhs = _mm_set1_ps( fInv );\
+        ArrayFloat rhs = _mm_set1_ps( fInv );\
         return ArrayVector3(\
                 op_func( lhs.mChunkBase[0], rhs ),\
                 op_func( lhs.mChunkBase[1], rhs ),\
@@ -133,7 +133,7 @@ namespace Demi
     inline ArrayVector3 operator op ( const leftClass &lhs, const rightType r )\
     {\
         ASSERT_DIV_BY_ZERO( r );\
-        Arrayfloat rhs = MathlibSSE2::Inv4( r );\
+        ArrayFloat rhs = MathlibSSE2::Inv4( r );\
         return ArrayVector3(\
                 op_func( lhs.mChunkBase[0], rhs ),\
                 op_func( lhs.mChunkBase[1], rhs ),\
@@ -144,8 +144,8 @@ namespace Demi
 #define DEFINE_UPDATE_OPERATION( leftClass, op, op_func )\
     inline void ArrayVector3::operator op ( const leftClass &a )\
     {\
-        Arrayfloat * RESTRICT_ALIAS chunkBase = mChunkBase;\
-        const Arrayfloat * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
         chunkBase[0] = op_func( chunkBase[0], aChunkBase[0] );\
         chunkBase[1] = op_func( chunkBase[1], aChunkBase[1] );\
         chunkBase[2] = op_func( chunkBase[2], aChunkBase[2] );\
@@ -153,7 +153,7 @@ namespace Demi
 #define DEFINE_UPDATE_R_SCALAR_OPERATION( rightType, op, op_func )\
     inline void ArrayVector3::operator op ( const rightType fScalar )\
     {\
-        Arrayfloat a = _mm_set1_ps( fScalar );\
+        ArrayFloat a = _mm_set1_ps( fScalar );\
         mChunkBase[0] = op_func( mChunkBase[0], a );\
         mChunkBase[1] = op_func( mChunkBase[1], a );\
         mChunkBase[2] = op_func( mChunkBase[2], a );\
@@ -168,8 +168,8 @@ namespace Demi
 #define DEFINE_UPDATE_DIVISION( leftClass, op, op_func )\
     inline void ArrayVector3::operator op ( const leftClass &a )\
     {\
-        Arrayfloat * RESTRICT_ALIAS chunkBase = mChunkBase;\
-        const Arrayfloat * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
         chunkBase[0] = op_func( chunkBase[0], aChunkBase[0] );\
         chunkBase[1] = op_func( chunkBase[1], aChunkBase[1] );\
         chunkBase[2] = op_func( chunkBase[2], aChunkBase[2] );\
@@ -179,7 +179,7 @@ namespace Demi
     {\
         assert( fScalar != 0.0 );\
         float fInv = 1.0f / fScalar;\
-        Arrayfloat a = _mm_set1_ps( fInv );\
+        ArrayFloat a = _mm_set1_ps( fInv );\
         mChunkBase[0] = op_func( mChunkBase[0], a );\
         mChunkBase[1] = op_func( mChunkBase[1], a );\
         mChunkBase[2] = op_func( mChunkBase[2], a );\
@@ -188,7 +188,7 @@ namespace Demi
     inline void ArrayVector3::operator op ( const rightType _a )\
     {\
         ASSERT_DIV_BY_ZERO( _a );\
-        Arrayfloat a = MathlibSSE2::Inv4( _a );\
+        ArrayFloat a = MathlibSSE2::Inv4( _a );\
         mChunkBase[0] = op_func( mChunkBase[0], a );\
         mChunkBase[1] = op_func( mChunkBase[1], a );\
         mChunkBase[2] = op_func( mChunkBase[2], a );\
@@ -213,34 +213,34 @@ namespace Demi
     DEFINE_L_SCALAR_OPERATION( float, ArrayVector3, +, _mm_add_ps );
     DEFINE_R_SCALAR_OPERATION( ArrayVector3, float, +, _mm_add_ps );
 
-    DEFINE_L_OPERATION( Arrayfloat, ArrayVector3, +, _mm_add_ps );
-    DEFINE_R_OPERATION( ArrayVector3, Arrayfloat, +, _mm_add_ps );
+    DEFINE_L_OPERATION( ArrayFloat, ArrayVector3, +, _mm_add_ps );
+    DEFINE_R_OPERATION( ArrayVector3, ArrayFloat, +, _mm_add_ps );
 
     // - Subtraction
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, -, _mm_sub_ps );
     DEFINE_L_SCALAR_OPERATION( float, ArrayVector3, -, _mm_sub_ps );
     DEFINE_R_SCALAR_OPERATION( ArrayVector3, float, -, _mm_sub_ps );
 
-    DEFINE_L_OPERATION( Arrayfloat, ArrayVector3, -, _mm_sub_ps );
-    DEFINE_R_OPERATION( ArrayVector3, Arrayfloat, -, _mm_sub_ps );
+    DEFINE_L_OPERATION( ArrayFloat, ArrayVector3, -, _mm_sub_ps );
+    DEFINE_R_OPERATION( ArrayVector3, ArrayFloat, -, _mm_sub_ps );
 
     // * Multiplication
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, *, _mm_mul_ps );
     DEFINE_L_SCALAR_OPERATION( float, ArrayVector3, *, _mm_mul_ps );
     DEFINE_R_SCALAR_OPERATION( ArrayVector3, float, *, _mm_mul_ps );
 
-    DEFINE_L_OPERATION( Arrayfloat, ArrayVector3, *, _mm_mul_ps );
-    DEFINE_R_OPERATION( ArrayVector3, Arrayfloat, *, _mm_mul_ps );
+    DEFINE_L_OPERATION( ArrayFloat, ArrayVector3, *, _mm_mul_ps );
+    DEFINE_R_OPERATION( ArrayVector3, ArrayFloat, *, _mm_mul_ps );
 
     // / Division (scalar versions use mul instead of div, because they mul against the reciprocal)
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, /, _mm_div_ps );
     DEFINE_L_SCALAR_DIVISION( float, ArrayVector3, /, _mm_div_ps );
     DEFINE_R_SCALAR_DIVISION( ArrayVector3, float, /, _mm_mul_ps );
 
-    DEFINE_L_DIVISION( Arrayfloat, ArrayVector3, /, _mm_div_ps );
-    DEFINE_R_DIVISION( ArrayVector3, Arrayfloat, /, _mm_mul_ps );
+    DEFINE_L_DIVISION( ArrayFloat, ArrayVector3, /, _mm_div_ps );
+    DEFINE_R_DIVISION( ArrayVector3, ArrayFloat, /, _mm_mul_ps );
 
-    inline ArrayVector3 ArrayVector3::Cmov4( const ArrayVector3 &arg1, const ArrayVector3 &arg2, Arrayfloat mask )
+    inline ArrayVector3 ArrayVector3::Cmov4( const ArrayVector3 &arg1, const ArrayVector3 &arg2, ArrayFloat mask )
     {
         return ArrayVector3(
                 MathlibSSE2::Cmov4( arg1.mChunkBase[0], arg2.mChunkBase[0], mask ),
@@ -252,26 +252,26 @@ namespace Demi
     // +=
     DEFINE_UPDATE_OPERATION(            ArrayVector3,       +=, _mm_add_ps );
     DEFINE_UPDATE_R_SCALAR_OPERATION(   float,               +=, _mm_add_ps );
-    DEFINE_UPDATE_R_OPERATION(          Arrayfloat,          +=, _mm_add_ps );
+    DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          +=, _mm_add_ps );
 
     // -=
     DEFINE_UPDATE_OPERATION(            ArrayVector3,       -=, _mm_sub_ps );
     DEFINE_UPDATE_R_SCALAR_OPERATION(   float,               -=, _mm_sub_ps );
-    DEFINE_UPDATE_R_OPERATION(          Arrayfloat,          -=, _mm_sub_ps );
+    DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          -=, _mm_sub_ps );
 
     // *=
     DEFINE_UPDATE_OPERATION(            ArrayVector3,       *=, _mm_mul_ps );
     DEFINE_UPDATE_R_SCALAR_OPERATION(   float,               *=, _mm_mul_ps );
-    DEFINE_UPDATE_R_OPERATION(          Arrayfloat,          *=, _mm_mul_ps );
+    DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          *=, _mm_mul_ps );
 
     // /=
     DEFINE_UPDATE_DIVISION(             ArrayVector3,       /=, _mm_div_ps );
     DEFINE_UPDATE_R_SCALAR_DIVISION(    float,               /=, _mm_mul_ps );
-    DEFINE_UPDATE_R_DIVISION(           Arrayfloat,          /=, _mm_mul_ps );
+    DEFINE_UPDATE_R_DIVISION(           ArrayFloat,          /=, _mm_mul_ps );
 
     //Functions
     
-    inline Arrayfloat ArrayVector3::length() const
+    inline ArrayFloat ArrayVector3::length() const
     {
         return
         _mm_sqrt_ps( _mm_add_ps( _mm_add_ps(                    //sqrt(
@@ -280,7 +280,7 @@ namespace Demi
             _mm_mul_ps( mChunkBase[2], mChunkBase[2] ) ) ); //z * z )
     }
     
-    inline Arrayfloat ArrayVector3::squaredLength() const
+    inline ArrayFloat ArrayVector3::squaredLength() const
     {
         return
         _mm_add_ps( _mm_add_ps(
@@ -289,17 +289,17 @@ namespace Demi
         _mm_mul_ps( mChunkBase[2], mChunkBase[2] ) );       //z * z )
     }
     
-    inline Arrayfloat ArrayVector3::distance( const ArrayVector3& rhs ) const
+    inline ArrayFloat ArrayVector3::distance( const ArrayVector3& rhs ) const
     {
         return (*this - rhs).length();
     }
     
-    inline Arrayfloat ArrayVector3::squaredDistance( const ArrayVector3& rhs ) const
+    inline ArrayFloat ArrayVector3::squaredDistance( const ArrayVector3& rhs ) const
     {
         return (*this - rhs).squaredLength();
     }
     
-    inline Arrayfloat ArrayVector3::dotProduct( const ArrayVector3& vec ) const
+    inline ArrayFloat ArrayVector3::dotProduct( const ArrayVector3& vec ) const
     {
         return
         _mm_add_ps( _mm_add_ps(
@@ -308,7 +308,7 @@ namespace Demi
             _mm_mul_ps( mChunkBase[2], vec.mChunkBase[2] ) );   //  z * vec.z
     }
     
-    inline Arrayfloat ArrayVector3::absDotProduct( const ArrayVector3& vec ) const
+    inline ArrayFloat ArrayVector3::absDotProduct( const ArrayVector3& vec ) const
     {
         return
         _mm_add_ps( _mm_add_ps(
@@ -319,7 +319,7 @@ namespace Demi
     
     inline void ArrayVector3::normalise( void )
     {
-        Arrayfloat sqLength = _mm_add_ps( _mm_add_ps(
+        ArrayFloat sqLength = _mm_add_ps( _mm_add_ps(
             _mm_mul_ps( mChunkBase[0], mChunkBase[0] ), //(x * x +
             _mm_mul_ps( mChunkBase[1], mChunkBase[1] ) ),   //y * y) +
         _mm_mul_ps( mChunkBase[2], mChunkBase[2] ) );       //z * z )
@@ -330,7 +330,7 @@ namespace Demi
         //generating the nans could impact performance in some architectures
         sqLength = MathlibSSE2::Cmov4( sqLength, MathlibSSE2::ONE,
                                         _mm_cmpgt_ps( sqLength, MathlibSSE2::FLOAT_MIN ) );
-        Arrayfloat invLength = MathlibSSE2::InvSqrtNonZero4( sqLength );
+        ArrayFloat invLength = MathlibSSE2::InvSqrtNonZero4( sqLength );
         mChunkBase[0] = _mm_mul_ps( mChunkBase[0], invLength ); //x * invLength
         mChunkBase[1] = _mm_mul_ps( mChunkBase[1], invLength ); //y * invLength
         mChunkBase[2] = _mm_mul_ps( mChunkBase[2], invLength ); //z * invLength
@@ -360,8 +360,8 @@ namespace Demi
     
     inline void ArrayVector3::makeFloor( const ArrayVector3& cmp )
     {
-        Arrayfloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS bChunkBase = cmp.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = cmp.mChunkBase;
         aChunkBase[0] = _mm_min_ps( aChunkBase[0], bChunkBase[0] );
         aChunkBase[1] = _mm_min_ps( aChunkBase[1], bChunkBase[1] );
         aChunkBase[2] = _mm_min_ps( aChunkBase[2], bChunkBase[2] );
@@ -369,19 +369,19 @@ namespace Demi
     
     inline void ArrayVector3::makeCeil( const ArrayVector3& cmp )
     {
-        Arrayfloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS bChunkBase = cmp.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = cmp.mChunkBase;
         aChunkBase[0] = _mm_max_ps( aChunkBase[0], bChunkBase[0] );
         aChunkBase[1] = _mm_max_ps( aChunkBase[1], bChunkBase[1] );
         aChunkBase[2] = _mm_max_ps( aChunkBase[2], bChunkBase[2] );
     }
     
-    inline Arrayfloat ArrayVector3::getMinComponent() const
+    inline ArrayFloat ArrayVector3::getMinComponent() const
     {
         return _mm_min_ps( mChunkBase[0], _mm_min_ps( mChunkBase[1], mChunkBase[2] ) );
     }
     
-    inline Arrayfloat ArrayVector3::getMaxComponent() const
+    inline ArrayFloat ArrayVector3::getMaxComponent() const
     {
         return _mm_max_ps( mChunkBase[0], _mm_max_ps( mChunkBase[1], mChunkBase[2] ) );
     }
@@ -389,7 +389,7 @@ namespace Demi
     inline void ArrayVector3::setToSign()
     {
         // x = 1.0f | (x & 0x80000000)
-        Arrayfloat signMask = _mm_set1_ps( -0.0f );
+        ArrayFloat signMask = _mm_set1_ps( -0.0f );
         mChunkBase[0] = _mm_or_ps( MathlibSSE2::ONE, _mm_and_ps( signMask, mChunkBase[0] ) );
         mChunkBase[1] = _mm_or_ps( MathlibSSE2::ONE, _mm_and_ps( signMask, mChunkBase[1] ) );
         mChunkBase[2] = _mm_or_ps( MathlibSSE2::ONE, _mm_and_ps( signMask, mChunkBase[2] ) );
@@ -399,7 +399,7 @@ namespace Demi
     {
         ArrayVector3 perp = this->crossProduct( ArrayVector3::UNIT_X );
 
-        const Arrayfloat mask = _mm_cmple_ps( perp.squaredLength(), MathlibSSE2::fSqEpsilon );
+        const ArrayFloat mask = _mm_cmple_ps( perp.squaredLength(), MathlibSSE2::fSqEpsilon );
         // Check length
         if( _mm_movemask_ps( mask ) )
         {
@@ -418,7 +418,7 @@ namespace Demi
     
     inline ArrayVector3 ArrayVector3::normalisedCopy( void ) const
     {
-        Arrayfloat sqLength = _mm_add_ps( _mm_add_ps(
+        ArrayFloat sqLength = _mm_add_ps( _mm_add_ps(
             _mm_mul_ps( mChunkBase[0], mChunkBase[0] ), //(x * x +
             _mm_mul_ps( mChunkBase[1], mChunkBase[1] ) ),   //y * y) +
         _mm_mul_ps( mChunkBase[2], mChunkBase[2] ) );       //z * z )
@@ -429,7 +429,7 @@ namespace Demi
         //generating the nans could impact performance in some architectures
         sqLength = MathlibSSE2::Cmov4( sqLength, MathlibSSE2::ONE,
                                         _mm_cmpgt_ps( sqLength, MathlibSSE2::FLOAT_MIN ) );
-        Arrayfloat invLength = MathlibSSE2::InvSqrtNonZero4( sqLength );
+        ArrayFloat invLength = MathlibSSE2::InvSqrtNonZero4( sqLength );
 
         return ArrayVector3(
             _mm_mul_ps( mChunkBase[0], invLength ), //x * invLength
@@ -439,7 +439,7 @@ namespace Demi
     
     inline ArrayVector3 ArrayVector3::reflect( const ArrayVector3& normal ) const
     {
-        const Arrayfloat twoPointZero = _mm_set_ps1( 2.0f );
+        const ArrayFloat twoPointZero = _mm_set_ps1( 2.0f );
         return ( *this - ( _mm_mul_ps( twoPointZero, this->dotProduct( normal ) ) * normal ) );
     }
     
@@ -456,7 +456,7 @@ namespace Demi
     
     inline int ArrayVector3::isNaN( void ) const
     {
-        Arrayfloat mask = _mm_and_ps( _mm_and_ps( 
+        ArrayFloat mask = _mm_and_ps( _mm_and_ps( 
             _mm_cmpeq_ps( mChunkBase[0], mChunkBase[0] ),
             _mm_cmpeq_ps( mChunkBase[1], mChunkBase[1] ) ),
             _mm_cmpeq_ps( mChunkBase[2], mChunkBase[2] ) );
@@ -475,12 +475,12 @@ namespace Demi
         // way. Doing this the "human readable way" results in massive amounts of wasted
         // instructions and stack memory abuse.
         // See DiVec3::primaryAxis() to understand what's actually going on.
-        Arrayfloat absx = MathlibSSE2::Abs4( mChunkBase[0] );
-        Arrayfloat absy = MathlibSSE2::Abs4( mChunkBase[1] );
-        Arrayfloat absz = MathlibSSE2::Abs4( mChunkBase[2] );
+        ArrayFloat absx = MathlibSSE2::Abs4( mChunkBase[0] );
+        ArrayFloat absy = MathlibSSE2::Abs4( mChunkBase[1] );
+        ArrayFloat absz = MathlibSSE2::Abs4( mChunkBase[2] );
 
         //xVec = x > 0 ? DiVec3::UNIT_X : DiVec3::NEGATIVE_UNIT_X;
-        Arrayfloat sign = MathlibSSE2::Cmov4( _mm_set1_ps( 1.0f ), _mm_set1_ps( -1.0f ),
+        ArrayFloat sign = MathlibSSE2::Cmov4( _mm_set1_ps( 1.0f ), _mm_set1_ps( -1.0f ),
                                             _mm_cmpgt_ps( mChunkBase[0], _mm_setzero_ps() ) );
         ArrayVector3 xVec( sign, _mm_setzero_ps(), _mm_setzero_ps() );
 
@@ -495,7 +495,7 @@ namespace Demi
         ArrayVector3 zVec( _mm_setzero_ps(), _mm_setzero_ps(), sign );
 
         //xVec = absx > absz ? xVec : zVec
-        Arrayfloat mask = _mm_cmpgt_ps( absx, absz );
+        ArrayFloat mask = _mm_cmpgt_ps( absx, absz );
         xVec.mChunkBase[0] = MathlibSSE2::Cmov4( xVec.mChunkBase[0], zVec.mChunkBase[0], mask );
         xVec.mChunkBase[2] = MathlibSSE2::Cmov4( xVec.mChunkBase[2], zVec.mChunkBase[2], mask );
 
@@ -511,10 +511,10 @@ namespace Demi
     inline DiVec3 ArrayVector3::collapseMin( void ) const
     {
         DEMI_ALIGNED_DECL( float, vals[4], DEMI_SIMD_ALIGNMENT );
-        Arrayfloat aosVec0, aosVec1, aosVec2, aosVec3;
+        ArrayFloat aosVec0, aosVec1, aosVec2, aosVec3;
 
         //Transpose XXXX YYYY ZZZZ to XYZZ XYZZ XYZZ XYZZ
-        Arrayfloat tmp2, tmp0;
+        ArrayFloat tmp2, tmp0;
         tmp0   = _mm_shuffle_ps( mChunkBase[0], mChunkBase[1], 0x44 );
         tmp2   = _mm_shuffle_ps( mChunkBase[0], mChunkBase[1], 0xEE );
 
@@ -536,10 +536,10 @@ namespace Demi
     inline DiVec3 ArrayVector3::collapseMax( void ) const
     {
         DEMI_ALIGNED_DECL( float, vals[4], DEMI_SIMD_ALIGNMENT );
-        Arrayfloat aosVec0, aosVec1, aosVec2, aosVec3;
+        ArrayFloat aosVec0, aosVec1, aosVec2, aosVec3;
 
         //Transpose XXXX YYYY ZZZZ to XYZZ XYZZ XYZZ XYZZ
-        Arrayfloat tmp2, tmp0;
+        ArrayFloat tmp2, tmp0;
         tmp0   = _mm_shuffle_ps( mChunkBase[0], mChunkBase[1], 0x44 );
         tmp2   = _mm_shuffle_ps( mChunkBase[0], mChunkBase[1], 0xEE );
 
@@ -558,19 +558,19 @@ namespace Demi
         return DiVec3( vals[0], vals[1], vals[2] );
     }
     
-    inline void ArrayVector3::Cmov4( Arrayfloat mask, const ArrayVector3 &replacement )
+    inline void ArrayVector3::Cmov4( ArrayFloat mask, const ArrayVector3 &replacement )
     {
-        Arrayfloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
         aChunkBase[0] = MathlibSSE2::Cmov4( aChunkBase[0], bChunkBase[0], mask );
         aChunkBase[1] = MathlibSSE2::Cmov4( aChunkBase[1], bChunkBase[1], mask );
         aChunkBase[2] = MathlibSSE2::Cmov4( aChunkBase[2], bChunkBase[2], mask );
     }
     
-    inline void ArrayVector3::CmovRobust( Arrayfloat mask, const ArrayVector3 &replacement )
+    inline void ArrayVector3::CmovRobust( ArrayFloat mask, const ArrayVector3 &replacement )
     {
-        Arrayfloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
         aChunkBase[0] = MathlibSSE2::CmovRobust( aChunkBase[0], bChunkBase[0], mask );
         aChunkBase[1] = MathlibSSE2::CmovRobust( aChunkBase[1], bChunkBase[1], mask );
         aChunkBase[2] = MathlibSSE2::CmovRobust( aChunkBase[2], bChunkBase[2], mask );

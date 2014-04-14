@@ -28,7 +28,7 @@ namespace Demi
 
     public:
         
-        DiScriptManager* Get()
+        static DiScriptManager* Get()
         {
             DI_ASSERT(sMgr);
             return sMgr;

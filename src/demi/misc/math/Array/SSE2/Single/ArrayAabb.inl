@@ -58,26 +58,26 @@ namespace Demi
         // ( abs( center.x - center2.x ) <= halfSize.x + halfSize2.x &&
         //   abs( center.y - center2.y ) <= halfSize.y + halfSize2.y &&
         //   abs( center.z - center2.z ) <= halfSize.z + halfSize2.z )
-        Arrayfloat maskX = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[0] ),
+        ArrayFloat maskX = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[0] ),
                                         sumHalfSizes.mChunkBase[0] );
-        Arrayfloat maskY = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[1] ),
+        ArrayFloat maskY = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[1] ),
                                         sumHalfSizes.mChunkBase[1] );
-        Arrayfloat maskZ = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[2] ),
+        ArrayFloat maskZ = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[2] ),
                                         sumHalfSizes.mChunkBase[2] );
         
         return _mm_and_ps( _mm_and_ps( maskX, maskY ), maskZ );
     }
     
-    inline Arrayfloat ArrayAabb::volume(void) const
+    inline ArrayFloat ArrayAabb::volume(void) const
     {
-        Arrayfloat w = _mm_add_ps( mHalfSize.mChunkBase[0], mHalfSize.mChunkBase[0] ); // x * 2
-        Arrayfloat h = _mm_add_ps( mHalfSize.mChunkBase[1], mHalfSize.mChunkBase[1] ); // y * 2
-        Arrayfloat d = _mm_add_ps( mHalfSize.mChunkBase[2], mHalfSize.mChunkBase[2] ); // z * 2
+        ArrayFloat w = _mm_add_ps( mHalfSize.mChunkBase[0], mHalfSize.mChunkBase[0] ); // x * 2
+        ArrayFloat h = _mm_add_ps( mHalfSize.mChunkBase[1], mHalfSize.mChunkBase[1] ); // y * 2
+        ArrayFloat d = _mm_add_ps( mHalfSize.mChunkBase[2], mHalfSize.mChunkBase[2] ); // z * 2
 
         return _mm_mul_ps( _mm_mul_ps( w, h ), d ); // w * h * d
     }
     
-    inline Arrayfloat ArrayAabb::contains( const ArrayAabb &other ) const
+    inline ArrayFloat ArrayAabb::contains( const ArrayAabb &other ) const
     {
         ArrayVector3 dist( mCenter - other.mCenter );
 
@@ -89,34 +89,34 @@ namespace Demi
         // ( abs( dist.x ) + other.mHalfSize.x <= mHalfSize.x &&
         //   abs( dist.y ) + other.mHalfSize.y <= mHalfSize.y &&
         //   abs( dist.z ) + other.mHalfSize.z <= mHalfSize.z )
-        Arrayfloat maskX = _mm_cmple_ps( _mm_add_ps( MathlibSSE2::Abs4( dist.mChunkBase[0] ),
+        ArrayFloat maskX = _mm_cmple_ps( _mm_add_ps( MathlibSSE2::Abs4( dist.mChunkBase[0] ),
                                         other.mHalfSize.mChunkBase[0] ), mHalfSize.mChunkBase[0] );
-        Arrayfloat maskY = _mm_cmple_ps( _mm_add_ps( MathlibSSE2::Abs4( dist.mChunkBase[1] ),
+        ArrayFloat maskY = _mm_cmple_ps( _mm_add_ps( MathlibSSE2::Abs4( dist.mChunkBase[1] ),
                                         other.mHalfSize.mChunkBase[1] ), mHalfSize.mChunkBase[1] );
-        Arrayfloat maskZ = _mm_cmple_ps( _mm_add_ps( MathlibSSE2::Abs4( dist.mChunkBase[2] ),
+        ArrayFloat maskZ = _mm_cmple_ps( _mm_add_ps( MathlibSSE2::Abs4( dist.mChunkBase[2] ),
                                         other.mHalfSize.mChunkBase[2] ), mHalfSize.mChunkBase[2] );
 
         return _mm_and_ps( _mm_and_ps( maskX, maskY ), maskZ );
     }
     
-    inline Arrayfloat ArrayAabb::contains( const ArrayVector3 &v ) const
+    inline ArrayFloat ArrayAabb::contains( const ArrayVector3 &v ) const
     {
         ArrayVector3 dist( mCenter - v );
 
         // ( abs( dist.x ) <= mHalfSize.x &&
         //   abs( dist.y ) <= mHalfSize.y &&
         //   abs( dist.z ) <= mHalfSize.z )
-        Arrayfloat maskX = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[0] ),
+        ArrayFloat maskX = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[0] ),
                                         mHalfSize.mChunkBase[0] );
-        Arrayfloat maskY = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[1] ),
+        ArrayFloat maskY = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[1] ),
                                         mHalfSize.mChunkBase[1] );
-        Arrayfloat maskZ = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[2] ),
+        ArrayFloat maskZ = _mm_cmple_ps( MathlibSSE2::Abs4( dist.mChunkBase[2] ),
                                         mHalfSize.mChunkBase[2] );
 
         return _mm_and_ps( _mm_and_ps( maskX, maskY ), maskZ );
     }
     
-    inline Arrayfloat ArrayAabb::distance( const ArrayVector3 &v ) const
+    inline ArrayFloat ArrayAabb::distance( const ArrayVector3 &v ) const
     {
         ArrayVector3 dist( mCenter - v );
 
@@ -141,15 +141,15 @@ namespace Demi
 
         mCenter = m * mCenter;
 
-        Arrayfloat x = _mm_mul_ps( Mathlib::Abs4( m.mChunkBase[2] ), mHalfSize.mChunkBase[2] );  // abs( m02 ) * z +
+        ArrayFloat x = _mm_mul_ps( Mathlib::Abs4( m.mChunkBase[2] ), mHalfSize.mChunkBase[2] );  // abs( m02 ) * z +
         x = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[1] ), mHalfSize.mChunkBase[1], x );            // abs( m01 ) * y +
         x = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[0] ), mHalfSize.mChunkBase[0], x );            // abs( m00 ) * x
 
-        Arrayfloat y = _mm_mul_ps( Mathlib::Abs4( m.mChunkBase[6] ), mHalfSize.mChunkBase[2] );  // abs( m12 ) * z +
+        ArrayFloat y = _mm_mul_ps( Mathlib::Abs4( m.mChunkBase[6] ), mHalfSize.mChunkBase[2] );  // abs( m12 ) * z +
         y = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[5] ), mHalfSize.mChunkBase[1], y );            // abs( m11 ) * y +
         y = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[4] ), mHalfSize.mChunkBase[0], y );            // abs( m10 ) * x
 
-        Arrayfloat z = _mm_mul_ps( Mathlib::Abs4( m.mChunkBase[10] ), mHalfSize.mChunkBase[2] ); // abs( m22 ) * z +
+        ArrayFloat z = _mm_mul_ps( Mathlib::Abs4( m.mChunkBase[10] ), mHalfSize.mChunkBase[2] ); // abs( m22 ) * z +
         z = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[9] ), mHalfSize.mChunkBase[1], z );            // abs( m21 ) * y +
         z = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[8] ), mHalfSize.mChunkBase[0], z );            // abs( m20 ) * x
 

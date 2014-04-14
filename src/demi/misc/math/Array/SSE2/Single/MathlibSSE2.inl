@@ -15,7 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    /*inline Arrayfloat ArrayRadian::valueDegrees() const
+    /*inline ArrayFloat ArrayRadian::valueDegrees() const
     {
         return _mm_mul_ps( mRad, MathlibSSE2::fRad2Deg );
     }*/
@@ -79,32 +79,32 @@ namespace Demi
         return ArrayRadian( _mm_mul_ps( mRad, r.mRad ) );
     }
     
-    inline ArrayRadian ArrayRadian::operator / ( Arrayfloat r ) const
+    inline ArrayRadian ArrayRadian::operator / ( ArrayFloat r ) const
     {
         return ArrayRadian( _mm_div_ps( mRad, r ) );
     }
     
-    inline ArrayRadian& ArrayRadian::operator /= ( Arrayfloat r )
+    inline ArrayRadian& ArrayRadian::operator /= ( ArrayFloat r )
     {
         mRad = _mm_div_ps( mRad, r );
         return *this;
     }
 
-    inline Arrayfloat ArrayRadian::operator <  ( const ArrayRadian& r ) const { return _mm_cmplt_ps( mRad, r.mRad ); }
-    inline Arrayfloat ArrayRadian::operator <= ( const ArrayRadian& r ) const { return _mm_cmple_ps( mRad, r.mRad ); }
-    inline Arrayfloat ArrayRadian::operator == ( const ArrayRadian& r ) const { return _mm_cmpeq_ps( mRad, r.mRad ); }
-    inline Arrayfloat ArrayRadian::operator != ( const ArrayRadian& r ) const { return _mm_cmpneq_ps( mRad, r.mRad );}
-    inline Arrayfloat ArrayRadian::operator >= ( const ArrayRadian& r ) const { return _mm_cmpge_ps( mRad, r.mRad ); }
-    inline Arrayfloat ArrayRadian::operator >  ( const ArrayRadian& r ) const { return _mm_cmpgt_ps( mRad, r.mRad ); }
+    inline ArrayFloat ArrayRadian::operator <  ( const ArrayRadian& r ) const { return _mm_cmplt_ps( mRad, r.mRad ); }
+    inline ArrayFloat ArrayRadian::operator <= ( const ArrayRadian& r ) const { return _mm_cmple_ps( mRad, r.mRad ); }
+    inline ArrayFloat ArrayRadian::operator == ( const ArrayRadian& r ) const { return _mm_cmpeq_ps( mRad, r.mRad ); }
+    inline ArrayFloat ArrayRadian::operator != ( const ArrayRadian& r ) const { return _mm_cmpneq_ps( mRad, r.mRad );}
+    inline ArrayFloat ArrayRadian::operator >= ( const ArrayRadian& r ) const { return _mm_cmpge_ps( mRad, r.mRad ); }
+    inline ArrayFloat ArrayRadian::operator >  ( const ArrayRadian& r ) const { return _mm_cmpgt_ps( mRad, r.mRad ); }
 
     
-    inline Arrayfloat MathlibSSE2::Modf4( Arrayfloat x, Arrayfloat &outIntegral )
+    inline ArrayFloat MathlibSSE2::Modf4( ArrayFloat x, ArrayFloat &outIntegral )
     {
         outIntegral = _mm_cvtepi32_ps( _mm_cvttps_epi32( x ) ); //outIntegral = floor( x )
         return _mm_sub_ps( x, outIntegral );
     }
     
-    inline Arrayfloat MathlibSSE2::ACos4( Arrayfloat x)
+    inline ArrayFloat MathlibSSE2::ACos4( ArrayFloat x)
     {
         // This function, ACos4, is under Copyright (C) 2006, 2007
         // Sony Computer Entertainment Inc. (BSD style license) See

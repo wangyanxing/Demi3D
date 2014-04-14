@@ -23,21 +23,26 @@ namespace Demi
     {
         DI_ASSERT(!sMgr);
         sMgr = this;
+
+        Init();
     }
     
     DiScriptManager::~DiScriptManager()
     {
+        Shutdown();
         sMgr = nullptr;
     }
     
     void DiScriptManager::Init()
     {
+        DI_LOG("Initializing lua script module...");
         mLuaState = luaL_newstate();
         luaL_openlibs(mLuaState);
     }
     
     void DiScriptManager::Shutdown()
     {
+        DI_LOG("Shuting down lua script module...");
         lua_close(mLuaState);
         mLuaState = nullptr;
     }

@@ -29,19 +29,19 @@ THE SOFTWARE.
 namespace Demi
 {
     
-    inline Arrayfloat ArraySphere::intersects( const ArraySphere &s ) const
+    inline ArrayFloat ArraySphere::intersects( const ArraySphere &s ) const
     {
-        Arrayfloat sqRadius  = _mm_add_ps( mRadius, s.mRadius );
+        ArrayFloat sqRadius  = _mm_add_ps( mRadius, s.mRadius );
         sqRadius            = _mm_mul_ps( sqRadius, sqRadius );
-        Arrayfloat sqDist    = mCenter.squaredDistance( s.mCenter );
+        ArrayFloat sqDist    = mCenter.squaredDistance( s.mCenter );
 
         return _mm_cmple_ps( sqDist, sqRadius ); // sqDist <= sqRadius
     }
     
-    inline Arrayfloat ArraySphere::intersects( const ArrayVector3 &v ) const
+    inline ArrayFloat ArraySphere::intersects( const ArrayVector3 &v ) const
     {
-        Arrayfloat sqRadius  = _mm_mul_ps( mRadius, mRadius );
-        Arrayfloat sqDist    = mCenter.squaredDistance( v );
+        ArrayFloat sqRadius  = _mm_mul_ps( mRadius, mRadius );
+        ArrayFloat sqDist    = mCenter.squaredDistance( v );
 
         return _mm_cmple_ps( sqDist, sqRadius ); // sqDist <= sqRadius
     }

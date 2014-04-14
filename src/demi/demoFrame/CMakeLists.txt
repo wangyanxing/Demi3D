@@ -38,7 +38,8 @@ if (DEMI_STATIC)
 endif()
 
 include_directories(${OIS_INCLUDE_DIRS})
-target_link_libraries(DemoFramework DiMisc DiGfx ${OIS_LIBRARIES} ${DI_DEMO_PLATFORM_LIBS})
+include_directories(${DEMI_SOURCE_DIR}/src/demi/script)
+target_link_libraries(DemoFramework DiMisc DiGfx DiScript ${OIS_LIBRARIES} ${DI_DEMO_PLATFORM_LIBS})
 
 if(NOT ${DEMI_FRAMEWORK_PATH} STREQUAL "")
   set_target_properties(DemoFramework PROPERTIES

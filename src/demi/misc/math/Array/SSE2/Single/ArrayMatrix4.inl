@@ -36,9 +36,9 @@ namespace Demi
     ///     particularly of the update operations ( a *= b )
     ///     This function will assert if DEMI_RESTRICT_ALIASING is enabled and any of the
     ///     given pointers point to the same location
-    inline void concatArrayMat4 ( Arrayfloat * RESTRICT_ALIAS outChunkBase,
-                                    const Arrayfloat * RESTRICT_ALIAS lhsChunkBase,
-                                    const Arrayfloat * RESTRICT_ALIAS rhsChunkBase )
+    inline void concatArrayMat4 ( ArrayFloat * RESTRICT_ALIAS outChunkBase,
+                                    const ArrayFloat * RESTRICT_ALIAS lhsChunkBase,
+                                    const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
 #if DEMI_RESTRICT_ALIASING != 0
         assert( outChunkBase != lhsChunkBase && outChunkBase != rhsChunkBase &&
@@ -182,14 +182,14 @@ namespace Demi
     }
 
     /// Update version
-    inline void concatArrayMat4 ( Arrayfloat * RESTRICT_ALIAS lhsChunkBase,
-                                    const Arrayfloat * RESTRICT_ALIAS rhsChunkBase )
+    inline void concatArrayMat4 ( ArrayFloat * RESTRICT_ALIAS lhsChunkBase,
+                                    const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
 #if DEMI_RESTRICT_ALIASING != 0
         assert( lhsChunkBase != rhsChunkBase &&
                 "Re-strict aliasing rule broken. Compile without DEMI_RESTRICT_ALIASING" );
 #endif
-        Arrayfloat lhs0 = lhsChunkBase[0];
+        ArrayFloat lhs0 = lhsChunkBase[0];
         lhsChunkBase[0] =
             _mm_add_ps(
             _mm_add_ps(
@@ -198,7 +198,7 @@ namespace Demi
             _mm_add_ps(
                 _mm_mul_ps( lhsChunkBase[2], rhsChunkBase[8] ),
                 _mm_mul_ps( lhsChunkBase[3], rhsChunkBase[12] ) ) );
-        Arrayfloat lhs1 = lhsChunkBase[1];
+        ArrayFloat lhs1 = lhsChunkBase[1];
         lhsChunkBase[1] =
             _mm_add_ps(
             _mm_add_ps(
@@ -207,7 +207,7 @@ namespace Demi
             _mm_add_ps(
                 _mm_mul_ps( lhsChunkBase[2], rhsChunkBase[9] ),
                 _mm_mul_ps( lhsChunkBase[3], rhsChunkBase[13] ) ) );
-        Arrayfloat lhs2 = lhsChunkBase[2];
+        ArrayFloat lhs2 = lhsChunkBase[2];
         lhsChunkBase[2] =
             _mm_add_ps(
             _mm_add_ps(
@@ -346,7 +346,7 @@ namespace Demi
     
     inline ArrayVector3 ArrayMatrix4::operator * ( const ArrayVector3 &rhs ) const
     {
-        Arrayfloat invW = _mm_add_ps( _mm_add_ps(
+        ArrayFloat invW = _mm_add_ps( _mm_add_ps(
                                 _mm_mul_ps( mChunkBase[12], rhs.mChunkBase[0] ),
                                 _mm_mul_ps( mChunkBase[13], rhs.mChunkBase[1] ) ),
                             _mm_add_ps(
@@ -388,20 +388,20 @@ namespace Demi
     
     inline void ArrayMatrix4::fromQuaternion( const ArrayQuaternion &q )
     {
-        Arrayfloat * RESTRICT_ALIAS chunkBase = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS qChunkBase = q.mChunkBase;
-        Arrayfloat fTx  = _mm_add_ps( qChunkBase[1], qChunkBase[1] );        // 2 * x
-        Arrayfloat fTy  = _mm_add_ps( qChunkBase[2], qChunkBase[2] );        // 2 * y
-        Arrayfloat fTz  = _mm_add_ps( qChunkBase[3], qChunkBase[3] );        // 2 * z
-        Arrayfloat fTwx = _mm_mul_ps( fTx, qChunkBase[0] );                  // fTx*w;
-        Arrayfloat fTwy = _mm_mul_ps( fTy, qChunkBase[0] );                  // fTy*w;
-        Arrayfloat fTwz = _mm_mul_ps( fTz, qChunkBase[0] );                  // fTz*w;
-        Arrayfloat fTxx = _mm_mul_ps( fTx, qChunkBase[1] );                  // fTx*x;
-        Arrayfloat fTxy = _mm_mul_ps( fTy, qChunkBase[1] );                  // fTy*x;
-        Arrayfloat fTxz = _mm_mul_ps( fTz, qChunkBase[1] );                  // fTz*x;
-        Arrayfloat fTyy = _mm_mul_ps( fTy, qChunkBase[2] );                  // fTy*y;
-        Arrayfloat fTyz = _mm_mul_ps( fTz, qChunkBase[2] );                  // fTz*y;
-        Arrayfloat fTzz = _mm_mul_ps( fTz, qChunkBase[3] );                  // fTz*z;
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS qChunkBase = q.mChunkBase;
+        ArrayFloat fTx  = _mm_add_ps( qChunkBase[1], qChunkBase[1] );        // 2 * x
+        ArrayFloat fTy  = _mm_add_ps( qChunkBase[2], qChunkBase[2] );        // 2 * y
+        ArrayFloat fTz  = _mm_add_ps( qChunkBase[3], qChunkBase[3] );        // 2 * z
+        ArrayFloat fTwx = _mm_mul_ps( fTx, qChunkBase[0] );                  // fTx*w;
+        ArrayFloat fTwy = _mm_mul_ps( fTy, qChunkBase[0] );                  // fTy*w;
+        ArrayFloat fTwz = _mm_mul_ps( fTz, qChunkBase[0] );                  // fTz*w;
+        ArrayFloat fTxx = _mm_mul_ps( fTx, qChunkBase[1] );                  // fTx*x;
+        ArrayFloat fTxy = _mm_mul_ps( fTy, qChunkBase[1] );                  // fTy*x;
+        ArrayFloat fTxz = _mm_mul_ps( fTz, qChunkBase[1] );                  // fTz*x;
+        ArrayFloat fTyy = _mm_mul_ps( fTy, qChunkBase[2] );                  // fTy*y;
+        ArrayFloat fTyz = _mm_mul_ps( fTz, qChunkBase[2] );                  // fTz*y;
+        ArrayFloat fTzz = _mm_mul_ps( fTz, qChunkBase[3] );                  // fTz*z;
 
         chunkBase[0] = _mm_sub_ps( MathlibSSE2::ONE, _mm_add_ps( fTyy, fTzz ) );
         chunkBase[1] = _mm_sub_ps( fTxy, fTwz );
@@ -417,9 +417,9 @@ namespace Demi
     inline void ArrayMatrix4::makeTransform( const ArrayVector3 &position, const ArrayVector3 &scale,
                                              const ArrayQuaternion &orientation )
     {
-        Arrayfloat * RESTRICT_ALIAS chunkBase            = mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS posChunkBase   = position.mChunkBase;
-        const Arrayfloat * RESTRICT_ALIAS scaleChunkBase = scale.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS chunkBase            = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS posChunkBase   = position.mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS scaleChunkBase = scale.mChunkBase;
         this->fromQuaternion( orientation );
         chunkBase[0] = _mm_mul_ps( chunkBase[0], scaleChunkBase[0] );   //m00 * scale.x
         chunkBase[1] = _mm_mul_ps( chunkBase[1], scaleChunkBase[1] );   //m01 * scale.y
@@ -443,7 +443,7 @@ namespace Demi
     
     inline bool ArrayMatrix4::isAffine() const
     {
-        Arrayfloat mask = 
+        ArrayFloat mask = 
             _mm_and_ps(
                 _mm_and_ps( _mm_cmpeq_ps( mChunkBase[12], _mm_setzero_ps() ),
                     _mm_cmpeq_ps( mChunkBase[13], _mm_setzero_ps() ) ),
@@ -472,7 +472,7 @@ namespace Demi
             (dst2) = _mm_shuffle_ps(tmp2, tmp3, 0x88);              \
             (dst3) = _mm_shuffle_ps(tmp2, tmp3, 0xDD);              \
         }
-        register Arrayfloat m0, m1, m2, m3;
+        register ArrayFloat m0, m1, m2, m3;
 
         _MM_TRANSPOSE4_SRC_DST_PS(
                             this->mChunkBase[0], this->mChunkBase[1],

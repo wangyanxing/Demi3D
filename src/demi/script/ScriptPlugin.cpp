@@ -36,20 +36,19 @@ namespace Demi
     DiScriptPlugin::DiScriptPlugin()
     {
 #ifndef DEMI_STATIC_API
-        mDriver = nullptr;
 #endif
     }
 
 #ifndef DEMI_STATIC_API
     DiScriptPlugin* plugin = nullptr;
 
-    extern "C" void DI_GLDRV_API PluginBegin() throw()
+    extern "C" void DI_SCRIPT_API PluginBegin() throw()
     {
         plugin = DI_NEW DiScriptPlugin();
         plugin->Install();
     }
 
-    extern "C" void DI_GLDRV_API PluginEnd()
+    extern "C" void DI_SCRIPT_API PluginEnd()
     {
         plugin->Uninstall();
         DI_DELETE plugin;
