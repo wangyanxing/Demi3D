@@ -46,7 +46,7 @@ namespace Demi
         static_assert( sizeof(bool) == 1 && sizeof(uint32) == 4,
                       "This code relies on correct casting!" );
 #else
-        assert( sizeof(bool) == 1 && sizeof(uint32) == 4 && "This code relies on correct casting!" );
+        DI_ASSERT( sizeof(bool) == 1 && sizeof(uint32) == 4 && "This code relies on correct casting!" );
 #endif
         return ( *reinterpret_cast<uint32*>(mask0) & *reinterpret_cast<uint32*>(mask1) ) == 0x01010101;
     }

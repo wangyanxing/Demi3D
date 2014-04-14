@@ -143,7 +143,7 @@ namespace Demi
         
         ArrayFloat fSin = vrsqrteq_f32( vsubq_f32( MathlibNEON::ONE, vmulq_f32( fCos, fCos ) ) );
         
-        /* ATan2 in original Quaternion is slightly absurd, because fSin was derived from
+        /* ATan2 in original DiQuat is slightly absurd, because fSin was derived from
            fCos (hence never negative) which makes ACos a better replacement. ACos is much
            faster than ATan2, as long as the input is whithin range [-1; 1], otherwise the generated
            NaNs make it slower (whether clamping the input outweights the benefit is
@@ -251,7 +251,7 @@ namespace Demi
     
     inline void ArrayQuaternion::FromAngleAxis( const ArrayRadian& rfAngle, const ArrayVector3& rkAxis )
     {
-        // assert:  axis[] is unit length
+        // DI_ASSERT:  axis[] is unit length
         //
         // The quaternion representing the rotation is
         //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
@@ -401,7 +401,7 @@ namespace Demi
             vmulq_f32( mChunkBase[2], mChunkBase[2] ) ), //  y * y ) +
             vmulq_f32( mChunkBase[3], mChunkBase[3] ) );    //  z * z;
 
-        //Will return a zero Quaternion if original is zero length (Quaternion's behavior)
+        //Will return a zero DiQuat if original is zero length (DiQuat's behavior)
         fNorm = MathlibNEON::Cmov4( fNorm, MathlibNEON::ONE,
                                     vcgtq_f32( fNorm, MathlibNEON::fEpsilon ) );
         ArrayFloat invNorm    = MathlibNEON::Inv4( fNorm );

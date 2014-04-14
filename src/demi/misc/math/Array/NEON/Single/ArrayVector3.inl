@@ -105,7 +105,7 @@ namespace Demi
 #define DEFINE_R_SCALAR_DIVISION( leftClass, rightType, op, op_func )\
     inline ArrayVector3 operator op ( const leftClass &lhs, const rightType fScalar )\
     {\
-        assert( fScalar != 0.0 );\
+        DI_ASSERT( fScalar != 0.0 );\
         Real fInv = 1.0f / fScalar;\
         ArrayFloat rhs = vdupq_n_f32( fInv );\
         return ArrayVector3(\
@@ -118,7 +118,7 @@ namespace Demi
     #define ASSERT_DIV_BY_ZERO( values ) ((void)0)
 #else
     #define ASSERT_DIV_BY_ZERO( values ) {\
-                assert( vmovemaskq_u32( vceqq_f32( values, vdupq_n_f32(0.0f) ) ) == 0 &&\
+                DI_ASSERT( vmovemaskq_u32( vceqq_f32( values, vdupq_n_f32(0.0f) ) ) == 0 &&\
                 "One of the 4 floats is a zero. Can't divide by zero" ); }
 #endif
 
@@ -178,7 +178,7 @@ namespace Demi
 #define DEFINE_UPDATE_R_SCALAR_DIVISION( rightType, op, op_func )\
     inline void ArrayVector3::operator op ( const rightType fScalar )\
     {\
-        assert( fScalar != 0.0 );\
+        DI_ASSERT( fScalar != 0.0 );\
         Real fInv = 1.0f / fScalar;\
         ArrayFloat a = vdupq_n_f32( fInv );\
         mChunkBase[0] = op_func( mChunkBase[0], a );\
@@ -475,22 +475,22 @@ namespace Demi
         // know it's always zero for both +x & -x. Therefore, we do it the manual
         // way. Doing this the "human readable way" results in massive amounts of wasted
         // instructions and stack memory abuse.
-        // See Vector3::primaryAxis() to understand what's actually going on.
+        // See DiVec3::primaryAxis() to understand what's actually going on.
         ArrayFloat absx = MathlibNEON::Abs4( mChunkBase[0] );
         ArrayFloat absy = MathlibNEON::Abs4( mChunkBase[1] );
         ArrayFloat absz = MathlibNEON::Abs4( mChunkBase[2] );
 
-        //xVec = x > 0 ? Vector3::UNIT_X : Vector3::NEGATIVE_UNIT_X;
+        //xVec = x > 0 ? DiVec3::UNIT_X : DiVec3::NEGATIVE_UNIT_X;
         ArrayFloat sign = MathlibNEON::Cmov4( vdupq_n_f32( 1.0f ), vdupq_n_f32( -1.0f ),
                                             vcgtq_f32( mChunkBase[0], vdupq_n_f32(0.0f) ) );
         ArrayVector3 xVec( sign, vdupq_n_f32(0.0f), vdupq_n_f32(0.0f) );
 
-        //yVec = y > 0 ? Vector3::UNIT_Y : Vector3::NEGATIVE_UNIT_Y;
+        //yVec = y > 0 ? DiVec3::UNIT_Y : DiVec3::NEGATIVE_UNIT_Y;
         sign = MathlibNEON::Cmov4( vdupq_n_f32( 1.0f ), vdupq_n_f32( -1.0f ),
                                     vcgtq_f32( mChunkBase[1], vdupq_n_f32(0.0f) ) );
         ArrayVector3 yVec( vdupq_n_f32(0.0f), sign, vdupq_n_f32(0.0f) );
 
-        //zVec = z > 0 ? Vector3::UNIT_Z : Vector3::NEGATIVE_UNIT_Z;
+        //zVec = z > 0 ? DiVec3::UNIT_Z : DiVec3::NEGATIVE_UNIT_Z;
         sign = MathlibNEON::Cmov4( vdupq_n_f32( 1.0f ), vdupq_n_f32( -1.0f ),
                                     vcgtq_f32( mChunkBase[2], vdupq_n_f32(0.0f) ) );
         ArrayVector3 zVec( vdupq_n_f32(0.0f), vdupq_n_f32(0.0f), sign );
@@ -509,7 +509,7 @@ namespace Demi
         return yVec;
     }
     
-    inline Vector3 ArrayVector3::collapseMin( void ) const
+    inline DiVec3 ArrayVector3::collapseMin( void ) const
     {
         DEMI_ALIGNED_DECL( Real, vals[4], DEMI_SIMD_ALIGNMENT );
 //      ArrayFloat aosVec0, aosVec1, aosVec2, aosVec3;
@@ -547,10 +547,10 @@ namespace Demi
 
         vst1q_f32( vals, vdupq_n_f32(min) );
 
-        return Vector3( vals[0], vals[1], vals[2] );
+        return DiVec3( vals[0], vals[1], vals[2] );
     }
     
-    inline Vector3 ArrayVector3::collapseMax( void ) const
+    inline DiVec3 ArrayVector3::collapseMax( void ) const
     {
         DEMI_ALIGNED_DECL( Real, vals[4], DEMI_SIMD_ALIGNMENT );
 //      ArrayFloat aosVec0, aosVec1, aosVec2, aosVec3;
@@ -581,7 +581,7 @@ namespace Demi
 
         vst1q_f32( vals, vdupq_n_f32(max) );
 
-        return Vector3( vals[0], vals[1], vals[2] );
+        return DiVec3( vals[0], vals[1], vals[2] );
     }
     
     inline void ArrayVector3::Cmov4( ArrayFloat mask, const ArrayVector3 &replacement )

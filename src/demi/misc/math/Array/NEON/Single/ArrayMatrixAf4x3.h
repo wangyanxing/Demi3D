@@ -104,7 +104,7 @@ namespace Demi
 
         /** Converts the given quaternion to a 3x3 matrix representation and fill our values
             @remarks
-                Similar to @see Quaternion::ToRotationMatrix, this function will take the input
+                Similar to @see DiQuat::ToRotationMatrix, this function will take the input
                 quaternion and overwrite the first 3x3 subset of this matrix. The 4th row &
                 columns are left untouched.
                 This function is defined in ArrayMatrix4 to avoid including this header into

@@ -19,7 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     #error "Don't include this file directly. include Math/Array/ArrayQuaternion.h"
 #endif
 
-#include "Quaternion.h"
+#include "DiQuat.h"
 
 #include "Math/Array/Mathlib.h"
 #include "Math/Array/ArrayVector3.h"
@@ -29,9 +29,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
 
-    /** Cache-friendly array of Quaternion represented as a SoA array.
+    /** Cache-friendly array of DiQuat represented as a SoA array.
         @remarks
-            ArrayQuaternion is a SIMD & cache-friendly version of Quaternion.
+            ArrayQuaternion is a SIMD & cache-friendly version of DiQuat.
             An operation on an ArrayQuaternion is done on 4 quaternions at a
             time (the actual amount is defined by ARRAY_PACKED_REALS)
             Assuming ARRAY_PACKED_REALS == 4, the memory layout will
@@ -59,7 +59,7 @@ namespace Demi
             mChunkBase[3] = chunkZ;
         }
 
-        void getAsQuaternion( Quaternion &out, size_t index ) const
+        void getAsQuaternion( DiQuat &out, size_t index ) const
         {
             //Be careful of not writing to these regions or else strict aliasing rule gets broken!!!
             const float *aliasedfloat = reinterpret_cast<const float*>( mChunkBase );
@@ -71,17 +71,17 @@ namespace Demi
 
         /// Prefer using @see getAsQuaternion() because this function may have more
         /// overhead (the other one is faster)
-        Quaternion getAsQuaternion( size_t index ) const
+        DiQuat getAsQuaternion( size_t index ) const
         {
             //Be careful of not writing to these regions or else strict aliasing rule gets broken!!!
             const float *aliasedfloat = reinterpret_cast<const float*>( mChunkBase );
-            return Quaternion( aliasedfloat[ARRAY_PACKED_REALS * 0 + index], //W
+            return DiQuat( aliasedfloat[ARRAY_PACKED_REALS * 0 + index], //W
                             aliasedfloat[ARRAY_PACKED_REALS * 1 + index],        //X
                             aliasedfloat[ARRAY_PACKED_REALS * 2 + index],        //Y
                             aliasedfloat[ARRAY_PACKED_REALS * 3 + index] );  //Z
         }
 
-        void setFromQuaternion( const Quaternion &v, size_t index )
+        void setFromQuaternion( const DiQuat &v, size_t index )
         {
             float *aliasedfloat = reinterpret_cast<float*>( mChunkBase );
             aliasedfloat[ARRAY_PACKED_REALS * 0 + index] = v.w;
@@ -90,10 +90,10 @@ namespace Demi
             aliasedfloat[ARRAY_PACKED_REALS * 3 + index] = v.z;
         }
 
-        /// @copydoc Quaternion::FromAngleAxis
+        /// @copydoc DiQuat::FromAngleAxis
         inline void FromAngleAxis( const ArrayDiRadian& rfAngle, const ArrayVector3& rkAxis );
 
-        /// @copydoc Quaternion::ToAngleAxis
+        /// @copydoc DiQuat::ToAngleAxis
         inline void ToAngleAxis( ArrayDiRadian &rfAngle, ArrayVector3 &rkAxis ) const;
 
         inline friend ArrayQuaternion operator * ( const ArrayQuaternion &lhs, const ArrayQuaternion &rhs );
@@ -106,21 +106,21 @@ namespace Demi
         inline void operator -= ( const ArrayQuaternion &a );
         inline void operator *= ( const Arrayfloat fScalar );
 
-        /// @copydoc Quaternion::xAxis
+        /// @copydoc DiQuat::xAxis
         inline ArrayVector3 xAxis( void ) const;
-        /// @copydoc Quaternion::yAxis
+        /// @copydoc DiQuat::yAxis
         inline ArrayVector3 yAxis( void ) const;
-        /// @copydoc Quaternion::zAxis
+        /// @copydoc DiQuat::zAxis
         inline ArrayVector3 zAxis( void ) const;
 
-        /// @copydoc Quaternion::Dot
+        /// @copydoc DiQuat::Dot
         inline Arrayfloat Dot( const ArrayQuaternion& rkQ ) const;
 
-        /// @copydoc Quaternion::Norm
+        /// @copydoc DiQuat::Norm
         inline Arrayfloat Norm( void ) const; //Returns the squared length, doesn't modify
 
-        /// Unlike Quaternion::normalise(), this function does not return the length of the vector
-        /// because such value was not cached and was never available @see Quaternion::normalise()
+        /// Unlike DiQuat::normalise(), this function does not return the length of the vector
+        /// because such value was not cached and was never available @see DiQuat::normalise()
         inline void normalise( void );
 
         inline ArrayQuaternion Inverse( void ) const;       // apply to non-zero quaternion
@@ -151,19 +151,19 @@ namespace Demi
         */
         static inline void mul( const ArrayQuaternion &inQ, ArrayVector3 &inOutVec );
 
-        /// @See Quaternion::Slerp
+        /// @See DiQuat::Slerp
         /// @remarks
         ///     shortestPath is always true
         static inline ArrayQuaternion Slerp( Arrayfloat fT, const ArrayQuaternion &rkP,
                                                 const ArrayQuaternion &rkQ );
 
-        /// @See Quaternion::nlerp
+        /// @See DiQuat::nlerp
         /// @remarks
         ///     shortestPath is always true
         static inline ArrayQuaternion nlerpShortest( Arrayfloat fT, const ArrayQuaternion& rkP, 
                                                     const ArrayQuaternion& rkQ );
 
-        /// @See Quaternion::nlerp
+        /// @See DiQuat::nlerp
         /// @remarks
         ///     shortestPath is always false
         static inline ArrayQuaternion nlerp( Arrayfloat fT, const ArrayQuaternion& rkP, 
