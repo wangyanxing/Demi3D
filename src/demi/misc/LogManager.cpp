@@ -10,7 +10,6 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
-
 #include "MiscPch.h"
 #include "LogManager.h"
 #include "PlatformFunction.h"
@@ -66,11 +65,7 @@ void DiLogManager::Init(const DiString& logFileName)
     DiFileLogger* fl = DI_NEW DiFileLogger();
     mLogger.push_back(fl);
 
-#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-    DiString logfile = logFileName;
-#else
     DiString logfile = DiPathLib::GetApplicationPath() + logFileName;
-#endif
     fl->Init(logfile.c_str());
 
     mLogLevel = (1 << LOG_LEVEL_ERROR)

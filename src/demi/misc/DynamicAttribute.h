@@ -15,7 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiDynamicAttribute_h__
 
 
-#include "Spline.h"
+#include "math/Spline.h"
 
 namespace Demi
 {

@@ -13,6 +13,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MiscPch.h"
 #include "Win32/Win32Function.h"
 #include <signal.h>
+#if !defined(NOMINMAX) && defined(_MSC_VER)
+#  define NOMINMAX // required to stop windows.h messing up DiMath::Min
+#endif
 #include <windows.h>
 
 #pragma warning(disable:4200)
