@@ -20,6 +20,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Math/Array/Transform.h"
 #include "KfTransformArrayMemoryManager.h"
 
+#include "Skeleton.h"
+#include "Bone.h"
+#include "Animation.h"
+#include "AnimationClip.h"
+#include "KeyFrame.h"
+
 namespace Demi
 {
     SkeletonAnimationDef::SkeletonAnimationDef() :
@@ -28,7 +34,7 @@ namespace Demi
         mKfTransformMemoryManager( 0 )
     {
     }
-    //-----------------------------------------------------------------------------------
+    
     SkeletonAnimationDef::~SkeletonAnimationDef()
     {
         mTracks.clear();
@@ -40,21 +46,21 @@ namespace Demi
             mKfTransformMemoryManager = 0;
         }
     }
-    //-----------------------------------------------------------------------------------
+    
     inline uint32 SkeletonAnimationDef::slotToBlockIdx( uint32 slotIdx ) const
     {
         return (slotIdx & 0xFF000000) | ((slotIdx & 0x00FFFFFF) / ARRAY_PACKED_REALS);
     }
-	//-----------------------------------------------------------------------------------
+	
     inline uint32 SkeletonAnimationDef::blockIdxToSlotStart( uint32 blockIdx ) const
     {
         return (blockIdx & 0xFF000000) | ((blockIdx & 0x00FFFFFF) * ARRAY_PACKED_REALS);
     }
-    //-----------------------------------------------------------------------------------
-    void SkeletonAnimationDef::build( const Skeleton *skeleton, const Animation *animation, float frameRate )
+    
+    void SkeletonAnimationDef::build( DiSkeleton *skeleton, DiAnimation *animation, float frameRate )
     {
         mOriginalFrameRate = frameRate;
-        mNumFrames = animation->getLength() * frameRate;
+        mNumFrames = animation->GetLength() * frameRate;
 
         //Terminology:
         // Bone Index:
@@ -72,24 +78,24 @@ namespace Demi
         //  For example, ARRAY_PACKED_REALS = 4, slots 0 1 2 & 3 are in block 0
 
         //Converts Bone Index -> Slot Index
-        vector<uint32>::type boneToSlot;
-        boneToSlot.reserve( skeleton->getNumBones() );
+        DiVector<uint32> boneToSlot;
+        boneToSlot.reserve( skeleton->GetNumBones() );
 
         //Converts Slot Index -> Bone Index
-        map<uint32, uint32>::type slotToBone;
+        DiMap<uint32, uint32> slotToBone;
 
-        for( size_t i=0; i<skeleton->getNumBones(); ++i )
+        for (size_t i = 0; i<skeleton->GetNumBones(); ++i)
         {
-            const OldBone *bone = skeleton->getBone( i );
+            DiBone *bone = skeleton->GetBone( i );
 
             size_t depthLevel = 0;
-            OldNode const *parentBone = bone;
-            while( (parentBone = parentBone->getParent()) )
+            DiNode* parentBone = bone;
+            while( (parentBone = parentBone->GetParent()) )
                 ++depthLevel;
 
             size_t offset = 0;
-            vector<uint32>::type::const_iterator itor = boneToSlot.begin();
-            vector<uint32>::type::const_iterator end  = boneToSlot.end();
+            auto itor = boneToSlot.begin();
+            auto end = boneToSlot.end();
             while( itor != end )
             {
                 if( (*itor >> 24) == depthLevel )
@@ -99,15 +105,15 @@ namespace Demi
 
             //Build the map that lets us know the final slot bone index that will be
             //assigned to this bone (to get the block we still need to divide by ARRAY_PACKED_REALS)
-            boneToSlot.push_back( static_cast<uint>((depthLevel << 24) | (offset & 0x00FFFFFF)) );
-            slotToBone[boneToSlot.back()] = static_cast<uint>(i);
+            boneToSlot.push_back( static_cast<uint32>((depthLevel << 24) | (offset & 0x00FFFFFF)) );
+            slotToBone[boneToSlot.back()] = static_cast<uint32>(i);
         }
 
         //1st Pass: Count the number of keyframes, so we know how
         //much memory to allocate, as we don't listen for resizes.
         //We also build a list of unique keyframe timestamps per block
         //(i.e. merge the keyframes from two bones that the same block)
-		Animation::OldNodeTrackIterator itor = animation->getOldNodeTrackIterator();
+        auto itor = animation->GetNodeClipsIterator();
         {
             //Count the number of blocks needed by counting the number of unique keyframes per block.
             //i.e. When ARRAY_PACKED_REALS = 4; if 2 bones are in the same block and have the same
@@ -116,12 +122,12 @@ namespace Demi
             TimestampVec emptyVec;
             TimestampsPerBlock timestampsByBlock;
 
-            while( itor.hasMoreElements() )
+            while( itor.HasMoreElements() )
             {
-                size_t boneIdx              = itor.peekNextKey();
-                OldNodeAnimationTrack *track   = itor.getNext();
+                size_t boneIdx = itor.PeekNextKey();
+                DiNodeClip* track = itor.GetNext();
 
-                if( track->getNumKeyFrames() > 0 )
+                if (track->GetNumFrames() > 0)
                 {
                     uint32 slotIdx = boneToSlot[boneIdx];
                     uint32 blockIdx = slotToBlockIdx( slotIdx );
@@ -133,11 +139,11 @@ namespace Demi
                                             std::make_pair( (size_t)blockIdx, emptyVec ) ).first;
                     }
 
-                    itKeyframes->second.reserve( track->getNumKeyFrames() );
+                    itKeyframes->second.reserve(track->GetNumFrames());
 
-                    for( size_t i=0; i<track->getNumKeyFrames(); ++i )
+                    for (size_t i = 0; i<track->GetNumFrames(); ++i)
                     {
-                        float timestamp = track->getKeyFrame(i)->getTime();
+                        float timestamp = track->GetKeyFrame(i)->GetTime();
                         TimestampVec::iterator it = std::lower_bound( itKeyframes->second.begin(),
                                                                         itKeyframes->second.end(),
                                                                         timestamp );
@@ -146,7 +152,7 @@ namespace Demi
                     }
 
                     size_t trackDiff = std::distance( timestampsByBlock.begin(), itKeyframes );
-                    mBoneToWeights[skeleton->getBone( boneIdx )->getName()] =
+                    mBoneToWeights[skeleton->GetBone( boneIdx )->GetName()] =
                                         (boneToSlot[boneIdx] & 0xFF000000) |
                                         ((trackDiff * ARRAY_PACKED_REALS + slotIdx) & 0x00FFFFFF);
                 }
@@ -178,22 +184,22 @@ namespace Demi
                     uint32 slotIdx = slotStart + i;
 
                     uint32 boneIdx = -1;
-                    map<uint32, uint32>::type::const_iterator it = slotToBone.find( slotIdx );
+                    auto it = slotToBone.find( slotIdx );
                     if( it != slotToBone.end() )
                         boneIdx = it->second;
 
-					if( animation->hasOldNodeTrack( boneIdx ) )
+					if( animation->HasNodeClip( boneIdx ) )
                     {
-						OldNodeAnimationTrack *oldTrack = animation->getOldNodeTrack( boneIdx );
+						auto *oldTrack = animation->GetNodeClip( boneIdx );
 
-                        TransformKeyFrame originalKF( 0, fTime );
-                        oldTrack->getInterpolatedKeyFrame( animation->_getTimeIndex( fTime ),
+                        DiTransformKeyFrame originalKF( 0, fTime );
+                        oldTrack->GetInterpolatedKeyFrame( animation->GetTimeIndex( fTime ),
                                                             &originalKF );
 
-                        itKeys->mBoneTransform->mPosition.setFromVector3( originalKF.getTranslate(), i );
-                        itKeys->mBoneTransform->mOrientation.setFromQuaternion( originalKF.getRotation(),
+                        itKeys->mBoneTransform->mPosition.setFromVector3( originalKF.GetTranslate(), i );
+                        itKeys->mBoneTransform->mOrientation.setFromQuaternion( originalKF.GetRotation(),
                                                                                 i );
-                        itKeys->mBoneTransform->mScale.setFromVector3( originalKF.getScale(), i );
+                        itKeys->mBoneTransform->mScale.setFromVector3( originalKF.GetScale(), i );
                         itTrack->_setMaxUsedSlot( i );
                     }
                     else
@@ -214,7 +220,7 @@ namespace Demi
             ++itTrack;
         }
     }
-    //-----------------------------------------------------------------------------------
+    
     void SkeletonAnimationDef::allocateCacheFriendlyKeyframes(
                                             const TimestampsPerBlock &timestampsByBlock, float frameRate )
     {
@@ -248,7 +254,7 @@ namespace Demi
             ++itor;
         }
 
-        vector<size_t>::type keyframesDone; //One per block
+        DiVector<size_t> keyframesDone; //One per block
         keyframesDone.resize( timestampsByBlock.size(), 1 );
 
         //2nd pass: The in-between keyframes.

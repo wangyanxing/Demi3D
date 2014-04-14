@@ -32,15 +32,15 @@ namespace Demi
         {
             size_t      index;
             size_t      parent;
-            DiVec3     vPos;
-            DiQuat  qRot;
-            DiVec3     vScale;
-            String      name;
+            DiVec3      vPos;
+            DiQuat      qRot;
+            DiVec3      vScale;
+            DiString    name;
             uint8       bInheritOrientation:1;
             uint8       bInheritScale:1;
 
             BoneData( size_t _index, size_t _parent, const DiVec3 &_pos, const DiQuat &_rot,
-                        const DiVec3 &_scale, const String &_name,
+                        const DiVec3 &_scale, const DiString &_name,
                         bool _inheritOrientation, bool _inheritScale ) :
                 index( _index ),
                 parent( _parent ),
@@ -81,7 +81,7 @@ namespace Demi
 
         DiVector<DiList<size_t>> mBonesPerDepth;
 
-        String                  mName;
+        DiString                mName;
 
     public:
         /** Constructs this Skeleton based on the old format's Skeleton. The frameRate parameter
@@ -90,9 +90,9 @@ namespace Demi
         @remarks
             If the framerate information has been lost, set it to 1.
         */
-        SkeletonDef( const Skeleton *originalSkeleton, float frameRate );
+        SkeletonDef( DiSkeleton *originalSkeleton, float frameRate );
 
-        const String& getName(void) const                               { return mName; }
+        const DiString& getName(void) const                             { return mName; }
 
         const BoneDataVec& getBones(void) const                         { return mBones; }
         const SkeletonAnimationDefVec& getAnimationDefs(void) const     { return mAnimationDefs; }

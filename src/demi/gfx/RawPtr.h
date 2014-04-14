@@ -39,7 +39,7 @@ namespace Demi
 
         RawSimdUniquePtr( size_t numElements ) :
             mPtr( static_cast<T * RESTRICT_ALIAS>(
-                    DEMI_MALLOC_SIMD( numElements * sizeof( T ), M_CATEGORY ) ) ),
+                    DEMI_MALLOC_SIMD( numElements * sizeof( T ) ) ) ),
             mNumElements( numElements )
         {
         }
@@ -51,14 +51,14 @@ namespace Demi
             if( copy.mPtr )
             {
                 mPtr = static_cast<T * RESTRICT_ALIAS>(
-                            DEMI_MALLOC_SIMD( copy.mNumElements * sizeof( T ), M_CATEGORY ) );
+                            DEMI_MALLOC_SIMD( copy.mNumElements * sizeof( T ) ) );
                 memcpy( mPtr, copy.mPtr, copy.mNumElements * sizeof( T ) );
             }
         }
 
         ~RawSimdUniquePtr()
         {
-            DEMI_FREE_SIMD( mPtr, M_CATEGORY );
+            DEMI_FREE_SIMD( mPtr );
             mPtr = 0;
         }
 
@@ -72,14 +72,14 @@ namespace Demi
         {
             if( this != &copy )
             {
-                DEMI_FREE_SIMD( mPtr, M_CATEGORY );
+                DEMI_FREE_SIMD( mPtr );
                 mPtr = 0;
                 mNumElements = copy.mNumElements;
 
                 if( copy.mPtr )
                 {
                     mPtr = static_cast<T * RESTRICT_ALIAS>(
-                                    DEMI_MALLOC_SIMD( copy.mNumElements * sizeof( T ), M_CATEGORY ) );
+                                    DEMI_MALLOC_SIMD( copy.mNumElements * sizeof( T ) ) );
                     memcpy( mPtr, copy.mPtr, copy.mNumElements * sizeof( T ) );
                 }
             }

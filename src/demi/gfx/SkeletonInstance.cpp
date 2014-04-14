@@ -29,25 +29,25 @@ namespace Demi
     {
         mBones.resize(mDefinition->getBones().size(), DiNewBone());
 
-        vector<list<size_t>::type>::type::const_iterator itDepth = mDefinition->mBonesPerDepth.begin();
-        vector<list<size_t>::type>::type::const_iterator enDepth = mDefinition->mBonesPerDepth.end();
+        auto itDepth = mDefinition->mBonesPerDepth.begin();
+        auto enDepth = mDefinition->mBonesPerDepth.end();
 
         while( itDepth != enDepth )
         {
-            list<size_t>::type::const_iterator itor = itDepth->begin();
-            list<size_t>::type::const_iterator end  = itDepth->end();
+            auto itor = itDepth->begin();
+            auto end = itDepth->end();
 
             while( itor != end )
             {
-                Bone *parent = 0;
+                DiNewBone *parent = 0;
                 size_t parentIdx = mDefinition->mBones[*itor].parent;
                 const SkeletonDef::BoneData &boneData = mDefinition->mBones[*itor];
 
                 if( parentIdx != std::numeric_limits<size_t>::max() )
                     parent = &mBones[parentIdx];
 
-                Bone &newBone = mBones[*itor];
-                newBone._initialize( Id::generateNewId<Node>(), boneMemoryManager, parent, 0 );
+                DiNewBone &newBone = mBones[*itor];
+                newBone._initialize( Id::generateNewId<DiNode>(), boneMemoryManager, parent, 0 );
                 newBone.setPosition( boneData.vPos );
                 newBone.setOrientation( boneData.qRot );
                 newBone.setScale( boneData.vScale );
@@ -106,12 +106,12 @@ namespace Demi
                         {
                             //Dummy bones need the right parent so they
                             //consume memory from the right depth level
-                            Bone *parent = 0;
+                            DiNewBone *parent = 0;
                             if( itor != depthLevelInfo.begin() )
                                 parent = &mBones[(itor-1)->firstBoneIndex];
 
-                            Bone &unused = mUnusedNodes[currentUnusedSlotIdx];
-                            unused._initialize( Id::generateNewId<Node>(), boneMemoryManager,
+                            DiNewBone &unused = mUnusedNodes[currentUnusedSlotIdx];
+                            unused._initialize( Id::generateNewId<DiNode>(), boneMemoryManager,
                                                 parent, 0 );
                             unused.setName( "Unused" );
                             unused.mGlobalIndex = i;
@@ -136,7 +136,7 @@ namespace Demi
                 }
 
                 //Take advantage that all Bones in mOwner are planar in memory
-                Bone **bonesPtr = firstBoneTransform.mOwner;
+                DiNewBone **bonesPtr = firstBoneTransform.mOwner;
                 for( size_t i=slotStart; i<slotStart + itor->numBonesInLevel; ++i )
                 {
                     bonesPtr[i]->_setReverseBindPtr( reverseBindPose );
@@ -170,8 +170,8 @@ namespace Demi
     {
         //Detach all bones in the reverse order they were attached (LIFO!!!)
         size_t currentDepth = mDefinition->mBonesPerDepth.size() - 1;
-        vector<list<size_t>::type>::type::const_reverse_iterator ritDepth = mDefinition->mBonesPerDepth.rbegin();
-        vector<list<size_t>::type>::type::const_reverse_iterator renDepth = mDefinition->mBonesPerDepth.rend();
+        auto ritDepth = mDefinition->mBonesPerDepth.rbegin();
+        auto renDepth = mDefinition->mBonesPerDepth.rend();
 
         BoneVec::reverse_iterator ritUnusedNodes = mUnusedNodes.rbegin();
         BoneVec::reverse_iterator renUnusedNodes = mUnusedNodes.rend();
@@ -184,8 +184,8 @@ namespace Demi
                 ++ritUnusedNodes;
             }
 
-            list<size_t>::type::const_reverse_iterator ritor = ritDepth->rbegin();
-            list<size_t>::type::const_reverse_iterator rend  = ritDepth->rend();
+            auto ritor = ritDepth->rbegin();
+            auto rend  = ritDepth->rend();
             while( ritor != rend )
             {
                 mBones[*ritor]._deinitialize();
@@ -240,9 +240,9 @@ namespace Demi
                 DEMI_PREFETCH_T0((const char*)(t.mOrientation + 8));
                 DEMI_PREFETCH_T0((const char*)(t.mScale + 8));
 
-                *t.mPosition = Math::lerp( *t.mPosition, bindPose->mPosition, *manualBones );
-                *t.mOrientation = Math::lerp( *t.mOrientation, bindPose->mOrientation, *manualBones );
-                *t.mScale = Math::lerp( *t.mScale, bindPose->mScale, *manualBones );
+                *t.mPosition = DiMath::Lerp(*t.mPosition, bindPose->mPosition, *manualBones);
+                *t.mOrientation = DiMath::Lerp(*t.mOrientation, bindPose->mOrientation, *manualBones);
+                *t.mScale = DiMath::Lerp(*t.mScale, bindPose->mScale, *manualBones);
                 t.advancePack();
 
                 ++bindPose;
@@ -253,32 +253,32 @@ namespace Demi
             ++itDepthLevelInfo;
         }
     }
-    //-----------------------------------------------------------------------------------
-    void SkeletonInstance::setManualBone( Bone *bone, bool isManual )
+    
+    void SkeletonInstance::setManualBone(DiNewBone *bone, bool isManual)
     {
         assert( &mBones[bone->mGlobalIndex] == bone && "The bone doesn't belong to this instance!" );
 
         uint32 depthLevel = bone->getDepthLevel();
-        Bone &firstBone = mBones[mDefinition->getDepthLevelInfo()[depthLevel].firstBoneIndex];
+        DiNewBone &firstBone = mBones[mDefinition->getDepthLevelInfo()[depthLevel].firstBoneIndex];
 
         uintptr_t diff = bone->_getTransform().mOwner - firstBone._getTransform().mOwner;
         float *manualBones = reinterpret_cast<float*>( mManualBones.get() );
         manualBones[diff] = isManual ? 1.0f : 0.0f;
     }
-    //-----------------------------------------------------------------------------------
-    bool SkeletonInstance::isManualBone( Bone *bone )
+    
+    bool SkeletonInstance::isManualBone(DiNewBone *bone)
     {
         assert( &mBones[bone->mGlobalIndex] == bone && "The bone doesn't belong to this instance!" );
 
         uint32 depthLevel = bone->getDepthLevel();
-        Bone &firstBone = mBones[mDefinition->getDepthLevelInfo()[depthLevel].firstBoneIndex];
+        DiNewBone &firstBone = mBones[mDefinition->getDepthLevelInfo()[depthLevel].firstBoneIndex];
 
         uintptr_t diff = bone->_getTransform().mOwner - firstBone._getTransform().mOwner;
         const float *manualBones = reinterpret_cast<const float*>( mManualBones.get() );
         return manualBones[diff] != 0.0f;
     }
-    //-----------------------------------------------------------------------------------
-    Bone* SkeletonInstance::getBone( IdString boneName )
+    
+    DiNewBone* SkeletonInstance::getBone(IdString boneName)
     {
         SkeletonDef::BoneNameMap::const_iterator itor = mDefinition->mBoneIndexByName.find( boneName );
 
@@ -289,11 +289,11 @@ namespace Demi
 
         return &mBones[itor->second];
     }
-    //-----------------------------------------------------------------------------------
+    
     bool SkeletonInstance::hasAnimation( IdString name ) const
     {
-        SkeletonAnimationVec::const_iterator itor = mAnimations.begin();
-        SkeletonAnimationVec::const_iterator end  = mAnimations.end();
+        auto itor = mAnimations.begin();
+        auto end  = mAnimations.end();
 
         while( itor != end && itor->getName() != name )
             ++itor;
@@ -303,8 +303,8 @@ namespace Demi
     
     SkeletonAnimation* SkeletonInstance::getAnimation( IdString name )
     {
-        SkeletonAnimationVec::iterator itor = mAnimations.begin();
-        SkeletonAnimationVec::iterator end  = mAnimations.end();
+        auto itor = mAnimations.begin();
+        auto end  = mAnimations.end();
 
         while( itor != end )
         {
@@ -329,12 +329,12 @@ namespace Demi
             efficientVectorRemove( mActiveAnimations, it );
     }
     
-    void SkeletonInstance::setParentNode( Node *parentNode )
+    void SkeletonInstance::setParentNode( DiNode *parentNode )
     {
         mParentNode = parentNode;
 
-        BoneVec::iterator itor = mBones.begin();
-        BoneVec::iterator end  = mBones.end();
+        auto itor = mBones.begin();
+        auto end = mBones.end();
 
         while( itor != end )
         {
@@ -364,8 +364,8 @@ namespace Demi
 
         TransformArray::iterator itBoneStartTr = mBoneStartTransforms.begin();
 
-        SkeletonDef::DepthLevelInfoVec::const_iterator itor = depthLevelInfo.begin();
-        SkeletonDef::DepthLevelInfoVec::const_iterator end  = depthLevelInfo.end();
+        auto itor = depthLevelInfo.begin();
+        auto end = depthLevelInfo.end();
 
         while( itor != end )
         {

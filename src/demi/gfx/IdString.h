@@ -101,7 +101,7 @@ namespace Demi
             DEMI_COPY_DEBUG_STRING( string );
         }
 
-        IdString( const std::string &string ) : mHash( 0 )
+        IdString( const DiString &string ) : mHash( 0 )
         {
             DEMI_HASH_FUNC( string.c_str(), static_cast<int>(string.size()), Seed, &mHash );
             DEMI_COPY_DEBUG_STRING( string );
@@ -135,7 +135,7 @@ namespace Demi
             mDebugString[DEMI_DEBUG_STR_SIZE-1] = '\0';
         }
 
-        void DEMI_COPY_DEBUG_STRING( const std::string &string )
+        void DEMI_COPY_DEBUG_STRING( const DiString& string )
         {
             size_t strLength = string.size();
             if( strLength > DEMI_DEBUG_STR_SIZE-1 )

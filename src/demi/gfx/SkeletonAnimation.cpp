@@ -11,14 +11,13 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-
 #include "GfxPch.h"
 
 #include "SkeletonAnimation.h"
 #include "SkeletonAnimationDef.h"
 #include "SkeletonInstance.h"
 
-namespace Ogre
+namespace Demi
 {
     SkeletonAnimation::SkeletonAnimation( const SkeletonAnimationDef *definition,
                                             const FastArray<size_t> *_slotStarts,
@@ -85,8 +84,8 @@ namespace Ogre
 
         if( !mLoop )
         {
-            mCurrentFrame = Ogre::max( mCurrentFrame, 0 );
-            mCurrentFrame = Ogre::min( mCurrentFrame, maxFrame );
+            mCurrentFrame = DiMath::Max(mCurrentFrame, 0.0f);
+            mCurrentFrame = DiMath::Min(mCurrentFrame, maxFrame);
         }
         else
         {
@@ -98,7 +97,7 @@ namespace Ogre
     
     void SkeletonAnimation::setBoneWeight( IdString boneName, float weight )
     {
-        map<IdString, size_t>::type::const_iterator itor = mDefinition->mBoneToWeights.find( boneName );
+        auto itor = mDefinition->mBoneToWeights.find( boneName );
         if( itor != mDefinition->mBoneToWeights.end() )
         {
             size_t level    = itor->second >> 24;
@@ -113,7 +112,7 @@ namespace Ogre
     {
         float retVal = 0.0f;
 
-        map<IdString, size_t>::type::const_iterator itor = mDefinition->mBoneToWeights.find( boneName );
+        auto itor = mDefinition->mBoneToWeights.find( boneName );
         if( itor != mDefinition->mBoneToWeights.end() )
         {
             size_t level    = itor->second >> 24;
@@ -129,7 +128,7 @@ namespace Ogre
     {
         float* retVal = 0;
 
-        map<IdString, size_t>::type::const_iterator itor = mDefinition->mBoneToWeights.find( boneName );
+        auto itor = mDefinition->mBoneToWeights.find( boneName );
         if( itor != mDefinition->mBoneToWeights.end() )
         {
             size_t level    = itor->second >> 24;
@@ -155,10 +154,10 @@ namespace Ogre
     
     void SkeletonAnimation::_applyAnimation( const TransformArray &boneTransforms )
     {
-        SkeletonTrackVec::const_iterator itor = mDefinition->mTracks.begin();
-        SkeletonTrackVec::const_iterator end  = mDefinition->mTracks.end();
+        auto itor = mDefinition->mTracks.begin();
+        auto end = mDefinition->mTracks.end();
 
-        KnownKeyFramesVec::iterator itLastKnownKeyFrame = mLastKnownKeyFrames.begin();
+        auto itLastKnownKeyFrame = mLastKnownKeyFrames.begin();
 
         ArrayFloat simdWeight = Mathlib::SetAll( mWeight );
         ArrayFloat * RESTRICT_ALIAS boneWeights = mBoneWeights.get();

@@ -86,11 +86,6 @@ namespace Demi
                                                     size_t numWorkerThreads );
         void destroySkeletonInstance( SkeletonInstance *skeletonInstance );
     };
-
-    /** @} */
-    /** @} */
 }
-
-#include "OgreHeaderSuffix.h"
 
 #endif

@@ -16,10 +16,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "GfxPrerequisites.h"
 #include "Math/Array/BoneTransform.h"
+#include "id.h"
 
 namespace Demi
 {
-    class DI_GFX_API DiNewBone : public DiBase
+    class DI_GFX_API DiNewBone : public DiBase, public IdObject
     {
     public:
         /** Index in the vector holding this node reference (could be our parent node, or a global array

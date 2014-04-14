@@ -1,40 +1,26 @@
 /*
 -----------------------------------------------------------------------------
 This source file is part of OGRE
-    (Object-oriented Graphics Rendering Engine)
-For the latest info, see http://www.ogre3d.org/
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
-Copyright (c) 2000-2014 Torus Knot Software Ltd
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
------------------------------------------------------------------------------
-*/
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 
 #include "GfxPch.h"
 
-#include "OgreException.h"
+#include "SkeletonAnimManager.h"
+#include "SkeletonDef.h"
+#include "SkeletonInstance.h"
 
-#include "Animation/OgreSkeletonAnimManager.h"
-#include "Animation/OgreSkeletonDef.h"
-#include "Animation/OgreSkeletonInstance.h"
-
-namespace Ogre
+namespace Demi
 {
     BySkeletonDef::BySkeletonDef( const SkeletonDef *_skeletonDef, size_t threadCount ) :
         skeletonDef( _skeletonDef ),
@@ -45,7 +31,7 @@ namespace Ogre
     //-----------------------------------------------------------------------
     void BySkeletonDef::initializeMemoryManager(void)
     {
-        vector<size_t>::type bonesPerDepth;
+        DiVector<size_t> bonesPerDepth;
         skeletonDef->getBonesPerDepth( bonesPerDepth );
         boneMemoryManager._growToDepth( bonesPerDepth );
         boneMemoryManager.setBoneRebaseListener( this );
@@ -102,7 +88,7 @@ namespace Ogre
 
         BySkeletonDef &bySkelDef = *itor;
         FastArray<SkeletonInstance*> &skeletonsArray = bySkelDef.skeletons;
-        SkeletonInstance *newInstance = OGRE_NEW SkeletonInstance( skeletonDef,
+        SkeletonInstance *newInstance = DI_NEW SkeletonInstance( skeletonDef,
                                                                     &bySkelDef.boneMemoryManager );
         FastArray<SkeletonInstance*>::iterator it = std::lower_bound(
                                                             skeletonsArray.begin(), skeletonsArray.end(),
@@ -115,11 +101,11 @@ namespace Ogre
 
         skeletonsArray.insert( it, newInstance );
 
-#if OGRE_DEBUG_MODE
+#if DEMI_DEBUG
         {
             //Check all depth levels respect the same ordering
-            FastArray<SkeletonInstance*>::const_iterator itSkel = skeletonsArray.begin();
-            FastArray<SkeletonInstance*>::const_iterator enSkel = skeletonsArray.end();
+            auto itSkel = skeletonsArray.begin();
+            auto enSkel = skeletonsArray.end();
             while( itSkel != enSkel )
             {
                 const TransformArray &transf1 = (*itSkel)-> _getTransformArray();
@@ -129,8 +115,8 @@ namespace Ogre
                     const TransformArray &transf2 = (*itSkel2)-> _getTransformArray();
                     for( size_t i=0; i<transf1.size(); ++i )
                     {
-                        Bone **owner1 = transf1[i].mOwner + transf1[i].mIndex;
-                        Bone **owner2 = transf2[i].mOwner + transf2[i].mIndex;
+                        DiNewBone **owner1 = transf1[i].mOwner + transf1[i].mIndex;
+                        DiNewBone **owner2 = transf2[i].mOwner + transf2[i].mIndex;
                         assert( owner1 < owner2 );
                     }
 
@@ -147,7 +133,7 @@ namespace Ogre
 
         return newInstance;
     }
-    //-----------------------------------------------------------------------
+    
     void SkeletonAnimManager::destroySkeletonInstance( SkeletonInstance *skeletonInstance )
     {
         IdString defName( skeletonInstance->getDefinition()->getName() );
@@ -156,9 +142,7 @@ namespace Ogre
 
         if( itor == bySkeletonDefs.end() )
         {
-            OGRE_EXCEPT( Exception::ERR_INVALID_STATE,
-                         "Trying to remove a SkeletonInstance for which we have no definition for!",
-                         "SceneManager::destroySkeletonInstance" );
+            DI_WARNING("Trying to remove a SkeletonInstance for which we have no definition for!");
         }
 
         BySkeletonDef &bySkelDef = *itor;
@@ -171,12 +155,10 @@ namespace Ogre
 
         if( it == skeletonsArray.end() || *it != skeletonInstance )
         {
-            OGRE_EXCEPT( Exception::ERR_INVALIDPARAMS,
-                         "Trying to remove a SkeletonInstance we don't have. Have you already removed it?",
-                         "SceneManager::destroySkeletonInstance" );
+            DI_WARNING("Trying to remove a SkeletonInstance we don't have. Have you already removed it?");
         }
 
-        OGRE_DELETE *it;
+        DI_DELETE *it;
         skeletonsArray.erase( it );
 
         //Update the thread starts, they have changed.

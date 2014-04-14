@@ -24,13 +24,6 @@ namespace Demi
     typedef DiVector<SkeletonAnimation> SkeletonAnimationVec;
     typedef DiVector<SkeletonAnimation*> ActiveAnimationsVec;
 
-    /** \addtogroup Core
-    *  @{
-    */
-    /** \addtogroup Animation
-    *  @{
-    */
-
     /** Instance of a Skeleton, main external interface for retrieving bone positions and applying
         animations.
     @remarks
@@ -135,7 +128,7 @@ namespace Demi
         /** Sets our parent node so that our bones are in World space.
             Iterates through all our bones and sets the root bones
         */
-        void setParentNode(DiNewBone *parentNode);
+        void setParentNode(DiNode *parentNode);
 
         /// Returns our parent node. May be null.
         DiNode* getParentNode(void) const { return mParentNode; }
@@ -160,8 +153,6 @@ namespace Demi
         return _left->_getMemoryUniqueOffset() < _right->_getMemoryUniqueOffset();
     }
 
-    /** @} */
-    /** @} */
 }
 
 #endif

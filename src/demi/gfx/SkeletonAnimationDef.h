@@ -28,8 +28,8 @@ namespace Demi
         /** Number of frames. May not equal the number of keyframes
             (i.e. remain stationary at the end for a long time).
         */
-        float                mNumFrames;
-        float                mOriginalFrameRate;
+        float mNumFrames;
+        float mOriginalFrameRate;
         /** Converts bone index to consecutive slot (@see SkeletonAnimation::mBoneWeights).
             The parent level depth is in the last 8 bits
         */
@@ -63,7 +63,7 @@ namespace Demi
 
         void setName( const DiString &name ) { mName = name; }
 
-        void build( const Skeleton *skeleton, const Animation *animation, float frameRate );
+        void build( DiSkeleton *skeleton, DiAnimation *animation, float frameRate );
     };
 
     typedef DiVector<SkeletonAnimationDef> SkeletonAnimationDefVec;

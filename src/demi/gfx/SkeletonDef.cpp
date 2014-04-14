@@ -21,39 +21,45 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Id.h"
 
+#include "Skeleton.h"
+#include "Bone.h"
+#include "Animation.h"
+#include "AnimationClip.h"
+#include "KeyFrame.h"
+
 namespace Demi
 {
-    SkeletonDef::SkeletonDef( const Skeleton *originalSkeleton, float frameRate ) :
+    SkeletonDef::SkeletonDef( DiSkeleton *originalSkeleton, float frameRate ) :
         mNumUnusedSlots( 0 ),
-        mName( originalSkeleton->getName() )
+        mName( ""/*originalSkeleton->GetName()*/ )
     {
-        mBones.reserve( originalSkeleton->getNumBones() );
+        mBones.reserve( originalSkeleton->GetNumBones() );
 
         //Clone the bone data
         size_t numDepthLevels = 1;
-        Skeleton::ConstBoneIterator itor = originalSkeleton->getBoneIteratorConst();
-        while( itor.hasMoreElements() )
+        auto itor = originalSkeleton->GetRootBoneIterator();
+        while( itor.HasMoreElements() )
         {
-            OldBone *bone = itor.getNext();
+            DiBone *bone = itor.GetNext();
             size_t parentIndex = -1;
-            if( bone->getParent() )
+            if( bone->GetParent() )
             {
-                assert( !bone->getParent() || dynamic_cast<OldBone*>( bone->getParent() ) );
-                OldBone *parent = static_cast<OldBone*>( bone->getParent() );
-                parentIndex = parent->getHandle();
+                assert(!bone->GetParent() || dynamic_cast<DiBone*>(bone->GetParent()));
+                DiBone *parent = static_cast<DiBone*>(bone->GetParent());
+                parentIndex = parent->GetHandle();
 
                 size_t tmpDepthLevels = 2;
-                OldNode *tmpParent = parent;
-                while( (tmpParent = tmpParent->getParent()) )
+                DiNode *tmpParent = parent;
+                while( (tmpParent = tmpParent->GetParent()) )
                     ++tmpDepthLevels;
                 numDepthLevels = std::max( numDepthLevels, tmpDepthLevels );
             }
 
-            BoneData boneData( bone->getHandle(), parentIndex, bone->getPosition(),
-                                bone->getOrientation(), bone->getScale(),
-                                bone->getName(), bone->getInheritOrientation(),
-                                bone->getInheritScale() );
-            mBoneIndexByName[bone->getName()] = mBones.size();
+            BoneData boneData( bone->GetHandle(), parentIndex, bone->GetPosition(),
+                                bone->GetOrientation(), bone->GetScale(),
+                                bone->GetName(), bone->GetInheritOrientation(),
+                                bone->GetInheritScale() );
+            mBoneIndexByName[bone->GetName()] = mBones.size();
             mBones.push_back( boneData );
         }
 
@@ -77,17 +83,17 @@ namespace Demi
         }
 
         //Clone the animations
-        mAnimationDefs.resize( originalSkeleton->getNumAnimations() );
-        for( size_t i=0; i<originalSkeleton->getNumAnimations(); ++i )
+        mAnimationDefs.resize( originalSkeleton->GetNumAnimations() );
+        for( size_t i=0; i<originalSkeleton->GetNumAnimations(); ++i )
         {
-            mAnimationDefs[i].setName( originalSkeleton->getAnimation( i )->getName() );
-            mAnimationDefs[i].build( originalSkeleton, originalSkeleton->getAnimation( i ), frameRate );
+            mAnimationDefs[i].setName( originalSkeleton->GetAnimation( i )->GetName() );
+            mAnimationDefs[i].build( originalSkeleton, originalSkeleton->GetAnimation( i ), frameRate );
         }
 
         //Create the bones (just like we would for SkeletonInstance)so we can
         //get derived position/rotation/scale and then calculate its inverse
         BoneMemoryManager boneMemoryManager;
-        DiVector<Bone> boneNodes( mBones.size(), Bone() );
+        DiVector<DiNewBone> boneNodes(mBones.size(), DiNewBone());
         auto itDepth = mBonesPerDepth.begin();
         auto enDepth = mBonesPerDepth.end();
 
@@ -98,15 +104,15 @@ namespace Demi
 
             while( bonesItor != bonesItorEnd )
             {
-                Bone *parent = 0;
+                DiNewBone *parent = 0;
                 size_t parentIdx = mBones[*bonesItor].parent;
                 const BoneData &boneData = mBones[*bonesItor];
 
                 if( parentIdx != std::numeric_limits<size_t>::max() )
                     parent = &boneNodes[parentIdx];
 
-                Bone &newBone = boneNodes[*bonesItor];
-                newBone._initialize( Id::generateNewId<Bone>(), &boneMemoryManager, parent, 0 );
+                DiNewBone &newBone = boneNodes[*bonesItor];
+                newBone._initialize(Id::generateNewId<DiNewBone>(), &boneMemoryManager, parent, 0);
                 
                 newBone.setPosition( boneData.vPos );
                 newBone.setOrientation( boneData.qRot );
@@ -128,7 +134,7 @@ namespace Demi
         {
             BoneTransform t;
             const size_t numNodes = boneMemoryManager.getFirstNode( t, i );
-            Bone::updateAllTransforms( numNodes, t, &ArrayMatrixAf4x3::IDENTITY, 1 );
+            DiNewBone::updateAllTransforms( numNodes, t, &ArrayMatrixAf4x3::IDENTITY, 1 );
         }
 
         {
@@ -158,7 +164,7 @@ namespace Demi
                     bindPose->mOrientation.setFromQuaternion( boneData.qRot, bindPoseIndex );
                     bindPose->mScale.setFromVector3( boneData.vScale, bindPoseIndex );
 
-                    const Bone &derivedBone = boneNodes[*itBoneIdx];
+                    const DiNewBone &derivedBone = boneNodes[*itBoneIdx];
                     derivedPose[bindPoseIndex] = derivedBone._getLocalSpaceTransform();
 
                     ++bindPoseIndex;
@@ -261,7 +267,7 @@ namespace Demi
         }
     }
     
-    void SkeletonDef::getBonesPerDepth( vector<size_t>::type &out ) const
+    void SkeletonDef::getBonesPerDepth( DiVector<size_t> &out ) const
     {
         out.clear();
         out.reserve( mDepthLevelInfoVec.size() );

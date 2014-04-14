@@ -63,7 +63,7 @@ namespace Demi
         KeyFrameRigVec::iterator itor = mKeyFrameRigs.begin();
         KeyFrameRigVec::iterator end  = mKeyFrameRigs.end();
 
-        while( itor != end && Math::Abs( itor->mFrame - frame ) < 1e-6f )
+        while( itor != end && DiMath::Abs( itor->mFrame - frame ) < 1e-6f )
             ++itor;
 
         if( itor == mKeyFrameRigs.end() )
@@ -125,10 +125,10 @@ namespace Demi
         ArrayVector3 interpPos, interpScale;
         ArrayQuaternion interpRot;
         //Interpolate keyframes' rotation not using shortestPath to respect the original animation
-        interpPos   = Math::lerp( prevTransf->mPosition, nextTransf->mPosition, fTimeW );
+        interpPos   = DiMath::Lerp( prevTransf->mPosition, nextTransf->mPosition, fTimeW );
         interpRot   = ArrayQuaternion::nlerp( fTimeW, prevTransf->mOrientation,
                                                         nextTransf->mOrientation );
-        interpScale = Math::lerp( prevTransf->mScale, nextTransf->mScale, fTimeW );
+        interpScale = DiMath::Lerp( prevTransf->mScale, nextTransf->mScale, fTimeW );
 
         //Combine our internal flag (that prevents blending
         //unanimated bones) with user's custom weights
@@ -136,7 +136,7 @@ namespace Demi
 
         //When mixing, also interpolate rotation not using shortest path; as this is usually desired
         *finalPos   += interpPos * fW;
-        *finalScale *= Math::lerp( ArrayVector3::UNIT_SCALE, interpScale, fW );
+        *finalScale *= DiMath::Lerp( ArrayVector3::UNIT_SCALE, interpScale, fW );
         *finalRot   = ArrayQuaternion::nlerp( fW, ArrayQuaternion::IDENTITY, interpRot ) *
                         (*finalRot);
 
