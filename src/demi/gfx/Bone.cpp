@@ -44,8 +44,8 @@ namespace Demi
         return retBone;
     }
 
-    DiNode* DiBone::CreateChild( const DiVec3& translate /*= Vector3::ZERO*/, 
-        const DiQuat& rotate /*= Quaternion::IDENTITY */ )
+    DiNode* DiBone::CreateChild( const DiVec3& translate /*= DiVec3::ZERO*/, 
+        const DiQuat& rotate /*= DiQuat::IDENTITY */ )
     {
         DiBone* bone = mCreator->CreateBone();
         bone->Translate(translate);
@@ -54,8 +54,8 @@ namespace Demi
     }
 
     DiNode* DiBone::CreateChild( const DiString& name, 
-        const DiVec3& translate /*= Vector3::ZERO*/,
-        const DiQuat& rotate /*= Quaternion::IDENTITY*/ )
+        const DiVec3& translate /*= DiVec3::ZERO*/,
+        const DiQuat& rotate /*= DiQuat::IDENTITY*/ )
     {
         DiBone* bone = mCreator->CreateBone(name);
         bone->Translate(translate);

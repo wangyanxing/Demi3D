@@ -106,7 +106,7 @@ namespace Demi
     inline ArrayVector3 operator op ( const leftClass &lhs, const rightType fScalar )\
     {\
         assert( fScalar != 0.0 );\
-        Real fInv = 1.0f / fScalar;\
+        float fInv = 1.0f / fScalar;\
         ArrayFloat rhs = vdupq_n_f32( fInv );\
         return ArrayVector3(\
                 op_func( lhs.mChunkBase[0], rhs ),\
@@ -179,7 +179,7 @@ namespace Demi
     inline void ArrayVector3::operator op ( const rightType fScalar )\
     {\
         assert( fScalar != 0.0 );\
-        Real fInv = 1.0f / fScalar;\
+        float fInv = 1.0f / fScalar;\
         ArrayFloat a = vdupq_n_f32( fInv );\
         mChunkBase[0] = op_func( mChunkBase[0], a );\
         mChunkBase[1] = op_func( mChunkBase[1], a );\
@@ -211,32 +211,32 @@ namespace Demi
 
     // + Addition
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, +, vaddq_f32 );
-    DEFINE_L_SCALAR_OPERATION( Real, ArrayVector3, +, vaddq_f32 );
-    DEFINE_R_SCALAR_OPERATION( ArrayVector3, Real, +, vaddq_f32 );
+    DEFINE_L_SCALAR_OPERATION( float, ArrayVector3, +, vaddq_f32 );
+    DEFINE_R_SCALAR_OPERATION( ArrayVector3, float, +, vaddq_f32 );
 
     DEFINE_L_OPERATION( ArrayFloat, ArrayVector3, +, vaddq_f32 );
     DEFINE_R_OPERATION( ArrayVector3, ArrayFloat, +, vaddq_f32 );
 
     // - Subtraction
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, -, vsubq_f32 );
-    DEFINE_L_SCALAR_OPERATION( Real, ArrayVector3, -, vsubq_f32 );
-    DEFINE_R_SCALAR_OPERATION( ArrayVector3, Real, -, vsubq_f32 );
+    DEFINE_L_SCALAR_OPERATION( float, ArrayVector3, -, vsubq_f32 );
+    DEFINE_R_SCALAR_OPERATION( ArrayVector3, float, -, vsubq_f32 );
 
     DEFINE_L_OPERATION( ArrayFloat, ArrayVector3, -, vsubq_f32 );
     DEFINE_R_OPERATION( ArrayVector3, ArrayFloat, -, vsubq_f32 );
 
     // * Multiplication
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, *, vmulq_f32 );
-    DEFINE_L_SCALAR_OPERATION( Real, ArrayVector3, *, vmulq_f32 );
-    DEFINE_R_SCALAR_OPERATION( ArrayVector3, Real, *, vmulq_f32 );
+    DEFINE_L_SCALAR_OPERATION( float, ArrayVector3, *, vmulq_f32 );
+    DEFINE_R_SCALAR_OPERATION( ArrayVector3, float, *, vmulq_f32 );
 
     DEFINE_L_OPERATION( ArrayFloat, ArrayVector3, *, vmulq_f32 );
     DEFINE_R_OPERATION( ArrayVector3, ArrayFloat, *, vmulq_f32 );
 
     // / Division (scalar versions use mul instead of div, because they mul against the reciprocal)
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, /, vdivq_f32 );
-    DEFINE_L_SCALAR_DIVISION( Real, ArrayVector3, /, vdivq_f32 );
-    DEFINE_R_SCALAR_DIVISION( ArrayVector3, Real, /, vmulq_f32 );
+    DEFINE_L_SCALAR_DIVISION( float, ArrayVector3, /, vdivq_f32 );
+    DEFINE_R_SCALAR_DIVISION( ArrayVector3, float, /, vmulq_f32 );
 
     DEFINE_L_DIVISION( ArrayFloat, ArrayVector3, /, vdivq_f32 );
     DEFINE_R_DIVISION( ArrayVector3, ArrayFloat, /, vmulq_f32 );
@@ -252,22 +252,22 @@ namespace Demi
     // Update operations
     // +=
     DEFINE_UPDATE_OPERATION(            ArrayVector3,       +=, vaddq_f32 );
-    DEFINE_UPDATE_R_SCALAR_OPERATION(   Real,               +=, vaddq_f32 );
+    DEFINE_UPDATE_R_SCALAR_OPERATION(   float,               +=, vaddq_f32 );
     DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          +=, vaddq_f32 );
 
     // -=
     DEFINE_UPDATE_OPERATION(            ArrayVector3,       -=, vsubq_f32 );
-    DEFINE_UPDATE_R_SCALAR_OPERATION(   Real,               -=, vsubq_f32 );
+    DEFINE_UPDATE_R_SCALAR_OPERATION(   float,               -=, vsubq_f32 );
     DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          -=, vsubq_f32 );
 
     // *=
     DEFINE_UPDATE_OPERATION(            ArrayVector3,       *=, vmulq_f32 );
-    DEFINE_UPDATE_R_SCALAR_OPERATION(   Real,               *=, vmulq_f32 );
+    DEFINE_UPDATE_R_SCALAR_OPERATION(   float,               *=, vmulq_f32 );
     DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          *=, vmulq_f32 );
 
     // /=
     DEFINE_UPDATE_DIVISION(             ArrayVector3,       /=, vdivq_f32 );
-    DEFINE_UPDATE_R_SCALAR_DIVISION(    Real,               /=, vmulq_f32 );
+    DEFINE_UPDATE_R_SCALAR_DIVISION(    float,               /=, vmulq_f32 );
     DEFINE_UPDATE_R_DIVISION(           ArrayFloat,          /=, vmulq_f32 );
 
     //Functions
@@ -475,22 +475,22 @@ namespace Demi
         // know it's always zero for both +x & -x. Therefore, we do it the manual
         // way. Doing this the "human readable way" results in massive amounts of wasted
         // instructions and stack memory abuse.
-        // See Vector3::primaryAxis() to understand what's actually going on.
+        // See DiVec3::primaryAxis() to understand what's actually going on.
         ArrayFloat absx = MathlibNEON::Abs4( mChunkBase[0] );
         ArrayFloat absy = MathlibNEON::Abs4( mChunkBase[1] );
         ArrayFloat absz = MathlibNEON::Abs4( mChunkBase[2] );
 
-        //xVec = x > 0 ? Vector3::UNIT_X : Vector3::NEGATIVE_UNIT_X;
+        //xVec = x > 0 ? DiVec3::UNIT_X : DiVec3::NEGATIVE_UNIT_X;
         ArrayFloat sign = MathlibNEON::Cmov4( vdupq_n_f32( 1.0f ), vdupq_n_f32( -1.0f ),
                                             vcgtq_f32( mChunkBase[0], vdupq_n_f32(0.0f) ) );
         ArrayVector3 xVec( sign, vdupq_n_f32(0.0f), vdupq_n_f32(0.0f) );
 
-        //yVec = y > 0 ? Vector3::UNIT_Y : Vector3::NEGATIVE_UNIT_Y;
+        //yVec = y > 0 ? DiVec3::UNIT_Y : DiVec3::NEGATIVE_UNIT_Y;
         sign = MathlibNEON::Cmov4( vdupq_n_f32( 1.0f ), vdupq_n_f32( -1.0f ),
                                     vcgtq_f32( mChunkBase[1], vdupq_n_f32(0.0f) ) );
         ArrayVector3 yVec( vdupq_n_f32(0.0f), sign, vdupq_n_f32(0.0f) );
 
-        //zVec = z > 0 ? Vector3::UNIT_Z : Vector3::NEGATIVE_UNIT_Z;
+        //zVec = z > 0 ? DiVec3::UNIT_Z : DiVec3::NEGATIVE_UNIT_Z;
         sign = MathlibNEON::Cmov4( vdupq_n_f32( 1.0f ), vdupq_n_f32( -1.0f ),
                                     vcgtq_f32( mChunkBase[2], vdupq_n_f32(0.0f) ) );
         ArrayVector3 zVec( vdupq_n_f32(0.0f), vdupq_n_f32(0.0f), sign );
@@ -509,16 +509,16 @@ namespace Demi
         return yVec;
     }
     
-    inline Vector3 ArrayVector3::collapseMin( void ) const
+    inline DiVec3 ArrayVector3::collapseMin( void ) const
     {
-        DEMI_ALIGNED_DECL( Real, vals[4], DEMI_SIMD_ALIGNMENT );
+        DEMI_ALIGNED_DECL( float, vals[4], DEMI_SIMD_ALIGNMENT );
 //      ArrayFloat aosVec0, aosVec1, aosVec2, aosVec3;
-        Real min0 = MathlibNEON::CollapseMin(mChunkBase[0]);
-        Real min1 = MathlibNEON::CollapseMin(mChunkBase[1]);
-        Real min2 = MathlibNEON::CollapseMin(mChunkBase[2]);
+        float min0 = MathlibNEON::CollapseMin(mChunkBase[0]);
+        float min1 = MathlibNEON::CollapseMin(mChunkBase[1]);
+        float min2 = MathlibNEON::CollapseMin(mChunkBase[2]);
 
-        ArrayFloat minArray = { min0, min1, min2, std::numeric_limits<Real>::infinity() };
-        Real min = MathlibNEON::CollapseMin(minArray);
+        ArrayFloat minArray = { min0, min1, min2, std::numeric_limits<float>::infinity() };
+        float min = MathlibNEON::CollapseMin(minArray);
 //        min = vminq_f32(mChunkBase[0], mChunkBase[1]);
 //        min = vminq_f32(min, mChunkBase[2]);
 
@@ -547,19 +547,19 @@ namespace Demi
 
         vst1q_f32( vals, vdupq_n_f32(min) );
 
-        return Vector3( vals[0], vals[1], vals[2] );
+        return DiVec3( vals[0], vals[1], vals[2] );
     }
     
-    inline Vector3 ArrayVector3::collapseMax( void ) const
+    inline DiVec3 ArrayVector3::collapseMax( void ) const
     {
-        DEMI_ALIGNED_DECL( Real, vals[4], DEMI_SIMD_ALIGNMENT );
+        DEMI_ALIGNED_DECL( float, vals[4], DEMI_SIMD_ALIGNMENT );
 //      ArrayFloat aosVec0, aosVec1, aosVec2, aosVec3;
-        Real max0 = MathlibNEON::CollapseMax(mChunkBase[0]);
-        Real max1 = MathlibNEON::CollapseMax(mChunkBase[1]);
-        Real max2 = MathlibNEON::CollapseMax(mChunkBase[2]);
+        float max0 = MathlibNEON::CollapseMax(mChunkBase[0]);
+        float max1 = MathlibNEON::CollapseMax(mChunkBase[1]);
+        float max2 = MathlibNEON::CollapseMax(mChunkBase[2]);
 
-        ArrayFloat maxArray = { max0, max1, max2, -std::numeric_limits<Real>::infinity() };
-        Real max = MathlibNEON::CollapseMax(maxArray);
+        ArrayFloat maxArray = { max0, max1, max2, -std::numeric_limits<float>::infinity() };
+        float max = MathlibNEON::CollapseMax(maxArray);
 //        ArrayFloat max;
 //        max = vmaxq_f32(mChunkBase[0], mChunkBase[1]);
 //        max = vmaxq_f32(max, mChunkBase[2]);
@@ -581,7 +581,7 @@ namespace Demi
 
         vst1q_f32( vals, vdupq_n_f32(max) );
 
-        return Vector3( vals[0], vals[1], vals[2] );
+        return DiVec3( vals[0], vals[1], vals[2] );
     }
     
     inline void ArrayVector3::Cmov4( ArrayFloat mask, const ArrayVector3 &replacement )

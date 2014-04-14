@@ -19,15 +19,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     #error "Don't include this file directly. include Math/Array/ArrayMatrix4.h"
 #endif
 
-#include "DiMat4.h"
-
+#include "Math/matrix4.h"
 #include "Math/Array/Mathlib.h"
 #include "Math/Array/ArrayVector3.h"
 #include "Math/Array/ArrayQuaternion.h"
 
 namespace Demi
 {
-    class SimpleDiMat4;
+    class SimpleMatrix4;
 
 
     /** Cache-friendly container of 4x4 matrices represented as a SoA array.
@@ -51,7 +50,7 @@ namespace Demi
     class DI_MISC_API ArrayMatrix4
     {
     public:
-        Arrayfloat       mChunkBase[16];
+        ArrayFloat       mChunkBase[16];
 
         ArrayMatrix4() {}
         ArrayMatrix4( const ArrayMatrix4 &copy )
@@ -69,7 +68,7 @@ namespace Demi
             }
         }
 
-        void getAsDiMat4( DiMat4 &out, size_t index ) const
+        void getAsMatrix4( DiMat4 &out, size_t index ) const
         {
             //Be careful of not writing to these regions or else strict aliasing rule gets broken!!!
             const float * RESTRICT_ALIAS aliasedfloat = reinterpret_cast<const float*>( mChunkBase );
@@ -83,17 +82,17 @@ namespace Demi
             }
         }
 
-        /// STRONGLY Prefer using @see getAsDiMat4() because this function may have more
+        /// STRONGLY Prefer using @see getAsMatrix4() because this function may have more
         /// overhead (the other one is faster)
-        DiMat4 getAsDiMat4( size_t index ) const
+        DiMat4 getAsMatrix4( size_t index ) const
         {
             DiMat4 retVal;
-            getAsDiMat4( retVal, index );
+            getAsMatrix4( retVal, index );
 
             return retVal;
         }
 
-        void setFromDiMat4( const DiMat4 &m, size_t index )
+        void setFromMatrix4( const DiMat4 &m, size_t index )
         {
             float * RESTRICT_ALIAS aliasedfloat = reinterpret_cast<float*>( mChunkBase );
             const float * RESTRICT_ALIAS matrix = reinterpret_cast<const float*>( m._m );
@@ -127,7 +126,7 @@ namespace Demi
             mChunkBase[15] = vdupq_n_f32( m._m[15] );
         }
 
-        static ArrayMatrix4 createAllFromDiMat4( const DiMat4 &m )
+        static ArrayMatrix4 createAllFromMatrix4( const DiMat4 &m )
         {
             ArrayMatrix4 retVal;
             retVal.mChunkBase[0]  = vdupq_n_f32( m._m[0] );
@@ -177,7 +176,7 @@ namespace Demi
 
         /** Converts the given quaternion to a 3x3 matrix representation and fill our values
             @remarks
-                Similar to @see Quaternion::ToRotationMatrix, this function will take the input
+                Similar to @see DiQuat::ToRotationMatrix, this function will take the input
                 quaternion and overwrite the first 3x3 subset of this matrix. The 4th row &
                 columns are left untouched.
                 This function is defined in ArrayMatrix4 to avoid including this header into
@@ -203,7 +202,7 @@ namespace Demi
             'src' must be aligned and assumed to have enough memory for ARRAY_PACKED_REALS matrices
         */
         inline void loadFromAoS( const DiMat4 * RESTRICT_ALIAS src );
-        inline void loadFromAoS( const SimpleDiMat4 * RESTRICT_ALIAS src );
+        inline void loadFromAoS( const SimpleMatrix4 * RESTRICT_ALIAS src );
 
         /// @copydoc DiMat4::isAffine()
         inline bool isAffine() const;
@@ -215,10 +214,10 @@ namespace Demi
         is to force MSVC to use 4 movaps to load arrays of DiMat4s (which are waaay more
         efficient that whatever lea+mov junk it tries to produce)
     */
-    class DI_MISC_API SimpleDiMat4
+    class DI_MISC_API SimpleMatrix4
     {
     public:
-        Arrayfloat       mChunkBase[4];
+        ArrayFloat       mChunkBase[4];
 
         /// Assumes src is aligned
         void load( const DiMat4 &src )

@@ -41,14 +41,14 @@ namespace Demi
     class DI_MISC_API ArraySphere
     {
     public:
-        Arrayfloat           mRadius;
+        ArrayFloat           mRadius;
         ArrayVector3        mCenter;
 
         ArraySphere()
         {
         }
 
-        ArraySphere( const Arrayfloat &radius, const ArrayVector3 &center ) :
+        ArraySphere( const ArrayFloat &radius, const ArrayVector3 &center ) :
                     mRadius( radius ),
                     mCenter( center )
         {
@@ -93,13 +93,13 @@ namespace Demi
         }
 
         /// @copydoc DiSphere::intersects()
-        inline Arrayfloat intersects( const ArraySphere &s ) const;
+        inline ArrayFloat intersects( const ArraySphere &s ) const;
 
         /// @copydoc DiSphere::intersects()
-        inline Arrayfloat intersects( const ArrayAabb &aabb ) const;
+        inline ArrayFloat intersects( const ArrayAabb &aabb ) const;
 
         /// @copydoc DiSphere::intersects()
-        inline Arrayfloat intersects( const ArrayVector3 &v ) const;
+        inline ArrayFloat intersects( const ArrayVector3 &v ) const;
     };
     /** @} */
     /** @} */

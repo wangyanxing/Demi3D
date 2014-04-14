@@ -56,12 +56,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #if (defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))) || \
     (defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__)))
 #   define DEMI_CPU DEMI_CPU_X86
-
-#elif DEMI_PLATFORM == DEMI_PLATFORM_APPLE && defined(__BIG_ENDIAN__)
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX && defined(__BIG_ENDIAN__)
 #   define DEMI_CPU DEMI_CPU_PPC
-#elif DEMI_PLATFORM == DEMI_PLATFORM_APPLE
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   define DEMI_CPU DEMI_CPU_X86
-#elif DEMI_PLATFORM == DEMI_PLATFORM_APPLE_IOS && (defined(__i386__) || defined(__x86_64__))
+#elif DEMI_PLATFORM == DEMI_PLATFORM_IOS && (defined(__i386__) || defined(__x86_64__))
 #   define DEMI_CPU DEMI_CPU_X86
 #elif defined(__arm__) || defined(_M_ARM) || defined(__arm64__) || defined(_aarch64_)
 #   define DEMI_CPU DEMI_CPU_ARM

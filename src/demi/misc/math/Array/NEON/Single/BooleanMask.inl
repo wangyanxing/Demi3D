@@ -39,7 +39,7 @@ namespace Demi
         size_t idx = (size_t)b[0] | ( (size_t)b[1] << 1 ) | ( (size_t)b[2] << 2 ) | ( (size_t)b[3] << 3 );
         return mMasks[idx];
     }
-    ---
+    
     inline bool BooleanMask4::allBitsSet( bool mask0[4], bool mask1[4] )
     {
 #if __cplusplus > 199711L //C++11
@@ -50,12 +50,12 @@ namespace Demi
 #endif
         return ( *reinterpret_cast<uint32*>(mask0) & *reinterpret_cast<uint32*>(mask1) ) == 0x01010101;
     }
-    ---
+
     inline uint32 BooleanMask4::getScalarMask( ArrayFloat mask )
     {
         return static_cast<uint32>( vmovemaskq_u32( mask ) );
     }
-    ---
+
     inline uint32 BooleanMask4::getScalarMask( ArrayInt mask )
     {
         return static_cast<uint32>( vmovemaskq_u32( mask ) );

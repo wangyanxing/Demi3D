@@ -125,7 +125,7 @@ namespace Demi
         inline ArrayAabb intersection( const ArrayAabb& b2 ) const;
 
         /// Calculate the volume of this box
-        inline Arrayfloat volume(void) const;
+        inline ArrayFloat volume(void) const;
 
         /// Tests whether another box contained by this box.
         inline ArrayMaskR contains( const ArrayAabb &other ) const;
@@ -134,7 +134,7 @@ namespace Demi
         inline ArrayMaskR contains( const ArrayVector3 &v ) const;
 
         /// Returns the minimum distance between a given point and any part of the box.
-        inline Arrayfloat distance( const ArrayVector3 &v ) const;
+        inline ArrayFloat distance( const ArrayVector3 &v ) const;
 
         static const ArrayAabb BOX_INFINITE;
 

@@ -16,7 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MiscPch.h"
 
 #if __DEMI_HAVE_NEON
-#define __Mathlib_H__ //Needed to directly include MathlibNEON
+#define __Mathlib_H__ //Needed to directly include MathlibNEORealN
 
 #include "Math/Array/ArrayConfig.h"
 #include "Math/Array/NEON/Single/MathlibNEON.h"
@@ -32,14 +32,14 @@ namespace Demi
     const ArrayFloat MathlibNEON::fEpsilon   = vdupq_n_f32( 1e-6f );
     const ArrayFloat MathlibNEON::fSqEpsilon = vdupq_n_f32( 1e-12f );
     const ArrayFloat MathlibNEON::OneMinusEpsilon= vdupq_n_f32( 1.0f - 1e-6f );
-    const ArrayFloat MathlibNEON::FLOAT_MIN  = vdupq_n_f32( std::numeric_limits<Real>::min() );
+    const ArrayFloat MathlibNEON::FLOAT_MIN  = vdupq_n_f32( std::numeric_limits<float>::min() );
     const ArrayFloat MathlibNEON::SIGN_MASK  = vdupq_n_f32( -0.0f );
-    const ArrayFloat MathlibNEON::INFINITEA  = vdupq_n_f32( std::numeric_limits<Real>::infinity() );
-    const ArrayFloat MathlibNEON::MAX_NEG    = vdupq_n_f32( -std::numeric_limits<Real>::max() );
-    const ArrayFloat MathlibNEON::MAX_POS    = vdupq_n_f32( std::numeric_limits<Real>::max() );
+    const ArrayFloat MathlibNEON::INFINITEA  = vdupq_n_f32( std::numeric_limits<float>::infinity() );
+    const ArrayFloat MathlibNEON::MAX_NEG    = vdupq_n_f32( -std::numeric_limits<float>::max() );
+    const ArrayFloat MathlibNEON::MAX_POS    = vdupq_n_f32( std::numeric_limits<float>::max() );
     const ArrayFloat MathlibNEON::LAST_AFFINE_COLUMN = (ArrayFloat) { 1, 0, 0, 0 };
 
-    static const Real _PI = Real( 4.0 * atan( 1.0 ) );
+    static const float _PI = float( 4.0 * atan( 1.0 ) );
     //We can't use Math::fDeg2Rad & Math::fRad2Deg directly because
     //it's not guaranteed to have been initialized first
     const ArrayFloat MathlibNEON::PI         = vdupq_n_f32( _PI );

@@ -51,7 +51,7 @@ namespace Demi
     class DI_MISC_API ArrayMatrixAf4x3
     {
     public:
-        Arrayfloat       mChunkBase[12];
+        ArrayFloat       mChunkBase[12];
 
         ArrayMatrixAf4x3() {}
         ArrayMatrixAf4x3( const ArrayMatrixAf4x3 &copy )
@@ -86,7 +86,7 @@ namespace Demi
             mChunkBase[11] = vdupq_n_f32( m._m[11] );
         }
 
-        static ArrayMatrixAf4x3 createAllFromDiMat4( const DiMat4 &m )
+        static ArrayMatrixAf4x3 createAllFromMatrix4( const DiMat4 &m )
         {
             ArrayMatrixAf4x3 retVal;
             retVal.setAll( m );
@@ -104,7 +104,7 @@ namespace Demi
 
         /** Converts the given quaternion to a 3x3 matrix representation and fill our values
             @remarks
-                Similar to @see Quaternion::ToRotationMatrix, this function will take the input
+                Similar to @see DiQuat::ToRotationMatrix, this function will take the input
                 quaternion and overwrite the first 3x3 subset of this matrix. The 4th row &
                 columns are left untouched.
                 This function is defined in ArrayMatrix4 to avoid including this header into
@@ -168,10 +168,10 @@ namespace Demi
     class DI_MISC_API SimpleMatrixAf4x3
     {
     public:
-        Arrayfloat       mChunkBase[3];
+        ArrayFloat       mChunkBase[3];
 
         SimpleMatrixAf4x3() {}
-        SimpleMatrixAf4x3( Arrayfloat row0, Arrayfloat row1, Arrayfloat row2 )
+        SimpleMatrixAf4x3( ArrayFloat row0, ArrayFloat row1, ArrayFloat row2 )
         {
             mChunkBase[0] = row0;
             mChunkBase[1] = row1;

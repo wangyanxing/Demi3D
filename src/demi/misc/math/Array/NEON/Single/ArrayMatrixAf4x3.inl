@@ -584,7 +584,7 @@ namespace Demi
     inline void ArrayMatrixAf4x3::streamToAoS( SimpleMatrixAf4x3 * RESTRICT_ALIAS _dst ) const
     {
         register ArrayFloat dst0, dst1, dst2, dst3;
-        Real *dst = reinterpret_cast<Real*>( _dst );
+        float *dst = reinterpret_cast<float*>( _dst );
 
         _MM_TRANSPOSE4_SRC_DST_PS(
                             this->mChunkBase[0], this->mChunkBase[1],

@@ -17,9 +17,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "MiscPrerequisites.h"
 #include "math/axisAlignedBox.h"
-#include "Sphere.h"
-#include "Math.h"
-#include "Plane.h"
+#include "math/sphere.h"
+#include "math/mathmisc.h"
+#include "math/plane.h"
 
 #include <vector>
 
