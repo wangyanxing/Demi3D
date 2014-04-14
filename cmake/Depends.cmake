@@ -99,6 +99,34 @@ make_library_set(STB_LIBRARY)
 findpkg_finish(STB)
 
 #-------------------------------------------------------------------
+# Find lua
+# - Try to find lua
+# Once done, this will define
+#
+#  LUA_FOUND - system has lua
+#  LUA_INCLUDE_DIRS - the lua include directories 
+#  LUA_LIBRARIES - link these to use lua
+
+findpkg_begin(LUA)
+set(LUA_HOME "${EXTERNAL_HOME}/src/lua")
+
+set(LUA_LIBRARY_NAMES lua)
+get_debug_names(LUA_LIBRARY_NAMES)
+
+if (LUA_HOME)
+  set(LUA_INC_SEARCH_PATH ${LUA_INC_SEARCH_PATH} ${LUA_HOME}/src)
+  set(LUA_LIB_SEARCH_PATH ${LUA_LIB_SEARCH_PATH} ${EXTERNAL_LIB})
+endif()
+
+find_path(LUA_INCLUDE_DIR NAMES lua.h HINTS ${LUA_INC_SEARCH_PATH} ${LUA_PKGC_INCLUDE_DIRS} PATH_SUFFIXES lua)
+find_library(LUA_LIBRARY_REL NAMES ${LUA_LIBRARY_NAMES} HINTS ${LUA_LIB_SEARCH_PATH} ${LUA_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" release relwithdebinfo minsizerel)
+find_library(LUA_LIBRARY_DBG NAMES ${LUA_LIBRARY_NAMES_DBG} HINTS ${LUA_LIB_SEARCH_PATH} ${LUA_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" debug)
+
+make_library_set(LUA_LIBRARY)
+
+findpkg_finish(LUA)
+
+#-------------------------------------------------------------------
 # Find zlib
 # - Try to find zlib
 # Once done, this will define

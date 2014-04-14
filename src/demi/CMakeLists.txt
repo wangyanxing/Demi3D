@@ -30,3 +30,4 @@ if (DEMI_BUILD_RENDERSYSTEM_GL)
 endif()
 
 add_subdirectory(demoFrame)
+add_subdirectory(script)
