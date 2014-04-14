@@ -16,7 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    
+    class DiScriptManager;
 }
 
 #include "ScriptDefines.h"

@@ -13,6 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "ScriptPch.h"
 #include "ScriptPlugin.h"
+#include "ScriptManager.h"
 
 namespace Demi
 {
@@ -24,10 +25,12 @@ namespace Demi
 
     void DiScriptPlugin::Install()
     {
+        DI_NEW DiScriptManager();
     }
 
     void DiScriptPlugin::Uninstall()
     {
+        DI_DELETE DiScriptManager::Get();
     }
 
     DiScriptPlugin::DiScriptPlugin()

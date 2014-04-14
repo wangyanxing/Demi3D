@@ -18,7 +18,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "ScriptPrerequisites.h"
 
+extern "C"
+{
 #include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
 #include "lua_tinker.h"
 
 #endif
