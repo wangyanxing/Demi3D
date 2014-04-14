@@ -1,30 +1,17 @@
-/*
------------------------------------------------------------------------------
-This source file is part of OGRE
-    (Object-oriented Graphics Rendering Engine)
-For the latest info, see http://www.ogre3d.org/
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
-Copyright (c) 2000-2014 Torus Knot Software Ltd
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
------------------------------------------------------------------------------
-*/
+/// This file is adapted from Ogre 2.0 (working version)
 
 namespace Demi
 {
@@ -32,8 +19,8 @@ namespace Demi
 #define DEFINE_OPERATION( leftClass, rightClass, op, op_func )\
     inline ArrayQuaternion operator op ( const leftClass &lhs, const rightClass &rhs )\
     {\
-        const ArrayReal * RESTRICT_ALIAS lhsChunkBase = lhs.mChunkBase;\
-        const ArrayReal * RESTRICT_ALIAS rhsChunkBase = rhs.mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS lhsChunkBase = lhs.mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS rhsChunkBase = rhs.mChunkBase;\
         return ArrayQuaternion(\
                 op_func( lhsChunkBase[0], rhsChunkBase[0] ),\
                 op_func( lhsChunkBase[1], rhsChunkBase[1] ),\
@@ -63,8 +50,8 @@ namespace Demi
 #define DEFINE_UPDATE_OPERATION( leftClass, op, op_func )\
     inline void ArrayQuaternion::operator op ( const leftClass &a )\
     {\
-        ArrayReal * RESTRICT_ALIAS chunkBase = mChunkBase;\
-        const ArrayReal * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
         chunkBase[0] = op_func( chunkBase[0], aChunkBase[0] );\
         chunkBase[1] = op_func( chunkBase[1], aChunkBase[1] );\
         chunkBase[2] = op_func( chunkBase[2], aChunkBase[2] );\
@@ -86,8 +73,8 @@ namespace Demi
     DEFINE_OPERATION( ArrayQuaternion, ArrayQuaternion, -, vsubq_f32 );
 
     // * Multiplication (scalar only)
-    DEFINE_L_OPERATION( ArrayReal, ArrayQuaternion, *, vmulq_f32 );
-    DEFINE_R_OPERATION( ArrayQuaternion, ArrayReal, *, vmulq_f32 );
+    DEFINE_L_OPERATION( ArrayFloat, ArrayQuaternion, *, vmulq_f32 );
+    DEFINE_R_OPERATION( ArrayQuaternion, ArrayFloat, *, vmulq_f32 );
 
     // Update operations
     // +=
@@ -97,7 +84,7 @@ namespace Demi
     DEFINE_UPDATE_OPERATION(            ArrayQuaternion,        -=, vsubq_f32 );
 
     // *=
-    DEFINE_UPDATE_R_OPERATION(          ArrayReal,          *=, vmulq_f32 );
+    DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          *=, vmulq_f32 );
 
     // Notes: This operator doesn't get inlined. The generated instruction count is actually high so
     // the compiler seems to be clever in not inlining. There is no gain in doing a "mul()" equivalent
@@ -137,16 +124,16 @@ namespace Demi
                     vmulq_f32( lhs.mChunkBase[2], rhs.mChunkBase[1] ) ) ) );
     }
     
-    inline ArrayQuaternion ArrayQuaternion::Slerp( ArrayReal fT, const ArrayQuaternion &rkP,
+    inline ArrayQuaternion ArrayQuaternion::Slerp( ArrayFloat fT, const ArrayQuaternion &rkP,
                                                         const ArrayQuaternion &rkQ /*, bool shortestPath*/ )
     {
-        ArrayReal fCos = rkP.Dot( rkQ );
+        ArrayFloat fCos = rkP.Dot( rkQ );
         /* Clamp fCos to [-1; 1] range */
         fCos = vminq_f32( MathlibNEON::ONE, vmaxq_f32( MathlibNEON::NEG_ONE, fCos ) );
         
         /* Invert the rotation for shortest path? */
         /* m = fCos < 0.0f ? -1.0f : 1.0f; */
-        ArrayReal m = MathlibNEON::Cmov4( MathlibNEON::NEG_ONE, MathlibNEON::ONE,
+        ArrayFloat m = MathlibNEON::Cmov4( MathlibNEON::NEG_ONE, MathlibNEON::ONE,
                                             vcltq_f32( fCos, vdupq_n_f32(0.0f) ) /*&& shortestPath*/ );
         ArrayQuaternion rkT(
                         vmulq_f32( rkQ.mChunkBase[0], m ),
@@ -154,7 +141,7 @@ namespace Demi
                         vmulq_f32( rkQ.mChunkBase[2], m ),
                         vmulq_f32( rkQ.mChunkBase[3], m ) );
         
-        ArrayReal fSin = vrsqrteq_f32( vsubq_f32( MathlibNEON::ONE, vmulq_f32( fCos, fCos ) ) );
+        ArrayFloat fSin = vrsqrteq_f32( vsubq_f32( MathlibNEON::ONE, vmulq_f32( fCos, fCos ) ) );
         
         /* ATan2 in original Quaternion is slightly absurd, because fSin was derived from
            fCos (hence never negative) which makes ACos a better replacement. ACos is much
@@ -162,15 +149,15 @@ namespace Demi
            NaNs make it slower (whether clamping the input outweights the benefit is
            arguable). We use ACos4 to avoid implementing ATan2_4.
         */
-        ArrayReal fAngle = MathlibNEON::ACos4( fCos );
+        ArrayFloat fAngle = MathlibNEON::ACos4( fCos );
 
         // mask = Abs( fCos ) < 1-epsilon
-        ArrayReal mask    = vcltq_f32( MathlibNEON::Abs4( fCos ), MathlibNEON::OneMinusEpsilon );
-        ArrayReal fInvSin = MathlibNEON::InvNonZero4( fSin );
-        ArrayReal oneSubT = vsubq_f32( MathlibNEON::ONE, fT );
+        ArrayFloat mask    = vcltq_f32( MathlibNEON::Abs4( fCos ), MathlibNEON::OneMinusEpsilon );
+        ArrayFloat fInvSin = MathlibNEON::InvNonZero4( fSin );
+        ArrayFloat oneSubT = vsubq_f32( MathlibNEON::ONE, fT );
         // fCoeff1 = Sin( fT * fAngle ) * fInvSin
-        ArrayReal fCoeff0 = vmulq_f32( MathlibNEON::Sin4( vmulq_f32( oneSubT, fAngle ) ), fInvSin );
-        ArrayReal fCoeff1 = vmulq_f32( MathlibNEON::Sin4( vmulq_f32( fT, fAngle ) ), fInvSin );
+        ArrayFloat fCoeff0 = vmulq_f32( MathlibNEON::Sin4( vmulq_f32( oneSubT, fAngle ) ), fInvSin );
+        ArrayFloat fCoeff1 = vmulq_f32( MathlibNEON::Sin4( vmulq_f32( fT, fAngle ) ), fInvSin );
         // fCoeff1 = mask ? fCoeff1 : fT; (switch to lerp when rkP & rkQ are too close->fSin=0, or 180°)
         fCoeff0 = MathlibNEON::CmovRobust( fCoeff0, oneSubT, mask );
         fCoeff1 = MathlibNEON::CmovRobust( fCoeff1, fT, mask );
@@ -190,12 +177,12 @@ namespace Demi
         return rkT;
     }
     
-    inline ArrayQuaternion ArrayQuaternion::nlerpShortest( ArrayReal fT, const ArrayQuaternion &rkP,
+    inline ArrayQuaternion ArrayQuaternion::nlerpShortest( ArrayFloat fT, const ArrayQuaternion &rkP,
                                                             const ArrayQuaternion &rkQ )
     {
         //Flip the sign of rkQ when p.dot( q ) < 0 to get the shortest path
-        ArrayReal signMask = vdupq_n_f32( -0.0f );
-        ArrayReal sign = vandq_s32( signMask, rkP.Dot( rkQ ) );
+        ArrayFloat signMask = vdupq_n_f32( -0.0f );
+        ArrayFloat sign = vandq_s32( signMask, rkP.Dot( rkQ ) );
         ArrayQuaternion tmpQ = ArrayQuaternion( veorq_s32( rkQ.mChunkBase[0], sign ),
                                                 veorq_s32( rkQ.mChunkBase[1], sign ),
                                                 veorq_s32( rkQ.mChunkBase[2], sign ),
@@ -211,7 +198,7 @@ namespace Demi
         return retVal;
     }
     
-    inline ArrayQuaternion ArrayQuaternion::nlerp( ArrayReal fT, const ArrayQuaternion &rkP,
+    inline ArrayQuaternion ArrayQuaternion::nlerp( ArrayFloat fT, const ArrayQuaternion &rkP,
                                                         const ArrayQuaternion &rkQ )
     {
         ArrayQuaternion retVal(
@@ -243,7 +230,7 @@ namespace Demi
         ArrayVector3 uuv    = qVec.crossProduct( uv );
 
         // uv = uv * (2.0f * w)
-        ArrayReal w2 = vaddq_f32( inQ.mChunkBase[0], inQ.mChunkBase[0] );
+        ArrayFloat w2 = vaddq_f32( inQ.mChunkBase[0], inQ.mChunkBase[0] );
         uv.mChunkBase[0] = vmulq_f32( uv.mChunkBase[0], w2 );
         uv.mChunkBase[1] = vmulq_f32( uv.mChunkBase[1], w2 );
         uv.mChunkBase[2] = vmulq_f32( uv.mChunkBase[2], w2 );
@@ -269,13 +256,13 @@ namespace Demi
         // The quaternion representing the rotation is
         //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
 
-        ArrayReal fHalfAngle( vmulq_f32( rfAngle.valueRadians(), MathlibNEON::HALF ) );
+        ArrayFloat fHalfAngle( vmulq_f32( rfAngle.valueRadians(), MathlibNEON::HALF ) );
 
-        ArrayReal fSin;
+        ArrayFloat fSin;
         MathlibNEON::SinCos4( fHalfAngle, fSin, mChunkBase[0] );
 
-        ArrayReal * RESTRICT_ALIAS chunkBase = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS rkAxisChunkBase = rkAxis.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS rkAxisChunkBase = rkAxis.mChunkBase;
 
         chunkBase[1] = vmulq_f32( fSin, rkAxisChunkBase[0] ); //x = fSin*rkAxis.x;
         chunkBase[2] = vmulq_f32( fSin, rkAxisChunkBase[1] ); //y = fSin*rkAxis.y;
@@ -286,20 +273,20 @@ namespace Demi
     {
         // The quaternion representing the rotation is
         //   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
-        ArrayReal sqLength = vaddq_f32( vaddq_f32(
+        ArrayFloat sqLength = vaddq_f32( vaddq_f32(
                                 vmulq_f32( mChunkBase[1], mChunkBase[1] ),  //(x * x +
                                 vmulq_f32( mChunkBase[2], mChunkBase[2] ) ),    //y * y) +
                                 vmulq_f32( mChunkBase[3], mChunkBase[3] ) );    //z * z )
 
-        ArrayReal mask      = vcgtq_f32( sqLength, vdupq_n_f32(0.0f) ); //mask = sqLength > 0
+        ArrayFloat mask      = vcgtq_f32( sqLength, vdupq_n_f32(0.0f) ); //mask = sqLength > 0
 
         //sqLength = sqLength > 0 ? sqLength : 1; so that invSqrt doesn't give NaNs or Infs
         //when 0 (to avoid using CmovRobust just to select the non-nan results)
         sqLength = MathlibNEON::Cmov4( sqLength, MathlibNEON::ONE,
                                         vcgtq_f32( sqLength, MathlibNEON::FLOAT_MIN ) );
-        ArrayReal fInvLength = MathlibNEON::InvSqrtNonZero4( sqLength );
+        ArrayFloat fInvLength = MathlibNEON::InvSqrtNonZero4( sqLength );
 
-        const ArrayReal acosW = MathlibNEON::ACos4( mChunkBase[0] );
+        const ArrayFloat acosW = MathlibNEON::ACos4( mChunkBase[0] );
         rfAngle = MathlibNEON::Cmov4( //sqLength > 0 ? (2 * ACos(w)) : 0
                     vaddq_f32( acosW, acosW ),
                     vdupq_n_f32(0.0f), mask );
@@ -314,14 +301,14 @@ namespace Demi
     
     inline ArrayVector3 ArrayQuaternion::xAxis( void ) const
     {
-        ArrayReal fTy  = vaddq_f32( mChunkBase[2], mChunkBase[2] );     // 2 * y
-        ArrayReal fTz  = vaddq_f32( mChunkBase[3], mChunkBase[3] );     // 2 * z
-        ArrayReal fTwy = vmulq_f32( fTy, mChunkBase[0] );                   // fTy*w;
-        ArrayReal fTwz = vmulq_f32( fTz, mChunkBase[0] );                   // fTz*w;
-        ArrayReal fTxy = vmulq_f32( fTy, mChunkBase[1] );                   // fTy*x;
-        ArrayReal fTxz = vmulq_f32( fTz, mChunkBase[1] );                   // fTz*x;
-        ArrayReal fTyy = vmulq_f32( fTy, mChunkBase[2] );                   // fTy*y;
-        ArrayReal fTzz = vmulq_f32( fTz, mChunkBase[3] );                   // fTz*z;
+        ArrayFloat fTy  = vaddq_f32( mChunkBase[2], mChunkBase[2] );     // 2 * y
+        ArrayFloat fTz  = vaddq_f32( mChunkBase[3], mChunkBase[3] );     // 2 * z
+        ArrayFloat fTwy = vmulq_f32( fTy, mChunkBase[0] );                   // fTy*w;
+        ArrayFloat fTwz = vmulq_f32( fTz, mChunkBase[0] );                   // fTz*w;
+        ArrayFloat fTxy = vmulq_f32( fTy, mChunkBase[1] );                   // fTy*x;
+        ArrayFloat fTxz = vmulq_f32( fTz, mChunkBase[1] );                   // fTz*x;
+        ArrayFloat fTyy = vmulq_f32( fTy, mChunkBase[2] );                   // fTy*y;
+        ArrayFloat fTzz = vmulq_f32( fTz, mChunkBase[3] );                   // fTz*z;
 
         return ArrayVector3(
                 vsubq_f32( MathlibNEON::ONE, vaddq_f32( fTyy, fTzz ) ),
@@ -331,15 +318,15 @@ namespace Demi
     
     inline ArrayVector3 ArrayQuaternion::yAxis( void ) const
     {
-        ArrayReal fTx  = vaddq_f32( mChunkBase[1], mChunkBase[1] );     // 2 * x
-        ArrayReal fTy  = vaddq_f32( mChunkBase[2], mChunkBase[2] );     // 2 * y
-        ArrayReal fTz  = vaddq_f32( mChunkBase[3], mChunkBase[3] );     // 2 * z
-        ArrayReal fTwx = vmulq_f32( fTx, mChunkBase[0] );                   // fTx*w;
-        ArrayReal fTwz = vmulq_f32( fTz, mChunkBase[0] );                   // fTz*w;
-        ArrayReal fTxx = vmulq_f32( fTx, mChunkBase[1] );                   // fTx*x;
-        ArrayReal fTxy = vmulq_f32( fTy, mChunkBase[1] );                   // fTy*x;
-        ArrayReal fTyz = vmulq_f32( fTz, mChunkBase[2] );                   // fTz*y;
-        ArrayReal fTzz = vmulq_f32( fTz, mChunkBase[3] );                   // fTz*z;
+        ArrayFloat fTx  = vaddq_f32( mChunkBase[1], mChunkBase[1] );     // 2 * x
+        ArrayFloat fTy  = vaddq_f32( mChunkBase[2], mChunkBase[2] );     // 2 * y
+        ArrayFloat fTz  = vaddq_f32( mChunkBase[3], mChunkBase[3] );     // 2 * z
+        ArrayFloat fTwx = vmulq_f32( fTx, mChunkBase[0] );                   // fTx*w;
+        ArrayFloat fTwz = vmulq_f32( fTz, mChunkBase[0] );                   // fTz*w;
+        ArrayFloat fTxx = vmulq_f32( fTx, mChunkBase[1] );                   // fTx*x;
+        ArrayFloat fTxy = vmulq_f32( fTy, mChunkBase[1] );                   // fTy*x;
+        ArrayFloat fTyz = vmulq_f32( fTz, mChunkBase[2] );                   // fTz*y;
+        ArrayFloat fTzz = vmulq_f32( fTz, mChunkBase[3] );                   // fTz*z;
 
         return ArrayVector3(
                 vsubq_f32( fTxy, fTwz ),
@@ -349,15 +336,15 @@ namespace Demi
     
     inline ArrayVector3 ArrayQuaternion::zAxis( void ) const
     {
-        ArrayReal fTx  = vaddq_f32( mChunkBase[1], mChunkBase[1] );     // 2 * x
-        ArrayReal fTy  = vaddq_f32( mChunkBase[2], mChunkBase[2] );     // 2 * y
-        ArrayReal fTz  = vaddq_f32( mChunkBase[3], mChunkBase[3] );     // 2 * z
-        ArrayReal fTwx = vmulq_f32( fTx, mChunkBase[0] );                   // fTx*w;
-        ArrayReal fTwy = vmulq_f32( fTy, mChunkBase[0] );                   // fTy*w;
-        ArrayReal fTxx = vmulq_f32( fTx, mChunkBase[1] );                   // fTx*x;
-        ArrayReal fTxz = vmulq_f32( fTz, mChunkBase[1] );                   // fTz*x;
-        ArrayReal fTyy = vmulq_f32( fTy, mChunkBase[2] );                   // fTy*y;
-        ArrayReal fTyz = vmulq_f32( fTz, mChunkBase[2] );                   // fTz*y;
+        ArrayFloat fTx  = vaddq_f32( mChunkBase[1], mChunkBase[1] );     // 2 * x
+        ArrayFloat fTy  = vaddq_f32( mChunkBase[2], mChunkBase[2] );     // 2 * y
+        ArrayFloat fTz  = vaddq_f32( mChunkBase[3], mChunkBase[3] );     // 2 * z
+        ArrayFloat fTwx = vmulq_f32( fTx, mChunkBase[0] );                   // fTx*w;
+        ArrayFloat fTwy = vmulq_f32( fTy, mChunkBase[0] );                   // fTy*w;
+        ArrayFloat fTxx = vmulq_f32( fTx, mChunkBase[1] );                   // fTx*x;
+        ArrayFloat fTxz = vmulq_f32( fTz, mChunkBase[1] );                   // fTz*x;
+        ArrayFloat fTyy = vmulq_f32( fTy, mChunkBase[2] );                   // fTy*y;
+        ArrayFloat fTyz = vmulq_f32( fTz, mChunkBase[2] );                   // fTz*y;
 
         return ArrayVector3(
                 vaddq_f32( fTxz, fTwy ),
@@ -365,7 +352,7 @@ namespace Demi
                 vsubq_f32( MathlibNEON::ONE, vaddq_f32( fTxx, fTyy ) ) );
     }
     
-    inline ArrayReal ArrayQuaternion::Dot( const ArrayQuaternion& rkQ ) const
+    inline ArrayFloat ArrayQuaternion::Dot( const ArrayQuaternion& rkQ ) const
     {
         return
         vaddq_f32( vaddq_f32( vaddq_f32(
@@ -375,7 +362,7 @@ namespace Demi
             vmulq_f32( mChunkBase[3], rkQ.mChunkBase[3] ) );    //  z * vec.z
     }
     
-    inline ArrayReal ArrayQuaternion::Norm( void ) const
+    inline ArrayFloat ArrayQuaternion::Norm( void ) const
     {
         return
         vaddq_f32( vaddq_f32( vaddq_f32(
@@ -387,7 +374,7 @@ namespace Demi
     
     inline void ArrayQuaternion::normalise( void )
     {
-        ArrayReal sqLength = vaddq_f32( vaddq_f32( vaddq_f32(
+        ArrayFloat sqLength = vaddq_f32( vaddq_f32( vaddq_f32(
             vmulq_f32( mChunkBase[0], mChunkBase[0] ) , //((w * w   +
             vmulq_f32( mChunkBase[1], mChunkBase[1] ) ),    //  x * x ) +
             vmulq_f32( mChunkBase[2], mChunkBase[2] ) ), //  y * y ) +
@@ -399,7 +386,7 @@ namespace Demi
         //generating the nans could impact performance in some architectures
         sqLength = MathlibNEON::Cmov4( sqLength, MathlibNEON::ONE,
                                         vcgtq_f32( sqLength, MathlibNEON::FLOAT_MIN ) );
-        ArrayReal invLength = MathlibNEON::InvSqrtNonZero4( sqLength );
+        ArrayFloat invLength = MathlibNEON::InvSqrtNonZero4( sqLength );
         mChunkBase[0] = vmulq_f32( mChunkBase[0], invLength ); //w * invLength
         mChunkBase[1] = vmulq_f32( mChunkBase[1], invLength ); //x * invLength
         mChunkBase[2] = vmulq_f32( mChunkBase[2], invLength ); //y * invLength
@@ -408,7 +395,7 @@ namespace Demi
     
     inline ArrayQuaternion ArrayQuaternion::Inverse( void ) const
     {
-        ArrayReal fNorm = vaddq_f32( vaddq_f32( vaddq_f32(
+        ArrayFloat fNorm = vaddq_f32( vaddq_f32( vaddq_f32(
             vmulq_f32( mChunkBase[0], mChunkBase[0] ) , //((w * w   +
             vmulq_f32( mChunkBase[1], mChunkBase[1] ) ),    //  x * x ) +
             vmulq_f32( mChunkBase[2], mChunkBase[2] ) ), //  y * y ) +
@@ -417,8 +404,8 @@ namespace Demi
         //Will return a zero Quaternion if original is zero length (Quaternion's behavior)
         fNorm = MathlibNEON::Cmov4( fNorm, MathlibNEON::ONE,
                                     vcgtq_f32( fNorm, MathlibNEON::fEpsilon ) );
-        ArrayReal invNorm    = MathlibNEON::Inv4( fNorm );
-        ArrayReal negInvNorm = vmulq_f32( invNorm, MathlibNEON::NEG_ONE );
+        ArrayFloat invNorm    = MathlibNEON::Inv4( fNorm );
+        ArrayFloat negInvNorm = vmulq_f32( invNorm, MathlibNEON::NEG_ONE );
 
         return ArrayQuaternion(
             vmulq_f32( mChunkBase[0], invNorm ),        //w * invNorm
@@ -442,16 +429,16 @@ namespace Demi
         // exp(q) = cos(A)+sin(A)*(x*i+y*j+z*k).  If sin(A) is near zero,
         // use exp(q) = cos(A)+A*(x*i+y*j+z*k) since A/sin(A) has limit 1.
 
-        ArrayReal fAngle = vrsqrteq_f32( vaddq_f32( vaddq_f32(                      //sqrt(
+        ArrayFloat fAngle = vrsqrteq_f32( vaddq_f32( vaddq_f32(                      //sqrt(
                                 vmulq_f32( mChunkBase[1], mChunkBase[1] ),      //(x * x +
                                 vmulq_f32( mChunkBase[2], mChunkBase[2] ) ),        //y * y) +
                                 vmulq_f32( mChunkBase[3], mChunkBase[3] ) ) );  //z * z )
 
-        ArrayReal w, fSin;
+        ArrayFloat w, fSin;
         MathlibNEON::SinCos4( fAngle, fSin, w );
 
         //coeff = Abs(fSin) >= msEpsilon ? (fSin / fAngle) : 1.0f;
-        ArrayReal coeff = MathlibNEON::CmovRobust( vdivq_f32( fSin, fAngle ), MathlibNEON::ONE,
+        ArrayFloat coeff = MathlibNEON::CmovRobust( vdivq_f32( fSin, fAngle ), MathlibNEON::ONE,
                                 vcgeq_f32( MathlibNEON::Abs4( fSin ), MathlibNEON::fEpsilon ) );
         return ArrayQuaternion(
             w,                                          //cos( fAngle )
@@ -466,11 +453,11 @@ namespace Demi
         // log(q) = A*(x*i+y*j+z*k).  If sin(A) is near zero, use log(q) =
         // sin(A)*(x*i+y*j+z*k) since sin(A)/A has limit 1.
 
-        ArrayReal fAngle    = MathlibNEON::ACos4( mChunkBase[0] );
-        ArrayReal fSin      = MathlibNEON::Sin4( fAngle );
+        ArrayFloat fAngle    = MathlibNEON::ACos4( mChunkBase[0] );
+        ArrayFloat fSin      = MathlibNEON::Sin4( fAngle );
 
         //mask = Math::Abs(w) < 1.0 && Math::Abs(fSin) >= msEpsilon
-        ArrayReal mask = vandq_s32(
+        ArrayFloat mask = vandq_s32(
                             vcltq_f32( MathlibNEON::Abs4( mChunkBase[0] ), MathlibNEON::ONE ),
                             vcgeq_f32( MathlibNEON::Abs4( fSin ), MathlibNEON::fEpsilon ) );
 
@@ -478,7 +465,7 @@ namespace Demi
         //Unlike Exp(), we can use InvNonZero4 (which is faster) instead of div because we know for
         //sure CMov will copy the 1 instead of the NaN when fSin is close to zero, guarantee we might
         //not have in Exp()
-        ArrayReal coeff = MathlibNEON::CmovRobust( vmulq_f32( fAngle, MathlibNEON::InvNonZero4( fSin ) ),
+        ArrayFloat coeff = MathlibNEON::CmovRobust( vmulq_f32( fAngle, MathlibNEON::InvNonZero4( fSin ) ),
                                                     MathlibNEON::ONE, mask );
 
         return ArrayQuaternion(
@@ -497,7 +484,7 @@ namespace Demi
         ArrayVector3 uuv    = qVec.crossProduct( uv );
 
         // uv = uv * (2.0f * w)
-        ArrayReal w2 = vaddq_f32( mChunkBase[0], mChunkBase[0] );
+        ArrayFloat w2 = vaddq_f32( mChunkBase[0], mChunkBase[0] );
         uv.mChunkBase[0] = vmulq_f32( uv.mChunkBase[0], w2 );
         uv.mChunkBase[1] = vmulq_f32( uv.mChunkBase[1], w2 );
         uv.mChunkBase[2] = vmulq_f32( uv.mChunkBase[2], w2 );
@@ -520,8 +507,8 @@ namespace Demi
     
     inline void ArrayQuaternion::Cmov4( ArrayMaskR mask, const ArrayQuaternion &replacement )
     {
-        ArrayReal * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
         aChunkBase[0] = MathlibNEON::Cmov4( aChunkBase[0], bChunkBase[0], mask );
         aChunkBase[1] = MathlibNEON::Cmov4( aChunkBase[1], bChunkBase[1], mask );
         aChunkBase[2] = MathlibNEON::Cmov4( aChunkBase[2], bChunkBase[2], mask );

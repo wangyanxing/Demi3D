@@ -71,26 +71,26 @@ namespace Demi
         // ( abs( center.x - center2.x ) <= halfSize.x + halfSize2.x &&
         //   abs( center.y - center2.y ) <= halfSize.y + halfSize2.y &&
         //   abs( center.z - center2.z ) <= halfSize.z + halfSize2.z )
-        ArrayReal maskX = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[0] ),
+        ArrayFloat maskX = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[0] ),
                                         sumHalfSizes.mChunkBase[0] );
-        ArrayReal maskY = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[1] ),
+        ArrayFloat maskY = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[1] ),
                                         sumHalfSizes.mChunkBase[1] );
-        ArrayReal maskZ = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[2] ),
+        ArrayFloat maskZ = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[2] ),
                                         sumHalfSizes.mChunkBase[2] );
         
         return vandq_s32( vandq_s32( maskX, maskY ), maskZ );
     }
     
-    inline ArrayReal ArrayAabb::volume(void) const
+    inline ArrayFloat ArrayAabb::volume(void) const
     {
-        ArrayReal w = vaddq_f32( mHalfSize.mChunkBase[0], mHalfSize.mChunkBase[0] ); // x * 2
-        ArrayReal h = vaddq_f32( mHalfSize.mChunkBase[1], mHalfSize.mChunkBase[1] ); // y * 2
-        ArrayReal d = vaddq_f32( mHalfSize.mChunkBase[2], mHalfSize.mChunkBase[2] ); // z * 2
+        ArrayFloat w = vaddq_f32( mHalfSize.mChunkBase[0], mHalfSize.mChunkBase[0] ); // x * 2
+        ArrayFloat h = vaddq_f32( mHalfSize.mChunkBase[1], mHalfSize.mChunkBase[1] ); // y * 2
+        ArrayFloat d = vaddq_f32( mHalfSize.mChunkBase[2], mHalfSize.mChunkBase[2] ); // z * 2
 
         return vmulq_f32( vmulq_f32( w, h ), d ); // w * h * d
     }
     
-    inline ArrayReal ArrayAabb::contains( const ArrayAabb &other ) const
+    inline ArrayFloat ArrayAabb::contains( const ArrayAabb &other ) const
     {
         ArrayVector3 dist( mCenter - other.mCenter );
 
@@ -102,34 +102,34 @@ namespace Demi
         // ( abs( dist.x ) + other.mHalfSize.x <= mHalfSize.x &&
         //   abs( dist.y ) + other.mHalfSize.y <= mHalfSize.y &&
         //   abs( dist.z ) + other.mHalfSize.z <= mHalfSize.z )
-        ArrayReal maskX = vcleq_f32( vaddq_f32( MathlibNEON::Abs4( dist.mChunkBase[0] ),
+        ArrayFloat maskX = vcleq_f32( vaddq_f32( MathlibNEON::Abs4( dist.mChunkBase[0] ),
                                         other.mHalfSize.mChunkBase[0] ), mHalfSize.mChunkBase[0] );
-        ArrayReal maskY = vcleq_f32( vaddq_f32( MathlibNEON::Abs4( dist.mChunkBase[1] ),
+        ArrayFloat maskY = vcleq_f32( vaddq_f32( MathlibNEON::Abs4( dist.mChunkBase[1] ),
                                         other.mHalfSize.mChunkBase[1] ), mHalfSize.mChunkBase[1] );
-        ArrayReal maskZ = vcleq_f32( vaddq_f32( MathlibNEON::Abs4( dist.mChunkBase[2] ),
+        ArrayFloat maskZ = vcleq_f32( vaddq_f32( MathlibNEON::Abs4( dist.mChunkBase[2] ),
                                         other.mHalfSize.mChunkBase[2] ), mHalfSize.mChunkBase[2] );
 
         return vandq_s32( vandq_s32( maskX, maskY ), maskZ );
     }
     
-    inline ArrayReal ArrayAabb::contains( const ArrayVector3 &v ) const
+    inline ArrayFloat ArrayAabb::contains( const ArrayVector3 &v ) const
     {
         ArrayVector3 dist( mCenter - v );
 
         // ( abs( dist.x ) <= mHalfSize.x &&
         //   abs( dist.y ) <= mHalfSize.y &&
         //   abs( dist.z ) <= mHalfSize.z )
-        ArrayReal maskX = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[0] ),
+        ArrayFloat maskX = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[0] ),
                                         mHalfSize.mChunkBase[0] );
-        ArrayReal maskY = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[1] ),
+        ArrayFloat maskY = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[1] ),
                                         mHalfSize.mChunkBase[1] );
-        ArrayReal maskZ = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[2] ),
+        ArrayFloat maskZ = vcleq_f32( MathlibNEON::Abs4( dist.mChunkBase[2] ),
                                         mHalfSize.mChunkBase[2] );
 
         return vandq_s32( vandq_s32( maskX, maskY ), maskZ );
     }
     
-    inline ArrayReal ArrayAabb::distance( const ArrayVector3 &v ) const
+    inline ArrayFloat ArrayAabb::distance( const ArrayVector3 &v ) const
     {
         ArrayVector3 dist( mCenter - v );
 
@@ -154,15 +154,15 @@ namespace Demi
 
         mCenter = m * mCenter;
 
-        ArrayReal x = vmulq_f32( Mathlib::Abs4( m.mChunkBase[2] ), mHalfSize.mChunkBase[2] );       // abs( m02 ) * z +
+        ArrayFloat x = vmulq_f32( Mathlib::Abs4( m.mChunkBase[2] ), mHalfSize.mChunkBase[2] );       // abs( m02 ) * z +
         x = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[1] ), mHalfSize.mChunkBase[1], x );            // abs( m01 ) * y +
         x = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[0] ), mHalfSize.mChunkBase[0], x );            // abs( m00 ) * x
 
-        ArrayReal y = vmulq_f32( Mathlib::Abs4( m.mChunkBase[6] ), mHalfSize.mChunkBase[2] );       // abs( m12 ) * z +
+        ArrayFloat y = vmulq_f32( Mathlib::Abs4( m.mChunkBase[6] ), mHalfSize.mChunkBase[2] );       // abs( m12 ) * z +
         y = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[5] ), mHalfSize.mChunkBase[1], y );            // abs( m11 ) * y +
         y = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[4] ), mHalfSize.mChunkBase[0], y );            // abs( m10 ) * x
 
-        ArrayReal z = vmulq_f32( Mathlib::Abs4( m.mChunkBase[10] ), mHalfSize.mChunkBase[2] );      // abs( m22 ) * z +
+        ArrayFloat z = vmulq_f32( Mathlib::Abs4( m.mChunkBase[10] ), mHalfSize.mChunkBase[2] );      // abs( m22 ) * z +
         z = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[9] ), mHalfSize.mChunkBase[1], z );            // abs( m21 ) * y +
         z = _mm_madd_ps( Mathlib::Abs4( m.mChunkBase[8] ), mHalfSize.mChunkBase[0], z );            // abs( m20 ) * x
 

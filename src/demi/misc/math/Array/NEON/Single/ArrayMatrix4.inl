@@ -1,30 +1,18 @@
-/*
------------------------------------------------------------------------------
-This source file is part of OGRE
-    (Object-oriented Graphics Rendering Engine)
-For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2014 Torus Knot Software Ltd
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
------------------------------------------------------------------------------
-*/
+/// This file is adapted from Ogre 2.0 (working version)
 
 namespace Demi
 {
@@ -34,16 +22,16 @@ namespace Demi
     ///     safe to assume &lhs != &rhs. RESTRICT_ALIAS modifier is used (a non-standard
     ///     C++ extension) is used when available to dramatically improve performance,
     ///     particularly of the update operations ( a *= b )
-    ///     This function will assert if OGRE_RESTRICT_ALIASING is enabled and any of the
+    ///     This function will assert if DEMI_RESTRICT_ALIASING is enabled and any of the
     ///     given pointers point to the same location
-    inline void concatArrayMat4 ( ArrayReal * RESTRICT_ALIAS outChunkBase,
-                                    const ArrayReal * RESTRICT_ALIAS lhsChunkBase,
-                                    const ArrayReal * RESTRICT_ALIAS rhsChunkBase )
+    inline void concatArrayMat4 ( ArrayFloat * RESTRICT_ALIAS outChunkBase,
+                                    const ArrayFloat * RESTRICT_ALIAS lhsChunkBase,
+                                    const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
-#if OGRE_RESTRICT_ALIASING != 0
+#if DEMI_RESTRICT_ALIASING != 0
         assert( outChunkBase != lhsChunkBase && outChunkBase != rhsChunkBase &&
                 lhsChunkBase != rhsChunkBase &&
-                "Re-strict aliasing rule broken. Compile without OGRE_RESTRICT_ALIASING" );
+                "Re-strict aliasing rule broken. Compile without DEMI_RESTRICT_ALIASING" );
 #endif
         outChunkBase[0] =
             vaddq_f32(
@@ -182,14 +170,14 @@ namespace Demi
     }
 
     /// Update version
-    inline void concatArrayMat4 ( ArrayReal * RESTRICT_ALIAS lhsChunkBase,
-                                    const ArrayReal * RESTRICT_ALIAS rhsChunkBase )
+    inline void concatArrayMat4 ( ArrayFloat * RESTRICT_ALIAS lhsChunkBase,
+                                    const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
-#if OGRE_RESTRICT_ALIASING != 0
+#if DEMI_RESTRICT_ALIASING != 0
         assert( lhsChunkBase != rhsChunkBase &&
-                "Re-strict aliasing rule broken. Compile without OGRE_RESTRICT_ALIASING" );
+                "Re-strict aliasing rule broken. Compile without DEMI_RESTRICT_ALIASING" );
 #endif
-        ArrayReal lhs0 = lhsChunkBase[0];
+        ArrayFloat lhs0 = lhsChunkBase[0];
         lhsChunkBase[0] =
             vaddq_f32(
             vaddq_f32(
@@ -198,7 +186,7 @@ namespace Demi
             vaddq_f32(
                 vmulq_f32( lhsChunkBase[2], rhsChunkBase[8] ),
                 vmulq_f32( lhsChunkBase[3], rhsChunkBase[12] ) ) );
-        ArrayReal lhs1 = lhsChunkBase[1];
+        ArrayFloat lhs1 = lhsChunkBase[1];
         lhsChunkBase[1] =
             vaddq_f32(
             vaddq_f32(
@@ -207,7 +195,7 @@ namespace Demi
             vaddq_f32(
                 vmulq_f32( lhsChunkBase[2], rhsChunkBase[9] ),
                 vmulq_f32( lhsChunkBase[3], rhsChunkBase[13] ) ) );
-        ArrayReal lhs2 = lhsChunkBase[2];
+        ArrayFloat lhs2 = lhsChunkBase[2];
         lhsChunkBase[2] =
             vaddq_f32(
             vaddq_f32(
@@ -346,7 +334,7 @@ namespace Demi
     
     inline ArrayVector3 ArrayMatrix4::operator * ( const ArrayVector3 &rhs ) const
     {
-        ArrayReal invW = vaddq_f32( vaddq_f32(
+        ArrayFloat invW = vaddq_f32( vaddq_f32(
                                 vmulq_f32( mChunkBase[12], rhs.mChunkBase[0] ),
                                 vmulq_f32( mChunkBase[13], rhs.mChunkBase[1] ) ),
                             vaddq_f32(
@@ -388,20 +376,20 @@ namespace Demi
     
     inline void ArrayMatrix4::fromQuaternion( const ArrayQuaternion &q )
     {
-        ArrayReal * RESTRICT_ALIAS chunkBase = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS qChunkBase = q.mChunkBase;
-        ArrayReal fTx  = vaddq_f32( qChunkBase[1], qChunkBase[1] );     // 2 * x
-        ArrayReal fTy  = vaddq_f32( qChunkBase[2], qChunkBase[2] );     // 2 * y
-        ArrayReal fTz  = vaddq_f32( qChunkBase[3], qChunkBase[3] );     // 2 * z
-        ArrayReal fTwx = vmulq_f32( fTx, qChunkBase[0] );                   // fTx*w;
-        ArrayReal fTwy = vmulq_f32( fTy, qChunkBase[0] );                   // fTy*w;
-        ArrayReal fTwz = vmulq_f32( fTz, qChunkBase[0] );                   // fTz*w;
-        ArrayReal fTxx = vmulq_f32( fTx, qChunkBase[1] );                   // fTx*x;
-        ArrayReal fTxy = vmulq_f32( fTy, qChunkBase[1] );                   // fTy*x;
-        ArrayReal fTxz = vmulq_f32( fTz, qChunkBase[1] );                   // fTz*x;
-        ArrayReal fTyy = vmulq_f32( fTy, qChunkBase[2] );                   // fTy*y;
-        ArrayReal fTyz = vmulq_f32( fTz, qChunkBase[2] );                   // fTz*y;
-        ArrayReal fTzz = vmulq_f32( fTz, qChunkBase[3] );                   // fTz*z;
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS qChunkBase = q.mChunkBase;
+        ArrayFloat fTx  = vaddq_f32( qChunkBase[1], qChunkBase[1] );     // 2 * x
+        ArrayFloat fTy  = vaddq_f32( qChunkBase[2], qChunkBase[2] );     // 2 * y
+        ArrayFloat fTz  = vaddq_f32( qChunkBase[3], qChunkBase[3] );     // 2 * z
+        ArrayFloat fTwx = vmulq_f32( fTx, qChunkBase[0] );                   // fTx*w;
+        ArrayFloat fTwy = vmulq_f32( fTy, qChunkBase[0] );                   // fTy*w;
+        ArrayFloat fTwz = vmulq_f32( fTz, qChunkBase[0] );                   // fTz*w;
+        ArrayFloat fTxx = vmulq_f32( fTx, qChunkBase[1] );                   // fTx*x;
+        ArrayFloat fTxy = vmulq_f32( fTy, qChunkBase[1] );                   // fTy*x;
+        ArrayFloat fTxz = vmulq_f32( fTz, qChunkBase[1] );                   // fTz*x;
+        ArrayFloat fTyy = vmulq_f32( fTy, qChunkBase[2] );                   // fTy*y;
+        ArrayFloat fTyz = vmulq_f32( fTz, qChunkBase[2] );                   // fTz*y;
+        ArrayFloat fTzz = vmulq_f32( fTz, qChunkBase[3] );                   // fTz*z;
 
         chunkBase[0] = vsubq_f32( MathlibNEON::ONE, vaddq_f32( fTyy, fTzz ) );
         chunkBase[1] = vsubq_f32( fTxy, fTwz );
@@ -417,9 +405,9 @@ namespace Demi
     inline void ArrayMatrix4::makeTransform( const ArrayVector3 &position, const ArrayVector3 &scale,
                                              const ArrayQuaternion &orientation )
     {
-        ArrayReal * RESTRICT_ALIAS chunkBase            = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS posChunkBase   = position.mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS scaleChunkBase = scale.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS chunkBase            = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS posChunkBase   = position.mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS scaleChunkBase = scale.mChunkBase;
         this->fromQuaternion( orientation );
         chunkBase[0] = vmulq_f32( chunkBase[0], scaleChunkBase[0] );    //m00 * scale.x
         chunkBase[1] = vmulq_f32( chunkBase[1], scaleChunkBase[1] );    //m01 * scale.y
@@ -453,7 +441,7 @@ namespace Demi
         return vmovemaskq_u32( mask ) == 0x0f;
     }
     
-    inline void ArrayMatrix4::storeToAoS( Matrix4 * RESTRICT_ALIAS dst ) const
+    inline void ArrayMatrix4::storeToAoS( DiMat4 * RESTRICT_ALIAS dst ) const
     {
 #define _MM_TRANSPOSE4_SRC_DST_PS(row0, row1, row2, row3, dst0, dst1, dst2, dst3) { \
             float32x4x4_t tmp0, tmp1;               \
@@ -468,7 +456,7 @@ namespace Demi
             dst3 = tmp1.val[3];                     \
         }
 
-        register ArrayReal m0, m1, m2, m3;
+        register ArrayFloat m0, m1, m2, m3;
 
         _MM_TRANSPOSE4_SRC_DST_PS(
                             this->mChunkBase[0], this->mChunkBase[1],
@@ -504,7 +492,7 @@ namespace Demi
         vst1q_f32( dst[3]._m+12, m3 );
     }
     
-    inline void ArrayMatrix4::loadFromAoS( const Matrix4 * RESTRICT_ALIAS src )
+    inline void ArrayMatrix4::loadFromAoS( const DiMat4 * RESTRICT_ALIAS src )
     {
         _MM_TRANSPOSE4_SRC_DST_PS(
                             vld1q_f32( src[0]._m ), vld1q_f32( src[1]._m ), 

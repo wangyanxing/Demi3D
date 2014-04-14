@@ -19,7 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     #error "Don't include this file directly. include Math/Array/ArrayMatrix4.h"
 #endif
 
-#include "DiMat4.h"
+#include "Math/matrix4.h"
 
 #include "Math/Array/Mathlib.h"
 #include "Math/Array/ArrayVector3.h"

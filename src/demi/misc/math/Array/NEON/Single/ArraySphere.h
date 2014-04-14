@@ -12,6 +12,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 /// This file is adapted from Ogre 2.0 (working version)
+
 #ifndef __NEON_ArraySphere_H__
 #define __NEON_ArraySphere_H__
 
@@ -19,7 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     #error "Don't include this file directly. include Math/Array/ArraySphere.h"
 #endif
 
-#include "Sphere.h"
+#include "DiSphere.h"
 
 #include "Math/Array/Mathlib.h"
 #include "Math/Array/ArrayVector3.h"
@@ -27,9 +28,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
 
-    /** Cache-friendly array of Sphere represented as a SoA array.
+    /** Cache-friendly array of DiSphere represented as a SoA array.
         @remarks
-            ArraySphere is a SIMD & cache-friendly version of Sphere.
+            ArraySphere is a SIMD & cache-friendly version of DiSphere.
             @See ArrayVector3 for more information.
         @par
             Extracting one sphere needs 64 bytes, which is within
@@ -53,51 +54,51 @@ namespace Demi
         {
         }
 
-        void getAsSphere( Sphere &out, size_t index ) const
+        void getAsSphere( DiSphere &out, size_t index ) const
         {
             //Be careful of not writing to these regions or else strict aliasing rule gets broken!!!
             const float *aliasedRadius = reinterpret_cast<const float*>( &mRadius );
 
             DiVec3 center;
-            mCenter.getAsDiVec3( center, index );
+            mCenter.getAsVector3( center, index );
             out.setCenter( center );
             out.setRadius( *aliasedRadius );
         }
 
         /// Prefer using @see getAsSphere() because this function may have more
         /// overhead (the other one is faster)
-        Sphere getAsSphere( size_t index ) const
+        DiSphere getAsSphere( size_t index ) const
         {
-            Sphere retVal;
+            DiSphere retVal;
             getAsSphere( retVal, index );
             return retVal;
         }
 
-        void setFromSphere( const Sphere &sphere, size_t index )
+        void setFromSphere( const DiSphere &sphere, size_t index )
         {
             float *aliasedRadius = reinterpret_cast<float*>( &mRadius );
             aliasedRadius[index] = sphere.getRadius();
-            mCenter.setFromDiVec3( sphere.getCenter(), index );
+            mCenter.setFromVector3( sphere.getCenter(), index );
         }
 
         /// Sets all packed spheres to the same value as the scalar input sphere
-        void setAll( const Sphere &sphere )
+        void setAll( const DiSphere &sphere )
         {
-            const float fRadius      = sphere.getRadius();
-            const DiVec3 &center   = sphere.getCenter();
+            const float fRadius  = sphere.getRadius();
+            const DiVec3 &center = sphere.getCenter();
             mRadius = vdupq_n_f32( fRadius );
             mCenter.mChunkBase[0] = vdupq_n_f32( center.x );
             mCenter.mChunkBase[1] = vdupq_n_f32( center.y );
             mCenter.mChunkBase[2] = vdupq_n_f32( center.z );
         }
 
-        /// @copydoc Sphere::intersects()
+        /// @copydoc DiSphere::intersects()
         inline Arrayfloat intersects( const ArraySphere &s ) const;
 
-        /// @copydoc Sphere::intersects()
+        /// @copydoc DiSphere::intersects()
         inline Arrayfloat intersects( const ArrayAabb &aabb ) const;
 
-        /// @copydoc Sphere::intersects()
+        /// @copydoc DiSphere::intersects()
         inline Arrayfloat intersects( const ArrayVector3 &v ) const;
     };
     /** @} */

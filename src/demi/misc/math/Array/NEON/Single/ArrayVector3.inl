@@ -1,30 +1,17 @@
-/*
------------------------------------------------------------------------------
-This source file is part of OGRE
-    (Object-oriented Graphics Rendering Engine)
-For the latest info, see http://www.ogre3d.org/
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
-Copyright (c) 2000-2014 Torus Knot Software Ltd
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
------------------------------------------------------------------------------
-*/
+/// This file is adapted from Ogre 2.0 (working version)
 
 namespace Demi
 {
@@ -38,7 +25,7 @@ namespace Demi
         Note that for scalars (i.e. floats) we use DEFINE_L_SCALAR_OPERATION/DEFINE_R_SCALAR_OPERATION
         depending on whether the scalar is on the left or right side of the operation
         (i.e. 2 * a vs a * 2)
-        And for ArrayReal scalars we use DEFINE_L_OPERATION/DEFINE_R_OPERATION
+        And for ArrayFloat scalars we use DEFINE_L_OPERATION/DEFINE_R_OPERATION
 
         As for division, we use specific scalar versions to increase performance (calculate
         the inverse of the scalar once, then multiply) as well as placing asserts in
@@ -64,8 +51,8 @@ namespace Demi
 #define DEFINE_OPERATION( leftClass, rightClass, op, op_func )\
     inline ArrayVector3 operator op ( const leftClass &lhs, const rightClass &rhs )\
     {\
-        const ArrayReal * RESTRICT_ALIAS lhsChunkBase = lhs.mChunkBase;\
-        const ArrayReal * RESTRICT_ALIAS rhsChunkBase = rhs.mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS lhsChunkBase = lhs.mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS rhsChunkBase = rhs.mChunkBase;\
         return ArrayVector3(\
                 op_func( lhsChunkBase[0], rhsChunkBase[0] ),\
                 op_func( lhsChunkBase[1], rhsChunkBase[1] ),\
@@ -74,7 +61,7 @@ namespace Demi
 #define DEFINE_L_SCALAR_OPERATION( leftType, rightClass, op, op_func )\
     inline ArrayVector3 operator op ( const leftType fScalar, const rightClass &rhs )\
     {\
-        ArrayReal lhs = vdupq_n_f32( fScalar );\
+        ArrayFloat lhs = vdupq_n_f32( fScalar );\
         return ArrayVector3(\
                 op_func( lhs, rhs.mChunkBase[0] ),\
                 op_func( lhs, rhs.mChunkBase[1] ),\
@@ -83,7 +70,7 @@ namespace Demi
 #define DEFINE_R_SCALAR_OPERATION( leftClass, rightType, op, op_func )\
     inline ArrayVector3 operator op ( const leftClass &lhs, const rightType fScalar )\
     {\
-        ArrayReal rhs = vdupq_n_f32( fScalar );\
+        ArrayFloat rhs = vdupq_n_f32( fScalar );\
         return ArrayVector3(\
                 op_func( lhs.mChunkBase[0], rhs ),\
                 op_func( lhs.mChunkBase[1], rhs ),\
@@ -109,7 +96,7 @@ namespace Demi
 #define DEFINE_L_SCALAR_DIVISION( leftType, rightClass, op, op_func )\
     inline ArrayVector3 operator op ( const leftType fScalar, const rightClass &rhs )\
     {\
-        ArrayReal lhs = vdupq_n_f32( fScalar );\
+        ArrayFloat lhs = vdupq_n_f32( fScalar );\
         return ArrayVector3(\
                 op_func( lhs, rhs.mChunkBase[0] ),\
                 op_func( lhs, rhs.mChunkBase[1] ),\
@@ -120,7 +107,7 @@ namespace Demi
     {\
         assert( fScalar != 0.0 );\
         Real fInv = 1.0f / fScalar;\
-        ArrayReal rhs = vdupq_n_f32( fInv );\
+        ArrayFloat rhs = vdupq_n_f32( fInv );\
         return ArrayVector3(\
                 op_func( lhs.mChunkBase[0], rhs ),\
                 op_func( lhs.mChunkBase[1], rhs ),\
@@ -147,7 +134,7 @@ namespace Demi
     inline ArrayVector3 operator op ( const leftClass &lhs, const rightType r )\
     {\
         ASSERT_DIV_BY_ZERO( r );\
-        ArrayReal rhs = MathlibNEON::Inv4( r );\
+        ArrayFloat rhs = MathlibNEON::Inv4( r );\
         return ArrayVector3(\
                 op_func( lhs.mChunkBase[0], rhs ),\
                 op_func( lhs.mChunkBase[1], rhs ),\
@@ -158,8 +145,8 @@ namespace Demi
 #define DEFINE_UPDATE_OPERATION( leftClass, op, op_func )\
     inline void ArrayVector3::operator op ( const leftClass &a )\
     {\
-        ArrayReal * RESTRICT_ALIAS chunkBase = mChunkBase;\
-        const ArrayReal * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
         chunkBase[0] = op_func( chunkBase[0], aChunkBase[0] );\
         chunkBase[1] = op_func( chunkBase[1], aChunkBase[1] );\
         chunkBase[2] = op_func( chunkBase[2], aChunkBase[2] );\
@@ -167,7 +154,7 @@ namespace Demi
 #define DEFINE_UPDATE_R_SCALAR_OPERATION( rightType, op, op_func )\
     inline void ArrayVector3::operator op ( const rightType fScalar )\
     {\
-        ArrayReal a = vdupq_n_f32( fScalar );\
+        ArrayFloat a = vdupq_n_f32( fScalar );\
         mChunkBase[0] = op_func( mChunkBase[0], a );\
         mChunkBase[1] = op_func( mChunkBase[1], a );\
         mChunkBase[2] = op_func( mChunkBase[2], a );\
@@ -182,8 +169,8 @@ namespace Demi
 #define DEFINE_UPDATE_DIVISION( leftClass, op, op_func )\
     inline void ArrayVector3::operator op ( const leftClass &a )\
     {\
-        ArrayReal * RESTRICT_ALIAS chunkBase = mChunkBase;\
-        const ArrayReal * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;\
+        const ArrayFloat * RESTRICT_ALIAS aChunkBase = a.mChunkBase;\
         chunkBase[0] = op_func( chunkBase[0], aChunkBase[0] );\
         chunkBase[1] = op_func( chunkBase[1], aChunkBase[1] );\
         chunkBase[2] = op_func( chunkBase[2], aChunkBase[2] );\
@@ -193,7 +180,7 @@ namespace Demi
     {\
         assert( fScalar != 0.0 );\
         Real fInv = 1.0f / fScalar;\
-        ArrayReal a = vdupq_n_f32( fInv );\
+        ArrayFloat a = vdupq_n_f32( fInv );\
         mChunkBase[0] = op_func( mChunkBase[0], a );\
         mChunkBase[1] = op_func( mChunkBase[1], a );\
         mChunkBase[2] = op_func( mChunkBase[2], a );\
@@ -202,7 +189,7 @@ namespace Demi
     inline void ArrayVector3::operator op ( const rightType _a )\
     {\
         ASSERT_DIV_BY_ZERO( _a );\
-        ArrayReal a = MathlibNEON::Inv4( _a );\
+        ArrayFloat a = MathlibNEON::Inv4( _a );\
         mChunkBase[0] = op_func( mChunkBase[0], a );\
         mChunkBase[1] = op_func( mChunkBase[1], a );\
         mChunkBase[2] = op_func( mChunkBase[2], a );\
@@ -227,34 +214,34 @@ namespace Demi
     DEFINE_L_SCALAR_OPERATION( Real, ArrayVector3, +, vaddq_f32 );
     DEFINE_R_SCALAR_OPERATION( ArrayVector3, Real, +, vaddq_f32 );
 
-    DEFINE_L_OPERATION( ArrayReal, ArrayVector3, +, vaddq_f32 );
-    DEFINE_R_OPERATION( ArrayVector3, ArrayReal, +, vaddq_f32 );
+    DEFINE_L_OPERATION( ArrayFloat, ArrayVector3, +, vaddq_f32 );
+    DEFINE_R_OPERATION( ArrayVector3, ArrayFloat, +, vaddq_f32 );
 
     // - Subtraction
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, -, vsubq_f32 );
     DEFINE_L_SCALAR_OPERATION( Real, ArrayVector3, -, vsubq_f32 );
     DEFINE_R_SCALAR_OPERATION( ArrayVector3, Real, -, vsubq_f32 );
 
-    DEFINE_L_OPERATION( ArrayReal, ArrayVector3, -, vsubq_f32 );
-    DEFINE_R_OPERATION( ArrayVector3, ArrayReal, -, vsubq_f32 );
+    DEFINE_L_OPERATION( ArrayFloat, ArrayVector3, -, vsubq_f32 );
+    DEFINE_R_OPERATION( ArrayVector3, ArrayFloat, -, vsubq_f32 );
 
     // * Multiplication
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, *, vmulq_f32 );
     DEFINE_L_SCALAR_OPERATION( Real, ArrayVector3, *, vmulq_f32 );
     DEFINE_R_SCALAR_OPERATION( ArrayVector3, Real, *, vmulq_f32 );
 
-    DEFINE_L_OPERATION( ArrayReal, ArrayVector3, *, vmulq_f32 );
-    DEFINE_R_OPERATION( ArrayVector3, ArrayReal, *, vmulq_f32 );
+    DEFINE_L_OPERATION( ArrayFloat, ArrayVector3, *, vmulq_f32 );
+    DEFINE_R_OPERATION( ArrayVector3, ArrayFloat, *, vmulq_f32 );
 
     // / Division (scalar versions use mul instead of div, because they mul against the reciprocal)
     DEFINE_OPERATION( ArrayVector3, ArrayVector3, /, vdivq_f32 );
     DEFINE_L_SCALAR_DIVISION( Real, ArrayVector3, /, vdivq_f32 );
     DEFINE_R_SCALAR_DIVISION( ArrayVector3, Real, /, vmulq_f32 );
 
-    DEFINE_L_DIVISION( ArrayReal, ArrayVector3, /, vdivq_f32 );
-    DEFINE_R_DIVISION( ArrayVector3, ArrayReal, /, vmulq_f32 );
+    DEFINE_L_DIVISION( ArrayFloat, ArrayVector3, /, vdivq_f32 );
+    DEFINE_R_DIVISION( ArrayVector3, ArrayFloat, /, vmulq_f32 );
 
-    inline ArrayVector3 ArrayVector3::Cmov4( const ArrayVector3 &arg1, const ArrayVector3 &arg2, ArrayReal mask )
+    inline ArrayVector3 ArrayVector3::Cmov4( const ArrayVector3 &arg1, const ArrayVector3 &arg2, ArrayFloat mask )
     {
         return ArrayVector3(
                 MathlibNEON::Cmov4( arg1.mChunkBase[0], arg2.mChunkBase[0], mask ),
@@ -266,26 +253,26 @@ namespace Demi
     // +=
     DEFINE_UPDATE_OPERATION(            ArrayVector3,       +=, vaddq_f32 );
     DEFINE_UPDATE_R_SCALAR_OPERATION(   Real,               +=, vaddq_f32 );
-    DEFINE_UPDATE_R_OPERATION(          ArrayReal,          +=, vaddq_f32 );
+    DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          +=, vaddq_f32 );
 
     // -=
     DEFINE_UPDATE_OPERATION(            ArrayVector3,       -=, vsubq_f32 );
     DEFINE_UPDATE_R_SCALAR_OPERATION(   Real,               -=, vsubq_f32 );
-    DEFINE_UPDATE_R_OPERATION(          ArrayReal,          -=, vsubq_f32 );
+    DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          -=, vsubq_f32 );
 
     // *=
     DEFINE_UPDATE_OPERATION(            ArrayVector3,       *=, vmulq_f32 );
     DEFINE_UPDATE_R_SCALAR_OPERATION(   Real,               *=, vmulq_f32 );
-    DEFINE_UPDATE_R_OPERATION(          ArrayReal,          *=, vmulq_f32 );
+    DEFINE_UPDATE_R_OPERATION(          ArrayFloat,          *=, vmulq_f32 );
 
     // /=
     DEFINE_UPDATE_DIVISION(             ArrayVector3,       /=, vdivq_f32 );
     DEFINE_UPDATE_R_SCALAR_DIVISION(    Real,               /=, vmulq_f32 );
-    DEFINE_UPDATE_R_DIVISION(           ArrayReal,          /=, vmulq_f32 );
+    DEFINE_UPDATE_R_DIVISION(           ArrayFloat,          /=, vmulq_f32 );
 
     //Functions
     
-    inline ArrayReal ArrayVector3::length() const
+    inline ArrayFloat ArrayVector3::length() const
     {
         return
         vrsqrteq_f32( vaddq_f32( vaddq_f32(                 //sqrt(
@@ -294,7 +281,7 @@ namespace Demi
             vmulq_f32( mChunkBase[2], mChunkBase[2] ) ) );  //z * z )
     }
     
-    inline ArrayReal ArrayVector3::squaredLength() const
+    inline ArrayFloat ArrayVector3::squaredLength() const
     {
         return
         vaddq_f32( vaddq_f32(
@@ -303,17 +290,17 @@ namespace Demi
         vmulq_f32( mChunkBase[2], mChunkBase[2] ) );        //z * z )
     }
     
-    inline ArrayReal ArrayVector3::distance( const ArrayVector3& rhs ) const
+    inline ArrayFloat ArrayVector3::distance( const ArrayVector3& rhs ) const
     {
         return (*this - rhs).length();
     }
     
-    inline ArrayReal ArrayVector3::squaredDistance( const ArrayVector3& rhs ) const
+    inline ArrayFloat ArrayVector3::squaredDistance( const ArrayVector3& rhs ) const
     {
         return (*this - rhs).squaredLength();
     }
     
-    inline ArrayReal ArrayVector3::dotProduct( const ArrayVector3& vec ) const
+    inline ArrayFloat ArrayVector3::dotProduct( const ArrayVector3& vec ) const
     {
         return
         vaddq_f32( vaddq_f32(
@@ -322,7 +309,7 @@ namespace Demi
             vmulq_f32( mChunkBase[2], vec.mChunkBase[2] ) );    //  z * vec.z
     }
     
-    inline ArrayReal ArrayVector3::absDotProduct( const ArrayVector3& vec ) const
+    inline ArrayFloat ArrayVector3::absDotProduct( const ArrayVector3& vec ) const
     {
         return
         vaddq_f32( vaddq_f32(
@@ -333,7 +320,7 @@ namespace Demi
     
     inline void ArrayVector3::normalise( void )
     {
-        ArrayReal sqLength = vaddq_f32( vaddq_f32(
+        ArrayFloat sqLength = vaddq_f32( vaddq_f32(
             vmulq_f32( mChunkBase[0], mChunkBase[0] ),  //(x * x +
             vmulq_f32( mChunkBase[1], mChunkBase[1] ) ),    //y * y) +
         vmulq_f32( mChunkBase[2], mChunkBase[2] ) );        //z * z )
@@ -344,7 +331,7 @@ namespace Demi
         //generating the nans could impact performance in some architectures
         sqLength = MathlibNEON::Cmov4( sqLength, MathlibNEON::ONE,
                                         vcgtq_f32( sqLength, MathlibNEON::FLOAT_MIN ) );
-        ArrayReal invLength = MathlibNEON::InvSqrtNonZero4( sqLength );
+        ArrayFloat invLength = MathlibNEON::InvSqrtNonZero4( sqLength );
         mChunkBase[0] = vmulq_f32( mChunkBase[0], invLength ); //x * invLength
         mChunkBase[1] = vmulq_f32( mChunkBase[1], invLength ); //y * invLength
         mChunkBase[2] = vmulq_f32( mChunkBase[2], invLength ); //z * invLength
@@ -374,8 +361,8 @@ namespace Demi
     
     inline void ArrayVector3::makeFloor( const ArrayVector3& cmp )
     {
-        ArrayReal * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS bChunkBase = cmp.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = cmp.mChunkBase;
         aChunkBase[0] = vminq_f32( aChunkBase[0], bChunkBase[0] );
         aChunkBase[1] = vminq_f32( aChunkBase[1], bChunkBase[1] );
         aChunkBase[2] = vminq_f32( aChunkBase[2], bChunkBase[2] );
@@ -383,19 +370,19 @@ namespace Demi
     
     inline void ArrayVector3::makeCeil( const ArrayVector3& cmp )
     {
-        ArrayReal * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS bChunkBase = cmp.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = cmp.mChunkBase;
         aChunkBase[0] = vmaxq_f32( aChunkBase[0], bChunkBase[0] );
         aChunkBase[1] = vmaxq_f32( aChunkBase[1], bChunkBase[1] );
         aChunkBase[2] = vmaxq_f32( aChunkBase[2], bChunkBase[2] );
     }
     
-    inline ArrayReal ArrayVector3::getMinComponent() const
+    inline ArrayFloat ArrayVector3::getMinComponent() const
     {
         return vminq_f32( mChunkBase[0], vminq_f32( mChunkBase[1], mChunkBase[2] ) );
     }
     
-    inline ArrayReal ArrayVector3::getMaxComponent() const
+    inline ArrayFloat ArrayVector3::getMaxComponent() const
     {
         return vmaxq_f32( mChunkBase[0], vmaxq_f32( mChunkBase[1], mChunkBase[2] ) );
     }
@@ -403,7 +390,7 @@ namespace Demi
     inline void ArrayVector3::setToSign()
     {
         // x = 1.0f | (x & 0x80000000)
-        ArrayReal signMask = vdupq_n_f32( -0.0f );
+        ArrayFloat signMask = vdupq_n_f32( -0.0f );
         mChunkBase[0] = vorrq_f32( MathlibNEON::ONE, vandq_s32( signMask, mChunkBase[0] ) );
         mChunkBase[1] = vorrq_f32( MathlibNEON::ONE, vandq_s32( signMask, mChunkBase[1] ) );
         mChunkBase[2] = vorrq_f32( MathlibNEON::ONE, vandq_s32( signMask, mChunkBase[2] ) );
@@ -432,7 +419,7 @@ namespace Demi
     
     inline ArrayVector3 ArrayVector3::normalisedCopy( void ) const
     {
-        ArrayReal sqLength = vaddq_f32( vaddq_f32(
+        ArrayFloat sqLength = vaddq_f32( vaddq_f32(
             vmulq_f32( mChunkBase[0], mChunkBase[0] ),  //(x * x +
             vmulq_f32( mChunkBase[1], mChunkBase[1] ) ),    //y * y) +
         vmulq_f32( mChunkBase[2], mChunkBase[2] ) );        //z * z )
@@ -443,7 +430,7 @@ namespace Demi
         //generating the nans could impact performance in some architectures
         sqLength = MathlibNEON::Cmov4( sqLength, MathlibNEON::ONE,
                                         vcgtq_f32( sqLength, MathlibNEON::FLOAT_MIN ) );
-        ArrayReal invLength = MathlibNEON::InvSqrtNonZero4( sqLength );
+        ArrayFloat invLength = MathlibNEON::InvSqrtNonZero4( sqLength );
 
         return ArrayVector3(
             vmulq_f32( mChunkBase[0], invLength ),  //x * invLength
@@ -453,7 +440,7 @@ namespace Demi
     
     inline ArrayVector3 ArrayVector3::reflect( const ArrayVector3& normal ) const
     {
-        const ArrayReal twoPointZero = vdupq_n_f32( 2.0f );
+        const ArrayFloat twoPointZero = vdupq_n_f32( 2.0f );
         return ( *this - ( vmulq_f32( twoPointZero, this->dotProduct( normal ) ) * normal ) );
     }
     
@@ -489,12 +476,12 @@ namespace Demi
         // way. Doing this the "human readable way" results in massive amounts of wasted
         // instructions and stack memory abuse.
         // See Vector3::primaryAxis() to understand what's actually going on.
-        ArrayReal absx = MathlibNEON::Abs4( mChunkBase[0] );
-        ArrayReal absy = MathlibNEON::Abs4( mChunkBase[1] );
-        ArrayReal absz = MathlibNEON::Abs4( mChunkBase[2] );
+        ArrayFloat absx = MathlibNEON::Abs4( mChunkBase[0] );
+        ArrayFloat absy = MathlibNEON::Abs4( mChunkBase[1] );
+        ArrayFloat absz = MathlibNEON::Abs4( mChunkBase[2] );
 
         //xVec = x > 0 ? Vector3::UNIT_X : Vector3::NEGATIVE_UNIT_X;
-        ArrayReal sign = MathlibNEON::Cmov4( vdupq_n_f32( 1.0f ), vdupq_n_f32( -1.0f ),
+        ArrayFloat sign = MathlibNEON::Cmov4( vdupq_n_f32( 1.0f ), vdupq_n_f32( -1.0f ),
                                             vcgtq_f32( mChunkBase[0], vdupq_n_f32(0.0f) ) );
         ArrayVector3 xVec( sign, vdupq_n_f32(0.0f), vdupq_n_f32(0.0f) );
 
@@ -509,7 +496,7 @@ namespace Demi
         ArrayVector3 zVec( vdupq_n_f32(0.0f), vdupq_n_f32(0.0f), sign );
 
         //xVec = absx > absz ? xVec : zVec
-        ArrayReal mask = vcgtq_f32( absx, absz );
+        ArrayFloat mask = vcgtq_f32( absx, absz );
         xVec.mChunkBase[0] = MathlibNEON::Cmov4( xVec.mChunkBase[0], zVec.mChunkBase[0], mask );
         xVec.mChunkBase[2] = MathlibNEON::Cmov4( xVec.mChunkBase[2], zVec.mChunkBase[2], mask );
 
@@ -524,18 +511,18 @@ namespace Demi
     
     inline Vector3 ArrayVector3::collapseMin( void ) const
     {
-        OGRE_ALIGNED_DECL( Real, vals[4], OGRE_SIMD_ALIGNMENT );
-//      ArrayReal aosVec0, aosVec1, aosVec2, aosVec3;
+        DEMI_ALIGNED_DECL( Real, vals[4], DEMI_SIMD_ALIGNMENT );
+//      ArrayFloat aosVec0, aosVec1, aosVec2, aosVec3;
         Real min0 = MathlibNEON::CollapseMin(mChunkBase[0]);
         Real min1 = MathlibNEON::CollapseMin(mChunkBase[1]);
         Real min2 = MathlibNEON::CollapseMin(mChunkBase[2]);
 
-        ArrayReal minArray = { min0, min1, min2, std::numeric_limits<Real>::infinity() };
+        ArrayFloat minArray = { min0, min1, min2, std::numeric_limits<Real>::infinity() };
         Real min = MathlibNEON::CollapseMin(minArray);
 //        min = vminq_f32(mChunkBase[0], mChunkBase[1]);
 //        min = vminq_f32(min, mChunkBase[2]);
 
-//        ArrayReal a_lo, a_hi, min;
+//        ArrayFloat a_lo, a_hi, min;
 //        a_lo = vget_low_f32(a);
 //        a_hi = vget_high_f32(a);
 //        min = vpmin_f32(a_lo, a_hi);
@@ -544,7 +531,7 @@ namespace Demi
 //        return vget_lane_f32(min, 0);
 
         //Transpose XXXX YYYY ZZZZ to XYZZ XYZZ XYZZ XYZZ
-//      ArrayReal tmp2, tmp0;
+//      ArrayFloat tmp2, tmp0;
 //      tmp0   = vshuf_f32( mChunkBase[0], mChunkBase[1], 0x44 );
 //        tmp2   = vshuf_f32( mChunkBase[0], mChunkBase[1], 0xEE );
 //
@@ -565,20 +552,20 @@ namespace Demi
     
     inline Vector3 ArrayVector3::collapseMax( void ) const
     {
-        OGRE_ALIGNED_DECL( Real, vals[4], OGRE_SIMD_ALIGNMENT );
-//      ArrayReal aosVec0, aosVec1, aosVec2, aosVec3;
+        DEMI_ALIGNED_DECL( Real, vals[4], DEMI_SIMD_ALIGNMENT );
+//      ArrayFloat aosVec0, aosVec1, aosVec2, aosVec3;
         Real max0 = MathlibNEON::CollapseMax(mChunkBase[0]);
         Real max1 = MathlibNEON::CollapseMax(mChunkBase[1]);
         Real max2 = MathlibNEON::CollapseMax(mChunkBase[2]);
 
-        ArrayReal maxArray = { max0, max1, max2, -std::numeric_limits<Real>::infinity() };
+        ArrayFloat maxArray = { max0, max1, max2, -std::numeric_limits<Real>::infinity() };
         Real max = MathlibNEON::CollapseMax(maxArray);
-//        ArrayReal max;
+//        ArrayFloat max;
 //        max = vmaxq_f32(mChunkBase[0], mChunkBase[1]);
 //        max = vmaxq_f32(max, mChunkBase[2]);
 
         //Transpose XXXX YYYY ZZZZ to XYZZ XYZZ XYZZ XYZZ
-//      ArrayReal tmp2, tmp0;
+//      ArrayFloat tmp2, tmp0;
 //      tmp0   = vshuf_f32( mChunkBase[0], mChunkBase[1], 0x44 );
 //        tmp2   = vshuf_f32( mChunkBase[0], mChunkBase[1], 0xEE );
 //
@@ -597,19 +584,19 @@ namespace Demi
         return Vector3( vals[0], vals[1], vals[2] );
     }
     
-    inline void ArrayVector3::Cmov4( ArrayReal mask, const ArrayVector3 &replacement )
+    inline void ArrayVector3::Cmov4( ArrayFloat mask, const ArrayVector3 &replacement )
     {
-        ArrayReal * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
         aChunkBase[0] = MathlibNEON::Cmov4( aChunkBase[0], bChunkBase[0], mask );
         aChunkBase[1] = MathlibNEON::Cmov4( aChunkBase[1], bChunkBase[1], mask );
         aChunkBase[2] = MathlibNEON::Cmov4( aChunkBase[2], bChunkBase[2], mask );
     }
     
-    inline void ArrayVector3::CmovRobust( ArrayReal mask, const ArrayVector3 &replacement )
+    inline void ArrayVector3::CmovRobust( ArrayFloat mask, const ArrayVector3 &replacement )
     {
-        ArrayReal * RESTRICT_ALIAS aChunkBase = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS aChunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS bChunkBase = replacement.mChunkBase;
         aChunkBase[0] = MathlibNEON::CmovRobust( aChunkBase[0], bChunkBase[0], mask );
         aChunkBase[1] = MathlibNEON::CmovRobust( aChunkBase[1], bChunkBase[1], mask );
         aChunkBase[2] = MathlibNEON::CmovRobust( aChunkBase[2], bChunkBase[2], mask );

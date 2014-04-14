@@ -22,7 +22,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     const ArrayMatrix4 ArrayMatrix4::IDENTITY( ArrayMatrix4::createAllFromMatrix4(
-                Matrix4(    1, 0, 0, 0,
+                DiMat4(    1, 0, 0, 0,
                             0, 1, 0, 0,
                             0, 0, 1, 0,
                             0, 0, 0, 1 ) ) );

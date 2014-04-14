@@ -1,30 +1,18 @@
-/*
------------------------------------------------------------------------------
-This source file is part of OGRE
-    (Object-oriented Graphics Rendering Engine)
-For the latest info, see http://www.ogre3d.org/
 
-Copyright (c) 2000-2014 Torus Knot Software Ltd
+/**********************************************************************
+This source file is a part of Demi3D
+   __  ___  __  __  __
+  |  \|_ |\/||   _)|  \ 
+  |__/|__|  ||  __)|__/ 
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Copyright (c) 2013-2014 Demi team
+https://github.com/wangyanxing/Demi3D
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+Released under the MIT License
+https://github.com/wangyanxing/Demi3D/blob/master/License.txt
+***********************************************************************/
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
------------------------------------------------------------------------------
-*/
+/// This file is adapted from Ogre 2.0 (working version)
 
 namespace Demi
 {
@@ -34,16 +22,16 @@ namespace Demi
     ///     safe to assume &lhs != &rhs. RESTRICT_ALIAS modifier is used (a non-standard
     ///     C++ extension) is used when available to dramatically improve performance,
     ///     particularly of the update operations ( a *= b )
-    ///     This function will assert if OGRE_RESTRICT_ALIASING is enabled and any of the
+    ///     This function will assert if DEMI_RESTRICT_ALIASING is enabled and any of the
     ///     given pointers point to the same location
-    FORCEINLINE void concatArrayMatAf4x3( ArrayReal * RESTRICT_ALIAS outChunkBase,
-                                        const ArrayReal * RESTRICT_ALIAS lhsChunkBase,
-                                        const ArrayReal * RESTRICT_ALIAS rhsChunkBase )
+    FORCEINLINE void concatArrayMatAf4x3( ArrayFloat * RESTRICT_ALIAS outChunkBase,
+                                        const ArrayFloat * RESTRICT_ALIAS lhsChunkBase,
+                                        const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
-#if OGRE_RESTRICT_ALIASING != 0
+#if DEMI_RESTRICT_ALIASING != 0
         assert( outChunkBase != lhsChunkBase && outChunkBase != rhsChunkBase &&
                 lhsChunkBase != rhsChunkBase &&
-                "Re-strict aliasing rule broken. Compile without OGRE_RESTRICT_ALIASING" );
+                "Re-strict aliasing rule broken. Compile without DEMI_RESTRICT_ALIASING" );
 #endif
         outChunkBase[0] =
             vaddq_f32(
@@ -148,14 +136,14 @@ namespace Demi
     }
 
     /// Update version
-    FORCEINLINE void concatArrayMatAf4x3( ArrayReal * RESTRICT_ALIAS lhsChunkBase,
-                                        const ArrayReal * RESTRICT_ALIAS rhsChunkBase )
+    FORCEINLINE void concatArrayMatAf4x3( ArrayFloat * RESTRICT_ALIAS lhsChunkBase,
+                                        const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
-#if OGRE_RESTRICT_ALIASING != 0
+#if DEMI_RESTRICT_ALIASING != 0
         assert( lhsChunkBase != rhsChunkBase &&
-                "Re-strict aliasing rule broken. Compile without OGRE_RESTRICT_ALIASING" );
+                "Re-strict aliasing rule broken. Compile without DEMI_RESTRICT_ALIASING" );
 #endif
-        ArrayReal lhs0 = lhsChunkBase[0];
+        ArrayFloat lhs0 = lhsChunkBase[0];
         lhsChunkBase[0] =
             vaddq_f32(
             vaddq_f32(
@@ -164,7 +152,7 @@ namespace Demi
             vaddq_f32(
                 vmulq_f32( lhsChunkBase[2], rhsChunkBase[8] ),
                 vmulq_f32( lhsChunkBase[3], rhsChunkBase[12] ) ) );
-        ArrayReal lhs1 = lhsChunkBase[1];
+        ArrayFloat lhs1 = lhsChunkBase[1];
         lhsChunkBase[1] =
             vaddq_f32(
             vaddq_f32(
@@ -173,7 +161,7 @@ namespace Demi
             vaddq_f32(
                 vmulq_f32( lhsChunkBase[2], rhsChunkBase[9] ),
                 vmulq_f32( lhsChunkBase[3], rhsChunkBase[13] ) ) );
-        ArrayReal lhs2 = lhsChunkBase[2];
+        ArrayFloat lhs2 = lhsChunkBase[2];
         lhsChunkBase[2] =
             vaddq_f32(
             vaddq_f32(
@@ -306,20 +294,20 @@ namespace Demi
     
     inline void ArrayMatrixAf4x3::fromQuaternion( const ArrayQuaternion &q )
     {
-        ArrayReal * RESTRICT_ALIAS chunkBase = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS qChunkBase = q.mChunkBase;
-        ArrayReal fTx  = vaddq_f32( qChunkBase[1], qChunkBase[1] );     // 2 * x
-        ArrayReal fTy  = vaddq_f32( qChunkBase[2], qChunkBase[2] );     // 2 * y
-        ArrayReal fTz  = vaddq_f32( qChunkBase[3], qChunkBase[3] );     // 2 * z
-        ArrayReal fTwx = vmulq_f32( fTx, qChunkBase[0] );                   // fTx*w;
-        ArrayReal fTwy = vmulq_f32( fTy, qChunkBase[0] );                   // fTy*w;
-        ArrayReal fTwz = vmulq_f32( fTz, qChunkBase[0] );                   // fTz*w;
-        ArrayReal fTxx = vmulq_f32( fTx, qChunkBase[1] );                   // fTx*x;
-        ArrayReal fTxy = vmulq_f32( fTy, qChunkBase[1] );                   // fTy*x;
-        ArrayReal fTxz = vmulq_f32( fTz, qChunkBase[1] );                   // fTz*x;
-        ArrayReal fTyy = vmulq_f32( fTy, qChunkBase[2] );                   // fTy*y;
-        ArrayReal fTyz = vmulq_f32( fTz, qChunkBase[2] );                   // fTz*y;
-        ArrayReal fTzz = vmulq_f32( fTz, qChunkBase[3] );                   // fTz*z;
+        ArrayFloat * RESTRICT_ALIAS chunkBase = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS qChunkBase = q.mChunkBase;
+        ArrayFloat fTx  = vaddq_f32( qChunkBase[1], qChunkBase[1] );     // 2 * x
+        ArrayFloat fTy  = vaddq_f32( qChunkBase[2], qChunkBase[2] );     // 2 * y
+        ArrayFloat fTz  = vaddq_f32( qChunkBase[3], qChunkBase[3] );     // 2 * z
+        ArrayFloat fTwx = vmulq_f32( fTx, qChunkBase[0] );                   // fTx*w;
+        ArrayFloat fTwy = vmulq_f32( fTy, qChunkBase[0] );                   // fTy*w;
+        ArrayFloat fTwz = vmulq_f32( fTz, qChunkBase[0] );                   // fTz*w;
+        ArrayFloat fTxx = vmulq_f32( fTx, qChunkBase[1] );                   // fTx*x;
+        ArrayFloat fTxy = vmulq_f32( fTy, qChunkBase[1] );                   // fTy*x;
+        ArrayFloat fTxz = vmulq_f32( fTz, qChunkBase[1] );                   // fTz*x;
+        ArrayFloat fTyy = vmulq_f32( fTy, qChunkBase[2] );                   // fTy*y;
+        ArrayFloat fTyz = vmulq_f32( fTz, qChunkBase[2] );                   // fTz*y;
+        ArrayFloat fTzz = vmulq_f32( fTz, qChunkBase[3] );                   // fTz*z;
 
         chunkBase[0] = vsubq_f32( MathlibNEON::ONE, vaddq_f32( fTyy, fTzz ) );
         chunkBase[1] = vsubq_f32( fTxy, fTwz );
@@ -335,9 +323,9 @@ namespace Demi
     inline void ArrayMatrixAf4x3::makeTransform( const ArrayVector3 &position, const ArrayVector3 &scale,
                                              const ArrayQuaternion &orientation )
     {
-        ArrayReal * RESTRICT_ALIAS chunkBase            = mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS posChunkBase   = position.mChunkBase;
-        const ArrayReal * RESTRICT_ALIAS scaleChunkBase = scale.mChunkBase;
+        ArrayFloat * RESTRICT_ALIAS chunkBase            = mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS posChunkBase   = position.mChunkBase;
+        const ArrayFloat * RESTRICT_ALIAS scaleChunkBase = scale.mChunkBase;
         this->fromQuaternion( orientation );
         chunkBase[0] = vmulq_f32( chunkBase[0], scaleChunkBase[0] );    //m00 * scale.x
         chunkBase[1] = vmulq_f32( chunkBase[1], scaleChunkBase[1] );    //m01 * scale.y
@@ -357,18 +345,18 @@ namespace Demi
     
     inline void ArrayMatrixAf4x3::setToInverse(void)
     {
-        ArrayReal m10 = mChunkBase[4], m11 = mChunkBase[5], m12 = mChunkBase[6];
-        ArrayReal m20 = mChunkBase[8], m21 = mChunkBase[9], m22 = mChunkBase[10];
+        ArrayFloat m10 = mChunkBase[4], m11 = mChunkBase[5], m12 = mChunkBase[6];
+        ArrayFloat m20 = mChunkBase[8], m21 = mChunkBase[9], m22 = mChunkBase[10];
 
-        ArrayReal t00 = _mm_nmsub_ps( m21, m12, vmulq_f32( m22, m11 ) ); //m22 * m11 - m21 * m12;
-        ArrayReal t10 = _mm_nmsub_ps( m22, m10, vmulq_f32( m20, m12 ) ); //m20 * m22 - m22 * m10;
-        ArrayReal t20 = _mm_nmsub_ps( m20, m11, vmulq_f32( m21, m10 ) ); //m21 * m10 - m20 * m11;
+        ArrayFloat t00 = _mm_nmsub_ps( m21, m12, vmulq_f32( m22, m11 ) ); //m22 * m11 - m21 * m12;
+        ArrayFloat t10 = _mm_nmsub_ps( m22, m10, vmulq_f32( m20, m12 ) ); //m20 * m22 - m22 * m10;
+        ArrayFloat t20 = _mm_nmsub_ps( m20, m11, vmulq_f32( m21, m10 ) ); //m21 * m10 - m20 * m11;
 
-        ArrayReal m00 = mChunkBase[0], m01 = mChunkBase[1], m02 = mChunkBase[2];
+        ArrayFloat m00 = mChunkBase[0], m01 = mChunkBase[1], m02 = mChunkBase[2];
 
         //det = m00 * t00 + m01 * t10 + m02 * t20
-        ArrayReal det   = _mm_madd_ps( m00, t00, _mm_madd_ps( m01, t10,  vmulq_f32( m02, t20 ) ) );
-        ArrayReal invDet= vdivq_f32( MathlibNEON::ONE, det ); //High precision division
+        ArrayFloat det   = _mm_madd_ps( m00, t00, _mm_madd_ps( m01, t10,  vmulq_f32( m02, t20 ) ) );
+        ArrayFloat invDet= vdivq_f32( MathlibNEON::ONE, det ); //High precision division
 
         t00 = vmulq_f32( t00, invDet );
         t10 = vmulq_f32( t10, invDet );
@@ -378,26 +366,26 @@ namespace Demi
         m01 = vmulq_f32( m01, invDet );
         m02 = vmulq_f32( m02, invDet );
 
-        ArrayReal r00 = t00;
-        ArrayReal r01 = _mm_nmsub_ps( m01, m22, vmulq_f32( m02, m21 ) ); //m02 * m21 - m01 * m22;
-        ArrayReal r02 = _mm_nmsub_ps( m02, m11, vmulq_f32( m01, m12 ) ); //m01 * m12 - m02 * m11;
+        ArrayFloat r00 = t00;
+        ArrayFloat r01 = _mm_nmsub_ps( m01, m22, vmulq_f32( m02, m21 ) ); //m02 * m21 - m01 * m22;
+        ArrayFloat r02 = _mm_nmsub_ps( m02, m11, vmulq_f32( m01, m12 ) ); //m01 * m12 - m02 * m11;
 
-        ArrayReal r10 = t10;
-        ArrayReal r11 = _mm_nmsub_ps( m02, m20, vmulq_f32( m00, m22 ) ); //m00 * m22 - m02 * m20;
-        ArrayReal r12 = _mm_nmsub_ps( m00, m12, vmulq_f32( m02, m10 ) ); //m02 * m10 - m00 * m12;
+        ArrayFloat r10 = t10;
+        ArrayFloat r11 = _mm_nmsub_ps( m02, m20, vmulq_f32( m00, m22 ) ); //m00 * m22 - m02 * m20;
+        ArrayFloat r12 = _mm_nmsub_ps( m00, m12, vmulq_f32( m02, m10 ) ); //m02 * m10 - m00 * m12;
 
-        ArrayReal r20 = t20;
-        ArrayReal r21 = _mm_nmsub_ps( m00, m21, vmulq_f32( m01, m20 ) ); //m01 * m20 - m00 * m21;
-        ArrayReal r22 = _mm_nmsub_ps( m01, m10, vmulq_f32( m00, m11 ) ); //m00 * m11 - m01 * m10;
+        ArrayFloat r20 = t20;
+        ArrayFloat r21 = _mm_nmsub_ps( m00, m21, vmulq_f32( m01, m20 ) ); //m01 * m20 - m00 * m21;
+        ArrayFloat r22 = _mm_nmsub_ps( m01, m10, vmulq_f32( m00, m11 ) ); //m00 * m11 - m01 * m10;
 
-        ArrayReal m03 = mChunkBase[3], m13 = mChunkBase[7], m23 = mChunkBase[11];
+        ArrayFloat m03 = mChunkBase[3], m13 = mChunkBase[7], m23 = mChunkBase[11];
 
         //r03 = (r00 * m03 + r01 * m13 + r02 * m23)
         //r13 = (r10 * m03 + r11 * m13 + r12 * m23)
         //r23 = (r20 * m03 + r21 * m13 + r22 * m23)
-        ArrayReal r03 = _mm_madd_ps( r00, m03, _mm_madd_ps( r01, m13, vmulq_f32( r02, m23 ) ) );
-        ArrayReal r13 = _mm_madd_ps( r10, m03, _mm_madd_ps( r11, m13, vmulq_f32( r12, m23 ) ) );
-        ArrayReal r23 = _mm_madd_ps( r20, m03, _mm_madd_ps( r21, m13, vmulq_f32( r22, m23 ) ) );
+        ArrayFloat r03 = _mm_madd_ps( r00, m03, _mm_madd_ps( r01, m13, vmulq_f32( r02, m23 ) ) );
+        ArrayFloat r13 = _mm_madd_ps( r10, m03, _mm_madd_ps( r11, m13, vmulq_f32( r12, m23 ) ) );
+        ArrayFloat r23 = _mm_madd_ps( r20, m03, _mm_madd_ps( r21, m13, vmulq_f32( r22, m23 ) ) );
 
         r03 = vmulq_f32( r03, MathlibNEON::NEG_ONE ); //r03 = -r03
         r13 = vmulq_f32( r13, MathlibNEON::NEG_ONE ); //r13 = -r13
@@ -421,18 +409,18 @@ namespace Demi
     
     inline void ArrayMatrixAf4x3::setToInverseDegeneratesAsIdentity(void)
     {
-        ArrayReal m10 = mChunkBase[4], m11 = mChunkBase[5], m12 = mChunkBase[6];
-        ArrayReal m20 = mChunkBase[8], m21 = mChunkBase[9], m22 = mChunkBase[10];
+        ArrayFloat m10 = mChunkBase[4], m11 = mChunkBase[5], m12 = mChunkBase[6];
+        ArrayFloat m20 = mChunkBase[8], m21 = mChunkBase[9], m22 = mChunkBase[10];
 
-        ArrayReal t00 = _mm_nmsub_ps( m21, m12, vmulq_f32( m22, m11 ) ); //m22 * m11 - m21 * m12;
-        ArrayReal t10 = _mm_nmsub_ps( m22, m10, vmulq_f32( m20, m12 ) ); //m20 * m22 - m22 * m10;
-        ArrayReal t20 = _mm_nmsub_ps( m20, m11, vmulq_f32( m21, m10 ) ); //m21 * m10 - m20 * m11;
+        ArrayFloat t00 = _mm_nmsub_ps( m21, m12, vmulq_f32( m22, m11 ) ); //m22 * m11 - m21 * m12;
+        ArrayFloat t10 = _mm_nmsub_ps( m22, m10, vmulq_f32( m20, m12 ) ); //m20 * m22 - m22 * m10;
+        ArrayFloat t20 = _mm_nmsub_ps( m20, m11, vmulq_f32( m21, m10 ) ); //m21 * m10 - m20 * m11;
 
-        ArrayReal m00 = mChunkBase[0], m01 = mChunkBase[1], m02 = mChunkBase[2];
+        ArrayFloat m00 = mChunkBase[0], m01 = mChunkBase[1], m02 = mChunkBase[2];
 
         //det = m00 * t00 + m01 * t10 + m02 * t20
-        ArrayReal det   = _mm_madd_ps( m00, t00, _mm_madd_ps( m01, t10,  vmulq_f32( m02, t20 ) ) );
-        ArrayReal invDet= vdivq_f32( MathlibNEON::ONE, det ); //High precision division
+        ArrayFloat det   = _mm_madd_ps( m00, t00, _mm_madd_ps( m01, t10,  vmulq_f32( m02, t20 ) ) );
+        ArrayFloat invDet= vdivq_f32( MathlibNEON::ONE, det ); //High precision division
 
         //degenerateMask = Abs( det ) < fEpsilon;
         ArrayMaskR degenerateMask = vcltq_f32( MathlibNEON::Abs4( det ), MathlibNEON::fEpsilon );
@@ -445,26 +433,26 @@ namespace Demi
         m01 = vmulq_f32( m01, invDet );
         m02 = vmulq_f32( m02, invDet );
 
-        ArrayReal r00 = t00;
-        ArrayReal r01 = _mm_nmsub_ps( m01, m22, vmulq_f32( m02, m21 ) ); //m02 * m21 - m01 * m22;
-        ArrayReal r02 = _mm_nmsub_ps( m02, m11, vmulq_f32( m01, m12 ) ); //m01 * m12 - m02 * m11;
+        ArrayFloat r00 = t00;
+        ArrayFloat r01 = _mm_nmsub_ps( m01, m22, vmulq_f32( m02, m21 ) ); //m02 * m21 - m01 * m22;
+        ArrayFloat r02 = _mm_nmsub_ps( m02, m11, vmulq_f32( m01, m12 ) ); //m01 * m12 - m02 * m11;
 
-        ArrayReal r10 = t10;
-        ArrayReal r11 = _mm_nmsub_ps( m02, m20, vmulq_f32( m00, m22 ) ); //m00 * m22 - m02 * m20;
-        ArrayReal r12 = _mm_nmsub_ps( m00, m12, vmulq_f32( m02, m10 ) ); //m02 * m10 - m00 * m12;
+        ArrayFloat r10 = t10;
+        ArrayFloat r11 = _mm_nmsub_ps( m02, m20, vmulq_f32( m00, m22 ) ); //m00 * m22 - m02 * m20;
+        ArrayFloat r12 = _mm_nmsub_ps( m00, m12, vmulq_f32( m02, m10 ) ); //m02 * m10 - m00 * m12;
 
-        ArrayReal r20 = t20;
-        ArrayReal r21 = _mm_nmsub_ps( m00, m21, vmulq_f32( m01, m20 ) ); //m01 * m20 - m00 * m21;
-        ArrayReal r22 = _mm_nmsub_ps( m01, m10, vmulq_f32( m00, m11 ) ); //m00 * m11 - m01 * m10;
+        ArrayFloat r20 = t20;
+        ArrayFloat r21 = _mm_nmsub_ps( m00, m21, vmulq_f32( m01, m20 ) ); //m01 * m20 - m00 * m21;
+        ArrayFloat r22 = _mm_nmsub_ps( m01, m10, vmulq_f32( m00, m11 ) ); //m00 * m11 - m01 * m10;
 
-        ArrayReal m03 = mChunkBase[3], m13 = mChunkBase[7], m23 = mChunkBase[11];
+        ArrayFloat m03 = mChunkBase[3], m13 = mChunkBase[7], m23 = mChunkBase[11];
 
         //r03 = (r00 * m03 + r01 * m13 + r02 * m23)
         //r13 = (r10 * m03 + r11 * m13 + r12 * m23)
         //r13 = (r20 * m03 + r21 * m13 + r22 * m23)
-        ArrayReal r03 = _mm_madd_ps( r00, m03, _mm_madd_ps( r01, m13, vmulq_f32( r02, m23 ) ) );
-        ArrayReal r13 = _mm_madd_ps( r10, m03, _mm_madd_ps( r11, m13, vmulq_f32( r12, m23 ) ) );
-        ArrayReal r23 = _mm_madd_ps( r20, m03, _mm_madd_ps( r21, m13, vmulq_f32( r22, m23 ) ) );
+        ArrayFloat r03 = _mm_madd_ps( r00, m03, _mm_madd_ps( r01, m13, vmulq_f32( r02, m23 ) ) );
+        ArrayFloat r13 = _mm_madd_ps( r10, m03, _mm_madd_ps( r11, m13, vmulq_f32( r12, m23 ) ) );
+        ArrayFloat r23 = _mm_madd_ps( r20, m03, _mm_madd_ps( r21, m13, vmulq_f32( r22, m23 ) ) );
 
         r03 = vmulq_f32( r03, MathlibNEON::NEG_ONE ); //r03 = -r03
         r13 = vmulq_f32( r13, MathlibNEON::NEG_ONE ); //r13 = -r13
@@ -523,7 +511,7 @@ namespace Demi
         mChunkBase[10]= row2.mChunkBase[2];
     }
     
-    inline void ArrayMatrixAf4x3::streamToAoS( Matrix4 * RESTRICT_ALIAS dst ) const
+    inline void ArrayMatrixAf4x3::streamToAoS( DiMat4 * RESTRICT_ALIAS dst ) const
     {
         //Do not use the unpack version, use the shuffle. Shuffle is faster in k10 processors
         //("The conceptual shuffle" http://developer.amd.com/community/blog/the-conceptual-shuffle/)
@@ -541,7 +529,7 @@ namespace Demi
             dst2 = tmp1.val[2];                     \
             dst3 = tmp1.val[3];                     \
         }
-        register ArrayReal m0, m1, m2, m3;
+        register ArrayFloat m0, m1, m2, m3;
 
         _MM_TRANSPOSE4_SRC_DST_PS(
                             this->mChunkBase[0], this->mChunkBase[1],
@@ -595,7 +583,7 @@ namespace Demi
     
     inline void ArrayMatrixAf4x3::streamToAoS( SimpleMatrixAf4x3 * RESTRICT_ALIAS _dst ) const
     {
-        register ArrayReal dst0, dst1, dst2, dst3;
+        register ArrayFloat dst0, dst1, dst2, dst3;
         Real *dst = reinterpret_cast<Real*>( _dst );
 
         _MM_TRANSPOSE4_SRC_DST_PS(
@@ -629,7 +617,7 @@ namespace Demi
         vst1q_f32( &dst[44], dst3 );
     }
     
-    inline void ArrayMatrixAf4x3::loadFromAoS( const Matrix4 * RESTRICT_ALIAS src )
+    inline void ArrayMatrixAf4x3::loadFromAoS( const DiMat4 * RESTRICT_ALIAS src )
     {
         _MM_TRANSPOSE4_SRC_DST_PS(
                             vld1q_f32( src[0]._m ), vld1q_f32( src[1]._m ), 

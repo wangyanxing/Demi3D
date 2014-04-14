@@ -56,7 +56,7 @@ namespace Demi
             mChunkBase[2] = chunkZ;
         }
 
-        void getAsDiVec3( DiVec3 &out, size_t index ) const
+        void getAsVector3( DiVec3 &out, size_t index ) const
         {
             //Be careful of not writing to these regions or else strict aliasing rule gets broken!!!
             const float *aliasedfloat = reinterpret_cast<const float*>( mChunkBase );
@@ -65,9 +65,9 @@ namespace Demi
             out.z = aliasedfloat[ARRAY_PACKED_REALS * 2 + index];        //Z
         }
 
-        /// Prefer using @see getAsDiVec3() because this function may have more
+        /// Prefer using @see getAsVector3() because this function may have more
         /// overhead (the other one is faster)
-        DiVec3 getAsDiVec3( size_t index ) const
+        DiVec3 getAsVector3( size_t index ) const
         {
             //Be careful of not writing to these regions or else strict aliasing rule gets broken!!!
             const float *aliasedfloat = reinterpret_cast<const float*>( mChunkBase );
@@ -76,7 +76,7 @@ namespace Demi
                             aliasedfloat[ARRAY_PACKED_REALS * 2 + index] );  //Z
         }
 
-        void setFromDiVec3( const DiVec3 &v, size_t index )
+        void setFromVector3( const DiVec3 &v, size_t index )
         {
             float *aliasedfloat = reinterpret_cast<float*>( mChunkBase );
             aliasedfloat[ARRAY_PACKED_REALS * 0 + index] = v.x;
@@ -96,8 +96,8 @@ namespace Demi
         /*void copyScalar( size_t ourIndex, const ArrayVector3 &copy, size_t copyIndex )
         {
             DiVec3 tmp;
-            copy.getAsDiVec3( tmp );
-            this->setFromDiVec3( tmp );
+            copy.getAsVector3( tmp );
+            this->setFromVector3( tmp );
         }*/
 
         inline ArrayVector3& operator = ( const float fScalar )

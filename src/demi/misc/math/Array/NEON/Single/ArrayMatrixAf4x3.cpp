@@ -22,14 +22,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     const ArrayMatrixAf4x3 ArrayMatrixAf4x3::IDENTITY( ArrayMatrixAf4x3::createAllFromMatrix4(
-                Matrix4(    1, 0, 0, 0,
+                DiMat4(    1, 0, 0, 0,
                             0, 1, 0, 0,
                             0, 0, 1, 0,
                             0, 0, 0, 1 ) ) );
 
-    const SimpleMatrixAf4x3 SimpleMatrixAf4x3::IDENTITY( (ArrayReal) { 0, 0, 0, 1 },
-                                                        (ArrayReal) { 0, 0, 1, 0 },
-                                                        (ArrayReal) { 0, 1, 0, 0 } );
+    const SimpleMatrixAf4x3 SimpleMatrixAf4x3::IDENTITY( (ArrayFloat) { 0, 0, 0, 1 },
+                                                        (ArrayFloat) { 0, 0, 1, 0 },
+                                                        (ArrayFloat) { 0, 1, 0, 0 } );
 }
 
 #endif

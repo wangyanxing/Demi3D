@@ -28,13 +28,13 @@ THE SOFTWARE.
 
 namespace Demi
 {
-    inline ArrayReal BooleanMask4::getMask( bool x, bool y, bool z, bool w )
+    inline ArrayFloat BooleanMask4::getMask( bool x, bool y, bool z, bool w )
     {
         size_t idx = (size_t)x | ( (size_t)y << 1 ) | ( (size_t)z << 2 ) | ( (size_t)w << 3 );
         return mMasks[idx];
     }
 
-    inline ArrayReal BooleanMask4::getMask( bool b[4] )
+    inline ArrayFloat BooleanMask4::getMask( bool b[4] )
     {
         size_t idx = (size_t)b[0] | ( (size_t)b[1] << 1 ) | ( (size_t)b[2] << 2 ) | ( (size_t)b[3] << 3 );
         return mMasks[idx];
@@ -51,7 +51,7 @@ namespace Demi
         return ( *reinterpret_cast<uint32*>(mask0) & *reinterpret_cast<uint32*>(mask1) ) == 0x01010101;
     }
     ---
-    inline uint32 BooleanMask4::getScalarMask( ArrayReal mask )
+    inline uint32 BooleanMask4::getScalarMask( ArrayFloat mask )
     {
         return static_cast<uint32>( vmovemaskq_u32( mask ) );
     }
