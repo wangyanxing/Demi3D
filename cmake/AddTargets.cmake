@@ -75,6 +75,9 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
   set(DEMI_BIN_NAME ${TARGETNAME})
   
   if (DEMI_STATIC)
+	  
+	target_link_libraries(${TARGETNAME} ${LUA_LIBRARIES} DiScript)
+	  
     # add static prefix, if compiling static version
 	if (NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
 		set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGETNAME}Static)
@@ -83,7 +86,7 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
 		set_target_properties(${TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGETNAME})		
 	endif()
     set_target_properties(${TARGETNAME} PROPERTIES COMPILE_DEFINITIONS DEMI_STATIC_API)
-	
+
 	if (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
 		target_link_libraries(${TARGETNAME} DiDrvGL)
 	elseif (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
