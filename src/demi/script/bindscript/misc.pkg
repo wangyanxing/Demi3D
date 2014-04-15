@@ -87,7 +87,6 @@ public:
 
     float valueDegrees() const;
     float valueRadians() const;
-    float valueAngleUnits() const;
 
     const DiRadian& operator + () const;
     DiRadian operator + ( const DiRadian& r ) const;
@@ -111,8 +110,7 @@ public:
     DiDegree ( const DiRadian& r );
 
     float valueDegrees() const { return mDeg; }
-    float valueRadians() const; // see bottom of this file
-    float valueAngleUnits() const;
+    float valueRadians() const;
 
     const DiDegree& operator + () const;
     DiDegree operator + ( const DiDegree& d ) const;

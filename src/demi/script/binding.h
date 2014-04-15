@@ -1,6 +1,6 @@
 /*
 ** Lua binding: ScriptMain
-** Generated automatically by tolua++-1.0.92 on Sat Apr 12 00:51:34 2014.
+** Generated automatically by tolua++-1.0.92 on Tue Apr 15 14:25:34 2014.
 */
 
 #ifndef __cplusplus
@@ -1983,38 +1983,6 @@ static int tolua_ScriptMain_Demi_DiRadian_valueRadians00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: valueAngleUnits of class  Demi::DiRadian */
-#ifndef TOLUA_DISABLE_tolua_ScriptMain_Demi_DiRadian_valueAngleUnits00
-static int tolua_ScriptMain_Demi_DiRadian_valueAngleUnits00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Demi::DiRadian",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const Demi::DiRadian* self = (const Demi::DiRadian*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'valueAngleUnits'", NULL);
-#endif
-  {
-   float tolua_ret = (float)  self->valueAngleUnits();
-   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'valueAngleUnits'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: operator+ of class  Demi::DiRadian */
 #ifndef TOLUA_DISABLE_tolua_ScriptMain_Demi_DiRadian__add00
 static int tolua_ScriptMain_Demi_DiRadian__add00(lua_State* tolua_S)
@@ -2645,38 +2613,6 @@ static int tolua_ScriptMain_Demi_DiDegree_valueRadians00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'valueRadians'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: valueAngleUnits of class  Demi::DiDegree */
-#ifndef TOLUA_DISABLE_tolua_ScriptMain_Demi_DiDegree_valueAngleUnits00
-static int tolua_ScriptMain_Demi_DiDegree_valueAngleUnits00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"const Demi::DiDegree",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  const Demi::DiDegree* self = (const Demi::DiDegree*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'valueAngleUnits'", NULL);
-#endif
-  {
-   float tolua_ret = (float)  self->valueAngleUnits();
-   tolua_pushnumber(tolua_S,(lua_Number)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'valueAngleUnits'.",&tolua_err);
  return 0;
 #endif
 }
@@ -3969,7 +3905,6 @@ TOLUA_API int tolua_ScriptMain_open (lua_State* tolua_S)
     tolua_function(tolua_S,".call",tolua_ScriptMain_Demi_DiRadian_new01_local);
     tolua_function(tolua_S,"valueDegrees",tolua_ScriptMain_Demi_DiRadian_valueDegrees00);
     tolua_function(tolua_S,"valueRadians",tolua_ScriptMain_Demi_DiRadian_valueRadians00);
-    tolua_function(tolua_S,"valueAngleUnits",tolua_ScriptMain_Demi_DiRadian_valueAngleUnits00);
     tolua_function(tolua_S,".add",tolua_ScriptMain_Demi_DiRadian__add00);
     tolua_function(tolua_S,".add",tolua_ScriptMain_Demi_DiRadian__add01);
     tolua_function(tolua_S,".add",tolua_ScriptMain_Demi_DiRadian__add02);
@@ -3997,7 +3932,6 @@ TOLUA_API int tolua_ScriptMain_open (lua_State* tolua_S)
     tolua_function(tolua_S,".call",tolua_ScriptMain_Demi_DiDegree_new01_local);
     tolua_function(tolua_S,"valueDegrees",tolua_ScriptMain_Demi_DiDegree_valueDegrees00);
     tolua_function(tolua_S,"valueRadians",tolua_ScriptMain_Demi_DiDegree_valueRadians00);
-    tolua_function(tolua_S,"valueAngleUnits",tolua_ScriptMain_Demi_DiDegree_valueAngleUnits00);
     tolua_function(tolua_S,".add",tolua_ScriptMain_Demi_DiDegree__add00);
     tolua_function(tolua_S,".add",tolua_ScriptMain_Demi_DiDegree__add01);
     tolua_function(tolua_S,".add",tolua_ScriptMain_Demi_DiDegree__add02);
