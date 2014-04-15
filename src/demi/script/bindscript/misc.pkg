@@ -1,10 +1,56 @@
 $cfile "../../misc/math/vector2.h"
+$cfile "../../misc/math/vector3.h"
+$cfile "../../misc/math/vector4.h"
 
 class DiVec2
 {
 	DiVec2();
 	DiVec2(const float);
 	DiVec2(const float, const float);
+
+	DiVec2 operator + (const DiVec2& vec) const;
+    DiVec2 operator - (const DiVec2& vec) const;
+    DiVec2 operator * (const DiVec2& vec) const;
+	DiVec2 operator * (const float fScalar) const;
+    bool operator  == (const DiVec2& vec) const;
+
 	float length () const;
 	float squaredLength () const;
+};
+
+class DiVec3
+{
+	DiVec3();
+	DiVec3(const float, const float, const float);
+
+	DiVec3 operator + (const DiVec3& vec) const;
+    DiVec3 operator - (const DiVec3& vec) const;
+    DiVec3 operator * (const DiVec3& vec) const;
+	DiVec3 operator * (const float fScalar) const;
+	DiVec3 operator / ( const float fScalar ) const;
+    bool operator  == (const DiVec3& vec) const;
+
+	const DiVec3& operator + () const;
+	DiVec3 operator - () const;
+
+	float distance(const DiVec3& rhs) const;
+	float squaredDistance(const DiVec3& rhs) const;
+	float dotProduct(const DiVec3& vec) const;
+
+	float length () const;
+	float squaredLength () const;
+};
+
+class DiVec4
+{
+	DiVec4();
+	DiVec4(const float, const float, const float, const float);
+
+	DiVec4 operator + (const DiVec4& vec) const;
+    DiVec4 operator - (const DiVec4& vec) const;
+    DiVec4 operator * (const DiVec4& vec) const;
+	DiVec4 operator * (const float fScalar) const;
+    bool operator  == (const DiVec4& vec) const;
+
+	float dotProduct(const DiVec4& vec) const;
 };
