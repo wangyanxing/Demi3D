@@ -14,7 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiScriptPlugin_h__
 #define DiScriptPlugin_h__
 
-#include "ScriptPrerequisites.h"
+#include "GfxPch.h"
+#include "ScriptDefines.h"
 #include "EnginePlugin.h"
 
 namespace Demi

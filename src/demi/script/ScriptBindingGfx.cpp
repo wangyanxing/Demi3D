@@ -11,4 +11,12 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#include "ScriptPch.h"
+#include "ScriptManager.h"
+
+namespace Demi
+{
+    void DiScriptManager::BindGfxLib()
+    {
+
+    }
+}

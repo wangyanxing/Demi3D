@@ -38,10 +38,36 @@ namespace Demi
         
         void    Shutdown();
 
+        void    RunFile(const DiString& fileName);
+
+        void    RunBuffer(DiDataStreamPtr data);
+
+    public:
+
+        void    BindMiscLib();
+
+        void    BindGfxLib();
+
     private:
+
+        int initErrorHandlerFunc();
+
+        int initErrorHandlerFunc(const DiString& func);
+
         static DiScriptManager* sMgr;
         
         lua_State*  mLuaState;
+
+        /// for other platforms,"../../scripts"
+        /// for iOS,"./scripts"
+        DiString    mBasePath;
+
+        bool d_ownsState;
+
+        DiString d_errFuncName;
+        int d_errFuncIndex;
+        DiString d_activeErrFuncName;
+        int d_activeErrFuncIndex;
     };
 }
 

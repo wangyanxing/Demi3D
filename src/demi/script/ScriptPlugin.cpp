@@ -11,7 +11,6 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#include "ScriptPch.h"
 #include "ScriptPlugin.h"
 #include "ScriptManager.h"
 

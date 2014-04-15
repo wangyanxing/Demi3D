@@ -1,0 +1,10 @@
+$cfile "../../misc/math/vector2.h"
+
+class DiVec2
+{
+	DiVec2();
+	DiVec2(const float);
+	DiVec2(const float, const float);
+	float length () const;
+	float squaredLength () const;
+};

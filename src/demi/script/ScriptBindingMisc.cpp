@@ -11,14 +11,15 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef _ScriptPch_h__
-#define _ScriptPch_h__
+#include "ScriptManager.h"
 
-#include "GfxPch.h"
+#include "math/vector2.h"
+#include "math/vector3.h"
 
-#include "ScriptPrerequisites.h"
-
-#include "lua.hpp"
-#include "lua_tinker.h"
-
-#endif
+namespace Demi
+{
+    void DiScriptManager::BindMiscLib()
+    {
+        DI_LOG("Binding DiMisc Libs");
+    }
+}
