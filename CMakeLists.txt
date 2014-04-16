@@ -133,7 +133,7 @@ endif ()
 if(CMAKE_COMPILER_IS_GNUCXX AND NOT APPLE)
     add_definitions(-std=gnu++0x)
 elseif (APPLE)
-    add_definitions("-std=c++11")
+#   add_definitions("-std=c++11")
 endif()
 
 if ((CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX) AND NOT MINGW)
