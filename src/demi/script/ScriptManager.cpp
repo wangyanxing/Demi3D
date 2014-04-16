@@ -62,6 +62,11 @@ namespace Demi
 
         DI_LOG("Binding to lua...");
         tolua_ScriptMain_open(mLuaState);
+        
+        // run some basic codes
+        DiString code;
+        code.Format("package.path = package.path..\";%s?.lua\"",mBasePath.c_str());
+        RunBuffer(code.c_str(), code.size(),"prerequisites");
 
         RunFile("test.lua");
     }
@@ -72,6 +77,33 @@ namespace Demi
         lua_close(mLuaState);
         mLuaState = nullptr;
     }
+    
+    void DiScriptManager::RunBuffer(const char* data, uint32 size, const DiString& name)
+    {
+        int top = lua_gettop(mLuaState);
+        
+        int loaderr = luaL_loadbuffer(mLuaState,
+                                      data, size, name.c_str());
+        
+        if (loaderr)
+        {
+            DiString errMsg = lua_tostring(mLuaState, -1);
+            lua_settop(mLuaState, top);
+            DI_WARNING("Unable to execute Lua script file: %s\n%s", name.c_str(),
+                       errMsg.c_str());
+        }
+        
+        // call it
+        if (lua_pcall(mLuaState, 0, 0, top))
+        {
+            DiString errMsg = lua_tostring(mLuaState, -1);
+            lua_settop(mLuaState, top);
+            DI_WARNING("Unable to execute Lua script file: %s\n%s", name.c_str(),
+                       errMsg.c_str());
+        }
+        
+        lua_settop(mLuaState, top);
+    }
 
     void DiScriptManager::RunBuffer(DiDataStreamPtr data)
     {
@@ -79,29 +111,7 @@ namespace Demi
         data->Read(buffer, data->Size());
         buffer[data->Size()] = 0;
         
-        int top = lua_gettop(mLuaState);
-
-        int loaderr = luaL_loadbuffer(mLuaState,
-            buffer, data->Size(), data->GetName().c_str());
-
-        if (loaderr)
-        {
-            DiString errMsg = lua_tostring(mLuaState, -1);
-            lua_settop(mLuaState, top);
-            DI_WARNING("Unable to execute Lua script file: %s\n%s", data->GetName().c_str(),
-                errMsg.c_str());
-        }
-
-        // call it
-        if (lua_pcall(mLuaState, 0, 0, top))
-        {
-            DiString errMsg = lua_tostring(mLuaState, -1);
-            lua_settop(mLuaState, top);
-            DI_WARNING("Unable to execute Lua script file: %s\n%s", data->GetName().c_str(),
-                errMsg.c_str());
-        }
-
-        lua_settop(mLuaState, top);
+        RunBuffer(buffer, (uint32)data->Size(), data->GetName());
 
         DI_DELETE[] buffer;
     }

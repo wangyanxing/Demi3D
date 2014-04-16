@@ -41,6 +41,8 @@ namespace Demi
         void    RunFile(const DiString& fileName);
 
         void    RunBuffer(DiDataStreamPtr data);
+        
+        void    RunBuffer(const char* data, uint32 size, const DiString& name);
 
     public:
 
