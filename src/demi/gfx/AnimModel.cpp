@@ -31,8 +31,6 @@ namespace Demi
         :DiModel(name,modelName),
         mSkeleton(NULL),
         mRefSkeleton(false),
-        mAttachSet(NULL),
-        mRefAttachSet(false),
         mBoneMatrices(NULL),
         mRefBoneMatrics(false),
         mNumBoneMatrices(0),
@@ -53,8 +51,6 @@ namespace Demi
         :DiModel(name,model),
         mSkeleton(NULL),
         mRefSkeleton(false),
-        mAttachSet(NULL),
-        mRefAttachSet(false),
         mBoneMatrices(NULL),
         mRefBoneMatrics(false),
         mNumBoneMatrices(0),
@@ -74,8 +70,6 @@ namespace Demi
         :DiModel(name,modelName),
         mSkeleton(pkSkeleton),
         mRefSkeleton(true),
-        mAttachSet(pkAttachSet),
-        mRefAttachSet(true),
         mBoneMatrices(pkBoneMatrics),
         mRefBoneMatrics(true),
         mNumBoneMatrices(0),
@@ -98,8 +92,6 @@ namespace Demi
         :DiModel(name,model),
         mSkeleton(pkSkeleton),
         mRefSkeleton(true),
-        mAttachSet(pkAttachSet),
-        mRefAttachSet(true),
         mBoneMatrices(pkBoneMatrics),
         mRefBoneMatrics(true),
         mNumBoneMatrices(0),
@@ -119,11 +111,6 @@ namespace Demi
         if(!mRefSkeleton)
         {
             SAFE_DELETE(mSkeleton);
-        }
-
-        if(!mRefAttachSet)
-        {
-            SAFE_DELETE(mAttachSet);
         }
 
         if(!mRefClipSet)
@@ -182,17 +169,6 @@ namespace Demi
                 }
             }
 
-            if (mMotion->GetAttachSet())
-            {
-                if(!mAttachSet)
-                {
-                    mAttachSet    = DI_NEW DiAttachSetInstance(mMotion->GetAttachSet(),mSkeleton);
-                    mRefAttachSet = false;
-                }
-
-                mMotion->AssociateNodeAnimToAttachSet(mAttachSet);
-            }
-
             if(!mClipSet)
             {
                 InitClipSet();
@@ -225,6 +201,11 @@ namespace Demi
         {
             if (HasSkeleton())
                 CacheBoneMatrices();
+
+            if ()
+            {
+            }
+
             mLastUpdateAnimFrame = mClipSet->GetDirtyFrameNumber();
         }
     }

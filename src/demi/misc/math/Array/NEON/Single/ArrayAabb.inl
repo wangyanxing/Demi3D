@@ -150,7 +150,7 @@ namespace Demi
     
     inline void ArrayAabb::transformAffine( const ArrayMatrix4 &m )
     {
-        assert( m.isAffine() );
+        DI_ASSERT( m.isAffine() );
 
         mCenter = m * mCenter;
 

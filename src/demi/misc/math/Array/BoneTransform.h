@@ -20,7 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    class DiBone;
+    class DiNewBone;
 
     /** Represents the transform of a single object, arranged in SoA (Structure of Arrays) */
     struct BoneTransform
@@ -29,7 +29,7 @@ namespace Demi
         unsigned char   mIndex;
 
         /// The Bone that owns this BoneTransform. Ours is mOwner[mIndex]
-        DiBone          **mOwner;
+        DiNewBone       **mOwner;
 
         /// Stores the position/translation of a node relative to its parent.
         ArrayVector3    * RESTRICT_ALIAS    mPosition;

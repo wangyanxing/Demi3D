@@ -94,10 +94,6 @@ namespace Demi
 
         bool                    mRefSkeleton;
         
-        DiAttachSetInstance*    mAttachSet;
-        
-        bool                    mRefAttachSet;
-
         DiClipControllerSet*    mClipSet;
         
         bool                    mRefClipSet;

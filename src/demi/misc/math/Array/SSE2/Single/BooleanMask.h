@@ -22,7 +22,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    class BooleanMask4
+    class DI_MISC_API BooleanMask4
     {
     public:
         enum

@@ -43,7 +43,7 @@ void ConverterMgr::Init()
     lodMgr = LodStrategyManager::getSingletonPtr();
     meshMgr = MeshManager::getSingletonPtr();
     matMgr = MaterialManager::getSingletonPtr();
-    skelMgr = SkeletonManager::getSingletonPtr();
+    skelMgr = Ogre::SkeletonManager::getSingletonPtr();
     meshSerializer = new MeshSerializer();
     xmlMeshSerializer = new XMLMeshSerializer();
     skeletonSerializer = new SkeletonSerializer();
@@ -136,7 +136,7 @@ void ConverterMgr::SkeletonToXML(CovOptions opts)
         exit(1);
     }
 
-    SkeletonPtr skel = SkeletonManager::getSingleton().create("conversion",
+    SkeletonPtr skel = Ogre::SkeletonManager::getSingleton().create("conversion",
         ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
     // pass false for freeOnClose to FileStreamDataStream since ifs is created locally on stack
@@ -179,7 +179,7 @@ void ConverterMgr::SkeletonToMotion(CovOptions opts)
         exit(1);
     }
 
-    SkeletonPtr skel = SkeletonManager::getSingleton().create("conversion",
+    SkeletonPtr skel = Ogre::SkeletonManager::getSingleton().create("conversion",
         ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
     // pass false for freeOnClose to FileStreamDataStream since ifs is created locally on stack

@@ -22,14 +22,14 @@ namespace Demi
     ///     safe to assume &lhs != &rhs. RESTRICT_ALIAS modifier is used (a non-standard
     ///     C++ extension) is used when available to dramatically improve performance,
     ///     particularly of the update operations ( a *= b )
-    ///     This function will assert if DEMI_RESTRICT_ALIASING is enabled and any of the
+    ///     This function will DI_ASSERT if DEMI_RESTRICT_ALIASING is enabled and any of the
     ///     given pointers point to the same location
     inline void concatArrayMat4 ( ArrayFloat * RESTRICT_ALIAS outChunkBase,
                                     const ArrayFloat * RESTRICT_ALIAS lhsChunkBase,
                                     const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
 #if DEMI_RESTRICT_ALIASING != 0
-        assert( outChunkBase != lhsChunkBase && outChunkBase != rhsChunkBase &&
+        DI_ASSERT( outChunkBase != lhsChunkBase && outChunkBase != rhsChunkBase &&
                 lhsChunkBase != rhsChunkBase &&
                 "Re-strict aliasing rule broken. Compile without DEMI_RESTRICT_ALIASING" );
 #endif
@@ -174,7 +174,7 @@ namespace Demi
                                     const ArrayFloat * RESTRICT_ALIAS rhsChunkBase )
     {
 #if DEMI_RESTRICT_ALIASING != 0
-        assert( lhsChunkBase != rhsChunkBase &&
+        DI_ASSERT( lhsChunkBase != rhsChunkBase &&
                 "Re-strict aliasing rule broken. Compile without DEMI_RESTRICT_ALIASING" );
 #endif
         ArrayFloat lhs0 = lhsChunkBase[0];

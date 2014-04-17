@@ -294,6 +294,11 @@ namespace Demi
 
         static inline DiDegree Sqrt (const DiDegree& fValue) { return DiDegree(sqrt(fValue.valueDegrees())); }
 
+        template<typename T, typename S> static FORCEINLINE T Lerp(const T& a, const T& b, const S& w)
+        {
+            return a + w * (b - a);
+        }
+
         static int    IntRound(double f)
         {
             return f < 0.0 ? int(f - 0.5) : int(f + 0.5);
