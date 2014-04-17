@@ -136,11 +136,6 @@ namespace Demi
             WriteSkeleton(pMotion->GetSkeleton());
         }
 
-        if (pMotion->GetAttachSet())
-        {
-            WriteAttachSet(pMotion->GetAttachSet());
-        }
-
         DiMotion::ConstAnimationListIterator i = pMotion->GetAnimations();
         while (i.HasMoreElements())
         {
@@ -157,7 +152,6 @@ namespace Demi
             uint16 streamID = ReadChunk(stream);
             while(!stream->Eof() &&
                 (streamID == DI_SKELETON ||
-                streamID == DI_ATTACHSET ||
                 streamID == DI_POSE ||
                 streamID == DI_ANIMATION))
             {
@@ -173,10 +167,6 @@ namespace Demi
 
                 case DI_POSE:
                     ReadPoses(stream,pDest);
-                    break;
-
-                case DI_ATTACHSET:
-                    ReadAttachSet(stream,pDest);
                     break;
                 }
 
@@ -581,71 +571,6 @@ namespace Demi
         }
     }
 
-    size_t DiMotionSerializerImpl::CalcAttachSize( const DiAttachSet* pkAttachSet )
-    {
-        size_t size = MSTREAM_OVERHEAD_SIZE;
-
-        size += sizeof(uint16);
-
-        DiAttachSet::AttachNodeMap::const_iterator itAttach = pkAttachSet->GetAttaches().begin();
-        
-        for ( ; itAttach != pkAttachSet->GetAttaches().end() ; ++ itAttach )
-        {
-            const DiAttachNode * pkAttNode = itAttach->second;
-
-            // name
-            size += (pkAttNode->GetName().length() + 1);
-
-            size += sizeof(float) * 3;
-
-            size += sizeof(float) * 4;
-
-            size += sizeof(bool);
-
-            if (pkAttNode->GetScale() != DiVec3::UNIT_SCALE)
-            {
-                size += sizeof(float) * 3;
-            }
-        }
-
-        return size;
-    }
-
-    void DiMotionSerializerImpl::ReadAttachSet( DiDataStreamPtr& stream,DiMotion* motion )
-    {
-        DiAttachSet * attachset = motion->CreateAttachSet();
-
-        if (!stream->Eof())
-        {
-            uint16 streamID = ReadChunk(stream);
-            while(!stream->Eof() &&
-                (streamID == DI_ATTACHS ||
-                streamID == DI_ATTACHS_PARENT))
-            {
-                switch(streamID)
-                {
-                case DI_ATTACHS:
-                    ReadAttachNodes(stream,attachset);
-                    break;
-
-                case DI_ATTACHS_PARENT:
-                    ReadAttachParents(stream,attachset,motion->GetSkeleton());
-                    break;
-                }
-
-                if (!stream->Eof())
-                {
-                    streamID = ReadChunk(stream);
-                }
-
-            }
-            if (!stream->Eof())
-            {
-                stream->Skip(- MSTREAM_OVERHEAD_SIZE);
-            }
-        }
-    }
-
     void DiMotionSerializerImpl::ReadAttachNodes( DiDataStreamPtr& stream,DiAttachSet* attachset )
     {
         uint16 numAttaches;
@@ -743,69 +668,6 @@ namespace Demi
             key->SetRotation(quat);
             key->SetScale(scale);
         }
-    }
-
-    void DiMotionSerializerImpl::WriteAttachSet( const DiAttachSet* pkAttachset )
-    {
-        WriteChunkHeader(DI_ATTACHSET,sizeof(uint16) + MSTREAM_OVERHEAD_SIZE);
-
-        if (pkAttachset->GetNumAttaches() > 0)
-        {
-            WriteAttachNode(pkAttachset);
-        }
-
-        DiAttachSet::AttachNodeMap::const_iterator itAttach = pkAttachset->GetAttaches().begin(); 
-        for (; itAttach != pkAttachset->GetAttaches().end() ; ++ itAttach )
-        {
-            const DiAttachNode * pkAttachNode = itAttach->second;
-            
-            DiString strNode = pkAttachNode->GetName();
-            DiNode * pkParent = pkAttachNode->GetParent();
-            if (pkParent != NULL) 
-            {
-                WriteAttachParents(strNode,pkParent->GetName());             
-            }
-        }
-    }
-
-    void DiMotionSerializerImpl::WriteAttachNode( const DiAttachSet* pkAttachset )
-    {
-        WriteChunkHeader(DI_ATTACHS,CalcAttachSize(pkAttachset));
-
-        uint16 numAttaches = (uint16)pkAttachset->GetNumAttaches();
-        WriteShorts(&numAttaches,1);
-
-        DiAttachSet::AttachNodeMap::const_iterator itAttach = pkAttachset->GetAttaches().begin(); 
-        for (; itAttach != pkAttachset->GetAttaches().end() ; ++ itAttach )
-        {
-            const DiAttachNode * pkAttachNode = itAttach->second;
-
-            WriteString(pkAttachNode->GetName());
-
-            WriteObject(pkAttachNode->GetPosition());
-
-            WriteObject(pkAttachNode->GetOrientation());
-
-            bool hasscale = pkAttachNode->GetScale() != DiVec3::UNIT_SCALE;
-            WriteBools(&hasscale,1);
-
-            if (hasscale)
-            {
-                WriteObject(pkAttachNode->GetScale());
-            }
-        }
-    }
-
-    void DiMotionSerializerImpl::WriteAttachParents( const DiString& strNode,const DiString strParent )
-    {
-        size_t cbNodeNameLen    = strNode.length() + 1;
-        size_t cbParentNameLen    = strParent.length() + 1;
-
-        WriteChunkHeader(DI_ATTACHS_PARENT,cbNodeNameLen + cbParentNameLen + MSTREAM_OVERHEAD_SIZE);
-
-        WriteString(strNode);
-
-        WriteString(strParent);
     }
 
     size_t DiMotionSerializerImpl::CalcAttachClipSize( const DiNodeClip* pClip )

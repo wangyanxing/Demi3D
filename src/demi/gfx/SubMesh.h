@@ -14,8 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiSubMesh_h__
 #define DiSubMesh_h__
 
-
 #include "VertexDeclaration.h"
+#include "FastArray.h"
 
 namespace Demi 
 {
@@ -44,36 +44,49 @@ namespace Demi
         {
             SourceData()
             {
-                data        = NULL;
                 numVertices = 0;
-                stride         = 0;
-                stream         = 0;
+                data    = nullptr;
+                stride  = 0;
+                stream  = 0;
             }
 
             SourceData(void* d,uint32 n, uint16 s,uint16 str)
             {
                 data        = d;
                 numVertices = n;
-                stride        = s;
-                stream        = str;
+                stride      = s;
+                stream      = str;
             }
 
-            uint32    GetSize()
+            uint32 GetSize()
             {
                 return numVertices * stride;
             }
 
             void*    data;
-            uint32    numVertices;
-            uint16    stride;
-            uint16    stream;
+            uint32   numVertices;
+            uint16   stride;
+            uint16   stream;
         };
 
-        typedef DiMap<uint32,SourceData>                SourceDataList;
-        typedef DiConstMapIterator<SourceDataList>        SourceDataIterator;
-        typedef std::multimap<uint32, DiBoneWeight>        BoneWeightList;
-        typedef DiVector<uint16>                        IndexMap;
+        struct SoftBlendData
+        {
+            ~SoftBlendData()
+            {
+                SAFE_ARRAY_DELETE(position);
+                SAFE_ARRAY_DELETE(normal);
+                SAFE_ARRAY_DELETE(tangent);
+            }
 
+            DiVec3* position;
+            DiVec3* normal;
+            DiVec3* tangent;
+        };
+
+        typedef DiMap<uint32,SourceData>            SourceDataList;
+        typedef DiConstMapIterator<SourceDataList>  SourceDataIterator;
+        typedef std::multimap<uint32, DiBoneWeight> BoneWeightList;
+        typedef DiVector<uint16>                    IndexMap;
 
         void                    SetPrimitiveType(DiPrimitiveType pt){ mPrimitiveType = pt; }
 
@@ -141,40 +154,42 @@ namespace Demi
 
         uint32                  GetIndex() const { return mIndex; }
 
+        SoftBlendData*          GenerateBlendData();
+
     protected:
 
         void                    SetupBoneWeightsData(uint16 numBlendWeightsPerVertex);
 
     protected:
 
-        DiMesh*                   mMesh;
+        DiMesh*                 mMesh;
 
         // the index in this submesh's parent mesh
-        uint32                    mIndex;
-        
-        SourceDataList            mVertexData;
+        uint32                  mIndex;
 
-        uint32                    mVerticesNum;
+        SourceDataList          mVertexData;
 
-        void*                     mIndexData;
+        uint32                  mVerticesNum;
 
-        uint32                    mIndicsNum;
-        
-        bool                      m32BitIndex;
-        
-        DiPrimitiveType           mPrimitiveType;
+        void*                   mIndexData;
 
-        uint32                    mPrimitiveCount;
+        uint32                  mIndicsNum;
 
-        DiString                  mMaterialName;
+        bool                    m32BitIndex;
 
-        BoneWeightList            mBoneWeights;
+        DiPrimitiveType         mPrimitiveType;
 
-        DiVertexElements          mVertexElems;
+        uint32                  mPrimitiveCount;
 
-        IndexMap                  mBlendIndexToBoneIndexMap;
-        
-        uint32                    mMaxWeights;
+        DiString                mMaterialName;
+
+        BoneWeightList          mBoneWeights;
+
+        DiVertexElements        mVertexElems;
+
+        IndexMap                mBlendIndexToBoneIndexMap;
+
+        uint32                  mMaxWeights;
     };
 }
 

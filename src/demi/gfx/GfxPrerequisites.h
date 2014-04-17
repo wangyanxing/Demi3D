@@ -132,7 +132,16 @@ namespace Demi
 
     class    DiBspNode;
     class    DiBspScene;
-    
+
+    class BoneMemoryManager;
+    class BoneArrayMemoryManager;
+    class SkeletonDef;
+    class SkeletonInstance;
+    class SkeletonManager;
+    class SkeletonAnimation;
+    class SimpleMatrixAf4x3;
+    class DiNewBone;
+
     typedef shared_ptr<DiOctree>            DiOctreePtr;
     typedef shared_ptr<DiOctreeCullUnit>    DiOctreeCullUnitPtr;
     typedef shared_ptr<DiCullUnit>          DiCullUnitPtr;

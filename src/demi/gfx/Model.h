@@ -45,6 +45,8 @@ namespace Demi
 
         virtual void      AddToBatchGroup(DiRenderBatchGroup* bg);
 
+        bool              UseHardwareSkinning() const { return mHardwareSkining; }
+
         DiMeshPtr         GetMesh(){return mMesh;}
 
         uint32            GetNumSubModels()const {return (uint32)mSubModels.size();}
@@ -63,13 +65,9 @@ namespace Demi
 
         virtual DiString& GetType();
 
-        virtual void      Save(DiXMLElement node);
-
-        virtual void      Load(DiXMLElement node);
-
     protected:
 
-        virtual void      Init();
+        void              InitModel();
 
         void              InitSubModels();
 
@@ -78,6 +76,8 @@ namespace Demi
         DiMeshPtr         mMesh;
 
         SubModelList      mSubModels;
+
+        bool              mHardwareSkining;
     };
 }
 

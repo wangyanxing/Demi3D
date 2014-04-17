@@ -529,10 +529,7 @@ namespace Demi
 
         WriteInts(&weightsSize,1);
 
-        DiSubMesh::BoneWeightList::const_iterator it;
-        DiSubMesh::BoneWeightList::const_iterator itEnd = weights.end();
-
-        for (it = weights.begin(); it != itEnd; ++it)
+        for (auto it = weights.begin(); it != weights.end(); ++it)
         {
             WriteInts(&it->second.vertexIndex,1);
             WriteShorts(&it->second.boneIndex,1);

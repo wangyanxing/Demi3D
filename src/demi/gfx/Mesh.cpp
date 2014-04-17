@@ -20,8 +20,7 @@ namespace Demi
     DiString DiMesh::TYPE = "Model";
 
     DiMesh::DiMesh( const DiString& name )
-        :DiAsset(name),
-        mSkeleton(NULL)
+        :DiAsset(name)
     {
     }
 

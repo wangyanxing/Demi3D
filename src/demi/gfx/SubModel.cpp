@@ -12,7 +12,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 #include "GfxPch.h"
 #include "SubModel.h"
-#include "SubMesh.h"
 #include "Model.h"
 #include "VertexBuffer.h"
 #include "VertexDeclaration.h"
@@ -21,11 +20,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    DiSubModel::DiSubModel( DiModel* parent, DiSubMesh* model )
+    DiSubModel::DiSubModel(DiModel* parent, DiSubMesh* model, bool softwareSkin)
         :mParent(parent),
-        mMesh(model)
+        mMesh(model),
+        mLocalWeights(nullptr),
+        mLocalIndices(nullptr),
+        mSoftBlendData(nullptr)
     {
-        InitFromSubMesh();
+        InitFromSubMesh(softwareSkin);
     }
 
     DiSubModel::~DiSubModel()
@@ -33,6 +35,10 @@ namespace Demi
         ReleaseSourceData();
         ReleaseIndexBuffer();
         ReleaseVertexDeclaration();
+
+        SAFE_ARRAY_DELETE(mLocalIndices);
+        SAFE_ARRAY_DELETE(mLocalWeights);
+        SAFE_DELETE(mSoftBlendData);
     }
 
     void DiSubModel::GetWorldTransform( DiMat4* xform ) const
@@ -40,17 +46,15 @@ namespace Demi
         *xform = mParent->GetTransform();
     }
 
-    void DiSubModel::InitFromSubMesh()
+    void DiSubModel::InitFromSubMesh(bool softwareSkin)
     {
         ReleaseSourceData();
         ReleaseIndexBuffer();
         ReleaseVertexDeclaration();
 
-        {
-            mVertexDecl = Driver->CreateVertexDeclaration();
-            mVertexDecl->AddElements(mMesh->mVertexElems);
-            mVertexDecl->Create();
-        }
+        mVertexDecl = Driver->CreateVertexDeclaration();
+        mVertexDecl->AddElements(mMesh->mVertexElems);
+        mVertexDecl->Create();
 
         if (mMesh->mIndexData && mMesh->GetIndexNum() > 0)
         {
@@ -66,20 +70,53 @@ namespace Demi
             mPrimitiveCount = mMesh->GetPrimitiveCount();
             mPrimitiveType  = mMesh->GetPrimitiveType();
         }
-
+       
+        for (auto it = mMesh->mVertexData.begin();
+            it != mMesh->mVertexData.end(); ++it)
         {
-            for (auto it = mMesh->mVertexData.begin();
-                it != mMesh->mVertexData.end(); ++it)
+            DiVertexBuffer* buf = Driver->CreateVertexBuffer();
+            uint32 size = it->second.GetSize();
+            buf->SetStride(it->second.stride);
+            buf->Create(size, RU_WRITE_ONLY,it->first);
+            buf->WriteData(0, size, it->second.data);
+            mSourceData.push_back(buf);
+        }
+
+        mVerticesNum = mMesh->GetVerticeNum();
+
+        // setup software skinning data
+        if (mMesh->GetParentMesh()->NeedSoftSkinning())
+        {
+            DI_ASSERT(!mLocalIndices);
+            DI_ASSERT(!mLocalWeights);
+
+            mLocalWeights = DI_NEW FastArray<float>[mVerticesNum];
+            mLocalIndices = DI_NEW FastArray<uint8>[mVerticesNum];
+
+            auto i = mMesh->mBoneWeights.begin();
+            auto iend = mMesh->mBoneWeights.end();
+            for (size_t v = 0; v < mVerticesNum; ++v)
             {
-                DiVertexBuffer* buf = Driver->CreateVertexBuffer();
-                uint32 size = it->second.GetSize();
-                buf->SetStride(it->second.stride);
-                buf->Create(size, RU_WRITE_ONLY,it->first);
-                buf->WriteData(0, size, it->second.data);
-                mSourceData.push_back(buf);
+                mLocalWeights[v].resize(mMesh->mMaxWeights);
+                mLocalIndices[v].resize(mMesh->mMaxWeights);
+
+                for (uint16 bone = 0; bone < mMesh->mMaxWeights; ++bone)
+                {
+                    if (i != iend && i->second.vertexIndex == v)
+                    {
+                        mLocalWeights[v][bone] = i->second.weight;
+                        mLocalIndices[v][bone] = static_cast<uint8>(i->second.boneIndex);
+                        ++i;
+                    }
+                    else
+                    {
+                        mLocalWeights[v][bone] = (bone == 0) ? 1.0f : 0.0f;
+                        mLocalIndices[v][bone] = 0;
+                    }
+                }
             }
 
-            mVerticesNum = mMesh->GetVerticeNum();
+            mSoftBlendData = mMesh->GenerateBlendData();
         }
 
         SetMaterial(mMesh->GetMaterialName());

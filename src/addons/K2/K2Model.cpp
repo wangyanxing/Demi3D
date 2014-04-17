@@ -37,7 +37,7 @@ namespace Demi
         , mSkeleton(nullptr)
     {
         Load(path);
-        Init();
+        InitModel();
         PostLoad();
     }
 

@@ -105,8 +105,13 @@ namespace Demi
 #define DEFINE_R_SCALAR_DIVISION( leftClass, rightType, op, op_func )\
     inline ArrayVector3 operator op ( const leftClass &lhs, const rightType fScalar )\
     {\
+<<<<<<< HEAD
         assert( fScalar != 0.0 );\
         float fInv = 1.0f / fScalar;\
+=======
+        DI_ASSERT( fScalar != 0.0 );\
+        Real fInv = 1.0f / fScalar;\
+>>>>>>> animationOptim
         ArrayFloat rhs = vdupq_n_f32( fInv );\
         return ArrayVector3(\
                 op_func( lhs.mChunkBase[0], rhs ),\
@@ -118,7 +123,7 @@ namespace Demi
     #define ASSERT_DIV_BY_ZERO( values ) ((void)0)
 #else
     #define ASSERT_DIV_BY_ZERO( values ) {\
-                assert( vmovemaskq_u32( vceqq_f32( values, vdupq_n_f32(0.0f) ) ) == 0 &&\
+                DI_ASSERT( vmovemaskq_u32( vceqq_f32( values, vdupq_n_f32(0.0f) ) ) == 0 &&\
                 "One of the 4 floats is a zero. Can't divide by zero" ); }
 #endif
 
@@ -178,8 +183,13 @@ namespace Demi
 #define DEFINE_UPDATE_R_SCALAR_DIVISION( rightType, op, op_func )\
     inline void ArrayVector3::operator op ( const rightType fScalar )\
     {\
+<<<<<<< HEAD
         assert( fScalar != 0.0 );\
         float fInv = 1.0f / fScalar;\
+=======
+        DI_ASSERT( fScalar != 0.0 );\
+        Real fInv = 1.0f / fScalar;\
+>>>>>>> animationOptim
         ArrayFloat a = vdupq_n_f32( fInv );\
         mChunkBase[0] = op_func( mChunkBase[0], a );\
         mChunkBase[1] = op_func( mChunkBase[1], a );\

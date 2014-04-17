@@ -29,15 +29,6 @@ namespace Demi
 
         DiAnimModel(const DiString& name,DiMeshPtr model,DiMotionPtr motion);
 
-        DiAnimModel(const DiString& name,const DiString& modelName,
-            const DiString& motionName,DiSkeletonInstance * pkSkeleton,
-            DiAttachSetInstance * pkAttachSet,DiMat4 * pkBoneMatrics,
-            DiClipControllerSet* pkClipSet);
-
-        DiAnimModel(const DiString& name,DiMeshPtr model,DiMotionPtr motion,
-            DiSkeletonInstance * pkSkeleton,DiAttachSetInstance * pkAttachSet,
-            DiMat4 * pkBoneMatrics,DiClipControllerSet* pkClipSet);
-
         virtual                 ~DiAnimModel();
 
     public:
@@ -94,10 +85,6 @@ namespace Demi
 
         bool                    mRefSkeleton;
         
-        DiAttachSetInstance*    mAttachSet;
-        
-        bool                    mRefAttachSet;
-
         DiClipControllerSet*    mClipSet;
         
         bool                    mRefClipSet;
@@ -115,8 +102,6 @@ namespace Demi
         uint64                  mLastUpdateAnimFrame;
         
         bool                    mAutoUpdateAnims;
-        
-        bool                    mHardwareSkining;
 
         float                   mSpeed;
 

@@ -296,6 +296,38 @@ namespace Demi
         /// With a duty cycle of 50% (0.5) will give the same output as WFT_SQUARE.
         WFT_PWM
     };
+
+    enum MemoryCategory
+    {
+        /// General purpose
+        MEMCATEGORY_GENERAL = 0,
+        /// Geometry held in main memory
+        MEMCATEGORY_GEOMETRY = 1,
+        /// Animation data like tracks, bone matrices
+        MEMCATEGORY_ANIMATION = 2,
+        /// Nodes, control data
+        MEMCATEGORY_SCENE_CONTROL = 3,
+        /// Scene object instances
+        MEMCATEGORY_SCENE_OBJECTS = 4,
+        /// Other resources
+        MEMCATEGORY_RESOURCE = 5,
+        /// Scripting
+        MEMCATEGORY_SCRIPTING = 6,
+        /// Rendersystem structures
+        MEMCATEGORY_RENDERSYS = 7,
+
+
+        // sentinel value, do not use 
+        MEMCATEGORY_COUNT = 8
+    };
+
+    enum SceneMemoryMgrTypes
+    {
+        SCENE_DYNAMIC = 0,
+        SCENE_STATIC,
+        NUM_SCENE_MEMORY_MANAGER_TYPES
+    };
+
 }
 
 

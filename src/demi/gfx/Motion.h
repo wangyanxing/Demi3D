@@ -47,13 +47,7 @@ namespace Demi
                                     
         DiSkeleton*                 GetSkeleton()const {return mSkeleton;}
 
-        DiAttachSet*                GetAttachSet() {return mAttachSet;}
-
-        DiAttachSet*                GetAttachSet()const {return mAttachSet;}
-
         bool                        HasSkeleton() const{return mSkeleton!=NULL;}
-
-        bool                        HasAttachSet() const{return mAttachSet!=NULL;}
 
         bool                        HasAnimation(const DiString& name);
 
@@ -67,11 +61,7 @@ namespace Demi
 
         void                        AssociateNodeAnimToSkeleton(DiSkeleton* skeleton);
 
-        void                        AssociateNodeAnimToAttachSet(DiAttachSet* attachset);
-
         DiSkeleton*                 CreateSkeleton();
-
-        DiAttachSet*                CreateAttachSet();
 
         DiAnimation*                CreateAnimation(const DiString& name, float length);
 
@@ -88,8 +78,6 @@ namespace Demi
     protected:
 
         DiSkeleton*                 mSkeleton;
-
-        DiAttachSet*                mAttachSet;
 
         AnimationList               mAnimationList;
     };
