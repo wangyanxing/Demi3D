@@ -26,13 +26,15 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Animation.h"
 #include "AnimationClip.h"
 #include "KeyFrame.h"
+#include "Motion.h"
 
 namespace Demi
 {
-    SkeletonDef::SkeletonDef( DiSkeleton *originalSkeleton, float frameRate ) :
+    SkeletonDef::SkeletonDef(DiMotion* motion, float frameRate) :
         mNumUnusedSlots( 0 ),
         mName( ""/*originalSkeleton->GetName()*/ )
     {
+        DiSkeleton* originalSkeleton = motion->GetSkeleton();
         mBones.reserve( originalSkeleton->GetNumBones() );
 
         //Clone the bone data
@@ -83,13 +85,17 @@ namespace Demi
         }
 
         //Clone the animations
-        mAnimationDefs.resize( originalSkeleton->GetNumAnimations() );
-        for( size_t i=0; i<originalSkeleton->GetNumAnimations(); ++i )
+        
+        mAnimationDefs.resize(motion->GetNumAnimations());
+        auto it = motion->GetAnimations();
+        while (it.HasMoreElements())
         {
-            mAnimationDefs[i].setName( originalSkeleton->GetAnimation( i )->GetName() );
-            mAnimationDefs[i].build( originalSkeleton, originalSkeleton->GetAnimation( i ), frameRate );
-        }
+            DiAnimation* anim = it.GetNext();
+            mAnimationDefs.push_back(SkeletonAnimationDef());
+            mAnimationDefs.back().setName(anim->GetName());
+            mAnimationDefs.back().build(originalSkeleton, anim, frameRate);
 
+        }
         //Create the bones (just like we would for SkeletonInstance)so we can
         //get derived position/rotation/scale and then calculate its inverse
         BoneMemoryManager boneMemoryManager;

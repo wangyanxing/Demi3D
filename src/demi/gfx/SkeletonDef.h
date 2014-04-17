@@ -90,7 +90,7 @@ namespace Demi
         @remarks
             If the framerate information has been lost, set it to 1.
         */
-        SkeletonDef( DiSkeleton *originalSkeleton, float frameRate );
+        SkeletonDef(DiMotion* motion, float frameRate);
 
         const DiString& getName(void) const                             { return mName; }
 

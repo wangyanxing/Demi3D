@@ -320,6 +320,14 @@ namespace Demi
         // sentinel value, do not use 
         MEMCATEGORY_COUNT = 8
     };
+
+    enum SceneMemoryMgrTypes
+    {
+        SCENE_DYNAMIC = 0,
+        SCENE_STATIC,
+        NUM_SCENE_MEMORY_MANAGER_TYPES
+    };
+
 }
 
 

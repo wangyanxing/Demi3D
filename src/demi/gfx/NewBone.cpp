@@ -14,6 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxPch.h"
 #include "NewBone.h"
 #include "BoneMemoryManager.h"
+#include "Math/Array/BooleanMask.h"
+#include "Node.h"
 
 namespace Demi
 {
@@ -98,18 +100,18 @@ namespace Demi
     
     void DiNewBone::_setNodeParent(DiNode *nodeParent)
     {
-        if (nodeParent)
-        {
-            //This "Hack" just works. Don't ask. And it's fast!
-            //(we're responsible for ensuring the memory layout matches)
-            Transform parentTransf = nodeParent->_getTransform();
-            mTransform.mParentNodeTransform[mTransform.mIndex] = reinterpret_cast<SimpleMatrixAf4x3*>(
-                &parentTransf.mDerivedTransform[parentTransf.mIndex]);
-        }
-        else
-        {
-            mTransform.mParentNodeTransform[mTransform.mIndex] = &SimpleMatrixAf4x3::IDENTITY;
-        }
+//         if (nodeParent)
+//         {
+//             //This "Hack" just works. Don't ask. And it's fast!
+//             //(we're responsible for ensuring the memory layout matches)
+//             Transform parentTransf = nodeParent->_getTransform();
+//             mTransform.mParentNodeTransform[mTransform.mIndex] = reinterpret_cast<SimpleMatrixAf4x3*>(
+//                 &parentTransf.mDerivedTransform[parentTransf.mIndex]);
+//         }
+//         else
+//         {
+//             mTransform.mParentNodeTransform[mTransform.mIndex] = &SimpleMatrixAf4x3::IDENTITY;
+//         }
     }
     
     void DiNewBone::setInheritOrientation(bool inherit)

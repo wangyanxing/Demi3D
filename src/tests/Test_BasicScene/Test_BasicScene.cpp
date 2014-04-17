@@ -15,7 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DebugHelper.h"
 
 DiAnimModelPtr am;
-DiDebugHelperPtr debugger;
+//DiDebugHelperPtr debugger;
 
 void CreateModels()
 {
@@ -44,11 +44,11 @@ void CreateModels()
                 cullnode->AttachObject(model);
                 //cullnode->SetPosition(i * 120.0f, j * 120.0f, k * 120.0f);
 
-                debugger = make_shared<DiDebugHelper>();
-                debugger->AddSkeleton(model->GetSkeleton(), DiColor::Red);
-                DiMaterialPtr m = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
-                debugger->SetMaterial(m);
-                sm->GetRootNode()->AttachObject(debugger);
+                //debugger = make_shared<DiDebugHelper>();
+                //debugger->AddSkeleton(model->GetSkeleton(), DiColor::Red);
+                //DiMaterialPtr m = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
+                //debugger->SetMaterial(m);
+                //sm->GetRootNode()->AttachObject(debugger);
                 am = model;
             }
         }
@@ -59,7 +59,7 @@ void CreateModels()
 
 void InitScene()
 {
-	DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+    DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));
 
     DiDirLightPtr dirlight = make_shared<DiDirLight>();
@@ -72,8 +72,8 @@ void InitScene()
 
 void UpdateScene()
 {
-    debugger->Clear();
-    debugger->AddSkeleton(am->GetSkeleton(), DiColor::Red);
+    //debugger->Clear();
+    //debugger->AddSkeleton(am->GetSkeleton(), DiColor::Red);
 }
 
 int main(int argc, char *argv[])

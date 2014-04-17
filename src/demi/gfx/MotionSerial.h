@@ -72,8 +72,6 @@ namespace Demi
 
         virtual void            ReadSkeleton(DiDataStreamPtr& stream,DiMotion* motion);
  
-        virtual void            ReadAttachSet(DiDataStreamPtr& stream,DiMotion* motion);
-
         virtual void            ReadBones(DiDataStreamPtr& stream,DiSkeleton* skeleton);
 
         virtual void            ReadAttachNodes(DiDataStreamPtr& stream,DiAttachSet* attachset);
@@ -94,15 +92,9 @@ namespace Demi
 
         virtual void            WriteFileHeader(void);
 
-        virtual void            WriteAttachSet(const DiAttachSet* pkAttachset);
-
         virtual void            WriteSkeleton(const DiSkeleton* pSkeleton);
 
-        virtual void            WriteAttachNode(const DiAttachSet* pkAttachset);
-
         virtual void            WriteBones(const DiSkeleton* pSkeleton);
-
-        virtual void            WriteAttachParents(const DiString& strNode,const DiString strParent);
 
         virtual void            WriteBoneParent(uint16 b0, uint16 b1);
 
@@ -114,8 +106,6 @@ namespace Demi
 
         virtual size_t          CalcBonesSize(const DiSkeleton* pSkeleton);
                                 
-        virtual size_t          CalcAttachSize(const DiAttachSet* pkAttachSet);
-
         virtual size_t          CalcAnimationSize(const DiAnimation* pAnim);
 
         virtual size_t          CalcNodeClipSize(const DiNodeClip* pClip);

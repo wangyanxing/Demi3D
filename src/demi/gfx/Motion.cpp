@@ -23,8 +23,7 @@ namespace Demi
 
     DiMotion::DiMotion( const DiString& name )
         :DiAsset(name),
-        mSkeleton(nullptr),
-        mAttachSet(nullptr)
+        mSkeleton(nullptr)
     {
     }
 
@@ -63,14 +62,6 @@ namespace Demi
 
         mSkeleton = DI_NEW DiSkeleton();
         return mSkeleton;
-    }
-
-    DiAttachSet* DiMotion::CreateAttachSet()
-    {
-        SAFE_DELETE(mAttachSet);
-
-        mAttachSet = DI_NEW DiAttachSet();
-        return mAttachSet;
     }
 
     DiAnimation* DiMotion::GetAnimation( const DiString& name )
@@ -162,16 +153,6 @@ namespace Demi
         for (it = mAnimationList.begin(); it != itEnd; ++it)
         {
             it->second->NodeClipAttachToSkeleton(skeleton);
-        }
-    }
-
-    void DiMotion::AssociateNodeAnimToAttachSet( DiAttachSet* attachset )
-    {
-        AnimationList::iterator it;
-        AnimationList::iterator itEnd = mAnimationList.end();
-        for (it = mAnimationList.begin(); it != itEnd; ++it)
-        {
-            it->second->NodeClipAttachToAttachSet(attachset);
         }
     }
 

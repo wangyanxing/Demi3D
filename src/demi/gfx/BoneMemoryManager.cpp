@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxPch.h"
 #include "BoneMemoryManager.h"
 #include "NewBone.h"
+#include "SkeletonAnimManager.h"
 
 namespace Demi
 {
@@ -201,7 +202,7 @@ namespace Demi
                 if( transform.mOwner[j] )
                 {
                     transform.mIndex = j;
-                    transform.mOwner[j]->GetTransform() = transform;
+                    transform.mOwner[j]->_getTransform() = transform;
                     transform.mOwner[j]->_memoryRebased();
                 }
             }
@@ -231,7 +232,7 @@ namespace Demi
                 if( transform.mOwner[j] )
                 {
                     transform.mIndex = j;
-                    transform.mOwner[j]->GetTransform() = transform;
+                    transform.mOwner[j]->_getTransform() = transform;
                     transform.mOwner[j]->_memoryRebased();
                 }
             }

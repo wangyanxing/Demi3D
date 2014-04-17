@@ -347,7 +347,7 @@ namespace Demi
     {
         /// Dummy node where to point ObjectData::mParents[i] when they're unused slots.
         DiNode           *mDummyNode;
-        DiTransUnitPtr   *mDummyObject;
+        DiTransUnitPtr    mDummyObject;
 
     protected:
         /// We overload to set all mParents to point to mDummyNode

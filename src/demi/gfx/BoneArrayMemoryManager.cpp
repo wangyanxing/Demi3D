@@ -84,7 +84,7 @@ namespace Demi
 
         //Set memory ptrs
         outTransform.mIndex = nextSlotIdx;
-        outTransform.mOwner             = reinterpret_cast<DiBone**>( mMemoryPools[Owner] +
+        outTransform.mOwner             = reinterpret_cast<DiNewBone**>( mMemoryPools[Owner] +
                                                 nextSlotBase * mElementsMemSizes[Owner] );
         outTransform.mPosition          = reinterpret_cast<ArrayVector3*>( mMemoryPools[Position] +
                                                 nextSlotBase * mElementsMemSizes[Position] );
@@ -138,7 +138,7 @@ namespace Demi
     
     size_t BoneArrayMemoryManager::getFirstNode( BoneTransform &outTransform )
     {
-        outTransform.mOwner             = reinterpret_cast<DiBone**>( mMemoryPools[Owner] );
+        outTransform.mOwner             = reinterpret_cast<DiNewBone**>( mMemoryPools[Owner] );
         outTransform.mPosition          = reinterpret_cast<ArrayVector3*>( mMemoryPools[Position] );
         outTransform.mOrientation       = reinterpret_cast<ArrayQuaternion*>(mMemoryPools[Orientation] );
         outTransform.mScale             = reinterpret_cast<ArrayVector3*>( mMemoryPools[Scale] );
