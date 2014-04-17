@@ -531,7 +531,7 @@ namespace Demi
                 ReadVertColors();
             else if (CheckFourcc(hed, "lnk1"))
             {
-                DI_WARNING("We don't support software skinning currently");
+                //DI_WARNING("We don't support software skinning currently");
                 ReadBoneLinks();
             }
             else if (CheckFourcc(hed, "lnk3"))
@@ -810,7 +810,7 @@ namespace Demi
 
         int chunk_size = ReadInt(mStream);
 
-#if 0
+#if 1
         int surfindex = ReadInt(mStream);
         int num_planes = ReadInt(mStream);
         int num_points = ReadInt(mStream);
