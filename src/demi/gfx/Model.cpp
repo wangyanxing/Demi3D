@@ -23,17 +23,19 @@ namespace Demi
 {
     DiModel::DiModel( const DiString& name,
         const DiString& modelName)
-        :DiTransformUnit(name)
+        :DiTransformUnit(name),
+        mHardwareSkining(false)
     {
         mMesh = DiAssetManager::GetInstance().GetAsset<DiMesh>(modelName,true);
-        Init();
+        InitModel();
     }
 
     DiModel::DiModel( const DiString& name,DiMeshPtr model )
         :DiTransformUnit(name),
-        mMesh(model)
+        mMesh(model),
+        mHardwareSkining(false)
     {
-        Init();
+        InitModel();
     }
 
     DiModel::DiModel( const DiString& name )
@@ -64,7 +66,7 @@ namespace Demi
     {
         DI_ASSERT(mSubModels.empty());
 
-        DiMesh::SubMeshIterator it = mMesh->GetSubMeshs();
+        auto it = mMesh->GetSubMeshs();
         while(it.HasMoreElements())
         {
             DiSubMesh* sm = it.GetNext();
@@ -74,7 +76,7 @@ namespace Demi
 
     DiSubModel* DiModel::CreateSubModel( DiSubMesh* sm )
     {
-        DiSubModel* se = DI_NEW DiSubModel(this,sm);
+        DiSubModel* se = DI_NEW DiSubModel(this, sm, !mHardwareSkining);
         mSubModels.push_back(se);
         return se;
     }
@@ -105,7 +107,7 @@ namespace Demi
             (*it)->SetMaterial(mat);
     }
 
-    void DiModel::Init()
+    void DiModel::InitModel()
     {
         if (mMesh)
             InitSubModels();
@@ -128,24 +130,4 @@ namespace Demi
         static DiString type = "Model";
         return type;
     }
-
-    void DiModel::Save( DiXMLElement node )
-    {
-        DiTransformUnit::Save(node);
-        if (mMesh)
-            node.SetAttribute("Model",mMesh->GetName());
-    }
-
-    void DiModel::Load( DiXMLElement node )
-    {
-        DiTransformUnit::Load(node);
-
-        if (node.HasAttribute("Model"))
-        {
-            DiString modelName = node.GetAttribute("Model");
-            mMesh = DiAssetManager::GetInstance().GetAsset<DiMesh>(modelName,true);
-            Init();
-        }
-    }
-
 }

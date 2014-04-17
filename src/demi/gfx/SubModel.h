@@ -14,9 +14,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiSubModel_h__
 #define DiSubModel_h__
 
-
 #include "RenderUnit.h"
 #include "Any.h"
+#include "FastArray.h"
+#include "SubMesh.h"
 
 namespace Demi 
 {
@@ -24,25 +25,34 @@ namespace Demi
     {
     public:
 
-        DiSubModel(DiModel* parent, DiSubMesh* model);
+        DiSubModel(DiModel* parent, DiSubMesh* model, bool softwareSkin);
 
         ~DiSubModel();
 
     public:
 
-        void            GetWorldTransform(DiMat4* xform) const;
+        void              GetWorldTransform(DiMat4* xform) const;
 
-        DiSubMesh*      GetSubMesh(){return mMesh;}
+        DiSubMesh*        GetSubMesh(){ return mMesh; }
 
-    protected:
-
-        void            InitFromSubMesh();
+        DiSubMesh::SoftBlendData*   GetBlendData() { return mSoftBlendData; }
 
     protected:
 
-        DiModel*        mParent;
+        void              InitFromSubMesh(bool softwareSkin);
 
-        DiSubMesh*      mMesh;
+    protected:
+
+        DiModel*          mParent;
+
+        DiSubMesh*        mMesh;
+
+        /// for software skinning
+        FastArray<float>* mLocalWeights;
+
+        FastArray<uint8>* mLocalIndices;
+
+        DiSubMesh::SoftBlendData*   mSoftBlendData;
     };
 }
 

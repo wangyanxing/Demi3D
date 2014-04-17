@@ -28,8 +28,8 @@ namespace Demi
         virtual                 ~DiMesh();
 
         typedef DiVector<DiSubMesh*>                SubMeshList;
-        typedef DiVectorIterator<SubMeshList>        SubMeshIterator;
-        typedef DiConstVectorIterator<SubMeshList>    ConstSubMeshIterator;
+        typedef DiVectorIterator<SubMeshList>       SubMeshIterator;
+        typedef DiConstVectorIterator<SubMeshList>  ConstSubMeshIterator;
 
     public:
 
@@ -55,6 +55,12 @@ namespace Demi
 
         DiSubMesh*              GetSubMesh(int id){return mSubMeshList[id];}
 
+#if 0
+        bool                    NeedSoftSkinning() const { return mSkeleton->GetNumBones() > MAX_BONE_NUM; }
+#else
+        bool                    NeedSoftSkinning() const { return true; }
+#endif
+
     public:
 
         static DiString         TYPE;
@@ -64,8 +70,6 @@ namespace Demi
         SubMeshList             mSubMeshList;
 
         DiAABB                  mAABB;
-
-        DiSkeleton*             mSkeleton;
     };
 }
 

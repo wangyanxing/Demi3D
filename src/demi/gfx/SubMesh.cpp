@@ -15,7 +15,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Mesh.h"
 #include "VertexDeclaration.h"
 
-#define MAX_BLEND_WEIGHTS 4
+#define MAX_HARDWARE_BLEND_WEIGHTS 4
+#define MAX_SOFTWARE_BLEND_WEIGHTS 8
 
 namespace Demi 
 {
@@ -30,7 +31,6 @@ namespace Demi
         mMaxWeights(0),
         mIndex(0)
     {
-
     }
 
     DiSubMesh::~DiSubMesh()
@@ -140,9 +140,7 @@ namespace Demi
 
     void DiSubMesh::ReleaseVertexData()
     {
-        SourceDataList::iterator it;
-        SourceDataList::iterator itEnd = mVertexData.end();
-        for (it = mVertexData.begin(); it != itEnd; ++it)
+        for (auto it = mVertexData.begin(); it != mVertexData.end(); ++it)
         {
             free(it->second.data);
         }
@@ -168,26 +166,28 @@ namespace Demi
 
     uint16 DiSubMesh::RationaliseBoneWeights()
     {
+        auto MAX_WEIGHT = MAX_HARDWARE_BLEND_WEIGHTS;
+        if (mMesh->NeedSoftSkinning())
+        {
+            MAX_WEIGHT = MAX_SOFTWARE_BLEND_WEIGHTS;
+        }
+
         typedef std::multimap<float, BoneWeightList::iterator> WeightIteratorMap;
 
-        unsigned short maxBones = 0;
+        unsigned short maxWeights = 0;
         bool existsNonSkinnedVertices = false;
         BoneWeightList::iterator i;
 
         for (size_t v = 0; v < mVerticesNum; ++v)
         {
-            unsigned short currBones = static_cast<unsigned short>(mBoneWeights.count(v));
-            if (currBones <= 0)
-            {
+            unsigned short currWeights = static_cast<unsigned short>(mBoneWeights.count(v));
+            if (currWeights <= 0)
                 existsNonSkinnedVertices = true;
-            }
 
-            if (maxBones < currBones)
-            {
-                maxBones = currBones;
-            }
+            if (maxWeights < currWeights)
+                maxWeights = currWeights;
             
-            if (currBones > MAX_BLEND_WEIGHTS)
+            if (currWeights > MAX_WEIGHT)
             {
                 std::pair<BoneWeightList::iterator, BoneWeightList::iterator> range;
                 
@@ -199,7 +199,7 @@ namespace Demi
                     weightToAssignmentMap.insert(
                         WeightIteratorMap::value_type(i->second.weight, i));
                 }
-                unsigned short numToRemove = currBones - MAX_BLEND_WEIGHTS;
+                unsigned short numToRemove = currWeights - MAX_WEIGHT;
                 WeightIteratorMap::iterator remIt = weightToAssignmentMap.begin();
 
                 while (numToRemove--)
@@ -213,9 +213,7 @@ namespace Demi
             float totalWeight = 0;
             
             for (i = normalise_range.first; i != normalise_range.second; ++i)
-            {
                 totalWeight += i->second.weight;
-            }
             
             if (!DiMath::RealEqual(totalWeight, 1.0f))
             {
@@ -226,10 +224,10 @@ namespace Demi
             }
         }
 
-        if (maxBones > MAX_BLEND_WEIGHTS)
+        if (maxWeights > MAX_WEIGHT)
         {
-            DI_WARNING("The mesh %s has more than 4 blend weights!", mMesh->GetName().c_str());
-            maxBones = MAX_BLEND_WEIGHTS;
+            DI_WARNING("The mesh %s has more than %d blend weights!", MAX_WEIGHT, mMesh->GetName().c_str());
+            maxWeights = MAX_WEIGHT;
         }
 
         if (existsNonSkinnedVertices)
@@ -237,66 +235,67 @@ namespace Demi
             DI_WARNING("The mesh %s has non-skinned vertices!", mMesh->GetName().c_str());
         }
 
-        mMaxWeights = maxBones;
+        mMaxWeights = maxWeights;
 
-        return maxBones;
+        return maxWeights;
     }
 
     void DiSubMesh::SetupBoneWeightsData(uint16 numBlendWeightsPerVertex)
     {
-        DI_ASSERT(numBlendWeightsPerVertex > 0 && numBlendWeightsPerVertex <= MAX_BLEND_WEIGHTS);
+        DI_ASSERT(numBlendWeightsPerVertex > 0);
 
-        numBlendWeightsPerVertex = 4;
+        //numBlendWeightsPerVertex = 4;
 
+        IndexMap boneToBlendIndex;
+        BuildIndexMap(boneToBlendIndex, mBlendIndexToBoneIndexMap);
 
-         IndexMap boneToBlendIndex;
-         BuildIndexMap(boneToBlendIndex, mBlendIndexToBoneIndexMap);
-
-        uint16 stream = 0;
-
-        bool needAddElements = true;
-        if (mVertexElems.Contains(VERT_USAGE_BLENDWEIGHT) ||
-            mVertexElems.Contains(VERT_USAGE_BLENDINDICES))
+        if (!mMesh->NeedSoftSkinning())
         {
-            needAddElements = false;
-            stream = mVertexElems.GetUsageAtStream(VERT_USAGE_BLENDINDICES);
-        }
+            uint16 stream = 0;
 
-        if (needAddElements)
-        {
-            stream = mVertexElems.GetStreams();
-            mVertexElems.AddElement(stream, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES,0);
-            mVertexElems.AddElement(stream, DiVertexType(numBlendWeightsPerVertex - 1), VERT_USAGE_BLENDWEIGHT, 0);
-        }
-
-        uint16 vertSize = sizeof(uint8)*4 + sizeof(float)*numBlendWeightsPerVertex;
-        uint8* pBase = (uint8*)CreateSourceData(stream,mVerticesNum,vertSize);
-        memset(pBase,0,mVerticesNum*vertSize);
-
-        BoneWeightList::const_iterator i, iend;
-        i = mBoneWeights.begin();
-        iend = mBoneWeights.end();
-        float* pWeight;
-        uint8* pIndex;
-        for (size_t v = 0; v < mVerticesNum; ++v)
-        {
-            pIndex = (uint8*)pBase;
-            pWeight = (float*)(pBase + sizeof(uint8)*4);
-            for (uint16 bone = 0; bone < numBlendWeightsPerVertex; ++bone)
+            bool needAddElements = true;
+            if (mVertexElems.Contains(VERT_USAGE_BLENDWEIGHT) ||
+                mVertexElems.Contains(VERT_USAGE_BLENDINDICES))
             {
-                if (i != iend && i->second.vertexIndex == v)
-                {
-                    *pWeight++ = i->second.weight;
-                    *pIndex++ = static_cast<uint8>(/*boneToBlendIndex[*/i->second.boneIndex/*]*/);
-                    ++i;
-                }
-                else
-                {
-                    *pWeight++ = (bone == 0) ? 1.0f : 0.0f;
-                    *pIndex++ = 0;
-                }
+                needAddElements = false;
+                stream = mVertexElems.GetUsageAtStream(VERT_USAGE_BLENDINDICES);
             }
-            pBase += vertSize;
+
+            if (needAddElements)
+            {
+                stream = mVertexElems.GetStreams();
+                mVertexElems.AddElement(stream, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES, 0);
+                mVertexElems.AddElement(stream, DiVertexType(numBlendWeightsPerVertex - 1), VERT_USAGE_BLENDWEIGHT, 0);
+            }
+
+            uint16 vertSize = sizeof(uint8)* 4 + sizeof(float)*numBlendWeightsPerVertex;
+            uint8* pBase = (uint8*)CreateSourceData(stream, mVerticesNum, vertSize);
+            memset(pBase, 0, mVerticesNum*vertSize);
+
+            auto i = mBoneWeights.begin();
+            auto iend = mBoneWeights.end();
+            float* pWeight;
+            uint8* pIndex;
+            for (size_t v = 0; v < mVerticesNum; ++v)
+            {
+                pIndex = (uint8*)pBase;
+                pWeight = (float*)(pBase + sizeof(uint8)* 4);
+                for (uint16 bone = 0; bone < numBlendWeightsPerVertex; ++bone)
+                {
+                    if (i != iend && i->second.vertexIndex == v)
+                    {
+                        *pWeight++ = i->second.weight;
+                        *pIndex++ = static_cast<uint8>(/*boneToBlendIndex[*/i->second.boneIndex/*]*/);
+                        ++i;
+                    }
+                    else
+                    {
+                        *pWeight++ = (bone == 0) ? 1.0f : 0.0f;
+                        *pIndex++ = 0;
+                    }
+                }
+                pBase += vertSize;
+            }
         }
     }
 
@@ -305,9 +304,7 @@ namespace Demi
         unsigned short maxBones = RationaliseBoneWeights();
 
         if (maxBones != 0)
-        {
             SetupBoneWeightsData(maxBones);
-        }
     }
 
     void DiSubMesh::AddWeight( uint32 vertexId, uint16 boneId, float weight )
@@ -321,7 +318,7 @@ namespace Demi
 
     void DiSubMesh::ReleaseSourceData( uint16 streamid )
     {
-        SourceDataList::iterator it = mVertexData.find(streamid);
+        auto it = mVertexData.find(streamid);
         if (it != mVertexData.end())
         {
             free(it->second.data);
@@ -341,9 +338,8 @@ namespace Demi
         typedef DiSet<uint16> BoneIndexSet;
         BoneIndexSet usedBoneIndices;
 
-        BoneWeightList::const_iterator itVBA, itendVBA;
-        itendVBA = mBoneWeights.end();
-        for (itVBA = mBoneWeights.begin(); itVBA != itendVBA; ++itVBA)
+        auto itendVBA = mBoneWeights.end();
+        for (auto itVBA = mBoneWeights.begin(); itVBA != itendVBA; ++itVBA)
         {
             usedBoneIndices.insert(itVBA->second.boneIndex);
         }
@@ -351,13 +347,65 @@ namespace Demi
         blendIndexToBoneIndexMap.resize(usedBoneIndices.size());
         boneIndexToBlendIndexMap.resize(*usedBoneIndices.rbegin() + 1);
 
-        BoneIndexSet::const_iterator itBoneIndex, itendBoneIndex;
         unsigned short blendIndex = 0;
-        itendBoneIndex = usedBoneIndices.end();
-        for (itBoneIndex = usedBoneIndices.begin(); itBoneIndex != itendBoneIndex; ++itBoneIndex, ++blendIndex)
+        auto itendBoneIndex = usedBoneIndices.end();
+        for (auto itBoneIndex = usedBoneIndices.begin(); itBoneIndex != itendBoneIndex; ++itBoneIndex, ++blendIndex)
         {
             boneIndexToBlendIndexMap[*itBoneIndex] = blendIndex;
             blendIndexToBoneIndexMap[blendIndex] = *itBoneIndex;
         }
     }
+
+    DiSubMesh::SoftBlendData* DiSubMesh::GenerateBlendData()
+    {
+        SoftBlendData* data = DI_NEW SoftBlendData();
+
+        if (mVertexElems.Contains(VERT_USAGE_POSITION))
+        {
+            auto element = mVertexElems.FindElement(VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
+            auto& vertData = mVertexData[element.Stream];
+            uint8* buffer = (uint8*)vertData.data;
+
+            data->position = DI_NEW DiVec3[mVerticesNum];
+            for (uint32 i = 0; i < mVerticesNum; ++i)
+            {
+                float* p = (float*)(buffer + i * vertData.stride + element.Offset);
+                data->position[i].x = *p++;
+                data->position[i].y = *p++;
+                data->position[i].z = *p++;
+            }
+        }
+        if (mVertexElems.Contains(VERT_USAGE_NORMAL))
+        {
+            auto element = mVertexElems.FindElement(VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
+            auto& vertData = mVertexData[element.Stream];
+            uint8* buffer = (uint8*)vertData.data;
+
+            data->normal = DI_NEW DiVec3[mVerticesNum];
+            for (uint32 i = 0; i < mVerticesNum; ++i)
+            {
+                float* p = (float*)(buffer + i * vertData.stride + element.Offset);
+                data->normal[i].x = *p++;
+                data->normal[i].y = *p++;
+                data->normal[i].z = *p++;
+            }
+        }
+        if (mVertexElems.Contains(VERT_USAGE_TANGENT))
+        {
+            auto element = mVertexElems.FindElement(VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
+            auto& vertData = mVertexData[element.Stream];
+            uint8* buffer = (uint8*)vertData.data;
+
+            data->tangent = DI_NEW DiVec3[mVerticesNum];
+            for (uint32 i = 0; i < mVerticesNum; ++i)
+            {
+                float* p = (float*)(buffer + i * vertData.stride + element.Offset);
+                data->tangent[i].x = *p++;
+                data->tangent[i].y = *p++;
+                data->tangent[i].z = *p++;
+            }
+        }
+        return data;
+    }
+
 }

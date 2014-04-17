@@ -28,7 +28,7 @@ namespace Demi
 {
     DiAnimModel::DiAnimModel( const DiString& name, 
         const DiString& modelName, const DiString& motionName )
-        :DiModel(name,modelName),
+        :DiModel(name),
         mSkeleton(NULL),
         mRefSkeleton(false),
         mBoneMatrices(NULL),
@@ -39,16 +39,16 @@ namespace Demi
         mLastUpdateBonesFrame(std::numeric_limits<uint64>::max()),
         mLastUpdateAnimFrame(std::numeric_limits<uint64>::max()),
         mAutoUpdateAnims(true),
-        mHardwareSkining(false),
         mSpeed(1.0f)
     {
+        mMesh = DiAssetManager::GetInstance().GetAsset<DiMesh>(modelName, true);
         mMotion = DiAssetManager::GetInstance().GetAsset<DiMotion>(motionName);
 
         Init();
     }
 
     DiAnimModel::DiAnimModel( const DiString& name,DiMeshPtr model, DiMotionPtr motion)
-        :DiModel(name,model),
+        :DiModel(name),
         mSkeleton(NULL),
         mRefSkeleton(false),
         mBoneMatrices(NULL),
@@ -61,50 +61,9 @@ namespace Demi
         mMotion(motion),
         mSpeed(1.0f)
     {
+        mMesh = model;
         Init();
     }
-
-    DiAnimModel::DiAnimModel( const DiString& name, const DiString& modelName,const DiString& motionName,
-                            DiSkeletonInstance * pkSkeleton,DiAttachSetInstance * pkAttachSet,DiMat4 * pkBoneMatrics,
-                            DiClipControllerSet* pkClipSet)
-        :DiModel(name,modelName),
-        mSkeleton(pkSkeleton),
-        mRefSkeleton(true),
-        mBoneMatrices(pkBoneMatrics),
-        mRefBoneMatrics(true),
-        mNumBoneMatrices(0),
-        mClipSet(pkClipSet),
-        mRefClipSet(true),
-        mLastUpdateBonesFrame(std::numeric_limits<uint64>::max()),
-        mLastUpdateAnimFrame(std::numeric_limits<uint64>::max()),
-        mAutoUpdateAnims(true),
-        mHardwareSkining(false),
-        mSpeed(1.0f)
-    {
-        mMotion = DiAssetManager::GetInstance().GetAsset<DiMotion>(motionName);
-
-        Init();
-    }
-
-    DiAnimModel::DiAnimModel( const DiString& name,DiMeshPtr model,DiMotionPtr motion,
-                              DiSkeletonInstance * pkSkeleton,DiAttachSetInstance * pkAttachSet,
-                              DiMat4 * pkBoneMatrics,DiClipControllerSet* pkClipSet)
-        :DiModel(name,model),
-        mSkeleton(pkSkeleton),
-        mRefSkeleton(true),
-        mBoneMatrices(pkBoneMatrics),
-        mRefBoneMatrics(true),
-        mNumBoneMatrices(0),
-        mClipSet(pkClipSet),
-        mRefClipSet(true),
-        mLastUpdateBonesFrame(std::numeric_limits<uint64>::max()),
-        mLastUpdateAnimFrame(std::numeric_limits<uint64>::max()),
-        mMotion(motion),
-        mSpeed(1.0f)
-    {
-        Init();
-    }
-
 
     DiAnimModel::~DiAnimModel()
     {
@@ -141,39 +100,44 @@ namespace Demi
 
     void DiAnimModel::Init()
     {
-        if (mMotion)
+        if (mMotion && mMotion->GetSkeleton())
         {
-            if (mMotion->GetSkeleton())
+            if (!mSkeleton)
             {
-                if(!mSkeleton)
-                {
-                    mSkeleton    = DI_NEW DiSkeletonInstance(mMotion->GetSkeleton());
-                    mRefSkeleton = false;
-                }
-
-                // link the motion and skeleton
-                mMotion->AssociateNodeAnimToSkeleton(mSkeleton);
-
-                mNumBoneMatrices = (uint32)mSkeleton->GetNumBones();
-
-                if(!mBoneMatrices)
-                {
-                    mBoneMatrices = DI_NEW DiMat4[mNumBoneMatrices];
-                    mRefBoneMatrics = false;
-                }
-
-                for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
-                {
-                    (*it)->mBoneNum = mNumBoneMatrices;
-                    (*it)->mBoneMatrices = mBoneMatrices;
-                }
+                mSkeleton = DI_NEW DiSkeletonInstance(mMotion->GetSkeleton());
+                mRefSkeleton = false;
             }
 
-            if(!mClipSet)
+            // link the motion and skeleton
+            mMotion->AssociateNodeAnimToSkeleton(mSkeleton);
+
+            mNumBoneMatrices = (uint32)mSkeleton->GetNumBones();
+
+            if (!mBoneMatrices)
             {
-                InitClipSet();
-                mRefClipSet = false;
+                mBoneMatrices = DI_NEW DiMat4[mNumBoneMatrices];
+                mRefBoneMatrics = false;
             }
+
+#if 0
+            mHardwareSkining = mSkeleton->GetNumBones() > MAX_BONE_NUM;
+#else
+            mHardwareSkining = false;
+#endif
+        }
+
+        InitModel();
+
+        for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
+        {
+            (*it)->mBoneNum = mNumBoneMatrices;
+            (*it)->mBoneMatrices = mBoneMatrices;
+        }
+
+        if (!mClipSet)
+        {
+            InitClipSet();
+            mRefClipSet = false;
         }
     }
 
@@ -202,8 +166,10 @@ namespace Demi
             if (HasSkeleton())
                 CacheBoneMatrices();
 
-            if ()
+            // software skinning
+            if (!mHardwareSkining)
             {
+
             }
 
             mLastUpdateAnimFrame = mClipSet->GetDirtyFrameNumber();
@@ -228,9 +194,7 @@ namespace Demi
         if (animationDirty)
         {
             if (HasSkeleton())
-            {
                 CacheBoneMatrices();
-            }
 
             mLastUpdateAnimFrame = mClipSet->GetDirtyFrameNumber();
         }
