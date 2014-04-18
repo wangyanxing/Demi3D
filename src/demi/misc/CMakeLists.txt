@@ -94,13 +94,14 @@ endif()
   
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/pugixml)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/math)
+include_directories(${DEMI_EXTERNAL_SRC_PATH}/LinearMath)
   
 # source files
 DI_ADD_LIBRARY(DiMisc ${DI_MISC_HEADERS} ${DI_MISC_SRCS} ${DI_MISC_PUGIXML} ${AFNetworking_ADDONS} 
 						${JSONKit_ADDONS} ${DI_MISC_PLATFORM_SPEC} ${HEADER_FILES} ${SOURCE_FILES})
 DI_CONFIG_CORE_LIB(DiMisc "${CMAKE_CURRENT_SOURCE_DIR}/MiscPch.h")
 
-target_link_libraries(DiMisc ${DI_MISC_PLATFORM_LIBS})
+target_link_libraries(DiMisc ${DI_MISC_PLATFORM_LIBS} ${LinearMath_LIBRARIES})
 
 set_property(TARGET DiMisc PROPERTY FOLDER "Core")
 

@@ -99,6 +99,35 @@ make_library_set(STB_LIBRARY)
 findpkg_finish(STB)
 
 #-------------------------------------------------------------------
+# Find LinearMath
+# - Try to find LinearMath
+# Once done, this will define
+#
+#  LinearMath_FOUND - system has LinearMath
+#  LinearMath_INCLUDE_DIRS - the LinearMath include directories 
+#  LinearMath_LIBRARIES - link these to use LinearMath
+
+findpkg_begin(LinearMath)
+set(LinearMath_HOME "${EXTERNAL_HOME}/src/LinearMath")
+
+set(LinearMath_LIBRARY_NAMES LinearMath)
+get_debug_names(LinearMath_LIBRARY_NAMES)
+
+if (LinearMath_HOME)
+  set(LinearMath_INC_SEARCH_PATH ${LinearMath_INC_SEARCH_PATH} ${LinearMath_HOME})
+  set(LinearMath_LIB_SEARCH_PATH ${LinearMath_LIB_SEARCH_PATH} ${EXTERNAL_LIB})
+endif()
+
+find_path(LinearMath_INCLUDE_DIR NAMES btScalar.h HINTS ${LinearMath_INC_SEARCH_PATH} ${LinearMath_PKGC_INCLUDE_DIRS} PATH_SUFFIXES LinearMath)
+find_library(LinearMath_LIBRARY_REL NAMES ${LinearMath_LIBRARY_NAMES} HINTS ${LinearMath_LIB_SEARCH_PATH} ${LinearMath_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" release relwithdebinfo minsizerel)
+find_library(LinearMath_LIBRARY_DBG NAMES ${LinearMath_LIBRARY_NAMES_DBG} HINTS ${LinearMath_LIB_SEARCH_PATH} ${LinearMath_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" debug)
+
+make_library_set(LinearMath_LIBRARY)
+
+findpkg_finish(LinearMath)
+
+
+#-------------------------------------------------------------------
 # Find lua
 # - Try to find lua
 # Once done, this will define

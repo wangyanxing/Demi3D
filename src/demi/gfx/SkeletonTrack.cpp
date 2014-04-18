@@ -130,9 +130,10 @@ namespace Demi
                                                         nextTransf->mOrientation );
         interpScale = DiMath::Lerp( prevTransf->mScale, nextTransf->mScale, fTimeW );
 
+#if 0
         //Combine our internal flag (that prevents blending
         //unanimated bones) with user's custom weights
-        ArrayFloat fW = (*perBoneWeights) * animWeight;
+        ArrayFloat fW = (*perBoneWeights) * (ArrayFloat)animWeight;
 
         //When mixing, also interpolate rotation not using shortest path; as this is usually desired
         *finalPos   += interpPos * fW;
@@ -141,6 +142,8 @@ namespace Demi
                         (*finalRot);
 
         inOutLastKnownKeyFrameRig = prevFrame;
+#endif
+        // todo
     }
     
     void SkeletonTrack::_bakeUnusedSlots(void)

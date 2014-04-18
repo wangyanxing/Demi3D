@@ -50,6 +50,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "math/mathMisc.h"
 #include "math/polygen.h"
 
+// bullet3's linear math library
+#include "btVector3.h"
+#include "btMatrix3x3.h"
+#include "btMatrixX.h"
+#include "btTransform.h"
+
 #include "DynamicAttribute.h"
 #include "DynamicAttributeFactory.h"
 #include "StlUtil.h"

@@ -46,6 +46,8 @@ namespace Demi
         *xform = mParent->GetTransform();
     }
 
+#define use_btvec 1
+
     void DiSubModel::SoftwareVertBlend()
     {
         DI_ASSERT(mSoftBlendData);
@@ -62,24 +64,34 @@ namespace Demi
             {
                 float weight = mLocalWeights[v][w];
                 const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
-                
+
+#if use_btvec
+                btVector3 src(sourceBuf[0], sourceBuf[1], sourceBuf[2]);
+                btVector3 m0(mat[0][0], mat[0][1], mat[0][2]);
+                btVector3 m1(mat[1][0], mat[1][1], mat[1][2]);
+                btVector3 m2(mat[2][0], mat[2][1], mat[2][2]);
+                btVector3 t = src.dot3(m0, m1, m2) + btVector3(mat[0][3], mat[1][3], mat[2][3]);
+                t *= weight;
+                *buf += DiVec3(t);
+#else
                 buf->x +=
-                (mat[0][0] * sourceBuf[0] +
-                 mat[0][1] * sourceBuf[1] +
-                 mat[0][2] * sourceBuf[2] +
-                 mat[0][3]) * weight;
-                
+                    (mat[0][0] * sourceBuf[0] +
+                    mat[0][1] * sourceBuf[1] +
+                    mat[0][2] * sourceBuf[2] +
+                    mat[0][3]) * weight;
+
                 buf->y +=
-                (mat[1][0] * sourceBuf[0] +
-                 mat[1][1] * sourceBuf[1] +
-                 mat[1][2] * sourceBuf[2] +
-                 mat[1][3]) * weight;
-                
+                    (mat[1][0] * sourceBuf[0] +
+                    mat[1][1] * sourceBuf[1] +
+                    mat[1][2] * sourceBuf[2] +
+                    mat[1][3]) * weight;
+
                 buf->z +=
-                (mat[2][0] * sourceBuf[0] +
-                 mat[2][1] * sourceBuf[1] +
-                 mat[2][2] * sourceBuf[2] +
-                 mat[2][3]) * weight;
+                    (mat[2][0] * sourceBuf[0] +
+                    mat[2][1] * sourceBuf[1] +
+                    mat[2][2] * sourceBuf[2] +
+                  mat[2][3]) * weight;
+#endif
             }
             sourceBuf += 3;
             buf++;
@@ -92,7 +104,15 @@ namespace Demi
                 {
                     float weight = mLocalWeights[v][w];
                     const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
-                    
+#if use_btvec
+                    btVector3 src(sourceBuf[0], sourceBuf[1], sourceBuf[2]);
+                    btVector3 m0(mat[0][0], mat[0][1], mat[0][2]);
+                    btVector3 m1(mat[1][0], mat[1][1], mat[1][2]);
+                    btVector3 m2(mat[2][0], mat[2][1], mat[2][2]);
+                    btVector3 t = src.dot3(m0, m1, m2);
+                    t *= weight;
+                    *buf += DiVec3(t);
+#else
                     buf->x +=
                     (mat[0][0] * sourceBuf[0] +
                      mat[0][1] * sourceBuf[1] +
@@ -107,6 +127,7 @@ namespace Demi
                     (mat[2][0] * sourceBuf[0] +
                      mat[2][1] * sourceBuf[1] +
                      mat[2][2] * sourceBuf[2]) * weight;
+#endif
                 }
                 sourceBuf += 3;
                 buf->normalise();
@@ -121,6 +142,16 @@ namespace Demi
                 {
                     float weight = mLocalWeights[v][w];
                     const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
+
+#if use_btvec
+                    btVector3 src(sourceBuf[0], sourceBuf[1], sourceBuf[2]);
+                    btVector3 m0(mat[0][0], mat[0][1], mat[0][2]);
+                    btVector3 m1(mat[1][0], mat[1][1], mat[1][2]);
+                    btVector3 m2(mat[2][0], mat[2][1], mat[2][2]);
+                    btVector3 t = src.dot3(m0, m1, m2);
+                    t *= weight;
+                    *buf += DiVec3(t);
+#else
                     
                     buf->x += 
                     (mat[0][0] * sourceBuf[0] +
@@ -136,6 +167,7 @@ namespace Demi
                     (mat[2][0] * sourceBuf[0] +
                      mat[2][1] * sourceBuf[1] +
                      mat[2][2] * sourceBuf[2]) * weight;
+#endif
                 }
                 sourceBuf += 3;
                 buf->normalise();

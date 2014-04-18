@@ -71,6 +71,10 @@ namespace Demi
 
         struct SoftBlendData
         {
+            SoftBlendData()
+            {
+                hasPos = hasNormal = hasTangent = false;
+            }
             ~SoftBlendData()
             {
                 SAFE_ARRAY_DELETE(data);

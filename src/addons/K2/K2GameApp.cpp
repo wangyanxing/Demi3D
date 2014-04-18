@@ -202,7 +202,7 @@ namespace Demi
         DiK2Configs::Init();
 
         mGame = DI_NEW DiK2Game();
-        mGame->OpenWorld("maps/grimmscrossing");
+        mGame->OpenWorld("maps/test_entity");
         mGame->SetHero("heroes/aluna/model.mdf");
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){

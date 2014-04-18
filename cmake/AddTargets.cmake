@@ -24,6 +24,8 @@ MACRO(DI_ADD_LIBRARY TARGETNAME)
   else(DEMI_STATIC)
     add_library(${TARGETNAME} SHARED ${ARGN})
   endif(DEMI_STATIC)
+  
+  include_directories(${DEMI_EXTERNAL_SRC_PATH}/LinearMath)
 
   if (DEMI_STATIC)
     # add static prefix, if compiling static version
@@ -71,12 +73,13 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
   endif ()
   
   add_executable(${TARGETNAME} ${_WIN32} ${_OSX} ${ARGN})
+  include_directories(${DEMI_EXTERNAL_SRC_PATH}/LinearMath)
   
   set(DEMI_BIN_NAME ${TARGETNAME})
   
   if (DEMI_STATIC)
 	  
-	target_link_libraries(${TARGETNAME} ${LUA_LIBRARIES} DiScript)
+	target_link_libraries(${TARGETNAME} ${LUA_LIBRARIES} ${LinearMath_LIBRARIES} DiScript)
 	  
     # add static prefix, if compiling static version
 	if (NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
