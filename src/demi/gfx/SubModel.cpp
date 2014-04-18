@@ -25,7 +25,8 @@ namespace Demi
         mMesh(model),
         mLocalWeights(nullptr),
         mLocalIndices(nullptr),
-        mSoftBlendData(nullptr)
+        mSoftBlendData(nullptr),
+        mBoneTransforms(nullptr)
     {
         InitFromSubMesh(softwareSkin);
     }
@@ -56,24 +57,27 @@ namespace Demi
         DiVertexBuffer* vb = mSourceData[0];
         DiVec3* buf = (DiVec3*)vb->Lock(0, vb->GetBufferSize());
         float* sourceBuf = mSoftBlendData->data;
+        
+        btVector3 src;
+        src.setZero();
+        btVector3 accu,t;
+        
         for (size_t v = 0; v < mVerticesNum; ++v)
         {
             *buf = DiVec3::ZERO;
-
+            src.setValue(sourceBuf[0], sourceBuf[1], sourceBuf[2]);
             for (size_t w = 0; w < mLocalIndices[v].size(); ++w)
             {
                 float weight = mLocalWeights[v][w];
-                const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
-
 #if use_btvec
-                btVector3 src(sourceBuf[0], sourceBuf[1], sourceBuf[2]);
-                btVector3 m0(mat[0][0], mat[0][1], mat[0][2]);
-                btVector3 m1(mat[1][0], mat[1][1], mat[1][2]);
-                btVector3 m2(mat[2][0], mat[2][1], mat[2][2]);
-                btVector3 t = src.dot3(m0, m1, m2) + btVector3(mat[0][3], mat[1][3], mat[2][3]);
+                const btTransform& mat = mBoneTransforms[mLocalIndices[v][w]];
+                t = mat.getBasis() * src + mat.getOrigin();
                 t *= weight;
-                *buf += DiVec3(t);
+                buf->x += t.getX();
+                buf->y += t.getY();
+                buf->z += t.getZ();
 #else
+                const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
                 buf->x +=
                     (mat[0][0] * sourceBuf[0] +
                     mat[0][1] * sourceBuf[1] +
@@ -90,7 +94,7 @@ namespace Demi
                     (mat[2][0] * sourceBuf[0] +
                     mat[2][1] * sourceBuf[1] +
                     mat[2][2] * sourceBuf[2] +
-                  mat[2][3]) * weight;
+                    mat[2][3]) * weight;
 #endif
             }
             sourceBuf += 3;
@@ -99,20 +103,18 @@ namespace Demi
             if (mSoftBlendData->hasNormal)
             {
                 *buf = DiVec3::ZERO;
-                
+#if use_btvec
+                accu.setZero();
+#endif
+                src.setValue(sourceBuf[0], sourceBuf[1], sourceBuf[2]);
                 for (size_t w = 0; w < mLocalIndices[v].size(); ++w)
                 {
                     float weight = mLocalWeights[v][w];
-                    const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
 #if use_btvec
-                    btVector3 src(sourceBuf[0], sourceBuf[1], sourceBuf[2]);
-                    btVector3 m0(mat[0][0], mat[0][1], mat[0][2]);
-                    btVector3 m1(mat[1][0], mat[1][1], mat[1][2]);
-                    btVector3 m2(mat[2][0], mat[2][1], mat[2][2]);
-                    btVector3 t = src.dot3(m0, m1, m2);
-                    t *= weight;
-                    *buf += DiVec3(t);
+                    const btTransform& mat = mBoneTransforms[mLocalIndices[v][w]];
+                    accu += mat.getBasis() * src * weight;
 #else
+                    const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
                     buf->x +=
                     (mat[0][0] * sourceBuf[0] +
                      mat[0][1] * sourceBuf[1] +
@@ -130,29 +132,32 @@ namespace Demi
 #endif
                 }
                 sourceBuf += 3;
+#if use_btvec
+                accu.normalize();
+                buf->x = accu.getX();
+                buf->y = accu.getY();
+                buf->z = accu.getZ();
+#else
                 buf->normalise();
+#endif
+                
                 buf++;
-
             }
             if (mSoftBlendData->hasTangent)
             {
                 *buf = DiVec3::ZERO;
-                
+#if use_btvec
+                accu.setZero();
+#endif
+                src.setValue(sourceBuf[0], sourceBuf[1], sourceBuf[2]);
                 for (size_t w = 0; w < mLocalIndices[v].size(); ++w)
                 {
                     float weight = mLocalWeights[v][w];
-                    const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
-
 #if use_btvec
-                    btVector3 src(sourceBuf[0], sourceBuf[1], sourceBuf[2]);
-                    btVector3 m0(mat[0][0], mat[0][1], mat[0][2]);
-                    btVector3 m1(mat[1][0], mat[1][1], mat[1][2]);
-                    btVector3 m2(mat[2][0], mat[2][1], mat[2][2]);
-                    btVector3 t = src.dot3(m0, m1, m2);
-                    t *= weight;
-                    *buf += DiVec3(t);
+                    const btTransform& mat = mBoneTransforms[mLocalIndices[v][w]];
+                    accu += mat.getBasis() * src * weight;
 #else
-                    
+                    const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
                     buf->x += 
                     (mat[0][0] * sourceBuf[0] +
                      mat[0][1] * sourceBuf[1] +
@@ -170,7 +175,14 @@ namespace Demi
 #endif
                 }
                 sourceBuf += 3;
+#if use_btvec
+                accu.normalize();
+                buf->x = accu.getX();
+                buf->y = accu.getY();
+                buf->z = accu.getZ();
+#else
                 buf->normalise();
+#endif
                 buf++;
             }
         }
@@ -184,7 +196,7 @@ namespace Demi
         ReleaseVertexDeclaration();
         
         mVertexDecl = Driver->CreateVertexDeclaration();
-        bool useOriginalVertDecl = mMesh->mVFElements == 0;
+        bool useOriginalVertDecl = mMesh->mVFElements == 0 || !softwareSkin;
         if (!useOriginalVertDecl)
             mVertexDecl->AddElements(mMesh->mVFElements, softwareSkin);
         else
@@ -209,7 +221,7 @@ namespace Demi
         mVerticesNum = mMesh->GetVerticeNum();
         
         // setup software skinning data
-        if (mMesh->GetParentMesh()->NeedSoftSkinning())
+        if (!mParent->UseHardwareSkinning())
         {
             DI_ASSERT(!mLocalIndices);
             DI_ASSERT(!mLocalWeights);

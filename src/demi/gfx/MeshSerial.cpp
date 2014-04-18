@@ -517,24 +517,28 @@ namespace Demi
         uint32 size = 0;
         ReadInts(stream,&size,1);
         DI_SERIAL_LOG("Size: %d",size);
+        
+        //int bonesize = -1;
+        int bonesize = 1000;
 
         for (uint16 i=0; i<size; i++)
         {
             DiBoneWeight weight;
             ReadInts(stream,&weight.vertexIndex,1);
             ReadShorts(stream,&weight.boneIndex,1);
+            bonesize = DiMath::Max(bonesize, weight.boneIndex);
             ReadFloats(stream,&weight.weight,1);
             pMesh->mBoneWeights.insert(DiSubMesh::BoneWeightList::value_type(weight.vertexIndex, weight));
         }
 
-        pMesh->SetupBoneWeights();
+        pMesh->SetupBoneWeights(bonesize > MAX_BONE_NUM);
     }
 
     void DiMeshSerializerImpl::WriteSubMeshBoneWeights( DiSubMesh* pMesh )
     {
         const DiSubMesh::BoneWeightList& weights = pMesh->GetBoneWeights();
 
-        uint32 weightsSize = weights.size();
+        uint32 weightsSize = (uint32)weights.size();
         size_t chunkSize = MSTREAM_OVERHEAD_SIZE + sizeof(uint32) + weightsSize * sizeof(DiBoneWeight);
         
         WriteChunkHeader(DI_MESH_WEIGHTS, chunkSize);

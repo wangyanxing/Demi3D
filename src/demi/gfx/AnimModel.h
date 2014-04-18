@@ -91,6 +91,8 @@ namespace Demi
 
         DiMat4*                 mBoneMatrices;
         
+        btTransform*            mBoneTransforms;
+        
         bool                    mRefBoneMatrics;
 
         DiMat4                  mLastWorldTrans;

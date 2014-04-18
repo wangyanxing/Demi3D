@@ -165,10 +165,10 @@ namespace Demi
         mPrimitiveType = PT_TRIANGLELIST;
     }
 
-    uint16 DiSubMesh::RationaliseBoneWeights()
+    uint16 DiSubMesh::RationaliseBoneWeights(bool softskin)
     {
         auto MAX_WEIGHT = MAX_HARDWARE_BLEND_WEIGHTS;
-        if (mMesh->NeedSoftSkinning())
+        if (softskin)
         {
             MAX_WEIGHT = MAX_SOFTWARE_BLEND_WEIGHTS;
         }
@@ -241,7 +241,7 @@ namespace Demi
         return maxWeights;
     }
 
-    void DiSubMesh::SetupBoneWeightsData(uint16 numBlendWeightsPerVertex)
+    void DiSubMesh::SetupBoneWeightsData(uint16 numBlendWeightsPerVertex, bool softskin)
     {
         DI_ASSERT(numBlendWeightsPerVertex > 0);
 
@@ -250,7 +250,7 @@ namespace Demi
         IndexMap boneToBlendIndex;
         BuildIndexMap(boneToBlendIndex, mBlendIndexToBoneIndexMap);
 
-        if (!mMesh->NeedSoftSkinning())
+        if (!softskin)
         {
             uint16 stream = 0;
 
@@ -300,12 +300,12 @@ namespace Demi
         }
     }
 
-    void DiSubMesh::SetupBoneWeights()
+    void DiSubMesh::SetupBoneWeights(bool softskin)
     {
-        unsigned short maxBones = RationaliseBoneWeights();
+        unsigned short maxBones = RationaliseBoneWeights(softskin);
 
         if (maxBones != 0)
-            SetupBoneWeightsData(maxBones);
+            SetupBoneWeightsData(maxBones, softskin);
     }
 
     void DiSubMesh::AddWeight( uint32 vertexId, uint16 boneId, float weight )

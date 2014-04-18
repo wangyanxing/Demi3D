@@ -251,15 +251,9 @@ namespace Demi
                     vmovemaskq_u32( vceqq_f32( arg2, arg2 ) ) == 0x0f &&
                     "Passing NaN values to CMov4" );
 #ifndef  NDEBUG
-<<<<<<< HEAD
             ArrayFloat newNan1 = vmulq_f32( arg1, vdupq_n_f32(0.0f) ); //+-Inf * 0 = nan
             ArrayFloat newNan2 = vmulq_f32( arg2, vdupq_n_f32(0.0f) ); //+-Inf * 0 = nan
             assert( vmovemaskq_u32( vceqq_f32( newNan1, newNan1 ) ) == 0x0f &&
-=======
-            Arrayfloat newNan1 = vmulq_f32( arg1, vdupq_n_f32(0.0f) ); //+-Inf * 0 = nan
-            Arrayfloat newNan2 = vmulq_f32( arg2, vdupq_n_f32(0.0f) ); //+-Inf * 0 = nan
-            DI_ASSERT( vmovemaskq_u32( vceqq_f32( newNan1, newNan1 ) ) == 0x0f &&
->>>>>>> animationOptim
                     vmovemaskq_u32( vceqq_f32( newNan2, newNan2 ) ) == 0x0f &&
                     "Passing +/- Infinity values to CMov4" );
 #endif

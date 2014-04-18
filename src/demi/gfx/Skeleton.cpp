@@ -198,6 +198,21 @@ namespace Demi
             (*i)->SetBindingPose();
         }
     }
+    
+    void DiSkeleton::GetBoneMatrices(btTransform* pMatrices, bool updateTransform)
+    {
+        if (updateTransform)
+        {
+            UpdateTransforms();
+        }
+        
+        for (auto i = mBoneList.begin();i != mBoneList.end(); ++i)
+        {
+            DiBone* pBone = *i;
+            pBone->GetOffsetTransform(*pMatrices);
+            pMatrices++;
+        }
+    }
 
     void DiSkeleton::GetBoneMatrices( DiMat4* pMatrices, bool updateTransform )
     {

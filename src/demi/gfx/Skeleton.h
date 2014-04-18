@@ -76,6 +76,8 @@ namespace Demi
         void                SetBindingPose(void);
 
         void                GetBoneMatrices(Demi::DiMat4* pMatrices, bool updateTransform = true);
+        
+        void                GetBoneMatrices(btTransform* pMatrices, bool updateTransform = true);
 
         SkeletonBlendMode   GetBlendMode() const { return mBlendMode; }
 

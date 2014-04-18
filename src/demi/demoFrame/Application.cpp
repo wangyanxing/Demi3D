@@ -103,12 +103,21 @@ namespace Demi
     void DemiDemo::Update()
     {
         DI_PROFILE_BEGIN_FRAME
-
+        
+        float delta = Driver->GetDeltaSecond();
+        
+        static DiTimer fpstimer;
+        if (fpstimer.GetElapse() > 1.0)
+        {
+            fpstimer.Start();
+            printf("FPS:%g\n",1.0f/delta);
+        }
+        
         if (mUpdateCallback)
             mUpdateCallback();
 
         mInputMgr->captureInput();
-        mCameraHelper->Update(Driver->GetDeltaSecond());
+        mCameraHelper->Update(delta);
 
         if (mMainHwnd)
             Driver->Render();

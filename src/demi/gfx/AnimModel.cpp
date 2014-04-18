@@ -31,7 +31,8 @@ namespace Demi
         :DiModel(name),
         mSkeleton(NULL),
         mRefSkeleton(false),
-        mBoneMatrices(NULL),
+        mBoneMatrices(nullptr),
+        mBoneTransforms(nullptr),
         mRefBoneMatrics(false),
         mNumBoneMatrices(0),
         mClipSet(NULL),
@@ -80,6 +81,7 @@ namespace Demi
         if(!mRefBoneMatrics)
         {
             SAFE_ARRAY_DELETE(mBoneMatrices);
+            SAFE_ARRAY_DELETE(mBoneTransforms);
         }
     }
 
@@ -91,7 +93,10 @@ namespace Demi
             mMotion->ApplySkeletonAnimation(mSkeleton,mClipSet);
             mSkeleton->UpdateTransforms();
             UpdatePostControllers();
-            mSkeleton->GetBoneMatrices(mBoneMatrices,false);
+            if(mHardwareSkining)
+                mSkeleton->GetBoneMatrices(mBoneMatrices,false);
+            else
+                mSkeleton->GetBoneMatrices(mBoneTransforms,false);
             mLastUpdateBonesFrame = lfm;
             return true;
         }
@@ -117,13 +122,11 @@ namespace Demi
             {
                 mBoneMatrices = DI_NEW DiMat4[mNumBoneMatrices];
                 mRefBoneMatrics = false;
+                mBoneTransforms = DI_NEW btTransform[mNumBoneMatrices];
             }
 
-#if 0
-            mHardwareSkining = mSkeleton->GetNumBones() > MAX_BONE_NUM;
-#else
+            //mHardwareSkining = mNumBoneMatrices < MAX_BONE_NUM;
             mHardwareSkining = false;
-#endif
         }
 
         InitModel();
@@ -132,6 +135,7 @@ namespace Demi
         {
             (*it)->mBoneNum = mNumBoneMatrices;
             (*it)->mBoneMatrices = mBoneMatrices;
+            (*it)->mBoneTransforms = mBoneTransforms;
         }
 
         if (!mClipSet)

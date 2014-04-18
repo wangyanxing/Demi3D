@@ -137,7 +137,7 @@ namespace Demi
 
         const BoneWeightList&   GetBoneWeights() { return mBoneWeights; }
 
-        void                    SetupBoneWeights();
+        void                    SetupBoneWeights(bool softskin);
 
         void                    AddWeight(uint32 vertexId, uint16 boneId, float weight);
 
@@ -147,7 +147,7 @@ namespace Demi
 
         uint32                  GetMaxWeights() const { return mMaxWeights; }
 
-        uint16                  RationaliseBoneWeights();
+        uint16                  RationaliseBoneWeights(bool softskin);
 
         void                    BuildIndexMap(IndexMap& boneIndexToBlendIndexMap, IndexMap& blendIndexToBoneIndexMap);
 
@@ -161,7 +161,7 @@ namespace Demi
 
     protected:
 
-        void                    SetupBoneWeightsData(uint16 numBlendWeightsPerVertex);
+        void                    SetupBoneWeightsData(uint16 numBlendWeightsPerVertex, bool softskin);
 
     protected:
 

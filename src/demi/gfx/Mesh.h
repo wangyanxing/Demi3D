@@ -55,12 +55,6 @@ namespace Demi
 
         DiSubMesh*              GetSubMesh(int id){return mSubMeshList[id];}
 
-#if 0
-        bool                    NeedSoftSkinning() const { return mSkeleton->GetNumBones() > MAX_BONE_NUM; }
-#else
-        bool                    NeedSoftSkinning() const { return true; }
-#endif
-
     public:
 
         static DiString         TYPE;

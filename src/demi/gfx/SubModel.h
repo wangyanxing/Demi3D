@@ -55,6 +55,10 @@ namespace Demi
         FastArray<uint8>* mLocalIndices;
 
         DiSubMesh::SoftBlendData*   mSoftBlendData;
+        
+    public:
+        
+        btTransform*      mBoneTransforms;
     };
 }
 

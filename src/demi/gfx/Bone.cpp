@@ -76,12 +76,23 @@ namespace Demi
     {
         ResetToInitialState();
     }
+    
+    void DiBone::GetOffsetTransform(btTransform& t) const
+    {
+        DiVec3 locScale = GetDerivedScale() * mBindDerivedInverseScale;
+        DiQuat locRotate = GetDerivedOrientation() * mBindDerivedInverseOrientation;
+        DiVec3 locTranslate = GetDerivedPosition() +
+        locRotate * (locScale * mBindDerivedInversePosition);
+        t.setOrigin(btVector3(locTranslate.x,locTranslate.y,locTranslate.z));
+        btQuaternion qt;
+        qt.setValue(locRotate.x,locRotate.y,locRotate.z,locRotate.w);
+        t.setRotation(qt);
+    }
 
     void DiBone::GetOffsetTransform( DiMat4& m ) const
     {
         DiVec3 locScale = GetDerivedScale() * mBindDerivedInverseScale;
         DiQuat locRotate = GetDerivedOrientation() * mBindDerivedInverseOrientation;
-
         DiVec3 locTranslate = GetDerivedPosition() +
             locRotate * (locScale * mBindDerivedInversePosition);
         m.makeTransform(locTranslate, locScale, locRotate);

@@ -47,6 +47,8 @@ namespace Demi
         void                Reset();
 
         void                GetOffsetTransform(DiMat4& m) const;
+        
+        void                GetOffsetTransform(btTransform& t) const;
 
         void                NeedUpdate(bool forceParentUpdate = false);
 
