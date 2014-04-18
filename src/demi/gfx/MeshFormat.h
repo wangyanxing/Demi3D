@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiMeshFormat_h__
 #define DiMeshFormat_h__
 
-
 namespace Demi 
 {
     enum DiMeshChunkID 

@@ -169,7 +169,10 @@ namespace Demi
             // software skinning
             if (!mHardwareSkining)
             {
-
+                for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
+                {
+                    (*it)->SoftwareVertBlend();
+                }
             }
 
             mLastUpdateAnimFrame = mClipSet->GetDirtyFrameNumber();

@@ -46,37 +46,114 @@ namespace Demi
         VERT_TYPE_UNUSED
     };
 
-    // Basically there are thee streams used in this engine
+    // Basically there are thee streams used in demi3d
     enum DiStreamID
     {
-        SID_GENERAL = 0,
-        SID_TANGENT,
-        SID_SKINNING
+        STREAM_GENERAL = 0,
+        STREAM_SKINNING
     };
 
-#define GENERAL_DECLAR_START  0
-#define TANGENT_DECLAR_START  20
-#define SKINNING_DECLAR_START 24
-
-    // We use a 32 bits unsigned int to save the all combinations of vertex decelarations
-    enum DiDefaultVertexFormat
+    struct DiVFElement
     {
-        // General stream, 20bits reserved
-        VF_POS3F_NORMAL3F_UV2F          = 1 << (GENERAL_DECLAR_START  + 0),
-        VF_POS3F_NORMAL3F_COLOR_UV2F    = 1 << (GENERAL_DECLAR_START  + 1),
-        VF_POS3F_NORMAL3F_COLOR         = 1 << (GENERAL_DECLAR_START  + 2),
-        VF_POS3F_UV2F_UF2F              = 1 << (GENERAL_DECLAR_START  + 3), // for lightmap
-        VF_POS3F_COLOR                  = 1 << (GENERAL_DECLAR_START  + 4), 
-        VF_POS3F_COLOR_UV2F             = 1 << (GENERAL_DECLAR_START  + 5), 
-        VF_POS1F_COLOR_UV4B_UV4B        = 1 << (GENERAL_DECLAR_START  + 6), // for terrain
-        VF_POS1F_UV4B_UV4B              = 1 << (GENERAL_DECLAR_START  + 7), // for water
-        // add new defaults here...
-
-        // Tangent stream, 4bits reserved
-        VF_TANG3F                       = 1 << (TANGENT_DECLAR_START  + 0), 
-                                                                            
-        // Skinning stream, 4bits reserved
-        VF_BONEID4B_WEIGHTS4F           = 1 << (SKINNING_DECLAR_START + 0) // for skinning
+        enum
+        {
+            VF_ELEMENT_POS3F     = 1<<0,
+            VF_ELEMENT_NORMAL3F  = 1<<1,
+            VF_ELEMENT_TANGENT3F = 1<<2,
+            
+            VF_ELEMENT_UV02F     = 1<<3,
+            VF_ELEMENT_UV12F     = 1<<4,
+            VF_ELEMENT_COLOR     = 1<<5,
+            VF_ELEMENT_BONEID4B  = 1<<6,
+            VF_ELEMENT_WEIGHTS4F = 1<<7,
+        
+            VF_ELEMENT_NUMS = 8
+        };
+        
+        inline static int ToVFElement(DiVertexType type, DiVertexUsage usage, uint8 id)
+        {
+            uint32 ret = 0;
+            
+            if(id == 0)
+            {
+                if (type == VERT_TYPE_FLOAT2 && usage == VERT_USAGE_TEXCOORD)
+                    return VF_ELEMENT_UV02F;
+                else if(type == VERT_TYPE_FLOAT3 && usage == VERT_USAGE_POSITION)
+                    return VF_ELEMENT_POS3F;
+                else if(type == VERT_TYPE_FLOAT3 && usage == VERT_USAGE_NORMAL)
+                    return VF_ELEMENT_NORMAL3F;
+                else if(type == VERT_TYPE_COLOR && usage == VERT_USAGE_COLOR)
+                    return VF_ELEMENT_COLOR;
+                else if(type == VERT_TYPE_UBYTE4 && usage == VERT_USAGE_BLENDINDICES)
+                    return VF_ELEMENT_BONEID4B;
+                else if(type == VERT_TYPE_FLOAT4 && usage == VERT_USAGE_BLENDWEIGHT)
+                    return VF_ELEMENT_WEIGHTS4F;
+            }
+            else if(id == 1)
+            {
+                if (type == VERT_TYPE_FLOAT2 && usage == VERT_USAGE_TEXCOORD)
+                    return VF_ELEMENT_UV12F;
+            }
+            
+            return ret;
+        }
+        
+        inline static bool IsSoftBlendingElement(int vfElement)
+        {
+            if(vfElement == VF_ELEMENT_POS3F ||
+               vfElement == VF_ELEMENT_NORMAL3F ||
+               vfElement == VF_ELEMENT_TANGENT3F)
+                return true;
+            else
+                return false;
+        }
+        
+        inline static void FromVFElement(int vfElement, DiVertexType& outType, DiVertexUsage& outUsage, uint8& outId)
+        {
+            switch(vfElement)
+            {
+                case VF_ELEMENT_POS3F:
+                    outType = VERT_TYPE_FLOAT3;
+                    outUsage = VERT_USAGE_POSITION;
+                    outId = 0;
+                    return;
+                case VF_ELEMENT_NORMAL3F:
+                    outType = VERT_TYPE_FLOAT3;
+                    outUsage = VERT_USAGE_NORMAL;
+                    outId = 0;
+                    return;
+                case VF_ELEMENT_UV02F:
+                    outType = VERT_TYPE_FLOAT2;
+                    outUsage = VERT_USAGE_TEXCOORD;
+                    outId = 0;
+                    return;
+                case VF_ELEMENT_UV12F:
+                    outType = VERT_TYPE_FLOAT2;
+                    outUsage = VERT_USAGE_TEXCOORD;
+                    outId = 1;
+                    return;
+                case VF_ELEMENT_COLOR:
+                    outType = VERT_TYPE_COLOR;
+                    outUsage = VERT_USAGE_COLOR;
+                    outId = 0;
+                    return;
+                case VF_ELEMENT_BONEID4B:
+                    outType = VERT_TYPE_UBYTE4;
+                    outUsage = VERT_USAGE_BLENDINDICES;
+                    outId = 0;
+                    return;
+                case VF_ELEMENT_WEIGHTS4F:
+                    outType = VERT_TYPE_FLOAT4;
+                    outUsage = VERT_USAGE_BLENDWEIGHT;
+                    outId = 0;
+                    return;
+                default:
+                    outType = VERT_TYPE_UNUSED;
+                    outUsage = MAX_VERT_USAGE;
+                    outId = 0;
+                    return;
+            }
+        }
     };
 }
 

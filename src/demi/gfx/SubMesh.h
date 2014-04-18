@@ -21,8 +21,8 @@ namespace Demi
 {
     struct DiBoneWeight
     {
-        uint32    vertexIndex;
-        uint16    boneIndex;
+        uint32   vertexIndex;
+        uint16   boneIndex;
         float    weight;
     };
 
@@ -73,14 +73,13 @@ namespace Demi
         {
             ~SoftBlendData()
             {
-                SAFE_ARRAY_DELETE(position);
-                SAFE_ARRAY_DELETE(normal);
-                SAFE_ARRAY_DELETE(tangent);
+                SAFE_ARRAY_DELETE(data);
             }
 
-            DiVec3* position;
-            DiVec3* normal;
-            DiVec3* tangent;
+            bool hasPos;
+            bool hasNormal;
+            bool hasTangent;
+            float* data;
         };
 
         typedef DiMap<uint32,SourceData>            SourceDataList;
@@ -186,6 +185,8 @@ namespace Demi
         BoneWeightList          mBoneWeights;
 
         DiVertexElements        mVertexElems;
+        
+        uint64                  mVFElements;
 
         IndexMap                mBlendIndexToBoneIndexMap;
 

@@ -29,7 +29,8 @@ namespace Demi
         mPrimitiveType(PT_TRIANGLELIST),
         mPrimitiveCount(0),
         mMaxWeights(0),
-        mIndex(0)
+        mIndex(0),
+        mVFElements(0)
     {
     }
 
@@ -359,50 +360,58 @@ namespace Demi
     DiSubMesh::SoftBlendData* DiSubMesh::GenerateBlendData()
     {
         SoftBlendData* data = DI_NEW SoftBlendData();
-
+        int floatNums = 0;
+        
         if (mVertexElems.Contains(VERT_USAGE_POSITION))
         {
-            auto element = mVertexElems.FindElement(VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
-            auto& vertData = mVertexData[element.Stream];
-            uint8* buffer = (uint8*)vertData.data;
-
-            data->position = DI_NEW DiVec3[mVerticesNum];
-            for (uint32 i = 0; i < mVerticesNum; ++i)
-            {
-                float* p = (float*)(buffer + i * vertData.stride + element.Offset);
-                data->position[i].x = *p++;
-                data->position[i].y = *p++;
-                data->position[i].z = *p++;
-            }
+            data->hasPos = true;
+            floatNums+=3;
         }
+        auto elementPos = mVertexElems.FindElement(VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
+        
         if (mVertexElems.Contains(VERT_USAGE_NORMAL))
         {
-            auto element = mVertexElems.FindElement(VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
-            auto& vertData = mVertexData[element.Stream];
-            uint8* buffer = (uint8*)vertData.data;
-
-            data->normal = DI_NEW DiVec3[mVerticesNum];
-            for (uint32 i = 0; i < mVerticesNum; ++i)
-            {
-                float* p = (float*)(buffer + i * vertData.stride + element.Offset);
-                data->normal[i].x = *p++;
-                data->normal[i].y = *p++;
-                data->normal[i].z = *p++;
-            }
+            data->hasNormal = true;
+            floatNums+=3;
         }
+        auto elementNormal = mVertexElems.FindElement(VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
+        
         if (mVertexElems.Contains(VERT_USAGE_TANGENT))
         {
-            auto element = mVertexElems.FindElement(VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
-            auto& vertData = mVertexData[element.Stream];
-            uint8* buffer = (uint8*)vertData.data;
-
-            data->tangent = DI_NEW DiVec3[mVerticesNum];
-            for (uint32 i = 0; i < mVerticesNum; ++i)
+            data->hasTangent = true;
+            floatNums+=3;
+        }
+        auto elementTang = mVertexElems.FindElement(VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
+        
+        DI_ASSERT(floatNums>0);
+        data->data = DI_NEW float[mVerticesNum*floatNums];
+        float* buf = data->data;
+        
+        for (uint32 i = 0; i < mVerticesNum; ++i)
+        {
+            if (data->hasPos)
             {
-                float* p = (float*)(buffer + i * vertData.stride + element.Offset);
-                data->tangent[i].x = *p++;
-                data->tangent[i].y = *p++;
-                data->tangent[i].z = *p++;
+                auto& vertData = mVertexData[elementPos.Stream];
+                uint8* buffer = (uint8*)vertData.data;
+                float* pSrc = (float*)(buffer + i * vertData.stride + elementPos.Offset);
+                memcpy(buf,pSrc,sizeof(float)*3);
+                buf += 3;
+            }
+            if (data->hasNormal)
+            {
+                auto& vertData = mVertexData[elementNormal.Stream];
+                uint8* buffer = (uint8*)vertData.data;
+                float* pSrc = (float*)(buffer + i * vertData.stride + elementNormal.Offset);
+                memcpy(buf,pSrc,sizeof(float)*3);
+                buf += 3;
+            }
+            if (data->hasTangent)
+            {
+                auto& vertData = mVertexData[elementTang.Stream];
+                uint8* buffer = (uint8*)vertData.data;
+                float* pSrc = (float*)(buffer + i * vertData.stride + elementTang.Offset);
+                memcpy(buf,pSrc,sizeof(float)*3);
+                buf += 3;
             }
         }
         return data;

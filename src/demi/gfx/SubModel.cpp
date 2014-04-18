@@ -46,16 +46,119 @@ namespace Demi
         *xform = mParent->GetTransform();
     }
 
+    void DiSubModel::SoftwareVertBlend()
+    {
+        DI_ASSERT(mSoftBlendData);
+        DI_ASSERT(mSoftBlendData->hasPos);
+        
+        DiVertexBuffer* vb = mSourceData[0];
+        DiVec3* buf = (DiVec3*)vb->Lock(0, vb->GetBufferSize());
+        float* sourceBuf = mSoftBlendData->data;
+        for (size_t v = 0; v < mVerticesNum; ++v)
+        {
+            *buf = DiVec3::ZERO;
+
+            for (size_t w = 0; w < mLocalIndices[v].size(); ++w)
+            {
+                float weight = mLocalWeights[v][w];
+                const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
+                
+                buf->x +=
+                (mat[0][0] * sourceBuf[0] +
+                 mat[0][1] * sourceBuf[1] +
+                 mat[0][2] * sourceBuf[2] +
+                 mat[0][3]) * weight;
+                
+                buf->y +=
+                (mat[1][0] * sourceBuf[0] +
+                 mat[1][1] * sourceBuf[1] +
+                 mat[1][2] * sourceBuf[2] +
+                 mat[1][3]) * weight;
+                
+                buf->z +=
+                (mat[2][0] * sourceBuf[0] +
+                 mat[2][1] * sourceBuf[1] +
+                 mat[2][2] * sourceBuf[2] +
+                 mat[2][3]) * weight;
+            }
+            sourceBuf += 3;
+            buf++;
+            
+            if (mSoftBlendData->hasNormal)
+            {
+                *buf = DiVec3::ZERO;
+                
+                for (size_t w = 0; w < mLocalIndices[v].size(); ++w)
+                {
+                    float weight = mLocalWeights[v][w];
+                    const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
+                    
+                    buf->x +=
+                    (mat[0][0] * sourceBuf[0] +
+                     mat[0][1] * sourceBuf[1] +
+                     mat[0][2] * sourceBuf[2]) * weight;
+                    
+                    buf->y +=
+                    (mat[1][0] * sourceBuf[0] +
+                     mat[1][1] * sourceBuf[1] +
+                     mat[1][2] * sourceBuf[2]) * weight;
+                    
+                    buf->z +=
+                    (mat[2][0] * sourceBuf[0] +
+                     mat[2][1] * sourceBuf[1] +
+                     mat[2][2] * sourceBuf[2]) * weight;
+                }
+                sourceBuf += 3;
+                buf->normalise();
+                buf++;
+
+            }
+            if (mSoftBlendData->hasTangent)
+            {
+                *buf = DiVec3::ZERO;
+                
+                for (size_t w = 0; w < mLocalIndices[v].size(); ++w)
+                {
+                    float weight = mLocalWeights[v][w];
+                    const DiMat4& mat = mBoneMatrices[mLocalIndices[v][w]];
+                    
+                    buf->x += 
+                    (mat[0][0] * sourceBuf[0] +
+                     mat[0][1] * sourceBuf[1] +
+                     mat[0][2] * sourceBuf[2]) * weight;
+                    
+                    buf->y +=
+                    (mat[1][0] * sourceBuf[0] +
+                     mat[1][1] * sourceBuf[1] +
+                     mat[1][2] * sourceBuf[2]) * weight;
+                    
+                    buf->z +=
+                    (mat[2][0] * sourceBuf[0] +
+                     mat[2][1] * sourceBuf[1] +
+                     mat[2][2] * sourceBuf[2]) * weight;
+                }
+                sourceBuf += 3;
+                buf->normalise();
+                buf++;
+            }
+        }
+        vb->Unlock();
+    }
+    
     void DiSubModel::InitFromSubMesh(bool softwareSkin)
     {
         ReleaseSourceData();
         ReleaseIndexBuffer();
         ReleaseVertexDeclaration();
-
+        
         mVertexDecl = Driver->CreateVertexDeclaration();
-        mVertexDecl->AddElements(mMesh->mVertexElems);
+        bool useOriginalVertDecl = mMesh->mVFElements == 0;
+        if (!useOriginalVertDecl)
+            mVertexDecl->AddElements(mMesh->mVFElements, softwareSkin);
+        else
+            mVertexDecl->AddElements(mMesh->mVertexElems);
         mVertexDecl->Create();
-
+        
         if (mMesh->mIndexData && mMesh->GetIndexNum() > 0)
         {
             mIndexBuffer = Driver->CreateIndexBuffer();
@@ -70,36 +173,25 @@ namespace Demi
             mPrimitiveCount = mMesh->GetPrimitiveCount();
             mPrimitiveType  = mMesh->GetPrimitiveType();
         }
-       
-        for (auto it = mMesh->mVertexData.begin();
-            it != mMesh->mVertexData.end(); ++it)
-        {
-            DiVertexBuffer* buf = Driver->CreateVertexBuffer();
-            uint32 size = it->second.GetSize();
-            buf->SetStride(it->second.stride);
-            buf->Create(size, RU_WRITE_ONLY,it->first);
-            buf->WriteData(0, size, it->second.data);
-            mSourceData.push_back(buf);
-        }
-
+        
         mVerticesNum = mMesh->GetVerticeNum();
-
+        
         // setup software skinning data
         if (mMesh->GetParentMesh()->NeedSoftSkinning())
         {
             DI_ASSERT(!mLocalIndices);
             DI_ASSERT(!mLocalWeights);
-
+            
             mLocalWeights = DI_NEW FastArray<float>[mVerticesNum];
             mLocalIndices = DI_NEW FastArray<uint8>[mVerticesNum];
-
+            
             auto i = mMesh->mBoneWeights.begin();
             auto iend = mMesh->mBoneWeights.end();
             for (size_t v = 0; v < mVerticesNum; ++v)
             {
                 mLocalWeights[v].resize(mMesh->mMaxWeights);
                 mLocalIndices[v].resize(mMesh->mMaxWeights);
-
+                
                 for (uint16 bone = 0; bone < mMesh->mMaxWeights; ++bone)
                 {
                     if (i != iend && i->second.vertexIndex == v)
@@ -115,10 +207,79 @@ namespace Demi
                     }
                 }
             }
-
+            
             mSoftBlendData = mMesh->GenerateBlendData();
         }
+       
+        if (useOriginalVertDecl)
+        {
+            // just use the orignal data
+            for (auto it = mMesh->mVertexData.begin();
+                 it != mMesh->mVertexData.end(); ++it)
+            {
+                DiVertexBuffer* buf = Driver->CreateVertexBuffer();
+                uint32 size = it->second.GetSize();
+                buf->SetStride(it->second.stride);
+                buf->Create(size, RU_WRITE_ONLY,it->first);
+                buf->WriteData(0, size, it->second.data);
+                mSourceData.push_back(buf);
+            }
+        }
+        else
+        {
+            auto& elements = mVertexDecl->GetElements();
+            DiVector<DiVertexElements::Element> mappings;
+            // map two vertex declarations
+            for (size_t e = 0; e < elements.mVertexElements.size(); ++e)
+            {
+                auto ele = mMesh->mVertexElems.FindElement((DiVertexType)elements.mVertexElements[e].Type,
+                                                (DiVertexUsage)elements.mVertexElements[e].Usage,
+                                                elements.mVertexElements[e].UsageIndex);
+                mappings.push_back(ele);
+            }
+            
+            // reorder
+            uint16 streamNum = elements.GetStreams();
+            uint16 startStream = softwareSkin ? 1 : 0;
+            if(softwareSkin)
+            {
+                // deal with first stream
+                DiVertexBuffer* buf = Driver->CreateVertexBuffer();
+                uint16 stride = elements.GetStreamElementsSize(0);
+                buf->SetStride(stride);
+                uint32 size = stride * mVerticesNum;
+                buf->Create(size, RU_WRITE_ONLY, 0);
+                buf->WriteData(0, size, mSoftBlendData->data);
+                mSourceData.push_back(buf);
+            }
+            
+            for (uint16 i = startStream; i < streamNum; ++i)
+            {
+                DiVertexBuffer* buf = Driver->CreateVertexBuffer();
+                uint16 stride = elements.GetStreamElementsSize(i);
+                buf->SetStride(stride);
+                uint32 size = stride * mVerticesNum;
 
+                buf->Create(size, RU_WRITE_ONLY,i);
+                uint8* vb = (uint8*)buf->Lock(0, size);
+                for (uint32 v = 0; v < mVerticesNum; ++v)
+                {
+                    for (size_t e = 0; e < elements.mVertexElements.size(); ++e)
+                    {
+                        if(elements.mVertexElements[e].Stream != i)
+                            break;
+                        auto sd = mMesh->mVertexData[mappings[e].Stream];
+                        uint8* srcMem = (uint8*)sd.data + v*sd.stride + mappings[e].Offset;
+                        uint8* dstMem = vb + v*stride + elements.mVertexElements[e].Offset;
+                        uint16 typesize = DiVertexElements::GetElementTypeSize((DiVertexType)elements.mVertexElements[e].Type);
+                        memcpy(dstMem,srcMem,typesize);
+                    }
+                }
+                buf->Unlock();
+                mSourceData.push_back(buf);
+            }
+        }
+        
         SetMaterial(mMesh->GetMaterialName());
     }
 }

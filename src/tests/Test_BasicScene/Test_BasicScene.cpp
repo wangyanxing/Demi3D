@@ -21,15 +21,13 @@ void CreateModels()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     const int size = 3;
-    int i = 0, j = 0;
-
-    //for (int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++)
     {
-        //for (int j = 0; j < size; j++)
+        for (int j = 0; j < size; j++)
         {
-            //for (int k = 0; k < size; k++)
+            for (int k = 0; k < size; k++)
             {
-                DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SKINNED);
+                DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p");
                 mat->SetDiffuse(DiColor(1, 1, 1));
 
                 DiString name;
@@ -42,7 +40,7 @@ void CreateModels()
 
                 DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
                 cullnode->AttachObject(model);
-                //cullnode->SetPosition(i * 120.0f, j * 120.0f, k * 120.0f);
+                cullnode->SetPosition(i * 120.0f, j * 120.0f, k * 120.0f);
 
                 //debugger = make_shared<DiDebugHelper>();
                 //debugger->AddSkeleton(model->GetSkeleton(), DiColor::Red);

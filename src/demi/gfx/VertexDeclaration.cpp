@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "VertexDeclaration.h"
 #include "GfxDriver.h"
@@ -33,6 +34,27 @@ namespace Demi
     void DiVertexDeclaration::AddElement(const DiVertexElements::Element& ele)
     {
         AddElement(ele.Stream, (DiVertexType)ele.Type, (DiVertexUsage)ele.Usage, ele.UsageIndex);
+    }
+    
+    void DiVertexDeclaration::AddElements(uint64 vfElements, bool needSoftSkinning)
+    {
+        for (int i = 0; i < Demi::DiVFElement::VF_ELEMENT_NUMS; ++i)
+        {
+            int element = (1 << i);
+            if (vfElements & element)
+            {
+                DiVertexType outType;
+                DiVertexUsage outUsage;
+                uint8 outId;
+                Demi::DiVFElement::FromVFElement(element, outType, outUsage, outId);
+                uint16 stream = 0;
+                if(needSoftSkinning && !Demi::DiVFElement::IsSoftBlendingElement(element))
+                {
+                    stream = 1;
+                }
+                mVertexElements.AddElement(stream,outType,outUsage,outId);
+            }
+        }
     }
 
     void DiVertexDeclaration::AddElements( const DiVertexElements& eles )
@@ -282,17 +304,20 @@ namespace Demi
         }
     }
 
-    void DiVertexDeclaration::CreateDefaultDeclarations()
+    DiVertexDeclaration* DiVertexDeclaration::GetDefault(uint64 vf)
     {
-        // TODO
-    }
-
-    DiVertexDeclaration* DiVertexDeclaration::GetDefault(DiDefaultVertexFormat vf)
-    {
-        //D3DDECL_END
+        auto it = sDefaultDeclarations.find(vf);
+        if(it != sDefaultDeclarations.end())
+        {
+            return it->second;
+        }
+        
+        // create it
+        
+        
 
         return nullptr;
     }
 
-    DiVector<DiVertexDeclaration*> DiVertexDeclaration::sDefaultDeclarations;
+    DiMap<uint64,DiVertexDeclaration*> DiVertexDeclaration::sDefaultDeclarations;
 }

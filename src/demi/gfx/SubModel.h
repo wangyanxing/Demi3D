@@ -36,6 +36,8 @@ namespace Demi
         DiSubMesh*        GetSubMesh(){ return mMesh; }
 
         DiSubMesh::SoftBlendData*   GetBlendData() { return mSoftBlendData; }
+        
+        void              SoftwareVertBlend();
 
     protected:
 

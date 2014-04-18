@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "MeshSerial.h"
 #include "MeshFormat.h"
@@ -17,6 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SubMesh.h"
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
+#include "VertexFormat.h"
 #include "VertexDeclaration.h"
 #include "AssetManager.h"
 
@@ -296,7 +298,7 @@ namespace Demi
         uint32  elementsNum = (mCurChunkSize - MSTREAM_OVERHEAD_SIZE)/(sizeof(uint16)*4);
 
         DI_SERIAL_LOG("Number of elements: %d", elementsNum);
-
+        
         if (elementsNum > 0 && !stream->Eof())
         {
             pMesh->GetVertexElements().ClearElements();
@@ -313,6 +315,16 @@ namespace Demi
                 vSemantic = static_cast<DiVertexUsage>(tmp);
                 ReadShorts(stream, &tmp, 1);
                 uint8 usageID = static_cast<uint8>(tmp);
+                
+                int element = Demi::DiVFElement::ToVFElement(vType, vSemantic, usageID);
+                if(element == 0)
+                {
+                    pMesh->mVFElements = 0;
+                    DI_WARNING("Manual vertex declaration detected:[%d,%d,%d]",vType, vSemantic, usageID);
+                }
+                else
+                    pMesh->mVFElements |= element;
+
                 pMesh->GetVertexElements().AddElement(source,vType,vSemantic,usageID);
             }
         }

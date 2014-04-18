@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiVertexDeclaration_h__
 #define DiVertexDeclaration_h__
 
-
 #include "VertexFormat.h"
 
 namespace Demi 
@@ -25,7 +24,7 @@ namespace Demi
 
         DiVertexElements();
 
-        virtual        ~DiVertexElements();
+        virtual ~DiVertexElements();
 
         struct Element
         {
@@ -67,7 +66,7 @@ namespace Demi
         uint16                GetNextFreeTexcoord();
 
         void                  DeleteSource(uint16 streamSorce);
-
+        
         ElementsList          GetElementsAtStream(uint16 streamSorce);
 
         void                  GetElementsAtStream(uint16 streamSorce, ElementsList& elem);
@@ -103,6 +102,8 @@ namespace Demi
         void                        AddElement(const DiVertexElements::Element& ele);
 
         void                        AddElements(const DiVertexElements& eles);
+        
+        void                        AddElements(uint64 vfElements, bool needSoftSkinning);
 
         DiVertexElements&           GetElements() { return mVertexElements; }
 
@@ -111,21 +112,19 @@ namespace Demi
         virtual void                Create() = 0;
 
         virtual void                Bind() = 0;
+        
+    public:
 
-        static DiVertexDeclaration* GetDefault(DiDefaultVertexFormat vf);
+        static DiVertexDeclaration* GetDefault(uint64 vf);
 
     private:
 
-        static void                 CreateDefaultDeclarations();
-
-        static DiVector<DiVertexDeclaration*> sDefaultDeclarations;
+        static DiMap<uint64,DiVertexDeclaration*> sDefaultDeclarations;
 
     protected:
 
         DiVertexElements            mVertexElements;
     };
 }
-
-
 
 #endif
