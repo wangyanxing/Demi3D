@@ -66,7 +66,7 @@ namespace Demi
 
         void    ReadVertColors();
 
-        void    ReadBoneLinks();
+        void    ReadBoneLinks(DiSubMesh* sm);
 
         void    ReadSigns();
 

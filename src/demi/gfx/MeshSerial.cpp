@@ -518,8 +518,7 @@ namespace Demi
         ReadInts(stream,&size,1);
         DI_SERIAL_LOG("Size: %d",size);
         
-        //int bonesize = -1;
-        int bonesize = 1000;
+        int bonesize = -1;
 
         for (uint16 i=0; i<size; i++)
         {

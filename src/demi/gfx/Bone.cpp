@@ -87,6 +87,7 @@ namespace Demi
         btQuaternion qt;
         qt.setValue(locRotate.x,locRotate.y,locRotate.z,locRotate.w);
         t.setRotation(qt);
+        t.setBasis(t.getBasis().scaled(btVector3(locScale.x, locScale.y, locScale.z)));
     }
 
     void DiBone::GetOffsetTransform( DiMat4& m ) const

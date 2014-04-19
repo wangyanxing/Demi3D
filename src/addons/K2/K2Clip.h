@@ -56,6 +56,8 @@ namespace Demi
 
         DiMat4*         GetBoneMatrices() { return mBoneMatrices; }
 
+        btTransform*    GetBoneTransforms() { return mBoneTransforms; }
+
         DiNode*         GetBone(uint32 id) { return mBones[id]; }
 
         bool            HasBone(const DiString& name) const { return mBoneNames.find(name) != mBoneNames.end(); }
@@ -73,6 +75,8 @@ namespace Demi
         DiNode*             mRootNode;
 
         DiMat4*             mBoneMatrices;
+
+        btTransform*        mBoneTransforms;
 
         DiVector<DiNode*>   mBones;
 

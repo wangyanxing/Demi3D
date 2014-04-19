@@ -11,7 +11,6 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-
 #include "Demi.h"
 #include "DemoFrame.h"
 #include "DebugHelper.h"
@@ -50,11 +49,11 @@ void InitScene()
     //k2md2 = make_shared<DiK2Model>("buildings/legion/well/model.mdf");
     //k2md2 = make_shared<DiK2Model>("heroes/javaras/model.mdf");
     nd1->AttachObject(k2md2);
-    nd1->Translate(50, -50, 0);
-    k2md2->GetAnimation()->Play("idle");
+    nd1->Translate(0/*50*/, -50, 0);
+    k2md2->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
 
-    DiCullNode* nd0 = sm->GetRootNode()->CreateChild();
-    k2md = make_shared<DiK2Model>("heroes/aluna/model.mdf");
+    //DiCullNode* nd0 = sm->GetRootNode()->CreateChild();
+    //k2md = make_shared<DiK2Model>("heroes/aluna/model.mdf");
     // nd0->AttachObject(k2md);
     // nd0->Translate(-50, -50, 0);
     // k2md->GetAnimation()->Play("idle");
@@ -64,11 +63,11 @@ void InitScene()
               switch (e.key)
               {
                   case OIS::KC_1:
-                      k2md->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
+                      //k2md->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
                       k2md2->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
                       break;
                   case OIS::KC_2:
-                      k2md->GetAnimation()->Play(K2PrefabClip::ANIM_WALK);
+                      //k2md->GetAnimation()->Play(K2PrefabClip::ANIM_WALK);
                       k2md2->GetAnimation()->Play(K2PrefabClip::ANIM_WALK);
                       break;
               }
@@ -77,6 +76,7 @@ void InitScene()
 
 void UpdateScene()
 {
+    k2md2->UpdateAnimation(DiBase::Driver->GetDeltaSecond());
 }
 
 int main(int argc, char *argv[])

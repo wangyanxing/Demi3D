@@ -159,6 +159,10 @@ namespace Demi
 
         SoftBlendData*          GenerateBlendData();
 
+        uint64                  GetVFElements() const { return mVFElements; }
+
+        void                    SetVFElements(uint64 val) { mVFElements = val; }
+
     protected:
 
         void                    SetupBoneWeightsData(uint16 numBlendWeightsPerVertex, bool softskin);
@@ -191,7 +195,7 @@ namespace Demi
         DiVertexElements        mVertexElems;
         
         uint64                  mVFElements;
-
+        
         IndexMap                mBlendIndexToBoneIndexMap;
 
         uint32                  mMaxWeights;

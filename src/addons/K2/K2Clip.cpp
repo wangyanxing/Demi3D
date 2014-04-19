@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Clip.h"
 #include "K2Asset.h"
 #include "Node.h"
+#include "AlignedAllocator.h"
 
 namespace Demi
 {
@@ -175,6 +176,7 @@ namespace Demi
         : mRootNode(nullptr)
         , mRowData(nullptr)
         , mBoneMatrices(nullptr)
+        , mBoneTransforms(nullptr)
     {
     }
 
@@ -194,6 +196,11 @@ namespace Demi
         if (mBoneMatrices)
         {
             DI_DELETE[] mBoneMatrices;
+        }
+
+        if (mBoneTransforms)
+        {
+            DEMI_FREE_SIMD(mBoneTransforms);
         }
     }
 
@@ -223,6 +230,7 @@ namespace Demi
         }
 
         mBoneMatrices = DI_NEW DiMat4[mBones.size()];
+        mBoneTransforms = (btTransform*)DEMI_MALLOC_SIMD(mBones.size()*sizeof(btTransform));
     }
 
     void DiK2Skeleton::Apply(DiK2Animation* anim)

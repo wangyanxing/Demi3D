@@ -28,6 +28,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "ConsoleVariable.h"
 #include "K2Asset.h"
+#include "VertexFormat.h"
 
 namespace Demi
 {
@@ -55,17 +56,16 @@ namespace Demi
     {
         K2Vert()
         {
-            for (int i = 0; i < 4; ++i)
+            for (int i = 0; i < 4; i++)
             {
-                weights[i] = 0;
-                indices[i] = 0;
+                weights[i] = indices[i] = 0;
             }
         }
 
         DiVec3 pos;
-        DiVec2 uv;
         DiVec3 normal;
         DiVec3 tangent;
+        DiVec2 uv;
 
         // for skinning
         float weights[4];
@@ -73,7 +73,11 @@ namespace Demi
     };
 
     bool g_trans_orit = true;
+    bool g_hardSkin = true;
+    bool g_hasAnim = false;
+    
     DiVector<K2Vert> gCurrentVerts;
+
     DiQuat g_trans_orit_quat(DiRadian(DiDegree(-90)), DiVec3::UNIT_X);
     
     enum ClipTags
@@ -187,7 +191,11 @@ namespace Demi
         }
         
         // xxx.model
-        target->mModelFile = rootNode.GetAttribute("high"); // TODO: make it optional
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        target->mModelFile = rootNode.GetAttribute("low");
+#else
+        target->mModelFile = rootNode.GetAttribute("high");
+#endif
         if( target->mModelFile.empty() )
             target->mModelFile = rootNode.GetAttribute("file");
         
@@ -265,11 +273,6 @@ namespace Demi
         int num_surfs = ReadInt(mStream);
         int num_bones = ReadInt(mStream);
 
-        if (num_bones > MAX_BONE_NUM)
-        {
-            DI_WARNING("Too many bones: %d!", num_bones);
-        }
-
         if (version == 1)
         {
             DI_WARNING("It's an old version of k2 model: %s", file.c_str());
@@ -315,15 +318,42 @@ namespace Demi
             return false;
         }
 
+        g_hasAnim = target->GetAnimNums() > 0;
+        // for now, we don't need animation on trees
+        if (target->mIsTree)
+            g_hasAnim = false;
+
         while (!mStream->Eof())
         {
             DiSubMesh* sub = LoadMeshes(target,mesh);
 
             if (sub)
             {
-                int stride = sub->GetVertexElements().GetStreamElementsSize(0);
-                void* data = sub->CreateSourceData(0, gCurrentVerts.size(), stride);
-                memcpy(data, &gCurrentVerts[0], gCurrentVerts.size()*stride);
+                size_t vertnum = gCurrentVerts.size();
+               
+                if (g_hasAnim && g_hardSkin)
+                {
+                    int stride = sub->GetVertexElements().GetStreamElementsSize(0);
+                    uint8* data = (uint8*)sub->CreateSourceData(0, vertnum, stride);
+                    memcpy(data, &gCurrentVerts[0], vertnum*stride);
+                }
+                else
+                {
+                    int stride = sub->GetVertexElements().GetStreamElementsSize(0);
+                    uint8* data = (uint8*)sub->CreateSourceData(0, vertnum, stride);
+                    for (size_t i = 0; i < vertnum; ++i)
+                    {
+                        memcpy(data, &gCurrentVerts[i], stride);
+                        data += stride;
+                    }
+                    stride = sub->GetVertexElements().GetStreamElementsSize(1);
+                    data = (uint8*)sub->CreateSourceData(1, vertnum, stride);
+                    for (size_t i = 0; i < vertnum; ++i)
+                    {
+                        memcpy(data, &gCurrentVerts[i].uv, stride);
+                        data += stride;
+                    }
+                }
             }
         }
 
@@ -453,17 +483,29 @@ namespace Demi
             mIgnoreSubMesh = true;
         }
 
+        // software skinning
+        auto numBones = target->GetBoneData()->names.size();
+        g_hardSkin = numBones <= MAX_BONE_NUM;
+
         DiSubMesh* submesh = nullptr;
         if (!mIgnoreSubMesh)
         {
             submesh = mesh->CreateSubMesh();
             submesh->SetVerticeNum(vertNum);
             submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
             submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
             submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_BLENDWEIGHT);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES);
+            submesh->GetVertexElements().AddElement(g_hardSkin?0:1, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+            if (g_hasAnim && g_hardSkin)
+            {
+                submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_BLENDWEIGHT);
+                submesh->GetVertexElements().AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES);
+            }
+            else
+            {
+                submesh->SetVFElements(DiVFElement::VF_ELEMENT_POS3F | DiVFElement::VF_ELEMENT_NORMAL3F
+                    | DiVFElement::VF_ELEMENT_TANGENT3F | DiVFElement::VF_ELEMENT_UV02F);
+            }
         }
         
         DiString materialName = ReadString(mStream, material_name_length);
@@ -480,28 +522,6 @@ namespace Demi
             materialName = materialName.ExtractFileName();
             materialName = materialName.ExtractBaseName();
             materialName += "material";
-        }
-
-        bool hasanim = target->GetAnimNums() > 0;
-
-        // for now, we don't need animation on trees
-        if (target->mIsTree)
-            hasanim = false;
-
-        if (submesh)
-        {
-            DiString materialFile = TryMaterialFile(materialName, target);
-            if (materialFile.empty())
-            {
-                DI_WARNING("No material founded: %s", target->GetBaseFolder().c_str());
-                submesh->SetMaterialName("defaultMat.mtl");
-            }
-            else
-            {
-                DI_LOG("Loading k2 material:%s", materialFile.c_str());
-                auto mat = ParseMaterial(materialFile, target->GetBaseFolder(), hasanim);
-                submesh->SetMaterialName(mat->GetName());
-            }
         }
 
         // manually setup the skinning weights
@@ -532,12 +552,12 @@ namespace Demi
             else if (CheckFourcc(hed, "lnk1"))
             {
                 //DI_WARNING("We don't support software skinning currently");
-                ReadBoneLinks();
+                ReadBoneLinks(submesh);
             }
             else if (CheckFourcc(hed, "lnk3"))
             {
                 // hardware skinning
-                ReadBoneLinks();
+                ReadBoneLinks(submesh);
             }
             else if (CheckFourcc(hed, "sign"))
                 ReadSigns();
@@ -545,7 +565,7 @@ namespace Demi
                 ReadTangents();
             else if (CheckFourcc(hed, "mesh"))
                 // start another turn
-                return submesh;
+                break;
             else if (CheckFourcc(hed, "surf"))
             {
                 // start another turn
@@ -554,9 +574,28 @@ namespace Demi
             else
             {
                 DI_WARNING("K2 Model:Unknown data chunk tag: %c%c%c%c", hed[0], hed[1], hed[2], hed[3]);
-                return submesh;
+                break;
             }
         }
+
+        if (submesh)
+        {
+            DiString materialFile = TryMaterialFile(materialName, target);
+            if (materialFile.empty())
+            {
+                DI_WARNING("No material founded: %s", target->GetBaseFolder().c_str());
+                submesh->SetMaterialName("defaultMat.mtl");
+            }
+            else
+            {
+                DI_LOG("Loading k2 material:%s", materialFile.c_str());
+                auto mat = ParseMaterial(materialFile, target->GetBaseFolder(), g_hasAnim && g_hardSkin);
+                submesh->SetMaterialName(mat->GetName());
+            }
+        }
+
+        if (g_hasAnim)
+            submesh->SetupBoneWeights(!g_hardSkin);
 
         return submesh;
     }
@@ -726,7 +765,7 @@ namespace Demi
         delete[] vertics; // unused currently
     }
 
-    void DiK2MdfSerial::ReadBoneLinks()
+    void DiK2MdfSerial::ReadBoneLinks(DiSubMesh* sm)
     {
         DI_SERIAL_LOG("-----------lnk------------");
         int chunkSize = ReadInt(mStream);
@@ -752,10 +791,14 @@ namespace Demi
             mStream->Read(weights, sizeof(float)*numWeights);
             mStream->Read(indexes, sizeof(int)*numWeights);
 
+            numWeights = DiMath::Min(4, numWeights);
             for (int w = 0; w < numWeights; ++w)
             {
                 gCurrentVerts[i].weights[w] = weights[w];
                 gCurrentVerts[i].indices[w] = indexes[w];
+
+                if (!g_hardSkin && sm)
+                    sm->AddWeight(i, indexes[w], weights[w]);
             }
 
             delete[] weights;

@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "SubModel.h"
 #include "Model.h"
@@ -47,7 +48,7 @@ namespace Demi
         *xform = mParent->GetTransform();
     }
 
-#define use_btvec 1
+#define use_btvec 0
 
     void DiSubModel::SoftwareVertBlend()
     {
@@ -264,7 +265,7 @@ namespace Demi
                 DiVertexBuffer* buf = Driver->CreateVertexBuffer();
                 uint32 size = it->second.GetSize();
                 buf->SetStride(it->second.stride);
-                buf->Create(size, RU_WRITE_ONLY,it->first);
+                buf->Create(size, RU_WRITE_ONLY, it->first);
                 buf->WriteData(0, size, it->second.data);
                 mSourceData.push_back(buf);
             }
@@ -311,7 +312,7 @@ namespace Demi
                     for (size_t e = 0; e < elements.mVertexElements.size(); ++e)
                     {
                         if(elements.mVertexElements[e].Stream != i)
-                            break;
+                            continue;
                         auto sd = mMesh->mVertexData[mappings[e].Stream];
                         uint8* srcMem = (uint8*)sd.data + v*sd.stride + mappings[e].Offset;
                         uint8* dstMem = vb + v*stride + elements.mVertexElements[e].Offset;

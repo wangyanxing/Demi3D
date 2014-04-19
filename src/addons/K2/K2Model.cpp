@@ -60,6 +60,8 @@ namespace Demi
 
         mSkeleton = DI_NEW DiK2Skeleton();
         mSkeleton->CreateBones(mAsset->GetBoneData());
+
+        mHardwareSkining = mSkeleton->GetNumBones() <= MAX_BONE_NUM;
     }
 
     void DiK2Model::Update(DiCamera*)
@@ -73,6 +75,7 @@ namespace Demi
             DiSubModel* sm = GetSubModel(i);
             sm->mBoneNum = mSkeleton->GetNumBones();
             sm->mBoneMatrices = mSkeleton->GetBoneMatrices();
+            sm->mBoneTransforms = mSkeleton->GetBoneTransforms();
         }
     }
 
@@ -81,5 +84,13 @@ namespace Demi
         mAnimation->Update(delta);
         mSkeleton->Apply(mAnimation);
         mSkeleton->CacheBoneMatrices();
+
+        if (!mHardwareSkining)
+        {
+            for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
+            {
+                (*it)->SoftwareVertBlend();
+            }
+        }
     }
 }

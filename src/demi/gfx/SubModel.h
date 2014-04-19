@@ -21,7 +21,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    class DiSubModel : public DiRenderUnit, public DiAnyInterface
+    class DI_GFX_API DiSubModel : public DiRenderUnit, public DiAnyInterface
     {
     public:
 

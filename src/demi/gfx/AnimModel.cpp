@@ -23,6 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SubModel.h"
 #include "RenderWindow.h"
 #include "PostController.h"
+#include "AlignedAllocator.h"
 
 namespace Demi
 {
@@ -81,7 +82,10 @@ namespace Demi
         if(!mRefBoneMatrics)
         {
             SAFE_ARRAY_DELETE(mBoneMatrices);
-            SAFE_ARRAY_DELETE(mBoneTransforms);
+            if (mBoneTransforms)
+            {
+                DEMI_FREE_SIMD(mBoneTransforms);
+            }
         }
     }
 
@@ -122,11 +126,10 @@ namespace Demi
             {
                 mBoneMatrices = DI_NEW DiMat4[mNumBoneMatrices];
                 mRefBoneMatrics = false;
-                mBoneTransforms = DI_NEW btTransform[mNumBoneMatrices];
+                mBoneTransforms = (btTransform*)DEMI_MALLOC_SIMD(mNumBoneMatrices * sizeof(btTransform));
             }
 
-            //mHardwareSkining = mNumBoneMatrices < MAX_BONE_NUM;
-            mHardwareSkining = false;
+            mHardwareSkining = mNumBoneMatrices <= MAX_BONE_NUM;
         }
 
         InitModel();

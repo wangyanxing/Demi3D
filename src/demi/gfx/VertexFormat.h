@@ -122,6 +122,11 @@ namespace Demi
                     outUsage = VERT_USAGE_NORMAL;
                     outId = 0;
                     return;
+                case VF_ELEMENT_TANGENT3F:
+                    outType = VERT_TYPE_FLOAT3;
+                    outUsage = VERT_USAGE_TANGENT;
+                    outId = 0;
+                    return;
                 case VF_ELEMENT_UV02F:
                     outType = VERT_TYPE_FLOAT2;
                     outUsage = VERT_USAGE_TEXCOORD;
