@@ -70,7 +70,6 @@ namespace Demi
         
         mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, true));
         mMouse->setEventCallback(this);
-        
 #endif
     }
 

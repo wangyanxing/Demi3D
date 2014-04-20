@@ -91,6 +91,7 @@ namespace Demi
 
     void* DiSubMesh::CreateSourceData( uint16 streamid, uint32 num, uint16 stride )
     {
+        DI_ASSERT(stride > 0);
         if (mVertexData.find(streamid) != mVertexData.end())
         {
             return mVertexData[streamid].data;

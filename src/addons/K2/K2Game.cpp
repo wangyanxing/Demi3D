@@ -66,7 +66,7 @@ namespace Demi
     {
         mHero = GetEntityManager()->CreateHero(1);
         mHero->SetModel(model);
-        DiVec3 spawnPoint = mWorld->GetSpawnPoint(1);
+        DiVec3 spawnPoint = mWorld->GetSpawnPoint(0);
         mHero->GetRenderObj()->SetWorldPosition(spawnPoint);
 
         if (mCamera)

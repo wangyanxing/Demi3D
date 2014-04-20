@@ -49,10 +49,6 @@ namespace Demi
 
         DiK2Input*          GetInputManager() { return mInputMgr; }
 
-        void                OnKeyPressed(const OIS::KeyEvent &arg);
-
-        void                OnKeyReleased(const OIS::KeyEvent &arg);
-
         void                Run();
 
         void                OpenImpl();

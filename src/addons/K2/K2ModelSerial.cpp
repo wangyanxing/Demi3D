@@ -337,6 +337,16 @@ namespace Demi
                     uint8* data = (uint8*)sub->CreateSourceData(0, vertnum, stride);
                     memcpy(data, &gCurrentVerts[0], vertnum*stride);
                 }
+                else if (!g_hasAnim)
+                {
+                    int stride = sub->GetVertexElements().GetStreamElementsSize(0);
+                    uint8* data = (uint8*)sub->CreateSourceData(0, vertnum, stride);
+                    for (size_t i = 0; i < vertnum; ++i)
+                    {
+                        memcpy(data, &gCurrentVerts[i], stride);
+                        data += stride;
+                    }
+                }
                 else
                 {
                     int stride = sub->GetVertexElements().GetStreamElementsSize(0);
@@ -594,7 +604,7 @@ namespace Demi
             }
         }
 
-        if (g_hasAnim)
+        if (g_hasAnim && submesh)
             submesh->SetupBoneWeights(!g_hardSkin);
 
         return submesh;

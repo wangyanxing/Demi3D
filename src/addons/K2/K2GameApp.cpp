@@ -23,6 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxDriver.h"
 #include "Command.h"
 #include "LogManager.h"
+#include "Window.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   include "K2GameAppOSX.h"
@@ -145,21 +146,8 @@ namespace Demi
 #endif
     }
 
-    void DiK2GameApp::OnKeyPressed(const OIS::KeyEvent& evt)
-    {
-        if (evt.key == OIS::KC_ESCAPE)
-            mQuit = true;
-    }
-
-    void DiK2GameApp::OnKeyReleased(const OIS::KeyEvent& evt)
-    {
-    }
-
     void DiK2GameApp::CloseEngine()
     {
-        mInputMgr->UnregisterKeyPressEvent("App::KeyDown");
-        mInputMgr->UnregisterKeyReleaseEvent("App::KeyUp");
-
         SAFE_DELETE(mInputMgr);
 
         DiK2Configs::Shutdown();
@@ -192,13 +180,12 @@ namespace Demi
         DI_ASSERT(ret);
 
         mInputMgr = new DiK2Input();
-        mInputMgr->CreateInput((size_t)(mMainHwnd));
+
+        DiWindow* wnd = Driver->GetMainRenderWindow()->GetWindow();
+        mInputMgr->CreateInput(wnd->GetWndHandle(), wnd->GetWndViewHandle());
 
         using namespace std::placeholders;
 
-        mInputMgr->RegisterKeyPressEvent("App::KeyDown", std::bind(&DiK2GameApp::OnKeyPressed, this, _1));
-        mInputMgr->RegisterKeyReleaseEvent("App::KeyUp", std::bind(&DiK2GameApp::OnKeyReleased, this, _1));
-    
         DiK2Configs::Init();
 
         mGame = DI_NEW DiK2Game();

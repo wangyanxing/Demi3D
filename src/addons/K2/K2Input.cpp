@@ -29,6 +29,10 @@ namespace Demi
         mMouse(0),
         mCursorX(0),
         mCursorY(0)
+#if OIS_WITH_MULTITOUCH
+        , mMultiTouch(nullptr)
+#endif
+        , mAccelerometer(nullptr)
     {
     }
 
@@ -37,23 +41,38 @@ namespace Demi
         DestroyInput();
     }
 
-    void DiK2Input::CreateInput(size_t _handle)
+    void DiK2Input::CreateInput(DiWndHandle _handle, DiWndViewHandle viewhandle)
     {
         std::ostringstream windowHndStr;
-        windowHndStr << _handle;
+        windowHndStr << (ulong)_handle;
 
         OIS::ParamList pl;
         pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
         pl.insert(std::make_pair(std::string("w32_mouse"), "DISCL_FOREGROUND"));
         pl.insert(std::make_pair(std::string("w32_mouse"), "DISCL_NONEXCLUSIVE"));
 
+#if (DEMI_PLATFORM == DEMI_PLATFORM_IOS)
+        // Pass the view to OIS so the contentScalingFactor can be used
+        std::ostringstream viewHandleStr;
+        viewHandleStr << (ulong)viewhandle;
+        pl.insert(std::make_pair("VIEW", viewHandleStr.str()));
+#endif
+
         mInputManager = OIS::InputManager::createInputSystem(pl);
 
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        mMultiTouch = static_cast<OIS::MultiTouch*>(mInputManager->createInputObject(OIS::OISMultiTouch, true));
+        mMultiTouch->setEventCallback(this);
+
+        mAccelerometer = static_cast<OIS::JoyStick*>(mInputManager->createInputObject(OIS::OISJoyStick, true));
+
+#elif DEMI_PLATFORM == DEMI_PLATFORM_WIN32 || DEMI_PLATFORM == DEMI_PLATFORM_OSX
         mKeyboard = static_cast<OIS::Keyboard*>(mInputManager->createInputObject(OIS::OISKeyboard, true));
         mKeyboard->setEventCallback(this);
 
         mMouse = static_cast<OIS::Mouse*>(mInputManager->createInputObject(OIS::OISMouse, true));
         mMouse->setEventCallback(this);
+#endif
     }
 
     void DiK2Input::DestroyInput()
@@ -70,10 +89,24 @@ namespace Demi
                 mInputManager->destroyInputObject(mKeyboard);
                 mKeyboard = nullptr;
             }
+#if OIS_WITH_MULTITOUCH
+            if (mMultiTouch)
+            {
+                mInputManager->destroyInputObject(mMultiTouch);
+                mMultiTouch = nullptr;
+            }
+#endif
+            if (mAccelerometer)
+            {
+                mInputManager->destroyInputObject(mAccelerometer);
+                mAccelerometer = nullptr;
+            }
             OIS::InputManager::destroyInputSystem(mInputManager);
             mInputManager = nullptr;
         }
     }
+
+#ifdef DEMI_KEYMOUSE
 
     bool DiK2Input::mouseMoved(const OIS::MouseEvent& _arg)
     {
@@ -124,6 +157,36 @@ namespace Demi
         return true;
     }
 
+#endif
+
+#ifdef DEMI_TOUCH
+    bool DiK2Input::touchMoved(const OIS::MultiTouchEvent &arg)
+    {
+        for (auto it = mMouseMoves.begin(); it != mMouseMoves.end(); ++it)
+        if (it->second)
+            it->second(arg);
+        return true;
+    }
+    bool DiK2Input::touchPressed(const OIS::MultiTouchEvent &arg)
+    {
+        for (auto it = mMousePresses.begin(); it != mMousePresses.end(); ++it)
+        if (it->second)
+            it->second(arg);
+        return true;
+    }
+    bool DiK2Input::touchReleased(const OIS::MultiTouchEvent &arg)
+    {
+        for (auto it = mMouseReleases.begin(); it != mMouseReleases.end(); ++it)
+        if (it->second)
+            it->second(arg);
+        return true;
+    }
+    bool DiK2Input::touchCancelled(const OIS::MultiTouchEvent &arg)
+    {
+        return true;
+    }
+#endif
+
     bool DiK2Input::keyPressed(const OIS::KeyEvent& _arg)
     {
         K2KeyEvent event;
@@ -162,7 +225,15 @@ namespace Demi
             DiRenderWindow* rw = Driver->GetMainRenderWindow();
             SetInputViewSize(rw->GetWidth(), rw->GetHeight());
         }
-        mKeyboard->capture();
+        if (mKeyboard)
+            mKeyboard->capture();
+
+#if OIS_WITH_MULTITOUCH
+        if (mMultiTouch)
+            mMultiTouch->capture();
+#endif
+        if (mAccelerometer)
+            mAccelerometer->capture();
     }
 
     void DiK2Input::SetInputViewSize(int _width, int _height)

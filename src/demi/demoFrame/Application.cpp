@@ -105,13 +105,14 @@ namespace Demi
         DI_PROFILE_BEGIN_FRAME
         
         float delta = Driver->GetDeltaSecond();
-        
+#if 0
         static DiTimer fpstimer;
         if (fpstimer.GetElapse() > 1.0)
         {
             fpstimer.Start();
             printf("FPS:%g\n",1.0f/delta);
         }
+#endif
         
         if (mUpdateCallback)
             mUpdateCallback();
