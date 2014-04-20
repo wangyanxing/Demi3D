@@ -50,8 +50,6 @@ namespace Demi
         float moveSpeed = mCurSpeed;
         int turnSpeed = mTumRate;
 
-        auto& pathFinder = DiK2GameApp::Get()->GetWorld()->GetTerrain()->GetPathFinder();
-
         DiK2RenderObject* renderObj = mEntity->GetRenderObj();
         if (!renderObj)
             return;
@@ -61,9 +59,7 @@ namespace Demi
             DiK2Pos currentPos = renderObj->GetPosition();
             DiK2Pos targetPos = mPosNode[mNumCurTarget];
 
-            DiK2Pos vTargetPos = targetPos;
             DiK2Pos  newPos;
-            K2WalkMode oldWalkMode = mWalkMode;
 
             float fMoveDistance = moveSpeed * dt;
             mCurrMoveDistance += fMoveDistance;
@@ -146,7 +142,6 @@ namespace Demi
                     yawToGoal = std::max<float>(0, std::min<float>(yawToGoal, yawAtSpeed));
                 
                 DiQuat actorOrientation = renderObj->GetRotQuat();
-                DiQuat oldActorOrientation = actorOrientation;
                 actorOrientation = DiQuat(DiDegree(yawToGoal), DiVec3::UNIT_Y) * actorOrientation;
 
                 float rotrad = actorOrientation.getYaw().valueRadians();
@@ -237,7 +232,6 @@ namespace Demi
         DiQuat quaternion = vRotation1.getRotationTo(vRotation2);
         vLinePos1 = quaternion*vLinePos1;
         vLinePos2 = quaternion*vLinePos2;
-        float tmp = vLinePos1.z - vLinePos2.z;
         float x = fRadius*fRadius - vLinePos1.z*vLinePos1.z;
         x = (float)sqrt(x);
         if (vLinePos1.x < vLinePos2.x)

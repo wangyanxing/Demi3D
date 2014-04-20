@@ -156,12 +156,50 @@ namespace Demi
 
         return true;
     }
+    
+    bool DiK2Input::keyPressed(const OIS::KeyEvent& _arg)
+    {
+        K2KeyEvent event;
+        event.type = K2KeyEvent::KEY_PRESS;
+        event.key = _arg.key;
+        event.text = _arg.text;
+        DiK2GameApp::Get()->GetGame()->OnKeyInput(event);
+        
+        for (auto it = mKeyPresses.begin(); it != mKeyPresses.end(); ++it)
+            if (it->second)
+                it->second(_arg);
+        
+        return true;
+    }
+    
+    bool DiK2Input::keyReleased(const OIS::KeyEvent& _arg)
+    {
+        K2KeyEvent event;
+        event.type = K2KeyEvent::KEY_RELEASE;
+        event.key = _arg.key;
+        event.text = _arg.text;
+        DiK2GameApp::Get()->GetGame()->OnKeyInput(event);
+        
+        for (auto it = mKeyReleases.begin(); it != mKeyReleases.end(); ++it)
+            if (it->second)
+                it->second(_arg);
+        
+        return true;
+    }
 
 #endif
 
 #ifdef DEMI_TOUCH
     bool DiK2Input::touchMoved(const OIS::MultiTouchEvent &arg)
     {
+        mCursorX += arg.state.X.rel;
+        mCursorY += arg.state.Y.rel;
+        
+        K2MouseEvent event;
+        event.state = arg.state;
+        event.type = K2MouseEvent::MOUSE_MOVE;
+        DiK2GameApp::Get()->GetGame()->OnMouseInput(event);
+        
         for (auto it = mMouseMoves.begin(); it != mMouseMoves.end(); ++it)
         if (it->second)
             it->second(arg);
@@ -169,6 +207,11 @@ namespace Demi
     }
     bool DiK2Input::touchPressed(const OIS::MultiTouchEvent &arg)
     {
+        K2MouseEvent event;
+        event.state = arg.state;
+        event.type = K2MouseEvent::MOUSE_PRESS;
+        DiK2GameApp::Get()->GetGame()->OnMouseInput(event);
+        
         for (auto it = mMousePresses.begin(); it != mMousePresses.end(); ++it)
         if (it->second)
             it->second(arg);
@@ -176,6 +219,11 @@ namespace Demi
     }
     bool DiK2Input::touchReleased(const OIS::MultiTouchEvent &arg)
     {
+        K2MouseEvent event;
+        event.state = arg.state;
+        event.type = K2MouseEvent::MOUSE_RELEASE;
+        DiK2GameApp::Get()->GetGame()->OnMouseInput(event);
+        
         for (auto it = mMouseReleases.begin(); it != mMouseReleases.end(); ++it)
         if (it->second)
             it->second(arg);
@@ -186,37 +234,7 @@ namespace Demi
         return true;
     }
 #endif
-
-    bool DiK2Input::keyPressed(const OIS::KeyEvent& _arg)
-    {
-        K2KeyEvent event;
-        event.type = K2KeyEvent::KEY_PRESS;
-        event.key = _arg.key;
-        event.text = _arg.text;
-        DiK2GameApp::Get()->GetGame()->OnKeyInput(event);
-
-        for (auto it = mKeyPresses.begin(); it != mKeyPresses.end(); ++it)
-            if (it->second)
-                it->second(_arg);
-
-        return true;
-    }
-
-    bool DiK2Input::keyReleased(const OIS::KeyEvent& _arg)
-    {
-        K2KeyEvent event;
-        event.type = K2KeyEvent::KEY_RELEASE;
-        event.key = _arg.key;
-        event.text = _arg.text;
-        DiK2GameApp::Get()->GetGame()->OnKeyInput(event);
-
-        for (auto it = mKeyReleases.begin(); it != mKeyReleases.end(); ++it)
-            if (it->second)
-                it->second(_arg);
-
-        return true;
-    }
-
+    
     void DiK2Input::Update()
     {
         if (mMouse)

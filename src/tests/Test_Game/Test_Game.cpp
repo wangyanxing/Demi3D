@@ -17,6 +17,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 int main(int argc, char *argv[])
 {
     DiK2GameApp game;
-    game.Open();
+    game.Open(argc,argv);
 	return 0;
 }

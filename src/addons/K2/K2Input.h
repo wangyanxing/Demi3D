@@ -49,8 +49,12 @@ namespace Demi
             MOUSE_PRESS,
             MOUSE_RELEASE
         };
+#ifdef DEMI_KEYMOUSE
         OIS::MouseState state;
         OIS::MouseButtonID button;
+#elif defined(DEMI_TOUCH)
+        OIS::MultiTouchState state;
+#endif
         Type type;
     };
 

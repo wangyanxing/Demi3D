@@ -42,7 +42,11 @@ namespace Demi
 
     void DiK2HeroEntity::OnMouseInput(const K2MouseEvent& event)
     {
+#ifdef DEMI_KEYMOUSE
         if (event.button == OIS::MB_Left && event.type == K2MouseEvent::MOUSE_PRESS)
+#elif defined(DEMI_TOUCH)
+        if (event.type == K2MouseEvent::MOUSE_PRESS)
+#endif
         {
             // click on map
             auto terrain = DiK2GameApp::Get()->GetWorld()->GetTerrain();
