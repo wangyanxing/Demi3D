@@ -37,6 +37,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2TerrainChunk.h"
 #include "K2MapLoader.h"
 #include "K2Configs.h"
+#include "K2PathSolver.h"
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable:4505)
@@ -52,7 +53,8 @@ namespace Demi
         mMinHeight(10000000),
         mWaterMap(nullptr),
         mFoliageMap(nullptr),
-        mRoot(nullptr)
+        mRoot(nullptr),
+        mPathSolver(nullptr)
     {
         SetShadowCastEnable(false);
         CreateVertexDecl();
@@ -172,12 +174,16 @@ namespace Demi
             }
         }
 
+        mPathSolver = DI_NEW DiPathSolver(desc);
+
         return true;
     }
 
     void DiTerrain::Unload()
     {
         DI_LOG("Unloading terrain");
+
+        SAFE_DELETE(mPathSolver);
 
         for (auto it = mChunks.begin(); it != mChunks.end(); ++it)
         {

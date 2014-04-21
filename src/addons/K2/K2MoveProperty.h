@@ -18,6 +18,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Property.h"
 #include "K2PathFinder.h"
 
+#include "micropather.h"
+
 namespace Demi
 {
 #define FUSE_PARAM          (0.3f)
@@ -83,6 +85,8 @@ namespace Demi
         float           mCurSpeed;
 
         int32           mTumRate;
+
+        MP_VECTOR<void*> mPathNodes;
     };
 }
 

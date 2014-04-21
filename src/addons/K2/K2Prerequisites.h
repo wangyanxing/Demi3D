@@ -53,6 +53,7 @@ namespace Demi
     class DiK2StaticObj;
     class DiK2AnimatedObj;
     class DiK2Attribute;
+    class DiPathSolver;
 
     struct K2KeyFrames;
     struct K2Anim;

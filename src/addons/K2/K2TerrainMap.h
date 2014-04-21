@@ -135,6 +135,8 @@ namespace Demi
         virtual DiString&           GetType();
 
         HeavyPathFinder&            GetPathFinder() { return mPathFinder; }
+
+        DiPathSolver*               GetPathSolver() { return mPathSolver; }
                 
     public:
 
@@ -198,6 +200,8 @@ namespace Demi
         DiQuadNode*                 mRoot;
 
         HeavyPathFinder             mPathFinder;
+
+        DiPathSolver*               mPathSolver;
     };
 }
 
