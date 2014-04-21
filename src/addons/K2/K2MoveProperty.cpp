@@ -23,7 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2RenderObjects.h"
 #include "K2PathSolver.h"
 
-#define USE_NEW_PATH 1
+#define USE_NEW_PATH 0
 
 namespace Demi
 {
