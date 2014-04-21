@@ -25,6 +25,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "CullNode.h"
 #include "GfxDriver.h"
 #include "SceneManager.h"
+#include "RenderWindow.h"
 
 namespace Demi
 {
@@ -50,9 +51,11 @@ namespace Demi
         {
             // click on map
             auto terrain = DiK2GameApp::Get()->GetWorld()->GetTerrain();
+            
+            DiRenderWindow* rw = Driver->GetMainRenderWindow();
 
-            float screenPosX = float(event.state.X.abs) / float(event.state.width);
-            float screenPosY = float(event.state.Y.abs) / float(event.state.height);
+            float screenPosX = float(event.state.X.abs) / float(rw->GetWidth());
+            float screenPosY = float(event.state.Y.abs) / float(rw->GetHeight());
 
             screenPosX = DiMath::Clamp<float>(screenPosX, 0, 1);
             screenPosY = DiMath::Clamp<float>(screenPosY, 0, 1);
