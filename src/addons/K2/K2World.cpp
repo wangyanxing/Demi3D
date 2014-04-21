@@ -41,7 +41,7 @@ namespace Demi
         mDebugger = make_shared<DiDebugHelper>();
         DiMaterialPtr helpermat = DiMaterial::QuickCreate(
             "basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
-        helpermat->SetDepthCheck(false);
+        //helpermat->SetDepthCheck(false);
         mDebugger->SetMaterial(helpermat);
         mRootNode->AttachObject(mDebugger);
 #endif
@@ -69,6 +69,25 @@ namespace Demi
         DiK2WorldSerial serial;
         serial.Load(path,this);
         mRootNode->AttachObject(mTerrain);
+
+        DiTerrainDescPtr desc = mTerrain->GetDesc();
+        uint8* blockerBuffer = desc->mVertBlockerMap->GetBuffer();
+        uint32 vertX = CHUNK_GRID_SIZE*desc->mSizeX + 1;
+        uint32 vertY = CHUNK_GRID_SIZE*desc->mSizeY + 1;
+#ifdef _DEBUG_CLIFF_POS
+        for (uint32 x = 0; x < vertX; ++x)
+        {
+            for (uint32 y = 0; y < vertY; ++y)
+            {
+                uint8 block = blockerBuffer[y*vertY + x];
+                if (block > 0)
+                {
+                    DiVec3 pos = mTerrain->GetPoint(x, y);
+                    mDebugger->AddBoundingBox(pos, 1.5f, DiColor::Red);
+                }
+            }
+        }
+#endif
     }
 
     DiK2RenderObject* DiK2World::AddRenderObj(const DiString& mdf, K2ObjSubTypes::Type subtype, const Trans& trans, int id)
@@ -109,10 +128,7 @@ namespace Demi
         float cliffsize = terDesc->mCliffSize * terDesc->mGridSize / 2.0f;
         DiVec3 transl(-cliffsize, 0, cliffsize);
         pos += rot * transl;
-        
-#ifdef _DEBUG_CLIFF_POS
-        mDebugger->AddBoundingBox(pos, 1.5f, DiColor::Red);
-#endif
+       
 
         DiTerrainDescPtr desc = mTerrain->GetDesc();
 

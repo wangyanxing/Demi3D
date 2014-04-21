@@ -559,9 +559,9 @@ namespace Demi
     DiVec3 DiTerrain::GetPoint( uint32 x, uint32 y )
     {
         DiVec3 pos;
-        pos.x = x * mDesc->mGridSize - GetTerrainWidth() / 2;
+        pos.x = x * mDesc->mGridSize;
         pos.y = GetHeightAtPoint(x,y);
-        pos.z = y * mDesc->mGridSize - GetTerrainHeight() / 2;
+        pos.z = y * mDesc->mGridSize;
         return pos;
     }
 
@@ -674,8 +674,8 @@ namespace Demi
         if (!DiMath::intersects(ray, aabb, &d1, &d2))
             return false;
 
-        DiVec3 start = ray.getPoint(d1) + GetTerrainWidth()/2;
-        DiVec3 end = ray.getPoint(d2) + GetTerrainHeight()/2;;
+        DiVec3 start = ray.getPoint(d1);
+        DiVec3 end = ray.getPoint(d2);
 
         float xstep = ray.getDirection().x * GetGridSize();
         float zstep = ray.getDirection().z * GetGridSize();
