@@ -99,6 +99,34 @@ make_library_set(STB_LIBRARY)
 findpkg_finish(STB)
 
 #-------------------------------------------------------------------
+# Find Freetype
+# - Try to find Freetype
+# Once done, this will define
+#
+#  FREETYPE_FOUND - system has Freetype
+#  FREETYPE_INCLUDE_DIRS - the Freetype include directories 
+#  FREETYPE_LIBRARIES - link these to use Freetype
+
+findpkg_begin(FREETYPE)
+set(FREETYPE_HOME "${EXTERNAL_HOME}/src/freetype")
+
+set(FREETYPE_LIBRARY_NAMES freetype)
+get_debug_names(FREETYPE_LIBRARY_NAMES)
+
+if (FREETYPE_HOME)
+  set(FREETYPE_INC_SEARCH_PATH ${FREETYPE_INC_SEARCH_PATH} ${FREETYPE_HOME}/include)
+  set(FREETYPE_LIB_SEARCH_PATH ${FREETYPE_LIB_SEARCH_PATH} ${EXTERNAL_LIB})
+endif()
+
+find_path(FREETYPE_INCLUDE_DIR NAMES ft2build.h HINTS ${FREETYPE_INC_SEARCH_PATH} ${FREETYPE_PKGC_INCLUDE_DIRS} PATH_SUFFIXES freetype)
+find_library(FREETYPE_LIBRARY_REL NAMES ${FREETYPE_LIBRARY_NAMES} HINTS ${FREETYPE_LIB_SEARCH_PATH} ${FREETYPE_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" release relwithdebinfo minsizerel)
+find_library(FREETYPE_LIBRARY_DBG NAMES ${FREETYPE_LIBRARY_NAMES_DBG} HINTS ${FREETYPE_LIB_SEARCH_PATH} ${FREETYPE_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" debug)
+
+make_library_set(FREETYPE_LIBRARY)
+
+findpkg_finish(FREETYPE)
+
+#-------------------------------------------------------------------
 # Find LinearMath
 # - Try to find LinearMath
 # Once done, this will define
