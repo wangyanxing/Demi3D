@@ -21,9 +21,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2GameApp.h"
 #include "K2GameEntity.h"
 #include "K2RenderObjects.h"
-#include "K2PathSolver.h"
-
-#define USE_NEW_PATH 1
 
 namespace Demi
 {
@@ -41,7 +38,7 @@ namespace Demi
     {
         // test
         mCurSpeed = 7;
-        mTumRate = 600;
+        mTumRate = 500;
     }
 
     DiK2MoveProperty::~DiK2MoveProperty()
@@ -50,8 +47,6 @@ namespace Demi
 
     void DiK2MoveProperty::Update(float dt)
     {
-        DiPathSolver* solver = DiK2GameApp::Get()->GetWorld()->GetTerrain()->GetPathSolver();
-
         float moveSpeed = mCurSpeed;
         int turnSpeed = mTumRate;
 
@@ -63,13 +58,7 @@ namespace Demi
         {
             DiK2Pos currentPos = renderObj->GetPosition();
 
-#if USE_NEW_PATH
-            int x,y;
-            solver->NodeToXY(mPathNodes[mNumCurTarget], &x, &y);
-            DiK2Pos targetPos(x,y);
-#else
             DiK2Pos targetPos = mPosNode[mNumCurTarget];
-#endif
 
             DiK2Pos  newPos;
 
@@ -106,12 +95,7 @@ namespace Demi
 
                             mNumCurTarget++;
 
-#if USE_NEW_PATH
-                            solver->NodeToXY(mPathNodes[mNumCurTarget], &x, &y);
-                            targetPos = DiK2Pos(x, y);
-#else
                             targetPos = mPosNode[mNumCurTarget];
-#endif
                             fDistanceToTarget = oldTargetPos.Distance(targetPos);
                         }
                     }
@@ -143,7 +127,7 @@ namespace Demi
                 direction.y = 0;
                 direction.normalise();
                 float yawToGoal;
-                DiVec3 srcVec = renderObj->GetRotQuat() * DiVec3::NEGATIVE_UNIT_Z;
+                DiVec3 srcVec = renderObj->GetRotQuat() * DiVec3::UNIT_Z;
 
                 if ((1.0f + srcVec.dotProduct(direction)) < 0.0001f)
                     yawToGoal = 180;
@@ -187,23 +171,7 @@ namespace Demi
         //DI_DEBUG("MOVE from <%g,%g> to <%g,%g>", source.x, source.z, target.x, target.z);
 
 
-#if USE_NEW_PATH
         //DiTimer timer;
-
-        DiPathSolver* solver = DiK2GameApp::Get()->GetWorld()->GetTerrain()->GetPathSolver();
-        if (solver->MoveTo((int)source.x, (int)source.z, (int)target.x, (int)target.z, &mPathNodes) == micropather::MicroPather::SOLVED)
-        {
-            mNumNode = (int)mPathNodes.size();
-            mTargetPosition = target;
-            mWalkMode = ENUM_WALK_MODE_WALK;
-            mTargetDirection = INVALID_INT_VALUE;
-            mNumCurTarget = 0;
-            mDistance = 0;
-        }
-
-        //double loadingTime = timer.GetElapse();
-        //DI_LOG("Pathfinding time: %f", loadingTime);
-#else
         auto& pathFinder = DiK2GameApp::Get()->GetWorld()->GetTerrain()->GetPathFinder();
         bool found = pathFinder.FindPath(&source, &target, mPosNode + 1, mNumNode, HeavyPathFinder::BLOCK_LEVEL_WALK);
         
@@ -246,7 +214,8 @@ namespace Demi
         {
             DI_DEBUG("No available path");
         }
-#endif
+        //double loadingTime = timer.GetElapse();
+        //DI_LOG("Pathfinding time: %f", loadingTime);
     }
 
     DiK2Pos DiK2MoveProperty::GetIntersectionLineRound(const DiK2Pos& linePos1, 

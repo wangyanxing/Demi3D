@@ -136,8 +136,6 @@ namespace Demi
 
         HeavyPathFinder&            GetPathFinder() { return mPathFinder; }
 
-        DiPathSolver*               GetPathSolver() { return mPathSolver; }
-                
     public:
 
         void                        AddToBatchGroup(DiRenderBatchGroup* bg);
@@ -200,8 +198,6 @@ namespace Demi
         DiQuadNode*                 mRoot;
 
         HeavyPathFinder             mPathFinder;
-
-        DiPathSolver*               mPathSolver;
     };
 }
 
