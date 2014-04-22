@@ -4,8 +4,31 @@
 
 project(MyGUI)
 
-file(GLOB DI_MYGUI_HEADERS "*.h")
-file(GLOB DI_MYGUI_SRCS "*.cpp")
+file(GLOB DI_MYGUI_HEADERS "*.h" "Extends/*.h")
+file(GLOB DI_MYGUI_SRCS "*.cpp" "Extends/*.cpp")
+
+
+function( add_filtered_h filterName fileString )
+	file(GLOB TMP_FILES ${fileString})
+	set(HEADER_FILES ${HEADER_FILES} ${TMP_FILES} PARENT_SCOPE)
+	source_group(${filterName} FILES ${TMP_FILES})
+endfunction( add_filtered_h )
+
+function( add_filtered_src filterName fileString )
+	file(GLOB TMP_FILES ${fileString})
+	set(SOURCE_FILES ${SOURCE_FILES} ${TMP_FILES} PARENT_SCOPE)
+	source_group(${filterName} FILES ${TMP_FILES})
+endfunction( add_filtered_src )
+
+function( add_filtered_std relativePath )
+	string(REPLACE "/" "\\" filterPart ${relativePath})
+	add_filtered_h("Header Files\\${filterPart}" "${CMAKE_CURRENT_SOURCE_DIR}/${relativePath}/*.h")
+	set(HEADER_FILES ${HEADER_FILES} PARENT_SCOPE)
+	add_filtered_src("Source Files\\${filterPart}" "${CMAKE_CURRENT_SOURCE_DIR}/${relativePath}/*.cpp")
+	set(SOURCE_FILES ${SOURCE_FILES} PARENT_SCOPE)
+endfunction( add_filtered_std )
+
+add_filtered_std("Extends")
 
 if (WIN32)
 set (DI_MYGUI_PLATFORM_SPEC ""
@@ -15,26 +38,15 @@ elseif (APPLE)
 set (DI_MYGUI_PLATFORM_SPEC ""
   )
   set(DI_MYGUI_PLATFORM_LIBS ${Carbon_LIBRARY_FWK} ${Cocoa_LIBRARY_FWK} ${IOKit_LIBRARY_FWK} ${CoreVideo_LIBRARY_FWK})
-  #set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/K2GameApp.cpp PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif()
 
 # source files
 DI_ADD_LIBRARY(MyGUI ${DI_MYGUI_HEADERS} ${DI_MYGUI_SRCS} )
 DI_CONFIG_CORE_LIB(MyGUI "${CMAKE_CURRENT_SOURCE_DIR}/MyGUI_Precompiled.h")
 
-if (DEMI_STATIC)
-	if (APPLE AND NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
-		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGL)
-	elseif (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
-		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGLES2)
-	elseif (WIN32)
-		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvD3D9)
-		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGLES2)
-		include_directories(${DEMI_SOURCE_DIR}/src/demi/drvGL)
-	endif()
-endif()
-
 include_directories(${DEMI_EXTERNAL_SRC_PATH}/freetype/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Extends)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(MyGUI DiMisc DiGfx ${DI_MYGUI_PLATFORM_LIBS} ${FREETYPE_LIBRARIES})
 
 if(NOT ${DI_MYGUI_PATH} STREQUAL "")
