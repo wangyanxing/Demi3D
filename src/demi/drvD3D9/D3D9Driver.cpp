@@ -111,8 +111,12 @@ namespace Demi
             return false;
         }
 
+        RECT rect;
+        GetClientRect((HWND)wnd, &rect);
+        DiIntVec2 buffersize(rect.right - rect.left, rect.bottom - rect.top);
+
         D3DFORMAT adapterFormat;
-        if (!GetPresentParameter(mMainParameters, adapterFormat, adapterMode))
+        if (!GetPresentParameter(buffersize, mMainParameters, adapterFormat, adapterMode))
         {
             DI_WARNING("Fill present parameter failed");
             ReleaseGfx();
@@ -180,14 +184,14 @@ namespace Demi
         return true;
     }
 
-    bool DiD3D9Driver::GetPresentParameter(D3DPRESENT_PARAMETERS &parameters, 
+    bool DiD3D9Driver::GetPresentParameter(const DiIntVec2& buffersize, D3DPRESENT_PARAMETERS &parameters, 
         D3DFORMAT &adapterFormat, const D3DDISPLAYMODE &adapterMode)
     {
         UINT adapter = (mAdapter == 0xFFFFFFFF) ? D3DADAPTER_DEFAULT : (UINT)mAdapter;
 
         memset(&parameters, 0, sizeof(D3DPRESENT_PARAMETERS));
-        parameters.BackBufferWidth          = mWidth;
-        parameters.BackBufferHeight         = mHeight;
+        parameters.BackBufferWidth          = buffersize.x;
+        parameters.BackBufferHeight         = buffersize.y;
         parameters.BackBufferCount          = 1;
         parameters.MultiSampleType          = D3DMULTISAMPLE_NONE;
         parameters.MultiSampleQuality       = 0;
@@ -282,8 +286,6 @@ namespace Demi
     bool DiD3D9Driver::InitGfx(uint16 width, uint16 height, bool fullscreen)
     {
         DI_INFO("Creating window: %d x %d, %s mode.", width, height, fullscreen?"full screen":"window");
-        mWidth = width;
-        mHeight = height;
 
         DI_ASSERT(false);
 

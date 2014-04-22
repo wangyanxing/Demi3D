@@ -56,10 +56,6 @@ namespace Demi
 
         virtual DiGfxDriverType     GetDriverType() const = 0;
 
-        uint16                      GetWidth() const { return mWidth; }
-
-        uint16                      GetHeight() const { return mHeight; }
-
         bool                        IsWindowed() const { return !mFullScreen; }
 
         virtual void                BeginFrame() = 0;
@@ -188,10 +184,6 @@ namespace Demi
         typedef DiMap<uint16, DepthBufferVec>       DepthBufferMap;
         typedef DiVector<DiDeviceLostListener*>     GpuResources;
         typedef DiMap<DiWndHandle, DiRenderWindow*> RenderWindows;
-
-        uint16                      mWidth;           
-
-        uint16                      mHeight;
 
         bool                        mFullScreen;
 

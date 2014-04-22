@@ -17,6 +17,7 @@
 #include "Material.h"
 #include "ShaderParam.h"
 #include "VertexDeclaration.h"
+#include "RenderWindow.h"
 
 namespace MyGUI
 {
@@ -35,7 +36,9 @@ namespace MyGUI
 		mVertexFormat = VertexColourType::ColourARGB;
 
 		memset(&mInfo, 0, sizeof(mInfo));
-        setViewSize(DiBase::Driver->GetWidth(),DiBase::Driver->GetHeight());
+        uint32 w = DiBase::Driver->GetMainRenderWindow()->GetWidth();
+        uint32 h = DiBase::Driver->GetMainRenderWindow()->GetHeight();
+        setViewSize(w,h);
         
         mSharedUnit = new DiRenderUnit();
         mSharedUnit->mSourceData.push_back(nullptr);
@@ -180,9 +183,10 @@ namespace MyGUI
 
 		mViewSize.set(_width, _height);
 
-		mInfo.maximumDepth = 0.0f;
-		mInfo.hOffset = -0.5f / float(mViewSize.width);
-		mInfo.vOffset = -0.5f / float(mViewSize.height);
+        auto drvType = DiBase::Driver->GetDriverType();
+        mInfo.maximumDepth = (drvType == DRV_DIRECT3D9 || drvType == DRV_DIRECT3D11) ? 0 : 1;
+        mInfo.hOffset = 0;
+        mInfo.vOffset = 0;
 		mInfo.aspectCoef = float(mViewSize.height) / float(mViewSize.width);
 		mInfo.pixScaleX = 1.0f / float(mViewSize.width);
 		mInfo.pixScaleY = 1.0f / float(mViewSize.height);

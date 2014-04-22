@@ -24,8 +24,6 @@ namespace Demi
 {
     DiGfxDriver::DiGfxDriver()
         :
-        mWidth(0), 
-        mHeight(0),
         mFullScreen(false),
         mDeviceLost(false),
         mMainWindow(nullptr),

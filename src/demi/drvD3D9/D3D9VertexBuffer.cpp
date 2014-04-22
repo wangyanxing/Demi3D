@@ -46,10 +46,7 @@ namespace Demi
 
         if (size > 0)
             mVertexBuffer = DiD3D9Driver::CreateVertexBuffer(size, mUsage, mPool);
-        else
-        {
-            DI_ERROR("Cannot create the vertex buffer, check the size please.");
-        }
+        
     }
 
     void DiD3D9VertexBuffer::Bind()

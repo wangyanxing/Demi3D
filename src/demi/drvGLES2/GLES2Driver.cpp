@@ -109,8 +109,6 @@ namespace Demi
     bool DiGLES2Driver::InitGfx(uint16 width, uint16 height, bool fullscreen)
     {
         DI_INFO("Creating window: %d x %d, %s mode.", width, height, fullscreen?"full screen":"window");
-        mWidth = width;
-        mHeight = height;
 
         DI_ASSERT(false);
 
@@ -574,7 +572,7 @@ namespace Demi
             break;
         case BLEND_ALPHA:
             StateCache->setEnabled(GL_BLEND);
-            StateCache->setBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+            StateCache->setBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             break;
         case BLEND_TRANS_COLOR:
             StateCache->setEnabled(GL_BLEND);

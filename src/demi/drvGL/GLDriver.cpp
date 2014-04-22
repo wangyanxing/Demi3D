@@ -89,8 +89,6 @@ namespace Demi
     bool DiGLDriver::InitGfx(uint16 width, uint16 height, bool fullscreen)
     {
         DI_INFO("Creating window: %d x %d, %s mode.", width, height, fullscreen?"full screen":"window");
-        mWidth = width;
-        mHeight = height;
 
         return true;
     }
@@ -337,13 +335,13 @@ namespace Demi
             break;
         case BLEND_ALPHA:
             glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             break;
         case BLEND_TRANS_COLOR:
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
             break;
-        case  BLEND_ONE_INV_ALPHA:
+        case BLEND_ONE_INV_ALPHA:
             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
             break;
         default:

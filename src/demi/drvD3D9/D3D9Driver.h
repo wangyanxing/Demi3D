@@ -171,7 +171,7 @@ namespace Demi
 
         DiGfxCaps*              InitGfxCapsImpl();
 
-        bool                    GetPresentParameter(D3DPRESENT_PARAMETERS &parameters,
+        bool                    GetPresentParameter(const DiIntVec2& buffersize, D3DPRESENT_PARAMETERS &parameters,
                                     D3DFORMAT &adapterFormat, const D3DDISPLAYMODE &adapterMode);
 
         bool                    CreateDirect3D();
