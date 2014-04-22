@@ -132,6 +132,7 @@ namespace Demi
 
         GL_ALPHA,                          // PF_A8,
         GL_LUMINANCE,                      // PF_L8,
+        GL_LUMINANCE_ALPHA,                // PF_A8L8
 
 #if GL_EXT_texture_compression_dxt1
         GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,  // PF_DXT1,
@@ -241,6 +242,7 @@ namespace Demi
         GL_RGB,                            // PF_X8R8G8B8,
         GL_ALPHA,                          // PF_A8,
         GL_LUMINANCE,                      // PF_L8,
+        GL_LUMINANCE_ALPHA,                // PF_A8L8,
 #if GL_EXT_texture_compression_dxt1
         GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,  // PF_DXT1,
 #else
@@ -360,6 +362,7 @@ namespace Demi
         {
         case PF_A8:
         case PF_L8:
+        case PF_A8L8:
         case PF_R8G8B8:
             return GL_UNSIGNED_BYTE;
 

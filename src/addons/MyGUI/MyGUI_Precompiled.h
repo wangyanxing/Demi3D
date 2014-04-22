@@ -43,4 +43,6 @@
 #include "MyGUI_ISerializable.h"
 #include "MyGUI_GenericFactory.h"
 
+#include "GfxPch.h"
+
 #endif // __MYGUI_PRECOMPILED_H__

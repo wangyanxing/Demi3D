@@ -164,6 +164,7 @@ namespace Demi
         
         PF_A8,
         PF_L8,
+        PF_A8L8,
         
         PF_DXT1,
         PF_DXT2,

@@ -4,142 +4,139 @@
 	@date		06/2009
 */
 
-#include <d3dx9.h>
-#include "MyGUI_DirectXTexture.h"
-#include "MyGUI_DirectXDataManager.h"
-#include "MyGUI_DirectXRTTexture.h"
-#include "MyGUI_DirectXDiagnostic.h"
+#include "MyGUI_Precompiled.h"
+#include "MyGUI_DemiTexture.h"
+#include "MyGUI_DemiDataManager.h"
+#include "MyGUI_DemiRTTexture.h"
+#include "MyGUI_DemiDiagnostic.h"
+
+#include "AssetManager.h"
+#include "Texture.h"
 
 namespace MyGUI
 {
-
-	DirectXTexture::DirectXTexture(const std::string& _name, IDirect3DDevice9* _device) :
+	DemiTexture::DemiTexture(const std::string& _name) :
 		mName(_name),
-		mpD3DDevice(_device),
-		mpTexture(NULL),
 		mNumElemBytes(0),
 		mLock(false),
-		mRenderTarget(nullptr),
-		mInternalPool(D3DPOOL_MANAGED),
-		mInternalFormat(D3DFMT_UNKNOWN),
-		mInternalUsage(0)
+		mRenderTarget(nullptr)
 	{
 	}
 
-	DirectXTexture::~DirectXTexture()
+	DemiTexture::~DemiTexture()
 	{
 		destroy();
 	}
 
-	const std::string& DirectXTexture::getName() const
+	const std::string& DemiTexture::getName() const
 	{
 		return mName;
 	}
 
-	void DirectXTexture::createManual(int _width, int _height, TextureUsage _usage, PixelFormat _format)
+	void DemiTexture::createManual(int _width, int _height, TextureUsage _usage, PixelFormat _format)
 	{
 		destroy();
-
-		mInternalUsage = 0;
-		mInternalFormat = D3DFMT_UNKNOWN;
+        
+        static int textureid = 0;
+        DiString texturename;
+        texturename.Format("MyGUITex_%d",textureid++);
 
 		mSize.set(_width, _height);
 		mTextureUsage = _usage;
 		mPixelFormat = _format;
-		mInternalPool = D3DPOOL_MANAGED;
-
-		if (mTextureUsage == TextureUsage::RenderTarget)
+        
+        DiResUsage resusage = RU_NONE;
+        DiTextureUsage texusage = TU_TEXURE;
+        DiPixelFormat pf = PIXEL_FORMAT_MAX;
+        
+        if (mTextureUsage == TextureUsage::RenderTarget)
 		{
-			mInternalUsage |= D3DUSAGE_RENDERTARGET;
-			mInternalPool = D3DPOOL_DEFAULT;
-		}
-		else if (mTextureUsage == TextureUsage::Dynamic)
-			mInternalUsage |= D3DUSAGE_DYNAMIC;
-		else if (mTextureUsage == TextureUsage::Stream)
-			mInternalUsage |= D3DUSAGE_DYNAMIC;
-
-		if (mPixelFormat == PixelFormat::R8G8B8A8)
+            texusage = TU_RENDER_TARGET;
+        }
+        else if (mTextureUsage == TextureUsage::Dynamic)
+        {
+            resusage = RU_DYNAMIC;
+        }
+        else if (mTextureUsage == TextureUsage::Stream)
+        {
+            resusage = RU_DYNAMIC;
+        }
+        
+        if (mPixelFormat == PixelFormat::R8G8B8A8)
 		{
-			mInternalFormat = D3DFMT_A8R8G8B8;
+			pf = PF_A8R8G8B8;
 			mNumElemBytes = 4;
 		}
 		else if (mPixelFormat == PixelFormat::R8G8B8)
 		{
-			mInternalFormat = D3DFMT_R8G8B8;
+			pf = PF_R8G8B8;
 			mNumElemBytes = 3;
-		}
-		else if (mPixelFormat == PixelFormat::L8A8)
-		{
-			mInternalFormat = D3DFMT_A8L8;
-			mNumElemBytes = 2;
 		}
 		else if (mPixelFormat == PixelFormat::L8)
 		{
-			mInternalFormat = D3DFMT_L8;
+			pf = PF_L8;
 			mNumElemBytes = 1;
+		}
+        else if (mPixelFormat == PixelFormat::L8A8)
+		{
+			pf = PF_A8L8;
+			mNumElemBytes = 2;
 		}
 		else
 		{
-			MYGUI_PLATFORM_EXCEPT("Creating texture with unknown pixel formal.");
+			MYGUI_PLATFORM_EXCEPT("Creating texture with unknown pixel format.");
 		}
-
-		HRESULT result = mpD3DDevice->CreateTexture(mSize.width, mSize.height, 1, mInternalUsage, mInternalFormat, mInternalPool, &mpTexture, NULL);
-		if (FAILED(result))
-		{
-			MYGUI_PLATFORM_EXCEPT("Failed to create texture (error code " << result <<"): size '" << mSize <<
-				"' internal usage '" << mInternalUsage <<
-				"' internal format '" << mInternalFormat << "'."
-				);
-		}
-
+        
+        mTexture = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(texturename);
+        mTexture->SetDimensions(_width, _height);
+        mTexture->SetFormat(pf);
+        mTexture->SetResourceUsage(resusage);
+        mTexture->SetUsage(texusage);
+        mTexture->SetAutoMipmap(false);
+        mTexture->CreateTexture();
+        mTexture->SetAddressing(AM_CLAMP);
 	}
 
-	void DirectXTexture::loadFromFile(const std::string& _filename)
+	void DemiTexture::loadFromFile(const std::string& _filename)
 	{
 		destroy();
 		mTextureUsage = TextureUsage::Default;
 		mPixelFormat = PixelFormat::R8G8B8A8;
 		mNumElemBytes = 4;
-
+        
+        DiAssetManager& assetMgr = DiAssetManager::GetInstance();
+        mTexture = assetMgr.GetAsset<DiTexture>(_filename.c_str());
+        
+        if (!mTexture)
+        {
+            DI_WARNING("Cannot load MYGUI texture: %s",_filename.c_str());
+            return;
+        }
+        
+        DiPixelFormat pf = mTexture->GetFormat();
+        
 		std::string fullname = DemiDataManager::getInstance().getDataPath(_filename);
 
-		D3DXIMAGE_INFO info;
-		D3DXGetImageInfoFromFile(fullname.c_str(), &info);
-
-		if (info.Format == D3DFMT_A8R8G8B8)
+		if (pf == PF_A8R8G8B8)
 		{
 			mPixelFormat = PixelFormat::R8G8B8A8;
 			mNumElemBytes = 4;
 		}
-		else if (info.Format == D3DFMT_R8G8B8)
+		else if (pf == PF_R8G8B8)
 		{
 			mPixelFormat = PixelFormat::R8G8B8;
 			mNumElemBytes = 3;
 		}
-		else if (info.Format == D3DFMT_A8L8)
-		{
-			mPixelFormat = PixelFormat::L8A8;
-			mNumElemBytes = 2;
-		}
-		else if (info.Format == D3DFMT_L8)
+		else if (pf == PF_L8)
 		{
 			mPixelFormat = PixelFormat::L8;
 			mNumElemBytes = 1;
 		}
 
-		mSize.set(info.Width, info.Height);
-		HRESULT result = D3DXCreateTextureFromFile(mpD3DDevice, fullname.c_str(), &mpTexture);
-		if (FAILED(result))
-		{
-			MYGUI_PLATFORM_EXCEPT("Failed to load texture '" << _filename <<
-				"' (error code " << result <<
-				"): size '" << mSize <<
-				"' format '" << info.Format << "'."
-				);
-		}
+		mSize.set(mTexture->GetWidth(),mTexture->GetHeight());
 	}
 
-	void DirectXTexture::destroy()
+	void DemiTexture::destroy()
 	{
 		if (mRenderTarget != nullptr)
 		{
@@ -147,106 +144,62 @@ namespace MyGUI
 			mRenderTarget = nullptr;
 		}
 
-		if (mpTexture != nullptr)
-		{
-			int nNewRefCount = mpTexture->Release();
-
-			if (nNewRefCount > 0)
-			{
-				MYGUI_PLATFORM_EXCEPT("The texture object failed to cleanup properly.\n"
-					"Release() returned a reference count of '" << nNewRefCount << "'."
-					);
-			}
-
-			mpTexture = nullptr;
-		}
+        mTexture.reset();
 	}
 
-	int DirectXTexture::getWidth()
+	int DemiTexture::getWidth()
 	{
 		return mSize.width;
 	}
 
-	int DirectXTexture::getHeight()
+	int DemiTexture::getHeight()
 	{
 		return mSize.height;
 	}
 
-	void* DirectXTexture::lock(TextureUsage _access)
+	void* DemiTexture::lock(TextureUsage _access)
 	{
-		D3DLOCKED_RECT d3dlr;
-		int lockFlag = (_access == TextureUsage::Write) ? D3DLOCK_DISCARD : D3DLOCK_READONLY;
-
-		HRESULT result = mpTexture->LockRect(0, &d3dlr, NULL, lockFlag);
-		if (FAILED(result))
-		{
-			MYGUI_PLATFORM_EXCEPT("Failed to lock texture (error code " << result << ").");
-		}
-
+        DiLockFlag lockFlag = (_access == TextureUsage::Write) ? LOCK_DISCARD : LOCK_READ_ONLY;
 		mLock = true;
-		return d3dlr.pBits;
+        return mTexture->GetTextureDriver()->LockLevel(0,0,lockFlag);
 	}
 
-	void DirectXTexture::unlock()
+	void DemiTexture::unlock()
 	{
-		HRESULT result = mpTexture->UnlockRect(0);
-		if (FAILED(result))
-		{
-			MYGUI_PLATFORM_EXCEPT("Failed to unlock texture (error code " << result << ").");
-		}
-
+        mTexture->GetTextureDriver()->UnlockLevel(0);
 		mLock = false;
 	}
 
-	bool DirectXTexture::isLocked()
+	bool DemiTexture::isLocked()
 	{
 		return mLock;
 	}
 
-	PixelFormat DirectXTexture::getFormat()
+	PixelFormat DemiTexture::getFormat()
 	{
 		return mPixelFormat;
 	}
 
-	size_t DirectXTexture::getNumElemBytes()
+	size_t DemiTexture::getNumElemBytes()
 	{
 		return mNumElemBytes;
 	}
 
-	TextureUsage DirectXTexture::getUsage()
+	TextureUsage DemiTexture::getUsage()
 	{
 		return mTextureUsage;
 	}
 
-	IRenderTarget* DirectXTexture::getRenderTarget()
+	IRenderTarget* DemiTexture::getRenderTarget()
 	{
-		if (mpTexture == nullptr)
+		if (!mTexture)
 			return nullptr;
 
-		if (mRenderTarget == nullptr)
-			mRenderTarget = new DirectXRTTexture(mpD3DDevice, mpTexture);
-
-		return mRenderTarget;
+        if(mTexture->GetUsage() & TU_RENDER_TARGET)
+        {
+            if (!mRenderTarget)
+                mRenderTarget = new DemiRTTexture(mTexture->GetRenderTarget());
+        }
+        return nullptr;
 	}
-
-	void DirectXTexture::deviceLost()
-	{
-		if (mInternalPool == D3DPOOL_DEFAULT)
-		{
-			destroy();
-		}
-	}
-
-	void DirectXTexture::deviceRestore()
-	{
-		if (mInternalPool == D3DPOOL_DEFAULT)
-		{
-			HRESULT result = mpD3DDevice->CreateTexture(mSize.width, mSize.height, 1, mInternalUsage, mInternalFormat, D3DPOOL_DEFAULT, &mpTexture, NULL);
-			if (FAILED(result))
-			{
-				MYGUI_PLATFORM_EXCEPT("Failed to recreate texture on device restore (error code " << result << ").");
-			}
-		}
-	}
-
 } // namespace MyGUI

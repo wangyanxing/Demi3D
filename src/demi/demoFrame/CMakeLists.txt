@@ -39,7 +39,9 @@ endif()
 
 include_directories(${OIS_INCLUDE_DIRS})
 include_directories(${DEMI_SOURCE_DIR}/src/demi/script)
-target_link_libraries(DemoFramework DiMisc DiGfx DiScript ${OIS_LIBRARIES} ${DI_DEMO_PLATFORM_LIBS})
+include_directories(${DEMI_SOURCE_DIR}/src/addons/MyGUI)
+include_directories(${DEMI_SOURCE_DIR}/src/addons/MyGUI/Extends)
+target_link_libraries(DemoFramework DiMisc DiGfx DiScript MyGUI ${OIS_LIBRARIES} ${DI_DEMO_PLATFORM_LIBS})
 
 if(NOT ${DEMI_FRAMEWORK_PATH} STREQUAL "")
   set_target_properties(DemoFramework PROPERTIES

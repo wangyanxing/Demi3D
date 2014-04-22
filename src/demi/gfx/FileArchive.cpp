@@ -206,6 +206,11 @@ namespace Demi
     DiFileArchive::~DiFileArchive()
     {
     }
+    
+    DiString DiFileArchive::GetFullPath(const DiString& filename)
+    {
+        return concatenate_path(mName, filename);
+    }
 
     DiDataStreamPtr DiFileArchive::Open( const DiString& filename) const
     {

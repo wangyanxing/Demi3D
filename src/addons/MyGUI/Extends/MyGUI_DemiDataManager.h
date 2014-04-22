@@ -10,8 +10,34 @@
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_DataManager.h"
 
+#include "DataStream.h"
+
 namespace MyGUI
 {
+    class DemiDataStream : public IDataStream
+	{
+	public:
+		bool eof()
+        {
+            return data->Eof();
+        }
+		size_t size()
+        {
+            return data->Size();
+        }
+		void readline(std::string& _source, Char _delim = '\n')
+        {
+            static char buffer[1024];
+            char delim[2] = {(char)_delim,'\0'};
+            data->ReadLine(buffer, 1024, delim);
+            _source = buffer;
+        }
+		size_t read(void* _buf, size_t _count)
+        {
+            return data->Read(_buf, _count);
+        }
+        Demi::DiDataStreamPtr data;
+	};
 
 	class DemiDataManager : public DataManager
 	{
@@ -42,17 +68,7 @@ namespace MyGUI
 		/** @see DataManager::getDataPath(const std::string& _name) */
 		virtual const std::string& getDataPath(const std::string& _name);
 
-	/*internal:*/
-		void addResourceLocation(const std::string& _name, bool _recursive);
-
 	private:
-		struct ArhivInfo
-		{
-			std::wstring name;
-			bool recursive;
-		};
-		typedef std::vector<ArhivInfo> VectorArhivInfo;
-		VectorArhivInfo mPaths;
 
 		bool mIsInitialise;
 	};

@@ -93,8 +93,12 @@ namespace Demi
         const DiString&               GetBasePath() const { return mBasePath; }
 
         void                          SetBasePath(const DiString& val);
+        
+        ArchivePtr                    GetArchive(const DiString& filename);
                                       
         DiDataStreamPtr               OpenArchive(const DiString& filename, bool ignoreError=false);
+        
+        DiString                      GetArchivePath(const DiString& filename, bool ignoreError=false);
 
         bool                          HasArchive(const DiString& filename);
 

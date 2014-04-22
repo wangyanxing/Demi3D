@@ -17,11 +17,11 @@ struct IDirect3DTexture9;
 namespace MyGUI
 {
 
-	class DirectXTexture : public ITexture
+	class DemiTexture : public ITexture
 	{
 	public:
-		DirectXTexture(const std::string& _name, IDirect3DDevice9* _device);
-		virtual ~DirectXTexture();
+		DemiTexture(const std::string& _name);
+		virtual ~DemiTexture();
 
 		virtual const std::string& getName() const;
 
@@ -41,20 +41,12 @@ namespace MyGUI
 		virtual PixelFormat getFormat();
 		virtual TextureUsage getUsage();
 		virtual size_t getNumElemBytes();
+        
+        DiTexturePtr getTexture() {return mTexture;}
 
 		virtual IRenderTarget* getRenderTarget();
 
-		/*internal:*/
-		IDirect3DTexture9* getDirectXTexture()
-		{
-			return mpTexture;
-		}
-		void deviceLost();
-		void deviceRestore();
-
 	private:
-		IDirect3DDevice9* mpD3DDevice;
-		IDirect3DTexture9* mpTexture;
 		IntSize mSize;
 		TextureUsage mTextureUsage;
 		PixelFormat mPixelFormat;
@@ -62,9 +54,7 @@ namespace MyGUI
 		bool mLock;
 		std::string mName;
 		IRenderTarget* mRenderTarget;
-		D3DPOOL mInternalPool;
-		D3DFORMAT mInternalFormat;
-		unsigned long mInternalUsage;
+        DiTexturePtr mTexture;
 	};
 
 } // namespace MyGUI

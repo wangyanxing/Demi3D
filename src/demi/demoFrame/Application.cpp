@@ -27,6 +27,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "LogManager.h"
 #include "ScriptPlugin.h"
 
+#include "MyGUI.h"
+#include "MyGUI_DemiWrapper.h"
+
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   include "ApplicationOSX.h"
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
@@ -68,6 +71,7 @@ namespace Demi
         , mInputMgr(nullptr)
         , mConfig(config)
         , mQuit(false)
+        , mGUIWrapper(nullptr)
     {
         DI_INIT_PROFILER;
 
@@ -241,6 +245,7 @@ namespace Demi
         DI_UNINSTALL_PLUGIN(DiDrvGLES2);
 #endif
 
+        SAFE_DELETE(mGUIWrapper);
         SAFE_DELETE(mAssetManager);
 
         if (DiLogManager::GetInstancePtr())
@@ -279,6 +284,9 @@ namespace Demi
 
         DiCamera* cam = Driver->GetSceneManager()->GetCamera();
         mCameraHelper = DI_NEW DiCameraHelper(cam);
+        
+        mGUIWrapper = new MyGUI::DemiWrapper();
+        mGUIWrapper->init("MyGUI_Core.xml");
 
         if (mInitCallback)
             mInitCallback();

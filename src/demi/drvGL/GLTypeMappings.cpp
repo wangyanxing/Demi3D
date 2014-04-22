@@ -123,6 +123,7 @@ namespace Demi
         GL_BGRA,                           // PF_X8R8G8B8,
         GL_ALPHA,                          // PF_A8,
         GL_LUMINANCE,                      // PF_L8,
+        GL_LUMINANCE_ALPHA,                // PF_A8L8,
         GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,  // PF_DXT1,
         GL_NONE,                           // PF_DXT2,
         GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,  // PF_DXT3,
@@ -159,6 +160,7 @@ namespace Demi
         GL_RGB8,                           // PF_X8R8G8B8,
         GL_ALPHA,                          // PF_A8,
         GL_LUMINANCE,                      // PF_L8,
+        GL_LUMINANCE_ALPHA,                // PF_A8L8
         GL_COMPRESSED_RGBA_S3TC_DXT1_EXT,  // PF_DXT1,
         GL_NONE,                           // PF_DXT2,
         GL_COMPRESSED_RGBA_S3TC_DXT3_EXT,  // PF_DXT3,

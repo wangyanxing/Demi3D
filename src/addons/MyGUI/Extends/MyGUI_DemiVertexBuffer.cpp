@@ -4,10 +4,13 @@
 	@date		06/2009
 */
 
-#include <d3dx9.h>
-#include "MyGUI_DirectXVertexBuffer.h"
+#include "MyGUI_Precompiled.h"
+#include "MyGUI_DemiVertexBuffer.h"
 #include "MyGUI_VertexData.h"
-#include "MyGUI_DirectXDiagnostic.h"
+#include "MyGUI_DemiDiagnostic.h"
+
+#include "GfxDriver.h"
+#include "VertexBuffer.h"
 
 namespace MyGUI
 {
@@ -15,21 +18,20 @@ namespace MyGUI
 	const size_t VERTEX_IN_QUAD = 6;
 	const size_t RENDER_ITEM_STEEP_REALLOCK = 5 * VERTEX_IN_QUAD;
 
-	DirectXVertexBuffer::DirectXVertexBuffer(IDirect3DDevice9* _device, DemiRenderManager* _pRenderManager) :
+	DemiVertexBuffer::DemiVertexBuffer(DemiRenderManager* _pRenderManager) :
 		mNeedVertexCount(0),
 		mVertexCount(RENDER_ITEM_STEEP_REALLOCK),
-		mpD3DDevice(_device),
 		pRenderManager(_pRenderManager),
-		mpBuffer(NULL)
+        mVertexBuffer(nullptr)
 	{
 	}
 
-	DirectXVertexBuffer::~DirectXVertexBuffer()
+	DemiVertexBuffer::~DemiVertexBuffer()
 	{
 		destroy();
 	}
-
-	void DirectXVertexBuffer::setVertexCount(size_t _count)
+    
+	void DemiVertexBuffer::setVertexCount(size_t _count)
 	{
 		if (_count != mNeedVertexCount)
 		{
@@ -38,62 +40,46 @@ namespace MyGUI
 		}
 	}
 
-	size_t DirectXVertexBuffer::getVertexCount()
+	size_t DemiVertexBuffer::getVertexCount()
 	{
 		return mNeedVertexCount;
 	}
 
-	Vertex* DirectXVertexBuffer::lock()
+	Vertex* DemiVertexBuffer::lock()
 	{
-		void* lockPtr = nullptr;
-		HRESULT result = mpBuffer->Lock(0, 0, (void**)&lockPtr, 0);
-		if (FAILED(result))
-		{
-			MYGUI_PLATFORM_EXCEPT("Failed to lock vertex buffer (error code " << result << ").");
-		}
+		void* lockPtr = mVertexBuffer->Lock(0,mVertexBuffer->GetBufferSize());
 		return (Vertex*)lockPtr;
 	}
 
-	void DirectXVertexBuffer::unlock()
+	void DemiVertexBuffer::unlock()
 	{
-		HRESULT result = mpBuffer->Unlock();
-		if (FAILED(result))
+        mVertexBuffer->Unlock();
+	}
+
+	bool DemiVertexBuffer::create()
+	{
+		uint32 length = (uint32)(mNeedVertexCount * sizeof(MyGUI::Vertex));
+        mVertexBuffer = DiBase::Driver->CreateVertexBuffer();
+        mVertexBuffer->Release();
+        mVertexBuffer->SetStride(sizeof(MyGUI::Vertex));
+        mVertexBuffer->Create(length);
+        return true;
+	}
+
+	void DemiVertexBuffer::destroy()
+	{
+		if (mVertexBuffer)
 		{
-			MYGUI_PLATFORM_EXCEPT("Failed to unlock vertex buffer (error code " << result << ").");
+            mVertexBuffer->Release();
+            delete mVertexBuffer;
+            mVertexBuffer = nullptr;
 		}
 	}
 
-	bool DirectXVertexBuffer::setToStream(size_t stream)
+	void DemiVertexBuffer::resize()
 	{
-		if (SUCCEEDED(mpD3DDevice->SetStreamSource(stream, mpBuffer, 0, sizeof(MyGUI::Vertex))))
-			return true;
-		return false;
-	}
-
-	bool DirectXVertexBuffer::create()
-	{
-		DWORD length = mNeedVertexCount * sizeof(MyGUI::Vertex);
-		if (SUCCEEDED(mpD3DDevice->CreateVertexBuffer(length, 0, 0, D3DPOOL_MANAGED, &mpBuffer, nullptr)))
-			return false;
-		return false;
-	}
-
-	void DirectXVertexBuffer::destroy()
-	{
-		if (mpBuffer)
-		{
-			mpBuffer->Release();
-			mpBuffer = nullptr;
-		}
-	}
-
-	void DirectXVertexBuffer::resize()
-	{
-		if (mpD3DDevice)
-		{
-			destroy();
-			create();
-		}
+        destroy();
+        create();
 	}
 
 } // namespace MyGUI

@@ -31,7 +31,7 @@ namespace Demi
     DiRenderUnit::DiRenderUnit(void)
     {
         mVerticesNum        = 0;
-        mPrimitiveType      = PT_POINTLIST;
+        mPrimitiveType      = PT_TRIANGLELIST;
         mPrimitiveCount     = 0;
         mVertexDecl         = NULL;
         mIndexBuffer        = NULL;

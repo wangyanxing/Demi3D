@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiApplication_h__
 #define DiApplication_h__
 
+#include "DemoPrerequisites.h"
 #include "OIS.h"
 
 namespace Demi
@@ -123,7 +124,7 @@ namespace Demi
 
         ShutdownCallback        mShutdownCallback;
 
-        //MyGUI::DemiWrapper*   mGUIWrapper;
+        MyGUI::DemiWrapper*     mGUIWrapper;
 
         DiInputManager*         mInputMgr;
 

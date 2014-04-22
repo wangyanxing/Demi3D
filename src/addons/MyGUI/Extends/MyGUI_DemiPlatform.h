@@ -18,11 +18,10 @@
 
 namespace MyGUI
 {
-
-	class DirectXPlatform
+	class DemiPlatform
 	{
 	public:
-		DirectXPlatform() :
+		DemiPlatform() :
 			mIsInitialise(false)
 		{
 			mLogManager = new LogManager();
@@ -30,7 +29,7 @@ namespace MyGUI
 			mDataManager = new DemiDataManager();
 		}
 
-		~DirectXPlatform()
+		~DemiPlatform()
 		{
 			DI_ASSERT(!mIsInitialise);
 			delete mRenderManager;
@@ -38,7 +37,7 @@ namespace MyGUI
 			delete mLogManager;
 		}
 
-		void initialise(IDirect3DDevice9* _device, const std::string& _logName = MYGUI_PLATFORM_LOG_FILENAME)
+		void initialise(const std::string& _logName = MYGUI_PLATFORM_LOG_FILENAME)
 		{
             DI_ASSERT(!mIsInitialise);
 			mIsInitialise = true;
@@ -46,7 +45,7 @@ namespace MyGUI
 			if (!_logName.empty())
 				LogManager::getInstance().createDefaultSource(_logName);
 
-			mRenderManager->initialise(_device);
+			mRenderManager->initialise();
 			mDataManager->initialise();
 		}
 

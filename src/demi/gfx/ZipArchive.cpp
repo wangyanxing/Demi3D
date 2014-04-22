@@ -133,6 +133,11 @@ namespace Demi
             mFileList.clear();
         }
     }
+    
+    DiString DiZipArchive::GetFullPath(const DiString& filename)
+    {
+        return filename;
+    }
 
     DiDataStreamPtr DiZipArchive::Open( const DiString& filename) const
     {

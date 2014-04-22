@@ -60,6 +60,7 @@ namespace Demi
         D3DFMT_X8R8G8B8,
         D3DFMT_A8,
         D3DFMT_L8,
+        D3DFMT_A8L8,
         D3DFMT_DXT1,
         D3DFMT_DXT2,
         D3DFMT_DXT3,
@@ -98,6 +99,7 @@ namespace Demi
             mapping[D3DFMT_X8R8G8B8] =    PF_X8R8G8B8;
             mapping[D3DFMT_A8]       =    PF_A8;
             mapping[D3DFMT_L8]       =    PF_L8;
+            mapping[D3DFMT_A8L8]     =    PF_A8L8;
             mapping[D3DFMT_DXT1]     =    PF_DXT1;
             mapping[D3DFMT_DXT2]     =    PF_DXT2;
             mapping[D3DFMT_DXT3]     =    PF_DXT3;

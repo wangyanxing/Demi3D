@@ -12,19 +12,14 @@
 #include "MyGUI_RenderFormat.h"
 #include "MyGUI_IRenderTarget.h"
 
-struct IDirect3DDevice9;
-struct IDirect3DTexture9;
-struct IDirect3DSurface9;
-
 namespace MyGUI
 {
 
-	class DirectXRTTexture :
-		public IRenderTarget
+	class DemiRTTexture : public IRenderTarget
 	{
 	public:
-		DirectXRTTexture(IDirect3DDevice9* _device, IDirect3DTexture9* _texture);
-		virtual ~DirectXRTTexture();
+		DemiRTTexture(DiRenderTarget* rt);
+		virtual ~DemiRTTexture();
 
 		virtual void begin();
 		virtual void end();
@@ -37,10 +32,7 @@ namespace MyGUI
 		}
 
 	private:
-		IDirect3DDevice9* mpD3DDevice;
-		IDirect3DTexture9* mpTexture;
-		IDirect3DSurface9* mpRenderSurface;
-		IDirect3DSurface9* mpBackBuffer;
+        DiRenderTarget* renderTarget;
 		RenderTargetInfo mRenderTargetInfo;
 	};
 

@@ -12,8 +12,6 @@
 #include "MyGUI_IVertexBuffer.h"
 #include "MyGUI_RenderManager.h"
 
-struct IDirect3DDevice9;
-
 namespace MyGUI
 {
 
@@ -24,7 +22,7 @@ namespace MyGUI
 	public:
 		DemiRenderManager();
 
-		void initialise(IDirect3DDevice9* _device);
+		void initialise();
 		void shutdown();
 
 		static DemiRenderManager& getInstance()
@@ -80,15 +78,12 @@ namespace MyGUI
 		/*internal:*/
 		void drawOneFrame();
 		void setViewSize(int _width, int _height);
-
-		void deviceLost();
-		void deviceRestore();
-
+        
 	private:
 		void destroyAllResources();
 
 	private:
-		IDirect3DDevice9* mpD3DDevice;
+
 		IntSize mViewSize;
 		VertexColourType mVertexFormat;
 		RenderTargetInfo mInfo;
@@ -98,6 +93,10 @@ namespace MyGUI
 		MapTexture mTextures;
 
 		bool mIsInitialise;
+        
+        DiRenderUnit* mSharedUnit;
+        
+        DiMaterialPtr mSharedMaterial;
 	};
 
 } // namespace MyGUI

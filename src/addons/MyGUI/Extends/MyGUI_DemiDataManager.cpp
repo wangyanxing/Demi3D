@@ -9,6 +9,7 @@
 #include "MyGUI_DemiDiagnostic.h"
 #include "MyGUI_DataFileStream.h"
 #include <fstream>
+#include "AssetManager.h"
 
 namespace MyGUI
 {
@@ -38,52 +39,43 @@ namespace MyGUI
 
 	IDataStream* DemiDataManager::getData(const std::string& _name)
 	{
-		std::string filepath = getDataPath(_name);
-		if (filepath.empty())
-			return nullptr;
-
-		std::ifstream* stream = new std::ifstream();
-		stream->open(filepath.c_str(), std::ios_base::binary);
-
-		if (!stream->is_open())
-		{
-			delete stream;
-			return nullptr;
-		}
-
-		DataFileStream* data = new DataFileStream(stream);
-
-		return data;
+        Demi::DiDataStreamPtr data = Demi::DiAssetManager::GetInstance().OpenArchive(_name.c_str());
+        DemiDataStream* ds = new DemiDataStream();
+        ds->data = data;
+		return ds;
 	}
 
 	bool DemiDataManager::isDataExist(const std::string& _name)
 	{
-		const VectorString& files = getDataListNames(_name);
-		return files.size() == 1;
+        return Demi::DiAssetManager::GetInstance().HasArchive(_name.c_str());
 	}
 
 	const VectorString& DemiDataManager::getDataListNames(const std::string& _pattern)
 	{
-		static VectorString result;
+        static VectorString result;
 		result.clear();
+        
+        ArchivePtr ar = Demi::DiAssetManager::GetInstance().GetArchive(Demi::DiAssetManager::GetInstance().GetBasePath());
+        
+        if(!ar)
+        {
+            return result;
+        }
+        
+        DiStringVecPtr rets = ar->Find(_pattern.c_str());
+        for (auto it = rets->begin(); it != rets->end(); ++it)
+        {
+            result.push_back(it->c_str());
+        }
 
 		return result;
 	}
 
 	const std::string& DemiDataManager::getDataPath(const std::string& _name)
 	{
-		static std::string path;
-		VectorString result;
-		
-		return path;
-	}
-
-	void DemiDataManager::addResourceLocation(const std::string& _name, bool _recursive)
-	{
-		ArhivInfo info;
-		info.name = MyGUI::UString(_name).asWStr();
-		info.recursive = _recursive;
-		mPaths.push_back(info);
+        static std::string ret;
+		ret = Demi::DiAssetManager::GetInstance().GetArchivePath(_name.c_str()).c_str();
+        return ret;
 	}
 
 } // namespace MyGUI

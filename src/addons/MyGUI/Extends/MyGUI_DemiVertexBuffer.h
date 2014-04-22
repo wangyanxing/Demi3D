@@ -9,28 +9,24 @@
 
 #include "MyGUI_Prerequest.h"
 #include "MyGUI_IVertexBuffer.h"
-#include "MyGUI_DirectXRenderManager.h"
+#include "MyGUI_DemiRenderManager.h"
 
-struct IDirect3DDevice9;
-struct IDirect3DVertexBuffer9;
 
 namespace MyGUI
 {
-
-	class DirectXVertexBuffer : public IVertexBuffer
+	class DemiVertexBuffer : public IVertexBuffer
 	{
 	public:
-		DirectXVertexBuffer(IDirect3DDevice9* _device, DemiRenderManager* _pRenderManager);
-		virtual ~DirectXVertexBuffer();
+		DemiVertexBuffer(DemiRenderManager* _pRenderManager);
+		virtual ~DemiVertexBuffer();
 
 		virtual void setVertexCount(size_t _count);
 		virtual size_t getVertexCount();
 
 		virtual Vertex* lock();
 		virtual void unlock();
-
-	/*internal:*/
-		virtual bool setToStream(size_t stream);
+        
+        DiVertexBuffer* getVertexBuffer() {return mVertexBuffer;}
 
 	private:
 		bool create();
@@ -38,8 +34,7 @@ namespace MyGUI
 		void resize();
 
 	private:
-		IDirect3DDevice9* mpD3DDevice;
-		IDirect3DVertexBuffer9* mpBuffer;
+        DiVertexBuffer* mVertexBuffer;
 		DemiRenderManager* pRenderManager;
 
 		size_t mVertexCount;

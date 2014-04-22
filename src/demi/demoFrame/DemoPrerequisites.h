@@ -30,4 +30,9 @@ namespace Demi
     class DiInputManager;
 }
 
+namespace MyGUI
+{
+    class DemiWrapper;
+}
+
 #endif

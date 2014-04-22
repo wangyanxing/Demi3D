@@ -818,6 +818,7 @@ namespace Demi
             names[PF_X8R8G8B8] = "PF_X8R8G8B8";
             names[PF_A8] = "PF_A8";
             names[PF_L8] = "PF_L8";
+            names[PF_A8L8] = "PF_A8L8";
             names[PF_DXT1] = "PF_DXT1";
             names[PF_DXT2] = "PF_DXT2";
             names[PF_DXT3] = "PF_DXT3";
@@ -934,6 +935,20 @@ namespace Demi
                 return desc;
             }
             break;
+        case PF_A8L8:
+            {
+                PixelFormatDescription desc =
+                {
+                    2,
+                    PFF_HASALPHA | PFF_LUMINANCE,
+                    PCT_BYTE, 2,
+                    8, 0, 0, 8,
+                    0, 0, 0, 0, 0, 0, 0, 0
+                };
+                s_kDescs[format] = desc;
+                return desc;
+            }
+                break;
         case PF_L8:
             {
                 PixelFormatDescription desc = 

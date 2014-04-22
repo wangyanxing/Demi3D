@@ -201,6 +201,17 @@ namespace Demi
 
         return asset;
     }
+    
+    ArchivePtr DiAssetManager::GetArchive(const DiString& filename)
+    {
+        auto it = mArchives.find(filename);
+        if (it != mArchives.end())
+        {
+            ArchivePtr ar = it->second;
+            return ar;
+        }
+        return nullptr;
+    }
 
     void DiAssetManager::SetBasePath( const DiString& val )
     {
@@ -245,6 +256,21 @@ namespace Demi
         }
 
         AddSearchPath(mBasePath);
+    }
+    
+    DiString DiAssetManager::GetArchivePath(const DiString& filename, bool ignoreError)
+    {
+        auto it = mArchives.find(filename);
+        if (it != mArchives.end())
+        {
+            ArchivePtr ar = it->second;
+            return ar->GetFullPath(filename);
+        }
+        if (!ignoreError)
+        {
+            DI_WARNING("Cannot locate the resouce file : %s",filename.c_str());
+        }
+        return DiString::BLANK;
     }
 
     DiDataStreamPtr DiAssetManager::OpenArchive( const DiString& filename , bool ignoreError)

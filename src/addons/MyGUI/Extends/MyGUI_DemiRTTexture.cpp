@@ -4,25 +4,20 @@
 	@date		12/2009
 */
 
-#include <d3dx9.h>
-#include "MyGUI_DirectXRTTexture.h"
-#include "MyGUI_DirectXRenderManager.h"
+#include "MyGUI_Precompiled.h"
+#include "MyGUI_DemiRTTexture.h"
+#include "MyGUI_DemiRenderManager.h"
+
+#include "RenderTarget.h"
 
 namespace MyGUI
 {
 
-	DirectXRTTexture::DirectXRTTexture(IDirect3DDevice9* _device, IDirect3DTexture9* _texture) :
-		mpD3DDevice(_device),
-		mpTexture(_texture),
-		mpRenderSurface(NULL),
-		mpBackBuffer(NULL)
+	DemiRTTexture::DemiRTTexture(DiRenderTarget* _renderTarget) :
+        renderTarget(_renderTarget)
 	{
-		mpTexture->GetSurfaceLevel(0, &mpRenderSurface);
-
-		D3DSURFACE_DESC info;
-		mpTexture->GetLevelDesc(0, &info);
-		int width = info.Width;
-		int height = info.Height;
+		int width = renderTarget->GetWidth();
+		int height = renderTarget->GetHeight();
 
 		mRenderTargetInfo.maximumDepth = 0.0f;
 		mRenderTargetInfo.hOffset = -0.5f / float(width);
@@ -32,35 +27,20 @@ namespace MyGUI
 		mRenderTargetInfo.pixScaleY = 1.0f / float(height);
 	}
 
-	DirectXRTTexture::~DirectXRTTexture()
+	DemiRTTexture::~DemiRTTexture()
 	{
-		if (mpRenderSurface != nullptr)
-		{
-			mpRenderSurface->Release();
-			mpRenderSurface = nullptr;
-		}
 	}
 
-	void DirectXRTTexture::begin()
+	void DemiRTTexture::begin()
 	{
-		mpD3DDevice->GetRenderTarget(0, &mpBackBuffer);
-
-		mpD3DDevice->SetRenderTarget(0, mpRenderSurface);
-		mpD3DDevice->Clear(0, NULL, D3DCLEAR_TARGET,
-			D3DCOLOR_RGBA(0, 0, 0, 0), 1, 0);
-
-		mpD3DDevice->BeginScene();
+        renderTarget->Bind();
 	}
 
-	void DirectXRTTexture::end()
+	void DemiRTTexture::end()
 	{
-		mpD3DDevice->EndScene();
-
-		mpD3DDevice->SetRenderTarget(0, mpBackBuffer);
-		mpBackBuffer->Release();
 	}
 
-	void DirectXRTTexture::doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count)
+	void DemiRTTexture::doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count)
 	{
 		DemiRenderManager::getInstance().doRender(_buffer, _texture, _count);
 	}

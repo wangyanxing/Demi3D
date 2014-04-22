@@ -47,6 +47,8 @@ namespace Demi
         virtual    void                Load() = 0;
 
         virtual    void                Unload() = 0;
+        
+        virtual    DiString            GetFullPath(const DiString& filename) = 0;
 
         virtual DiDataStreamPtr        Open(const DiString& filename) const = 0;
 
