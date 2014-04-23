@@ -286,7 +286,7 @@ namespace Demi
         mCameraHelper = DI_NEW DiCameraHelper(cam);
         
         mGUIWrapper = new MyGUI::DemiWrapper();
-        mGUIWrapper->init("MyGUI_Core.xml");
+        mGUIWrapper->init("Editor.xml");
 
         if (mInitCallback)
             mInitCallback();

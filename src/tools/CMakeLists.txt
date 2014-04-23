@@ -5,3 +5,7 @@
 if (FALSE)
 add_subdirectory(OgreConverter)
 endif()
+
+if (NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
+add_subdirectory(HonViewer)
+endif()
