@@ -52,7 +52,6 @@ namespace MyGUI
         mSharedMaterial->SetBlendMode(BLEND_ALPHA);
         mSharedMaterial->SetCullMode(CULL_NONE);
         mSharedMaterial->SetDepthCheck(false);
-        mSharedMaterial->SetDepthWrite(false);
 
 		mUpdate = false;
 
