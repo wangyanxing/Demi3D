@@ -36,6 +36,7 @@ CocoaInputManager::CocoaInputManager() : InputManager("Mac OS X Cocoa Input Mana
     mHideMouse = true;
     mUseRepeat = false;
 	mWindow = nil;
+    mExcludeMouse = false;
 
 	keyboardUsed = mouseUsed = false;
 
@@ -93,6 +94,15 @@ void CocoaInputManager::_parseConfigSettings( ParamList &paramList )
         if(paramList.find("MacAutoRepeatOn")->second == "true")
 		{
             mUseRepeat = true;
+        }
+    }
+    
+    // Exclude mouse mode
+    if(paramList.find("CocoaExcludeMouse") != paramList.end())
+	{
+        if(paramList.find("CocoaExcludeMouse")->second == "true")
+		{
+            mExcludeMouse = true;
         }
     }
 }
@@ -164,7 +174,7 @@ Object* CocoaInputManager::createObject(InputManager* creator, Type iType, bool 
         case OISMouse:
         {
             if( mouseUsed == false )
-                obj = new CocoaMouse(this, bufferMode);
+                obj = new CocoaMouse(this, bufferMode,mExcludeMouse);
             break;
         }
         default:

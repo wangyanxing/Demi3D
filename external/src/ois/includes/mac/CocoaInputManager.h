@@ -56,7 +56,7 @@ namespace OIS
 		bool vendorExist(Type iType, const std::string & vendor);
 
 		/** @copydoc FactoryCreator::createObject */
-		Object* createObject(InputManager* creator, Type iType, bool bufferMode, const std::string & vendor = "");
+		Object* createObject(InputManager* creator, Type iType, bool bufferMode,const std::string & vendor = "");
 
 		/** @copydoc FactoryCreator::destroyObject */
 		void destroyObject(Object* obj);
@@ -84,6 +84,7 @@ namespace OIS
         // settings
         bool mHideMouse;
         bool mUseRepeat;
+        bool mExcludeMouse;
 
 		//! Used to know if we used up keyboard
 		bool keyboardUsed;

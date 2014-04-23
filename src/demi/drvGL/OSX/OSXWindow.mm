@@ -346,9 +346,11 @@ namespace Demi
                 CGLDisable((CGLContextObj)[mGLContext CGLContextObj], kCGLCESurfaceBackingSize);
                 
                 NSRect viewRect = NSMakeRect(mWindowOrigin.x, mWindowOrigin.y, mRect.Width(), mRect.Height());
-                [mWindow setFrame:viewRect display:YES];
+                NSRect viewFrame = viewRect;
+                [mWindow setFrame:viewFrame display:YES];
                 [mView setFrame:viewRect];
-                [mWindow setStyleMask:NSResizableWindowMask|NSTitledWindowMask];
+                //[mWindow setStyleMask:NSResizableWindowMask|NSTitledWindowMask];
+                [mWindow setStyleMask:NSBorderlessWindowMask];
                 [mWindow setOpaque:YES];
                 [mWindow setHidesOnDeactivate:NO];
                 [mWindow setContentView:mView];
@@ -380,7 +382,8 @@ namespace Demi
             windowRect = NSMakeRect(0.0, 0.0, width, height);
         
         mWindow = [[DemiWindow alloc] initWithContentRect:windowRect
-                                                styleMask:mIsFullScreen ? NSBorderlessWindowMask : NSResizableWindowMask|NSTitledWindowMask
+                                                //styleMask:mIsFullScreen ? NSBorderlessWindowMask : NSResizableWindowMask|NSTitledWindowMask
+                                                styleMask: NSBorderlessWindowMask
                                                   backing:NSBackingStoreBuffered
                                                     defer:YES];
         [mWindow setTitle:[NSString stringWithCString:title encoding:NSUTF8StringEncoding]];

@@ -320,29 +320,42 @@ namespace Demi
         glDepthMask(mat->GetDepthWrite() ? GL_TRUE : GL_FALSE);
 
         // blending mode
-        switch(mat->GetBlendMode())
+        DiBlendMode blendmode = mat->GetBlendMode();
+        switch(blendmode)
         {
         case BLEND_REPLACE:
+            {
             glDisable(GL_BLEND);
+            }
             break;
         case BLEND_ADD:
+            {
             glEnable(GL_BLEND);
             glBlendFunc(GL_ONE, GL_ONE);
+            }
             break;
         case BLEND_MULTIPLY:
+            {
             glEnable(GL_BLEND);
             glBlendFunc(GL_DST_COLOR, GL_ZERO);
+            }
             break;
         case BLEND_ALPHA:
+            {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            }
             break;
         case BLEND_TRANS_COLOR:
+            {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
+            }
             break;
         case BLEND_ONE_INV_ALPHA:
+            {
             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+            }
             break;
         default:
             glDisable(GL_BLEND);

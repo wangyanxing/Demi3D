@@ -45,7 +45,7 @@ namespace MyGUI
         mGUI = new MyGUI::Gui();
         mGUI->initialise(mResourceFileName);
 
-        PointerManager::getInstance().setVisible(false);
+        //PointerManager::getInstance().setVisible(false);
     }
 
     void DemiWrapper::destroyGui()

@@ -37,7 +37,7 @@ namespace OIS
 	class CocoaMouse : public Mouse
     {
 	public:
-		CocoaMouse( InputManager* creator, bool buffered );
+		CocoaMouse( InputManager* creator, bool buffered, bool exclude );
 		virtual ~CocoaMouse();
 		
 		/** @copydoc Object::setBuffered */
@@ -53,9 +53,12 @@ namespace OIS
 		virtual void _initialize();
         
         MouseState * getMouseStatePtr() { return &(mState); }
+        
+        bool isExcludeMode() {return mExcludeMode;}
 
 	protected:
         CocoaMouseView *mResponder;
+        bool mExcludeMode;
 	};
 }
 

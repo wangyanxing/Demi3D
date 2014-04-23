@@ -29,18 +29,21 @@
 using namespace OIS;
 
 //-------------------------------------------------------------------//
-CocoaMouse::CocoaMouse( InputManager* creator, bool buffered )
-	: Mouse(creator->inputSystemName(), buffered, 0, creator)
+CocoaMouse::CocoaMouse( InputManager* creator, bool buffered, bool exclude)
+	: Mouse(creator->inputSystemName(), buffered, 0, creator),
+    mExcludeMode(exclude)
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	CocoaInputManager *man = static_cast<CocoaInputManager*>(mCreator);
-    mResponder = [[CocoaMouseView alloc] initWithFrame:[[man->_getWindow() contentView] frame]];
+    mResponder = [CocoaMouseView alloc];
+    [mResponder setOISMouseObj:this];
+    [mResponder initWithFrame:[[man->_getWindow() contentView] frame]];
     if(!mResponder)
         OIS_EXCEPT( E_General, "CocoaMouseView::CocoaMouseView >> Error creating event responder" );
     
     [[man->_getWindow() contentView] addSubview:mResponder];
-    [mResponder setOISMouseObj:this];
+
     
 	static_cast<CocoaInputManager*>(mCreator)->_setMouseUsed(true);
 
@@ -50,8 +53,11 @@ CocoaMouse::CocoaMouse( InputManager* creator, bool buffered )
 CocoaMouse::~CocoaMouse()
 {
 	// Restore Mouse
-//	CGAssociateMouseAndMouseCursorPosition(true);
-	CGDisplayShowCursor(kCGDirectMainDisplay);
+    if(mExcludeMode)
+    {
+        CGAssociateMouseAndMouseCursorPosition(true);
+        CGDisplayShowCursor(kCGDirectMainDisplay);
+    }
 
     if (mResponder)
     {
@@ -65,7 +71,9 @@ CocoaMouse::~CocoaMouse()
 void CocoaMouse::_initialize()
 {
 	mState.clear();
-	CGAssociateMouseAndMouseCursorPosition(false);
+    
+    if(mExcludeMode)
+        CGAssociateMouseAndMouseCursorPosition(false);
 }
 
 void CocoaMouse::setBuffered( bool buffered )
@@ -89,15 +97,19 @@ void CocoaMouse::capture()
         mNeedsToRegainFocus = false;
         
         // Hide OS Mouse
-        CGDisplayHideCursor(kCGDirectMainDisplay);
+        if(oisMouseObj->isExcludeMode())
+            CGDisplayHideCursor(kCGDirectMainDisplay);
 
         NSRect clipRect = NSMakeRect(0.0f, 0.0f, 0.0f, 0.0f);
         clipRect = [[[self window] contentView] frame];
 
-        CGPoint warpPoint;
-		warpPoint.x = (((frame.origin.x + frame.size.width) - frame.origin.x) / 2) + frame.origin.x;
-		warpPoint.y = (((frame.origin.y + frame.size.height) - frame.origin.y) / 2) - frame.origin.y;
-        CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint);
+        if(oisMouseObj->isExcludeMode())
+        {
+            CGPoint warpPoint;
+            warpPoint.x = (((frame.origin.x + frame.size.width) - frame.origin.x) / 2) + frame.origin.x;
+            warpPoint.y = (((frame.origin.y + frame.size.height) - frame.origin.y) / 2) - frame.origin.y;
+        	CGDisplayMoveCursorToPoint(kCGDirectMainDisplay, warpPoint);
+        }
 
         // Use NSTrackingArea to track mouse move events
         NSTrackingAreaOptions trackingOptions = 
@@ -150,9 +162,18 @@ void CocoaMouse::capture()
 		state->Z.rel = mTempState.Z.rel;
 		
 		// Update absolute position
-		state->X.abs += mTempState.X.rel;
-		state->Y.abs += mTempState.Y.rel;
-		
+        if (oisMouseObj->isExcludeMode())
+        {
+            state->X.abs += mTempState.X.rel;
+            state->Y.abs += mTempState.Y.rel;
+        }
+        else
+        {
+            state->X.abs = mTempState.X.abs;
+            state->Y.abs = mTempState.Y.abs;
+        }
+
+        
 		if(state->X.abs > state->width)
 			state->X.abs = state->width;
 		else if(state->X.abs < 0)
@@ -237,6 +258,14 @@ void CocoaMouse::capture()
         mTempState.Y.rel += delta.y;
     }
     
+    if (!oisMouseObj->isExcludeMode())
+    {
+        NSSize wndSize = [ [ [theEvent window] contentView ] frame ].size;
+        NSPoint mousePos = [theEvent locationInWindow];
+        mTempState.X.abs = mousePos.x;
+        mTempState.Y.abs = wndSize.height-mousePos.y;
+    }
+    
     mMouseWarped = false;
 }
 
@@ -284,6 +313,14 @@ void CocoaMouse::capture()
     {
         mTempState.X.rel += delta.x;
         mTempState.Y.rel += delta.y;
+    }
+    
+    if (!oisMouseObj->isExcludeMode())
+    {
+        NSSize wndSize = [ [ [theEvent window] contentView ] frame ].size;
+        NSPoint mousePos = [theEvent locationInWindow];
+        mTempState.X.abs = mousePos.x;
+        mTempState.Y.abs = wndSize.height-mousePos.y;
     }
     
     mMouseWarped = false;
@@ -335,6 +372,14 @@ void CocoaMouse::capture()
         mTempState.Y.rel += delta.y;
     }
     
+    if (!oisMouseObj->isExcludeMode())
+    {
+        NSSize wndSize = [ [ [theEvent window] contentView ] frame ].size;
+        NSPoint mousePos = [theEvent locationInWindow];
+        mTempState.X.abs = mousePos.x;
+        mTempState.Y.abs = wndSize.height-mousePos.y;
+    }
+    
     mMouseWarped = false;
 }
 
@@ -342,6 +387,14 @@ void CocoaMouse::capture()
 {
     if([theEvent deltaY] != 0.0)
         mTempState.Z.rel += ([theEvent deltaY] * 60);
+    
+    if (!oisMouseObj->isExcludeMode())
+    {
+        NSSize wndSize = [ [ [theEvent window] contentView ] frame ].size;
+        NSPoint mousePos = [theEvent locationInWindow];
+        mTempState.X.abs = mousePos.x;
+        mTempState.Y.abs = wndSize.height-mousePos.y;
+    }
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent
@@ -357,13 +410,26 @@ void CocoaMouse::capture()
         mTempState.Y.rel += delta.y;
     }
     
+    if (!oisMouseObj->isExcludeMode())
+    {
+        NSSize wndSize = [ [ [theEvent window] contentView ] frame ].size;
+        NSPoint mousePos = [theEvent locationInWindow];
+        mTempState.X.abs = mousePos.x;
+        mTempState.Y.abs = wndSize.height-mousePos.y;
+    }
+    //NSLog(@"[%f %f] %i,%i",wndSize.width,wndSize.height, mTempState.X.abs,mTempState.Y.abs);
+    
     mMouseWarped = false;
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent
 {
-	CGDisplayHideCursor(kCGDirectMainDisplay);
-	CGAssociateMouseAndMouseCursorPosition(false);
+    if (oisMouseObj->isExcludeMode())
+    {
+        CGDisplayHideCursor(kCGDirectMainDisplay);
+        CGAssociateMouseAndMouseCursorPosition(false);
+    }
+    
     if(!mMouseWarped)
     {
         NSPoint pos = [[self window] mouseLocationOutsideOfEventStream];
@@ -372,17 +438,28 @@ void CocoaMouse::capture()
         // Clear the previous mouse state
         MouseState *state = oisMouseObj->getMouseStatePtr();
         state->clear();
-
+if (oisMouseObj->isExcludeMode())
         // Cocoa's coordinate system has the origin in the bottom left so we need to transform the height
         mTempState.X.rel = pos.x;
         mTempState.Y.rel = frame.size.height - pos.y;
+
+        if (!oisMouseObj->isExcludeMode())
+        {
+            NSSize wndSize = [ [ [theEvent window] contentView ] frame ].size;
+            NSPoint mousePos = [theEvent locationInWindow];
+            mTempState.X.abs = mousePos.x;
+            mTempState.Y.abs = wndSize.height-mousePos.y;
+        }
     }
 }
 
 - (void)mouseExited:(NSEvent *)theEvent
 {
-	CGDisplayShowCursor(kCGDirectMainDisplay);
-	CGAssociateMouseAndMouseCursorPosition(true);
+    if (oisMouseObj->isExcludeMode())
+    {
+        CGDisplayShowCursor(kCGDirectMainDisplay);
+        CGAssociateMouseAndMouseCursorPosition(true);
+    }
 }
 
 @end
