@@ -63,7 +63,7 @@ namespace Demi
         mAdaptedRT     = nullptr;
 
         if (Driver)
-            Driver->AddGpuResource(this);
+            Driver->AddDeviceLostListener(this);
     }
 
     DiTexture::~DiTexture()
@@ -74,7 +74,7 @@ namespace Demi
         mTextureDrv = nullptr;
 
         if (Driver)
-            Driver->RemoveGpuResource(this);
+            Driver->RemoveDeviceLostListener(this);
     }
 
     void DiTexture::SetFilter(DiFilterType ft)

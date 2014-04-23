@@ -18,9 +18,9 @@ Creator:    InputManager.h
 #ifndef DiInputManager_h__
 #define DiInputManager_h__
 
-//#include "MyGUI_KeyCode.h"
-//#include "MyGUI_MouseButton.h"
-//#include "MyGUI_Types.h"
+#include "MyGUI_KeyCode.h"
+#include "MyGUI_MouseButton.h"
+#include "MyGUI_Types.h"
 
 #include <functional>
 #include "OIS.h"
@@ -99,6 +99,12 @@ namespace Demi
         bool mouseReleased(const OIS::MouseEvent& _arg, OIS::MouseButtonID _id);
         bool keyPressed(const OIS::KeyEvent& _arg);
         bool keyReleased(const OIS::KeyEvent& _arg);
+
+        void injectMouseMove(int _absx, int _absy, int _absz);
+        void injectMousePress(int _absx, int _absy, MyGUI::MouseButton _id);
+        void injectMouseRelease(int _absx, int _absy, MyGUI::MouseButton _id);
+        void injectKeyPress(MyGUI::KeyCode _key, MyGUI::Char _text);
+        void injectKeyRelease(MyGUI::KeyCode _key);
 #endif
         
 #ifdef DEMI_TOUCH

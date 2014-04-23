@@ -36,13 +36,13 @@ namespace Demi
         mIsActive(true),
         mFlippingUV(false)
     {
-        Driver->AddGpuResource(this);
+        Driver->AddDeviceLostListener(this);
     }
 
     DiRenderTarget::~DiRenderTarget()
     {
         if (Driver)
-            Driver->RemoveGpuResource(this);
+            Driver->RemoveDeviceLostListener(this);
 
         DetachDepthBuffer();
     }

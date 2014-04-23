@@ -26,6 +26,8 @@ MACRO(DI_ADD_LIBRARY TARGETNAME)
   endif(DEMI_STATIC)
   
   include_directories(${DEMI_EXTERNAL_SRC_PATH}/LinearMath)
+  include_directories(${DEMI_SOURCE_DIR}/src/addons/MyGUI)
+  include_directories(${DEMI_SOURCE_DIR}/src/addons/MyGUI/Extends)
 
   if (DEMI_STATIC)
     # add static prefix, if compiling static version
@@ -74,6 +76,8 @@ MACRO(DI_ADD_EXECUTABLE TARGETNAME)
   
   add_executable(${TARGETNAME} ${_WIN32} ${_OSX} ${ARGN})
   include_directories(${DEMI_EXTERNAL_SRC_PATH}/LinearMath)
+  include_directories(${DEMI_SOURCE_DIR}/src/addons/MyGUI)
+  include_directories(${DEMI_SOURCE_DIR}/src/addons/MyGUI/Extends)
   
   set(DEMI_BIN_NAME ${TARGETNAME})
   

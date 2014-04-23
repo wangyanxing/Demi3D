@@ -72,6 +72,9 @@ namespace Demi
         uint32 h = 0;
         GetWindowSize(mMainHwnd, w, h);
 
+        if (mMainWindow)
+            mMainWindow->OnMoveOrResize();
+
         if (w == 0 || h == 0)
             return;
 
@@ -144,7 +147,7 @@ namespace Demi
         }
     }
 
-    void DiGfxDriver::AddGpuResource(DiDeviceLostListener* res)
+    void DiGfxDriver::AddDeviceLostListener(DiDeviceLostListener* res)
     {
 #ifndef NDEBUG
         if (mGpuResources.contains(res))
@@ -156,7 +159,7 @@ namespace Demi
         mGpuResources.push_back(res);
     }
 
-    void DiGfxDriver::RemoveGpuResource(DiDeviceLostListener* res)
+    void DiGfxDriver::RemoveDeviceLostListener(DiDeviceLostListener* res)
     {
         auto it = mGpuResources.find(res);
         if (it != mGpuResources.end())

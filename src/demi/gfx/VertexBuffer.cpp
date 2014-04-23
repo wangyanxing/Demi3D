@@ -24,13 +24,13 @@ namespace Demi
         mStreamId    = 0;
         mInstance    = SOURCE_NO_INSTANCE;
         mInstanceNum = 1;
-        Driver->AddGpuResource(this);
+        Driver->AddDeviceLostListener(this);
     }
 
     DiVertexBuffer::~DiVertexBuffer()
     {
         if (Driver)
-            Driver->RemoveGpuResource(this);
+            Driver->RemoveDeviceLostListener(this);
     }
 
     void DiVertexBuffer::SetStride( uint32 stride )

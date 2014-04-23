@@ -45,7 +45,7 @@ namespace MyGUI
 		mTextureUsage = _usage;
 		mPixelFormat = _format;
         
-        DiResUsage resusage = RU_NONE;
+        DiResUsage resusage = RU_WRITE_ONLY;
         DiTextureUsage texusage = TU_TEXURE;
         DiPixelFormat pf = PIXEL_FORMAT_MAX;
         

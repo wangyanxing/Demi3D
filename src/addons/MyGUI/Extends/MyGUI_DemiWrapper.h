@@ -16,12 +16,13 @@
 #define __MYGUI_DEMIWRAPPER_H__
 
 #include "MyGUI_Prerequest.h"
+#include "DeviceLostListener.h"
 
 namespace MyGUI
 {
     class DemiPlatform;
 
-    class MYGUI_EXPORT DemiWrapper
+    class MYGUI_EXPORT DemiWrapper : public DiDeviceLostListener
     {
     public:
         DemiWrapper();
@@ -33,6 +34,8 @@ namespace MyGUI
         void createGui();
         void destroyGui();
         void setupResources();
+        void OnDeviceLost(){}
+        void OnDeviceReset();
 
     private:
         Gui* mGUI;

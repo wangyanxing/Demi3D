@@ -21,11 +21,11 @@ namespace Demi
     {
         mMaxIndices    = 0;
         mFormat     = IB_16BITS;
-        Driver->AddGpuResource(this);
+        Driver->AddDeviceLostListener(this);
     }
 
     DiIndexBuffer::~DiIndexBuffer()
     {
-        Driver->RemoveGpuResource(this);
+        Driver->RemoveDeviceLostListener(this);
     }
 }

@@ -138,9 +138,9 @@ namespace Demi
 
         virtual void                NotifyDeviceLost();
 
-        void                        AddGpuResource(DiDeviceLostListener* res);
+        void                        AddDeviceLostListener(DiDeviceLostListener* res);
 
-        void                        RemoveGpuResource(DiDeviceLostListener* res);
+        void                        RemoveDeviceLostListener(DiDeviceLostListener* res);
 
         DiRenderPipeline*           GetPipeline() const { return mPipeline; }
 

@@ -12,15 +12,82 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 #include "DemoPch.h"
 #include "InputManager.h"
-//#include "MyGUI.h"
 #include "Application.h"
 #include "RenderWindow.h"
 #include "GfxDriver.h"
 
 #include <sstream>
 
+#include "MyGUI.h"
+
 namespace Demi
 {
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+    MyGUI::Char translateWin32Text(MyGUI::KeyCode kc)
+    {
+        static WCHAR deadKey = 0;
+
+        BYTE keyState[256];
+        HKL  layout = GetKeyboardLayout(0);
+        if (GetKeyboardState(keyState) == 0)
+            return 0;
+
+        int code = *((int*)&kc);
+        unsigned int vk = MapVirtualKeyEx((UINT)code, 3, layout);
+        if (vk == 0)
+            return 0;
+
+        WCHAR buff[3] = { 0, 0, 0 };
+        int ascii = ToUnicodeEx(vk, (UINT)code, keyState, buff, 3, 0, layout);
+        if (ascii == 1 && deadKey != '\0')
+        {
+            // A dead key is stored and we have just converted a character key
+            // Combine the two into a single character
+            WCHAR wcBuff[3] = { buff[0], deadKey, '\0' };
+            WCHAR out[3];
+
+            deadKey = '\0';
+            if (FoldStringW(MAP_PRECOMPOSED, (LPWSTR)wcBuff, 3, (LPWSTR)out, 3))
+                return out[0];
+        }
+        else if (ascii == 1)
+        {
+            // We have a single character
+            deadKey = '\0';
+            return buff[0];
+        }
+        else if (ascii == 2)
+        {
+            // Convert a non-combining diacritical mark into a combining diacritical mark
+            // Combining versions range from 0x300 to 0x36F; only 5 (for French) have been mapped below
+            // http://www.fileformat.info/info/unicode/block/combining_diacritical_marks/images.htm
+            switch (buff[0])
+            {
+            case 0x5E: // Circumflex accent: ?
+                deadKey = 0x302;
+                break;
+            case 0x60: // Grave accent: ?
+                deadKey = 0x300;
+                break;
+            case 0xA8: // Diaeresis: ?
+                deadKey = 0x308;
+                break;
+            case 0xB4: // Acute accent: ?
+                deadKey = 0x301;
+                break;
+            case 0xB8: // Cedilla: ?
+                deadKey = 0x327;
+                break;
+            default:
+                deadKey = buff[0];
+                break;
+            }
+        }
+
+        return 0;
+    }
+#endif
+
     DiInputManager::DiInputManager() :
         mInputManager(0),
         mKeyboard(0),
@@ -113,6 +180,8 @@ namespace Demi
 
         checkPosition();
 
+        injectMouseMove(_arg.state.X.abs, _arg.state.Y.abs, _arg.state.Z.abs);
+
         for (auto it = mMouseMoves.begin(); it != mMouseMoves.end(); ++it)
             if (it->second)
                 it->second(_arg);
@@ -122,6 +191,8 @@ namespace Demi
 
     bool DiInputManager::mousePressed(const OIS::MouseEvent& _arg, OIS::MouseButtonID _id)
     {
+        injectMousePress(_arg.state.X.abs, _arg.state.Y.abs, MyGUI::MouseButton::Enum(_id));
+
         for (auto it = mMousePresses.begin(); it != mMousePresses.end(); ++it)
             if (it->second)
                 it->second(_arg, _id);
@@ -131,6 +202,8 @@ namespace Demi
 
     bool DiInputManager::mouseReleased(const OIS::MouseEvent& _arg, OIS::MouseButtonID _id)
     {
+        injectMouseRelease(_arg.state.X.abs, _arg.state.Y.abs, MyGUI::MouseButton::Enum(_id));
+
         for (auto it = mMouseReleases.begin(); it != mMouseReleases.end(); ++it)
             if (it->second)
                 it->second(_arg, _id);
@@ -140,6 +213,26 @@ namespace Demi
 
     bool DiInputManager::keyPressed(const OIS::KeyEvent& _arg)
     {
+        MyGUI::Char text = (MyGUI::Char)_arg.text;
+        MyGUI::KeyCode key = MyGUI::KeyCode::Enum(_arg.key);
+        int scan_code = key.toValue();
+
+        if (scan_code > 70 && scan_code < 84)
+        {
+            static MyGUI::Char nums[13] = { 55, 56, 57, 45, 52, 53, 54, 43, 49, 50, 51, 48, 46 };
+            text = nums[scan_code - 71];
+        }
+        else if (key == MyGUI::KeyCode::Divide)
+        {
+            text = '/';
+        }
+        else
+        {
+            text = translateWin32Text(key);
+        }
+
+        injectKeyPress(key, text);
+
         for (auto it = mKeyPresses.begin(); it != mKeyPresses.end(); ++it)
             if (it->second)
                 it->second(_arg);
@@ -149,12 +242,40 @@ namespace Demi
     
     bool DiInputManager::keyReleased(const OIS::KeyEvent& _arg)
     {
+        injectKeyRelease(MyGUI::KeyCode::Enum(_arg.key));
+
         for (auto it = mKeyReleases.begin(); it != mKeyReleases.end(); ++it)
             if (it->second)
                 it->second(_arg);
         
         return true;
     }
+
+    void DiInputManager::injectMouseMove(int _absx, int _absy, int _absz)
+    {
+        MyGUI::InputManager::getInstance().injectMouseMove(_absx, _absy, _absz);
+    }
+
+    void DiInputManager::injectMousePress(int _absx, int _absy, MyGUI::MouseButton _id)
+    {
+        MyGUI::InputManager::getInstance().injectMousePress(_absx, _absy, _id);
+    }
+
+    void DiInputManager::injectMouseRelease(int _absx, int _absy, MyGUI::MouseButton _id)
+    {
+        MyGUI::InputManager::getInstance().injectMouseRelease(_absx, _absy, _id);
+    }
+
+    void DiInputManager::injectKeyPress(MyGUI::KeyCode _key, MyGUI::Char _text)
+    {
+        MyGUI::InputManager::getInstance().injectKeyPress(_key, _text);
+    }
+
+    void DiInputManager::injectKeyRelease(MyGUI::KeyCode _key)
+    {
+        MyGUI::InputManager::getInstance().injectKeyRelease(_key);
+    }
+
 #endif
     
 #ifdef DEMI_TOUCH
