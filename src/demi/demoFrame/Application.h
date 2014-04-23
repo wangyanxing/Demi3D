@@ -56,7 +56,7 @@ namespace Demi
     public:
         DemiDemo(DemoConfig config);
 
-        ~DemiDemo(void);
+        virtual ~DemiDemo(void);
 
         static DemiDemo* GetApp(){return sTheApp;}
 
@@ -68,9 +68,9 @@ namespace Demi
 
     public:
 
-        void              Update();
+        virtual void      Update();
 
-        void              Close();
+        virtual void      Close();
 
         bool              IsOpen();
 
@@ -108,7 +108,7 @@ namespace Demi
 
         void              Run();
 
-        void              OpenImpl();
+        virtual void      OpenImpl();
 
     protected:
 

@@ -9,7 +9,6 @@
 
 namespace tools
 {
-
 	TextureToolControl::TextureToolControl(MyGUI::Widget* _parent) :
 		TextureControl("TextureControl.layout", _parent),
 		mCurrentScaleValue(100),

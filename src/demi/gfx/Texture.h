@@ -141,6 +141,10 @@ namespace Demi
 
         void                    OnDeviceReset(void);
 
+        /** Only works for render targets
+         */
+        void                    ResizeTexture(uint32 newWidth, uint32 newHeight);
+
         void*                   LockLevel(uint32 level, uint32 surface=0);
 
         void                    UnlockLevel(uint32 level, uint32 surface=0);

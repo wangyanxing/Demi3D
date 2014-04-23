@@ -84,6 +84,8 @@ namespace MyGUI
 		/// Creates texture
 		void createTexture(const IntSize& _size, TextureResizeMode _resizeMode, TextureUsage _usage = getDefaultTextureUsage(), PixelFormat _format = getDefaultTextureFormat());
 
+        void createTexture(const std::string& textureName);
+
 		/// Destroys texture
 		void destroyTexture();
 

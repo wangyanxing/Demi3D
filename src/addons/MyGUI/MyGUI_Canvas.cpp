@@ -103,6 +103,20 @@ namespace MyGUI
 			createExactTexture( width, height, _usage, _format );
 	}
 
+    void Canvas::createTexture(const std::string& textureName)
+    {
+        destroyTexture();
+
+        mTexture = RenderManager::getInstance().getTexture(textureName);
+        mTexture->setInvalidateListener(this);
+
+        mTexManaged = true;
+
+        _setTextureName(textureName);
+        correctUV();
+        requestUpdateCanvas(this, Event(true, true, mInvalidateData));
+    }
+
 	void Canvas::setSize( const IntSize& _size )
 	{
 		resize( _size );

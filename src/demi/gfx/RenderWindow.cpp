@@ -254,4 +254,13 @@ namespace Demi
         Driver->DestroyRenderWindow(mWndHandle);
         mWndHandle = nullptr;
     }
+
+    void DiRenderWindow::SetCustomizedCanvasSize(uint32 width, uint32 height)
+    {
+        DI_LOG("Resizing render canvas texture to (%d,%d)",width,height);
+        mCanvasTexture->SetAdaptedRT(nullptr);
+        mCanvasTexture->ResizeTexture(width,height);
+
+        mSceneManager->GetCamera()->SetAspectRatio(float(width) / float(height));
+    }
 }

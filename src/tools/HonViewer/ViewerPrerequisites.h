@@ -10,11 +10,21 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
-#ifndef DiDiPch_h__
-#define DiDiPch_h__
 
-#include "Demi.h"
-#include "DemoFrame.h"
-#include "MyGUI.h"
+#ifndef HonViewerPrerequisites_h__
+#define HonViewerPrerequisites_h__
+
+namespace Demi
+{
+    class HonViewerApp;
+}
+
+namespace tools
+{
+    class BackgroundControl;
+    class MainPaneControl;
+}
+
+using namespace tools;
 
 #endif

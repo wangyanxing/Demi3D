@@ -25,7 +25,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-
     DiPostEffectPass::DiPostEffectPass( DiPostEffect* parent, const DiString& name )
         :mParent(parent)
         ,mPassName(name)
@@ -53,7 +52,7 @@ namespace Demi
         mTexture = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(texname);
         mTexture->SetDimensions(0,0);
         mTexture->SetAdaptedRT(mParent->GetPostEffectManager(
-            )->GetRenderWindow()->GetRenderBuffer());
+            )->GetRenderWindow()->GetSceneCanvas());
         mTexture->SetViewportScale(DiVec2(1.0, 1.0));
         mTexture->SetFormat(format);
         mTexture->SetResourceUsage(RU_NONE);

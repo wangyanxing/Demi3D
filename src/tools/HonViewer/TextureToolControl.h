@@ -3,6 +3,7 @@
 	@author		Albert Semenov
 	@date		08/2010
 */
+
 #ifndef __TEXTURE_TOOL_CONTROL_H__
 #define __TEXTURE_TOOL_CONTROL_H__
 
@@ -10,9 +11,7 @@
 
 namespace tools
 {
-
-	class TextureToolControl :
-		public TextureControl
+	class TextureToolControl : public TextureControl
 	{
 	public:
 		TextureToolControl(MyGUI::Widget* _parent);

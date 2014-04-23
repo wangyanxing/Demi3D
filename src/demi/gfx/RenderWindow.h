@@ -85,6 +85,8 @@ namespace Demi
 
         void                    SetUpdateCallback(std::function<void(void)> val) { mUpdateCb = val; }
 
+        void                    SetCustomizedCanvasSize(uint32 width, uint32 height);
+
     protected:
 
         void                    Init();

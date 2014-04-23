@@ -98,46 +98,48 @@ namespace MyGUI
         mTexture->SetFilter(FILTER_DEFAULT);
 	}
 
-	void DemiTexture::loadFromFile(const std::string& _filename)
-	{
-		destroy();
-		mTextureUsage = TextureUsage::Default;
-		mPixelFormat = PixelFormat::R8G8B8A8;
-		mNumElemBytes = 4;
-        
+    void DemiTexture::loadFromDemiTexture(const std::string& _texName)
+    {
+        destroy();
+
+        mTextureUsage = TextureUsage::Default;
+        mPixelFormat = PixelFormat::R8G8B8A8;
+        mNumElemBytes = 4;
+
         DiAssetManager& assetMgr = DiAssetManager::GetInstance();
-        mTexture = assetMgr.GetAsset<DiTexture>(_filename.c_str());
-        
+        mTexture = assetMgr.GetAsset<DiTexture>(_texName.c_str());
+
         if (!mTexture)
         {
-            DI_WARNING("Cannot load MYGUI texture: %s",_filename.c_str());
+            DI_WARNING("Cannot load Demi texture: %s", _texName.c_str());
             return;
         }
 
+        DiPixelFormat pf = mTexture->GetFormat();
+        if (pf == PF_A8R8G8B8)
+        {
+            mPixelFormat = PixelFormat::R8G8B8A8;
+            mNumElemBytes = 4;
+        }
+        else if (pf == PF_R8G8B8)
+        {
+            mPixelFormat = PixelFormat::R8G8B8;
+            mNumElemBytes = 3;
+        }
+        else if (pf == PF_L8)
+        {
+            mPixelFormat = PixelFormat::L8;
+            mNumElemBytes = 1;
+        }
+        mSize.set(mTexture->GetWidth(), mTexture->GetHeight());
+    }
+
+	void DemiTexture::loadFromFile(const std::string& _filename)
+	{
+        loadFromDemiTexture(_filename);
+
         mTexture->SetAddressing(AM_CLAMP);
         mTexture->SetFilter(FILTER_DEFAULT);
-        
-        DiPixelFormat pf = mTexture->GetFormat();
-        
-		std::string fullname = DemiDataManager::getInstance().getDataPath(_filename);
-
-		if (pf == PF_A8R8G8B8)
-		{
-			mPixelFormat = PixelFormat::R8G8B8A8;
-			mNumElemBytes = 4;
-		}
-		else if (pf == PF_R8G8B8)
-		{
-			mPixelFormat = PixelFormat::R8G8B8;
-			mNumElemBytes = 3;
-		}
-		else if (pf == PF_L8)
-		{
-			mPixelFormat = PixelFormat::L8;
-			mNumElemBytes = 1;
-		}
-
-		mSize.set(mTexture->GetWidth(),mTexture->GetHeight());
 	}
 
 	void DemiTexture::destroy()

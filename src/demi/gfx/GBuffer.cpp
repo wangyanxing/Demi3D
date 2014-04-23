@@ -39,7 +39,7 @@ namespace Demi
         DiTexturePtr tex;
         tex = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(gbName);
         tex->SetDimensions(0,0);
-        tex->SetAdaptedRT(mParentWnd->GetRenderBuffer());
+        tex->SetAdaptedRT(mParentWnd->GetSceneCanvas());
         tex->SetViewportScale(DiVec2(1,1));
         tex->SetFormat(PF_A32B32G32R32F);
         tex->SetResourceUsage(RU_NONE);

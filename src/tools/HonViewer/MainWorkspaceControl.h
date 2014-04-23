@@ -3,7 +3,7 @@
 
 #include "SeparatorPartControl.h"
 #include "ToolsControl.h"
-#include "TextureToolControl.h"
+#include "RenderWindowControl.h"
 
 namespace tools
 {
@@ -15,7 +15,7 @@ namespace tools
 
 	private:
         ToolsControl* mToolsControl;
-        TextureToolControl* mWorkspaceControl;
+        RenderWindowControl* mWorkspaceControl;
 	};
 
 } // namespace tools

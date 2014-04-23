@@ -13,8 +13,7 @@
 namespace tools
 {
 
-	class TextureControl :
-		public wraps::BaseLayout
+	class TextureControl : public wraps::BaseLayout
 	{
 	public:
 		TextureControl(const std::string& _layout, MyGUI::Widget* _parent);

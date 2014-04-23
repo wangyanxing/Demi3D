@@ -16,7 +16,6 @@ struct IDirect3DTexture9;
 
 namespace MyGUI
 {
-
 	class DemiTexture : public ITexture
 	{
 	public:
@@ -27,6 +26,7 @@ namespace MyGUI
 
 		virtual void createManual(int _width, int _height, TextureUsage _usage, PixelFormat _format);
 		virtual void loadFromFile(const std::string& _filename);
+        virtual void loadFromDemiTexture(const std::string& _texName);
 		virtual void saveToFile(const std::string& _filename) { }
 
 		virtual void destroy();

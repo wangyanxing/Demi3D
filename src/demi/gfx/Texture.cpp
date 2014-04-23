@@ -221,6 +221,24 @@ namespace Demi
         mTextureDrv->UnlockLevel(level, surface);
     }
 
+    void DiTexture::ResizeTexture(uint32 newWidth, uint32 newHeight)
+    {
+        if (mUsage != TU_RENDER_TARGET)
+        {
+            DI_WARNING("DiTexture::ResizeTexture only works for render targets");
+            return;
+        }
+
+        if (mTextureDrv)
+            mTextureDrv->Release();
+        if (mRenderTarget)
+            mRenderTarget->DetachTexture();
+
+        mWidth = newWidth;
+        mHeight = newHeight;
+        CreateTexture();
+    }
+
     void DiTexture::OnDeviceLost(void)
     {
         if (mUsage == TU_TEXURE && (mResUsage & (RU_DYNAMIC | RU_WRITE_ONLY)))
