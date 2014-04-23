@@ -93,7 +93,7 @@ namespace MyGUI
         
 		DemiVertexBuffer* vb = static_cast<DemiVertexBuffer*>(_buffer);
         mSharedUnit->mSourceData[0] = vb->getVertexBuffer();
-        mSharedUnit->mVerticesNum = (uint32)vb->getVertexCount();
+        mSharedUnit->mVerticesNum = _count;
         mSharedUnit->mPrimitiveCount = mSharedUnit->mVerticesNum / 3;
 		
         DiBase::Driver->RenderGeometry(mSharedUnit);
@@ -185,8 +185,16 @@ namespace MyGUI
 
         auto drvType = DiBase::Driver->GetDriverType();
         mInfo.maximumDepth = (drvType == DRV_DIRECT3D9 || drvType == DRV_DIRECT3D11) ? 0 : 1;
-        mInfo.hOffset = 0;
-        mInfo.vOffset = 0;
+        if (drvType == DRV_DIRECT3D9)
+        {
+            mInfo.hOffset = -0.5f / float(mViewSize.width);
+            mInfo.vOffset = -0.5f / float(mViewSize.height);
+        }
+        else
+        {
+            mInfo.hOffset = 0;
+            mInfo.vOffset = 0;
+        }
 		mInfo.aspectCoef = float(mViewSize.height) / float(mViewSize.width);
 		mInfo.pixScaleX = 1.0f / float(mViewSize.width);
 		mInfo.pixScaleY = 1.0f / float(mViewSize.height);

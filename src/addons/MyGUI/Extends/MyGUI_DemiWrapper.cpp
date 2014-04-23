@@ -40,6 +40,8 @@ namespace MyGUI
         mGUI = new MyGUI::Gui();
         mGUI->initialise(mResourceFileName);
 
+        PointerManager::getInstance().setVisible(false);
+
         const MyGUI::VectorWidgetPtr& root = MyGUI::LayoutManager::getInstance().loadLayout("HelpPanel.layout");
         root.at(0)->findWidget("Text")->castType<MyGUI::TextBox>()->setCaption("Demo of rendering camera view into widget and mesh into widget (you can drag it using mouse).");
 

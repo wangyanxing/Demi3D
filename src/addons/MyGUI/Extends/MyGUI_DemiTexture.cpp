@@ -95,6 +95,7 @@ namespace MyGUI
         mTexture->SetAutoMipmap(false);
         mTexture->CreateTexture();
         mTexture->SetAddressing(AM_CLAMP);
+        mTexture->SetFilter(FILTER_DEFAULT);
 	}
 
 	void DemiTexture::loadFromFile(const std::string& _filename)
@@ -112,6 +113,9 @@ namespace MyGUI
             DI_WARNING("Cannot load MYGUI texture: %s",_filename.c_str());
             return;
         }
+
+        mTexture->SetAddressing(AM_CLAMP);
+        mTexture->SetFilter(FILTER_DEFAULT);
         
         DiPixelFormat pf = mTexture->GetFormat();
         

@@ -22,8 +22,16 @@ namespace MyGUI
 
         auto drvType = DiBase::Driver->GetDriverType();
         mRenderTargetInfo.maximumDepth = (drvType == DRV_DIRECT3D9 || drvType == DRV_DIRECT3D11) ? 0 : 1;
-        mRenderTargetInfo.hOffset = 0;
-        mRenderTargetInfo.vOffset = 0;
+        if (drvType == DRV_DIRECT3D9)
+        {
+            mRenderTargetInfo.hOffset = -0.5f / float(width);
+            mRenderTargetInfo.vOffset = -0.5f / float(height);
+        }
+        else
+        {
+            mRenderTargetInfo.hOffset = 0;
+            mRenderTargetInfo.vOffset = 0;
+        }
 		mRenderTargetInfo.aspectCoef = float(height) / float(width);
 		mRenderTargetInfo.pixScaleX = 1.0f / float(width);
 		mRenderTargetInfo.pixScaleY = 1.0f / float(height);
