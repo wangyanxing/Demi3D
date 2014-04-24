@@ -190,32 +190,38 @@ namespace Demi
         bool wildCard = pattern.find("*") != DiString::npos;
 
         DiFileTree* node = DI_NEW DiFileTree();
+        node->folder = true;
         for (auto i = mFileList.begin(); i != mFileList.end(); ++i)
         {
             if (false == (i->compressedSize == size_t(-1)))
             {
                 DiVector<DiString> tokens = i->filename.Tokenize("/");
                 DiFileTree* cur = node;
-                for (size_t i = 0; i < tokens.size(); ++i)
+                for (size_t t = 0; t < tokens.size(); ++t)
                 {
-                    if (i < tokens.size()-1)
+                    if (t < tokens.size() - 1)
                     {
-                        cur = cur->AddChild(tokens[i]);
+                        cur = cur->AddChild(tokens[t]);
                         cur->folder = true;
                     }
                     else
                     {
                         if (wildCard)
                         {
-                            if (DiString::MatchPatternEx(tokens[i], pattern, false))
-                                cur = cur->AddChild(tokens[i]);
+                            if (DiString::MatchPatternEx(tokens[t], pattern, false))
+                            {
+                                cur = cur->AddChild(tokens[t]);
+                                cur->folder = false;
+                            }
                         }
                         else
                         {
-                            if (tokens[i] == pattern)
-                                cur = cur->AddChild(tokens[i]);
+                            if (tokens[t] == pattern)
+                            {
+                                cur = cur->AddChild(tokens[t]);
+                                cur->folder = false;
+                            }
                         }
-                        cur->folder = false;
                     }
                 }
             }
@@ -272,7 +278,14 @@ namespace Demi
         
         return ret;
     }
-    
+
+    bool DiZipArchive::HasFile(const DiString& file)
+    {
+        ZZIP_FILE* zzipFile =
+            zzip_file_open(mZzipDir, file.c_str(), ZZIP_ONLYZIP | ZZIP_CASELESS);
+        return zzipFile != NULL;
+    }
+
     DiZipDataStream::DiZipDataStream(ZZIP_FILE* zzipFile, size_t uncompressedSize)
     : mZzipFile(zzipFile)
     {

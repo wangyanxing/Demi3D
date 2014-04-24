@@ -232,7 +232,10 @@ namespace Demi
         if (mTextureDrv)
             mTextureDrv->Release();
         if (mRenderTarget)
+        {
             mRenderTarget->DetachTexture();
+            mRenderTarget->DetachDepthBuffer();
+        }
 
         mWidth = newWidth;
         mHeight = newHeight;

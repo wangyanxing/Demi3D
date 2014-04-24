@@ -40,8 +40,6 @@ namespace Demi
         DiMaterialPtr ParseMaterial(const DiString& matFile,
             const DiString& basePath, bool needSkinning);
 
-        static  DiString GetK2MediaPath(const DiString& relativePath);
-
     private:
         
         void    ParseAnim(DiXMLElement data, DiK2ModelAsset* target);

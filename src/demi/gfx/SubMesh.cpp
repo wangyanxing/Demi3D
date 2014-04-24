@@ -232,10 +232,12 @@ namespace Demi
             maxWeights = MAX_WEIGHT;
         }
 
+#if 0
         if (existsNonSkinnedVertices)
         {
             DI_WARNING("The mesh %s has non-skinned vertices!", mMesh->GetName().c_str());
         }
+#endif
 
         mMaxWeights = maxWeights;
 

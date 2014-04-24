@@ -48,12 +48,22 @@ namespace Demi
         /** Map the k2's shader to our shader file
          */
         static DiString GetShader(const DiString& shader);
+        
+        /** Directly use the pack files
+        */
+        static void SetK2ResourcePack(const DiString& resPack, const DiString& texturePack);
+
+        static void ReleaseK2Packs();
 
         static DiString TERRAIN_SHADER;
 
         static DiString CLIFF_SHADER;
 
         static DiString MESH_SHADER;
+
+        static DiZipArchive* RESOURCE_PACK;
+
+        static DiZipArchive* TEXTURE_PACK;
     };
 }
 

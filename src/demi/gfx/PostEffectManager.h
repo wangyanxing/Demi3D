@@ -48,6 +48,8 @@ namespace Demi
 
         DiRenderWindow*         GetRenderWindow() const { return mRenderWindow; }
 
+        void                    SetOutputToBackBuffer(bool val) { mOutput = val; }
+
     protected:
 
         void                    Init();
@@ -77,6 +79,8 @@ namespace Demi
         PostMap                 mPostMap;
                                 
         DiRenderWindow*         mRenderWindow;
+
+        bool                    mOutput;
     };
 }
 

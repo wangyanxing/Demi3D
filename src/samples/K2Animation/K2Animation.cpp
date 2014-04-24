@@ -29,7 +29,13 @@ DiK2ModelPtr k2md2 = nullptr;
 void InitScene()
 {
     DI_INSTALL_PLUGIN(DiK2);
-   
+    
+#if 0
+    DiString resPack = "L:/Games/HON/game/resources0.s2z";
+    DiString texPack = "L:/Games/HON/game/textures.s2z";
+    DiK2Configs::SetK2ResourcePack(resPack,texPack);
+#endif
+
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
     
     DiDirLightPtr dirlight;

@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Asset.h"
 #include "K2Clip.h"
 #include "K2ModelSerial.h"
+#include "K2Configs.h"
 
 #include "PathLib.h"
 
@@ -47,7 +48,7 @@ namespace Demi
     {
         DiK2MdfSerial serial;
 
-        DiString mdfFile = DiK2MdfSerial::GetK2MediaPath(mName);
+        //DiString mdfFile = DiK2Configs::GetK2MediaPath(mName);
         mBaseFolder = mName.ExtractDirName();
         if (!mBaseFolder.empty() && mBaseFolder[mBaseFolder.size()-1] == '/')
             mBaseFolder = mBaseFolder.substr(0,mBaseFolder.size()-1);
@@ -56,19 +57,19 @@ namespace Demi
 
         mBoneData = make_shared<DiK2BonesData>();
 
-        serial.ParseMdf(mdfFile, this);
+        serial.ParseMdf(mName, this);
         
-        DiString absPath = mdfFile.ExtractDirName();
+        //DiString absPath = mdfFile.ExtractDirName();
 
         mIsTree = DiString::StartsWith(mBaseFolder, "world/props/trees", false);
         
-        DiString modelFile = absPath + mModelFile;
-        serial.LoadModel(modelFile, this);
+        DiString modelFile = mModelFile;
+        serial.LoadModel(mBaseFolder + "/" + modelFile, this);
 
         for (auto i = mAnims.begin(); i != mAnims.end(); ++i)
         {
-            DiString clipFile = absPath + i->clip;
-            serial.LoadClip(clipFile, &(*i), this);
+            DiString clipFile = i->clip;
+            serial.LoadClip(mBaseFolder + "/" + clipFile, &(*i), this);
         }
 
         double loadingTime = timer.GetElapse();

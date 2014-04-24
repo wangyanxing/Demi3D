@@ -20,6 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PathLib.h"
 #include "Texture.h"
 #include "PathLib.h"
+#include "ZipArchive.h"
 #include "math/euler.h"
 
 namespace Demi
@@ -56,25 +57,40 @@ namespace Demi
 
     DiString DiK2Configs::GetK2MediaPath(const DiString& relativePath)
     {
-        DiString baseFolder = DiBase::CommandMgr->GetConsoleVar("k2_media_folder")->GetString();
-        baseFolder += "/";
-        baseFolder += relativePath;
-        return baseFolder;
+        if (!RESOURCE_PACK)
+        {
+            DiString baseFolder = DiBase::CommandMgr->GetConsoleVar("k2_media_folder")->GetString();
+            baseFolder += "/";
+            baseFolder += relativePath;
+            return baseFolder;
+        }
+        else
+        {
+            return relativePath;
+        }
     }
 
     DiDataStreamPtr DiK2Configs::GetDataStream(const DiString& relPath, bool asBinary)
     {
         DiString full = GetK2MediaPath(relPath);
 
-        // now we just simply using OS's file system
-        FILE* fp = fopen(full.c_str(), asBinary?"rb":"r");
-        if (!fp)
+        if (RESOURCE_PACK)
         {
-            DI_WARNING("Cannot open the file: %s", full.c_str());
-            return nullptr;
+            DiDataStreamPtr data = RESOURCE_PACK->Open(full);
+            return data;
         }
-        DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
-        return data;
+        else
+        {
+            // now we just simply using OS's file system
+            FILE* fp = fopen(full.c_str(), asBinary ? "rb" : "r");
+            if (!fp)
+            {
+                DI_WARNING("Cannot open the file: %s", full.c_str());
+                return nullptr;
+            }
+            DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
+            return data;
+        }
     }
 
     DiTexturePtr DiK2Configs::GetTexture(const DiString& relPath)
@@ -85,38 +101,59 @@ namespace Demi
 
         DiString full = GetK2MediaPath(relPath);
 
+
         DiString tgaFile = full + ".tga";
-        
+
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
         DiString ddsFile = full + ".pvr";
 #else
         DiString ddsFile = full + ".dds";
 #endif
 
-        FILE* fp = NULL;
-
-        // if the file is a tga image, maybe we should change it to .dds
-        if (!DiPathLib::FileExisted(tgaFile))
+        if (TEXTURE_PACK)
         {
-            // try dds
-            fp = fopen(ddsFile.c_str(), "rb");
+            DiDataStreamPtr data;
+            
+            /// TODO read the descriptor file
+            tgaFile = "00000000/" + tgaFile;
+            ddsFile = "00000000/" + ddsFile;
+
+            if (TEXTURE_PACK->HasFile(ddsFile))
+                data = TEXTURE_PACK->Open(ddsFile);
+            else
+                data = TEXTURE_PACK->Open(tgaFile);
+
+            if (!data)
+            {
+                DI_WARNING("Cannot open the texture file: %s", ddsFile.c_str());
+                return nullptr;
+            }
+            ret = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(relPath);
+            ret->Load(data);
+            return ret;
         }
         else
         {
+            FILE* fp = NULL;
+
+            // try dds
+            fp = fopen(ddsFile.c_str(), "rb");
+
             // try tga
-            fp = fopen(tgaFile.c_str(), "rb");
-        }
+            if (!fp)
+                fp = fopen(tgaFile.c_str(), "rb");
 
-        if (!fp)
-        {
-            DI_WARNING("Cannot open the texture file: %s", ddsFile.c_str());
-            return nullptr;
-        }
-        DiDataStreamPtr texData(DI_NEW DiFileHandleDataStream(relPath,fp));
+            if (!fp)
+            {
+                DI_WARNING("Cannot open the texture file: %s", ddsFile.c_str());
+                return nullptr;
+            }
+            DiDataStreamPtr texData(DI_NEW DiFileHandleDataStream(relPath, fp));
 
-        ret = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(relPath);
-        ret->Load(texData);
-        return ret;
+            ret = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(relPath);
+            ret->Load(texData);
+            return ret;
+        }
     }
 
     DiQuat DiK2Configs::ConvertAngles(const DiVec3& eulerrot)
@@ -130,9 +167,15 @@ namespace Demi
 
     bool DiK2Configs::K2ArchiveExists(const DiString& relPath)
     {
-        // TODO ZIP
-        DiString full = GetK2MediaPath(relPath);
-        return DiPathLib::FileExisted(full);
+        if (RESOURCE_PACK)
+        {
+            return RESOURCE_PACK->HasFile(relPath);
+        }
+        else
+        {
+            DiString full = GetK2MediaPath(relPath);
+            return DiPathLib::FileExisted(full);
+        }
     }
 
     DiString DiK2Configs::GetShader(const DiString& shader)
@@ -149,6 +192,29 @@ namespace Demi
         else
             return MESH_SHADER;
     }
+
+    void DiK2Configs::SetK2ResourcePack(const DiString& resPack, const DiString& texturePack)
+    {
+        DiTimer timer;
+
+        DiK2Configs::RESOURCE_PACK = DI_NEW DiZipArchive(resPack);
+        DiK2Configs::TEXTURE_PACK = DI_NEW DiZipArchive(texturePack);
+
+        DiK2Configs::RESOURCE_PACK->Load();
+        DiK2Configs::TEXTURE_PACK->Load();
+
+        double loadingTime = timer.GetElapse();
+        DI_LOG("Zip files loading time: %f", loadingTime);
+    }
+
+    void DiK2Configs::ReleaseK2Packs()
+    {
+        SAFE_DELETE(DiK2Configs::RESOURCE_PACK);
+        SAFE_DELETE(DiK2Configs::TEXTURE_PACK);
+    }
+
+    DiZipArchive* DiK2Configs::TEXTURE_PACK = nullptr;
+    DiZipArchive* DiK2Configs::RESOURCE_PACK = nullptr;
 
     DiString DiK2Configs::MESH_SHADER    = "k2_color";
     DiString DiK2Configs::CLIFF_SHADER   = "k2_cliff";

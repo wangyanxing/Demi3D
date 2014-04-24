@@ -163,8 +163,8 @@ namespace Demi
 
     bool DiK2MdfSerial::ParseMdf(const DiString& file, DiK2ModelAsset* target)
     {
-        FILE* fp = fopen(file.c_str(), "r");
-        if (!fp)
+        auto data = DiK2Configs::GetDataStream(file, false);
+        if (!data)
         {
             DI_WARNING("Cannot open k2 mdf: %s", file.c_str());
             return false;
@@ -172,8 +172,6 @@ namespace Demi
         
         DI_LOG("Loading k2 mdf: %s", file.c_str());
         
-        DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
-
         shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
         xmlfile->Load(data->GetAsString());
         data->Close();
@@ -238,16 +236,15 @@ namespace Demi
     
     bool DiK2MdfSerial::LoadModel(const DiString& file, DiK2ModelAsset* target)
     {
-        FILE* fp = fopen(file.c_str(), "rb");
-        if (!fp)
+        auto data = DiK2Configs::GetDataStream(file, true);
+        if (!data)
         {
             DI_WARNING("Cannot open k2 model: %s", file.c_str());
             return false;
         }
-        
+
         DI_LOG("Loading k2 model: %s",file.c_str());
 
-        DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
         mStream = data;
         
         DI_SERIAL_LOG("Loading k2 model: %s", file.c_str());
@@ -1035,14 +1032,12 @@ namespace Demi
     
     bool DiK2MdfSerial::LoadClip(const DiString& file, K2Anim* anim, DiK2ModelAsset* target)
     {
-        FILE* fp = fopen(file.c_str(), "rb");
-        if (!fp)
+        auto data = DiK2Configs::GetDataStream(file, true);
+        if (!data)
         {
             DI_WARNING("Cannot open k2 clip: %s", file.c_str());
             return false;
         }
-        
-        DiDataStreamPtr data(DI_NEW DiFileHandleDataStream(fp));
         mStream = data;
 
         if (!CheckFourcc("CLIP"))
@@ -1150,14 +1145,6 @@ namespace Demi
         delete[] dataFloats;
 
         return true;
-    }
-
-    DiString DiK2MdfSerial::GetK2MediaPath(const DiString& relativePath)
-    {
-        DiString baseFolder = DiBase::CommandMgr->GetConsoleVar("k2_media_folder")->GetString();
-        baseFolder += "/";
-        baseFolder += relativePath;
-        return baseFolder;
     }
 
     DiString DiK2MdfSerial::TryMaterialFile(const DiString& materialName, DiK2ModelAsset* target)

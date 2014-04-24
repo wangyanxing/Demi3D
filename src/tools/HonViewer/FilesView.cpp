@@ -53,9 +53,8 @@ namespace tools
         for (auto i = filetree->children.begin(); i != filetree->children.end(); ++i)
         {
             DiFileTree* cur = i->second;
-            bool folder = !cur->children.empty();
-            MyGUI::TreeControl::Node* nd = new MyGUI::TreeControl::Node(cur->fileName.c_str(), folder ? "Folder" : "File");
-            if (folder)
+            MyGUI::TreeControl::Node* nd = new MyGUI::TreeControl::Node(cur->fileName.c_str(), cur->folder ? "Folder" : "File");
+            if (cur->folder)
                 nd->setData(cur);
             else
                 nd->setPrepared(true);
@@ -73,9 +72,8 @@ namespace tools
         for (auto i = mResources->children.begin(); i != mResources->children.end(); ++i)
         {
             DiFileTree* cur = i->second;
-            bool folder = !cur->children.empty();
-            MyGUI::TreeControl::Node* pNode = new MyGUI::TreeControl::Node(cur->fileName.c_str(), folder ? "Folder" : "File");
-            if (folder)
+            MyGUI::TreeControl::Node* pNode = new MyGUI::TreeControl::Node(cur->fileName.c_str(), cur->folder ? "Folder" : "File");
+            if (cur->folder)
                 pNode->setData(cur);
             else
                 pNode->setPrepared(true);

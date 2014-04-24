@@ -42,8 +42,8 @@ namespace Demi
 
     void HonViewerApp::Close()
     {
-        delete mBackground;
-        mBackground = nullptr;
+        //delete mBackground;
+        //mBackground = nullptr;
 
         delete mMainPane;
         mMainPane = nullptr;
@@ -60,6 +60,12 @@ namespace Demi
     void HonViewerApp::OpenImpl()
     {
         DemiDemo::OpenImpl();
+
+        DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
+        peMgr->SetOutputToBackBuffer(false);
+
+        DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.35f, 0.35f, 0.35f));
+        DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.2f, 0.2f, 0.2f));
 
         DiSceneManager* sm = DiBase::Driver->GetSceneManager();
         sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));
@@ -118,7 +124,7 @@ namespace Demi
         MyGUI::ResourceManager::getInstance().load("TreeControlSkin.xml");
         MyGUI::ResourceManager::getInstance().load("TreeItemIcons.xml");
 
-        mBackground = new BackgroundControl();
+        //mBackground = new BackgroundControl();
         mMainPane = new MainPaneControl();
     }
 }

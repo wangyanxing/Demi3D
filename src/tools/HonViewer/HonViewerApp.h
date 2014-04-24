@@ -37,7 +37,7 @@ namespace Demi
 
     private:
 
-        BackgroundControl*  mBackground;
+        //BackgroundControl*  mBackground;
 
         MainPaneControl*    mMainPane;
     };

@@ -52,6 +52,8 @@ namespace Demi
 
         DiFileInfoListPtr   FindFileInfo(const DiString& pattern, 
                                 bool recursive = true, bool dirs = false) const;
+
+        bool                HasFile(const DiString& file);
         
         DiString            GetFullPath(const DiString& filename);
 

@@ -28,7 +28,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     DiPostEffectManager::DiPostEffectManager(DiRenderWindow* renderWindow)
-        :mRenderWindow(renderWindow)
+        :mRenderWindow(renderWindow),
+        mOutput(true)
     {
         Init();
     }
@@ -84,7 +85,10 @@ namespace Demi
     void DiPostEffectManager::RenderOutput(DiRenderPipeline* pipe)
     {
         mRenderWindow->GetRenderBuffer()->Bind();
-        DrawQuad(mScreenQuad->mMaterial.get(),1);
+        if (mOutput)
+        {
+            DrawQuad(mScreenQuad->mMaterial.get(), 1);
+        }
     }
 
     DiPostEffect* DiPostEffectManager::CreatePostEffect( const DiString& name )
