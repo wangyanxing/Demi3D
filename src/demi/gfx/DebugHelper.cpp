@@ -178,6 +178,7 @@ namespace Demi
         if(mLines.empty())
         {
             mSourceData[0]->Release();
+            mVbSize = 0;
             return;
         }
         

@@ -26,9 +26,17 @@ namespace tools
         CommonToolsControl(MyGUI::Widget* _parent = nullptr);
         virtual ~CommonToolsControl();
 
+    public:
+
+        void notifyButtonPressed(MyGUI::Widget* _sender);
+
 	private:
 
-	};
+        MyGUI::Button* mWireframe;
+        MyGUI::Button* mShowBones;
+        MyGUI::Button* mShowModel;
+        MyGUI::Button* mShowBounds;
+    };
 
 } // namespace tools
 

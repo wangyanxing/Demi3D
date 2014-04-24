@@ -33,6 +33,8 @@ namespace Demi
 
         DiK2Animation*  GetAnimation() { return mAnimation; }
 
+        DiK2Skeleton*   GetSkeleton() { return mSkeleton; }
+
         void            Update(DiCamera*);
 
         void            UpdateAnimation(float delta);

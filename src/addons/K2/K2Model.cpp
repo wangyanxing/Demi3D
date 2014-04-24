@@ -25,10 +25,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Asset.h"
 #include "ShaderManager.h"
 
-#ifdef ENABLE_K2_ANIM_DEBUGGER
-#   include "DebugHelper.h"
-#endif
-
 namespace Demi
 {
     DiK2Model::DiK2Model(const DiString& path)

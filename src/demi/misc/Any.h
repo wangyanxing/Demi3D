@@ -333,7 +333,7 @@ namespace Demi
 
     //////////////////////////////////////////////////////////////////////////
 
-    class DiAnyInterface
+    class DI_GFX_API DiAnyInterface
     {
     public:
 

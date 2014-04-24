@@ -48,7 +48,7 @@ namespace MyGUI
 
 			void setData(Any Data);
 			template <typename TYPE>
-			TYPE* getData() const;
+			TYPE* getData(bool throwexp = true) const;
 
 		private:
 			bool mbIsPrepared;
@@ -153,9 +153,9 @@ namespace MyGUI
 		mData = Data;
 	}
 	template <typename TYPE>
-	TYPE* TreeControl::Node::getData() const
+    TYPE* TreeControl::Node::getData(bool throwexp) const
 	{
-		return mData.castType<TYPE>(true);
+        return mData.castType<TYPE>(throwexp);
 	}
 
 	inline TreeControl::Node* TreeControl::getRoot() const

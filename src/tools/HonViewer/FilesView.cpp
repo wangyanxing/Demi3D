@@ -84,7 +84,7 @@ namespace tools
 
     void FilesView::notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)
     {
-        DiFileTree* filetree = *(pNode->getData<DiFileTree*>());
+        DiFileTree* filetree = *(pNode->getData<DiFileTree*>(false));
         if (!filetree || filetree->folder)
         {
             return;

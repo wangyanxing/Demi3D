@@ -257,7 +257,7 @@ namespace Demi
 
     void DiRenderWindow::SetCustomizedCanvasSize(uint32 width, uint32 height)
     {
-        DI_LOG("Resizing render canvas texture to (%d,%d)",width,height);
+        DI_DEBUG("Resizing render canvas texture to (%d,%d)",width,height);
         mCanvasTexture->SetAdaptedRT(nullptr);
         mCanvasTexture->ResizeTexture(width,height);
 

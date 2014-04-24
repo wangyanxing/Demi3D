@@ -36,11 +36,31 @@ namespace Demi
 
         void LoadModel(const DiString& file);
 
+        bool SetWireframe(bool var);
+        
+        bool ShowModel(bool var);
+
+        bool ShowBones(bool var);
+
+        bool ShowBounds(bool var);
+
+    protected:
+
+        void InitHelpers();
+
+        void UpdateSkeletonHelper();
+
+        void UpdateBoundsHelper();
+
     protected:
 
         DiK2ModelPtr mModel;
 
         DiCullNode* mSceneNode;
+
+        DiDebugHelperPtr mBounds;
+
+        DiDebugHelperPtr mSkeleton;
     };
 }
 

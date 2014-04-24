@@ -4,14 +4,14 @@
         <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 5 120 20" name="CheckWireframe">
             <Property key="Caption" value="Wireframe"/>
         </Widget>
-        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 30 120 20" name="CheckShowBones">
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 30 120 20" name="CheckShowModel">
+            <Property key="Caption" value="Show Model"/>
+        </Widget>
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 55 120 20" name="CheckShowBones">
             <Property key="Caption" value="Show Bones"/>
         </Widget>
-        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 55 120 20" name="CheckShowNormals">
-            <Property key="Caption" value="Show Normals"/>
-        </Widget>
-        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 80 120 20" name="CheckShowTangents">
-            <Property key="Caption" value="Show Tangens"/>
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 80 120 20" name="CheckShowBounds">
+            <Property key="Caption" value="Show Bounds"/>
         </Widget>
     </Widget>
 </MyGUI>
