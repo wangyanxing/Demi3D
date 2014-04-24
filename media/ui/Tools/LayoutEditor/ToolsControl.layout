@@ -4,16 +4,16 @@
         <UserString key="SnapTo" value="Stretch"/>
         <Widget type="TabControl" skin="TabControl" position="0 0 600 315" align="Stretch">
             <Widget type="TabItem" skin="" position="2 24 594 287">
-                <Property key="Caption" value="#{Properties}"/>
-                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="PropertiesControl"/>
+                <Property key="Caption" value="#{Files}"/>
+                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="FilesControl"/>
             </Widget>
             <Widget type="TabItem" skin="" position="2 24 594 287">
-                <Property key="Caption" value="#{Widgets}"/>
-                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="WidgetsControl"/>
+                <Property key="Caption" value="#{Model}"/>
+                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="ModelControl"/>
             </Widget>
             <Widget type="TabItem" skin="" position="2 24 594 287">
-                <Property key="Caption" value="#{Project}"/>
-                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="ProjectControl"/>
+                <Property key="Caption" value="#{Animation}"/>
+                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="AnimationControl"/>
             </Widget>
         </Widget>
     </Widget>

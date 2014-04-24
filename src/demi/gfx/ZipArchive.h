@@ -24,7 +24,7 @@ namespace Demi
 {
     /** Zip file system
      */
-    class DiZipArchive : public DiArchive
+    class DI_GFX_API DiZipArchive : public DiArchive
     {
     public:
 
@@ -39,6 +39,9 @@ namespace Demi
         void                Unload();
 
         DiDataStreamPtr     Open(const DiString& filename) const;
+
+        /// List files recursively
+        DiFileTree*         GenerateFileTree(const DiString& pattern);
 
         DiStringVecPtr      List(bool recursive = true, bool dirs = false);
 

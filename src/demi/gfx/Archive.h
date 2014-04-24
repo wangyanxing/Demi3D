@@ -30,8 +30,48 @@ namespace Demi
     typedef DiVector<DiFileInfo>       DiFileInfoList;
     typedef shared_ptr<DiFileInfoList> DiFileInfoListPtr;
 
+    struct DiFileTree
+    {
+        void Release()
+        {
+            for (auto i = children.begin(); i != children.end(); ++i)
+            {
+                i->second->Release();
+                DI_DELETE i->second;
+            }
+            children.clear();
+        }
+
+        DiFileTree* FindChildren(const DiString& name)
+        {
+            auto i = children.find(name);
+            if (i != children.end())
+                return i->second;
+            else
+                return nullptr;
+        }
+
+        DiFileTree* AddChild(const DiString& name)
+        {
+            DiFileTree* ret = FindChildren(name);
+            if (!ret)
+            {
+                ret = DI_NEW DiFileTree();
+                children[name] = ret;
+                ret->fileName = name;
+            }
+            return ret;
+        }
+
+        DiString fileName;
+
+        bool folder;
+
+        DiMap<DiString, DiFileTree*> children;
+    };
+
     //////////////////////////////////////////////////////////////////////////
-    class DiArchive
+    class DI_GFX_API DiArchive
     {
     public:
     

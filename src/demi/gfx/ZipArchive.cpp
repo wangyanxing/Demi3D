@@ -183,7 +183,44 @@ namespace Demi
                 ret->push_back(i->filename);
         
         return ret;
+    }
 
+    DiFileTree* DiZipArchive::GenerateFileTree(const DiString& pattern)
+    {
+        bool wildCard = pattern.find("*") != DiString::npos;
+
+        DiFileTree* node = DI_NEW DiFileTree();
+        for (auto i = mFileList.begin(); i != mFileList.end(); ++i)
+        {
+            if (false == (i->compressedSize == size_t(-1)))
+            {
+                DiVector<DiString> tokens = i->filename.Tokenize("/");
+                DiFileTree* cur = node;
+                for (size_t i = 0; i < tokens.size(); ++i)
+                {
+                    if (i < tokens.size()-1)
+                    {
+                        cur = cur->AddChild(tokens[i]);
+                        cur->folder = true;
+                    }
+                    else
+                    {
+                        if (wildCard)
+                        {
+                            if (DiString::MatchPatternEx(tokens[i], pattern, false))
+                                cur = cur->AddChild(tokens[i]);
+                        }
+                        else
+                        {
+                            if (tokens[i] == pattern)
+                                cur = cur->AddChild(tokens[i]);
+                        }
+                        cur->folder = false;
+                    }
+                }
+            }
+        }
+        return node;
     }
 
     DiFileInfoListPtr DiZipArchive::ListFileInfo( bool recursive /*= true*/,

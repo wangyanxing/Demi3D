@@ -16,6 +16,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "MyGUI_FilterNoneSkin.h"
 #include "MyGUI_RTTLayer.h"
+#include "MyGUI_TreeControl.h"
+#include "MyGUI_TreeControlItem.h"
 #include "MessageBoxManager.h"
 #include "DialogManager.h"
 #include "Localise.h"
@@ -109,6 +111,12 @@ namespace Demi
         DialogManager::getInstance().initialise();
 
         MyGUI::ResourceManager::getInstance().load("Initialise.xml");
+
+        MyGUI::FactoryManager& factory = MyGUI::FactoryManager::getInstance();
+        factory.registerFactory<MyGUI::TreeControl>("Widget");
+        factory.registerFactory<MyGUI::TreeControlItem>("Widget");
+        MyGUI::ResourceManager::getInstance().load("TreeControlSkin.xml");
+        MyGUI::ResourceManager::getInstance().load("TreeItemIcons.xml");
 
         mBackground = new BackgroundControl();
         mMainPane = new MainPaneControl();

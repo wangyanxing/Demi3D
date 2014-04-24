@@ -12,6 +12,10 @@
 	<Tag name="RecentFiles">Recent files</Tag>
 	<Tag name="Quit">Quit</Tag>
 
+  <Tag name="Files">Files</Tag>
+  <Tag name="Model">Model</Tag>
+  <Tag name="Animation">Animation</Tag>
+
 	<Tag name="Properties">Properties</Tag>
 	<Tag name="Main_properties">Main properties</Tag>
 	<Tag name="Widget_type_propertes">#{widget_type} properties</Tag>

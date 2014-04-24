@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout">
+    <Widget type="Widget" skin="Default" position="10 10 280 600" align="Stretch" name="_Main">
+        <UserString key="SnapTo" value="Stretch"/>
+        <Widget type="TreeControl" skin="Tree" position="0 0 280 600" align="Stretch" name="ResourcesTree">
+        </Widget>
+    </Widget>
+</MyGUI>

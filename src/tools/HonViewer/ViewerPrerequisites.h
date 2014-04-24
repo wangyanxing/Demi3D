@@ -23,6 +23,13 @@ namespace tools
 {
     class BackgroundControl;
     class MainPaneControl;
+    class FilesView;
+}
+
+namespace MyGUI
+{
+    class TreeControl;
+    class TreeControlItem;
 }
 
 using namespace tools;
