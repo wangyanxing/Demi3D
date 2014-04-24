@@ -53,6 +53,8 @@ namespace Demi
         */
         static void SetK2ResourcePack(const DiString& resPack, const DiString& texturePack);
 
+        static void SetK2ResourcePack(const DiString& resPack);
+
         static void ReleaseK2Packs();
 
         static DiString TERRAIN_SHADER;
@@ -64,6 +66,8 @@ namespace Demi
         static DiZipArchive* RESOURCE_PACK;
 
         static DiZipArchive* TEXTURE_PACK;
+
+        static DiString TEXTURE_PACK_PREFIX_FOLDER;
     };
 }
 

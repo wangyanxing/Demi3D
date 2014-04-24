@@ -14,6 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ViewerPch.h"
 #include "FilesView.h"
 #include "ZipArchive.h"
+#include "K2ModelView.h"
+#include "HonViewerApp.h"
 #include "MyGUI_TreeControlItem.h"
 
 namespace tools
@@ -26,6 +28,7 @@ namespace tools
 	    assignWidget(mResourcesTree, "ResourcesTree");
 
         mResourcesTree->eventTreeNodePrepare += newDelegate(this, &FilesView::notifyTreeNodePrepare);
+        mResourcesTree->eventTreeNodeSelected += newDelegate(this, &FilesView::notifyTreeNodeSelected);
 
         scanFiles();
 	}
@@ -54,9 +57,8 @@ namespace tools
         {
             DiFileTree* cur = i->second;
             MyGUI::TreeControl::Node* nd = new MyGUI::TreeControl::Node(cur->fileName.c_str(), cur->folder ? "Folder" : "File");
-            if (cur->folder)
-                nd->setData(cur);
-            else
+            nd->setData(cur);
+            if (!cur->folder)
                 nd->setPrepared(true);
             pNode->add(nd);
         }
@@ -64,7 +66,7 @@ namespace tools
 
     void FilesView::scanFiles()
     {
-        DiZipArchive zip("C:\\Users\\Yanxing\\Desktop\\resources_KillerNurseAluna.zip");
+        DiZipArchive zip("L:/Games/hon_res_misc/hon_res_misc.zip");
         zip.Load();
         mResources = zip.GenerateFileTree("*.mdf");
 
@@ -73,12 +75,30 @@ namespace tools
         {
             DiFileTree* cur = i->second;
             MyGUI::TreeControl::Node* pNode = new MyGUI::TreeControl::Node(cur->fileName.c_str(), cur->folder ? "Folder" : "File");
-            if (cur->folder)
-                pNode->setData(cur);
-            else
+            pNode->setData(cur);
+            if (!cur->folder)
                 pNode->setPrepared(true);
             root->add(pNode);
         }
+    }
+
+    void FilesView::notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)
+    {
+        DiFileTree* filetree = *(pNode->getData<DiFileTree*>());
+        if (!filetree || filetree->folder)
+        {
+            return;
+        }
+
+        DiString fullpath = pNode->getText().asUTF8().c_str();
+        MyGUI::TreeControl::Node* cur = pNode->getParent();
+        while (cur->getParent())
+        {
+            fullpath = cur->getText().asUTF8().c_str() + DiString("/") + fullpath;
+            cur = cur->getParent();
+        }
+        DI_DEBUG("Model %s selected", fullpath.c_str());
+        HonViewerApp::GetViewerApp()->GetModelViewer()->LoadModel(fullpath);
     }
 
 } // namespace tools

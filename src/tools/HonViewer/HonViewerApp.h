@@ -35,11 +35,17 @@ namespace Demi
 
         virtual void      OpenImpl();
 
+        static HonViewerApp* GetViewerApp();
+
+        K2ModelViewer*    GetModelViewer() { return mModelViewer; }
+
     private:
 
         //BackgroundControl*  mBackground;
 
         MainPaneControl*    mMainPane;
+
+        K2ModelViewer*      mModelViewer;
     };
 }
 

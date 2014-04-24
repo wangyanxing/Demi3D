@@ -115,8 +115,8 @@ namespace Demi
             DiDataStreamPtr data;
             
             /// TODO read the descriptor file
-            tgaFile = "00000000/" + tgaFile;
-            ddsFile = "00000000/" + ddsFile;
+            tgaFile = DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER + tgaFile;
+            ddsFile = DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER + ddsFile;
 
             if (TEXTURE_PACK->HasFile(ddsFile))
                 data = TEXTURE_PACK->Open(ddsFile);
@@ -207,11 +207,26 @@ namespace Demi
         DI_LOG("Zip files loading time: %f", loadingTime);
     }
 
+    void DiK2Configs::SetK2ResourcePack(const DiString& resPack)
+    {
+        DiTimer timer;
+
+        DiK2Configs::RESOURCE_PACK = DI_NEW DiZipArchive(resPack);
+        DiK2Configs::TEXTURE_PACK = RESOURCE_PACK;
+
+        DiK2Configs::RESOURCE_PACK->Load();
+
+        double loadingTime = timer.GetElapse();
+        DI_LOG("Zip files loading time: %f", loadingTime);
+    }
+
     void DiK2Configs::ReleaseK2Packs()
     {
         SAFE_DELETE(DiK2Configs::RESOURCE_PACK);
         SAFE_DELETE(DiK2Configs::TEXTURE_PACK);
     }
+
+    DiString DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER;
 
     DiZipArchive* DiK2Configs::TEXTURE_PACK = nullptr;
     DiZipArchive* DiK2Configs::RESOURCE_PACK = nullptr;

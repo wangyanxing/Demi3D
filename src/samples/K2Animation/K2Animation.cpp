@@ -33,7 +33,12 @@ void InitScene()
 #if 0
     DiString resPack = "L:/Games/HON/game/resources0.s2z";
     DiString texPack = "L:/Games/HON/game/textures.s2z";
+    DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER = "00000000/";
     DiK2Configs::SetK2ResourcePack(resPack,texPack);
+#endif
+#if 0
+    DiString resPack = "L:/Games/hon_res_misc/hon_res_misc.zip";
+    DiK2Configs::SetK2ResourcePack(resPack);
 #endif
 
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();

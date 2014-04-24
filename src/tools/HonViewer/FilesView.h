@@ -31,6 +31,8 @@ namespace tools
 
         void notifyTreeNodePrepare(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode);
 
+        void notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode);
+
     private:
 
         void scanFiles();

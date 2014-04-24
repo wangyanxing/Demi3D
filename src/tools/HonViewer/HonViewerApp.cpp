@@ -23,11 +23,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Localise.h"
 #include "BackgroundControl.h"
 #include "MainPaneControl.h"
+#include "K2ModelView.h"
 
 namespace Demi
 {
     HonViewerApp::HonViewerApp()
         : DemiDemo(DemoConfig("Hon Viewer"))
+        , mMainPane(nullptr)
+        , mModelViewer(nullptr)
     {
     }
 
@@ -38,6 +41,8 @@ namespace Demi
     void HonViewerApp::Update()
     {
         DemiDemo::Update();
+
+        mModelViewer->Update(Driver->GetDeltaSecond());
     }
 
     void HonViewerApp::Close()
@@ -45,14 +50,16 @@ namespace Demi
         //delete mBackground;
         //mBackground = nullptr;
 
-        delete mMainPane;
-        mMainPane = nullptr;
+        SAFE_DELETE(mModelViewer);
+        SAFE_DELETE(mMainPane);
 
         DialogManager::getInstance().shutdown();
         delete DialogManager::getInstancePtr();
 
         MessageBoxManager::getInstance().shutdown();
         delete MessageBoxManager::getInstancePtr();
+
+        DI_UNINSTALL_PLUGIN(DiK2);
 
         DemiDemo::Close();
     }
@@ -61,6 +68,8 @@ namespace Demi
     {
         DemiDemo::OpenImpl();
 
+        DI_INSTALL_PLUGIN(DiK2);
+
         DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
         peMgr->SetOutputToBackBuffer(false);
 
@@ -68,38 +77,13 @@ namespace Demi
         DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.2f, 0.2f, 0.2f));
 
         DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-        sm->SetAmbientColor(DiColor(0.1f, 0.1f, 0.1f, 0.1f));
-
-        DiDirLightPtr dirlight = make_shared<DiDirLight>();
-        sm->AttachObject(dirlight);
+        sm->SetAmbientColor(DiColor(0.3f, 0.3f, 0.3f));
+        DiDirLightPtr dirlight;
+        dirlight = make_shared<DiDirLight>();
+        DiCullNode* dirNode = sm->GetRootNode()->CreateChild();
+        dirNode->AttachObject(dirlight);
         dirlight->SetColor(DiColor());
-        dirlight->SetDirection(-DiVec3(1, 1, 2).normalisedCopy());
-
-        const int size = 1;
-        for (int i = 0; i < size; i++)
-        {
-            for (int j = 0; j < size; j++)
-            {
-                for (int k = 0; k < size; k++)
-                {
-                    DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SKINNED);
-                    mat->SetDiffuse(DiColor(1, 1, 1));
-
-                    DiString name;
-                    name.Format("md_%d_%d", i, j);
-                    DiAnimModelPtr model = make_shared<DiAnimModel>(name, "robot.model", "robot.motion");
-                    //DiModelPtr model = make_shared<DiModel>(name, "robot.model");
-                    model->SetMaterial(mat);
-
-                    model->SetAutoUpdateAnims(true);
-                    model->GetClipSet()->GetClipController("Walk")->SetEnabled(true);
-
-                    DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
-                    cullnode->AttachObject(model);
-                    cullnode->SetPosition(i * 120.0f, j * 120.0f, k * 120.0f);
-                }
-            }
-        }
+        dirlight->SetDirection(DiVec3(0, -0.3f, -0.4).normalisedCopy());
 
         //////////////////////////////////////////////////////////////////////////
 
@@ -126,5 +110,13 @@ namespace Demi
 
         //mBackground = new BackgroundControl();
         mMainPane = new MainPaneControl();
+
+        mModelViewer = DI_NEW K2ModelViewer();
     }
+
+    HonViewerApp* HonViewerApp::GetViewerApp()
+    {
+        return (HonViewerApp*)sTheApp;
+    }
+
 }

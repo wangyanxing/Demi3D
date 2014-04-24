@@ -11,29 +11,37 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef HonViewerPrerequisites_h__
-#define HonViewerPrerequisites_h__
+#ifndef DiK2ModelView_h__
+#define DiK2ModelView_h__
+
+#include "ViewerPrerequisites.h"
 
 namespace Demi
 {
-    class HonViewerApp;
-    class K2ModelViewer;
-}
+    class K2ModelViewer : public DiBase
+    {
+    public:
 
-namespace tools
-{
-    class BackgroundControl;
-    class MainPaneControl;
-    class FilesView;
-    class CommonToolsControl;
-}
+        K2ModelViewer();
 
-namespace MyGUI
-{
-    class TreeControl;
-    class TreeControlItem;
-}
+        ~K2ModelViewer();
 
-using namespace tools;
+    public:
+
+        void Init();
+
+        void Release();
+
+        void Update(float dt);
+
+        void LoadModel(const DiString& file);
+
+    protected:
+
+        DiK2ModelPtr mModel;
+
+        DiCullNode* mSceneNode;
+    };
+}
 
 #endif

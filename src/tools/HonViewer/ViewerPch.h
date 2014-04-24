@@ -17,4 +17,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DemoFrame.h"
 #include "MyGUI.h"
 
+#include "K2Model.h"
+#include "K2Clip.h"
+#include "K2Configs.h"
+#include "K2GameDefines.h"
+#include "K2Plugin.h"
+
 #endif
