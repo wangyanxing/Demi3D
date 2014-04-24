@@ -12,22 +12,19 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "ViewerPch.h"
-#include "ToolsControl.h"
-#include "FilesView.h"
 #include "CommonToolControl.h"
+#include "FilesView.h"
 
 namespace tools
 {
-	ToolsControl::ToolsControl(MyGUI::Widget* _parent) :
-		wraps::BaseLayout("ToolsControl.layout", _parent)
-        , mFilesView(nullptr)
-        , mCommonTools(nullptr)
+    CommonToolsControl::CommonToolsControl(MyGUI::Widget* _parent) :
+		wraps::BaseLayout("CommonTools.layout", _parent)
+        
 	{
-        assignBase(mFilesView, "FilesControl");
-        assignBase(mCommonTools, "CommonToolsControl");
+        
 	}
 
-	ToolsControl::~ToolsControl()
+    CommonToolsControl::~CommonToolsControl()
 	{
 	}
 

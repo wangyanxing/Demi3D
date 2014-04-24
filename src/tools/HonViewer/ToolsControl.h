@@ -19,7 +19,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace tools
 {
-
 	class ToolsControl :
 		public wraps::BaseLayout
 	{
@@ -30,6 +29,8 @@ namespace tools
 	private:
 
         FilesView*  mFilesView;
+
+        CommonToolsControl* mCommonTools;
 	};
 
 } // namespace tools

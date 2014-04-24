@@ -4,7 +4,6 @@
 
 namespace tools
 {
-
 	MainWorkspaceControl::MainWorkspaceControl(MyGUI::Widget* _parent) :
 		SeparatorPartControl("MainWorkspaceControl.layout", _parent),
         mToolsControl(nullptr),

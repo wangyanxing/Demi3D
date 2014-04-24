@@ -11,24 +11,25 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#include "ViewerPch.h"
-#include "ToolsControl.h"
-#include "FilesView.h"
-#include "CommonToolControl.h"
+#ifndef __COMMON_TOOLS_CONTROL_H__
+#define __COMMON_TOOLS_CONTROL_H__
+
+#include "ViewerPrerequisites.h"
+#include "BaseLayout.h"
 
 namespace tools
 {
-	ToolsControl::ToolsControl(MyGUI::Widget* _parent) :
-		wraps::BaseLayout("ToolsControl.layout", _parent)
-        , mFilesView(nullptr)
-        , mCommonTools(nullptr)
+	class CommonToolsControl :
+		public wraps::BaseLayout
 	{
-        assignBase(mFilesView, "FilesControl");
-        assignBase(mCommonTools, "CommonToolsControl");
-	}
+	public:
+        CommonToolsControl(MyGUI::Widget* _parent = nullptr);
+        virtual ~CommonToolsControl();
 
-	ToolsControl::~ToolsControl()
-	{
-	}
+	private:
+
+	};
 
 } // namespace tools
+
+#endif // __TOOLS_CONTROL_H__

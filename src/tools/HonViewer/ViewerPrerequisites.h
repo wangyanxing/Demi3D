@@ -24,6 +24,7 @@ namespace tools
     class BackgroundControl;
     class MainPaneControl;
     class FilesView;
+    class CommonToolsControl;
 }
 
 namespace MyGUI
