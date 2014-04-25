@@ -129,19 +129,22 @@ namespace Demi
 
     void DiK2Clip::Update(float deltaTime)
     {
-        mTime += deltaTime;
-        float length = mNumFrames / mFPS;
-        if (mTime >= length)
+        if (deltaTime > 0)
         {
-            if (mLoop)
-                mTime = 0;
-            else
-                mTime = length;
-        }
+            mTime += deltaTime;
+            float length = mNumFrames / mFPS;
+            if (mTime >= length)
+            {
+                if (mLoop)
+                    mTime = 0;
+                else
+                    mTime = length;
+            }
 
-        float realFrame = (mTime / length) * mNumFrames;
-        mCurFrame = DiMath::Clamp(int(realFrame), 0, mNumFrames-1);
-        mInterpFactor = realFrame - mCurFrame;
+            float realFrame = (mTime / length) * mNumFrames;
+            mCurFrame = DiMath::Clamp(int(realFrame), 0, mNumFrames - 1);
+            mInterpFactor = realFrame - mCurFrame;
+        }
     }
 
     DiK2Clip::DiK2Clip() : 

@@ -67,11 +67,11 @@ namespace Demi
         
         void                    OnMouseUp(const OIS::MultiTouchEvent& evt);
 #else
-        void                    OnMouseMove(const OIS::MouseEvent& evt);
+        void                    OnMouseMove(const OIS::MouseState& evt);
 
-        void                    OnMouseDown(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+        void                    OnMouseDown(const OIS::MouseState& evt, OIS::MouseButtonID id);
 
-        void                    OnMouseUp(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+        void                    OnMouseUp(const OIS::MouseState& evt, OIS::MouseButtonID id);
 #endif
 
         void                    OnKeyDown(const OIS::KeyEvent& evt);

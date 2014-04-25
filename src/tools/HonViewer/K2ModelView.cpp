@@ -15,11 +15,17 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2ModelView.h"
 #include "SubModel.h"
 #include "DebugHelper.h"
+#include "HonViewerApp.h"
+#include "MainPaneControl.h"
+#include "MainWorkspaceControl.h"
+#include "RenderWindowControl.h"
+#include "KeyFrameBar.h"
 
 namespace Demi
 {
     K2ModelViewer::K2ModelViewer()
-        :mSceneNode(nullptr)
+        : mSceneNode(nullptr)
+        , mPauseClip(false)
     {
         Init();
     }
@@ -56,7 +62,7 @@ namespace Demi
     {
         if (mModel)
         {
-            mModel->UpdateAnimation(dt);
+            mModel->UpdateAnimation(mPauseClip ? -1 : dt);
             UpdateSkeletonHelper();
             UpdateBoundsHelper(); 
         }
@@ -64,6 +70,11 @@ namespace Demi
 
     void K2ModelViewer::LoadModel(const DiString& file)
     {
+        if (mCurrentFile == file)
+            return;
+
+        mCurrentFile = file;
+
         mSceneNode->DetachAllObjects();
         mModel = make_shared<DiK2Model>(file);
         mSceneNode->AttachObject(mModel);
@@ -71,6 +82,10 @@ namespace Demi
         mModel->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
 
         InitHelpers();
+
+        //notify keyframe bar to update the scale
+        RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp()->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
+        renderWnd->getKeyFrameBar()->updateScales();
     }
 
     bool K2ModelViewer::SetWireframe(bool var)
@@ -154,7 +169,12 @@ namespace Demi
         if (!mBounds || !mBounds->GetVisible())
             return;
         mBounds->Clear();
-        mBounds->AddBoundingBox(mModel->GetBoundingBox(), DiColor::Blue);
+        mBounds->AddBoundingBox(mSceneNode->GetLocalAABB(), DiColor::Blue);
+    }
+
+    DiK2Clip* K2ModelViewer::GetCurrentClip()
+    {
+        return mModel ? mModel->GetAnimation()->mSource : nullptr;
     }
 
 }

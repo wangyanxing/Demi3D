@@ -42,7 +42,9 @@ namespace Demi
     {
         DemiDemo::Update();
 
+        mMainPane->update();
         mModelViewer->Update(Driver->GetDeltaSecond());
+
     }
 
     void HonViewerApp::Close()
@@ -119,4 +121,30 @@ namespace Demi
         return (HonViewerApp*)sTheApp;
     }
 
+    void HonViewerApp::mouseMoved(const OIS::MouseEvent& evt)
+    {
+        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+        if (incanvas)
+        {
+            DemiDemo::mouseMoved(evt);
+        }
+    }
+
+    void HonViewerApp::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+    {
+        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+        if (incanvas)
+        {
+            DemiDemo::mousePressed(evt,id);
+        }
+    }
+
+    void HonViewerApp::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+    {
+        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+        if (incanvas)
+        {
+            DemiDemo::mouseReleased(evt, id);
+        }
+    }
 }

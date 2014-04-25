@@ -16,6 +16,10 @@ namespace tools
 
 		void setVisible(bool _value);
 
+        MainWorkspaceControl* getMainWorkspaceControl(){ return mMainWorkspaceControl; }
+
+        virtual void update();
+
 	private:
 		MainMenuControl* mMainMenuControl;
 		MainWorkspaceControl* mMainWorkspaceControl;

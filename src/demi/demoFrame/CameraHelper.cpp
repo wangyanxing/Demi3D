@@ -178,14 +178,14 @@ namespace Demi
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
     void DiCameraHelper::OnMouseMove(const OIS::MultiTouchEvent& evt)
 #else
-    void DiCameraHelper::OnMouseMove(const OIS::MouseEvent& evt)
+    void DiCameraHelper::OnMouseMove(const OIS::MouseState& evt)
 #endif
     {
         if (!mEnabled)
             return;
         
-        mMousePos.x = evt.state.X.abs;
-        mMousePos.y = evt.state.Y.abs;
+        mMousePos.x = evt.X.abs;
+        mMousePos.y = evt.Y.abs;
         
         if (mStyle == CS_ORBIT)
         {
@@ -194,21 +194,21 @@ namespace Demi
             if (mOrbiting)
             {
                 mCamera->SetPosition(mTarget);
-                mCamera->Yaw(DiDegree(-evt.state.X.rel * 0.25f));
-                mCamera->Pitch(DiDegree(-evt.state.Y.rel * 0.25f));
+                mCamera->Yaw(DiDegree(-evt.X.rel * 0.25f));
+                mCamera->Pitch(DiDegree(-evt.Y.rel * 0.25f));
                 mCamera->MoveRelative(DiVec3(0, 0, dist));
             }
             else if (mZooming)
             {
-                mCamera->MoveRelative(DiVec3(0, 0, evt.state.Y.rel * 0.004f * dist));
+                mCamera->MoveRelative(DiVec3(0, 0, evt.Y.rel * 0.004f * dist));
             }
-            else if (evt.state.Z.rel != 0)
+            else if (evt.Z.rel != 0)
             {
-                mCamera->MoveRelative(DiVec3(0, 0, -evt.state.Z.rel * 0.0008f * dist));
+                mCamera->MoveRelative(DiVec3(0, 0, -evt.Z.rel * 0.0008f * dist));
             }
             else if (mMoving)
             {
-                DiVec3 vec = DiVec3((float)-evt.state.X.rel, (float)evt.state.Y.rel, 0.0f);
+                DiVec3 vec = DiVec3((float)-evt.X.rel, (float)evt.Y.rel, 0.0f);
                 mCamera->MoveRelative(vec);
                 DiVec3 trans = mCamera->GetOrientation() * vec;
                 mTarget += trans;
@@ -216,8 +216,8 @@ namespace Demi
         }
         else if (mStyle == CS_FREELOOK)
         {
-            mCamera->Yaw(DiDegree(-evt.state.X.rel * 0.15f));
-            mCamera->Pitch(DiDegree(-evt.state.Y.rel * 0.15f));
+            mCamera->Yaw(DiDegree(-evt.X.rel * 0.15f));
+            mCamera->Pitch(DiDegree(-evt.Y.rel * 0.15f));
         }
     }
     
@@ -239,7 +239,7 @@ namespace Demi
     }
 #else
 
-    void DiCameraHelper::OnMouseDown(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+    void DiCameraHelper::OnMouseDown(const OIS::MouseState& evt, OIS::MouseButtonID id)
     {
         if (!mEnabled)
             return;
@@ -248,14 +248,14 @@ namespace Demi
         {
             if (id == OIS::MB_Left) 
                 mOrbiting = true;
-            else if (id == OIS::MB_Right) 
-                mOrbiting = true;
+            else if (id == OIS::MB_Right)
+                mZooming = true;
             else if (id == OIS::MB_Middle) 
                 mMoving = true;
         }
     }
 
-    void DiCameraHelper::OnMouseUp(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
+    void DiCameraHelper::OnMouseUp(const OIS::MouseState& evt, OIS::MouseButtonID id)
     {
         if (!mEnabled)
             return;

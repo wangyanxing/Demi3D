@@ -13,10 +13,14 @@ namespace tools
 		MainWorkspaceControl(MyGUI::Widget* _parent);
 		virtual ~MainWorkspaceControl();
 
+        RenderWindowControl* getRenderWndControl() const { return mRenderWndCtrl; }
+
+        virtual void update();
+
 	private:
-        ToolsControl* mToolsControl;
-        RenderWindowControl* mWorkspaceControl;
-	};
+        ToolsControl* mToolsCtrl;
+        RenderWindowControl* mRenderWndCtrl;
+    };
 
 } // namespace tools
 

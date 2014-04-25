@@ -83,6 +83,10 @@ namespace MyGUI
 		/** Get minimal track size */
 		int getMinTrackSize() const;
 
+        Button* getTrackButton(){ return mWidgetTrack; }
+        Button* getTrackStartButton(){ return mWidgetStart; }
+        Button* getTrackEndButton(){ return mWidgetEnd; }
+
 		/** Enable or disable move to click mode.\n
 			Move to click mode: Tracker moves to cursor when pressed on scroll line.\n
 			Disabled (false) by default.
@@ -90,6 +94,9 @@ namespace MyGUI
 		void setMoveToClick(bool _value);
 		/** Get move to click mode flag */
 		bool getMoveToClick() const;
+
+        void setDisableInput(bool _value){ mDisableInput = _value; }
+        bool getDisableInput() const { return mDisableInput; }
 
 		//! @copydoc Widget::setPosition(const IntPoint& _value)
 		virtual void setPosition(const IntPoint& _value);
@@ -155,6 +162,7 @@ namespace MyGUI
 
 		int mMinTrackSize;
 		bool mMoveToClick;
+        bool mDisableInput;
 
 		bool mVerticalAlignment;
 	};

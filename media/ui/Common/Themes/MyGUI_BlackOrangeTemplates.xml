@@ -14,6 +14,36 @@
             <UserString key="LE_TargetWidgetType" value="Button"/>
         </Widget>
     </Resource>
+	<Resource type="ResourceLayout" name="KeyFrameBar" version="3.2.0">
+        <Widget type="Widget" skin="KeyFrameTileSkin" position="25 50 125 15" name="Root">
+            <Property key="VerticalAlignment" value="false"/>
+            <UserString key="LE_TargetWidgetType" value="ScrollBar"/>
+            <Widget type="Widget" skin="PanelEmpty" position="-5 0 125 15" align="Stretch" name="TrackPlace">
+                <Property key="NeedKey" value="false"/>
+                <Property key="InheritsPick" value="true"/>
+                <Widget type="Button" skin="ScrollPanelHSkin" position="0 1 19 14" align="Left VStretch" name="Track">
+                    <UserString key="MinTrackSize" value="10"/>
+                </Widget>
+                <Widget type="Widget" skin="PanelEmpty" position="0 0 35 15" align="Left VStretch" name="FirstPart"/>
+                <Widget type="Widget" skin="PanelEmpty" position="54 0 44 15" align="Left VStretch" name="SecondPart"/>
+            </Widget>
+        </Widget>
+    </Resource>
+	<Resource type="ResourceLayout" name="KeyFrameButtonBar" version="3.2.0">
+        <Widget type="Widget" skin="KeyFrameButtonSkin" position="25 50 125 15" name="Root">
+            <Property key="VerticalAlignment" value="false"/>
+            <UserString key="LE_TargetWidgetType" value="ScrollBar"/>
+            <Widget type="Widget" skin="PanelEmpty" position="3 0 122 15" align="Stretch" name="TrackPlace">
+                <Property key="NeedKey" value="false"/>
+                <Property key="InheritsPick" value="true"/>
+                <Widget type="Button" skin="ScrollTrackHSkin" position="0 1 19 14" align="Left VStretch" name="Track">
+                    <UserString key="MinTrackSize" value="30"/>
+                </Widget>
+                <Widget type="Widget" skin="PanelEmpty" position="0 0 35 15" align="Left VStretch" name="FirstPart"/>
+                <Widget type="Widget" skin="PanelEmpty" position="54 0 44 15" align="Left VStretch" name="SecondPart"/>
+            </Widget>
+        </Widget>
+    </Resource>
     <Resource type="ResourceLayout" name="ScrollBarH" version="3.2.0">
         <Widget type="Widget" skin="ScrollPanelHSkin" position="25 50 125 15" name="Root">
             <Property key="VerticalAlignment" value="false"/>

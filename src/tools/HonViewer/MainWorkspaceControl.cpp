@@ -6,15 +6,20 @@ namespace tools
 {
 	MainWorkspaceControl::MainWorkspaceControl(MyGUI::Widget* _parent) :
 		SeparatorPartControl("MainWorkspaceControl.layout", _parent),
-        mToolsControl(nullptr),
-        mWorkspaceControl(nullptr)
+        mToolsCtrl(nullptr),
+        mRenderWndCtrl(nullptr)
 	{
-        assignBase(mToolsControl, "ToolsControl");
-        assignBase(mWorkspaceControl, "WorkspaceControl");
+        assignBase(mToolsCtrl, "ToolsControl");
+        assignBase(mRenderWndCtrl, "WorkspaceControl");
     }
 
 	MainWorkspaceControl::~MainWorkspaceControl()
 	{
 	}
+
+    void MainWorkspaceControl::update()
+    {
+        mRenderWndCtrl->update();
+    }
 
 } // namespace tools

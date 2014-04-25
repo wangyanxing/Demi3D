@@ -71,6 +71,8 @@ namespace tools
         mResources = zip.GenerateFileTree("*.mdf");
 
         MyGUI::TreeControl::Node* root = mResourcesTree->getRoot();
+        DiFileTree* nullfile = nullptr;
+        root->setData(nullfile);
         for (auto i = mResources->children.begin(); i != mResources->children.end(); ++i)
         {
             DiFileTree* cur = i->second;
@@ -84,6 +86,10 @@ namespace tools
 
     void FilesView::notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)
     {
+        if (!pNode || pNode->emptyData())
+        {
+            return;
+        }
         DiFileTree* filetree = *(pNode->getData<DiFileTree*>(false));
         if (!filetree || filetree->folder)
         {

@@ -25,6 +25,7 @@ namespace tools
     class BackgroundControl;
     class MainPaneControl;
     class FilesView;
+    class KeyFrameBarControl;
     class CommonToolsControl;
 }
 

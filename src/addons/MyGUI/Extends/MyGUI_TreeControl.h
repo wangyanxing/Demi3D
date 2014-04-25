@@ -49,6 +49,7 @@ namespace MyGUI
 			void setData(Any Data);
 			template <typename TYPE>
 			TYPE* getData(bool throwexp = true) const;
+            bool emptyData()const  { return mData.empty(); }
 
 		private:
 			bool mbIsPrepared;

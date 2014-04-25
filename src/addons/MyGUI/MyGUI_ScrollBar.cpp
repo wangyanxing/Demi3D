@@ -45,7 +45,8 @@ namespace MyGUI
 		mScrollViewPage(0),
 		mMinTrackSize(0),
 		mMoveToClick(false),
-		mVerticalAlignment(true)
+		mVerticalAlignment(true),
+        mDisableInput(false)
 	{
 	}
 
@@ -266,6 +267,9 @@ namespace MyGUI
 
 	void ScrollBar::notifyMousePressed(Widget* _sender, int _left, int _top, MouseButton _id)
 	{
+        if (mDisableInput)
+            return;
+        
 		// диспечерезируем нажатие своих детей как свое
 		eventMouseButtonPressed(this, _left, _top, _id);
 
@@ -361,11 +365,15 @@ namespace MyGUI
 
 	void ScrollBar::notifyMouseReleased(Widget* _sender, int _left, int _top, MouseButton _id)
 	{
+        if (mDisableInput)
+            return;
 		updateTrack();
 	}
 
 	void ScrollBar::notifyMouseDrag(Widget* _sender, int _left, int _top, MouseButton _id)
 	{
+        if (mDisableInput)
+            return;
 		if (_id == MouseButton::Left)
 			TrackMove(_left, _top);
 	}
@@ -450,6 +458,8 @@ namespace MyGUI
 
 	void ScrollBar::notifyMouseWheel(Widget* _sender, int _rel)
 	{
+        if (mDisableInput)
+            return;
 		if (mScrollRange < 2)
 			return;
 

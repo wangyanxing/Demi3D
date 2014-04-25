@@ -138,7 +138,7 @@ namespace MyGUI
 	{
         loadFromDemiTexture(_filename);
 
-        mTexture->SetAddressing(AM_CLAMP);
+        mTexture->SetAddressing(AM_WRAP);
         mTexture->SetFilter(FILTER_DEFAULT);
 	}
 

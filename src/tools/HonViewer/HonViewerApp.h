@@ -37,7 +37,15 @@ namespace Demi
 
         static HonViewerApp* GetViewerApp();
 
+        MainPaneControl*  getMainPane(){ return mMainPane; }
+
         K2ModelViewer*    GetModelViewer() { return mModelViewer; }
+
+        virtual void      mouseMoved(const OIS::MouseEvent& evt);
+
+        virtual void      mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+
+        virtual void      mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
 
     private:
 

@@ -28,29 +28,35 @@ namespace Demi
 
     public:
 
-        void Init();
+        void        Init();
 
-        void Release();
+        void        Release();
 
-        void Update(float dt);
+        void        Update(float dt);
 
-        void LoadModel(const DiString& file);
+        void        LoadModel(const DiString& file);
 
-        bool SetWireframe(bool var);
-        
-        bool ShowModel(bool var);
+        bool        SetWireframe(bool var);
 
-        bool ShowBones(bool var);
+        bool        ShowModel(bool var);
 
-        bool ShowBounds(bool var);
+        bool        ShowBones(bool var);
+
+        bool        ShowBounds(bool var);
+
+        DiK2Clip*   GetCurrentClip();
+
+        bool        PauseClip() const { return mPauseClip; }
+
+        void        PauseClip(bool val) { mPauseClip = val; }
 
     protected:
 
-        void InitHelpers();
+        void        InitHelpers();
 
-        void UpdateSkeletonHelper();
+        void        UpdateSkeletonHelper();
 
-        void UpdateBoundsHelper();
+        void        UpdateBoundsHelper();
 
     protected:
 
@@ -61,6 +67,11 @@ namespace Demi
         DiDebugHelperPtr mBounds;
 
         DiDebugHelperPtr mSkeleton;
+
+        DiString  mCurrentFile;
+
+        bool mPauseClip;
+        
     };
 }
 

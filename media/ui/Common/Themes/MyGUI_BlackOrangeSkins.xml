@@ -528,6 +528,35 @@
             <State name="pushed_checked" colour="0 0 0" shift="0"/>
         </BasisSkin>
     </Resource>
+	<Resource type="ResourceSkin" name="KeyFrameButtonBarSkin" size="8 17" texture="MyGUI_BlackOrangeSkins.png">
+        <BasisSkin type="SubSkin" offset="0 0 2 2" align="Left Top">
+            <State name="normal" offset="341 54 2 2"/>
+        </BasisSkin>
+        <BasisSkin type="SubSkin" offset="2 0 15 2" align="HStretch Top">
+            <State name="normal" offset="343 54 15 2"/>
+        </BasisSkin>
+        <BasisSkin type="SubSkin" offset="17 0 2 2" align="Right Top">
+            <State name="normal" offset="358 54 2 2"/>
+        </BasisSkin>
+        <BasisSkin type="SubSkin" offset="17 2 2 11" align="Right VStretch">
+            <State name="normal" offset="358 56 2 11"/>
+        </BasisSkin>
+        <BasisSkin type="SubSkin" offset="17 13 2 2" align="Right Bottom">
+            <State name="normal" offset="358 67 2 2"/>
+        </BasisSkin>
+        <BasisSkin type="SubSkin" offset="2 13 15 2" align="HStretch Bottom">
+            <State name="normal" offset="343 67 15 2"/>
+        </BasisSkin>
+        <BasisSkin type="SubSkin" offset="0 13 2 2" align="Left Bottom">
+            <State name="normal" offset="341 67 2 2"/>
+        </BasisSkin>
+        <BasisSkin type="SubSkin" offset="0 2 2 11" align="Left VStretch">
+            <State name="normal" offset="341 56 2 11"/>
+        </BasisSkin>
+        <BasisSkin type="SubSkin" offset="0 0 8 17" align="Stretch">
+            <State name="normal" offset="490 217 8 17"/>
+        </BasisSkin>
+    </Resource>
     <Resource type="ResourceSkin" name="ScrollPanelHSkin" size="19 15" texture="MyGUI_BlackOrangeSkins.png">
         <BasisSkin type="SubSkin" offset="0 0 2 2" align="Left Top">
             <State name="normal" offset="341 54 2 2"/>
@@ -743,6 +772,24 @@
                 <Property key="TileSize" value="34 18"/>
                 <Property key="TileH" value="true"/>
                 <Property key="TileV" value="true"/>
+            </State>
+        </BasisSkin>
+    </Resource>
+    <Resource type="ResourceSkin" name="KeyFrameTileSkin" size="79 27" texture="MyGUI_BlackOrangeSkins.png">
+        <BasisSkin type="TileRect" offset="0 0 79 27" align="Stretch">
+            <State name="normal" offset="404 217 79 27">
+                <Property key="TileSize" value="79 27"/>
+                <Property key="TileH" value="true"/>
+                <Property key="TileV" value="false"/>
+            </State>
+        </BasisSkin>
+    </Resource>
+	<Resource type="ResourceSkin" name="KeyFrameButtonSkin" size="5 21" texture="MyGUI_BlackOrangeSkins.png">
+        <BasisSkin type="TileRect" offset="0 0 5 21" align="Stretch">
+            <State name="normal" offset="501 217 5 21">
+                <Property key="TileSize" value="5 21"/>
+                <Property key="TileH" value="true"/>
+                <Property key="TileV" value="false"/>
             </State>
         </BasisSkin>
     </Resource>

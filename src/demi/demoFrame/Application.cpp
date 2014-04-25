@@ -204,17 +204,17 @@ namespace Demi
     
     void DemiDemo::mouseMoved(const OIS::MouseEvent& evt)
     {
-        mCameraHelper->OnMouseMove(evt);
+        mCameraHelper->OnMouseMove(evt.state);
     }
     
     void DemiDemo::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
-        mCameraHelper->OnMouseDown(evt, id);
+        mCameraHelper->OnMouseDown(evt.state, id);
     }
     
     void DemiDemo::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
-        mCameraHelper->OnMouseUp(evt, id);
+        mCameraHelper->OnMouseUp(evt.state, id);
     }
     
 #endif
