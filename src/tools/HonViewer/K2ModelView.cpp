@@ -86,10 +86,12 @@ namespace Demi
         InitHelpers();
 
         //notify keyframe bar to update the scale
-        RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp()->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
+        RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp(
+            )->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
         renderWnd->getKeyFrameBar()->updateScales();
 
-        ToolsControl* toolsCtrl = HonViewerApp::GetViewerApp()->getMainPane()->getMainWorkspaceControl()->getToolsControl();
+        ToolsControl* toolsCtrl = HonViewerApp::GetViewerApp(
+            )->getMainPane()->getMainWorkspaceControl()->getToolsControl();
         toolsCtrl->GetAnimationView()->UpdateClips();
     }
 
@@ -214,7 +216,8 @@ namespace Demi
         mModel->GetAnimation()->Play(clip);
 
         //notify keyframe bar to update the scale
-        RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp()->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
+        RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp(
+            )->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
         renderWnd->getKeyFrameBar()->updateScales();
     }
 
