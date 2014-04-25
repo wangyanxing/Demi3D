@@ -98,17 +98,16 @@ namespace tools
         auto clip = HonViewerApp::GetViewerApp()->GetModelViewer()->GetCurrentClip();
         if (!clip)
             return;
-
-        int cur = clip->mCurFrame;
+        
         mNumFrames = clip->mNumFrames;
 
         // TODO: may overflow
         mScale = 1;
-        while (mScale*mScaleActuaFrames >= mNumFrames)
+        while (mScale*mScaleActuaFrames < mNumFrames)
             mScale *= 2;
 
-        mKeyFrameBar->setScrollRange(mScaleActuaFrames);
-        mKeyFrameButtonBar->setScrollRange(mScaleActuaFrames);
+        mKeyFrameBar->setScrollRange(mScaleActuaFrames * mScale);
+        mKeyFrameButtonBar->setScrollRange(mScaleActuaFrames * mScale);
 
         updateBarButtonPosition();
         updateScaleNums();
@@ -121,12 +120,12 @@ namespace tools
             generateScaleNums(mScaleNumbers.size());
         }
 
-        for (size_t i = 0; i < mScaleNumbers.size(); ++i)
+        for (size_t i = 0; i < mScaleNumbers.size(); i+=mScale)
         {
-            if (i * 10 < (size_t)mScaleActuaFrames)
+            if (i * 10 < (size_t)mScaleActuaFrames*mScale)
             {
                 mScaleNumbers[i]->setVisible(true);
-                mScaleNumbers[i]->setPosition(FRAME_SCALE_WIDTH*i, 8);
+                mScaleNumbers[i]->setPosition(FRAME_SCALE_WIDTH*i/mScale, 9);
             }
             else
             {

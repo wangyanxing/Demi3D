@@ -11,32 +11,25 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef HonViewerPrerequisites_h__
-#define HonViewerPrerequisites_h__
-
-namespace Demi
-{
-    class HonViewerApp;
-    class K2ModelViewer;
-}
+#include "ViewerPch.h"
+#include "ModelView.h"
+#include "K2ModelView.h"
+#include "HonViewerApp.h"
 
 namespace tools
 {
-    class BackgroundControl;
-    class MainPaneControl;
-    class FilesView;
-    class AnimationView;
-    class ModelView;
-    class KeyFrameBarControl;
-    class CommonToolsControl;
-}
+    ModelView::ModelView(MyGUI::Widget* _parent) :
+		wraps::BaseLayout("ModelView.layout", _parent)
+	{
+        
+	}
 
-namespace MyGUI
-{
-    class TreeControl;
-    class TreeControlItem;
-}
+    ModelView::~ModelView()
+	{
+	}
 
-using namespace tools;
-
-#endif
+    void ModelView::UpdateModelInfo()
+    {
+    }
+    
+} // namespace tools

@@ -808,7 +808,8 @@ namespace Demi
 
             if(numWeights > 4)
             {
-                DI_WARNING("Mesh [%s], The number of weights is greater than 4", sm->GetParentMesh()->GetName().c_str());
+                DI_DEBUG("Mesh[%s]: weight number(%d) is greater than 4",
+                         sm->GetParentMesh()->GetName().c_str(),numWeights);
             }
             DI_ASSERT(numWeights <= MAX_K2_BONEWEIGHTS);
 

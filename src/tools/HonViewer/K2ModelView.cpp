@@ -216,6 +216,7 @@ namespace Demi
         //notify keyframe bar to update the scale
         RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp()->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
         renderWnd->getKeyFrameBar()->updateScales();
+        mPauseClip = false;
     }
 
 }
