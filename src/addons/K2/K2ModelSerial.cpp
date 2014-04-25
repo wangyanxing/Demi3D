@@ -52,11 +52,12 @@ namespace Demi
         }
     };
 
+#define MAX_K2_BONEWEIGHTS 12
     struct K2Vert
     {
         K2Vert()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < MAX_K2_BONEWEIGHTS; i++)
             {
                 weights[i] = indices[i] = 0;
             }
@@ -68,8 +69,8 @@ namespace Demi
         DiVec2 uv;
 
         // for skinning
-        float weights[4];
-        uint8 indices[4];
+        float weights[MAX_K2_BONEWEIGHTS];
+        uint8 indices[MAX_K2_BONEWEIGHTS];
     };
 
     bool g_trans_orit = true;
@@ -330,35 +331,49 @@ namespace Demi
                
                 if (g_hasAnim && g_hardSkin)
                 {
+                    // hardware skinning, max # of bone weights is 4
                     int stride = sub->GetVertexElements().GetStreamElementsSize(0);
-                    uint8* data = (uint8*)sub->CreateSourceData(0, vertnum, stride);
-                    memcpy(data, &gCurrentVerts[0], vertnum*stride);
+                    uint8* buf = (uint8*)sub->CreateSourceData(0, vertnum, stride);
+                    int geoStride = sizeof(DiVec3)+sizeof(DiVec3)+sizeof(DiVec3)+sizeof(DiVec2);//pos+norm+tang+uv
+                    int weightsStride = sizeof(float)*4;
+                    int indicesStride = sizeof(uint8)*4;
+                    for (size_t i = 0; i < vertnum; ++i)
+                    {
+                        memcpy(buf, &gCurrentVerts[i], stride);
+                        buf += geoStride;
+                        memcpy(buf, &gCurrentVerts[i].weights, weightsStride);
+                        buf += weightsStride;
+                        memcpy(buf, &gCurrentVerts[i].indices, indicesStride);
+                        buf += indicesStride;
+                    }
                 }
                 else if (!g_hasAnim)
                 {
+                    // no animation
                     int stride = sub->GetVertexElements().GetStreamElementsSize(0);
-                    uint8* data = (uint8*)sub->CreateSourceData(0, vertnum, stride);
+                    uint8* buf = (uint8*)sub->CreateSourceData(0, vertnum, stride);
                     for (size_t i = 0; i < vertnum; ++i)
                     {
-                        memcpy(data, &gCurrentVerts[i], stride);
-                        data += stride;
+                        memcpy(buf, &gCurrentVerts[i], stride);
+                        buf += stride;
                     }
                 }
                 else
                 {
+                    // software skinning
                     int stride = sub->GetVertexElements().GetStreamElementsSize(0);
-                    uint8* data = (uint8*)sub->CreateSourceData(0, vertnum, stride);
+                    uint8* buf = (uint8*)sub->CreateSourceData(0, vertnum, stride);
                     for (size_t i = 0; i < vertnum; ++i)
                     {
-                        memcpy(data, &gCurrentVerts[i], stride);
-                        data += stride;
+                        memcpy(buf, &gCurrentVerts[i], stride);
+                        buf += stride;
                     }
                     stride = sub->GetVertexElements().GetStreamElementsSize(1);
-                    data = (uint8*)sub->CreateSourceData(1, vertnum, stride);
+                    buf = (uint8*)sub->CreateSourceData(1, vertnum, stride);
                     for (size_t i = 0; i < vertnum; ++i)
                     {
-                        memcpy(data, &gCurrentVerts[i].uv, stride);
-                        data += stride;
+                        memcpy(buf, &gCurrentVerts[i].uv, stride);
+                        buf += stride;
                     }
                 }
             }
@@ -492,7 +507,8 @@ namespace Demi
 
         // software skinning
         auto numBones = target->GetBoneData()->names.size();
-        g_hardSkin = numBones <= MAX_BONE_NUM;
+        bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
+        g_hardSkin = !forcesoft && numBones <= MAX_BONE_NUM;
 
         DiSubMesh* submesh = nullptr;
         if (!mIgnoreSubMesh)
@@ -790,7 +806,11 @@ namespace Demi
         {
             int numWeights = ReadInt(mStream);
 
-            DI_ASSERT(numWeights <= 4);
+            if(numWeights > 4)
+            {
+                DI_WARNING("Mesh [%s], The number of weights is greater than 4", sm->GetParentMesh()->GetName().c_str());
+            }
+            DI_ASSERT(numWeights <= MAX_K2_BONEWEIGHTS);
 
             float* weights = new float[numWeights];
             int* indexes = new int[numWeights];

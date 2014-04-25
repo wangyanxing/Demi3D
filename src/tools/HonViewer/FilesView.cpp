@@ -66,7 +66,11 @@ namespace tools
 
     void FilesView::scanFiles()
     {
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         DiZipArchive zip("L:/Games/hon_res_misc/hon_res_misc.zip");
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        DiZipArchive zip("/Users/wangya/Demi/media_hon/buildings.zip");
+#endif
         zip.Load();
         mResources = zip.GenerateFileTree("*.mdf");
 

@@ -2,8 +2,5 @@
 
 <MyGUI type="List">
 
-	<List file="StrangeButtonPlugin.xml"/>
-	<List file="HikariWidgetPlugin.xml"/>
-	<List file="BerkeliumWidgetPlugin.xml"/>
 
 </MyGUI>

@@ -122,6 +122,18 @@ namespace Demi
         void                     RemoveConsoleVarListener(DiConsoleVarListener *pSink);
                                  
         DiConsoleVar*            GetConsoleVar(const DiString& name);
+        
+        int                      GetIntVar(const DiString& name);
+        
+        DiString                 GetStringVar(const DiString& name);
+        
+        float                    GetFloatVar(const DiString& name);
+        
+        bool                     SetIntVar(const DiString& name, int var);
+        
+        bool                     SetStringVar(const DiString& name, const DiString& var);
+        
+        bool                     SetFloatVar(const DiString& name, float var);
                                  
     protected:                   
                                  

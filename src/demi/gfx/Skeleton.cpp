@@ -101,12 +101,11 @@ namespace Demi
         if (handle > MAX_BONE_NUM)
         {
             DI_WARNING("Too many bones: %d", handle);
-            return nullptr;
         }
-
+        
         if (handle < mBoneList.size() && mBoneList[handle])
         {
-            DI_ERROR("The bone: %d has already existed",handle);
+            DI_WARNING("The bone: %d has already existed",handle);
             return nullptr;
         }
 
@@ -131,12 +130,11 @@ namespace Demi
         if (handle > MAX_BONE_NUM)
         {
             DI_WARNING("Too many bones: %d", handle);
-            return nullptr;
         }
         
         if (handle < mBoneList.size() && mBoneList[handle])
         {
-            DI_ERROR("The bone: %d has already existed",handle);
+            DI_WARNING("The bone: %d has already existed",handle);
             return nullptr;
         }
 

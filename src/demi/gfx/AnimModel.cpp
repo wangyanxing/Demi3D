@@ -24,6 +24,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RenderWindow.h"
 #include "PostController.h"
 #include "AlignedAllocator.h"
+#include "Command.h"
+#include "ConsoleVariable.h"
 
 namespace Demi
 {
@@ -129,7 +131,8 @@ namespace Demi
                 mBoneTransforms = (btTransform*)DEMI_MALLOC_SIMD(mNumBoneMatrices * sizeof(btTransform));
             }
 
-            mHardwareSkining = mNumBoneMatrices <= MAX_BONE_NUM;
+            bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
+            mHardwareSkining = !forcesoft && (mNumBoneMatrices <= MAX_BONE_NUM);
         }
 
         InitModel();
