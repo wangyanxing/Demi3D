@@ -219,6 +219,7 @@ namespace Demi
         RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp(
             )->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
         renderWnd->getKeyFrameBar()->updateScales();
+        mPauseClip = false;
     }
 
 }

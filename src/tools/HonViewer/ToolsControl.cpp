@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "FilesView.h"
 #include "CommonToolControl.h"
 #include "AnimationView.h"
+#include "ModelView.h"
 
 namespace tools
 {
@@ -24,9 +25,11 @@ namespace tools
         , mFilesView(nullptr)
         , mCommonTools(nullptr)
         , mAnimationView(nullptr)
+        , mModelView(nullptr)
 	{
         assignBase(mFilesView, "FilesControl");
         assignBase(mAnimationView, "AnimationControl");
+        assignBase(mModelView, "ModelControl");
         assignBase(mCommonTools, "CommonToolsControl");
 	}
 
@@ -37,6 +40,11 @@ namespace tools
     AnimationView* ToolsControl::GetAnimationView()
     {
         return mAnimationView;
+    }
+    
+    ModelView* ToolsControl::GetModelView()
+    {
+        return mModelView;
     }
 
 } // namespace tools

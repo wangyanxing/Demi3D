@@ -57,7 +57,8 @@ namespace Demi
         mSkeleton = DI_NEW DiK2Skeleton();
         mSkeleton->CreateBones(mAsset->GetBoneData());
 
-        mHardwareSkining = mSkeleton->GetNumBones() <= MAX_BONE_NUM;
+        bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
+        mHardwareSkining = !forcesoft && (mSkeleton->GetNumBones() <= MAX_BONE_NUM);
     }
 
     void DiK2Model::Update(DiCamera*)

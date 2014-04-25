@@ -193,7 +193,7 @@ namespace Demi
         node->folder = true;
         for (auto i = mFileList.begin(); i != mFileList.end(); ++i)
         {
-            if (false == (i->compressedSize == size_t(-1)))
+            if (false == (i->compressedSize == size_t(-1)) && i->basename[0]!='.')
             {
                 DiVector<DiString> tokens = i->filename.Tokenize("/");
                 DiFileTree* cur = node;

@@ -322,6 +322,90 @@ namespace Demi
 
         return nullptr;
     }
+    
+    int DiCommandManager::GetIntVar(const DiString& name)
+    {
+        DiConsoleVar* var = GetConsoleVar(name);
+        if(var)
+            return var->GetAsInt();
+        else
+        {
+            DI_WARNING("Cannot locate the command variable: %s", name.c_str());
+            return 0;
+        }
+    }
+    
+    DiString DiCommandManager::GetStringVar(const DiString& name)
+    {
+        DiConsoleVar* var = GetConsoleVar(name);
+        if(var)
+            return var->GetString();
+        else
+        {
+            DI_WARNING("Cannot locate the command variable: %s", name.c_str());
+            return 0;
+        }
+    }
+    
+    float DiCommandManager::GetFloatVar(const DiString& name)
+    {
+        DiConsoleVar* var = GetConsoleVar(name);
+        if(var)
+            return var->GetAsFloat();
+        else
+        {
+            DI_WARNING("Cannot locate the command variable: %s", name.c_str());
+            return 0;
+        }
+    }
+    
+    bool DiCommandManager::SetIntVar(const DiString& name, int var)
+    {
+        DiConsoleVar* cv = GetConsoleVar(name);
+        if(!cv)
+            return false;
+        
+        if(cv->GetType() != CONSOLE_VAR_INT)
+        {
+            DI_WARNING("Cannot set come variable : %s, bad type cast", name.c_str());
+            return false;
+        }
+        DiConsoleVariableInt* v = (DiConsoleVariableInt*)cv;
+        v->Set(var);
+        return true;
+    }
+    
+    bool DiCommandManager::SetStringVar(const DiString& name, const DiString& var)
+    {
+        DiConsoleVar* cv = GetConsoleVar(name);
+        if(!cv)
+            return false;
+        
+        if(cv->GetType() != CONSOLE_VAR_STRING)
+        {
+            DI_WARNING("Cannot set come variable : %s, bad type cast", name.c_str());
+            return false;
+        }
+        DiConsoleVariableString* v = (DiConsoleVariableString*)cv;
+        v->Set(var.c_str());
+        return true;
+    }
+    
+    bool DiCommandManager::SetFloatVar(const DiString& name, float var)
+    {
+        DiConsoleVar* cv = GetConsoleVar(name);
+        if(!cv)
+            return false;
+        
+        if(cv->GetType() != CONSOLE_VAR_FLOAT)
+        {
+            DI_WARNING("Cannot set come variable : %s, bad type cast", name.c_str());
+            return false;
+        }
+        DiConsoleVariableFloat* v = (DiConsoleVariableFloat*)cv;
+        v->Set(var);
+        return true;
+    }
 
     void DiCommandManager::UnregisterVariable(const DiString& varName)
     {

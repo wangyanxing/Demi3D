@@ -145,7 +145,7 @@ namespace Demi
             }
 
             float realFrame = (mTime / length) * mNumFrames;
-            mCurFrame = DiMath::Clamp(int(realFrame), 0, mNumFrames - 1);
+            mCurFrame = std::min(std::max(int(realFrame), 0), mNumFrames - 1);
             mInterpFactor = realFrame - mCurFrame;
         }
     }

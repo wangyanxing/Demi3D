@@ -363,6 +363,7 @@ namespace Demi
 
     void DiGfxDriver::InitCommandVars()
     {
+        CommandMgr->RegisterInt("force_softskin", 0, 0, "Force to use software skinning");
         CommandMgr->RegisterInt("def_filter", FILTER_BILINEAR, 0, "Default texture filter");
         CommandMgr->RegisterFloat("tex_anisotropy", 4.0f, 0, "Default texture anisotropy level");
         CommandMgr->RegisterFloat("clear_color", 0.0f, 0, "Clear color of the main render target");

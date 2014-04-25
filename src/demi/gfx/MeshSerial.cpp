@@ -21,6 +21,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "VertexFormat.h"
 #include "VertexDeclaration.h"
 #include "AssetManager.h"
+#include "Command.h"
 
 namespace Demi 
 {
@@ -530,7 +531,8 @@ namespace Demi
             pMesh->mBoneWeights.insert(DiSubMesh::BoneWeightList::value_type(weight.vertexIndex, weight));
         }
 
-        pMesh->SetupBoneWeights(bonesize > MAX_BONE_NUM);
+        bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
+        pMesh->SetupBoneWeights(forcesoft || bonesize > MAX_BONE_NUM);
     }
 
     void DiMeshSerializerImpl::WriteSubMeshBoneWeights( DiSubMesh* pMesh )
