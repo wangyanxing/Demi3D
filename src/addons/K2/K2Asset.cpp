@@ -98,6 +98,7 @@ namespace Demi
         for (auto i = mAnims.begin(); i != mAnims.end(); ++i)
         {
             DiK2Clip* clip = anim->AddClip(i->name);
+            clip->mName = i->name;
             clip->mFPS = i->fps;
             clip->mLoop = i->loop;
             clip->mNumFrames = i->numframes;

@@ -62,6 +62,9 @@ namespace Demi
 
     void DiK2Animation::Play(DiK2Clip* clip)
     {
+        if (clip->mNumFrames == 0)
+            return;
+
         if (mSource && mTarget)
         {
             mSource = mTarget;
@@ -129,7 +132,7 @@ namespace Demi
 
     void DiK2Clip::Update(float deltaTime)
     {
-        if (deltaTime > 0)
+        if (deltaTime > 0 && mNumFrames!=0)
         {
             mTime += deltaTime;
             float length = mNumFrames / mFPS;
@@ -166,13 +169,23 @@ namespace Demi
         int curFrame  = mCurFrame;
         int nextFrame = GetNextFrame();
         
-        Trans& source = mKeyFrames->boneFrames[bone][curFrame];
-        Trans& target = mKeyFrames->boneFrames[bone][nextFrame];
-        
-        // just linear interpolate for now
-        output.rot = DiQuat::Nlerp(mInterpFactor, source.rot, target.rot,true);
-        output.pos = source.pos + (target.pos - source.pos) * mInterpFactor;
-        output.scale = source.scale + (target.scale - source.scale) * mInterpFactor;
+        DiVector<Trans>& trans = mKeyFrames->boneFrames[bone];
+        if (curFrame < trans.size() && nextFrame < trans.size())
+        {
+            Trans& source = trans[curFrame];
+            Trans& target = trans[nextFrame];
+
+            // just linear interpolate for now
+            output.rot = DiQuat::Nlerp(mInterpFactor, source.rot, target.rot, true);
+            output.pos = source.pos + (target.pos - source.pos) * mInterpFactor;
+            output.scale = source.scale + (target.scale - source.scale) * mInterpFactor;
+        }
+        else
+        {
+            output.rot = DiQuat::IDENTITY;
+            output.pos = DiVec3::ZERO;
+            output.scale = DiVec3::UNIT_SCALE;
+        }
     }
 
     DiK2Skeleton::DiK2Skeleton()

@@ -19,6 +19,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MainPaneControl.h"
 #include "MainWorkspaceControl.h"
 #include "RenderWindowControl.h"
+#include "ToolsControl.h"
+#include "AnimationView.h"
 #include "KeyFrameBar.h"
 
 namespace Demi
@@ -86,6 +88,9 @@ namespace Demi
         //notify keyframe bar to update the scale
         RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp()->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
         renderWnd->getKeyFrameBar()->updateScales();
+
+        ToolsControl* toolsCtrl = HonViewerApp::GetViewerApp()->getMainPane()->getMainWorkspaceControl()->getToolsControl();
+        toolsCtrl->GetAnimationView()->UpdateClips();
     }
 
     bool K2ModelViewer::SetWireframe(bool var)
@@ -175,6 +180,42 @@ namespace Demi
     DiK2Clip* K2ModelViewer::GetCurrentClip()
     {
         return mModel ? mModel->GetAnimation()->mSource : nullptr;
+    }
+
+    DiVector<DiK2Clip*> K2ModelViewer::GetClipList()
+    {
+        DiVector<DiK2Clip*> ret;
+
+        if (!mModel)
+            return ret;
+
+        DiK2Animation* animation = mModel->GetAnimation();
+        if (!animation)
+            return ret;
+
+        for (int i = 0; i < K2PrefabClip::MAX_PREFAB_ANIM; ++i)
+        {
+            DiK2Clip* clip = animation->mClips[i];
+            if (clip)
+                ret.push_back(clip);
+        }
+
+        for (auto i = animation->mExtraClips.begin(); i != animation->mExtraClips.end(); ++i)
+            ret.push_back(i->second);
+
+        return ret; 
+    }
+
+    void K2ModelViewer::PlayClip(DiK2Clip* clip)
+    {
+        if (!mModel)
+            return;
+
+        mModel->GetAnimation()->Play(clip);
+
+        //notify keyframe bar to update the scale
+        RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp()->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
+        renderWnd->getKeyFrameBar()->updateScales();
     }
 
 }

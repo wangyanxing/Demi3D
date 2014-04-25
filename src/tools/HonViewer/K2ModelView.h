@@ -50,6 +50,10 @@ namespace Demi
 
         void        PauseClip(bool val) { mPauseClip = val; }
 
+        DiVector<DiK2Clip*>   GetClipList();
+
+        void        PlayClip(DiK2Clip* clip);
+
     protected:
 
         void        InitHelpers();

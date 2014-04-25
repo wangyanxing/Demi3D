@@ -15,6 +15,8 @@ namespace tools
 
         RenderWindowControl* getRenderWndControl() const { return mRenderWndCtrl; }
 
+        ToolsControl* getToolsControl() const { return mToolsCtrl; }
+
         virtual void update();
 
 	private:

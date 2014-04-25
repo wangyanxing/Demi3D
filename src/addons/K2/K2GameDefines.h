@@ -76,6 +76,8 @@ namespace Demi
         };
 
         static Clips FromString(const DiString& str);
+
+        static DiString ToString(Clips c);
     }; 
 
     /** prime types

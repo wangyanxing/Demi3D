@@ -11,30 +11,31 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef __TOOLS_CONTROL_H__
-#define __TOOLS_CONTROL_H__
+#ifndef __ANIMATION_VIEW_H__
+#define __ANIMATION_VIEW_H__
 
 #include "ViewerPrerequisites.h"
 #include "BaseLayout.h"
 
 namespace tools
 {
-	class ToolsControl :
-		public wraps::BaseLayout
+	class AnimationView : public wraps::BaseLayout
 	{
 	public:
-		ToolsControl(MyGUI::Widget* _parent = nullptr);
-		virtual ~ToolsControl();
+        AnimationView(MyGUI::Widget* _parent = nullptr);
+        virtual ~AnimationView();
 
-        AnimationView* GetAnimationView();
+    public:
+
+        void UpdateClips();
+
+        void notifyListChangePosition(MyGUI::MultiListBox* _sender, size_t _index);
 
 	private:
 
-        FilesView*  mFilesView;
+        DiVector<DiK2Clip*> mClips;
 
-        AnimationView* mAnimationView;
-
-        CommonToolsControl* mCommonTools;
+        MyGUI::MultiListBox* mAnimationList;
 	};
 
 } // namespace tools

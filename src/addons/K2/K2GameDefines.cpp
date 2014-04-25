@@ -116,4 +116,34 @@ namespace Demi
         return MAX_PREFAB_ANIM;
     }
 
+    Demi::DiString K2PrefabClip::ToString(Clips c)
+    {
+        static DiVector<DiString> sTable;
+        if (sTable.empty())
+        {
+            sTable.resize(MAX_PREFAB_ANIM);
+            sTable[ANIM_IDLE] = "idle";
+            sTable[ANIM_PORTRAIT] = "portrait";
+            sTable[ANIM_WALK] = "walk_1";
+            sTable[ANIM_DEATH] = "death_1";
+            sTable[ANIM_BORED] = "bored_1";
+            sTable[ANIM_TAUNT] = "taunt_1";
+            sTable[ANIM_ITEM] = "item_1";
+            sTable[ANIM_KNOCK] = "knock_1";
+            sTable[ANIM_ATTACK_1] = "attack_1";
+            sTable[ANIM_ATTACK_2] = "attack_2";
+            sTable[ANIM_ATTACK_3] = "attack_3";
+            sTable[ANIM_ATTACK_4] = "attack_4";
+            sTable[ANIM_ABILITY_1] = "ability_1";
+            sTable[ANIM_ABILITY_2] = "ability_2";
+            sTable[ANIM_ABILITY_3] = "ability_3";
+            sTable[ANIM_ABILITY_4] = "ability_4";
+        }
+
+        if (c < MAX_PREFAB_ANIM)
+            return sTable[c];
+        else
+            return DiString::BLANK;
+    }
+
 }
