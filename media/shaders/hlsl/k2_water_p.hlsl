@@ -1,17 +1,20 @@
 
 #include <common.hlsl>
 
-// options
-//define USE_SCHLICK_FRESNEL
+uniform sampler2D map;
 
-#ifdef USE_MAP
-	uniform sampler2D map;
+sampler normalmap1;
+sampler normalmap2;
+
+//#define USE_SCHLICK_FRESNEL
+
+#ifdef USE_ENV_MAP
+uniform samplerCUBE envMap;
+uniform float		reflectivity;
+#ifdef ENV_MAP_REFRACT
+uniform float 	refractionRatio;
 #endif
-
-#ifdef USE_NORMALMAP
-    uniform sampler2D normalMap;
-    uniform sampler2D specularMap;
-#endif 
+#endif
 
 struct VS_OUTPUT
 {
@@ -20,68 +23,66 @@ struct VS_OUTPUT
 #if defined( USE_COLOR )
 	half4  Color		: COLOR;
 #endif
-
-#if defined( USE_MAP ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP ) || defined( USE_SPECULARMAP )
-	float2 Texcoord0  	: TEXCOORD0;
-#endif
-
-#if defined( USE_LIGHTMAP )
-	float2 Texcoord1	: TEXCOORD1;
-#endif
-
+     
+    float4 Texcoord0  	: TEXCOORD0;
+    //float4 Texcoord1    : TEXCOORD1;
 	float3 Normal       : TEXCOORD2;
-	
-    float3 ViewDir	 	: TEXCOORD3;
-	
-	float3 PosWorld 	: TEXCOORD4;
-
-#if defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )
-	float3 Tangent		: TEXCOORD5;
-	float3 Binormal		: TEXCOORD6;
-#endif
+	float3 ViewDir 		: TEXCOORD3;
+	float3 PosWorld		: TEXCOORD4;
+    float3 Tangent      : TEXCOORD5;
+    float3 Binormal     : TEXCOORD6;
 };
 
 // Data that we can read or derive from the surface shader outputs
 struct SurfaceData
 {
-    float3 positionWorld;         // world space position
+	float3 positionWorld;         // world space position
 	float3 viewDirWorld;
     float3 normal;               // world space normal
+    float3 textureNormal;
     float4 albedo;
-    float3 specularAmount;        // Treated as a multiplier on albedo
+    float3 specularAmount;
 };
 
 static SurfaceData gSurface;
 
 void ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
 {
-    gSurface.positionWorld = input.PosWorld;
-    gSurface.viewDirWorld = input.ViewDir;
+	gSurface.viewDirWorld = input.ViewDir;
+	gSurface.positionWorld = input.PosWorld;
     gSurface.specularAmount = float3(1, 1, 1);
 
-#if defined( USE_NORMALMAP )
-    float4 normMapColor;
-    float4 nmTex = tex2D(normalMap, input.Texcoord0);
-    normMapColor.rgb = nmTex.agb;
-    gSurface.specularAmount *= tex2D(specularMap, input.Texcoord0).g;
-    float3 texNormal = float3(normMapColor.rgb * 2.0f - 1.0f);
-    float3x3 rot = float3x3(input.Tangent, input.Binormal, input.Normal);
-    gSurface.normal = normalize(mul(texNormal, rot));
-#else
-    gSurface.normal = normalize(input.Normal);
-#endif
-	
-#ifdef USE_MAP
-    gSurface.albedo = tex2D(map, input.Texcoord0);
-	#ifdef GAMMA_INPUT
-    gSurface.albedo.rgb *= gSurface.albedo.rgb;
-	#endif
-#else
-    gSurface.albedo = float4(1.0, 1.0, 1.0, 1.0);
+#if 0
+    float3 cNormalmapColor1 = tex2D(normalMap, input.Texcoord1.xy).rgb;
+    float3 cNormalmapColor2 = tex2D(normalMap, input.Texcoord1.zw).rgb;
+    float3 vTexNormal1 = float3(cNormalmapColor1.rgb * 2.0f - 1.0f);
+    float3 vTexNormal2 = float3(cNormalmapColor2.rgb * 2.0f - 1.0f);
+    float3 vTexNormal = normalize(vTexNormal1 + vTexNormal2);
+    
+    float Bump = 1.0f;
+    float3 vNormal = input.Normal;
+    float3 bump = Bump * vTexNormal;
+    vNormal = vNormal + bump.x * input.Tangent + bump.y * input.Binormal;
+    vNormal = normalize(vNormal);
+    gSurface.normal = vNormal;
 #endif
 
+    float3 cNormalmapColor1 = tex2D(normalmap1, input.Texcoord0.xy).agb;
+    float3 cNormalmapColor2 = tex2D(normalmap2, input.Texcoord0.zw).agb;
+    float3 vTexNormal1 = float3(cNormalmapColor1.rgb * 2.0f - 1.0f);
+    float3 vTexNormal2 = float3(cNormalmapColor2.rgb * 2.0f - 1.0f);
+    float3 vTexNormal = normalize(vTexNormal1 + vTexNormal2);
+    float3x3 rot = float3x3(input.Tangent, input.Binormal, input.Normal);
+    gSurface.normal = normalize(mul(vTexNormal, rot));
+    gSurface.textureNormal = vTexNormal;
+
+	gSurface.albedo = tex2D( map, input.Texcoord0 );
+	#ifdef GAMMA_INPUT
+		gSurface.albedo.rgb *= gSurface.albedo.rgb;
+	#endif
+
 #ifdef USE_COLOR
-    gSurface.albedo = gSurface.albedo * float4(n.Color, 1.0);
+    gSurface.albedo = gSurface.albedo * float4(input.Color, 1.0);
 #endif	
 }
 
@@ -94,7 +95,7 @@ void AccumulatePhong(float3 normal,
 {
     float NdotL = max(dot(normal, lightDir), 0.0);
     float3 halfVec = normalize(lightDir + viewDir);
-        float dotHalf = max(dot(normal, halfVec), 0.0);
+    float dotHalf = max(dot(normal, halfVec), 0.0);
     float specWeight = max(pow(dotHalf, g_shininess), 0.0);
 
 #ifdef USE_SCHLICK_FRESNEL
@@ -107,7 +108,7 @@ void AccumulatePhong(float3 normal,
     float3 specular = gSurface.specularAmount * specWeight;
 #endif
 
-        litDiffuse += lightContrib * NdotL;
+    litDiffuse += lightContrib * NdotL;
     litSpecular += lightContrib * specular;
 }
 
@@ -115,10 +116,10 @@ void AccumulateDirLight(float3 dir, float4 color,
     inout float3 diffuse, inout float3 specular) {
 
     float3 litDiffuse = float3(0.0f, 0.0f, 0.0f);
-        float3 litSpecular = float3(0.0f, 0.0f, 0.0f);
+    float3 litSpecular = float3(0.0f, 0.0f, 0.0f);
 
-        AccumulatePhong(gSurface.normal, normalize(-dir), normalize(gSurface.viewDirWorld),
-        color.rgb * color.a, litDiffuse, litSpecular);
+    AccumulatePhong(gSurface.normal, normalize(-dir), normalize(gSurface.viewDirWorld),
+    color.rgb * color.a, litDiffuse, litSpecular);
 
     diffuse += litDiffuse;
     specular += litSpecular;
@@ -150,14 +151,14 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 	PS_OUTPUT Out;
 	
 	ComputeSurfaceDataFromGeometry(In);
-	
+
 #ifdef ALPHATEST
     if (gSurface.albedo.a * g_opacity < ALPHATEST) discard;
 #endif
-
+	
     float3 vDiffuse = g_globalAmbient.rgb;
     float3 vSpecular = float3(0.0f, 0.0f, 0.0f);
-	
+
     for (int i = 0; i < g_numDirLights; i++){
         AccumulateDirLight(g_dirLightsDir[i], g_dirLightsColor[i],
             vDiffuse, vSpecular);
@@ -168,15 +169,45 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
             g_pointLightsAttenuation[i].x, g_pointLightsAttenuation[i].y,
             g_pointLightsColor[i], vDiffuse, vSpecular);
     }
-
+    
     float3 vFinalColor = gSurface.albedo * vDiffuse + vSpecular;
-
     Out.Color.rgb = vFinalColor;
     Out.Color.a = gSurface.albedo.a * g_opacity;
 
+#if 0
+    float3 reflVect = reflect(normalize(In.ViewDir), gSurface.normal);
+    float3 cEnviroColor = texCUBE(cube, reflVect);
+    Out.Color.rgb = lerp(Out.Color.rgb, cEnviroColor.rgb, 0.35f);
+#endif
+
+	// environment mapping
+#if defined(USE_ENV_MAP)
+
+	#ifdef ENV_MAP_REFRACT
+		float3 reflVect = refract(normalize(In.ViewDir), gSurface.normal, refractionRatio);
+	#else
+		float3 reflVect = reflect(normalize(In.ViewDir), gSurface.normal);
+	#endif
+	
+	float4 cubeColor = texCUBE( envMap, reflVect.xyz );
+	
+	#ifdef GAMMA_INPUT
+		cubeColor.rgb *= cubeColor.rgb;
+	#endif
+	
+	#if defined( ENV_MAP_ADD )
+		Out.Color.rgb += cubeColor.rgb * reflectivity;
+	#elif defined( ENV_MAP_MIX )
+		Out.Color.rgb = lerp( Out.Color.rgb, cubeColor.rgb, reflectivity );
+	#else
+		Out.Color.rgb = lerp( Out.Color.rgb, Out.Color.rgb * cubeColor.rgb, reflectivity );
+	#endif
+#endif
+
 #ifdef GAMMA_OUTPUT
-    Out.Color.rgb = sqrt(Out.Color.xyz);
+	Out.Color.rgb = sqrt( Out.Color.xyz );
 #endif
 
 	return Out;
 }
+

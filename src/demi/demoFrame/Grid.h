@@ -44,7 +44,6 @@ namespace Demi
 
         void                    BuildGrid(uint32 size, float cellSize, const DiColor& color1, const DiColor& color2);
     };
-
 }
 
 #endif

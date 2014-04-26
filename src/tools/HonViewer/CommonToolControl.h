@@ -36,6 +36,9 @@ namespace tools
         MyGUI::Button* mShowBones;
         MyGUI::Button* mShowModel;
         MyGUI::Button* mShowBounds;
+        MyGUI::Button* mShowGrids;
+        MyGUI::Button* mLoopAnim;
+        MyGUI::Button* mShowBoneNames;
     };
 
 } // namespace tools

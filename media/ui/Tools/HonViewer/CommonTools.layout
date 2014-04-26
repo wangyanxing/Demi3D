@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Widget" skin="PanelEmpty" position="0 0 290 240" align="Stretch" name="_Main">
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 5 130 20" name="CheckWireframe">
+            <Property key="Caption" value="Wireframe"/>
+        </Widget>
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="155 5 145 20" name="CheckShowModel">
+            <Property key="Caption" value="Show Model"/>
+        </Widget>
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 30 145 20" name="CheckShowBones">
+            <Property key="Caption" value="Show Bones"/>
+        </Widget>
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="155 30 145 20" name="CheckShowBounds">
+            <Property key="Caption" value="Show Bounds"/>
+        </Widget>
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 55 145 20" name="CheckShowBoneNames">
+          <Property key="Caption" value="Show Bone Names"/>
+        </Widget>
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="155 55 145 20" name="CheckLoopAnim">
+          <Property key="Caption" value="Loop Animation"/>
+        </Widget>
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 80 145 20" name="CheckShowGrids">
+          <Property key="Caption" value="Show Grids"/>
+        </Widget>
+    </Widget>
+</MyGUI>

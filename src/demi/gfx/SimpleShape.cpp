@@ -262,6 +262,7 @@ namespace Demi
         mVertexDecl = Driver->CreateVertexDeclaration();
         mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
         mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
+        mVertexDecl->AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
         mVertexDecl->AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
         mVertexDecl->Create();
 
@@ -274,20 +275,26 @@ namespace Demi
         sizeX /= 2;
         sizeY /= 2;
 
-        float vertices[32] = 
+        const int vtElements = 4 * (3+3+3+2);
+
+        float vertices[vtElements] =
         {
             -sizeX, 0, -sizeY,  // pos
-            0,1,0,            // normal
-            0,1,              // texcoord
+            0, 1, 0,            // normal
+            1, 0, 0,            // tangent
+            0, 1,              // texcoord
             sizeX, 0,-sizeY,
             0,1,0,
-            1,1,
+            1, 0, 0,
+            1, 1,
             sizeX, 0,sizeY,
             0,1,0,
-            1,0,
+            1, 0, 0,
+            1, 0,
             -sizeX, 0, sizeY ,
             0,1,0,
-            0,0 
+            1, 0, 0,
+            0, 0
         };
 
         unsigned short faces[6] = {0,2,1,
@@ -296,10 +303,10 @@ namespace Demi
         mVerticesNum = 4;
         mPrimitiveCount = 2;
 
-        uint32 vbsize = 32*sizeof(float);
+        uint32 vbsize = vtElements*sizeof(float);
         mSourceData[0]->Create(vbsize);
         mSourceData[0]->WriteData(0, vbsize, vertices);
-        mSourceData[0]->SetStride(8 * sizeof(float));
+        mSourceData[0]->SetStride((3 + 3 + 3 + 2) * sizeof(float));
 
         uint32 ibsize = 6*sizeof(uint16);
         mIndexBuffer->Create(ibsize);

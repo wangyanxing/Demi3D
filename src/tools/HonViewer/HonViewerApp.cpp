@@ -73,7 +73,7 @@ namespace Demi
         DI_INSTALL_PLUGIN(DiK2);
 
         // use software skinning for editor
-        DiBase::CommandMgr->SetIntVar("force_softskin", 1);
+        DiBase::CommandMgr->SetIntVar("force_softskin", 0);
         
         DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
         peMgr->SetOutputToBackBuffer(false);

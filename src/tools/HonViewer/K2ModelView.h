@@ -42,7 +42,13 @@ namespace Demi
 
         bool        ShowBones(bool var);
 
+        bool        ShowBoneNames(bool var);
+
         bool        ShowBounds(bool var);
+
+        bool        ShowGrids(bool var);
+
+        bool        SetLoopAnim(bool var);
 
         DiK2Clip*   GetCurrentClip();
 
@@ -53,6 +59,14 @@ namespace Demi
         DiVector<DiK2Clip*>   GetClipList();
 
         void        PlayClip(DiK2Clip* clip);
+
+        int         GetNumFaces();
+
+        int         GetNumVertices();
+
+        int         GetNumSubModels();
+
+        DiK2ModelPtr    GetModel() { return mModel; }
 
     protected:
 
@@ -74,8 +88,13 @@ namespace Demi
 
         DiString  mCurrentFile;
 
+        DiGridPlanePtr mGridPlane;
+
         bool mPauseClip;
         
+        bool mLoopAnimation;
+
+        bool mShowBoneNames;
     };
 }
 

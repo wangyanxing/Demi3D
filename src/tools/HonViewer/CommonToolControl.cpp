@@ -27,13 +27,20 @@ namespace tools
         assignWidget(mShowBones, "CheckShowBones");
         assignWidget(mShowModel, "CheckShowModel");
         assignWidget(mShowBounds, "CheckShowBounds");
+        assignWidget(mShowGrids, "CheckShowGrids");
+        assignWidget(mLoopAnim, "CheckLoopAnim");
+        assignWidget(mShowBoneNames, "CheckShowBoneNames");
 
         mWireframe->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
         mShowBones->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
         mShowModel->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
         mShowBounds->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
+        mShowGrids->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
+        mLoopAnim->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
+        mShowBoneNames->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
 
         mShowModel->setStateSelected(true);
+        mLoopAnim->setStateSelected(true);
     }
 
     CommonToolsControl::~CommonToolsControl()
@@ -59,6 +66,14 @@ namespace tools
                 mShowBones->setStateSelected(!checked);
             }
         }
+        else if (_sender == mShowBoneNames)
+        {
+            bool checked = mShowBoneNames->getStateSelected();
+            if (viewer->ShowBoneNames(!checked))
+            {
+                mShowBoneNames->setStateSelected(!checked);
+            }
+        }
         else if (_sender == mShowModel)
         {
             bool checked = mShowModel->getStateSelected();
@@ -73,6 +88,22 @@ namespace tools
             if (viewer->ShowBounds(!checked))
             {
                 mShowBounds->setStateSelected(!checked);
+            }
+        }
+        else if (_sender == mShowGrids)
+        {
+            bool checked = mShowGrids->getStateSelected();
+            if (viewer->ShowGrids(!checked))
+            {
+                mShowGrids->setStateSelected(!checked);
+            }
+        }
+        else if (_sender == mLoopAnim)
+        {
+            bool checked = mLoopAnim->getStateSelected();
+            if (viewer->SetLoopAnim(!checked))
+            {
+                mLoopAnim->setStateSelected(!checked);
             }
         }
     }

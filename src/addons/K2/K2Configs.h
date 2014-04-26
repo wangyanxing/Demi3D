@@ -58,9 +58,8 @@ namespace Demi
         static void ReleaseK2Packs();
 
         static DiString TERRAIN_SHADER;
-
         static DiString CLIFF_SHADER;
-
+        static DiString WATER_SHADER;
         static DiString MESH_SHADER;
 
         static DiZipArchive* RESOURCE_PACK;

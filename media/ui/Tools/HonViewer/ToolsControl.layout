@@ -8,10 +8,6 @@
                 <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="FilesControl"/>
             </Widget>
             <Widget type="TabItem" skin="" position="2 24 594 287">
-                <Property key="Caption" value="#{Model}"/>
-                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="ModelControl"/>
-            </Widget>
-            <Widget type="TabItem" skin="" position="2 24 594 287">
                 <Property key="Caption" value="#{Animation}"/>
                 <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="AnimationControl"/>
             </Widget>

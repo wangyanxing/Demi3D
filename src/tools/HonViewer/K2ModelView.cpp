@@ -22,12 +22,15 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ToolsControl.h"
 #include "AnimationView.h"
 #include "KeyFrameBar.h"
+#include "Grid.h"
 
 namespace Demi
 {
     K2ModelViewer::K2ModelViewer()
         : mSceneNode(nullptr)
         , mPauseClip(false)
+        , mLoopAnimation(true)
+        , mShowBoneNames(false)
     {
         Init();
     }
@@ -51,6 +54,11 @@ namespace Demi
         mSkeleton = make_shared<DiDebugHelper>();
         mSkeleton->SetMaterial(dbgHelperMat);
 
+        mGridPlane = make_shared<DiGridPlane>(30, 10, DiColor(0.1f, 0.1f, 0.1f), DiColor(0.5f, 0.5f, 0.5f));
+        mGridPlane->SetMaterial(dbgHelperMat);
+        mGridPlane->SetVisible(false);
+        sm->GetRootNode()->AttachObject(mGridPlane);
+
         mSkeleton->SetVisible(false);
         mBounds->SetVisible(false);
     }
@@ -65,6 +73,11 @@ namespace Demi
         if (mModel)
         {
             mModel->UpdateAnimation(mPauseClip ? -1 : dt);
+
+            RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp(
+                )->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
+            renderWnd->updateBoneNames(mShowBoneNames);
+
             UpdateSkeletonHelper();
             UpdateBoundsHelper(); 
         }
@@ -80,7 +93,6 @@ namespace Demi
         mSceneNode->DetachAllObjects();
         mModel = make_shared<DiK2Model>(file);
         mSceneNode->AttachObject(mModel);
-        mSceneNode->SetPosition(0, -50, 0);
         mModel->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
 
         InitHelpers();
@@ -89,6 +101,7 @@ namespace Demi
         RenderWindowControl* renderWnd = HonViewerApp::GetViewerApp(
             )->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
         renderWnd->getKeyFrameBar()->updateScales();
+        renderWnd->updateInfo();
 
         ToolsControl* toolsCtrl = HonViewerApp::GetViewerApp(
             )->getMainPane()->getMainWorkspaceControl()->getToolsControl();
@@ -213,6 +226,7 @@ namespace Demi
         if (!mModel)
             return;
 
+        clip->mLoop = mLoopAnimation;
         mModel->GetAnimation()->Play(clip);
 
         //notify keyframe bar to update the scale
@@ -220,6 +234,75 @@ namespace Demi
             )->getMainPane()->getMainWorkspaceControl()->getRenderWndControl();
         renderWnd->getKeyFrameBar()->updateScales();
         mPauseClip = false;
+    }
+
+    int K2ModelViewer::GetNumFaces()
+    {
+        if (!mModel)
+            return 0;
+
+        int ret = 0;
+        uint32 submodels = mModel->GetNumSubModels();
+        for (uint32 i = 0; i < submodels; ++i)
+        {
+            ret += mModel->GetSubModel(i)->mVerticesNum;
+        }
+        return ret;
+    }
+
+    int K2ModelViewer::GetNumVertices()
+    {
+        if (!mModel)
+            return 0;
+
+        int ret = 0;
+        uint32 submodels = mModel->GetNumSubModels();
+        for (uint32 i = 0; i < submodels; ++i)
+        {
+            ret += mModel->GetSubModel(i)->mPrimitiveCount;
+        }
+        return ret;
+    }
+
+    int K2ModelViewer::GetNumSubModels()
+    {
+        if (!mModel)
+            return 0;
+
+        return (int)mModel->GetNumSubModels();
+    }
+
+    bool K2ModelViewer::ShowGrids(bool var)
+    {
+        mGridPlane->SetVisible(var);
+        return true;
+    }
+
+    bool K2ModelViewer::SetLoopAnim(bool var)
+    {
+        if (!mModel)
+            return false;
+
+        if (mModel->GetAnimation()->mSource)
+        {
+            mModel->GetAnimation()->mSource->mLoop = var;
+        }
+        if (mModel->GetAnimation()->mTarget)
+        {
+            mModel->GetAnimation()->mTarget->mLoop = var;
+        }
+        mLoopAnimation = var;
+        return true;
+    }
+
+    bool K2ModelViewer::ShowBoneNames(bool var)
+    {
+        if (!mModel)
+            return false;
+
+        mShowBoneNames = var;
+
+        return true;
     }
 
 }

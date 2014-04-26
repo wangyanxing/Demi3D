@@ -144,7 +144,6 @@ namespace Demi
         }
 
         vb->Unlock();
-        SetMaterial("unlighting_color.mtl");
     }
 
     DiString& DiGridPlane::GetType()

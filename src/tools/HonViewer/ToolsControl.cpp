@@ -29,7 +29,7 @@ namespace tools
 	{
         assignBase(mFilesView, "FilesControl");
         assignBase(mAnimationView, "AnimationControl");
-        assignBase(mModelView, "ModelControl");
+        //assignBase(mModelView, "ModelControl");
         assignBase(mCommonTools, "CommonToolsControl");
 	}
 

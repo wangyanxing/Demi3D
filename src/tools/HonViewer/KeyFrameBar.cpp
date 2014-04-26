@@ -158,16 +158,15 @@ namespace tools
         mKeyFrameBar->setScrollPosition(_position);
         updateBarButtonPosition();
 
-        if (HonViewerApp::GetViewerApp()->GetModelViewer()->PauseClip())
-        {
-            auto clip = HonViewerApp::GetViewerApp()->GetModelViewer()->GetCurrentClip();
-            if (!clip)
-                return;
-            _position = DiMath::Clamp<size_t>(_position, 0, mNumFrames - 1);
-            clip->mCurFrame = _position;
-            clip->mTime = clip->mCurFrame / clip->mFPS;
-            clip->mInterpFactor = 0;
-        }
+        HonViewerApp::GetViewerApp()->GetModelViewer()->PauseClip(true);
+        
+        auto clip = HonViewerApp::GetViewerApp()->GetModelViewer()->GetCurrentClip();
+        if (!clip)
+            return;
+        _position = DiMath::Clamp<size_t>(_position, 0, mNumFrames - 1);
+        clip->mCurFrame = _position;
+        clip->mTime = clip->mCurFrame / clip->mFPS;
+        clip->mInterpFactor = 0;
     }
 
     void KeyFrameBarControl::updateBarButtonPosition()

@@ -988,9 +988,15 @@ namespace Demi
         }
 
         bool translucent = false;
+        bool writeDepth = true;
 
         DiString diffuseTex;
         DiString normalTex;
+        
+        // for water
+        DiString normal1Tex;
+        DiString normal2Tex;
+
         DiString shaderVs, shaderPs;
 
         DiXMLElement child = root.GetChild();
@@ -1006,6 +1012,8 @@ namespace Demi
                         translucent = child.GetBool("translucent");
                     if (child.HasAttribute("alphatest") && child.GetBool("alphatest"))
                         shaderFlag |= SHADER_FLAG_ALPHA_TEST;
+                    if (child.HasAttribute("depthwrite"))
+                        writeDepth = child.GetBool("depthwrite");
 
                     shaderVs = child.GetAttribute("vs");
                     shaderPs = child.GetAttribute("ps");
@@ -1026,6 +1034,14 @@ namespace Demi
                                 normalTex = samplers.GetAttribute("texture").ExtractBaseName();
                                 shaderFlag |= SHADER_FLAG_USE_NORMALMAP;
                             }
+                            else if (samplers.GetAttribute("name") == "normalmap1")
+                            {
+                                normal1Tex = samplers.GetAttribute("texture").ExtractBaseName();
+                            }
+                            else if (samplers.GetAttribute("name") == "normalmap2")
+                            {
+                                normal2Tex = samplers.GetAttribute("texture").ExtractBaseName();
+                            }
                             // we don't care about their team map for now
                         }
 
@@ -1044,6 +1060,7 @@ namespace Demi
         DiMaterialPtr mat = DiMaterial::QuickCreate(shader+"_v", shader+"_p", shaderFlag);
         if (translucent)
             mat->SetBlendMode(BLEND_ALPHA);
+        //mat->SetDepthWrite(writeDepth);
 
         DiShaderParameter* sm = mat->GetShaderParameter();
 
@@ -1081,6 +1098,38 @@ namespace Demi
             if (spectex)
                 sm->WriteTexture2D("specularMap", spectex);
 #endif
+        }
+        if (shader == DiK2Configs::WATER_SHADER)
+        {
+            DiString path1, path2;
+
+            if (!normal1Tex.empty() && normal1Tex[0] == '/')
+                path1 = normal1Tex;
+            else
+                path1 = basePath + "/" + normal1Tex;
+            if (!normal2Tex.empty() && normal2Tex[0] == '/')
+                path2 = normal2Tex;
+            else
+                path2 = basePath + "/" + normal2Tex;
+
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+            DiTexturePtr normtex1 = DiK2Configs::GetTexture(path1);
+            if (normtex1)
+                sm->WriteTexture2D("normalmap1", normtex1);
+            DiTexturePtr normtex2 = DiK2Configs::GetTexture(path2);
+            if (normtex2)
+                sm->WriteTexture2D("normalmap2", normtex2);
+#else
+            DiTexturePtr normtex1 = DiK2Configs::GetTexture(path1 + "_rxgb");
+            if (normtex1)
+                sm->WriteTexture2D("normalmap1", normtex1);
+            DiTexturePtr normtex2 = DiK2Configs::GetTexture(path2 + "_rxgb");
+            if (normtex2)
+                sm->WriteTexture2D("normalmap2", normtex2);
+#endif
+
+            sm->WriteFloat("fSpeed", 0.02f);
+            mat->SetShininess(1400);
         }
 
         return mat;

@@ -26,18 +26,37 @@ void InitScene()
     DiCullNode* dirNode = sm->GetRootNode()->CreateChild();
     dirNode->AttachObject(dirlight);
     dirlight->SetColor(DiColor());
-    dirlight->SetDirection(DiVec3(0, -0.3f, -0.4).normalisedCopy());
+    dirlight->SetDirection(DiVec3(0.5f,-0.86f,0).normalisedCopy());
     //dirlight->SetShadowCastEnable(true);
 
     // visbile mesh for the point light
     DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>("lightSphere");
-    lightSphere->CreateSphere(5, 16, 8);
-    DiMaterialPtr m = DiMaterial::QuickCreate("basic_v", "basic_p");
-    m->SetDiffuse(DiColor(1, 0.8f, 0));
+    lightSphere->CreatePlane(40,40);
+    DiMaterialPtr m = DiMaterial::QuickCreate("k2_water_v", "k2_water_p", SHADER_FLAG_USE_ENV_MAP | SHADER_FLAG_ENV_MAP_MIX);
+    //m->SetDiffuse(DiColor(1, 0.8f, 0));
     lightSphere->SetMaterial(m);
+
+    m->SetSpecular(DiColor::White);
+    m->SetShininess(1438);
+    auto pm = m->GetShaderParameter();
+    m->SetBlendMode(BLEND_ALPHA);
+    m->SetOpacity(0.5f);
+#if 0
+    pm->WriteFloat2("v_Rotation", DiVec2(1,-1));
+    pm->WriteFloat3("v_TextureParams", DiVec3(0.3f, 0.6f, 0.02f));
+#endif
+    pm->WriteFloat("fSpeed", 0.02f);
+    pm->WriteTexture2D("map", "water_color.dds");
+    pm->WriteTextureCUBE("envMap", "deadlock.dds");
+    pm->WriteTexture2D("normalmap1", "water_normal_rxgb.dds");
+    pm->WriteTexture2D("normalmap2", "water_normal_rxgb.dds");
 
     DiCullNode* nd = sm->GetRootNode()->CreateChild();
     nd->AttachObject(lightSphere);
+
+    DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
+    DiPostEffect* bloom = peMgr->GetEffect("Bloom");
+    bloom->SetEnable(true);
 }
 
 void UpdateScene()

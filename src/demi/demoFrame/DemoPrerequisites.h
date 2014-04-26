@@ -28,6 +28,8 @@ namespace Demi
     class DiConsoleVar;
     class DiConsoleVarListener;
     class DiInputManager;
+
+    typedef shared_ptr<DiGridPlane>  DiGridPlanePtr;
 }
 
 namespace MyGUI

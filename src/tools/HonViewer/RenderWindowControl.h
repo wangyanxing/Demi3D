@@ -22,11 +22,21 @@ namespace tools
 
         bool mouseInCanvas();
 
+        void updateInfo();
+
+        void updateBoneNames(bool show);
+
     protected:
 
         MyGUI::Canvas* mCanvas;
 
         KeyFrameBarControl* mKeyFrameBar;
+
+        MyGUI::TextBox* mInfo;
+
+        MyGUI::TextBox* mInfoStatic;
+
+        DiVector<MyGUI::TextBox*> mBoneNames;
 	};
 
 } // namespace tools
