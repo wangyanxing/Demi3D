@@ -52,7 +52,9 @@ namespace Demi
 
     void DiSubModel::SoftwareVertBlend()
     {
-        DI_ASSERT(mSoftBlendData);
+        if (!mSoftBlendData)
+            return;
+
         DI_ASSERT(mSoftBlendData->hasPos);
         
         DiVertexBuffer* vb = mSourceData[0];
@@ -220,6 +222,7 @@ namespace Demi
         }
         
         mVerticesNum = mMesh->GetVerticeNum();
+        bool hasAnim = mMesh->mMaxWeights > 0;
         
         // setup software skinning data
         if (!mParent->UseHardwareSkinning())
@@ -253,7 +256,8 @@ namespace Demi
                 }
             }
             
-            mSoftBlendData = mMesh->GenerateBlendData();
+            if (hasAnim)
+                mSoftBlendData = mMesh->GenerateBlendData();
         }
        
         if (useOriginalVertDecl)
@@ -286,7 +290,7 @@ namespace Demi
             // reorder
             uint16 streamNum = elements.GetStreams();
             uint16 startStream = softwareSkin ? 1 : 0;
-            if(softwareSkin)
+            if(softwareSkin && hasAnim)
             {
                 // deal with first stream
                 DiVertexBuffer* buf = Driver->CreateVertexBuffer();

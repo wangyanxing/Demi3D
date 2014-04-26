@@ -52,14 +52,15 @@ namespace Demi
         }
     };
 
-#define MAX_K2_BONEWEIGHTS 12
+#define MAX_K2_BONEWEIGHTS 4
     struct K2Vert
     {
         K2Vert()
         {
             for (int i = 0; i < MAX_K2_BONEWEIGHTS; i++)
             {
-                weights[i] = indices[i] = 0;
+                weights[i] = 0;
+                indices[i] = 0;
             }
         }
 
@@ -339,7 +340,7 @@ namespace Demi
                     int indicesStride = sizeof(uint8)*4;
                     for (size_t i = 0; i < vertnum; ++i)
                     {
-                        memcpy(buf, &gCurrentVerts[i], stride);
+                        memcpy(buf, &gCurrentVerts[i], geoStride);
                         buf += geoStride;
                         memcpy(buf, &gCurrentVerts[i].weights, weightsStride);
                         buf += weightsStride;
@@ -518,16 +519,28 @@ namespace Demi
             submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
             submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
             submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
-            submesh->GetVertexElements().AddElement(g_hardSkin?0:1, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+
+            if (bonelink >= 0)
+            {
+                g_hasAnim = false;
+            }
+
             if (g_hasAnim && g_hardSkin)
             {
+                submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
                 submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_BLENDWEIGHT);
                 submesh->GetVertexElements().AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES);
             }
-            else
+            else if (g_hasAnim && !g_hardSkin)
             {
+                submesh->GetVertexElements().AddElement(1, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
                 submesh->SetVFElements(DiVFElement::VF_ELEMENT_POS3F | DiVFElement::VF_ELEMENT_NORMAL3F
                     | DiVFElement::VF_ELEMENT_TANGENT3F | DiVFElement::VF_ELEMENT_UV02F);
+            }
+            else if (!g_hasAnim)
+            {
+                submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+                submesh->SetVFElements(0);
             }
         }
         
@@ -538,15 +551,8 @@ namespace Demi
         DI_SERIAL_LOG("Material name: %s", materialName.c_str());
 
         DI_LOG("MESH: %s [%d], mod[%d], bonelnk[%d], mat[%s]", meshName.c_str(), meshid, meshmod, bonelink, materialName.c_str());
-        
-        if(materialName.empty())
-        {
-            materialName = mesh->GetName();
-            materialName = materialName.ExtractFileName();
-            materialName = materialName.ExtractBaseName();
-            materialName += "material";
-        }
 
+#if 0
         // manually setup the skinning weights
         if (bonelink >= 0)
         {
@@ -554,7 +560,19 @@ namespace Demi
             {
                 gCurrentVerts[i].weights[0] = 1.0f;
                 gCurrentVerts[i].indices[0] = bonelink;
+
+                if (!g_hardSkin && submesh)
+                    submesh->AddWeight(i, bonelink, 1.0f);
             }
+        }
+#endif
+        
+        if(materialName.empty())
+        {
+            materialName = mesh->GetName();
+            materialName = materialName.ExtractFileName();
+            materialName = materialName.ExtractBaseName();
+            materialName += "material";
         }
 
         while (!mStream->Eof())
@@ -574,7 +592,6 @@ namespace Demi
                 ReadVertColors();
             else if (CheckFourcc(hed, "lnk1"))
             {
-                //DI_WARNING("We don't support software skinning currently");
                 ReadBoneLinks(submesh);
             }
             else if (CheckFourcc(hed, "lnk3"))
@@ -617,8 +634,8 @@ namespace Demi
             }
         }
 
-        if (g_hasAnim && submesh)
-            submesh->SetupBoneWeights(!g_hardSkin);
+        //if (g_hasAnim && submesh)
+            //submesh->RationaliseBoneWeights(!g_hardSkin);
 
         return submesh;
     }
@@ -802,16 +819,19 @@ namespace Demi
         int meshIndex = ReadInt(mStream);
         int vertNums = ReadInt(mStream);
 
+        int maxWeights = 0;
+
         for (int i = 0; i < vertNums; i++)
         {
             int numWeights = ReadInt(mStream);
 
+#if 0
             if(numWeights > 4)
             {
                 DI_DEBUG("Mesh[%s]: weight number(%d) is greater than 4",
                          sm->GetParentMesh()->GetName().c_str(),numWeights);
             }
-            DI_ASSERT(numWeights <= MAX_K2_BONEWEIGHTS);
+#endif
 
             float* weights = new float[numWeights];
             int* indexes = new int[numWeights];
@@ -819,19 +839,34 @@ namespace Demi
             mStream->Read(weights, sizeof(float)*numWeights);
             mStream->Read(indexes, sizeof(int)*numWeights);
 
-            numWeights = DiMath::Min(4, numWeights);
+            int numCount = 0;
             for (int w = 0; w < numWeights; ++w)
             {
-                gCurrentVerts[i].weights[w] = weights[w];
-                gCurrentVerts[i].indices[w] = indexes[w];
+                if (numCount >= MAX_K2_BONEWEIGHTS)
+                    break;
 
-                if (!g_hardSkin && sm)
-                    sm->AddWeight(i, indexes[w], weights[w]);
+                if (!DiMath::RealEqual(weights[w], 0))
+                {
+                    gCurrentVerts[i].weights[numCount] = weights[w];
+                    gCurrentVerts[i].indices[numCount++] = indexes[w];
+#if 0
+                    DiString t;
+                    t.Format("(%d,%f) ", indexes[w], weights[w]);
+                    curLog += t;
+#endif
+
+                    if (!g_hardSkin && sm)
+                    {
+                        sm->AddWeight(i, indexes[w], weights[w]);
+                    }
+                }
             }
-
+            maxWeights = DiMath::Max(maxWeights, numCount);
             delete[] weights;
             delete[] indexes;
         }
+        DI_ASSERT(maxWeights <= MAX_K2_BONEWEIGHTS);
+        sm->SetMaxWeights(maxWeights);
     }
 
     void DiK2MdfSerial::ReadSigns()

@@ -16,7 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "VertexDeclaration.h"
 
 #define MAX_HARDWARE_BLEND_WEIGHTS 4
-#define MAX_SOFTWARE_BLEND_WEIGHTS 8
+#define MAX_SOFTWARE_BLEND_WEIGHTS 12
 
 namespace Demi 
 {
@@ -158,7 +158,7 @@ namespace Demi
         if (mIndexData)
         {
             free(mIndexData);
-            mIndexData = NULL;
+            mIndexData = nullptr;
         }
 
         mIndicsNum = 0;

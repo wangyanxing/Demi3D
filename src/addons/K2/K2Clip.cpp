@@ -166,8 +166,8 @@ namespace Demi
     
     void DiK2Clip::GetFrameTrans(const DiString& bone, Trans& output)
     {
-        int curFrame  = mCurFrame;
-        int nextFrame = GetNextFrame();
+        size_t curFrame  = (size_t)mCurFrame;
+        size_t nextFrame = (size_t)GetNextFrame();
         
         DiVector<Trans>& trans = mKeyFrames->boneFrames[bone];
         if (curFrame < trans.size() && nextFrame < trans.size())

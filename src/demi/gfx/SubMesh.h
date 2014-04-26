@@ -147,6 +147,8 @@ namespace Demi
 
         uint32                  GetMaxWeights() const { return mMaxWeights; }
 
+        void                    SetMaxWeights(uint32 mx) { mMaxWeights = mx; }
+
         uint16                  RationaliseBoneWeights(bool softskin);
 
         void                    BuildIndexMap(IndexMap& boneIndexToBlendIndexMap, IndexMap& blendIndexToBoneIndexMap);
