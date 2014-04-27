@@ -39,6 +39,7 @@ namespace tools
         MyGUI::Button* mShowGrids;
         MyGUI::Button* mLoopAnim;
         MyGUI::Button* mShowBoneNames;
+        MyGUI::Button* mEnableBloom; 
     };
 
 } // namespace tools

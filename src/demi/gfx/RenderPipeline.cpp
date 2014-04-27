@@ -166,6 +166,8 @@ namespace Demi
         if (mPostEnable)
             DiRenderWindow::ActiveWindow->GetPostEffectManager()->Process(this);
         
+        DiRenderWindow::ActiveWindow->GetRenderBuffer()->Bind();
+
         for (uint32 i = BATCH_POST_FILTER; i < mBatchGroups.size(); i++)
         {
             if (!mBatchGroups[i]->IsInterfaceGroup() ||

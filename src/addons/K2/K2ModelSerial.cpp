@@ -52,10 +52,17 @@ namespace Demi
         }
     };
 
-#define MAX_K2_BONEWEIGHTS 4
     struct K2Vert
     {
-        K2Vert()
+        DiVec3 pos;
+        DiVec3 normal;
+        DiVec2 uv;
+    };
+
+#define MAX_K2_BONEWEIGHTS 4
+    struct K2VertSkin
+    {
+        K2VertSkin()
         {
             for (int i = 0; i < MAX_K2_BONEWEIGHTS; i++)
             {
@@ -63,13 +70,6 @@ namespace Demi
                 indices[i] = 0;
             }
         }
-
-        DiVec3 pos;
-        DiVec3 normal;
-        DiVec3 tangent;
-        DiVec2 uv;
-
-        // for skinning
         float weights[MAX_K2_BONEWEIGHTS];
         uint8 indices[MAX_K2_BONEWEIGHTS];
     };
@@ -79,6 +79,9 @@ namespace Demi
     bool g_hasAnim = false;
     
     DiVector<K2Vert> gCurrentVerts;
+    DiVector<K2VertSkin> gCurrentVertSkins;
+    DiVector<uint32> gCurrentVertColors;
+    DiVector<DiVec3> gCurrentTangents;
 
     DiQuat g_trans_orit_quat(DiRadian(DiDegree(-90)), DiVec3::UNIT_X);
     
@@ -317,6 +320,7 @@ namespace Demi
             return false;
         }
 
+        
         g_hasAnim = target->GetAnimNums() > 0;
         // for now, we don't need animation on trees
         if (target->mIsTree)
@@ -328,23 +332,41 @@ namespace Demi
 
             if (sub)
             {
+                bool hasTangent = !gCurrentTangents.empty();
+                bool hasVertColors = !gCurrentVertColors.empty();
+
                 size_t vertnum = gCurrentVerts.size();
-               
+                int geoStride = sizeof(DiVec3)+sizeof(DiVec3)+sizeof(DiVec2);//pos+norm+uv
+                int softGeoStride = sizeof(DiVec3)+sizeof(DiVec3);//pos+norm+uv
+                int uvStride = sizeof(DiVec2);
+                int colorStride = sizeof(uint32);
+                int tangStride = sizeof(DiVec3);
+                int weightsStride = sizeof(float)* 4;
+                int indicesStride = sizeof(uint8)* 4;
+
                 if (g_hasAnim && g_hardSkin)
                 {
                     // hardware skinning, max # of bone weights is 4
                     int stride = sub->GetVertexElements().GetStreamElementsSize(0);
                     uint8* buf = (uint8*)sub->CreateSourceData(0, vertnum, stride);
-                    int geoStride = sizeof(DiVec3)+sizeof(DiVec3)+sizeof(DiVec3)+sizeof(DiVec2);//pos+norm+tang+uv
-                    int weightsStride = sizeof(float)*4;
-                    int indicesStride = sizeof(uint8)*4;
+                    
                     for (size_t i = 0; i < vertnum; ++i)
                     {
                         memcpy(buf, &gCurrentVerts[i], geoStride);
                         buf += geoStride;
-                        memcpy(buf, &gCurrentVerts[i].weights, weightsStride);
+                        if (hasTangent)
+                        {
+                            memcpy(buf, &gCurrentTangents[i], tangStride);
+                            buf += tangStride;
+                        }
+                        if (hasVertColors)
+                        {
+                            memcpy(buf, &gCurrentVertColors[i], colorStride);
+                            buf += colorStride;
+                        }
+                        memcpy(buf, &gCurrentVertSkins[i].weights, weightsStride);
                         buf += weightsStride;
-                        memcpy(buf, &gCurrentVerts[i].indices, indicesStride);
+                        memcpy(buf, &gCurrentVertSkins[i].indices, indicesStride);
                         buf += indicesStride;
                     }
                 }
@@ -355,8 +377,18 @@ namespace Demi
                     uint8* buf = (uint8*)sub->CreateSourceData(0, vertnum, stride);
                     for (size_t i = 0; i < vertnum; ++i)
                     {
-                        memcpy(buf, &gCurrentVerts[i], stride);
-                        buf += stride;
+                        memcpy(buf, &gCurrentVerts[i], geoStride);
+                        buf += geoStride;
+                        if (hasTangent)
+                        {
+                            memcpy(buf, &gCurrentTangents[i], tangStride);
+                            buf += tangStride;
+                        }
+                        if (hasVertColors)
+                        {
+                            memcpy(buf, &gCurrentVertColors[i], colorStride);
+                            buf += colorStride;
+                        }
                     }
                 }
                 else
@@ -366,15 +398,26 @@ namespace Demi
                     uint8* buf = (uint8*)sub->CreateSourceData(0, vertnum, stride);
                     for (size_t i = 0; i < vertnum; ++i)
                     {
-                        memcpy(buf, &gCurrentVerts[i], stride);
-                        buf += stride;
+                        memcpy(buf, &gCurrentVerts[i], softGeoStride);
+                        buf += softGeoStride;
+                        if (hasTangent)
+                        {
+                            memcpy(buf, &gCurrentTangents[i], tangStride);
+                            buf += tangStride;
+                        }
                     }
+                   
                     stride = sub->GetVertexElements().GetStreamElementsSize(1);
                     buf = (uint8*)sub->CreateSourceData(1, vertnum, stride);
                     for (size_t i = 0; i < vertnum; ++i)
                     {
-                        memcpy(buf, &gCurrentVerts[i].uv, stride);
-                        buf += stride;
+                        memcpy(buf, &gCurrentVerts[i].uv, uvStride);
+                        buf += uvStride;
+                        if (hasVertColors)
+                        {
+                            memcpy(buf, &gCurrentVertColors[i], colorStride);
+                            buf += colorStride;
+                        }
                     }
                 }
             }
@@ -464,6 +507,9 @@ namespace Demi
     DiSubMesh* DiK2MdfSerial::LoadMeshes(DiK2ModelAsset* target, DiMeshPtr mesh)
     {
         gCurrentVerts.clear();
+        gCurrentVertColors.clear();
+        gCurrentTangents.clear();
+        gCurrentVertSkins.clear();
 
         // chunk size
         int chunksize = ReadInt(mStream);
@@ -511,37 +557,17 @@ namespace Demi
         bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
         g_hardSkin = !forcesoft && numBones <= MAX_BONE_NUM;
 
+        if (bonelink >= 0)
+            g_hasAnim = false;
+
+        
+        //////////////////////////////////////////////////////////////////////////
+
         DiSubMesh* submesh = nullptr;
         if (!mIgnoreSubMesh)
         {
             submesh = mesh->CreateSubMesh();
             submesh->SetVerticeNum(vertNum);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
-            submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
-
-            if (bonelink >= 0)
-            {
-                g_hasAnim = false;
-            }
-
-            if (g_hasAnim && g_hardSkin)
-            {
-                submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
-                submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_BLENDWEIGHT);
-                submesh->GetVertexElements().AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES);
-            }
-            else if (g_hasAnim && !g_hardSkin)
-            {
-                submesh->GetVertexElements().AddElement(1, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
-                submesh->SetVFElements(DiVFElement::VF_ELEMENT_POS3F | DiVFElement::VF_ELEMENT_NORMAL3F
-                    | DiVFElement::VF_ELEMENT_TANGENT3F | DiVFElement::VF_ELEMENT_UV02F);
-            }
-            else if (!g_hasAnim)
-            {
-                submesh->GetVertexElements().AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
-                submesh->SetVFElements(0);
-            }
         }
         
         DiString materialName = ReadString(mStream, material_name_length);
@@ -632,6 +658,44 @@ namespace Demi
                 auto mat = ParseMaterial(materialFile, target->GetBaseFolder(), g_hasAnim && g_hardSkin);
                 submesh->SetMaterialName(mat->GetName());
             }
+
+            //////////////////////////////////////////////////////////////////////////
+            uint64 vfelements = 0;
+            DiVertexElements vertElements;
+            vertElements.AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_POSITION);
+            vertElements.AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_NORMAL);
+
+            if (g_hasAnim && g_hardSkin)
+            {
+                vertElements.AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+                if (!gCurrentTangents.empty())
+                    vertElements.AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
+                if (!gCurrentVertColors.empty())
+                    vertElements.AddElement(0, VERT_TYPE_COLOR, VERT_USAGE_COLOR);
+                vertElements.AddElement(0, VERT_TYPE_FLOAT4, VERT_USAGE_BLENDWEIGHT);
+                vertElements.AddElement(0, VERT_TYPE_UBYTE4, VERT_USAGE_BLENDINDICES);
+            }
+            else if (g_hasAnim && !g_hardSkin)
+            {
+                if (!gCurrentTangents.empty())
+                    vertElements.AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
+
+                vertElements.AddElement(1, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+                if (!gCurrentVertColors.empty())
+                    vertElements.AddElement(1, VERT_TYPE_COLOR, VERT_USAGE_COLOR);
+                vfelements = DiVFElement::VF_ELEMENT_POS3F | DiVFElement::VF_ELEMENT_NORMAL3F
+                    | DiVFElement::VF_ELEMENT_TANGENT3F | DiVFElement::VF_ELEMENT_UV02F;
+            }
+            else if (!g_hasAnim)
+            {
+                vertElements.AddElement(0, VERT_TYPE_FLOAT2, VERT_USAGE_TEXCOORD);
+                if (!gCurrentTangents.empty())
+                    vertElements.AddElement(0, VERT_TYPE_FLOAT3, VERT_USAGE_TANGENT);
+                if (!gCurrentVertColors.empty())
+                    vertElements.AddElement(0, VERT_TYPE_COLOR, VERT_USAGE_COLOR);
+            }
+            submesh->GetVertexElements().Clone(vertElements);
+            submesh->SetVFElements(vfelements);
         }
 
         //if (g_hasAnim && submesh)
@@ -795,14 +859,23 @@ namespace Demi
             return;
         }
 
-        int numverts = (chunkSize - 4) / 4;
+        int numverts = (chunkSize - 8) / 4;
         DI_SERIAL_LOG("colr nums:%d", numverts);
-        int meshindex = ReadInt(mStream);
 
-        // we don't need the vertex color currently
+        if (gCurrentVertColors.empty())
+            gCurrentVertColors.resize(numverts);
+
+        int meshindex = ReadInt(mStream);
+        int meshindex2 = ReadInt(mStream);
         unsigned int* vertics = new unsigned int[numverts];
         mStream->Read(vertics, sizeof(unsigned int)*numverts);
-        delete[] vertics; // unused currently
+        for (int i = 0; i < numverts; ++i)
+        {
+            DiColor c;
+            c.SetAsRGBA(vertics[i]);
+            gCurrentVertColors[i] = vertics[i];
+        }
+        delete[] vertics;
     }
 
     void DiK2MdfSerial::ReadBoneLinks(DiSubMesh* sm)
@@ -819,19 +892,14 @@ namespace Demi
         int meshIndex = ReadInt(mStream);
         int vertNums = ReadInt(mStream);
 
+        if (gCurrentVertSkins.empty())
+            gCurrentVertSkins.resize(vertNums);
+
         int maxWeights = 0;
 
         for (int i = 0; i < vertNums; i++)
         {
             int numWeights = ReadInt(mStream);
-
-#if 0
-            if(numWeights > 4)
-            {
-                DI_DEBUG("Mesh[%s]: weight number(%d) is greater than 4",
-                         sm->GetParentMesh()->GetName().c_str(),numWeights);
-            }
-#endif
 
             float* weights = new float[numWeights];
             int* indexes = new int[numWeights];
@@ -847,13 +915,8 @@ namespace Demi
 
                 if (!DiMath::RealEqual(weights[w], 0))
                 {
-                    gCurrentVerts[i].weights[numCount] = weights[w];
-                    gCurrentVerts[i].indices[numCount++] = indexes[w];
-#if 0
-                    DiString t;
-                    t.Format("(%d,%f) ", indexes[w], weights[w]);
-                    curLog += t;
-#endif
+                    gCurrentVertSkins[i].weights[numCount] = weights[w];
+                    gCurrentVertSkins[i].indices[numCount++] = indexes[w];
 
                     if (!g_hardSkin && sm)
                     {
@@ -893,18 +956,21 @@ namespace Demi
         int meshindex = ReadInt(mStream);
         int what = ReadInt(mStream);
 
+        if (gCurrentTangents.empty())
+            gCurrentTangents.resize(numverts);
+
         float* vertics = new float[3 * numverts];
         mStream->Read(vertics, sizeof(float)* 3 * numverts);
 
         DI_ASSERT(gCurrentVerts.size() == numverts);
         for (int i = 0; i < numverts; i++)
         {
-            gCurrentVerts[i].tangent.x = vertics[i * 3 + 0];
-            gCurrentVerts[i].tangent.y = vertics[i * 3 + 1];
-            gCurrentVerts[i].tangent.z = vertics[i * 3 + 2];
+            gCurrentTangents[i].x = vertics[i * 3 + 0];
+            gCurrentTangents[i].y = vertics[i * 3 + 1];
+            gCurrentTangents[i].z = vertics[i * 3 + 2];
 
             if (g_trans_orit)
-                gCurrentVerts[i].tangent = g_trans_orit_quat * gCurrentVerts[i].tangent;
+                gCurrentTangents[i] = g_trans_orit_quat * gCurrentTangents[i];
         }
 
         delete[] vertics;
@@ -999,6 +1065,12 @@ namespace Demi
 
         DiString shaderVs, shaderPs;
 
+        DiVec3 diffuseColor = DiVec3(1,1,1);
+        float specularLevel = 1.0f;
+        float opacity = 1.0f;
+        float shiness = 16.0f;
+        DiMap<DiString, float> floatParams;
+
         DiXMLElement child = root.GetChild();
         while (child)
         {
@@ -1031,15 +1103,18 @@ namespace Demi
                             }
                             else if (samplers.GetAttribute("name") == "normalmap")
                             {
+                                // for ordinary material
                                 normalTex = samplers.GetAttribute("texture").ExtractBaseName();
                                 shaderFlag |= SHADER_FLAG_USE_NORMALMAP;
                             }
                             else if (samplers.GetAttribute("name") == "normalmap1")
                             {
+                                // for water
                                 normal1Tex = samplers.GetAttribute("texture").ExtractBaseName();
                             }
                             else if (samplers.GetAttribute("name") == "normalmap2")
                             {
+                                // for water
                                 normal2Tex = samplers.GetAttribute("texture").ExtractBaseName();
                             }
                             // we don't care about their team map for now
@@ -1047,6 +1122,31 @@ namespace Demi
 
                         samplers = samplers.GetNext();
                     }
+                }
+            }
+            else if (child.CheckName("parameters"))
+            {
+                if (child.HasAttribute("vDiffuseColor"))
+                    diffuseColor = child.GetVector3("vDiffuseColor");
+                if (child.HasAttribute("fSpecularLevel"))
+                    specularLevel = child.GetFloat("fSpecularLevel");
+                if (child.HasAttribute("fGlossiness"))
+                    shiness = child.GetFloat("fGlossiness");
+
+                DiXMLElement parametes = child.GetChild();
+                while (parametes)
+                {
+                    if (parametes.CheckName("float"))
+                    {
+                        float var = parametes.GetFloat("value");
+                        DiString name = parametes.GetAttribute("name");
+                        floatParams[name] = var;
+                    }
+                    else
+                    {
+                        DI_WARNING("Unsupported k2 parameter type");
+                    }
+                    parametes = parametes.GetNext();
                 }
             }
             child = child.GetNext();
@@ -1061,6 +1161,10 @@ namespace Demi
         if (translucent)
             mat->SetBlendMode(BLEND_ALPHA);
         //mat->SetDepthWrite(writeDepth);
+
+        mat->SetDiffuse(DiColor(diffuseColor.x, diffuseColor.y, diffuseColor.z));
+        mat->SetSpecular(DiColor::White*specularLevel);
+        mat->SetShininess(shiness);
 
         DiShaderParameter* sm = mat->GetShaderParameter();
 
@@ -1127,9 +1231,11 @@ namespace Demi
             if (normtex2)
                 sm->WriteTexture2D("normalmap2", normtex2);
 #endif
+        }
 
-            sm->WriteFloat("fSpeed", 0.02f);
-            mat->SetShininess(1400);
+        for (auto i = floatParams.begin(); i != floatParams.end(); ++i)
+        {
+            sm->WriteFloat(i->first, i->second);
         }
 
         return mat;

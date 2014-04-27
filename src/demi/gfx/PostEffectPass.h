@@ -41,6 +41,8 @@ namespace Demi
 
         void                BuildMaterial(const DiString& vpshader, const DiString& fpshader);
 
+        void                InvalidateTextures();
+
         void                SetInput(const DiString& paramName, PassInputType inputtype);
 
         void                SetInput(const DiString& paramName, float value);

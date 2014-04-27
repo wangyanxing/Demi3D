@@ -30,6 +30,7 @@ namespace tools
         assignWidget(mShowGrids, "CheckShowGrids");
         assignWidget(mLoopAnim, "CheckLoopAnim");
         assignWidget(mShowBoneNames, "CheckShowBoneNames");
+        assignWidget(mEnableBloom, "CheckEnableBloom");
 
         mWireframe->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
         mShowBones->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
@@ -38,6 +39,7 @@ namespace tools
         mShowGrids->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
         mLoopAnim->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
         mShowBoneNames->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
+        mEnableBloom->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
 
         mShowModel->setStateSelected(true);
         mLoopAnim->setStateSelected(true);
@@ -105,6 +107,15 @@ namespace tools
             {
                 mLoopAnim->setStateSelected(!checked);
             }
+        }
+        else if (_sender == mEnableBloom)
+        {
+            bool checked = mEnableBloom->getStateSelected();
+            DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
+            DiPostEffect* bloom = peMgr->GetEffect("Bloom");
+            if (bloom)
+                bloom->SetEnable(!checked);
+            mEnableBloom->setStateSelected(!checked);
         }
     }
 

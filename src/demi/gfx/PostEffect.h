@@ -54,6 +54,8 @@ namespace Demi
 
         void                    RefereshPasses();
 
+        void                    InvalidPassesTextures();
+
     protected:
 
         DiString                mName;

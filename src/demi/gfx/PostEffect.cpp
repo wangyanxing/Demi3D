@@ -160,4 +160,13 @@ namespace Demi
             (*it)->RefreshInput();
         }
     }
+
+    void DiPostEffect::InvalidPassesTextures()
+    {
+        for (auto it = mPasses.begin(); it != mPasses.end(); ++it)
+        {
+            (*it)->InvalidateTextures();
+        }
+    }
+
 }

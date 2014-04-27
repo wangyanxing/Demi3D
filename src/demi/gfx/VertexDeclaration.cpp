@@ -304,6 +304,15 @@ namespace Demi
         }
     }
 
+    void DiVertexElements::Clone(const DiVertexElements& rhs)
+    {
+        ClearElements();
+        for (auto it = rhs.mVertexElements.begin(); it != rhs.mVertexElements.end(); ++it)
+        {
+            AddElement(*it);
+        }
+    }
+
     DiVertexDeclaration* DiVertexDeclaration::GetDefault(uint64 vf)
     {
         auto it = sDefaultDeclarations.find(vf);
@@ -314,7 +323,7 @@ namespace Demi
         
         // create it
         
-        
+        // TODO
 
         return nullptr;
     }

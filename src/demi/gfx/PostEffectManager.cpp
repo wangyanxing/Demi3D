@@ -29,7 +29,8 @@ namespace Demi
 {
     DiPostEffectManager::DiPostEffectManager(DiRenderWindow* renderWindow)
         :mRenderWindow(renderWindow),
-        mOutput(true)
+        mManualOutputTarget(nullptr),
+        mDisablePostFilters(true)
     {
         Init();
     }
@@ -79,16 +80,18 @@ namespace Demi
         for (auto it = mPostList.begin(); it != mPostList.end(); ++it)
             (*it)->Process();
 
-        RenderOutput(pipe);
+        if (!mDisablePostFilters)
+            RenderOutput(pipe);
     }
 
     void DiPostEffectManager::RenderOutput(DiRenderPipeline* pipe)
     {
-        mRenderWindow->GetRenderBuffer()->Bind();
-        if (mOutput)
-        {
-            DrawQuad(mScreenQuad->mMaterial.get(), 1);
-        }
+        if (!mManualOutputTarget)
+            mRenderWindow->GetRenderBuffer()->Bind();
+        else
+            mManualOutputTarget->Bind();
+
+        DrawQuad(mScreenQuad->mMaterial.get(), 1);
     }
 
     DiPostEffect* DiPostEffectManager::CreatePostEffect( const DiString& name )
@@ -185,13 +188,15 @@ namespace Demi
 
         if (GetLastEnabledEffect())
         {
+            mDisablePostFilters = false;
             mScreenQuad->GetMaterial()->GetShaderParameter()->WriteTexture2D("image",
                 GetLastEnabledEffect()->GetLastValidPass()->GetOutTexture());
         }
         else
         {
-            mScreenQuad->GetMaterial()->GetShaderParameter()->WriteTexture2D("image",
-                mRenderWindow->GetCanvasTexture());
+            mDisablePostFilters = true;
+            //mScreenQuad->GetMaterial()->GetShaderParameter()->WriteTexture2D("image",
+            //    mRenderWindow->GetCanvasTexture());
         }
     }
 
@@ -259,5 +264,13 @@ namespace Demi
             return it->second;
 
         return nullptr;
+    }
+
+    void DiPostEffectManager::NotifyInvalidatePasses()
+    {
+        for (auto i = mPostList.begin(); i != mPostList.end(); ++i)
+        {
+            (*i)->InvalidPassesTextures();
+        }
     }
 }

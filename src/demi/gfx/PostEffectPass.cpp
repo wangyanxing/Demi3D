@@ -200,4 +200,11 @@ namespace Demi
     { 
         return mRenderTarget->GetClearPerFrame();
     }
+
+    void DiPostEffectPass::InvalidateTextures()
+    {
+        mTexture->OnDeviceLost();
+        mTexture->OnDeviceReset();
+    }
+
 }

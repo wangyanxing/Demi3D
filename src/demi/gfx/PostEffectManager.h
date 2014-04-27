@@ -48,7 +48,9 @@ namespace Demi
 
         DiRenderWindow*         GetRenderWindow() const { return mRenderWindow; }
 
-        void                    SetOutputToBackBuffer(bool val) { mOutput = val; }
+        void                    SetManualOutputTarget(DiRenderTarget* val) { mManualOutputTarget = val; }
+
+        void                    NotifyInvalidatePasses();
 
     protected:
 
@@ -80,7 +82,9 @@ namespace Demi
                                 
         DiRenderWindow*         mRenderWindow;
 
-        bool                    mOutput;
+        DiRenderTarget*         mManualOutputTarget;
+
+        bool                    mDisablePostFilters;
     };
 }
 

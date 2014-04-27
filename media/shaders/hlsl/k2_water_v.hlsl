@@ -13,20 +13,13 @@ struct VS_INPUT
 #endif
 
 	float2 Texcoord0  	: TEXCOORD0;
-
-#if defined( USE_COLOR )
 	half4  Color		: COLOR;
-#endif
 };
 
 struct VS_OUTPUT
 {
 	float4 Position 	: POSITION;
-	
-#if defined( USE_COLOR )
 	half4  Color		: COLOR;
-#endif
-     
 	float4 Texcoord0  	: TEXCOORD0;
     //float4 Texcoord1    : TEXCOORD1;
 	float3 Normal       : TEXCOORD2;
@@ -55,9 +48,8 @@ VS_OUTPUT vs_main( VS_INPUT In )
 	VS_OUTPUT Out;
 	Out.Position = mul(g_projMatrix,viewPos);
 
-#if defined( USE_COLOR )
 	Out.Color = In.Color;
-#endif
+    Out.Color.a *= Out.Color.a;
 
 #if 0
     // UV rotation

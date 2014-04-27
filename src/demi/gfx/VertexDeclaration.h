@@ -26,6 +26,12 @@ namespace Demi
 
         virtual ~DiVertexElements();
 
+        DiVertexElements& operator = (const DiVertexElements& rhs)
+        {
+            this->Clone(rhs);
+            return *this;
+        }
+
         struct Element
         {
             uint16   Stream;     // Stream index
@@ -38,6 +44,8 @@ namespace Demi
         typedef DiVector<Element> ElementsList;
 
     public:
+
+        void                  Clone(const DiVertexElements& rhs);
 
         Element               AddElement(uint16 stream, DiVertexType type, DiVertexUsage usage, uint8 usageid = 0);
 

@@ -5,6 +5,7 @@ uniform sampler2D map;
 
 sampler normalmap1;
 sampler normalmap2;
+uniform float fDiffuseOpacity;
 
 //#define USE_SCHLICK_FRESNEL
 
@@ -19,11 +20,7 @@ uniform float 	refractionRatio;
 struct VS_OUTPUT
 {
 	float4 Position 	: POSITION;
-	
-#if defined( USE_COLOR )
 	half4  Color		: COLOR;
-#endif
-     
     float4 Texcoord0  	: TEXCOORD0;
     //float4 Texcoord1    : TEXCOORD1;
 	float3 Normal       : TEXCOORD2;
@@ -81,9 +78,7 @@ void ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
 		gSurface.albedo.rgb *= gSurface.albedo.rgb;
 	#endif
 
-#ifdef USE_COLOR
-    gSurface.albedo = gSurface.albedo * float4(input.Color, 1.0);
-#endif	
+    gSurface.albedo = gSurface.albedo * input.Color;
 }
 
 void AccumulatePhong(float3 normal,
@@ -172,13 +167,8 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
     
     float3 vFinalColor = gSurface.albedo * vDiffuse + vSpecular;
     Out.Color.rgb = vFinalColor;
-    Out.Color.a = gSurface.albedo.a * g_opacity;
-
-#if 0
-    float3 reflVect = reflect(normalize(In.ViewDir), gSurface.normal);
-    float3 cEnviroColor = texCUBE(cube, reflVect);
-    Out.Color.rgb = lerp(Out.Color.rgb, cEnviroColor.rgb, 0.35f);
-#endif
+    Out.Color.a = gSurface.albedo.a * g_opacity * fDiffuseOpacity;
+    //Out.Color = In.Color;
 
 	// environment mapping
 #if defined(USE_ENV_MAP)

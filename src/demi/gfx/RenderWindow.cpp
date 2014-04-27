@@ -262,5 +262,7 @@ namespace Demi
         mCanvasTexture->ResizeTexture(width,height);
 
         mSceneManager->GetCamera()->SetAspectRatio(float(width) / float(height));
+
+        GetPostEffectManager()->NotifyInvalidatePasses();
     }
 }

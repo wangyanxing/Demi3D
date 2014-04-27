@@ -22,5 +22,8 @@
         <Widget type="Button" skin="CheckBox"  align="Stretch" position="5 80 145 20" name="CheckShowGrids">
           <Property key="Caption" value="Show Grids"/>
         </Widget>
+        <Widget type="Button" skin="CheckBox"  align="Stretch" position="155 80 145 20" name="CheckEnableBloom">
+          <Property key="Caption" value="Bloom Filter"/>
+        </Widget>
     </Widget>
 </MyGUI>
