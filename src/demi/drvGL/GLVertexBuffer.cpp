@@ -35,7 +35,6 @@ namespace Demi
     {
         if (mBufferId)
         {
-            DI_WARNING("The GL vertex buffer id has already existed. It should be deleted before creating a new one.");
             glDeleteBuffersARB(1, &mBufferId);
         }
 

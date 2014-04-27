@@ -25,7 +25,7 @@ namespace Demi
         /// Free? (pack with size)
         uint32 free : 1;
     };
-#define SCRATCH_POOL_SIZE 1 * 1024 * 1024
+#define SCRATCH_POOL_SIZE 10 * 1024 * 1024
 #define SCRATCH_ALIGNMENT 32
 
     //////////////////////////////////////////////////////////////////////////
@@ -95,6 +95,7 @@ namespace Demi
             bufferPos += (uint32)sizeof(GLScratchBufferAlloc) + pNext->size;
         }
 
+        DI_WARNING("No available allocations");
         // no available alloc
         return 0;
     }
