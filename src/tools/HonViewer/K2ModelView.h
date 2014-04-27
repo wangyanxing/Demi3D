@@ -66,6 +66,8 @@ namespace Demi
 
         int         GetNumSubModels();
 
+        int         GetNumBones();
+
         DiK2ModelPtr    GetModel() { return mModel; }
 
     protected:

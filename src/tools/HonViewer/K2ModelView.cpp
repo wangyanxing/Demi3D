@@ -305,4 +305,11 @@ namespace Demi
         return true;
     }
 
+    int K2ModelViewer::GetNumBones()
+    {
+        if (!mModel || !mModel->GetSkeleton())
+            return 0;
+        return mModel->GetSkeleton()->GetNumBones();
+    }
+
 }

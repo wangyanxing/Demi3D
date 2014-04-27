@@ -1070,6 +1070,7 @@ namespace Demi
         float opacity = 1.0f;
         float shiness = 16.0f;
         DiMap<DiString, float> floatParams;
+        DiMap<DiString, DiVec3> vec3Params;
 
         DiXMLElement child = root.GetChild();
         while (child)
@@ -1141,6 +1142,12 @@ namespace Demi
                         float var = parametes.GetFloat("value");
                         DiString name = parametes.GetAttribute("name");
                         floatParams[name] = var;
+                    }
+                    else if (parametes.CheckName("vec3"))
+                    {
+                        DiVec3 var = parametes.GetVector3("value");
+                        DiString name = parametes.GetAttribute("name");
+                        vec3Params[name] = var;
                     }
                     else
                     {
@@ -1236,6 +1243,10 @@ namespace Demi
         for (auto i = floatParams.begin(); i != floatParams.end(); ++i)
         {
             sm->WriteFloat(i->first, i->second);
+        }
+        for (auto i = vec3Params.begin(); i != vec3Params.end(); ++i)
+        {
+            sm->WriteFloat3(i->first, i->second);
         }
 
         return mat;

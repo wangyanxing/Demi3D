@@ -24,13 +24,13 @@ namespace tools
         mCanvas = mMainWidget->createWidget<MyGUI::Canvas>("Canvas",
             MyGUI::IntCoord(0, 0, mMainWidget->getClientCoord().width, mMainWidget->getClientCoord().height-51), MyGUI::Align::Stretch);
 
-        mInfo = mCanvas->createWidget<MyGUI::TextBox>("TextBox", MyGUI::IntCoord(100, 10, 100, 50), MyGUI::Align::Default);
+        mInfo = mCanvas->createWidget<MyGUI::TextBox>("TextBox", MyGUI::IntCoord(100, 10, 100, 70), MyGUI::Align::Default);
         mInfo->setTextShadow(true);
         mInfo->setTextShadowColour(MyGUI::Colour::Black);
-        mInfoStatic = mCanvas->createWidget<MyGUI::TextBox>("TextBox", MyGUI::IntCoord(10, 10, 80, 50), MyGUI::Align::Default);
+        mInfoStatic = mCanvas->createWidget<MyGUI::TextBox>("TextBox", MyGUI::IntCoord(10, 10, 80, 70), MyGUI::Align::Default);
         mInfoStatic->setTextShadow(true);
         mInfoStatic->setTextShadowColour(MyGUI::Colour::Black);
-        mInfoStatic->setCaption("Vertices :\nFaces:\nSub Models:");
+        mInfoStatic->setCaption("Vertices :\nFaces:\nSub Models:\nBones:");
         updateInfo();
 
         for (int i = 0; i < MAX_BONE_NUM; ++i)
@@ -99,9 +99,10 @@ namespace tools
         int numVerts = model->GetNumVertices();
         int numFaces = model->GetNumFaces();
         int numSubMods = model->GetNumSubModels();
+        int numBones = model->GetNumBones();
 
         DiString info;
-        info.Format("%d\n%d\n%d", numVerts, numFaces, numSubMods);
+        info.Format("%d\n%d\n%d\n%d", numVerts, numFaces, numSubMods, numBones);
         mInfo->setCaption(info.c_str());
     }
 
