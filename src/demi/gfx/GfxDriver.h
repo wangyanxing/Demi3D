@@ -156,8 +156,6 @@ namespace Demi
                                     
         unsigned long               GetFrameNum() const { return mFrameNum; }
 
-        void                        MarkClosing() { mClosing = true; }
-
         DiWindowManager*            GetWindowManager() const { return mWndManager; }
 
         virtual void                SetColorBufferWriteEnabled(bool r, bool g, bool b, bool a) = 0;
@@ -230,8 +228,6 @@ namespace Demi
         double                      mElapsedTime;
 
         unsigned long               mFrameNum;
-
-        bool                        mClosing;
 
         bool                        mNeedTextureFlipping;
 

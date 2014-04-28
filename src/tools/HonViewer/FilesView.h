@@ -33,8 +33,6 @@ namespace tools
 
         void notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode);
 
-    private:
-
         void scanFiles();
 
 	private:

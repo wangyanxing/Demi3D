@@ -129,7 +129,6 @@ namespace Demi
         DiVec3 transl(-cliffsize, 0, cliffsize);
         pos += rot * transl;
        
-
         DiTerrainDescPtr desc = mTerrain->GetDesc();
 
         int gridx = pos.x / CHUNK_GRID_SIZE;

@@ -160,8 +160,6 @@ namespace Demi
     {
     public:
         static void BindAllSystemCmd(DiCommandManager* cm);
-
-        static bool Quit(DiCmdArgs* pkArgs);
     };
 }
 

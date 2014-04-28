@@ -36,6 +36,8 @@ namespace Demi
 
         void        LoadModel(const DiString& file);
 
+        void        SetK2ResourcePack(const DiString& resPack, const DiString& texturePack = DiString::BLANK);
+
         bool        SetWireframe(bool var);
 
         bool        ShowModel(bool var);
@@ -69,6 +71,10 @@ namespace Demi
         int         GetNumBones();
 
         DiK2ModelPtr    GetModel() { return mModel; }
+
+        void        NotifySettingsChanged(const MyGUI::UString& _sectorName, const MyGUI::UString& _propertyName);
+
+        void        SetBackgroundColor(const DiColor& color);
 
     protected:
 

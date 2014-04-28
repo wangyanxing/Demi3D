@@ -125,8 +125,8 @@ namespace Demi
 
             if (!data)
             {
-                DI_WARNING("Cannot open the texture file: %s", ddsFile.c_str());
-                return DiAssetManager::GetInstance().GetAsset<DiTexture>("default.png");
+                DI_WARNING("Cannot open the texture file: %s, using default texture", ddsFile.c_str());
+                return DiTexture::GetDefaultTexture();
             }
             ret = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(relPath);
             ret->Load(data);
@@ -145,8 +145,8 @@ namespace Demi
 
             if (!fp)
             {
-                DI_WARNING("Cannot open the texture file: %s", ddsFile.c_str());
-                return DiAssetManager::GetInstance().GetAsset<DiTexture>("default.png");
+                DI_WARNING("Cannot open the texture file: %s, using default texture", ddsFile.c_str());
+                return DiTexture::GetDefaultTexture();
             }
             DiDataStreamPtr texData(DI_NEW DiFileHandleDataStream(relPath, fp));
 

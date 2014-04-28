@@ -41,13 +41,7 @@ namespace Demi
             break;
 
         case WM_CLOSE:
-            DiBase::Driver->MarkClosing();
-
-            window->Close();
-
-            if (window->GetParentRenderWnd())
-                window->GetParentRenderWnd()->Closing();
-
+            DiBase::CommandMgr->ExecuteCommand("quit");
             break;
         case WM_ACTIVATE:
 	    {

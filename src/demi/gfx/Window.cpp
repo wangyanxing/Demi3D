@@ -40,6 +40,15 @@ namespace Demi
         return i == mWnds.end() ? nullptr : i->second;
     }
 
+    DiWindowManager::~DiWindowManager()
+    {
+        for (auto i = mWnds.begin(); i != mWnds.end(); ++i)
+        {
+            DI_DELETE i->second;
+        }
+        mWnds.clear();
+    }
+
     DiWindow::~DiWindow()
     {
     }

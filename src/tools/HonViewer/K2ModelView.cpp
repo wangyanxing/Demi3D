@@ -20,8 +20,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MainWorkspaceControl.h"
 #include "RenderWindowControl.h"
 #include "ToolsControl.h"
+#include "FilesView.h"
 #include "AnimationView.h"
 #include "KeyFrameBar.h"
+#include "SettingsManager.h"
 #include "Grid.h"
 
 namespace Demi
@@ -61,10 +63,16 @@ namespace Demi
 
         mSkeleton->SetVisible(false);
         mBounds->SetVisible(false);
+
+        MyGUI::Colour c = SettingsManager::getInstance().getSector("Settings")->getPropertyValue<MyGUI::Colour>("ColorBackground");
+        DiColor backgroundColor(c.red,c.green,c.blue,c.alpha);
+        SetBackgroundColor(backgroundColor);
+        SettingsManager::getInstance().eventSettingsChanged += MyGUI::newDelegate(this, &K2ModelViewer::NotifySettingsChanged);
     }
 
     void K2ModelViewer::Release()
     {
+        SettingsManager::getInstance().eventSettingsChanged -= MyGUI::newDelegate(this, &K2ModelViewer::NotifySettingsChanged);
         mModel.reset();
     }
 
@@ -310,6 +318,37 @@ namespace Demi
         if (!mModel || !mModel->GetSkeleton())
             return 0;
         return mModel->GetSkeleton()->GetNumBones();
+    }
+
+    void K2ModelViewer::SetK2ResourcePack(const DiString& resPack, const DiString& texturePack)
+    {
+        //DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER = "00000000/";
+        if (texturePack.empty())
+            DiK2Configs::SetK2ResourcePack(resPack);
+        else
+            DiK2Configs::SetK2ResourcePack(resPack, texturePack);
+
+        FilesView* fv = HonViewerApp::GetViewerApp(
+            )->getMainPane()->getMainWorkspaceControl()->getToolsControl()->GetFilesView();
+        fv->scanFiles();
+    }
+
+    void K2ModelViewer::NotifySettingsChanged(const MyGUI::UString& _sectorName, const MyGUI::UString& _propertyName)
+    {
+        if (_sectorName == "Settings")
+        {
+            if (_propertyName == "ColorBackground")
+            {
+                MyGUI::Colour c = SettingsManager::getInstance().getSector("Settings")->getPropertyValue<MyGUI::Colour>("ColorBackground");
+                DiColor backgroundColor(c.red, c.green, c.blue, c.alpha);
+                SetBackgroundColor(backgroundColor);
+            }
+        }
+    }
+
+    void K2ModelViewer::SetBackgroundColor(const DiColor& color)
+    {
+        DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(color);
     }
 
 }

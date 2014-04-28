@@ -110,6 +110,8 @@ namespace Demi
 
         virtual void      OpenImpl();
 
+        void              QuitApp() { mQuit = true; }
+
     protected:
 
         DiAssetManager*         mAssetManager;

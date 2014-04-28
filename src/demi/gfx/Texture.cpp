@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Image.h"
 #include "RenderTarget.h"
 #include "GfxDriver.h"
+#include "AssetManager.h"
 
 namespace Demi
 {
@@ -404,6 +405,16 @@ namespace Demi
 
         if (mNeedRecalcTexMat)
             _RecalcTextureMatrix();
+    }
+
+    DiTexturePtr DiTexture::GetDefaultTexture()
+    {
+        static DiTexturePtr texture = nullptr;
+        if (!texture)
+        {
+            texture = DiAssetManager::GetInstance().GetAsset<DiTexture>("default.png");
+        }
+        return texture;
     }
 
     void DiTextureDrv::CopyFromMemory(const DiPixelBox& srcBox, uint32 level, uint32 surface /*= 0*/)

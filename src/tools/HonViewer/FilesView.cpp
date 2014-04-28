@@ -30,7 +30,7 @@ namespace tools
         mResourcesTree->eventTreeNodePrepare += newDelegate(this, &FilesView::notifyTreeNodePrepare);
         mResourcesTree->eventTreeNodeSelected += newDelegate(this, &FilesView::notifyTreeNodeSelected);
 
-        scanFiles();
+        //scanFiles();
 	}
 
     FilesView::~FilesView()
@@ -66,13 +66,12 @@ namespace tools
 
     void FilesView::scanFiles()
     {
-#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-        DiZipArchive zip("L:/Games/hon_res_misc/hon_res_misc.zip");
-#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
-        DiZipArchive zip("/Users/wangya/Demi/media_hon/buildings.zip");
-#endif
-        zip.Load();
-        mResources = zip.GenerateFileTree("*.mdf");
+        DiZipArchive* zip = DiK2Configs::RESOURCE_PACK;
+        if (!zip)
+            return;
+
+        DiTimer timer;
+        mResources = zip->GenerateFileTree("*.mdf");
 
         MyGUI::TreeControl::Node* root = mResourcesTree->getRoot();
         DiFileTree* nullfile = nullptr;
@@ -86,6 +85,9 @@ namespace tools
                 pNode->setPrepared(true);
             root->add(pNode);
         }
+
+        double loadingTime = timer.GetElapse();
+        DI_LOG("Zip files scanning time: %f", loadingTime);
     }
 
     void FilesView::notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)

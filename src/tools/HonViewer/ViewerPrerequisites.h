@@ -28,7 +28,9 @@ namespace tools
     class AnimationView;
     class ModelView;
     class KeyFrameBarControl;
+    class ColourManager;
     class CommonToolsControl;
+    class SettingsManager;
 }
 
 namespace MyGUI

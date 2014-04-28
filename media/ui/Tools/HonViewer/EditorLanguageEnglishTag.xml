@@ -37,9 +37,9 @@
 	<Tag name="MenuUpdateResources">Update resources</Tag>
 
 	<Tag name="MenuColours">Colours</Tag>
-	<Tag name="MenuColourBackground">Background colour ...</Tag>
-	<Tag name="MenuColourSelector">Selector colour ...</Tag>
-	<Tag name="MenuColourSelectorInactive">Inactive selector colour ...</Tag>
+	<Tag name="MenuColourBackground">Background color ...</Tag>
+	<Tag name="MenuColourSelector">Selector color ...</Tag>
+	<Tag name="MenuColourSelectorInactive">Inactive selector color ...</Tag>
 
 	<Tag name="MenuScale">Scale</Tag>
 

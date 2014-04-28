@@ -30,6 +30,8 @@ namespace tools
         
         ModelView* GetModelView();
 
+        FilesView* GetFilesView();
+
 	private:
 
         FilesView*  mFilesView;

@@ -23,10 +23,10 @@ namespace tools
 	private:
 		void createMainMenu();
 
+        void notifyPopupMenuAccept(MyGUI::MenuControl* _sender, MyGUI::MenuItem* _item);
 
 	private:
 		MyGUI::MenuBar* mBar;
-		MyGUI::MenuControl* mPopupMenuWidgets;
 	};
 
 } // namespace tools

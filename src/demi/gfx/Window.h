@@ -87,7 +87,7 @@ namespace Demi
 
         DiWindowManager(){}
 
-        ~DiWindowManager(){}
+        ~DiWindowManager();
 
     public:
 

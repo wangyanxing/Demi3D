@@ -23,7 +23,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Localise.h"
 #include "BackgroundControl.h"
 #include "MainPaneControl.h"
+#include "PathLib.h"
+#include "ColorManager.h"
 #include "K2ModelView.h"
+#include "SettingsManager.h"
+#include "CommandManager.h"
 
 namespace Demi
 {
@@ -42,9 +46,10 @@ namespace Demi
     {
         DemiDemo::Update();
 
-        mMainPane->update();
-        mModelViewer->Update(Driver->GetDeltaSecond());
-
+        if (mMainPane)
+            mMainPane->update();
+        if (mModelViewer)
+            mModelViewer->Update(Driver->GetDeltaSecond());
     }
 
     void HonViewerApp::Close()
@@ -60,6 +65,18 @@ namespace Demi
 
         MessageBoxManager::getInstance().shutdown();
         delete MessageBoxManager::getInstancePtr();
+
+        SettingsManager::getInstance().shutdown();
+        delete SettingsManager::getInstancePtr();
+
+        ColourManager::getInstance().shutdown();
+        delete ColourManager::getInstancePtr();
+
+        CommandManager::getInstance().shutdown();
+        delete CommandManager::getInstancePtr();
+
+        MyGUI::FactoryManager::getInstance().unregisterFactory<MyGUI::FilterNone>("BasisSkin");
+        MyGUI::FactoryManager::getInstance().unregisterFactory<MyGUI::RTTLayer>("Layer");
 
         DI_UNINSTALL_PLUGIN(DiK2);
 
@@ -78,7 +95,6 @@ namespace Demi
         DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
         peMgr->SetManualOutputTarget(DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas());
 
-        DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.35f, 0.35f, 0.35f));
         DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.2f, 0.2f, 0.2f));
 
         //DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0,0,0));
@@ -98,6 +114,13 @@ namespace Demi
         MyGUI::FactoryManager::getInstance().registerFactory<MyGUI::FilterNone>("BasisSkin");
         MyGUI::ResourceManager::getInstance().load("EditorLayers.xml");
 
+        new CommandManager();
+        CommandManager::getInstance().initialise();
+
+        DiString userSettings = DiPathLib::GetApplicationPath() + "ViewerSettings.xml";
+        new SettingsManager();
+        SettingsManager::getInstance().initialise(userSettings.c_str());
+
         std::string mLocale = "English";
         MyGUI::LanguageManager::getInstance().setCurrentLanguage(mLocale);
 
@@ -106,6 +129,9 @@ namespace Demi
 
         new DialogManager();
         DialogManager::getInstance().initialise();
+
+        new ColourManager();
+        ColourManager::getInstance().initialise();
 
         MyGUI::ResourceManager::getInstance().load("Initialise.xml");
 
@@ -119,6 +145,21 @@ namespace Demi
         mMainPane = new MainPaneControl();
 
         mModelViewer = DI_NEW K2ModelViewer();
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+        //DiString zip("L:/Games/Savage2Res/resources0.zip");
+        //DiString zipTex("L:/Games/Savage2Res/textures-high.zip");
+        DiString zip("L:/Games/Heroes of Newerth/game/resources0.s2z");
+        DiString zipTex("L:/Games/Heroes of Newerth/game/textures.s2z");
+        //DiString zip("L:/Games/hon_res_misc/hon_res_misc.zip");
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        DiString zip("/Users/wangya/Demi/media_hon/buildings.zip");
+#endif
+        DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER = "00000000/";
+
+        mModelViewer->SetK2ResourcePack("L:/Games/HON_res/world/cliffs.zip");
+
+        //mModelViewer->SetK2ResourcePack(zip, zipTex);
+        //mModelViewer->SetK2ResourcePack(zip);
     }
 
     HonViewerApp* HonViewerApp::GetViewerApp()

@@ -218,7 +218,6 @@ namespace Demi
         SAFE_DELETE(mPostEffectMgr);
         SAFE_DELETE(mSceneManager);
         SAFE_DELETE(mRenderBuffer);
-        SAFE_DELETE(mWindow);
     }
 
     void DiRenderWindow::OnDeviceLost()

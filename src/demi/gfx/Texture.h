@@ -211,6 +211,8 @@ namespace Demi
 
         static DiString         TYPE;
 
+        static DiTexturePtr     GetDefaultTexture();
+
     protected:
 
         void                    _UpdateUVAnimation(float delta);

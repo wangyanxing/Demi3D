@@ -47,4 +47,9 @@ namespace tools
         return mModelView;
     }
 
+    FilesView* ToolsControl::GetFilesView()
+    {
+        return mFilesView;
+    }
+
 } // namespace tools

@@ -66,6 +66,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    static bool Quit(DiCmdArgs*)
+    {
+        DemiDemo::GetApp()->QuitApp();
+        return true;
+    }
+
     DemiDemo::DemiDemo(DemoConfig config) :
         mAssetManager(nullptr)
         , mInputMgr(nullptr)
@@ -97,6 +103,7 @@ namespace Demi
         mAssetManager->SetBasePath(mConfig.mediaPath);
 
         CommandMgr->RegisterString("scene_type", config.sceneType, 0, "Scene manager type");
+        CommandMgr->AddCommand("quit", Quit, "Close Application");
     }
 
     DemiDemo::~DemiDemo(void)
@@ -128,7 +135,7 @@ namespace Demi
             Driver->Render();
         
         if (mQuit)
-            CloseEngine();
+            Close();
 
         DI_PROFILE_END_FRAME
     }
@@ -232,7 +239,8 @@ namespace Demi
 
         SAFE_DELETE(mInputMgr);
         SAFE_DELETE(mCameraHelper);
-        
+        SAFE_DELETE(mGUIWrapper);
+
         Driver->Shutdown();
 
         DI_UNINSTALL_PLUGIN(DiScript);
@@ -245,7 +253,6 @@ namespace Demi
         DI_UNINSTALL_PLUGIN(DiDrvGLES2);
 #endif
 
-        SAFE_DELETE(mGUIWrapper);
         SAFE_DELETE(mAssetManager);
 
         if (DiLogManager::GetInstancePtr())

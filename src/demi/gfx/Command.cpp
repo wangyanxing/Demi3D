@@ -423,21 +423,13 @@ namespace Demi
 
     void DiSystemCmd::BindAllSystemCmd(DiCommandManager* cm)
     {
-        cm->AddCommand("quit", DiSystemCmd::Quit, "close application");
+        //cm->AddCommand("quit", DiSystemCmd::Quit, "close application");
         DI_INFO("All built-in commands binded");
     }
 
     bool DiCommandManager::HasCommand(const DiString& varName)
     {
         return mMapVariables.find(varName) != mMapVariables.end();
-    }
-
-    bool DiSystemCmd::Quit(DiCmdArgs*)
-    {
-#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-        ::SendMessage((HWND)mMainHwnd, WM_CLOSE, 0, 0);
-#endif
-        return true;
     }
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32

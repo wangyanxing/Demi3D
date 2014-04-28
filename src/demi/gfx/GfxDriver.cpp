@@ -31,7 +31,6 @@ namespace Demi
         mDeltaTime(0),
         mElapsedTime(0),
         mFrameNum(0),
-        mClosing(false),
         mWndManager(nullptr),
         mNeedTextureFlipping(false),
         mInvertVertexWinding(false),
@@ -325,9 +324,6 @@ namespace Demi
 
         if (mMainWindow)
             mMainWindow->Update();
-
-        if (mClosing)
-            return;
 
         DiRenderWindow::ActiveWindow = render;
         render->Render();
