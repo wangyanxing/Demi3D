@@ -38,10 +38,6 @@ namespace Demi
             DiAny an(p);
             it->second = an;
         }
-        else
-        {
-            DI_WARNING("Failed to write the float4 array : %s",name.c_str());
-        }
     }
 
     void DiShaderParameter::WriteMatrix4(const DiString& name, DiMat4 mat4)
@@ -51,10 +47,6 @@ namespace Demi
         {
             DiAny an(mat4);
             it->second = an;
-        }
-        else
-        {
-            DI_WARNING("Failed to write the float4 variable : %s", name.c_str());
         }
     }
 
@@ -66,10 +58,6 @@ namespace Demi
             DiAny an(vec4);
             it->second = an;
         }
-        else
-        {
-            DI_WARNING("Failed to write the float4 variable : %s",name.c_str());
-        }
     }
 
     void DiShaderParameter::WriteFloat3( const DiString& name,DiVec3 vec3 )
@@ -80,10 +68,6 @@ namespace Demi
             DiAny an(vec3);
             it->second = an;
         }
-        else
-        {
-            DI_WARNING("Failed to write the float3 variable : %s",name.c_str());
-        }        
     }
 
     void DiShaderParameter::WriteFloat2( const DiString& name,DiVec2 ve2 )
@@ -93,11 +77,7 @@ namespace Demi
         {
             DiAny an(ve2);
             it->second = an;
-        }
-        else
-        {
-            DI_WARNING("Failed to write the float2 variable : %s",name.c_str());
-        }        
+        }    
     }
 
     void DiShaderParameter::WriteFloat( const DiString& name,float ve1)
@@ -107,10 +87,6 @@ namespace Demi
         {
             DiAny an(ve1);
             it->second = an;
-        }
-        else
-        {
-            //DI_WARNING("Failed to write the float variable : %s",name.c_str());
         }
     }
 
@@ -141,11 +117,6 @@ namespace Demi
             DiAny an(tex);
             it->second = an;
         }
-        else
-        {
-            DI_WARNING("Failed to write the texture2D variable : %s",name.c_str());
-            return textureAsset;
-        }
         return textureAsset;
     }
 
@@ -163,10 +134,6 @@ namespace Demi
             DiTexture* tex = textureAsset.get();
             DiAny an(tex);
             it->second = an;
-        }
-        else
-        {
-            DI_WARNING("Failed to write the texture2D variable : %s",name.c_str());
         }
     }
 
@@ -195,11 +162,6 @@ namespace Demi
             DiAny an(tex);
             it->second = an;
         }
-        else
-        {
-            DI_WARNING("Failed to write the textureCUBE variable : %s",name.c_str());
-            return textureAsset;
-        }
         return textureAsset;
     }
 
@@ -213,10 +175,6 @@ namespace Demi
             DiTexture* tex = textureAsset.get();
             DiAny an(tex);
             it->second = an;
-        }
-        else
-        {
-            DI_WARNING("Failed to write the textureCUBE variable : %s",name.c_str());
         }
     }
 
@@ -240,10 +198,6 @@ namespace Demi
         {
             DiAny an(vec4);
             it->second = an;
-        }
-        else
-        {
-            DI_WARNING("Failed to write the color variable : %s",name.c_str());
         }
     }
 

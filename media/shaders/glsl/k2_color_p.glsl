@@ -86,9 +86,9 @@ void AccumulatePhong(vec3 normal,
                          vec3 viewDir,
                          vec3 lightContrib,
                          inout vec3 litDiffuse,
-                         inout vec3 litSpecular) {
+                         inout vec3 litSpecular) 
+{						 
     float NdotL = max(dot(normal, lightDir), 0.0);
-	
 	vec3 halfVec = normalize(lightDir + viewDir);
 	float dotHalf = max(dot(normal, halfVec), 0.0);
 	float specWeight = max(pow(dotHalf, g_shininess), 0.0);
@@ -103,21 +103,23 @@ void AccumulatePhong(vec3 normal,
 	vec3 specular = gSurface.specularAmount * specWeight;
 #endif
 		
-	litDiffuse += lightContrib * NdotL * gSurface.albedo.rgb;
+	litDiffuse += lightContrib * NdotL;
     litSpecular += lightContrib * specular;
 }
 
-void AccumulateDirLight(vec3 dir, vec4 color, inout vec3 lit){
+void AccumulateDirLight(vec3 dir, vec4 color, inout vec3 diffuse, inout vec3 specular){
 	vec3 litDiffuse = vec3(0.0);
     vec3 litSpecular = vec3(0.0);
 	
     AccumulatePhong(gSurface.normal, normalize(-dir), normalize(gSurface.viewDirWorld),
         color.rgb * color.a, litDiffuse, litSpecular);
 	
-    lit += litDiffuse + litSpecular;
+    diffuse += litDiffuse;
+	specular += litSpecular;
 }
 
-void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd, vec4 color, inout vec3 lit) {
+void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd, vec4 color,
+		inout vec3 diffuse, inout vec3 specular) {
 	vec3 directionToLight = position - gSurface.positionWorld;
     float distanceToLight = length(directionToLight);
 	
@@ -131,49 +133,9 @@ void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd, vec4
 		AccumulatePhong(gSurface.normal, directionToLight, normalize(gSurface.viewDirWorld),
 			attenuation * color.rgb * color.a, litDiffuse, litSpecular);
 		
-		lit += litDiffuse + litSpecular;
+        diffuse += litDiffuse;
+        specular += litSpecular;
 	}
-}
-
-void AccumulateSkyLight(vec3 dir, vec4 skycolor, vec4 groundcolor, inout vec3 lit){
-	
-	vec3 lightDir = normalize(dir);
-	vec3 viewDir = normalize(gSurface.viewDirWorld);
-	
-	// diffuse
-	float NdotL = max(dot(gSurface.normal, lightDir), 0.0);
-	float skyDiffuseWeight = 0.5 * NdotL + 0.5;
-	vec3 skyLightColor = mix( groundcolor.rgb, skycolor.rgb, skyDiffuseWeight );
-	vec3 litDiffuse = gSurface.albedo.rgb * skyLightColor;
-	
-	// specular (sky light)
-	vec3 hemiHalfVectorSky = normalize( lightDir + viewDir );
-	float hemiDotNormalHalfSky = 0.5 * dot( gSurface.normal, hemiHalfVectorSky ) + 0.5;
-	float hemiSpecularWeightSky = max( pow( hemiDotNormalHalfSky, g_shininess ), 0.0 );
-	
-	// specular (ground light)
-	vec3 dirGround = -lightDir;
-	vec3 hemiHalfVectorGround = normalize( dirGround + viewDir );
-	float hemiDotNormalHalfGround = 0.5 * dot( gSurface.normal, hemiHalfVectorGround ) + 0.5;
-	float hemiSpecularWeightGround = max( pow( hemiDotNormalHalfGround, g_shininess ), 0.0 );
-	
-#ifdef USE_SCHLICK_FRESNEL
-	float dotGround = dot( gSurface.normal, dirGround );
-	float specularNormalization = ( g_shininess + 2.0001 ) / 8.0;
-	
-	vec3 schlickSky = gSurface.specularAmount + vec3( 1.0 - gSurface.specularAmount ) 
-						* pow( 1.0 - dot( lightDir, hemiHalfVectorSky ), 5.0 );
-						
-	vec3 schlickGround = gSurface.specularAmount + vec3( 1.0 - gSurface.specularAmount )
-						* pow( 1.0 - dot( dirGround, hemiHalfVectorGround ), 5.0 );
-						
-	vec3 litSpecular = skyLightColor * specularNormalization * ( schlickSky * hemiSpecularWeightSky
-						* max( NdotL, 0.0 ) + schlickGround * hemiSpecularWeightGround * max( dotGround, 0.0 ) );
-#else
-	vec3 litSpecular = gSurface.specularAmount * skyLightColor * ( hemiSpecularWeightSky + hemiSpecularWeightGround ) * skyDiffuseWeight;
-#endif
-	
-	lit += litDiffuse + litSpecular;
 }
 
 void main(){
@@ -184,26 +146,18 @@ void main(){
 	if ( gSurface.albedo.a * g_opacity < ALPHATEST ) discard;
 #endif
 	
-	vec3 lit = vec3(0.0);
+	vec3 vDiffuse = g_globalAmbient.rgb;
+    vec3 vSpecular = vec3(0.0, 0.0, 0.0);
 	
 	for(int i = 0; i < g_numDirLights; i++){
-		AccumulateDirLight(g_dirLightsDir[i].xyz, g_dirLightsColor[i], lit);
+		AccumulateDirLight(g_dirLightsDir[i].xyz, g_dirLightsColor[i], vDiffuse, vSpecular);
 	}
-	
-#if 0
-	for(int i = 0; i < g_numPointLights; i++){
-		AccumulatePointLight(g_pointLightsPosition[i].xyz,
-			g_pointLightsAttenuation[i].x,g_pointLightsAttenuation[i].y, g_pointLightsColor[i], lit);
-	}
-	
-	if (g_hasSkyLight == 1){
-		AccumulateSkyLight(g_skyLightDir, g_skyLightColor, g_groundColor, lit);
-	}
-#endif
 
-	gl_FragColor.rgb = lit * g_diffuseColor.rgb;
-	gl_FragColor.rgb += g_globalAmbient.rgb * g_ambientColor.rgb;	
-	gl_FragColor.a = gSurface.albedo.a * g_opacity;
+	vec3 vFinalColor = gSurface.albedo.rgb * vDiffuse + vSpecular;
+	
+	gl_FragColor.rgb = vFinalColor;
+    gl_FragColor.a = gSurface.albedo.a * g_opacity;
+	
 	
 	// environment mapping
 #if defined(USE_ENV_MAP)

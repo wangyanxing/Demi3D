@@ -58,36 +58,36 @@ namespace Demi
 	
     void DiGfxCaps::LogCaps()
 	{
-        DI_LOG("-------------------------");
-        DI_LOG("--Graphics capabilities--");
-        DI_LOG("-------------------------");
+        DI_INFO("-------------------------");
+        DI_INFO("--Graphics capabilities--");
+        DI_INFO("-------------------------");
 
-        DI_LOG("GfxDriver: %s", getRenderSystemName().c_str());
-        DI_LOG("GPU Vendor: %s", vendorToString(getVendor()).c_str());
-        DI_LOG("Device Name: %s", getDeviceName().c_str());
-        DI_LOG("Driver Version: %s", getDriverVersion().toString().c_str());
+        DI_INFO("GfxDriver: %s", getRenderSystemName().c_str());
+        DI_INFO("GPU Vendor: %s", vendorToString(getVendor()).c_str());
+        DI_INFO("Device Name: %s", getDeviceName().c_str());
+        DI_INFO("Driver Version: %s", getDriverVersion().toString().c_str());
 
-        DI_LOG(" * Hardware generation of mipmaps: %s", _BoolToStr(hasCapability(RSC_AUTOMIPMAP)));
-        DI_LOG(" * Anisotropic texture filtering: %s", _BoolToStr(hasCapability(RSC_ANISOTROPY)));
-        DI_LOG(" * Hardware stencil buffer: %s", _BoolToStr(hasCapability(RSC_HWSTENCIL)));
+        DI_INFO(" * Hardware generation of mipmaps: %s", _BoolToStr(hasCapability(RSC_AUTOMIPMAP)));
+        DI_INFO(" * Anisotropic texture filtering: %s", _BoolToStr(hasCapability(RSC_ANISOTROPY)));
+        DI_INFO(" * Hardware stencil buffer: %s", _BoolToStr(hasCapability(RSC_HWSTENCIL)));
 
 		if (hasCapability(RSC_HWSTENCIL))
 		{
-            DI_LOG("   - Stencil depth: %d", getStencilBufferBitDepth());
-            DI_LOG("   - Two sided stencil support: %s", _BoolToStr(hasCapability(RSC_TWO_SIDED_STENCIL)));
-            DI_LOG("   - Wrap stencil values: %s", _BoolToStr(hasCapability(RSC_STENCIL_WRAP)));
+            DI_INFO("   - Stencil depth: %d", getStencilBufferBitDepth());
+            DI_INFO("   - Two sided stencil support: %s", _BoolToStr(hasCapability(RSC_TWO_SIDED_STENCIL)));
+            DI_INFO("   - Wrap stencil values: %s", _BoolToStr(hasCapability(RSC_STENCIL_WRAP)));
 		}
-        DI_LOG(" * 32-bit index buffers: %s", +_BoolToStr(hasCapability(RSC_32BIT_INDEX)));
+        DI_INFO(" * 32-bit index buffers: %s", +_BoolToStr(hasCapability(RSC_32BIT_INDEX)));
 
-        DI_LOG(" * Vertex shader: %s", _BoolToStr(hasCapability(RSC_VERTEX_PROGRAM)));
-        DI_LOG(" * Number of float constants for vertex shader: %d", mVertexProgramConstantFloatCount);
-        DI_LOG(" * Number of int constants for vertex shader: %d", mVertexProgramConstantIntCount);
-        DI_LOG(" * Number of bool constants for vertex shader: %d", mVertexProgramConstantBoolCount);
+        DI_INFO(" * Vertex shader: %s", _BoolToStr(hasCapability(RSC_VERTEX_PROGRAM)));
+        DI_INFO(" * Number of float constants for vertex shader: %d", mVertexProgramConstantFloatCount);
+        DI_INFO(" * Number of int constants for vertex shader: %d", mVertexProgramConstantIntCount);
+        DI_INFO(" * Number of bool constants for vertex shader: %d", mVertexProgramConstantBoolCount);
 
-        DI_LOG(" * Fragment shader: %s", _BoolToStr(hasCapability(RSC_FRAGMENT_PROGRAM)));
-        DI_LOG(" * Number of float constants for fragment shader: %d", mFragmentProgramConstantFloatCount);
-        DI_LOG(" * Number of int constants for fragment shader: %d", mFragmentProgramConstantIntCount);
-        DI_LOG(" * Number of bool constants for fragment shader: %d", mFragmentProgramConstantBoolCount);
+        DI_INFO(" * Fragment shader: %s", _BoolToStr(hasCapability(RSC_FRAGMENT_PROGRAM)));
+        DI_INFO(" * Number of float constants for fragment shader: %d", mFragmentProgramConstantFloatCount);
+        DI_INFO(" * Number of int constants for fragment shader: %d", mFragmentProgramConstantIntCount);
+        DI_INFO(" * Number of bool constants for fragment shader: %d", mFragmentProgramConstantBoolCount);
 
 		DiString profileList = "";
 		for(ShaderProfiles::iterator iter = mSupportedShaderProfiles.begin(), end = mSupportedShaderProfiles.end();
@@ -95,66 +95,66 @@ namespace Demi
 		{
 			profileList += " " + *iter;
 		}
-        DI_LOG(" * Supported Shader Profiles: %s", profileList.c_str());
+        DI_INFO(" * Supported Shader Profiles: %s", profileList.c_str());
 
-        DI_LOG(" * Texture Compression: ", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION)));
+        DI_INFO(" * Texture Compression: ", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION)));
 		if (hasCapability(RSC_TEXTURE_COMPRESSION))
 		{
-            DI_LOG("   - DXT: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_DXT)));
-            DI_LOG("   - VTC: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_VTC)));
-			DI_LOG("   - PVRTC: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_PVRTC)));
-			DI_LOG("   - ATC: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_ATC)));
-			DI_LOG("   - ETC1: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_ETC1)));
-			DI_LOG("   - ETC2: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_ETC2)));
-			DI_LOG("   - BC4/BC5: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_BC4_BC5)));
-			DI_LOG("   - BC6H/BC7: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_BC6H_BC7)));
+            DI_INFO("   - DXT: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_DXT)));
+            DI_INFO("   - VTC: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_VTC)));
+			DI_INFO("   - PVRTC: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_PVRTC)));
+			DI_INFO("   - ATC: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_ATC)));
+			DI_INFO("   - ETC1: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_ETC1)));
+			DI_INFO("   - ETC2: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_ETC2)));
+			DI_INFO("   - BC4/BC5: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_BC4_BC5)));
+			DI_INFO("   - BC6H/BC7: %s", _BoolToStr(hasCapability(RSC_TEXTURE_COMPRESSION_BC6H_BC7)));
 		}
 
-		DI_LOG(" * Scissor Rectangle: %s", _BoolToStr(hasCapability(RSC_SCISSOR_TEST)));
-		DI_LOG(" * Hardware Occlusion Query: %s", _BoolToStr(hasCapability(RSC_HWOCCLUSION)));
-		DI_LOG(" * User clip planes: %s", _BoolToStr(hasCapability(RSC_USER_CLIP_PLANES)));
-		DI_LOG(" * VET_UBYTE4 vertex element type: %s", _BoolToStr(hasCapability(RSC_VERTEX_FORMAT_UBYTE4)));
-		DI_LOG(" * Infinite far plane projection: %s", _BoolToStr(hasCapability(RSC_INFINITE_FAR_PLANE)));
-		DI_LOG(" * Hardware render-to-texture: %s", _BoolToStr(hasCapability(RSC_HWRENDER_TO_TEXTURE)));
-		DI_LOG(" * Floating point textures: %s", _BoolToStr(hasCapability(RSC_TEXTURE_FLOAT)));
-		DI_LOG(" * Non-power-of-two textures: %s %s", _BoolToStr(hasCapability(RSC_NON_POWER_OF_2_TEXTURES)),(mNonPOW2TexturesLimited ? " (limited)" : ""));
-		DI_LOG(" * 1D textures: %s", _BoolToStr(hasCapability(RSC_TEXTURE_1D)));
-		DI_LOG(" * 3D textures: %s", _BoolToStr(hasCapability(RSC_TEXTURE_3D)));
-		DI_LOG(" * Multiple Render Targets: %d", mNumMultiRenderTargets);
-		DI_LOG("   - With different bit depths: %s", _BoolToStr(hasCapability(RSC_MRT_DIFFERENT_BIT_DEPTHS)));
+		DI_INFO(" * Scissor Rectangle: %s", _BoolToStr(hasCapability(RSC_SCISSOR_TEST)));
+		DI_INFO(" * Hardware Occlusion Query: %s", _BoolToStr(hasCapability(RSC_HWOCCLUSION)));
+		DI_INFO(" * User clip planes: %s", _BoolToStr(hasCapability(RSC_USER_CLIP_PLANES)));
+		DI_INFO(" * VET_UBYTE4 vertex element type: %s", _BoolToStr(hasCapability(RSC_VERTEX_FORMAT_UBYTE4)));
+		DI_INFO(" * Infinite far plane projection: %s", _BoolToStr(hasCapability(RSC_INFINITE_FAR_PLANE)));
+		DI_INFO(" * Hardware render-to-texture: %s", _BoolToStr(hasCapability(RSC_HWRENDER_TO_TEXTURE)));
+		DI_INFO(" * Floating point textures: %s", _BoolToStr(hasCapability(RSC_TEXTURE_FLOAT)));
+		DI_INFO(" * Non-power-of-two textures: %s %s", _BoolToStr(hasCapability(RSC_NON_POWER_OF_2_TEXTURES)),(mNonPOW2TexturesLimited ? " (limited)" : ""));
+		DI_INFO(" * 1D textures: %s", _BoolToStr(hasCapability(RSC_TEXTURE_1D)));
+		DI_INFO(" * 3D textures: %s", _BoolToStr(hasCapability(RSC_TEXTURE_3D)));
+		DI_INFO(" * Multiple Render Targets: %d", mNumMultiRenderTargets);
+		DI_INFO("   - With different bit depths: %s", _BoolToStr(hasCapability(RSC_MRT_DIFFERENT_BIT_DEPTHS)));
 		
-		DI_LOG(" * Vertex texture fetch: %s", _BoolToStr(hasCapability(RSC_VERTEX_TEXTURE_FETCH)));
-		DI_LOG(" * Number of world matrices: %d", mNumWorldMatrices);
-		DI_LOG(" * Number of texture units: %d", mNumTextureUnits);
-		DI_LOG(" * Stencil buffer depth: %d", mStencilBufferBitDepth);
-		DI_LOG(" * Number of vertex blend matrices: %d", mNumVertexBlendMatrices);
+		DI_INFO(" * Vertex texture fetch: %s", _BoolToStr(hasCapability(RSC_VERTEX_TEXTURE_FETCH)));
+		DI_INFO(" * Number of world matrices: %d", mNumWorldMatrices);
+		DI_INFO(" * Number of texture units: %d", mNumTextureUnits);
+		DI_INFO(" * Stencil buffer depth: %d", mStencilBufferBitDepth);
+		DI_INFO(" * Number of vertex blend matrices: %d", mNumVertexBlendMatrices);
 
-		DI_LOG(" * Render to Vertex Buffer : %s", _BoolToStr(hasCapability(RSC_HWRENDER_TO_VERTEX_BUFFER)));
-        DI_LOG(" * Hardware Atomic Counters: %s", _BoolToStr(hasCapability(RSC_ATOMIC_COUNTERS)));
+		DI_INFO(" * Render to Vertex Buffer : %s", _BoolToStr(hasCapability(RSC_HWRENDER_TO_VERTEX_BUFFER)));
+        DI_INFO(" * Hardware Atomic Counters: %s", _BoolToStr(hasCapability(RSC_ATOMIC_COUNTERS)));
 
         if (mCategoryRelevant[CAPS_CATEGORY_GL])
         {
-            DI_LOG(" * GL 1.5 without VBO workaround: %s"
+            DI_INFO(" * GL 1.5 without VBO workaround: %s"
                 , _BoolToStr(hasCapability(RSC_GL1_5_NOVBO)));
-            DI_LOG(" * Frame Buffer objects: %s"
+            DI_INFO(" * Frame Buffer objects: %s"
                 , _BoolToStr(hasCapability(RSC_FBO)));
-            DI_LOG(" * Frame Buffer objects (ARB extension): %s"
+            DI_INFO(" * Frame Buffer objects (ARB extension): %s"
                 , _BoolToStr(hasCapability(RSC_FBO_ARB)));
-            DI_LOG(" * Frame Buffer objects (ATI extension): %s"
+            DI_INFO(" * Frame Buffer objects (ATI extension): %s"
                 , _BoolToStr(hasCapability(RSC_FBO_ATI)));
-            DI_LOG(" * PBuffer support: %s"
+            DI_INFO(" * PBuffer support: %s"
                 , _BoolToStr(hasCapability(RSC_PBUFFER)));
-            DI_LOG(" * GL 1.5 without HW-occlusion workaround: %s"
+            DI_INFO(" * GL 1.5 without HW-occlusion workaround: %s"
                 , _BoolToStr(hasCapability(RSC_GL1_5_NOHWOCCLUSION)));
-            DI_LOG(" * Vertex Array Objects: %s"
+            DI_INFO(" * Vertex Array Objects: %s"
                 , _BoolToStr(hasCapability(RSC_VAO)));
-            DI_LOG(" * Separate shader objects: %s"
+            DI_INFO(" * Separate shader objects: %s"
                 , _BoolToStr(hasCapability(RSC_SEPARATE_SHADER_OBJECTS)));
         }
 
 		if (mCategoryRelevant[CAPS_CATEGORY_D3D9])
 		{
-			DI_LOG(" * DirectX per stage constants: %s", _BoolToStr(hasCapability(RSC_PERSTAGECONSTANT)));
+			DI_INFO(" * DirectX per stage constants: %s", _BoolToStr(hasCapability(RSC_PERSTAGECONSTANT)));
 		}
 	}
 	

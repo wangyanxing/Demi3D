@@ -107,7 +107,7 @@ void AccumulatePhong(float3 normal,
     float3 specular = gSurface.specularAmount * specWeight;
 #endif
 
-        litDiffuse += lightContrib * NdotL;
+	litDiffuse += lightContrib * NdotL;
     litSpecular += lightContrib * specular;
 }
 
@@ -115,10 +115,10 @@ void AccumulateDirLight(float3 dir, float4 color,
     inout float3 diffuse, inout float3 specular) {
 
     float3 litDiffuse = float3(0.0f, 0.0f, 0.0f);
-        float3 litSpecular = float3(0.0f, 0.0f, 0.0f);
+    float3 litSpecular = float3(0.0f, 0.0f, 0.0f);
 
-        AccumulatePhong(gSurface.normal, normalize(-dir), normalize(gSurface.viewDirWorld),
-        color.rgb * color.a, litDiffuse, litSpecular);
+    AccumulatePhong(gSurface.normal, normalize(-dir), normalize(gSurface.viewDirWorld),
+    color.rgb * color.a, litDiffuse, litSpecular);
 
     diffuse += litDiffuse;
     specular += litSpecular;
@@ -163,11 +163,13 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
             vDiffuse, vSpecular);
     }
 
+	#if 0
     for (int i = 0; i < g_numPointLights; i++){
         AccumulatePointLight(g_pointLightsPosition[i],
             g_pointLightsAttenuation[i].x, g_pointLightsAttenuation[i].y,
             g_pointLightsColor[i], vDiffuse, vSpecular);
     }
+	#endif
 
     float3 vFinalColor = gSurface.albedo * vDiffuse + vSpecular;
 
