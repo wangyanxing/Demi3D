@@ -215,8 +215,9 @@ namespace Demi
         DiWindow* wnd = Driver->GetWindowManager()->GetWindow(mWnd);
         if(wnd)
         {
+            bool resized = CheckSizeChanged(wnd);
             wnd->SwapBuffers();
-            return true;
+            return !resized;
         }
         else
             return false;
@@ -225,4 +226,26 @@ namespace Demi
     void DiGLWindowTarget::Init()
     {
     }
+
+    bool DiGLWindowTarget::CheckSizeChanged(DiWindow* wnd)
+    {
+        uint32 w, h;
+        Driver->GetWindowSize(wnd->GetWndHandle(), w, h);
+        if (w != mWidth || h != mHeight)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    void DiGLWindowTarget::OnDeviceLost()
+    {
+
+    }
+
+    void DiGLWindowTarget::OnDeviceReset()
+    {
+        Driver->GetWindowSize(mWnd, mWidth, mHeight);
+    }
+
 }

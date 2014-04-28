@@ -69,10 +69,11 @@ namespace Demi
 
     DiTexture::~DiTexture()
     {
+        DI_DEBUG("Releasing texture: %s", mName.c_str());
+
         Release();
 
-        DI_DELETE mTextureDrv;
-        mTextureDrv = nullptr;
+        SAFE_DELETE(mTextureDrv);
 
         if (Driver)
             Driver->RemoveDeviceLostListener(this);
@@ -409,12 +410,7 @@ namespace Demi
 
     DiTexturePtr DiTexture::GetDefaultTexture()
     {
-        static DiTexturePtr texture = nullptr;
-        if (!texture)
-        {
-            texture = DiAssetManager::GetInstance().GetAsset<DiTexture>("default.png");
-        }
-        return texture;
+        return DiAssetManager::GetInstance().GetAsset<DiTexture>("default.png");
     }
 
     void DiTextureDrv::CopyFromMemory(const DiPixelBox& srcBox, uint32 level, uint32 surface /*= 0*/)

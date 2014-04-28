@@ -77,6 +77,12 @@ namespace Demi
 
         bool                    SwapBuffer();
 
+        bool                    CheckSizeChanged(DiWindow* wnd);
+
+        void                    OnDeviceLost();
+
+        void                    OnDeviceReset();
+
         void                    Init();
 
     private:

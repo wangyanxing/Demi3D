@@ -62,11 +62,7 @@ namespace Demi
     void DiGLTextureDrv::Release()
     {
         glDeleteTextures(1, &mTextureID); 
-        if (mBuffer)
-        {
-            DI_DELETE mBuffer;
-            mBuffer = nullptr;
-        }
+        SAFE_DELETE(mBuffer);
     }
     
     void DiGLTextureDrv::CreateTexture()
