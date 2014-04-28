@@ -58,7 +58,6 @@ namespace Demi
 
         mGridPlane = make_shared<DiGridPlane>(30, 10, DiColor(0.1f, 0.1f, 0.1f), DiColor(0.5f, 0.5f, 0.5f));
         mGridPlane->SetMaterial(dbgHelperMat);
-        mGridPlane->SetVisible(false);
         sm->GetRootNode()->AttachObject(mGridPlane);
 
         mSkeleton->SetVisible(false);

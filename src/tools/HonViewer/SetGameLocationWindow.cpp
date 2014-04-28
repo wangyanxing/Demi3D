@@ -17,6 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Window.h"
 #include "HonViewerApp.h"
 #include "MessageBox.h"
+#include "SettingsManager.h"
+#include "SettingsSector.h"
 
 namespace tools
 {
@@ -65,6 +67,9 @@ namespace tools
             DiString respack = path + "/game/resources0.s2z";
             DiString texpack = path + "/game/textures.s2z";
             HonViewerApp::GetViewerApp()->SetResourceLocation(respack, texpack);
+
+            SettingsManager::getInstance().getSector("Settings")->setPropertyValue("ResourcePack", respack.c_str());
+            SettingsManager::getInstance().getSector("Settings")->setPropertyValue("TexturePack", texpack.c_str());
         }
         else
         {

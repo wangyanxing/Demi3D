@@ -42,6 +42,7 @@ namespace tools
         mEnableBloom->eventMouseButtonClick += MyGUI::newDelegate(this, &CommonToolsControl::notifyButtonPressed);
 
         mShowModel->setStateSelected(true);
+        mShowGrids->setStateSelected(true);
         mLoopAnim->setStateSelected(true);
     }
 
