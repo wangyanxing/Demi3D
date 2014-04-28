@@ -24,7 +24,8 @@ namespace Demi
 {
     DiQuadElement::DiQuadElement( const DiColor& col )
     {
-        uint32 c = col.GetAsByte4();
+        uint32 c = DiBase::Driver->GetNativeColor(col);
+
         topLeftColor     = c;
         topRightColor    = c;
         bottomLeftColor  = c;
@@ -45,8 +46,8 @@ namespace Demi
 
     DiQuadElement::DiQuadElement()
     {
-        uint32 c = DiColor::White.GetAsByte4();
-        topLeftColor     = c;
+        uint32 c = DiBase::Driver->GetNativeColor(DiColor::White);
+        topLeftColor = c;
         topRightColor    = c;
         bottomLeftColor  = c;
         bottomRightColor = c;

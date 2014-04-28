@@ -26,15 +26,6 @@ namespace Demi
     const DiColor DiColor::Purple    = DiColor(1.0,0.0,1.0);
     const DiColor DiColor::LightBlue = DiColor(0.3f,1.0f,1.0f);
     
-    uint32 DiColor::GetAsByte4(void) const
-    {
-#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-        return GetAsARGB();
-#else
-        return GetAsABGR();
-#endif
-    }
-
 #if DEMI_ENDIAN == DEMI_BIG_ENDIAN
     ABGR DiColor::GetAsABGR(void) const
 #else

@@ -111,6 +111,8 @@ namespace Demi
 
         DiWindow*               CreateWnd();
 
+        uint32                  GetNativeColor(const DiColor& col);
+
         static DiGLES2StateCache*   StateCache;
 
         static DiGLES2UniformCache* UniformCache;

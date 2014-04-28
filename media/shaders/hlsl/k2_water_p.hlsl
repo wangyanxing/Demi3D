@@ -36,7 +36,6 @@ struct SurfaceData
 	float3 positionWorld;         // world space position
 	float3 viewDirWorld;
     float3 normal;               // world space normal
-    float3 textureNormal;
     float4 albedo;
     float3 specularAmount;
 };
@@ -49,21 +48,6 @@ void ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
 	gSurface.positionWorld = input.PosWorld;
     gSurface.specularAmount = float3(1, 1, 1);
 
-#if 0
-    float3 cNormalmapColor1 = tex2D(normalMap, input.Texcoord1.xy).rgb;
-    float3 cNormalmapColor2 = tex2D(normalMap, input.Texcoord1.zw).rgb;
-    float3 vTexNormal1 = float3(cNormalmapColor1.rgb * 2.0f - 1.0f);
-    float3 vTexNormal2 = float3(cNormalmapColor2.rgb * 2.0f - 1.0f);
-    float3 vTexNormal = normalize(vTexNormal1 + vTexNormal2);
-    
-    float Bump = 1.0f;
-    float3 vNormal = input.Normal;
-    float3 bump = Bump * vTexNormal;
-    vNormal = vNormal + bump.x * input.Tangent + bump.y * input.Binormal;
-    vNormal = normalize(vNormal);
-    gSurface.normal = vNormal;
-#endif
-
     float3 cNormalmapColor1 = tex2D(normalmap1, input.Texcoord0.xy).agb;
     float3 cNormalmapColor2 = tex2D(normalmap2, input.Texcoord0.zw).agb;
     float3 vTexNormal1 = float3(cNormalmapColor1.rgb * 2.0f - 1.0f);
@@ -71,7 +55,6 @@ void ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
     float3 vTexNormal = normalize(vTexNormal1 + vTexNormal2);
     float3x3 rot = float3x3(input.Tangent, input.Binormal, input.Normal);
     gSurface.normal = normalize(mul(vTexNormal, rot));
-    gSurface.textureNormal = vTexNormal;
 
 	gSurface.albedo = tex2D( map, input.Texcoord0 );
 	#ifdef GAMMA_INPUT
@@ -159,17 +142,18 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
             vDiffuse, vSpecular);
     }
 
+	#if 0
     for (int i = 0; i < g_numPointLights; i++){
         AccumulatePointLight(g_pointLightsPosition[i],
             g_pointLightsAttenuation[i].x, g_pointLightsAttenuation[i].y,
             g_pointLightsColor[i], vDiffuse, vSpecular);
     }
+	#endif
     
     float3 vFinalColor = gSurface.albedo * vDiffuse + vSpecular;
     Out.Color.rgb = vFinalColor;
     Out.Color.a = gSurface.albedo.a * g_opacity * fDiffuseOpacity;
-    //Out.Color = In.Color;
-
+	
 	// environment mapping
 #if defined(USE_ENV_MAP)
 

@@ -105,6 +105,8 @@ namespace Demi
 
         DiGfxCaps*              InitGfxCaps();
 
+        uint32                  GetNativeColor(const DiColor& col);
+
         static DiString&        GetGlslVersion();
 
         static DiGLBufferManager* BufferMgr;

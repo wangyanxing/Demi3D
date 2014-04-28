@@ -847,6 +847,11 @@ namespace Demi
         //TODO:
     }
 
+    uint32 DiGLES2Driver::GetNativeColor(const DiColor& col)
+    {
+        return col.GetAsABGR();
+    }
+
     DiGLES2Util* DiGLES2Driver::GLUtil = nullptr;
     DiGLES2UniformCache* DiGLES2Driver::UniformCache = nullptr;
     DiGLES2StateCache* DiGLES2Driver::StateCache = nullptr;

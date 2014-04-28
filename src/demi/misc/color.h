@@ -49,10 +49,6 @@ namespace Demi
 
         float r,g,b,a;
         
-        /** It depends on the platform
-         */
-        uint32 GetAsByte4(void) const;
-
         RGBA GetAsRGBA(void) const;
 
         ARGB GetAsARGB(void) const;

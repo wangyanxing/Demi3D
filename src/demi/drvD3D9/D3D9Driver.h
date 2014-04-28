@@ -143,6 +143,11 @@ namespace Demi
 
         D3D9DriverList*         GetD3D9Devices();
 
+        uint32                  GetNativeColor(const DiColor& col)
+        {
+            return col.GetAsARGB();
+        }
+
     public:
 
         static IDirect3DVertexShader9*         CreateVertexShader(const DWORD* pFunction);

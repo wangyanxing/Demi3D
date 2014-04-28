@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxPrerequisites.h"
 #include "TransformUnit.h"
 #include "RenderUnit.h"
+#include "GfxDriver.h"
 
 namespace Demi
 {
@@ -28,10 +29,10 @@ namespace Demi
 
         DebugLine(const DiVec3& startPos, const DiVec3& endPos, const DiColor& lineColor) :
             point0(startPos),
-            point1(endPos),
-            color0(lineColor.GetAsByte4()),
-            color1(lineColor.GetAsByte4())
+            point1(endPos)
         {
+            color0 = DiBase::Driver->GetNativeColor(lineColor);
+            color1 = color0;
         }
 
         DiVec3 point0;

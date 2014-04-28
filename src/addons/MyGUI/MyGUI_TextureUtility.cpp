@@ -25,6 +25,8 @@
 #include "MyGUI_DataManager.h"
 #include "MyGUI_Bitwise.h"
 
+#include "GfxDriver.h"
+
 namespace MyGUI
 {
 
@@ -82,14 +84,15 @@ namespace MyGUI
 
 		uint32 toColourARGB(const Colour& _colour)
 		{
-			uint32 val32 = uint8(_colour.alpha * 255);
-			val32 <<= 8;
-			val32 += uint8(_colour.red * 255);
-			val32 <<= 8;
-			val32 += uint8(_colour.green * 255);
-			val32 <<= 8;
-			val32 += uint8(_colour.blue * 255);
-			return val32;
+            return DiBase::Driver->GetNativeColor(DiColor(_colour.red, _colour.green, _colour.blue, _colour.alpha));
+// 			uint32 val32 = uint8(_colour.alpha * 255);
+// 			val32 <<= 8;
+// 			val32 += uint8(_colour.red * 255);
+// 			val32 <<= 8;
+// 			val32 += uint8(_colour.green * 255);
+// 			val32 <<= 8;
+// 			val32 += uint8(_colour.blue * 255);
+// 			return val32;
 		}
 
 	} // namespace texture_utility

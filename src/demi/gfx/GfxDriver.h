@@ -178,6 +178,8 @@ namespace Demi
 
         DiGfxCaps*                  GetGfxCaps() { return mCaps; }
 
+        virtual uint32              GetNativeColor(const DiColor& col) = 0;
+
     public:
 
         typedef DiVector<DiDepthBuffer*>            DepthBufferVec;

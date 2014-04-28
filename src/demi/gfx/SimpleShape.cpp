@@ -491,7 +491,7 @@ namespace Demi
         const int STRIDE = sizeof(float)*3 + sizeof(ARGB);
         const int NUM_INDICES = 3 * 2 * 6;
 
-        uint32 col = color.GetAsByte4();
+        uint32 col = DiBase::Driver->GetNativeColor(color);
 
         float CUBE_HALF_SIZE = size/2;
         Vert vertices[NUM_VERTICES] = 

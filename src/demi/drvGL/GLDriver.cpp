@@ -1078,4 +1078,9 @@ namespace Demi
         return rsc;
     }
 
+    uint32 DiGLDriver::GetNativeColor(const DiColor& col)
+    {
+        return col.GetAsABGR();
+    }
+
 }
