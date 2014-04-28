@@ -18,7 +18,7 @@ namespace Demi
 {
     const DiString& DiScriptPlugin::GetName() const
     {
-        static DiString plugin = "DrvGL";
+        static DiString plugin = "Script";
         return plugin;
     }
 

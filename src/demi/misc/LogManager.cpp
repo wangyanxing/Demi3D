@@ -80,6 +80,7 @@ void DiLogManager::Init(const DiString& logFileName)
 
 void DiLogManager::Shutdown()
 {
+    DI_LOG("Shutting down log manager");
     if (!mLogger.empty())
     {
         DI_DELETE mLogger[0];

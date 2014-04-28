@@ -782,10 +782,25 @@ namespace Demi
         DiVector<DiString> tokens; 
         this->Tokenize(", \t\n", tokens);
 
-        DI_ASSERT (tokens.size() == 3);
-
-        DiVec3 v(tokens[0].AsFloat(),  tokens[1].AsFloat(),  tokens[2].AsFloat());
-        return v;
+        if (tokens.size() >= 3)
+        {
+            DiVec3 v(tokens[0].AsFloat(), tokens[1].AsFloat(), tokens[2].AsFloat());
+            return v;
+        }
+        else if (tokens.size() == 2)
+        {
+            DiVec3 v(tokens[0].AsFloat(), tokens[1].AsFloat(), 0);
+            return v;
+        }
+        else if (tokens.size() == 1)
+        {
+            DiVec3 v(tokens[0].AsFloat(), tokens[0].AsFloat(), tokens[0].AsFloat());
+            return v;
+        }
+        else
+        {
+            return DiVec3::ZERO;
+        }
     }
 
     DiVec2 

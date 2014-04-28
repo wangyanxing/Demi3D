@@ -244,7 +244,7 @@ namespace Demi
     void DiRenderWindow::SwapBuffer()
     {
         DI_PROFILE(RenderWindow_SwapBuffer);
-        if (mRenderBuffer && mRenderBuffer->IsActive())
+        if (mRenderBuffer)
             Driver->SwapBuffer(mRenderBuffer);
     }
 

@@ -195,6 +195,9 @@ namespace Demi
         {
             if (false == (i->compressedSize == size_t(-1)) && i->basename[0]!='.')
             {
+                if (!DiString::MatchPatternEx(i->basename, pattern))
+                    continue;
+
                 DiVector<DiString> tokens = i->filename.Tokenize("/");
                 DiFileTree* cur = node;
                 for (size_t t = 0; t < tokens.size(); ++t)

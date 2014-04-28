@@ -41,6 +41,9 @@ namespace Demi
         , mSetResLocWindow(nullptr)
         , mSetGameLocWindow(nullptr)
     {
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32 && !DEMI_DEBUG
+        ShowWindow(GetConsoleWindow(), SW_HIDE);
+#endif
     }
 
     HonViewerApp::~HonViewerApp()

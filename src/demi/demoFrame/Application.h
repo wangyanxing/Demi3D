@@ -74,7 +74,7 @@ namespace Demi
 
         bool              IsOpen();
 
-        void              Open(int argc, char *argv[]);
+        void              Open(int argc = 0, char *argv[] = nullptr);
 
         void              CloseEngine();
 
