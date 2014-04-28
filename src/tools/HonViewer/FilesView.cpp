@@ -74,6 +74,8 @@ namespace tools
         mResources = zip->GenerateFileTree("*.mdf");
 
         MyGUI::TreeControl::Node* root = mResourcesTree->getRoot();
+        root->removeAll();
+
         DiFileTree* nullfile = nullptr;
         root->setData(nullfile);
         for (auto i = mResources->children.begin(); i != mResources->children.end(); ++i)

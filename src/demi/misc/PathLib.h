@@ -34,7 +34,24 @@ namespace Demi
         */
         static bool FileExisted(const DiString& file);
 
-        static DiString        msAppFile;
+        enum FileDlgFlag
+        {
+            MULTIPLE_SELECTION = 0x01
+        };
+
+        /** Reset the current directory to the binary directory
+        */
+        static void ResetCurrentDir();
+
+        static bool OpenDirectoryDialog(const void* wndHandle, const DiString& title, const DiString& defaultPath, DiString& outFolderName);
+
+        static bool OpenFileDialog(const void* wndHandle, const DiString& title, const DiString& defaultPath, const DiString& defaultFile,
+            const DiString& fileTypes, uint32 flags, DiVector<DiString>& outFiles);
+
+        static bool SaveFileDialog(const void* wndHandle, const DiString& dialogTitle, const DiString& defaultPath,
+            const DiString& defaultFile, const DiString& fileTypes, uint32 flags, DiVector<DiString>& outFilenames);
+
+        static DiString msAppFile;
     };
 }
 

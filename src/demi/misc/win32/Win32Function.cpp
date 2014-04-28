@@ -10,7 +10,10 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "MiscPch.h"
+#include "PathLib.h"
+
 #include "Win32/Win32Function.h"
 #include <signal.h>
 #if !defined(NOMINMAX) && defined(_MSC_VER)

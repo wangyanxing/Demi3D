@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="WindowCSX" position="45 30 573 145" align="Left Top" layer="Overlapped" name="_Main">
+        <Property key="Caption" value="Set Game Location"/>
+        <Property key="Snap" value="true"/>
+        <Property key="Visible" value="false"/>
+        <Property key="MinSize" value="448 296"/>
+        <Widget type="Button" skin="Button" position="438 78 120 26" align="Right Bottom" name="Ok">
+            <Property key="Caption" value="#{Ok}"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position="6 77 120 26" align="Left Bottom" name="Cancel">
+            <Property key="Caption" value="#{Cancel}"/>
+        </Widget>
+        <Widget type="TextBox" skin="TextBox" position="20 25 85 25">
+            <Property key="Caption" value="Game Path"/>
+        </Widget>
+        <Widget type="EditBox" skin="EditBox" position="105 25 395 25" name="TextGameLocation">
+            <Property key="Enabled" value="true"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position="515 25 30 25" name="ButtonBrowser">
+            <Property key="Caption" value="..."/>
+        </Widget>
+    </Widget>
+</MyGUI>

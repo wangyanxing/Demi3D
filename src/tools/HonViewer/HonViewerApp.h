@@ -35,6 +35,10 @@ namespace Demi
 
         virtual void      OpenImpl();
 
+        void              SetResourceLocation(const DiString& resPack, const DiString& texPack);
+
+        DiString          DetectTexturePackDesc();
+
         static HonViewerApp* GetViewerApp();
 
         MainPaneControl*  getMainPane(){ return mMainPane; }
@@ -47,9 +51,31 @@ namespace Demi
 
         virtual void      mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
 
+        virtual void      keyPressed(const OIS::KeyEvent &arg);
+
+    private:
+
+        bool CheckCommand();
+
+        void Command_QuitApp(const MyGUI::UString& _commandName, bool& _result);
+
+        void Command_Export(const MyGUI::UString& _commandName, bool& _result);
+
+        void Command_ResLocation(const MyGUI::UString& _commandName, bool& _result);
+
+        void Command_GameLocation(const MyGUI::UString& _commandName, bool& _result);
+
+        void NotifySetResLocWindowEndDialog(Dialog* _dialog, bool _result);
+
+        void NotifySetGameLocWindowEndDialog(Dialog* _dialog, bool _result);
+
     private:
 
         //BackgroundControl*  mBackground;
+
+        SetResLocWindow*    mSetResLocWindow;
+
+        SetGameLocWindow*   mSetGameLocWindow;
 
         MainPaneControl*    mMainPane;
 

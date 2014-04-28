@@ -3,5 +3,7 @@
     <Settings>
         <Property key="ColorBackground" value="0.35 0.35 0.35 1"/>
         <Property key="Grid" value="5"/>
+		<Property key="ResourcePack" value=""/>
+		<Property key="TexturePack" value=""/>
     </Settings>
 </MyGUI>

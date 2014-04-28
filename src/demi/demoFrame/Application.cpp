@@ -26,6 +26,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "LogManager.h"
 #include "ScriptPlugin.h"
+#include "PathLib.h"
 
 #include "MyGUI.h"
 #include "MyGUI_DemiWrapper.h"
@@ -104,6 +105,8 @@ namespace Demi
 
         CommandMgr->RegisterString("scene_type", config.sceneType, 0, "Scene manager type");
         CommandMgr->AddCommand("quit", Quit, "Close Application");
+
+        DiPathLib::ResetCurrentDir();
     }
 
     DemiDemo::~DemiDemo(void)

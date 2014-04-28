@@ -26,8 +26,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PathLib.h"
 #include "ColorManager.h"
 #include "K2ModelView.h"
+#include "ZipArchive.h"
 #include "SettingsManager.h"
 #include "CommandManager.h"
+#include "SetResLocationWindow.h"
+#include "SetGameLocationWindow.h"
 
 namespace Demi
 {
@@ -35,6 +38,8 @@ namespace Demi
         : DemiDemo(DemoConfig("Hon Viewer"))
         , mMainPane(nullptr)
         , mModelViewer(nullptr)
+        , mSetResLocWindow(nullptr)
+        , mSetGameLocWindow(nullptr)
     {
     }
 
@@ -57,6 +62,8 @@ namespace Demi
         //delete mBackground;
         //mBackground = nullptr;
 
+        SAFE_DELETE(mSetResLocWindow);
+        SAFE_DELETE(mSetGameLocWindow);
         SAFE_DELETE(mModelViewer);
         SAFE_DELETE(mMainPane);
 
@@ -127,9 +134,6 @@ namespace Demi
         new MessageBoxManager();
         MessageBoxManager::getInstance().initialise();
 
-        new DialogManager();
-        DialogManager::getInstance().initialise();
-
         new ColourManager();
         ColourManager::getInstance().initialise();
 
@@ -141,10 +145,25 @@ namespace Demi
         MyGUI::ResourceManager::getInstance().load("TreeControlSkin.xml");
         MyGUI::ResourceManager::getInstance().load("TreeItemIcons.xml");
 
+        CommandManager::getInstance().registerCommand("Command_Quit", MyGUI::newDelegate(this, &HonViewerApp::Command_QuitApp));
+        CommandManager::getInstance().registerCommand("Command_Export", MyGUI::newDelegate(this, &HonViewerApp::Command_Export));
+        CommandManager::getInstance().registerCommand("Command_ResLocation", MyGUI::newDelegate(this, &HonViewerApp::Command_ResLocation));
+        CommandManager::getInstance().registerCommand("Command_GameLocation", MyGUI::newDelegate(this, &HonViewerApp::Command_GameLocation));
+
         //mBackground = new BackgroundControl();
         mMainPane = new MainPaneControl();
 
         mModelViewer = DI_NEW K2ModelViewer();
+
+        new DialogManager();
+        DialogManager::getInstance().initialise();
+
+        mSetResLocWindow = new SetResLocWindow();
+        mSetResLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonViewerApp::NotifySetResLocWindowEndDialog);
+
+        mSetGameLocWindow = new SetGameLocWindow();
+        mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonViewerApp::NotifySetGameLocWindowEndDialog);
+
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         //DiString zip("L:/Games/Savage2Res/resources0.zip");
         //DiString zipTex("L:/Games/Savage2Res/textures-high.zip");
@@ -154,9 +173,8 @@ namespace Demi
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
         DiString zip("/Users/wangya/Demi/media_hon/buildings.zip");
 #endif
-        DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER = "00000000/";
 
-        mModelViewer->SetK2ResourcePack("L:/Games/HON_res/world/cliffs.zip");
+        //mModelViewer->SetK2ResourcePack("L:/Games/HON_res/world/cliffs.zip");
 
         //mModelViewer->SetK2ResourcePack(zip, zipTex);
         //mModelViewer->SetK2ResourcePack(zip);
@@ -193,4 +211,112 @@ namespace Demi
             DemiDemo::mouseReleased(evt, id);
         }
     }
+
+    void HonViewerApp::Command_QuitApp(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if (DialogManager::getInstance().getAnyDialog())
+            DialogManager::getInstance().endTopDialog();
+        else
+        {
+            if (MessageBoxManager::getInstance().hasAny())
+                MessageBoxManager::getInstance().endTop(MyGUI::MessageBoxStyle::Cancel);
+            else
+                mQuit = true;
+        }
+
+        _result = true;
+    }
+
+    void HonViewerApp::Command_GameLocation(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if (!CheckCommand())
+            return;
+
+        mSetGameLocWindow->doModal();
+
+        _result = true;
+    }
+
+    void HonViewerApp::keyPressed(const OIS::KeyEvent &arg)
+    {
+        mCameraHelper->OnKeyDown(arg);
+    }
+
+    void HonViewerApp::Command_Export(const MyGUI::UString& _commandName, bool& _result)
+    {
+        MyGUI::Message::createMessageBox("Message", "Sorry",
+            "This feature hasn't been implemented yet.", 
+            MyGUI::MessageBoxStyle::Ok | MyGUI::MessageBoxStyle::IconInfo);
+    }
+
+    void HonViewerApp::Command_ResLocation(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if (!CheckCommand())
+            return;
+
+        mSetResLocWindow->doModal();
+
+        _result = true;
+    }
+
+    void HonViewerApp::NotifySetResLocWindowEndDialog(Dialog* _dialog, bool _result)
+    {
+        MYGUI_ASSERT(mSetResLocWindow == _dialog, "mSetResLocWindow == _sender");
+
+        if (_result)
+        {
+            mSetResLocWindow->saveSettings();
+        }
+
+        mSetResLocWindow->endModal();
+    }
+
+    bool HonViewerApp::CheckCommand()
+    {
+        if (DialogManager::getInstance().getAnyDialog())
+            return false;
+
+        if (MessageBoxManager::getInstance().hasAny())
+            return false;
+
+        return true;
+    }
+
+    void HonViewerApp::NotifySetGameLocWindowEndDialog(Dialog* _dialog, bool _result)
+    {
+        MYGUI_ASSERT(mSetGameLocWindow == _dialog, "mSetGameLocWindow == _sender");
+
+        if (_result)
+        {
+            mSetGameLocWindow->saveSettings();
+        }
+
+        mSetGameLocWindow->endModal();
+    }
+
+    void HonViewerApp::SetResourceLocation(const DiString& resPack, const DiString& texPack)
+    {
+        if (!texPack.empty())
+        {
+            GetModelViewer()->SetK2ResourcePack(resPack, texPack);
+            DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER = DetectTexturePackDesc();
+        }
+        else
+            GetModelViewer()->SetK2ResourcePack(resPack);
+    }
+
+    DiString HonViewerApp::DetectTexturePackDesc()
+    {
+        DiString ret;
+        if (DiK2Configs::TEXTURE_PACK)
+        {
+            if (DiK2Configs::TEXTURE_PACK->HasFile("descriptor"))
+            {
+                // TODO
+                return "00000000/";
+            }
+        }
+        return ret;
+    }
+
 }

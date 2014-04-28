@@ -85,7 +85,6 @@ namespace Demi
         OnDeviceReset();
     }
 
-
     void DiGfxDriver::CleanUpDepthBuffers(bool bCleanManualBuffers)
     {
         auto itMap = mDepthBufferPool.begin();

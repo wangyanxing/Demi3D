@@ -30,7 +30,10 @@ namespace tools
     class KeyFrameBarControl;
     class ColourManager;
     class CommonToolsControl;
+    class SetResLocWindow;
     class SettingsManager;
+    class Dialog;
+    class SetGameLocWindow;
 }
 
 namespace MyGUI
