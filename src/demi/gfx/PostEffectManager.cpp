@@ -195,8 +195,8 @@ namespace Demi
         else
         {
             mDisablePostFilters = true;
-            //mScreenQuad->GetMaterial()->GetShaderParameter()->WriteTexture2D("image",
-            //    mRenderWindow->GetCanvasTexture());
+            mScreenQuad->GetMaterial()->GetShaderParameter()->WriteTexture2D("image",
+                mRenderWindow->GetCanvasTexture());
         }
     }
 

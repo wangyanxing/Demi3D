@@ -18,6 +18,7 @@
 #include "ShaderParam.h"
 #include "VertexDeclaration.h"
 #include "RenderWindow.h"
+#include "RenderTarget.h"
 
 namespace MyGUI
 {
@@ -122,7 +123,6 @@ namespace MyGUI
 
 	void DemiRenderManager::begin()
 	{
-        
 	}
 
 	void DemiRenderManager::end()

@@ -99,7 +99,7 @@ namespace Demi
             mMotion->ApplySkeletonAnimation(mSkeleton,mClipSet);
             mSkeleton->UpdateTransforms();
             UpdatePostControllers();
-            if(mHardwareSkining)
+            if(mAnimState == DiModel::HARDWARE_SKINNING)
                 mSkeleton->GetBoneMatrices(mBoneMatrices,false);
             else
                 mSkeleton->GetBoneMatrices(mBoneTransforms,false);
@@ -132,7 +132,7 @@ namespace Demi
             }
 
             bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
-            mHardwareSkining = !forcesoft && (mNumBoneMatrices <= MAX_BONE_NUM);
+            mAnimState = (!forcesoft && (mNumBoneMatrices <= MAX_BONE_NUM)) ? HARDWARE_SKINNING : SOFTWARE_SKINNING;
         }
 
         InitModel();
@@ -177,7 +177,7 @@ namespace Demi
                 CacheBoneMatrices();
 
             // software skinning
-            if (!mHardwareSkining)
+            if (mAnimState == SOFTWARE_SKINNING)
             {
                 for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
                 {

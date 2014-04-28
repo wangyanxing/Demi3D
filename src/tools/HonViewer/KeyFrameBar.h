@@ -29,7 +29,7 @@ namespace tools
 
         void update();
 
-        void updateScales();
+        void updateScales(DiK2Clip* clip = nullptr);
 
         void notifyChangePosition(MyGUI::ScrollBar* _sender, size_t _position);
 

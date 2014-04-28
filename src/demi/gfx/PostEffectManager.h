@@ -52,6 +52,8 @@ namespace Demi
 
         void                    NotifyInvalidatePasses();
 
+        bool                    HasEnabledPostPasses() { return !mDisablePostFilters; }
+
     protected:
 
         void                    Init();

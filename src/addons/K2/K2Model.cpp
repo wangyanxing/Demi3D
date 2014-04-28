@@ -58,7 +58,7 @@ namespace Demi
         mSkeleton->CreateBones(mAsset->GetBoneData());
 
         bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
-        mHardwareSkining = !forcesoft && (mSkeleton->GetNumBones() <= MAX_BONE_NUM);
+        mAnimState = (!forcesoft && (mSkeleton->GetNumBones() <= MAX_BONE_NUM)) ? DiModel::HARDWARE_SKINNING : DiModel::SOFTWARE_SKINNING;
     }
 
     void DiK2Model::Update(DiCamera*)
@@ -82,7 +82,7 @@ namespace Demi
         mSkeleton->Apply(mAnimation);
         mSkeleton->CacheBoneMatrices();
 
-        if (!mHardwareSkining)
+        if (mAnimState == DiModel::SOFTWARE_SKINNING)
         {
             for (auto it = mSubModels.begin(); it != mSubModels.end(); ++it)
             {

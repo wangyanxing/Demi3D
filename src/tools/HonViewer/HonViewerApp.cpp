@@ -99,6 +99,8 @@ namespace Demi
 
         DI_INSTALL_PLUGIN(DiK2);
 
+        Driver->GetMainRenderWindow()->SetForceRenderToCanvas(true);
+
         // use software skinning for editor
         DiBase::CommandMgr->SetIntVar("force_softskin", 0);
         

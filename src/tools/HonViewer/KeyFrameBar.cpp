@@ -90,12 +90,13 @@ namespace tools
         mCurFrames->setCaption(frameInfo.c_str());
     }
 
-    void KeyFrameBarControl::updateScales()
+    void KeyFrameBarControl::updateScales(DiK2Clip* clip)
     {
         auto sizeInPixel = mKeyFrameBar->getSize();
         mScaleActuaFrames = int((sizeInPixel.width / FRAME_SCALE_WIDTH) * 10);
 
-        auto clip = HonViewerApp::GetViewerApp()->GetModelViewer()->GetCurrentClip();
+        if (!clip)
+            clip = HonViewerApp::GetViewerApp()->GetModelViewer()->GetCurrentClip();
         if (!clip)
             return;
         

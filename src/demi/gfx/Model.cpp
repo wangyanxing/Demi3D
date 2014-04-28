@@ -24,7 +24,7 @@ namespace Demi
     DiModel::DiModel( const DiString& name,
         const DiString& modelName)
         :DiTransformUnit(name),
-        mHardwareSkining(false)
+        mAnimState(NO_ANIMATION)
     {
         mMesh = DiAssetManager::GetInstance().GetAsset<DiMesh>(modelName,true);
         InitModel();
@@ -33,7 +33,7 @@ namespace Demi
     DiModel::DiModel( const DiString& name,DiMeshPtr model )
         :DiTransformUnit(name),
         mMesh(model),
-        mHardwareSkining(false)
+        mAnimState(NO_ANIMATION)
     {
         InitModel();
     }
@@ -66,6 +66,9 @@ namespace Demi
     {
         DI_ASSERT(mSubModels.empty());
 
+        // just in order to disable the animation pre-processing
+        //mHardwareSkining = true;
+
         auto it = mMesh->GetSubMeshs();
         while(it.HasMoreElements())
         {
@@ -76,7 +79,7 @@ namespace Demi
 
     DiSubModel* DiModel::CreateSubModel( DiSubMesh* sm )
     {
-        DiSubModel* se = DI_NEW DiSubModel(this, sm, !mHardwareSkining);
+        DiSubModel* se = DI_NEW DiSubModel(this, sm, mAnimState == SOFTWARE_SKINNING);
         mSubModels.push_back(se);
         return se;
     }

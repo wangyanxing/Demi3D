@@ -809,10 +809,20 @@ namespace Demi
         DiVector<DiString> tokens; 
         this->Tokenize(", \t\n", tokens);
 
-        DI_ASSERT (tokens.size() == 2);
-        
-        DiVec2 v(tokens[0].AsFloat(),  tokens[1].AsFloat());
-        return v;
+        if (tokens.size() >= 2)
+        {
+            DiVec2 v(tokens[0].AsFloat(), tokens[1].AsFloat());
+            return v;
+        }
+        else if (tokens.size() == 1)
+        {
+            DiVec2 v(tokens[0].AsFloat(), tokens[0].AsFloat());
+            return v;
+        }
+        else
+        {
+            return DiVec2::ZERO;
+        }
     }
 
     DiVec4 
@@ -821,11 +831,30 @@ namespace Demi
         DiVector<DiString> tokens; 
         this->Tokenize(", \t\n", tokens);
 
-        DI_ASSERT (tokens.size() == 4);
-
-        DiVec4 v(tokens[0].AsFloat(),  tokens[1].AsFloat(),
-                        tokens[2].AsFloat(),  tokens[3].AsFloat());
-        return v;
+        if (tokens.size() >= 4)
+        {
+            DiVec4 v(tokens[0].AsFloat(), tokens[1].AsFloat(), tokens[2].AsFloat(), tokens[3].AsFloat());
+            return v;
+        }
+        else if (tokens.size() == 3)
+        {
+            DiVec4 v(tokens[0].AsFloat(), tokens[1].AsFloat(), tokens[2].AsFloat(), 0);
+            return v;
+        }
+        else if (tokens.size() == 2)
+        {
+            DiVec4 v(tokens[0].AsFloat(), tokens[1].AsFloat(), 0, 0);
+            return v;
+        }
+        else if (tokens.size() == 1)
+        {
+            DiVec4 v(tokens[0].AsFloat(), tokens[0].AsFloat(), tokens[0].AsFloat(), tokens[0].AsFloat());
+            return v;
+        }
+        else
+        {
+            return DiVec4::ZERO;
+        }
     }
 
     DiQuat 

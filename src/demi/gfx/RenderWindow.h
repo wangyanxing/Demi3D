@@ -87,6 +87,10 @@ namespace Demi
 
         void                    SetCustomizedCanvasSize(uint32 width, uint32 height);
 
+        bool                    IsForceRenderToCanvas() const { return mForceRenderToCanvas; }
+
+        void                    SetForceRenderToCanvas(bool val) { mForceRenderToCanvas = val; }
+
     protected:
 
         void                    Init();
@@ -132,7 +136,8 @@ namespace Demi
         DiWindow*               mWindow;
 
         std::function<void(void)> mUpdateCb;
-        
+
+        bool                    mForceRenderToCanvas;
     };
 }
 

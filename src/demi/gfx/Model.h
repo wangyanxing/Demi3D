@@ -33,6 +33,15 @@ namespace Demi
 
         DiModel(const DiString& name,DiMeshPtr model);
 
+        enum AnimState
+        {
+            NO_ANIMATION,
+            HARDWARE_SKINNING,
+            SOFTWARE_SKINNING
+        };
+
+    public:
+
         virtual ~DiModel();
 
         typedef DiVector<DiSubModel*> SubModelList;
@@ -45,7 +54,7 @@ namespace Demi
 
         virtual void      AddToBatchGroup(DiRenderBatchGroup* bg);
 
-        bool              UseHardwareSkinning() const { return mHardwareSkining; }
+        bool              UseHardwareSkinning() const { return mAnimState == HARDWARE_SKINNING; }
 
         DiMeshPtr         GetMesh(){return mMesh;}
 
@@ -77,7 +86,7 @@ namespace Demi
 
         SubModelList      mSubModels;
 
-        bool              mHardwareSkining;
+        AnimState         mAnimState;
     };
 }
 

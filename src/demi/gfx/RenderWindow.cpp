@@ -45,6 +45,7 @@ namespace Demi
         , mWndHandle(nullptr)
         , mWindow(nullptr)
         , mFrameNumber(0)
+        , mForceRenderToCanvas(false)
     {
     }
 
@@ -96,6 +97,8 @@ namespace Demi
         if (mUpdateCb)
             mUpdateCb();
 
+        Driver->BeginFrame();
+
         // Shadow mapping pass
         rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
         auto& visLights = mSceneManager->GetVisibleLights();
@@ -123,11 +126,8 @@ namespace Demi
         mSceneManager->GetMainVisibleObjects().AddToBatch(rp);
         rp->SetCurrentPass(DiRenderPipeline::P_LIGHTING_PASS);
         
-#ifndef DISABLE_POST
-        rp->Render(mSceneManager, mainCam, mSceneCanvas);
-#else
-        rp->Render(mSceneManager, mainCam, mRenderBuffer);
-#endif
+        rp->Render(mSceneManager, mainCam, mPostEffectMgr->HasEnabledPostPasses() 
+            || mForceRenderToCanvas ? mSceneCanvas : mRenderBuffer);
 
         // Process the extra render targets
         rp->SetCurrentPass(DiRenderPipeline::P_CUSTOM_RTT_PASS);
@@ -151,6 +151,8 @@ namespace Demi
         // Post filters
         rp->RenderPost(mSceneManager, mainCam);
 #endif
+
+        Driver->EndFrame();
 
         mFrameNumber++;
         ActiveRenderWindow = nullptr;

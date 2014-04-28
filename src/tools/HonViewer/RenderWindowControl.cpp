@@ -16,6 +16,8 @@
 
 namespace tools
 {
+#define MAX_BONE_NAME_NUMS 100
+
     RenderWindowControl::RenderWindowControl(MyGUI::Widget* _parent) :
         wraps::BaseLayout("RenderWindow.layout", _parent),
         mCanvas(nullptr),
@@ -33,7 +35,7 @@ namespace tools
         mInfoStatic->setCaption("Vertices :\nFaces:\nSub Models:\nBones:");
         updateInfo();
 
-        for (int i = 0; i < MAX_BONE_NUM; ++i)
+        for (int i = 0; i < MAX_BONE_NAME_NUMS; ++i)
         {
             MyGUI::TextBox* bonename = mCanvas->createWidget<MyGUI::TextBox>("TextBox", MyGUI::IntCoord(0, 10, 150, 15), MyGUI::Align::Default);
             bonename->setTextAlign(MyGUI::Align::Center);
@@ -119,6 +121,9 @@ namespace tools
         uint32 bones = show ? m->GetSkeleton()->GetNumBones() : 0;
         for (uint32 i = 0; i < bones; ++i)
         {
+            if (i >= MAX_BONE_NAME_NUMS)
+                break;
+
             mBoneNames[i]->setVisible(true);
 
             DiNode* node = m->GetSkeleton()->GetBone(i);
@@ -140,7 +145,7 @@ namespace tools
 
             mBoneNames[i]->setCaption(node->GetName().c_str());
         }
-        for (uint32 i = bones; i < MAX_BONE_NUM; ++i)
+        for (uint32 i = bones; i < MAX_BONE_NAME_NUMS; ++i)
         {
             mBoneNames[i]->setVisible(false);
         }
