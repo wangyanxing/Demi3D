@@ -56,7 +56,7 @@ void InitScene()
 
     DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
     DiPostEffect* bloom = peMgr->GetEffect("Bloom");
-    bloom->SetEnable(true);
+    //bloom->SetEnable(true);
 }
 
 void UpdateScene()

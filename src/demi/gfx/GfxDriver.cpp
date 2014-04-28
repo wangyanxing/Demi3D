@@ -54,7 +54,18 @@ namespace Demi
     void DiGfxDriver::SwapBuffer(DiRenderTarget* renderwnd)
     {
         if (mDeviceLost || IsDeviceLost())
-            return;
+        {
+            // Test if we can reset the device
+            if (ReadyToReset())
+            {
+                NotifyDeviceLost();
+            }
+            else
+            {
+                // not ready to reset yet
+                return;
+            }
+        }
 
         if (!renderwnd->SwapBuffer())
             NotifyDeviceLost();
@@ -62,9 +73,6 @@ namespace Demi
 
     void DiGfxDriver::NotifyDeviceLost()
     {
-        if (mDeviceLost)
-            return;
-
         mDeviceLost = true;
 
         uint32 w = 0;
@@ -74,6 +82,7 @@ namespace Demi
         if (mMainWindow)
             mMainWindow->OnMoveOrResize();
 
+        // minimizing window, don't try to reset
         if (w == 0 || h == 0)
             return;
 

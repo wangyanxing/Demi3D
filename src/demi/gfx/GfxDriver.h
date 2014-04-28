@@ -80,6 +80,8 @@ namespace Demi
 
         virtual bool                IsDeviceLost() const = 0;
 
+        virtual bool                ReadyToReset() { return true; }
+
         virtual bool                ResetDevice(uint16 w, uint16 h) = 0;
 
         virtual void                SetViewport(int x, int y, int w, int h, float minz = 0.0f, float maxz = 1.0f) = 0;

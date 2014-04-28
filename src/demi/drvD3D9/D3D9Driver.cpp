@@ -536,10 +536,14 @@ namespace Demi
         mMainParameters.BackBufferWidth = (uint32)w;
         mMainParameters.BackBufferHeight = (uint32)h;
 
-        DI_INFO("Reset D3D9 device.");
+        DI_LOG("Try to reset D3D9 device");
         HRESULT res = mDevice->Reset(&mMainParameters);
         DiD3D9Driver::StateCache->DirtyAll();
 
+        if (res != S_OK)
+        {
+            DI_LOG("Failed to reset D3D9 device: %s", DiD3D9ErrorCheck::GetResultString(res));
+        }
         return res == S_OK;
     }
 
@@ -1551,5 +1555,24 @@ namespace Demi
     void DiD3D9Driver::PostInit()
     {
         InitGfxCapsImpl();
+    }
+
+    bool DiD3D9Driver::ReadyToReset()
+    {
+        uint32 w = 0;
+        uint32 h = 0;
+        GetWindowSize(mMainHwnd, w, h);
+        if (w == 0 || h == 0)
+        {
+            return false;
+        }
+
+        HRESULT hr = mDevice->TestCooperativeLevel();
+        if (hr == D3DERR_DEVICELOST ||
+            hr == D3DERR_DRIVERINTERNALERROR)
+        {
+            return false;
+        }
+        return true;
     }
 }

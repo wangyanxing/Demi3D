@@ -77,6 +77,8 @@ namespace Demi
 
         bool                    IsDeviceLost() const;
 
+        bool                    ReadyToReset();
+
         bool                    ResetDevice(uint16 w, uint16 h);
 
         bool                    RenderGeometry(DiRenderUnit* unit);
