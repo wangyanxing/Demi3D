@@ -50,7 +50,7 @@ void ComputeSurfaceDataFromGeometry()
     vec3 vTexNormal2 = vec3(cNormalmapColor2.rgb * 2.0 - 1.0);
     vec3 vTexNormal = normalize(vTexNormal1 + vTexNormal2);
     mat3 rot = mat3(vTangent, vBinormal, vNormal);
-    gSurface.normal = normalize(mul(vTexNormal, rot));
+    gSurface.normal = normalize(rot * vTexNormal);
 	
 	gSurface.albedo = texture2D( map, vTexcoord0.xy );
 	#ifdef GAMMA_INPUT

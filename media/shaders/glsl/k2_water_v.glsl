@@ -28,9 +28,8 @@ void main()
 {
 	GET_SPACE_POS_NORMAL_TANGENT(objPos, objNormal, objTangent);
 	
-    vec4 viewPos = mul(g_modelViewMatrix,objPos);
-
-	gl_Position = mul(g_projMatrix,viewPos);
+    vec4 viewPos = g_modelViewMatrix * objPos;
+    gl_Position = g_modelViewProjMatrix * objPos;
 
 	vColor = Color;
     vColor.a *= vColor.a;
