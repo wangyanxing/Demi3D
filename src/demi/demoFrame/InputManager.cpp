@@ -213,9 +213,9 @@ namespace Demi
 
     bool DiInputManager::keyPressed(const OIS::KeyEvent& _arg)
     {
-#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         MyGUI::Char text = (MyGUI::Char)_arg.text;
         MyGUI::KeyCode key = MyGUI::KeyCode::Enum(_arg.key);
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         int scan_code = key.toValue();
 
         if (scan_code > 70 && scan_code < 84)
@@ -227,6 +227,8 @@ namespace Demi
             text = '/';
         else
             text = translateWin32Text(key);
+        injectKeyPress(key, text);
+#else
         injectKeyPress(key, text);
 #endif
 
