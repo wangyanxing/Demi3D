@@ -18,7 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2GameDefines.h"
 #include "K2Input.h"
 
-#define _DEBUG_CLIFF_POS
+//#define _DEBUG_CLIFF_POS
 
 namespace Demi
 {

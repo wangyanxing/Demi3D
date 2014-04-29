@@ -42,7 +42,7 @@ void InitScene()
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
     world = DI_NEW DiK2World();
-    world->Load("maps/test_entity2");
+    world->Load("maps/demoMap");
 
     DiVec2 worldsize = world->mTerrain->GetWorldSize();
 
@@ -50,6 +50,11 @@ void InitScene()
     cameraHelper->SetStyle(CS_FREELOOK);
     cameraHelper->SetTopSpeed(600);
     cameraHelper->GetCamera()->SetPosition(worldsize.x / 2, 500, worldsize.y / 2);
+
+    DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
+    DiPostEffect* bloom = peMgr->GetEffect("Bloom");
+    if (bloom)
+        bloom->SetEnable(true);
 }
 
 void UpdateScene()

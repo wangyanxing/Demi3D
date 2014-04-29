@@ -241,7 +241,7 @@ namespace Demi
         if (subtype == K2ObjSubTypes::SUB_STATIC_CLIFF
             || subtype == K2ObjSubTypes::SUB_STATIC_TREE
             //|| subtype == K2ObjSubTypes::SUB_STATIC_MODEL
-            //|| subtype == K2ObjSubTypes::SUB_STATIC_SCENERY
+            || subtype == K2ObjSubTypes::SUB_STATIC_SCENERY
             )
         {
             // directly add to the scene
