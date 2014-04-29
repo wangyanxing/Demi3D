@@ -54,6 +54,8 @@ namespace Demi
         uint32                  GetNumSubMeshes() const { return (uint32)mSubMeshList.size(); }
 
         DiSubMesh*              GetSubMesh(int id){return mSubMeshList[id];}
+        
+        uint32                  GetMaxWeights() const;
 
     public:
 

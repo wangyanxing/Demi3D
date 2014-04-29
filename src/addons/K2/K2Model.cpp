@@ -58,7 +58,8 @@ namespace Demi
         mSkeleton->CreateBones(mAsset->GetBoneData());
 
         bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
-        mAnimState = (!forcesoft && (mSkeleton->GetNumBones() <= MAX_BONE_NUM)) ? DiModel::HARDWARE_SKINNING : DiModel::SOFTWARE_SKINNING;
+        uint32 maxWeight = mMesh->GetMaxWeights();
+        mAnimState = (!forcesoft && (mSkeleton->GetNumBones() <= MAX_BONE_NUM) && maxWeight <= 4) ? DiModel::HARDWARE_SKINNING : DiModel::SOFTWARE_SKINNING;
     }
 
     void DiK2Model::Update(DiCamera*)

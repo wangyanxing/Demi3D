@@ -121,8 +121,16 @@ namespace tools
         {
             DiString outFolder;
             void* wndHandle = DiBase::Driver->GetMainRenderWindow()->GetWindow()->GetWndHandle();
+#if DEMI_PLATFORM == DEMI_PLATFORM_OSX
+            DiVector<DiString> out;
+            DiString filter = "Mac Application(app)|*.app|All files (*.*)|*.*";
+            DiPathLib::OpenFileDialog(wndHandle, "Game Application", DiPathLib::GetApplicationPath(), "", filter, 0, out);
+            if (out.size() >= 1)
+                mTextLocation->setCaption(out[0].c_str());
+#else
             DiPathLib::OpenDirectoryDialog(wndHandle, "Game root directory", DiPathLib::GetApplicationPath(), outFolder);
             mTextLocation->setCaption(outFolder.c_str());
+#endif
         }
     }
 

@@ -56,7 +56,7 @@ void InitScene()
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
     
     DiCullNode* nd1 = sm->GetRootNode()->CreateChild();
-    k2md2 = make_shared<DiK2Model>("npcs/good_range/model.mdf");
+    k2md2 = make_shared<DiK2Model>("npcs/n_dragon/model.mdf");
     //k2md2 = make_shared<DiK2Model>("buildings/legion/well/model.mdf");
     //k2md2 = make_shared<DiK2Model>("heroes/javaras/model.mdf");
     nd1->AttachObject(k2md2);

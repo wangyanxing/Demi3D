@@ -132,7 +132,8 @@ namespace Demi
             }
 
             bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
-            mAnimState = (!forcesoft && (mNumBoneMatrices <= MAX_BONE_NUM)) ? HARDWARE_SKINNING : SOFTWARE_SKINNING;
+            uint32 maxWeight = mMesh->GetMaxWeights();
+            mAnimState = (!forcesoft && (mNumBoneMatrices <= MAX_BONE_NUM) && maxWeight <= 4) ? HARDWARE_SKINNING : SOFTWARE_SKINNING;
         }
 
         InitModel();

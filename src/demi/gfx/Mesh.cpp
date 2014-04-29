@@ -60,6 +60,16 @@ namespace Demi
         return sm;
     }
 
+    uint32 DiMesh::GetMaxWeights() const
+    {
+        uint32 maxWeights = 0;
+        for (auto it = mSubMeshList.begin(); it != mSubMeshList.end(); ++it)
+        {
+            maxWeights = std::max(maxWeights, (*it)->GetMaxWeights());
+        }
+        return maxWeights;
+    }
+    
     DiMesh::ConstSubMeshIterator DiMesh::GetSubMeshs() const
     {
         return ConstSubMeshIterator(mSubMeshList.begin(), mSubMeshList.end());

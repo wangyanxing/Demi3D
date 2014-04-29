@@ -59,7 +59,7 @@ namespace Demi
         DiVec2 uv;
     };
 
-#define MAX_K2_BONEWEIGHTS 4
+#define MAX_K2_BONEWEIGHTS 8
     struct K2VertSkin
     {
         K2VertSkin()
@@ -577,21 +577,6 @@ namespace Demi
         DI_SERIAL_LOG("Material name: %s", materialName.c_str());
 
         DI_LOG("MESH: %s [%d], mod[%d], bonelnk[%d], mat[%s]", meshName.c_str(), meshid, meshmod, bonelink, materialName.c_str());
-
-#if 0
-        // manually setup the skinning weights
-        if (bonelink >= 0)
-        {
-            for (int i = 0; i < vertNum; i++)
-            {
-                gCurrentVerts[i].weights[0] = 1.0f;
-                gCurrentVerts[i].indices[0] = bonelink;
-
-                if (!g_hardSkin && submesh)
-                    submesh->AddWeight(i, bonelink, 1.0f);
-            }
-        }
-#endif
         
         if(materialName.empty())
         {
@@ -866,7 +851,7 @@ namespace Demi
             gCurrentVertColors.resize(numverts);
 
         int meshindex = ReadInt(mStream);
-        int meshindex2 = ReadInt(mStream);
+        int meshindex2 = ReadInt(mStream); // anybody can tell me what the hell is it?
         unsigned int* vertics = new unsigned int[numverts];
         mStream->Read(vertics, sizeof(unsigned int)*numverts);
         for (int i = 0; i < numverts; ++i)
@@ -889,7 +874,7 @@ namespace Demi
             return;
         }
 
-        int meshIndex = ReadInt(mStream);
+        ReadInt(mStream); // mesh index
         int vertNums = ReadInt(mStream);
 
         if (gCurrentVertSkins.empty())
@@ -910,7 +895,7 @@ namespace Demi
             int numCount = 0;
             for (int w = 0; w < numWeights; ++w)
             {
-                if (numCount >= MAX_K2_BONEWEIGHTS)
+                if (numCount > MAX_K2_BONEWEIGHTS)
                     break;
 
                 if (!DiMath::RealEqual(weights[w], 0))
@@ -918,7 +903,7 @@ namespace Demi
                     gCurrentVertSkins[i].weights[numCount] = weights[w];
                     gCurrentVertSkins[i].indices[numCount++] = indexes[w];
 
-                    if (!g_hardSkin && sm)
+                    if (sm)
                     {
                         sm->AddWeight(i, indexes[w], weights[w]);
                     }
@@ -930,6 +915,11 @@ namespace Demi
         }
         DI_ASSERT(maxWeights <= MAX_K2_BONEWEIGHTS);
         sm->SetMaxWeights(maxWeights);
+        if(maxWeights > 4)
+        {
+            DI_INFO("Mesh:%s, The number of bone weights is greater than 4, use software skinning",sm->GetParentMesh()->GetName().c_str());
+            g_hardSkin = false;
+        }
     }
 
     void DiK2MdfSerial::ReadSigns()
