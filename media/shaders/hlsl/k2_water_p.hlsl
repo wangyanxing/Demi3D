@@ -46,7 +46,7 @@ void ComputeSurfaceDataFromGeometry(VS_OUTPUT input)
 {
 	gSurface.viewDirWorld = input.ViewDir;
 	gSurface.positionWorld = input.PosWorld;
-    gSurface.specularAmount = float3(1, 1, 1);
+    gSurface.specularAmount = g_specularColor.rgb;
 
     float3 cNormalmapColor1 = tex2D(normalmap1, input.Texcoord0.xy).agb;
     float3 cNormalmapColor2 = tex2D(normalmap2, input.Texcoord0.zw).agb;

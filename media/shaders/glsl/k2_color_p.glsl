@@ -49,7 +49,7 @@ void ComputeSurfaceDataFromGeometry()
 	gSurface.viewDirWorld = vViewDir;
 	gSurface.positionWorld = vPosWorld;
     
-    gSurface.specularAmount = vec3(1.0);
+    gSurface.specularAmount = g_specularColor.rgb;
     
 #if defined( USE_NORMALMAP )
     vec4 normMapColor;

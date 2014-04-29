@@ -42,7 +42,7 @@ void ComputeSurfaceDataFromGeometry()
 {
 	gSurface.viewDirWorld = vViewDir;
 	gSurface.positionWorld = vPosWorld;
-    gSurface.specularAmount = vec3(1.0);
+    gSurface.specularAmount = g_specularColor.rgb;
     
 	vec3 cNormalmapColor1 = texture2D(normalmap1, vTexcoord0.xy).agb;
     vec3 cNormalmapColor2 = texture2D(normalmap2, vTexcoord0.zw).agb;
