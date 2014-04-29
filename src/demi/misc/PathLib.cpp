@@ -232,6 +232,18 @@ namespace Demi
         DiString path = DiPathLib::GetApplicationPath();
         ::SetCurrentDirectory(path.c_str());
     }
+    
+    bool DiPathLib::OpenFileDialog(const void* wndHandle, const DiString& title,
+                                   const DiString& defaultPath, const DiString& defaultFile, const DiString& fileTypes, uint32 flags, DiVector<DiString>& outFiles)
+    {
+        return FileDialogShared(false, wndHandle, title, defaultPath, defaultFile, fileTypes, flags, outFiles);
+    }
+    
+    bool DiPathLib::SaveFileDialog(const void* wndHandle, const DiString& title, const DiString& defaultPath,
+                                   const DiString& defaultFile, const DiString& fileTypes, uint32 flags, DiVector<DiString>& outFiles)
+    {
+        return FileDialogShared(true, wndHandle, title, defaultPath, defaultFile, fileTypes, flags, outFiles);
+    }
 
 #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX || DEMI_PLATFORM == DEMI_PLATFORM_IOS
 #   include <mach-o/dyld.h>
@@ -255,13 +267,11 @@ namespace Demi
             ret = pathName;
         }
         
-        
-        
         return ret;
     }
 
 #define _SLASH "/"
-
+    
 #endif
 
     const DiString& DiPathLib::GetApplicationFileName()
@@ -285,17 +295,8 @@ namespace Demi
     {
         return (access(file.c_str(), 0) != -1);
     }
-
-    bool DiPathLib::OpenFileDialog(const void* wndHandle, const DiString& title,
-        const DiString& defaultPath, const DiString& defaultFile, const DiString& fileTypes, uint32 flags, DiVector<DiString>& outFiles)
+    
+    void DiPathLib::ResetCurrentDir()
     {
-        return FileDialogShared(false, wndHandle, title, defaultPath, defaultFile, fileTypes, flags, outFiles);
     }
-
-    bool DiPathLib::SaveFileDialog(const void* wndHandle, const DiString& title, const DiString& defaultPath,
-        const DiString& defaultFile, const DiString& fileTypes, uint32 flags, DiVector<DiString>& outFiles)
-    {
-        return FileDialogShared(true, wndHandle, title, defaultPath, defaultFile, fileTypes, flags, outFiles);
-    }
-
 }

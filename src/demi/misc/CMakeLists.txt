@@ -72,6 +72,7 @@ set (DI_MISC_PLATFORM_SPEC
   OSX/MacUtils.cpp
   OSX/OSXFunction.h
   OSX/OSXFunction.cpp
+  OSX/OSXPathLib.mm
   )
   
   if (DEMI_BUILD_PLATFORM_APPLE_IOS)
