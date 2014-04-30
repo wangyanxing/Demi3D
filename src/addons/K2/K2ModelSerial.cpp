@@ -913,7 +913,7 @@ namespace Demi
             delete[] weights;
             delete[] indexes;
         }
-        DI_ASSERT(maxWeights <= MAX_K2_BONEWEIGHTS);
+        //DI_ASSERT(maxWeights <= MAX_K2_BONEWEIGHTS);
         sm->SetMaxWeights(maxWeights);
         if(maxWeights > 4)
         {
@@ -1176,7 +1176,7 @@ namespace Demi
             
             DiTexturePtr tex = DiK2Configs::GetTexture(colorPath);
             if (tex)
-                sm->WriteTexture2D("map", colorPath);
+                sm->WriteTexture2D("map", tex);
         }
         if (shaderFlag & SHADER_FLAG_USE_NORMALMAP)
         {

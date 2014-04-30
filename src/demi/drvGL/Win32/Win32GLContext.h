@@ -37,6 +37,8 @@ namespace Demi
 
         void            Release();
 
+        void            SetVSyncEnabled(bool vsync);
+
         DiGLContext*    Clone() const;
 
     private:
@@ -50,6 +52,8 @@ namespace Demi
         HDC             mHDC;
 
         HGLRC           mGLRc;
+
+        bool            mVSync;
     };
 }
 

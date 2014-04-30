@@ -95,6 +95,12 @@ namespace Demi
 
     DiTexturePtr DiK2Configs::GetTexture(const DiString& relPath)
     {
+        DiString baseName = relPath.ExtractFileName();
+        if (baseName.empty() || baseName[0] == '$')
+        {
+            return DiTexture::GetDefaultTexture();
+        }
+
         DiTexturePtr ret = DiAssetManager::GetInstance().FindAsset<DiTexture>(relPath);
         if (ret)
             return ret;

@@ -17,7 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     DiWin32GLContext::DiWin32GLContext(DiWin32GLUtil* glutil, DiWndHandle wnd)
-        : mGLUtil(glutil)
+        : mGLUtil(glutil),
+        mVSync(false)
     {
         InitFromHwnd((HWND)wnd);
         if (!glutil->GetMainHDC())
@@ -134,6 +135,36 @@ namespace Demi
             if (!wglMakeCurrent(mHDC, mGLRc))
             {
                 DI_ERROR("Failed to call wglMakeCurrent");
+            }
+        }
+    }
+
+    void DiWin32GLContext::SetVSyncEnabled(bool vsync)
+    {
+        mVSync = vsync;
+        HDC old_hdc = wglGetCurrentDC();
+        HGLRC old_context = wglGetCurrentContext();
+        if (!wglMakeCurrent(mHDC, mGLRc))
+        {
+            DI_WARNING("Failed to call wglMakeCurrent");
+        }
+
+        // TODO : External control
+        if (true) 
+        {
+            // Don't use wglew as if this is the first window, we won't have initialised yet
+            PFNWGLSWAPINTERVALEXTPROC _wglSwapIntervalEXT =
+                (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
+            if (_wglSwapIntervalEXT)
+                _wglSwapIntervalEXT(mVSync ? 1 : 0);
+        }
+
+        if (old_context && old_context != mGLRc)
+        {
+            // Restore old context
+            if (!wglMakeCurrent(old_hdc, old_context))
+            {
+                DI_WARNING("Failed to call wglMakeCurrent");
             }
         }
     }

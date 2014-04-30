@@ -29,6 +29,7 @@ namespace Demi
         , mResUsage(RU_NONE)
         , mAutoGenerateMipmap(true)
     {
+
         mAddressingU   = AM_WRAP;
         mAddressingV   = AM_WRAP;
         mBorderColor   = DiColor(0, 0, 0, 0);
@@ -248,6 +249,7 @@ namespace Demi
     {
         if (mUsage == TU_TEXURE && (mResUsage & (RU_DYNAMIC | RU_WRITE_ONLY)))
             return;
+        DI_DEBUG("Losting %s", mName.c_str());
 
         if (mTextureDrv)
             mTextureDrv->Release();

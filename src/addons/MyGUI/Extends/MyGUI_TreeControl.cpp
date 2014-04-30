@@ -238,7 +238,7 @@ namespace MyGUI
 		{
 			if (mpWidgetScroll->getVisible())
 			{
-				mpWidgetScroll->setVisible(true);
+				mpWidgetScroll->setVisible(false);
 				mClient->setSize(mClient->getWidth() + mpWidgetScroll->getWidth(), mClient->getHeight());
 			}
 		}
