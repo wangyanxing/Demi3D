@@ -17,7 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2MapLoader.h"
 #include "K2Configs.h"
 #include "K2Model.h"
-#include "K2TerrainMap.h"
+#include "K2Terrain.h"
 #include "K2TerrainDesc.h"
 
 #include "XMLFile.h"

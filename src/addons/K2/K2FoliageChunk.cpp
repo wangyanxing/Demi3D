@@ -13,7 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Pch.h"
 #include "K2FoliageChunk.h"
 #include "VertexBuffer.h"
-#include "K2TerrainMap.h"
+#include "K2Terrain.h"
 #include "ShaderParam.h"
 #include "K2TerrainChunk.h"
 #include "K2FoliageMap.h"

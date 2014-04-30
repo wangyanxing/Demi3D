@@ -21,7 +21,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "EnginePlugin.h"
 #include "K2World.h"
 #include "K2Configs.h"
-#include "K2TerrainMap.h"
+#include "K2Terrain.h"
 #include "K2Plugin.h"
 
 DiK2World* world = nullptr;

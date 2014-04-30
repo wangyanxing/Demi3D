@@ -12,7 +12,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 #include "K2Pch.h"
 #include "K2TerrainNode.h"
-#include "K2TerrainMap.h"
+#include "K2Terrain.h"
 #include "K2TerrainChunk.h"
 #include "Camera.h"
 

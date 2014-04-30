@@ -86,12 +86,12 @@ namespace Demi
             wcex.cbClsExtra = 0;
             wcex.cbWndExtra = sizeof(void*);
             wcex.hInstance = hInstance;
-            wcex.hIcon = ::LoadIcon(hInstance, (LPCTSTR)0);
+            wcex.hIcon = ::LoadIcon(hInstance, IDI_APPLICATION);
             wcex.hCursor = ::LoadCursor(NULL, IDC_ARROW);
             wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
             wcex.lpszMenuName = 0;
             wcex.lpszClassName = gWindowClass;
-            wcex.hIconSm = ::LoadIcon(wcex.hInstance, (LPCTSTR)0);
+            wcex.hIconSm = ::LoadIcon(wcex.hInstance, IDI_APPLICATION);
             atom = ::RegisterClassEx(&wcex);
         }
         return atom;

@@ -14,7 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2FoliageMap.h"
 #include "K2FoliageLayer.h"
 #include "K2FoliageChunk.h"
-#include "K2TerrainMap.h"
+#include "K2Terrain.h"
 #include "RandomTable.h"
 #include "ShaderParam.h"
 

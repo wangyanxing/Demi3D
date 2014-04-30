@@ -15,7 +15,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2Clip_h__
 
 #include "K2Prerequisites.h"
-#include "K2GameDefines.h"
 
 namespace Demi
 {

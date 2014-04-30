@@ -30,10 +30,6 @@ namespace Demi
 
     public:
 
-        void	                SetParent(DiK2GameEntity* entity){ mEnity = entity; }
-        
-        DiK2GameEntity*         GetParent(){ return mEnity; }
-
         virtual void            Release();
 
         DiCullNode*             GetNode() { return mNode; }
@@ -81,8 +77,6 @@ namespace Demi
         DiCullNode*             mNode;
 
         bool                    mVisible;
-
-        DiK2GameEntity*         mEnity;
 
         DiQuat                  mRotation;
 

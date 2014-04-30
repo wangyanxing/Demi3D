@@ -16,7 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxDriver.h"
 #include "ShaderParam.h"
 
-#include "K2TerrainMap.h"
+#include "K2Terrain.h"
 #include "K2WaterChunk.h"
 #include "K2WaterMap.h"
 #include "K2TerrainChunk.h"

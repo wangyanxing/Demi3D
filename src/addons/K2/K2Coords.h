@@ -23,7 +23,7 @@ namespace Demi
 {
     /** some global scale data
      */
-    struct K2MapScale
+    struct DEMI_K2_API K2MapScale
     {
         static float GridSize;
     };

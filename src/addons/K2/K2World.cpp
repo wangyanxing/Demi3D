@@ -18,14 +18,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SubModel.h"
 #include "ShaderParam.h"
 
-#include "K2TerrainMap.h"
+#include "K2Terrain.h"
 #include "K2World.h"
 #include "K2WorldSerial.h"
 #include "K2Model.h"
 #include "K2Configs.h"
 #include "K2AnimatedObj.h"
 #include "K2StaticObj.h"
-#include "K2GameCamera.h"
 
 #include "DebugHelper.h"
 #include "ShaderManager.h"
@@ -222,14 +221,6 @@ namespace Demi
     }
 
     void DiK2World::Update(float dt)
-    {
-    }
-
-    void DiK2World::OnKeyInput(const K2KeyEvent& event)
-    {
-    }
-
-    void DiK2World::OnMouseInput(const K2MouseEvent& event)
     {
     }
 

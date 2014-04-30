@@ -15,8 +15,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2World_h__
 
 #include "K2Prerequisites.h"
-#include "K2GameDefines.h"
-#include "K2Input.h"
 
 //#define _DEBUG_CLIFF_POS
 
@@ -28,7 +26,7 @@ namespace Demi
 
         DiK2World();
 
-        ~DiK2World();
+        virtual ~DiK2World();
 
         friend class DiK2WorldSerial;
 
@@ -60,10 +58,6 @@ namespace Demi
         void                RemoveAllRenderObjs();
 
         DiK2RenderObject*   CreateRenderObject( K2ObjTypes type );
-
-        void                OnKeyInput(const K2KeyEvent& event);
-
-        void                OnMouseInput(const K2MouseEvent& event);
 
         /** id: usually team id
          */

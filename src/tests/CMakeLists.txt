@@ -4,4 +4,3 @@
 
 add_subdirectory(Test_BasicScene)
 add_subdirectory(Test_GUI)
-add_subdirectory(Test_Game)

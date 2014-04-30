@@ -40,20 +40,9 @@ namespace Demi
     class DiK2TileCliffMap;
     class DiK2HeightMap;
     class DiK2VertexBlockerMap;
-    class DiK2HeroEntity;
-    class DiK2Game;
-    class DiK2GameCamera;
-    class DiK2Input;
-    class DiK2GameApp;
-    class DiK2Entity;
-    class DiK2EntityManager;
-    class DiK2GameEntity;
-    class DiK2Property;
     class DiK2RenderObject;
     class DiK2StaticObj;
     class DiK2AnimatedObj;
-    class DiK2Attribute;
-    class DiPathSolver;
 
     struct K2KeyFrames;
     struct K2Anim;
@@ -63,9 +52,9 @@ namespace Demi
     typedef shared_ptr<DiK2ModelAsset>  DiK2ModelAssetPtr;
     typedef shared_ptr<DiTerrainDesc>   DiTerrainDescPtr;
     typedef shared_ptr<DiTerrain>       DiTerrainPtr;
-    typedef shared_ptr<DiK2GameEntity>  DiK2GameEntityPtr;
-    typedef shared_ptr<DiK2HeroEntity>  DiK2HeroEntityPtr;
-    typedef shared_ptr<DiK2Attribute>   DiK2AttributePtr;
 }
+
+#include "K2Coords.h"
+#include "K2Common.h"
 
 #endif

@@ -12,7 +12,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "K2Pch.h"
-#include "K2GameEntity.h"
 #include "K2StaticObj.h"
 #include "K2Clip.h"
 #include "K2Model.h"
