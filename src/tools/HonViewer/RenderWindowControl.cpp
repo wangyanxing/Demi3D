@@ -82,14 +82,7 @@ namespace tools
 
     bool RenderWindowControl::mouseInCanvas()
     {
-        MyGUI::IntPoint point = MyGUI::InputManager::getInstance().getMousePosition() - mCanvas->getAbsolutePosition();
-        if (point.left > 0 && point.top > 0 && 
-            point.left < mCanvas->getSize().width &&
-            point.top < mCanvas->getSize().height)
-        {
-            return true;
-        }
-        return false;
+        return mCanvas->getRootMouseFocus();
     }
 
     void RenderWindowControl::updateInfo()

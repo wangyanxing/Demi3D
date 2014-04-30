@@ -213,13 +213,21 @@ namespace Demi
         return nullptr;
     }
 
-    void DiAssetManager::SetBasePath( const DiString& val )
+    bool DiAssetManager::SetBasePath(const DiString& val)
     {
         DiString appPath = DiPathLib::GetApplicationPath();
 
-        mBasePath = appPath + val;
-        mBasePath.SimplifyPath();
-        mBasePath += "/";
+        DiString path = appPath + val;
+        path.SimplifyPath();
+
+        DI_LOG("Try to locate the media path: %s", path.c_str());
+        // test if this folder is existed
+        if (!DiPathLib::FileExisted(path))
+        {
+            return false;
+        }
+        
+        mBasePath = path + "/";
 
         DI_INFO("Set media path to: %s", mBasePath.c_str());
         DI_INFO("Searching for sub paths");
@@ -256,6 +264,7 @@ namespace Demi
         }
 
         AddSearchPath(mBasePath);
+        return true;
     }
     
     DiString DiAssetManager::GetArchivePath(const DiString& filename, bool ignoreError)

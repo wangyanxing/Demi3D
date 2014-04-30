@@ -37,14 +37,10 @@ namespace MyGUI
 			delete mLogManager;
 		}
 
-		void initialise(const std::string& _logName = MYGUI_PLATFORM_LOG_FILENAME)
+		void initialise()
 		{
             DI_ASSERT(!mIsInitialise);
 			mIsInitialise = true;
-
-			if (!_logName.empty())
-				LogManager::getInstance().createDefaultSource(_logName);
-
 			mRenderManager->initialise();
 			mDataManager->initialise();
 		}

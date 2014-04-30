@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="WindowCSX" position="45 30 595 430" align="Left Top" layer="Overlapped" name="_Main">
+        <Property key="Caption" value="Help"/>
+        <Property key="Snap" value="true"/>
+        <Property key="Visible" value="false"/>
+        <Property key="MinSize" value="448 296"/>
+        <Widget type="Button" skin="Button" position="460 363 120 26" align="Right Bottom" name="Ok">
+            <Property key="Caption" value="#{Ok}"/>
+        </Widget>
+        <Widget type="ImageBox" skin="ImageBox" position="10 238 295 101">
+            <Property key="ImageTexture" value="demilogo.png"/>
+        </Widget>
+        <Widget type="TextBox" skin="TextBox" position="15 40 530 225">
+            <Property key="Caption" value="Use File-&gt;Set Game Location to indicate your HON game path. \nOr try File-&gt;Set Resource Locations to manually setup the resource pack \n and texture pack (e.g. resource0.s2z and textures.s2z)\n\nI&apos;m working on parsing and loading effect files. Look forward of seeing you \nguys in next version. Or clone my github repo at \ngithub.com/wangyanxing/Demi3D\n\nHava fun.\n\nYanxing Wang\nApril 29th 2014, v1.0"/>
+        </Widget>
+        <Widget type="ImageBox" skin="ImageBox" position="310 245 250 100">
+            <Property key="ImageTexture" value="MyGUI_Logo.png"/>
+        </Widget>
+    </Widget>
+    <CodeGeneratorSettings>
+        <Property key="IncludeDirectory" value=""/>
+        <Property key="PanelName" value="ViewerHelper"/>
+        <Property key="PanelNamespace" value="tools"/>
+        <Property key="SourceDirectory" value=""/>
+    </CodeGeneratorSettings>
+</MyGUI>

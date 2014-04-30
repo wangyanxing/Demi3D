@@ -33,6 +33,7 @@ namespace tools
     class SetResLocWindow;
     class SettingsManager;
     class Dialog;
+    class ViewerHelper;
     class SetGameLocWindow;
 }
 

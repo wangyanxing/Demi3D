@@ -112,6 +112,11 @@ namespace MyGUI
 			return getValueName(value);
 		}
 
+        Enum getValue()
+        {
+            return value;
+        }
+
 	private:
 		const char* getValueName(int _index) const
 		{

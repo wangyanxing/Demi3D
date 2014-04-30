@@ -47,45 +47,11 @@ namespace MyGUI
 		static LogManager& getInstance();
 		static LogManager* getInstancePtr();
 
-		/** Call LogSource::flush() for all log sources. */
-		void flush();
 		/** Call LogSource::log for all log sources. */
 		void log(const std::string& _section, LogLevel _level, const std::string& _message, const char* _file, int _line);
 
-		/** Create default LevelLogFilter, FileLogListener and ConsoleLogListener. */
-		void createDefaultSource(const std::string& _logname);
-
-		/** Enable or disable default ConsoleLogListener that writes log into std::cout.\n
-			Enabled (true) by default.
-		*/
-		void setSTDOutputEnabled(bool _value);
-		/** Is disable ConsoleLogListener enabled. */
-		bool getSTDOutputEnabled() const;
-
-		/** Set default LevelLogFilter level. */
-		void setLoggingLevel(LogLevel _value);
-		/** Get default LevelLogFilter level. */
-		LogLevel getLoggingLevel() const;
-
-		/** Add log source. */
-		void addLogSource(LogSource* _source);
-
-	private:
-		void close();
-
 	private:
 		static LogManager* msInstance;
-
-		typedef std::vector<LogSource*> VectorLogSource;
-		VectorLogSource mSources;
-
-		ConsoleLogListener* mConsole;
-		FileLogListener* mFile;
-		LevelLogFilter* mFilter;
-		LogSource* mDefaultSource;
-
-		LogLevel mLevel;
-		bool mConsoleEnable;
 	};
 
 } // namespace MyGUI

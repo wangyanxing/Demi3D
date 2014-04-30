@@ -296,7 +296,4 @@ namespace Demi
         return (access(file.c_str(), 0) != -1);
     }
     
-    void DiPathLib::ResetCurrentDir()
-    {
-    }
 }

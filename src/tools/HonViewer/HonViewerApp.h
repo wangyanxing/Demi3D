@@ -65,6 +65,8 @@ namespace Demi
 
         void Command_GameLocation(const MyGUI::UString& _commandName, bool& _result);
 
+        void Command_ViewHelp(const MyGUI::UString& _commandName, bool& _result);
+
         void NotifySetResLocWindowEndDialog(Dialog* _dialog, bool _result);
 
         void NotifySetGameLocWindowEndDialog(Dialog* _dialog, bool _result);
@@ -76,6 +78,8 @@ namespace Demi
         SetResLocWindow*    mSetResLocWindow;
 
         SetGameLocWindow*   mSetGameLocWindow;
+
+        ViewerHelper*       mHelpWindow;
 
         MainPaneControl*    mMainPane;
 

@@ -92,7 +92,11 @@ namespace Demi
 
         const DiString&               GetBasePath() const { return mBasePath; }
 
-        void                          SetBasePath(const DiString& val);
+        /** 
+            Set the base media folder of the application
+            @return if successfully found the folder
+         */
+        bool                          SetBasePath(const DiString& val);
         
         ArchivePtr                    GetArchive(const DiString& filename);
                                       

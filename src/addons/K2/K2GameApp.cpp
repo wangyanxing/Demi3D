@@ -179,7 +179,7 @@ namespace Demi
 
     void DiK2GameApp::OpenImpl()
     {
-        bool ret = Driver->Init(1024,768, "Game", false);
+        bool ret = Driver->Init(1136,640, "Game", false);
         DI_ASSERT(ret);
 
         mInputMgr = new DiK2Input();
@@ -192,7 +192,7 @@ namespace Demi
         DiK2Configs::Init();
 
         mGame = DI_NEW DiK2Game();
-        mGame->OpenWorld("maps/pathfind");
+        mGame->OpenWorld("maps/demoMap");
         mGame->SetHero("heroes/aluna/model.mdf");
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){
@@ -201,5 +201,4 @@ namespace Demi
     }
 
     DiK2GameApp* DiK2GameApp::sApp = nullptr;
-
 }

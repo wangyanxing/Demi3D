@@ -22,6 +22,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2EntityManager.h"
 #include "K2RenderObjects.h"
 
+#include "RenderWindow.h"
+#include "PostEffectManager.h"
+#include "PostEffect.h"
 #include "DirectionalLight.h"
 #include "CullNode.h"
 #include "GfxDriver.h"
@@ -85,6 +88,11 @@ namespace Demi
         dirNode->AttachObject(dirlight);
         dirlight->SetColor(DiColor());
         dirlight->SetDirection(DiVec3(-0.5f, -0.866f, 0).normalisedCopy());
+
+        DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
+        DiPostEffect* bloom = peMgr->GetEffect("Bloom");
+        if (bloom)
+            bloom->SetEnable(true);
 
         SetCamera(DiK2GameCamera::STYLE_CHARACTER);
     }

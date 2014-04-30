@@ -27,36 +27,34 @@
 #include "MyGUI_LogSource.h"
 #include <time.h>
 
+#include "LogManager.h"
+
 namespace MyGUI
 {
+    static Demi::LogLevel ToDemiLogLevel(MyGUI::LogLevel::Enum level)
+    {
+        switch (level)
+        {
+        case LogLevel::Warning:
+        case LogLevel::Error:
+            return Demi::LOG_LEVEL_WARNING;
+        case LogLevel::Critical:
+            return Demi::LOG_LEVEL_ERROR;
+        case LogLevel::Info:
+        default:
+            return Demi::LOG_LEVEL_LOG;
+        }
+    }
 
 	LogManager* LogManager::msInstance = nullptr;
 
-	LogManager::LogManager() :
-		mConsole(nullptr),
-		mFile(nullptr),
-		mFilter(nullptr),
-		mDefaultSource(nullptr),
-		mLevel(LogLevel::Info),
-		mConsoleEnable(true)
+	LogManager::LogManager()
 	{
 		msInstance = this;
 	}
 
 	LogManager::~LogManager()
 	{
-		flush();
-		close();
-
-		delete mDefaultSource;
-		mDefaultSource = nullptr;
-		delete mConsole;
-		mConsole = nullptr;
-		delete mFile;
-		mFile = nullptr;
-		delete mFilter;
-		mFilter = nullptr;
-
 		msInstance = nullptr;
 	}
 
@@ -75,78 +73,9 @@ namespace MyGUI
 		return msInstance;
 	}
 
-	void LogManager::flush()
-	{
-		for (VectorLogSource::iterator item = mSources.begin(); item != mSources.end(); ++item)
-			(*item)->flush();
-	}
-
 	void LogManager::log(const std::string& _section, LogLevel _level, const std::string& _message, const char* _file, int _line)
 	{
-		time_t ctTime;
-		time(&ctTime);
-		struct tm* currentTime;
-		currentTime = localtime(&ctTime);
-
-		for (VectorLogSource::iterator item = mSources.begin(); item != mSources.end(); ++item)
-			(*item)->log(_section, _level, currentTime, _message, _file, _line);
-	}
-
-	void LogManager::close()
-	{
-		for (VectorLogSource::iterator item = mSources.begin(); item != mSources.end(); ++item)
-			(*item)->close();
-	}
-
-	void LogManager::addLogSource(LogSource* _source)
-	{
-		mSources.push_back(_source);
-	}
-
-	void LogManager::createDefaultSource(const std::string& _logname)
-	{
-		mConsole = new ConsoleLogListener();
-		mFile = new FileLogListener();
-		mFilter = new LevelLogFilter();
-
-		mFile->setFileName(_logname);
-		mConsole->setEnabled(mConsoleEnable);
-		mFilter->setLoggingLevel(mLevel);
-
-		mDefaultSource = new LogSource();
-		mDefaultSource->addLogListener(mFile);
-		mDefaultSource->addLogListener(mConsole);
-		mDefaultSource->setLogFilter(mFilter);
-
-		mDefaultSource->open();
-
-		LogManager::getInstance().addLogSource(mDefaultSource);
-	}
-
-	void LogManager::setSTDOutputEnabled(bool _value)
-	{
-		mConsoleEnable = _value;
-
-		if (mConsole != nullptr)
-			mConsole->setEnabled(_value);
-	}
-
-	bool LogManager::getSTDOutputEnabled() const
-	{
-		return mConsoleEnable;
-	}
-
-	void LogManager::setLoggingLevel(LogLevel _value)
-	{
-		mLevel = _value;
-
-		if (mFilter != nullptr)
-			mFilter->setLoggingLevel(_value);
-	}
-
-	LogLevel LogManager::getLoggingLevel() const
-	{
-		return mLevel;
+        Demi::DiLogManager::GetInstance().Output(ToDemiLogLevel(_level.getValue()), _file, _line, "[MyGUI]%s", _message.c_str());
 	}
 
 } // namespace MyGUI

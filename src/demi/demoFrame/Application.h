@@ -26,14 +26,11 @@ namespace Demi
         , windowHeight(height)
         , fullScreen(false)
         , windowTitle(title)
-#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-        , mediaPath("media")
-#else
-        , mediaPath("../../media")
-#endif
         , logFile("Demi.log")
         , sceneType("Octree")
         {
+            searchPaths.push_back("../../media");
+            searchPaths.push_back("media");
         }
 
         uint32      windowWidth;
@@ -45,7 +42,7 @@ namespace Demi
 
         bool        fullScreen;
 
-        DiString    mediaPath;
+        DiVector<DiString> searchPaths;
         DiString    logFile;
     };
 

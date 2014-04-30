@@ -300,6 +300,11 @@ namespace Demi
     {
         return FileDialogShared(true, wndHandle, title, defaultPath, defaultFile, fileTypes, flags, outFiles);
     }
+
+	// we don't need this feature under MacOSX
+    void DiPathLib::ResetCurrentDir()
+    {
+    }
     
     bool DiPathLib::OpenDirectoryDialog(const void* wndHandle, const DiString& dlgTitle, const DiString& defaultPath, DiString& outFolder)
     {

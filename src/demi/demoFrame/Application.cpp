@@ -102,8 +102,21 @@ namespace Demi
         DI_INSTALL_PLUGIN(DiScript);
 #endif
 
-        mAssetManager = new DiAssetManager;
-        mAssetManager->SetBasePath(mConfig.mediaPath);
+        mAssetManager = DI_NEW DiAssetManager;
+        bool foundMediaPath = false;
+        for (auto i = mConfig.searchPaths.begin(); i != mConfig.searchPaths.end(); ++i)
+        {
+            if (mAssetManager->SetBasePath(*i))
+            {
+                foundMediaPath = true;
+                break;
+            }
+        }
+
+        if (!foundMediaPath)
+        {
+            DI_ERROR("Failed to locate the media path");
+        }
 
         CommandMgr->RegisterString("scene_type", config.sceneType, 0, "Scene manager type");
         CommandMgr->AddCommand("quit", Quit, "Close Application");

@@ -31,6 +31,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "CommandManager.h"
 #include "SetResLocationWindow.h"
 #include "SetGameLocationWindow.h"
+#include "ViewerHelper.h"
 
 namespace Demi
 {
@@ -65,6 +66,7 @@ namespace Demi
         //delete mBackground;
         //mBackground = nullptr;
 
+        SAFE_DELETE(mHelpWindow);
         SAFE_DELETE(mSetResLocWindow);
         SAFE_DELETE(mSetGameLocWindow);
         SAFE_DELETE(mModelViewer);
@@ -154,6 +156,7 @@ namespace Demi
         CommandManager::getInstance().registerCommand("Command_Export", MyGUI::newDelegate(this, &HonViewerApp::Command_Export));
         CommandManager::getInstance().registerCommand("Command_ResLocation", MyGUI::newDelegate(this, &HonViewerApp::Command_ResLocation));
         CommandManager::getInstance().registerCommand("Command_GameLocation", MyGUI::newDelegate(this, &HonViewerApp::Command_GameLocation));
+        CommandManager::getInstance().registerCommand("Command_ViewHelp", MyGUI::newDelegate(this, &HonViewerApp::Command_ViewHelp));
 
         //mBackground = new BackgroundControl();
         mMainPane = new MainPaneControl();
@@ -168,6 +171,9 @@ namespace Demi
 
         mSetGameLocWindow = new SetGameLocWindow();
         mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonViewerApp::NotifySetGameLocWindowEndDialog);
+
+        mHelpWindow = new ViewerHelper();
+
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         //DiString zip("L:/Games/Savage2Res/resources0.zip");
@@ -324,4 +330,13 @@ namespace Demi
         return ret;
     }
 
+    void HonViewerApp::Command_ViewHelp(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if (!CheckCommand())
+            return;
+
+        mHelpWindow->doModal();
+
+        _result = true;
+    }
 }
