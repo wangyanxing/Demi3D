@@ -233,12 +233,13 @@ namespace Demi
         if(!mIsFullScreen)
         {
             NSRect frame = [mWindow frame];
+            NSRect viewFrame = [mView frame];
             NSRect screenFrame = [[NSScreen mainScreen] visibleFrame];
             
             mRect.left = (long)frame.origin.x;
             mRect.top = (int)(screenFrame.size.height - frame.size.height);
-            mRect.right = (long)frame.size.width + mRect.left;
-            mRect.bottom = (long)frame.size.height + mRect.top;
+            mRect.right = (long)viewFrame.size.width + mRect.left;
+            mRect.bottom = (long)viewFrame.size.height + mRect.top;
             
             mWindowOrigin = NSMakePoint(mRect.left, mRect.top);
         }
@@ -283,7 +284,6 @@ namespace Demi
             if(!mIsExternal)
             {
                 // Remove the window from the Window listener
-                //WindowEventUtilities::_removeRenderWindow(this);
             }
             
             if(mGLContext)
@@ -346,11 +346,10 @@ namespace Demi
                 CGLDisable((CGLContextObj)[mGLContext CGLContextObj], kCGLCESurfaceBackingSize);
                 
                 NSRect viewRect = NSMakeRect(mWindowOrigin.x, mWindowOrigin.y, mRect.Width(), mRect.Height());
-                NSRect viewFrame = viewRect;
-                [mWindow setFrame:viewFrame display:YES];
+                [mWindow setFrame:viewRect display:YES];
                 [mView setFrame:viewRect];
-                //[mWindow setStyleMask:NSResizableWindowMask|NSTitledWindowMask];
-                [mWindow setStyleMask:NSBorderlessWindowMask];
+                [mWindow setStyleMask:NSResizableWindowMask|NSTitledWindowMask|NSClosableWindowMask];
+                //[mWindow setStyleMask:NSBorderlessWindowMask];
                 [mWindow setOpaque:YES];
                 [mWindow setHidesOnDeactivate:NO];
                 [mWindow setContentView:mView];
@@ -366,6 +365,7 @@ namespace Demi
             
             // Even though OgreCocoaView doesn't accept first responder, it will get passed onto the next in the chain
             [mWindow makeFirstResponder:mView];
+            [NSApp activateIgnoringOtherApps:YES];
         }
 
     }
@@ -382,11 +382,13 @@ namespace Demi
             windowRect = NSMakeRect(0.0, 0.0, width, height);
         
         mWindow = [[DemiWindow alloc] initWithContentRect:windowRect
-                                                //styleMask:mIsFullScreen ? NSBorderlessWindowMask : NSResizableWindowMask|NSTitledWindowMask
-                                                styleMask: NSBorderlessWindowMask
+                                                styleMask:mIsFullScreen ? NSBorderlessWindowMask : NSResizableWindowMask|NSTitledWindowMask|NSClosableWindowMask
+                                                //styleMask: NSBorderlessWindowMask
                                                   backing:NSBackingStoreBuffered
                                                     defer:YES];
         [mWindow setTitle:[NSString stringWithCString:title encoding:NSUTF8StringEncoding]];
+        [mWindow setReleasedWhenClosed:NO]; // we will do it manually
+        
         mWindowTitle = title;
         
         mView = [[DemiView alloc] initWithGLOSXWindow:this];

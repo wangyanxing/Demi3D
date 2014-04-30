@@ -43,7 +43,10 @@ if (WIN32)
       Win32/HonViewer.rc
       Win32/winres.h
     )
-else()
+elseif(APPLE)
+	set(RESOURCE_FILES
+      ${DEMI_SOURCE_DIR}/src/tools/HonViewer/honicon.icns
+    )
 endif()
 
 DI_ADD_EXECUTABLE(HonViewer ${SAMPLE_HEADERS} ${SAMPLE_SRCS} ${RESOURCE_FILES})
@@ -55,6 +58,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Tools)
 
 if (NOT APPLE)
 	set_property(TARGET HonViewer APPEND PROPERTY DEBUG_POSTFIX "_d")
+else()
+	set_property(TARGET HonViewer PROPERTY MACOSX_BUNDLE TRUE)
+	set_property(TARGET HonViewer PROPERTY MACOSX_BUNDLE_ICON_FILE honicon)
+	set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.demi3d.\${PRODUCT_NAME:rfc1034identifier}")
+
+	add_custom_command(TARGET HonViewer POST_BUILD
+  	    	COMMAND ditto ${DEMI_SOURCE_DIR}/src/tools/HonViewer/honicon.icns ${DEMI_SOURCE_DIR}/bin/$(CONFIGURATION)/${DEMI_BIN_NAME}.app/Contents/Resources/
+  	    	)
 endif ()
 
 set_property(TARGET HonViewer PROPERTY FOLDER "Tools")

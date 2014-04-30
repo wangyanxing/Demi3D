@@ -10,8 +10,10 @@
   Released under the MIT License
   https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "OSXWindowDelegate.h"
 #include "OSXWindow.h"
+#include "Command.h"
 
 using namespace Demi;
 @implementation OSXWindowDelegate
@@ -85,7 +87,7 @@ using namespace Demi;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-//    DiOSXWindow* curWindow = static_cast<DiOSXWindow *>(demiWindow);
+    DiBase::CommandMgr->ExecuteCommand("quit");
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification

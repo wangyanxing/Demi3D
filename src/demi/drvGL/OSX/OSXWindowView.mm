@@ -30,9 +30,9 @@ using namespace Demi;
 
 - (id)initWithGLOSXWindow:(DiWindow*)w
 {
-    uint32 wid;
-    uint32 hei;
-    w->GetWindowSize(wid, hei);
+    uint32 wid = 0;
+    uint32 hei = 0;
+    //w->GetWindowSize(wid, hei);
 	if((self = [super initWithFrame:NSMakeRect(0, 0, wid, hei)]))
     {
         window = w;

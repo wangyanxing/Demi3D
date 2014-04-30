@@ -331,6 +331,10 @@ namespace Demi
         [pool drain];
         return bSuccess;
     }
+    
+    void DiPathLib::ResetCurrentDir()
+    {
+    }
 }
 
 #endif
