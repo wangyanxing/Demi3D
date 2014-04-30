@@ -51,6 +51,11 @@ MACRO(DI_ADD_LIBRARY TARGETNAME)
       set_target_properties(${TARGETNAME} PROPERTIES XCODE_ATTRIBUTE_GCC_INLINES_ARE_PRIVATE_EXTERN[arch=x86_64] "YES")
       # disable "lib" prefix on Unix
       set_target_properties(${TARGETNAME} PROPERTIES PREFIX "")
+      if (APPLE)
+        set_target_properties(${TARGETNAME} PROPERTIES BUILD_WITH_INSTALL_RPATH 1
+          INSTALL_NAME_DIR "@executable_path/"
+        )
+      endif()
     endif (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_CLANGXX)
   endif (DEMI_STATIC)
 

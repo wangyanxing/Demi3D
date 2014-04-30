@@ -87,7 +87,8 @@ using namespace Demi;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-    DiBase::CommandMgr->ExecuteCommand("quit");
+    if(DiBase::CommandMgr)
+        DiBase::CommandMgr->ExecuteCommand("quit");
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification
