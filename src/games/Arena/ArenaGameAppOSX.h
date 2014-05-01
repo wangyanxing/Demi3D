@@ -16,7 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #ifdef __OBJC__
 
-#include "K2GameApp.h"
+#include "ArenaGameApp.h"
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CVDisplayLink.h>

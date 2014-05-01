@@ -11,10 +11,10 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef K2GameAppIOS_h__
-#define K2GameAppIOS_h__
+#ifndef ArenaGameAppIOS_h__
+#define ArenaGameAppIOS_h__
 
-#include "K2GameApp.h"
+#include "ArenaGameApp.h"
 
 #ifdef __OBJC__
 
