@@ -195,7 +195,7 @@ namespace Demi
         
         // xxx.model
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-        target->mModelFile = rootNode.GetAttribute("low");
+        target->mModelFile = rootNode.GetAttribute("med");
 #else
         target->mModelFile = rootNode.GetAttribute("high");
 #endif

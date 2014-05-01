@@ -41,7 +41,7 @@ void SetupWater(DiSceneManager* sm)
     refractMap->SetAddressing(AM_CLAMP);
     refractMap->CreateTexture();
     auto refractRT = refractMap->GetRenderTarget();
-
+    
     // Water plane 
     DiCullNode* nodePlane = sm->GetRootNode()->CreateChild();
     DiSimpleShapePtr model = make_shared<DiSimpleShape>();
@@ -88,6 +88,11 @@ void SetupWater(DiSceneManager* sm)
             cam->DisableReflection();
         }
     );
+    
+    DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
+	DiPostEffect* bloom = peMgr->GetEffect("Bloom");
+    if (bloom)
+		bloom->SetEnable(false);
 }
 
 void InitScene()

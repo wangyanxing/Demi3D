@@ -10,12 +10,15 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "RenderTarget.h"
 #include "GfxDriver.h"
 #include "Texture.h"
 #include "DepthBuffer.h"
 #include "GfxDriver.h"
+#include "RenderWindow.h"
+#include "PostEffectManager.h"
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable : 4706)
@@ -109,7 +112,15 @@ namespace Demi
 
     void DiRenderTarget::Bind(uint8 mrtID)
     {
-        Driver->SetTextureFlipping(mFlippingUV);
+        if(!ActiveRenderWindow->GetPostEffectManager()->HasEnabledPostPasses())
+        {
+            Driver->SetTextureFlipping(this == ActiveRenderWindow->GetRenderBuffer()?
+                                       false : true);
+        }
+        else
+        {
+            Driver->SetTextureFlipping(mFlippingUV);
+        }
         
         PreBind();
 

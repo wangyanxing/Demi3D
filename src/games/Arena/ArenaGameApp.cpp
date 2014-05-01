@@ -199,7 +199,7 @@ namespace Demi
         DiK2Configs::Init();
 
         mGame = DI_NEW ArGame();
-        mGame->OpenWorld("maps/demoMap");
+        mGame->OpenWorld("maps/test_entity");
         mGame->SetHero("heroes/aluna/model.mdf");
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){

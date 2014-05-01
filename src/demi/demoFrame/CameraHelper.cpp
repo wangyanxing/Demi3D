@@ -176,7 +176,7 @@ namespace Demi
     }
     
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-    void DiCameraHelper::OnMouseMove(const OIS::MultiTouchEvent& evt)
+    void DiCameraHelper::OnMouseMove(const OIS::MultiTouchState& evt)
 #else
     void DiCameraHelper::OnMouseMove(const OIS::MouseState& evt)
 #endif
@@ -222,7 +222,7 @@ namespace Demi
     }
     
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-    void DiCameraHelper::OnMouseDown(const OIS::MultiTouchEvent& evt)
+    void DiCameraHelper::OnMouseDown(const OIS::MultiTouchState& evt)
     {
         if (mStyle == CS_ORBIT)
         {
@@ -230,7 +230,7 @@ namespace Demi
         }
     }
     
-    void DiCameraHelper::OnMouseUp(const OIS::MultiTouchEvent& evt)
+    void DiCameraHelper::OnMouseUp(const OIS::MultiTouchState& evt)
     {
         if (mStyle == CS_ORBIT)
         {

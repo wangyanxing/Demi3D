@@ -249,7 +249,6 @@ namespace Demi
     {
         if (mUsage == TU_TEXURE && (mResUsage & (RU_DYNAMIC | RU_WRITE_ONLY)))
             return;
-        DI_DEBUG("Losting %s", mName.c_str());
 
         if (mTextureDrv)
             mTextureDrv->Release();

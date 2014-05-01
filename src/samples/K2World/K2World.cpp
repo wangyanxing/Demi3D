@@ -42,9 +42,9 @@ void InitScene()
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
     world = DI_NEW DiK2World();
-    world->Load("maps/demoMap");
+    world->Load("maps/test_entity2");
 
-    DiVec2 worldsize = world->mTerrain->GetWorldSize();
+    DiVec2 worldsize = world->mTerrain?world->mTerrain->GetWorldSize():DiVec2(0,0);
 
     auto cameraHelper = DemiDemo::GetApp()->GetCameraHelper();
     cameraHelper->SetStyle(CS_FREELOOK);

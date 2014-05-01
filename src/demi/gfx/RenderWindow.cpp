@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "RenderWindow.h"
 #include "GfxDriver.h"
@@ -119,7 +120,25 @@ namespace Demi
                     rp->Render(mSceneManager, cam, light->mShadowTextures[cascadeId]->GetRenderTarget());
                 }
             }
-         }
+        }
+        
+        // Process the extra render targets
+        rp->SetCurrentPass(DiRenderPipeline::P_CUSTOM_RTT_PASS);
+        auto rts = mSceneManager->GetExtraRenderTargets();
+        for (auto it = rts.begin(); it != rts.end(); ++it)
+        {
+            if (it->preUpdateCallback)
+                it->preUpdateCallback(it->rt);
+            
+            rp->ClearGroup();
+            mSceneManager->SetCurrentPass(RTT_PASS);
+            mSceneManager->Cull(it->camera);
+            mSceneManager->GetVisibleObjects().AddToBatch(rp);
+            rp->Render(mSceneManager, it->camera, it->rt);
+            
+            if (it->postUpdateCallback)
+                it->postUpdateCallback(it->rt);
+        }
 
         // Normal geometry pass
         rp->ClearGroup();
@@ -129,23 +148,7 @@ namespace Demi
         rp->Render(mSceneManager, mainCam, mPostEffectMgr->HasEnabledPostPasses() 
             || mForceRenderToCanvas ? mSceneCanvas : mRenderBuffer);
 
-        // Process the extra render targets
-        rp->SetCurrentPass(DiRenderPipeline::P_CUSTOM_RTT_PASS);
-        auto rts = mSceneManager->GetExtraRenderTargets();
-        for (auto it = rts.begin(); it != rts.end(); ++it) 
-        {
-            if (it->preUpdateCallback)
-                it->preUpdateCallback(it->rt);
-
-            rp->ClearGroup();
-            mSceneManager->SetCurrentPass(RTT_PASS);
-            mSceneManager->Cull(it->camera);
-            mSceneManager->GetVisibleObjects().AddToBatch(rp);
-            rp->Render(mSceneManager, it->camera, it->rt);
-
-            if (it->postUpdateCallback)
-                it->postUpdateCallback(it->rt);
-        }
+        
         
 #ifndef DISABLE_POST
         // Post filters

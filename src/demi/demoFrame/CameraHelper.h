@@ -61,11 +61,11 @@ namespace Demi
         bool                    Update(float elapsed);
         
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-        void                    OnMouseMove(const OIS::MultiTouchEvent& evt);
+        void                    OnMouseMove(const OIS::MultiTouchState& evt);
         
-        void                    OnMouseDown(const OIS::MultiTouchEvent& evt);
+        void                    OnMouseDown(const OIS::MultiTouchState& evt);
         
-        void                    OnMouseUp(const OIS::MultiTouchEvent& evt);
+        void                    OnMouseUp(const OIS::MultiTouchState& evt);
 #else
         void                    OnMouseMove(const OIS::MouseState& evt);
 

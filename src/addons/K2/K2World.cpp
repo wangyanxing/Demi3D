@@ -63,17 +63,22 @@ namespace Demi
 
     void DiK2World::Load(const DiString& path)
     {
-        DI_LOG("Loading world: %s", path.c_str());
-
         DiK2WorldSerial serial;
         serial.Load(path,this);
+        if(!mTerrain)
+        {
+            return;
+        }
+        
         mRootNode->AttachObject(mTerrain);
 
         DiTerrainDescPtr desc = mTerrain->GetDesc();
+
+#ifdef _DEBUG_CLIFF_POS
         uint8* blockerBuffer = desc->mVertBlockerMap->GetBuffer();
         uint32 vertX = CHUNK_GRID_SIZE*desc->mSizeX + 1;
         uint32 vertY = CHUNK_GRID_SIZE*desc->mSizeY + 1;
-#ifdef _DEBUG_CLIFF_POS
+        
         for (uint32 x = 0; x < vertX; ++x)
         {
             for (uint32 y = 0; y < vertY; ++y)

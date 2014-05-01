@@ -121,7 +121,9 @@ namespace Demi
         CommandMgr->RegisterString("scene_type", config.sceneType, 0, "Scene manager type");
         CommandMgr->AddCommand("quit", Quit, "Close Application");
 
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         DiPathLib::ResetCurrentDir();
+#endif
     }
 
     DemiDemo::~DemiDemo(void)
@@ -212,17 +214,17 @@ namespace Demi
     
     void DemiDemo::mouseMoved(const OIS::MultiTouchEvent& evt)
     {
-        mCameraHelper->OnMouseMove(evt);
+        mCameraHelper->OnMouseMove(evt.state);
     }
     
     void DemiDemo::mousePressed(const OIS::MultiTouchEvent& evt)
     {
-        mCameraHelper->OnMouseDown(evt);
+        mCameraHelper->OnMouseDown(evt.state);
     }
     
     void DemiDemo::mouseReleased(const OIS::MultiTouchEvent& evt)
     {
-        mCameraHelper->OnMouseUp(evt);
+        mCameraHelper->OnMouseUp(evt.state);
     }
     
 #else
