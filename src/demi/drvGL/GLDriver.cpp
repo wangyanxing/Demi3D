@@ -417,7 +417,7 @@ namespace Demi
 
         glClear(clearBuf);
 
-#if 1
+#if 0
         GLenum glErr = glGetError();
         if (glErr != GL_NO_ERROR)
             DiGLShaderInstance::LogGLSLError(glErr, "glClear error: ", 0);

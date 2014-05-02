@@ -117,7 +117,7 @@ namespace Demi
         if (mat)
         {
             Driver->GetShaderEnvironment()->SetIdentity();
-            mat->SetForceWireframe(true);
+            //mat->SetForceWireframe(true);
             DiSprite* quad = CheckScreenQuad(quadscale);
             mat->Bind();
             Driver->RenderGeometry(quad);
