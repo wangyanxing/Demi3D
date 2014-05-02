@@ -557,10 +557,9 @@ namespace Demi
         bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
         g_hardSkin = !forcesoft && numBones <= MAX_BONE_NUM;
 
-        if (bonelink >= 0)
-            g_hasAnim = false;
+        //if (bonelink >= 0)
+        //    g_hasAnim = false;
 
-        
         //////////////////////////////////////////////////////////////////////////
 
         DiSubMesh* submesh = nullptr;
@@ -568,6 +567,22 @@ namespace Demi
         {
             submesh = mesh->CreateSubMesh();
             submesh->SetVerticeNum(vertNum);
+        }
+        
+        // manually setup the skinning weights
+        if (bonelink >= 0)
+        {
+            if(gCurrentVertSkins.empty())
+                gCurrentVertSkins.resize(vertNum);
+            for (int i = 0; i < vertNum; i++)
+            {
+                gCurrentVertSkins[i].weights[0] = 1.0f;
+                gCurrentVertSkins[i].indices[0] = bonelink;
+                if (submesh)
+                {
+                    submesh->AddWeight(i, bonelink,1.0f);
+                }
+            }
         }
         
         DiString materialName = ReadString(mStream, material_name_length);

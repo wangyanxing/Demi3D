@@ -106,8 +106,16 @@ namespace Demi
             return ret;
 
         DiString full = GetK2MediaPath(relPath);
-
-
+        if(full.empty())
+        {
+            DI_WARNING("Empty texture file!, using default texture instead");
+            return DiTexture::GetDefaultTexture();
+        }
+        else if(full[0] != '\\' && full[0] != '/')
+        {
+            full = "/"+full;
+        }
+        
         DiString tgaFile = full + ".tga";
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
