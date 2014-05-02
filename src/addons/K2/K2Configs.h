@@ -42,6 +42,10 @@ namespace Demi
             we don't need extension here 
          */
         static DiTexturePtr GetTexture(const DiString& relPath);
+        
+        /** Some textures are begin with '$'
+         */
+        static DiTexturePtr GetSpecialTexture(const DiString& name);
 
         static DiQuat ConvertAngles(const DiVec3& eulerrot);
         

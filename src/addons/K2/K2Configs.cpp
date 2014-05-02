@@ -92,13 +92,30 @@ namespace Demi
             return data;
         }
     }
+    
+    DiTexturePtr DiK2Configs::GetSpecialTexture(const DiString& name)
+    {
+        static DiMap<DiString, DefaultTextureType> sMap;
+        if(sMap.empty())
+        {
+            sMap["$black"] = DEFAULT_BLACK;
+            sMap["$white"] = DEFAULT_WHITE;
+            sMap["$flat"]  = DEFAULT_FLAT;
+        }
+        auto i = sMap.find(name);
+        if(i != sMap.end())
+        {
+            return DiTexture::GetDefaultTexture(i->second);
+        }
+        return DiTexture::GetDefaultTexture();
+    }
 
     DiTexturePtr DiK2Configs::GetTexture(const DiString& relPath)
     {
         DiString baseName = relPath.ExtractFileName();
         if (baseName.empty() || baseName[0] == '$')
         {
-            return DiTexture::GetDefaultTexture();
+            return DiK2Configs::GetSpecialTexture(baseName);
         }
 
         DiTexturePtr ret = DiAssetManager::GetInstance().FindAsset<DiTexture>(relPath);

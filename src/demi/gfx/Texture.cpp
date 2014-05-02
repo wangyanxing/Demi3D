@@ -409,9 +409,21 @@ namespace Demi
             _RecalcTextureMatrix();
     }
 
-    DiTexturePtr DiTexture::GetDefaultTexture()
+    DiTexturePtr DiTexture::GetDefaultTexture(DefaultTextureType type)
     {
-        return DiAssetManager::GetInstance().GetAsset<DiTexture>("default.png");
+        switch (type)
+        {
+            case DEFAULT_WHITE:
+                return DiAssetManager::GetInstance().GetAsset<DiTexture>("default_white.png");
+            case DEFAULT_BLACK:
+                return DiAssetManager::GetInstance().GetAsset<DiTexture>("default_black.png");
+            case DEFAULT_FLAT:
+                return DiAssetManager::GetInstance().GetAsset<DiTexture>("default_flat.png");
+            case DEFAULT_GRID:
+            default:
+                return DiAssetManager::GetInstance().GetAsset<DiTexture>("default.png");
+        }
+
     }
 
     void DiTextureDrv::CopyFromMemory(const DiPixelBox& srcBox, uint32 level, uint32 surface /*= 0*/)

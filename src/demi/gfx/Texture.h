@@ -24,6 +24,14 @@ namespace Demi
         TEXTURE_2D,
         TEXTURE_CUBE
     };
+    
+    enum DefaultTextureType
+    {
+        DEFAULT_GRID,
+        DEFAULT_WHITE,
+        DEFAULT_BLACK,
+        DEFAULT_FLAT
+    };
 
     class DiTextureDrv : public DiBase
     {
@@ -211,7 +219,7 @@ namespace Demi
 
         static DiString         TYPE;
 
-        static DiTexturePtr     GetDefaultTexture();
+        static DiTexturePtr     GetDefaultTexture(DefaultTextureType type = DEFAULT_GRID);
 
     protected:
 
