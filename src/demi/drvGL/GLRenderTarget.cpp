@@ -42,9 +42,14 @@ namespace Demi
     bool DiGLRenderTarget::BindRenderTarget(uint8 mrtid)
     {
         if (mFrameBuffer)
+        {
             mFrameBuffer->Bind();
+        }
         else
+        {
+            //DI_DEBUG("Binding Framebuffer");
             glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        }
         return true;
     }
 

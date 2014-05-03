@@ -29,6 +29,7 @@ namespace Demi
         :mGLFormat(0),
         mFrameBuffer(nullptr)
     {
+        //mFlippingUV = true;
     }
 
     DiGLES2RenderTarget::~DiGLES2RenderTarget()
@@ -136,7 +137,6 @@ namespace Demi
             if (mWidth != db->GetWidth() || mHeight != db->GetHeight())
                 return retVal;
         }
-
 
         DiGLES2DepthBuffer* gldb = static_cast<DiGLES2DepthBuffer*>(db);
         DiGLES2RenderBuffer* glDepth = gldb->GetDepthBuffer();

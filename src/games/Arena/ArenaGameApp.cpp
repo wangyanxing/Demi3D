@@ -26,9 +26,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Window.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
-#   include "K2GameAppOSX.h"
+#   include "ArenaGameAppOSX.h"
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
-#   include "K2GameAppIOS.h"
+#   include "ArenaGameAppIOS.h"
 #endif
 
 #define DRV_DX9     0
@@ -199,7 +199,7 @@ namespace Demi
         DiK2Configs::Init();
 
         mGame = DI_NEW ArGame();
-        mGame->OpenWorld("maps/demoMap");
+        mGame->OpenWorld("maps/test_entity");
         mGame->SetHero("heroes/aluna/model.mdf");
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){

@@ -53,5 +53,4 @@ namespace Demi
     }
 
     Demi::ArObjID ArAutoID::sID = 0;
-
 }

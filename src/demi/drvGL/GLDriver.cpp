@@ -179,6 +179,7 @@ namespace Demi
 
         if (!unit->mIndexBuffer)
         {
+            //DI_DEBUG("Calling glDrawArrays :%d",unit->mVerticesNum);
             glDrawArrays(primType, 0, unit->mVerticesNum);
         }
         else
@@ -189,6 +190,7 @@ namespace Demi
 
             void* pBufferData = VBO_BUFFER_OFFSET(unit->mIndexOffset * indexSize);
 
+            //DI_DEBUG("Calling glDrawElements :%d,%d",indicesCount, indexType);
             glDrawElements(primType, indicesCount, indexType, pBufferData);
         }
 
@@ -415,9 +417,10 @@ namespace Demi
         if (scissorBoxDifference)
             glScissor(viewport[0], viewport[1], viewport[2], viewport[3]);
 
+        //DI_DEBUG("Calling glClear");
         glClear(clearBuf);
 
-#if 1
+#if 0
         GLenum glErr = glGetError();
         if (glErr != GL_NO_ERROR)
             DiGLShaderInstance::LogGLSLError(glErr, "glClear error: ", 0);

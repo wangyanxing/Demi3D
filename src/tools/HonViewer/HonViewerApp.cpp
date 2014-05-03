@@ -324,7 +324,7 @@ namespace Demi
             if (DiK2Configs::TEXTURE_PACK->HasFile("descriptor"))
             {
                 // TODO
-                return "00000000/";
+                return "00000000";
             }
         }
         return ret;

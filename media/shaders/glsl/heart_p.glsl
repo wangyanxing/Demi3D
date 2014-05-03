@@ -1,6 +1,6 @@
 #include "common.h"
 
-// this shader is adapted from 
+// this shader was directly copied from
 // https://www.shadertoy.com/view/XsfGRn
 // Created by inigo quilez - iq/2013
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
@@ -10,7 +10,7 @@ varying vec2 vTexCoord0;
 void main(void)
 {
 #ifdef DI_GLES2
-	vec2 p = (g_viewportSize.xy - 2.0*gl_FragCoord.xy) / min(g_viewportSize.y,g_viewportSize.x);
+	vec2 p = (gl_FragCoord.xy - g_viewportSize.xy) / min(g_viewportSize.y,g_viewportSize.x);
 #else
 	vec2 p = (2.0*gl_FragCoord.xy - g_viewportSize.xy) / min(g_viewportSize.y,g_viewportSize.x);
 #endif

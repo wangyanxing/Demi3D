@@ -49,13 +49,13 @@ void AddMeshes()
 void SetupPostEffects()
 {
 	DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
-	DiPostEffect* bloom = peMgr->GetEffect("Bloom");
+	DiPostEffect* bloom = peMgr->GetEffect("Gray");
     if (bloom)
 		bloom->SetEnable(true);
     
-	DiPostEffect* film = peMgr->GetEffect("Film");
-    if (film)
-		film->SetEnable(true);
+	//DiPostEffect* film = peMgr->GetEffect("Film");
+    //if (film)
+	//	film->SetEnable(true);
 }
 
 void InitScene()

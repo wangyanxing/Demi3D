@@ -109,6 +109,11 @@ void InitScene()
  	AddMesh(  60, y1, DiColor(0.33f,0.0f,1.0f),"phong");
  	AddMesh(  60, y2, DiColor(0.33f,0.0f,1.0f),"lambert"); 
  	AddMesh(  60, y3, DiColor(0.33f,0.0f,1.0f),"phong");
+
+    DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
+	DiPostEffect* bloom = peMgr->GetEffect("Gray");
+    if (bloom)
+		bloom->SetEnable(true);
 }
 
 void UpdateScene()

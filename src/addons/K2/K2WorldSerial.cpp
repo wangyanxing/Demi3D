@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Model.h"
 #include "K2Terrain.h"
 #include "K2TerrainDesc.h"
+#include "PathLib.h"
 
 #include "XMLFile.h"
 #include "XMLElement.h"
@@ -29,6 +30,12 @@ namespace Demi
     void DiK2WorldSerial::Load(const DiString& path, DiK2World* world)
     {
         DI_LOG("Loading k2 world: %s", path.c_str());
+        
+        if(!DiK2Configs::K2ArchiveExists(path))
+        {
+            DI_WARNING("Cannot locate the k2 map: %s", path.c_str());
+            return;
+        }
 
         DiTerrainDescPtr terrainDesc = make_shared<DiTerrainDesc>();
 
