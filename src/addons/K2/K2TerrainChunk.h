@@ -39,6 +39,8 @@ namespace Demi
         DiString        mDiffuseTexture[TERRAIN_LAYER_NUM];
 
         DiString        mNormalTexture[TERRAIN_LAYER_NUM];
+
+        DiAABB          mAABB;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -63,8 +65,6 @@ namespace Demi
         void                Unload();
 
         int                 GetChunkID();
-
-        void                AddToBatchGroup(DiRenderBatchGroup* bg);
 
         void                CorrectChunkPosition();
 

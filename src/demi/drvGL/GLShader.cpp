@@ -300,7 +300,7 @@ namespace Demi
                     // check if we already have this global uniform
                     if (DiGLUniforms::msUniformFuncs.find(name) != DiGLUniforms::msUniformFuncs.end())
                     {
-                        params->AddBuiltinParam(location, DiGLUniforms::msUniformFuncs[name]);
+                        params->AddBuiltinParam(uniformName, location, DiGLUniforms::msUniformFuncs[name]);
                     }
                     else
                     {

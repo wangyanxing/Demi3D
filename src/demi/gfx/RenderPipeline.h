@@ -105,6 +105,8 @@ namespace Demi
 
         void                        SetEnableGBuffer(bool v) { mEnableGbuffer = v; }
 
+        int                         GetBatchNums();
+
     protected:
 
         DiShaderEnvironment*        mShaderEnv;

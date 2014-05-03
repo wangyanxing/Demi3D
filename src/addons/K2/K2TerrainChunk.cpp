@@ -20,7 +20,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "CullNode.h"
 #include "ShaderParam.h"
 #include "RenderPipeline.h"
+#include "SceneManager.h"
 #include "GfxDriver.h"
+#include "RenderWindow.h"
 
 #include "K2Terrain.h"
 #include "K2TerrainNode.h"
@@ -40,6 +42,7 @@ namespace Demi
     DiTerrainBatch::DiTerrainBatch(DiTerrainChunk* parent)
         :mParent(parent),DiTerrainBatchBase()
     {
+        mAABB.SetNull();
     }
 
     DiTerrainBatch::~DiTerrainBatch()
@@ -115,6 +118,7 @@ namespace Demi
             bytes.diffuse1 = l1.diffuseID;
             bytes.normal1 = l1.normalID;
 
+            // this is grid ID, not vertex ID
             ids[bytes].push_back(i);
         }
 
@@ -148,11 +152,17 @@ namespace Demi
 
             for (auto iv = it->second.begin(); iv != it->second.end(); ++iv)
             {
-                uint16 i = (uint16)((*iv) % CHUNK_GRID_SIZE);
-                uint16 j = (uint16)((*iv) / CHUNK_GRID_SIZE);
+                uint16 gridID = *iv;
+                uint16 i = (uint16)(gridID % CHUNK_GRID_SIZE);
+                uint16 j = (uint16)(gridID / CHUNK_GRID_SIZE);
 
                 uint16 sz = i + j * (CHUNK_GRID_SIZE + 1);
                 uint16 nt = i + (j + 1) * (CHUNK_GRID_SIZE + 1);
+
+                batch->mAABB.Merge(mParent->GetPosition(mChunkIDX, mChunkIDY, sz));
+                batch->mAABB.Merge(mParent->GetPosition(mChunkIDX, mChunkIDY, sz + 1));
+                batch->mAABB.Merge(mParent->GetPosition(mChunkIDX, mChunkIDY, nt));
+                batch->mAABB.Merge(mParent->GetPosition(mChunkIDX, mChunkIDY, nt + 1));
 
                 bool fst = true;
 
@@ -323,12 +333,6 @@ namespace Demi
         mIndexBuffer->Create(indicesSize);
     }
 
-    void DiTerrainChunk::AddToBatchGroup(DiRenderBatchGroup* bg)
-    {
-        for (auto it = mBatches.begin(); it != mBatches.end(); ++it)
-            bg->AddRenderUnit(*it);
-    }
-
     void DiTerrainChunk::CorrectChunkPosition()
     {
         DiVec2 pos = mParent->GetChunkCenterPos(mChunkIDX, mChunkIDY);
@@ -448,11 +452,15 @@ namespace Demi
 
     void DiTerrainChunk::GetBatches( DiVector<DiRenderUnit*>& visible )
     {
-        DiVector<DiTerrainBatch*>::iterator it,itend;
+        DiCamera* cam = Driver->ActiveRenderWindow->GetSceneManager()->GetCamera();
+        DiVector<DiTerrainBatch*>::iterator it, itend;
         itend = mBatches.end();
         for (it = mBatches.begin();it!=itend;++it)
         {
-            visible.push_back(*it);
+            if (cam->IsVisible((*it)->mAABB))
+            {
+                visible.push_back(*it);
+            }
         }
     }
 
@@ -481,4 +489,5 @@ namespace Demi
     {
         return mParent->GetDesc()->mSizeX * mChunkIDX + mChunkIDY;
     }
+
 }

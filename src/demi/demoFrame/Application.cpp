@@ -26,6 +26,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "LogManager.h"
 #include "ScriptPlugin.h"
+#include "RenderPipeline.h"
 #include "PathLib.h"
 
 #include "MyGUI.h"
@@ -50,7 +51,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
 #   define USE_DRV     DRV_GL_ES2
 #else
-#   define USE_DRV     DRV_DX9
+#   define USE_DRV     DRV_GL
 #endif
 
 #ifdef DEMI_STATIC_API

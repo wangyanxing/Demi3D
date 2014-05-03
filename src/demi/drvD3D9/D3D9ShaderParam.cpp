@@ -38,7 +38,7 @@ namespace Demi
         
         // bind built-in (global) uniforms
         for (auto it = mBuiltinFuncs.begin(); it != mBuiltinFuncs.end(); ++it)
-            it->func(env,it->type,it->reg);
+            it->second.func(env, it->second.type, it->second.reg);
 
         for (uint32 i = 0; i < NUM_VARIABLE_TYPES; ++i)
         {
@@ -172,6 +172,37 @@ namespace Demi
         }
     }
 
+    void DiD3D9ShaderParam::_BindBuiltin(const DiString& name)
+    {
+        auto it = mBuiltinFuncs.find(name);
+        if (it != mBuiltinFuncs.end())
+        {
+            it->second.func(Driver->GetShaderEnvironment(), it->second.type, it->second.reg);
+        }
+    }
+
+    void DiD3D9ShaderParam::_BindTexture2Ds()
+    {
+        for (auto it = mShaderParams[VARIABLE_SAMPLER2D].begin();
+            it != mShaderParams[VARIABLE_SAMPLER2D].end(); ++it)
+        {
+            const DiAny& data = it->second;
+            if (data.isEmpty())
+                continue;
+
+            DiString name = it->first;
+
+            auto d3dstuff = mD3DConsts.find(name);
+            if (d3dstuff == mD3DConsts.end())
+                continue;
+
+            DiShaderType type = d3dstuff->second.first;
+            uint32 regID = d3dstuff->second.second;
+
+            DiTexture* tex = any_cast<DiTexture*>(data);
+            tex->Bind(regID);
+        }
+    }
 
     DiD3D9BuiltinConsts::BuiltinFuncs DiD3D9BuiltinConsts::msUniformFuncs;
 

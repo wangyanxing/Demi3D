@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ShaderParam.h"
 
 #include "K2Terrain.h"
+#include "K2TerrainChunk.h"
 #include "K2World.h"
 #include "K2WorldSerial.h"
 #include "K2Model.h"
@@ -40,7 +41,7 @@ namespace Demi
         mDebugger = make_shared<DiDebugHelper>();
         DiMaterialPtr helpermat = DiMaterial::QuickCreate(
             "basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
-        //helpermat->SetDepthCheck(false);
+        helpermat->SetDepthCheck(false);
         mDebugger->SetMaterial(helpermat);
         mRootNode->AttachObject(mDebugger);
 #endif
@@ -74,17 +75,21 @@ namespace Demi
         uint32 vertX = CHUNK_GRID_SIZE*desc->mSizeX + 1;
         uint32 vertY = CHUNK_GRID_SIZE*desc->mSizeY + 1;
 #ifdef _DEBUG_CLIFF_POS
-        for (uint32 x = 0; x < vertX; ++x)
+//         for (uint32 x = 0; x < vertX; ++x)
+//         {
+//             for (uint32 y = 0; y < vertY; ++y)
+//             {
+//                 uint8 block = blockerBuffer[y*vertY + x];
+//                 if (block > 0)
+//                 {
+//                     DiVec3 pos = mTerrain->GetPoint(x, y);
+//                     mDebugger->AddBoundingBox(pos, 1.5f, DiColor::Red);
+//                 }
+//             }
+//         }
+        for (auto i = DiTerrainChunk::sAABBs.begin(); i != DiTerrainChunk::sAABBs.end(); ++i)
         {
-            for (uint32 y = 0; y < vertY; ++y)
-            {
-                uint8 block = blockerBuffer[y*vertY + x];
-                if (block > 0)
-                {
-                    DiVec3 pos = mTerrain->GetPoint(x, y);
-                    mDebugger->AddBoundingBox(pos, 1.5f, DiColor::Red);
-                }
-            }
+            mDebugger->AddBoundingBox(*i, DiColor::Red);
         }
 #endif
     }

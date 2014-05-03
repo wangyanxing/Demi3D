@@ -48,15 +48,22 @@ namespace Demi
 
         void            Bind() const;
 
+        void            _BindBuiltin(const DiString& name);
+
+        void            _BindTexture2Ds();
+
         void            AddD3DParameter(const DiString& name, DiShaderType shadertype, uint32 regID);
 
         void            AddBuiltinParameter(const DiString& name, DiShaderType shadertype, uint32 regID)
         {
-            mBuiltinFuncs.push_back(ConstFuncParamDesc(name,shadertype,regID));
+            mBuiltinFuncs[name] = ConstFuncParamDesc(name,shadertype,regID);
         }
 
         struct ConstFuncParamDesc
         {
+            ConstFuncParamDesc()
+            {
+            }
             ConstFuncParamDesc(const DiString& name, DiShaderType shadertype, uint32 regID)
             {
                 type = shadertype;
@@ -72,9 +79,9 @@ namespace Demi
 
         typedef DiStrHash<DiPair<DiShaderType, uint32>> D3DConstMaps;
 
-        D3DConstMaps    mD3DConsts;
+        D3DConstMaps mD3DConsts;
 
-        DiVector<ConstFuncParamDesc> mBuiltinFuncs;
+        DiMap<DiString,ConstFuncParamDesc> mBuiltinFuncs;
     };
 }
 

@@ -83,11 +83,18 @@ namespace Demi
 
         void                    WriteTextureCUBE(const DiString& name,DiTexturePtr texture);
 
+        // bind all parameters
         virtual void            Bind() const = 0;
 
         bool                    HasVariableType(ParamType varType);
 
         static DiAny            GetDefault(ParamType type);
+
+    public:
+
+        virtual void            _BindBuiltin(const DiString& name) = 0;
+
+        virtual void            _BindTexture2Ds() = 0;
 
     protected:
 

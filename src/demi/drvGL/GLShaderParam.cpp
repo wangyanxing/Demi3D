@@ -145,4 +145,37 @@ namespace Demi
         mShaderLinker->Link();
         mShaderLinker->LoadConstants(this);
     }
+
+    void DiGLShaderParam::_BindBuiltin(const DiString& name)
+    {
+        auto env = Driver->GetShaderEnvironment();
+        GLuint id = mBuiltinFuncNames[name];
+        mBuiltinFuncs[id](env, id);
+    }
+
+    void DiGLShaderParam::_BindTexture2Ds()
+    {
+        for (auto it = mShaderParams[VARIABLE_SAMPLER2D].begin(); 
+            it != mShaderParams[VARIABLE_SAMPLER2D].end(); ++it)
+        {
+            const DiAny& data = it->second;
+            if (data.isEmpty())
+                continue;
+
+            GLuint location = 0;
+            int samplerUnit = 0;
+
+            auto sampler = mShaderLinker->GetSampler(it->first);
+            if (!sampler)
+                continue;
+            location = sampler->location;
+            samplerUnit = (int)sampler->unit;
+
+
+            glUniform1ivARB(location, 1, &samplerUnit);
+            DiTexture* tex = any_cast<DiTexture*>(data);
+            tex->Bind((uint32)samplerUnit);
+        }
+    }
+
 }

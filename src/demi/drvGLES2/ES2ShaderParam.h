@@ -34,11 +34,16 @@ namespace Demi
 
         void            LoadParameters();
 
-        void            AddBuiltinParam(DiGLUniforms::BindingFunc& func,
+        void            AddBuiltinParam(const DiString& name, DiGLUniforms::BindingFunc& func,
                                         DiGLES2ShaderConstant* consts)
         {
             mBuiltinFuncs[consts] = func;
+            mBuiltinFuncNames[name] = consts;
         }
+
+        void            _BindBuiltin(const DiString& name);
+
+        void            _BindTexture2Ds();
 
     private:
 
@@ -53,6 +58,8 @@ namespace Demi
 #endif
         
         DiMap<DiGLES2ShaderConstant*, DiGLUniforms::BindingFunc > mBuiltinFuncs;
+
+        DiStrHash<DiGLES2ShaderConstant*> mBuiltinFuncNames;
     };
 }
 

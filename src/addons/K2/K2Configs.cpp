@@ -37,10 +37,10 @@ namespace Demi
             honMediaPath += "../media_hon"; // default value
 #endif
             honMediaPath.SimplifyPath();
-#if 1
+#if 0
             CommandMgr->RegisterString("k2_media_folder", honMediaPath, 0);
 #else
-            CommandMgr->RegisterString("k2_media_folder", "L:/Games/HON_res", 0);
+            CommandMgr->RegisterString("k2_media_folder", "L:/Games/new_hon_res", 0);
 #endif
         }
 

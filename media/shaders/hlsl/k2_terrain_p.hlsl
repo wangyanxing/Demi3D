@@ -36,7 +36,7 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 {
 	PS_OUTPUT Out;
 
-	float fAlpha = In.Color0.a;
+	
 
 #if _SHOW_LAYER_0
 	half4 diffuse0 = tex2D(diffuseMap_0,In.Texcoord0.xy);
@@ -49,6 +49,8 @@ PS_OUTPUT ps_main( VS_OUTPUT In )
 #else
 	half4 diffuse1 = diffuse0;
 #endif
+
+    float fAlpha = In.Color0.a * diffuse1.a;
 
 	half3 cDiffuseColor0 = diffuse0.rgb;
 	half3 cDiffuseColor1 = diffuse1.rgb;

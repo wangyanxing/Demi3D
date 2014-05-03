@@ -146,6 +146,8 @@ namespace Demi
 
     protected:
 
+        void                        Render();
+
         void                        Cull(DiCamera*);
 
         void                        CreateVertexDecl();

@@ -165,9 +165,7 @@ namespace Demi
             DiRenderWindow::ActiveWindow->GetPostEffectManager()->Process(this);
 
         if (DiRenderWindow::ActiveWindow->IsForceRenderToCanvas())
-        {
             DiRenderWindow::ActiveWindow->GetRenderBuffer()->Bind();
-        }
 
         for (uint32 i = BATCH_POST_FILTER; i < mBatchGroups.size(); i++)
         {
@@ -198,7 +196,7 @@ namespace Demi
         uint32 dps = 0;
         uint32 faces = 0;
 
-        bool needStatics = DiRenderWindow::ActiveWindow->GetRenderBuffer() == rt;
+        bool needStatics = DiRenderWindow::ActiveWindow->GetSceneCanvas() == rt;
         mEnableInterface = true; //TODO
 
         for (uint32 i = 0; i<mBatchGroups.size(); i++)
@@ -219,12 +217,6 @@ namespace Demi
             }
 
             mBatchGroups[i]->EnableStatis(false);
-        }
-
-        for (uint32 i = 0; i < BATCH_POST_FILTER; i++)
-        {
-            mBatchGroups[i]->ClearStatis();
-            mBatchGroups[i]->EnableStatis(needStatics);
         }
     }
 
@@ -332,6 +324,16 @@ namespace Demi
     {
         for (uint32 i = 0; i < mBatchGroups.size(); i++)
             mBatchGroups[i]->Clear();
+    }
+
+    int DiRenderPipeline::GetBatchNums()
+    {
+        int ret = 0;
+        for (uint32 i = 0; i < mBatchGroups.size(); i++)
+        {
+            ret += mBatchGroups[i]->GetBatchesNum();
+        }
+        return ret;
     }
 
 }

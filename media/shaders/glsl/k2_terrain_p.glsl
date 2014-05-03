@@ -20,10 +20,10 @@ varying vec3 vViewDir;
 
 void main()
 {
-	float fAlpha = vColor0.a;
-
 	vec4 diffuse0 = texture2D(diffuseMap_0,vTexcoord0.xy);
 	vec4 diffuse1 = texture2D(diffuseMap_1,vTexcoord0.xy);
+	
+	float fAlpha = vColor0.a * diffuse1.a;
 
 	vec3 cDiffuseColor = mix(diffuse0.rgb, diffuse1.rgb, fAlpha) * vColor0.rgb;
 

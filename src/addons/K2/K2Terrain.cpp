@@ -26,6 +26,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Texture.h"
 #include "ShaderParam.h"
 #include "GfxDriver.h"
+#include "RenderPipeline.h"
 
 #include "K2TerrainNode.h"
 #include "K2WaterMap.h"
@@ -54,8 +55,14 @@ namespace Demi
         mFoliageMap(nullptr),
         mRoot(nullptr)
     {
+        mGroupType = BATCH_TERRAIN;
         SetShadowCastEnable(false);
         CreateVertexDecl();
+
+        Demi::DiRenderBatchGroup* group = DiBase::Driver->GetPipeline()->GetBatchGroup(Demi::BATCH_TERRAIN);
+        group->SetExtraProcess([this](){
+            Render();
+        });
     }
 
     DiTerrain::~DiTerrain()
@@ -786,12 +793,6 @@ namespace Demi
 
     void DiTerrain::AddToBatchGroup(DiRenderBatchGroup* bg)
     {
-        for (auto it = mVisibles.begin(); it != mVisibles.end(); ++it)
-        {
-            DiTerrainBatchBase* batch = static_cast<DiTerrainBatchBase*>(*it);
-            batch->UpdateMaterialParams();
-            bg->AddRenderUnit(batch);
-        }
     }
 
     void DiTerrain::Update(DiCamera* camera)
@@ -981,7 +982,6 @@ namespace Demi
     DiVec2 DiTerrain::GetChunkCenterPos( uint32 idx, uint32 idy )
     {
         DiVec2 pos(0,0);
-
         pos.x = idx * mDesc->mGridSize * CHUNK_GRID_SIZE;
         pos.y = idy * mDesc->mGridSize * CHUNK_GRID_SIZE;
         return pos;
@@ -991,5 +991,39 @@ namespace Demi
     {
         static DiString type = "TerrainMap";
         return type;
+    }
+
+    void DiTerrain::Render()
+    {
+        DiMat4 worldTrans = DiMat4::IDENTITY;
+        bool firstMaterial = true;
+        for (auto it = mVisibles.begin(); it != mVisibles.end(); ++it)
+        {
+            DiTerrainBatchBase* batch = static_cast<DiTerrainBatchBase*>(*it);
+            batch->UpdateMaterialParams();
+            batch->GetWorldTransform(&worldTrans);
+            auto pipeline = Driver->GetPipeline();
+            if (pipeline->GetCurrentPass() == DiRenderPipeline::P_LIGHTING_PASS)
+            {
+                pipeline->BindMeshContext(batch, &worldTrans);
+                DiMaterial* material = batch->mMaterial.get();
+                if (firstMaterial)
+                {
+                    material->Bind();
+                    firstMaterial = false;
+                }
+                else
+                {
+                    material->GetShaderParameter()->_BindTexture2Ds();
+                    material->GetShaderParameter()->_BindBuiltin("g_modelMatrix");
+                    material->GetShaderParameter()->_BindBuiltin("g_modelViewProjMatrix");
+                }
+                Driver->RenderGeometry(batch);
+            }
+            else
+            {
+                Driver->GetPipeline()->RenderSingleBatch(batch, &worldTrans);
+            }
+        }
     }
 }
