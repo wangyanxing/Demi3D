@@ -49,13 +49,13 @@ void AddMeshes()
 void SetupPostEffects()
 {
 	DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
-	DiPostEffect* bloom = peMgr->GetEffect("Gray");
+	DiPostEffect* bloom = peMgr->GetEffect("Bloom");
     if (bloom)
 		bloom->SetEnable(true);
     
-	//DiPostEffect* film = peMgr->GetEffect("Film");
-    //if (film)
-	//	film->SetEnable(true);
+	DiPostEffect* film = peMgr->GetEffect("Film");
+    if (film)
+		film->SetEnable(true);
 }
 
 void InitScene()
@@ -84,7 +84,7 @@ void UpdateScene()
 
 int main(int argc, char *argv[])
 {
-    DemiDemo app( DemoConfig("Demi3D Sample - Lava", 1500, 800));
+    DemiDemo app( DemoConfig("Demi3D Sample - Lava", 1024, 768));
 	app.SetInitCallback(InitScene);
 	app.SetUpdateCallback(UpdateScene);
 	app.Open(argc, argv);

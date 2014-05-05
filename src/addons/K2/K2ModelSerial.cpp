@@ -1076,6 +1076,8 @@ namespace Demi
         float shiness = 16.0f;
         DiMap<DiString, float> floatParams;
         DiMap<DiString, DiVec3> vec3Params;
+        DiString blendSrc = "BLEND_ONE";
+        DiString blendDest = "BLEND_ZERO";
 
         DiXMLElement child = root.GetChild();
         while (child)
@@ -1092,6 +1094,10 @@ namespace Demi
                         shaderFlag |= SHADER_FLAG_ALPHA_TEST;
                     if (child.HasAttribute("depthwrite"))
                         writeDepth = child.GetBool("depthwrite");
+                    if (child.HasAttribute("srcblend"))
+                        blendSrc = child.GetAttribute("srcblend");
+                    if (child.HasAttribute("dstblend"))
+                        blendDest = child.GetAttribute("dstblend");
 
                     shaderVs = child.GetAttribute("vs");
                     shaderPs = child.GetAttribute("ps");
@@ -1138,7 +1144,9 @@ namespace Demi
                     specularLevel = child.GetFloat("fSpecularLevel");
                 if (child.HasAttribute("fGlossiness"))
                     shiness = child.GetFloat("fGlossiness");
-
+                if (child.HasAttribute("fOpacity"))
+                    opacity = child.GetFloat("fOpacity");
+                
                 DiXMLElement parametes = child.GetChild();
                 while (parametes)
                 {
@@ -1173,10 +1181,14 @@ namespace Demi
         if (translucent)
             mat->SetBlendMode(BLEND_ALPHA);
         //mat->SetDepthWrite(writeDepth);
+        
+        if (blendSrc == "BLEND_ONE" && blendDest == "BLEND_ONE")
+            mat->SetBlendMode(BLEND_ADD);
 
         mat->SetDiffuse(DiColor(diffuseColor.x, diffuseColor.y, diffuseColor.z));
         mat->SetSpecular(DiColor::White*specularLevel);
         mat->SetShininess(shiness);
+        mat->SetOpacity(opacity);
 
         DiShaderParameter* sm = mat->GetShaderParameter();
 

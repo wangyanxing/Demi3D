@@ -383,7 +383,6 @@ namespace Demi
         
         mWindow = [[DemiWindow alloc] initWithContentRect:windowRect
                                                 styleMask:mIsFullScreen ? NSBorderlessWindowMask : NSResizableWindowMask|NSTitledWindowMask|NSClosableWindowMask
-                                                //styleMask: NSBorderlessWindowMask
                                                   backing:NSBackingStoreBuffered
                                                     defer:YES];
         [mWindow setTitle:[NSString stringWithCString:title encoding:NSUTF8StringEncoding]];
@@ -394,9 +393,6 @@ namespace Demi
         mView = [[DemiView alloc] initWithGLOSXWindow:this];
         
         _SetWindowParams();
-
-        //DiGLDriver* drv = static_cast<DiGLDriver*>(Driver);
-        //drv->Clear(CLEAR_COLOR, DiColor::Black, 1.0f);
         
         // Show window
         if(mWindow)

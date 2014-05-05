@@ -147,7 +147,6 @@ namespace Demi
         
         rp->Render(mSceneManager, mainCam, mPostEffectMgr->HasEnabledPostPasses() 
             || mForceRenderToCanvas ? mSceneCanvas : mRenderBuffer);
-
         
         
 #ifndef DISABLE_POST
