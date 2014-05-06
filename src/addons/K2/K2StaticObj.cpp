@@ -21,7 +21,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiK2StaticObj::DiK2StaticObj()
+    DiK2StaticObj::DiK2StaticObj(DiK2World* world)
+        :DiK2RenderObject(world)
     {
 
     }

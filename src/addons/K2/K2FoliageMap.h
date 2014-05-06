@@ -49,7 +49,7 @@ namespace Demi
 
         void                        DeleteLayer( int layerID );
 
-        DiTerrain*               GetTerrainMap(){return mTerrainMap;}
+        DiTerrain*                  GetTerrainMap(){return mTerrainMap;}
 
         void                        Update();
 
@@ -63,7 +63,7 @@ namespace Demi
 
     protected:
 
-        DiTerrain*               mTerrainMap;
+        DiTerrain*                  mTerrainMap;
 
         DiVector<DiFoliageChunk*>   mChunks;
 

@@ -24,7 +24,7 @@ namespace Demi
     {
     public:
 
-        DiK2RenderObject();
+        DiK2RenderObject(DiK2World* world);
 
         virtual ~DiK2RenderObject();
 
@@ -40,7 +40,9 @@ namespace Demi
 
         bool                    GetVisible() { return mVisible; }
 
-        void                    SetPosition(const DiK2Pos& pos);
+        void                    SetPosition(const DiK2Pos& pos, bool autoHeight = true);
+        
+        void                    SetPosition(const DiK2Pos& pos, float height);
 
         DiK2Pos                 GetPosition() { return mPosition; }
 
@@ -85,6 +87,8 @@ namespace Demi
         DiVec3                  mScale;
 
         DiK2Pos                 mPosition;
+        
+        DiK2World*              mWorld;
 
         // for debug
         DiDebugHelperPtr        mDebugger;

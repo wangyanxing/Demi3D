@@ -61,7 +61,7 @@ namespace Demi
 
         /** id: usually team id
          */
-        DiVec3              GetSpawnPoint(int id);
+        bool                GetSpawnPoint(int id, DiVec3& out);
 
     private:
 

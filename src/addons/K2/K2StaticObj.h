@@ -23,7 +23,7 @@ namespace Demi
     {
     public:
 
-        DiK2StaticObj();
+        DiK2StaticObj(DiK2World* world);
 
         virtual ~DiK2StaticObj();
 

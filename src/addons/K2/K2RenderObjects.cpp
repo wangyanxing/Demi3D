@@ -15,6 +15,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2RenderObjects.h"
 #include "K2Clip.h"
 #include "K2Model.h"
+#include "K2World.h"
+#include "K2Terrain.h"
 
 #include "DebugHelper.h"
 #include "CullNode.h"
@@ -24,11 +26,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiK2RenderObject::DiK2RenderObject()
+    DiK2RenderObject::DiK2RenderObject(DiK2World* world)
         : mNode(nullptr)
         , mVisible(true)
         , mRotRadian(0)
         , mScale(DiVec3::UNIT_SCALE)
+        , mWorld(world)
     {
     }
 
@@ -67,10 +70,28 @@ namespace Demi
         mPosition.FromWorldPos(pos);
         mNode->SetPosition(pos);
     }
-
-    void DiK2RenderObject::SetPosition(const DiK2Pos& pos)
+    
+    void DiK2RenderObject::SetPosition(const DiK2Pos& pos, float height)
     {
-        mNode->SetPosition(pos.ToWorldPos());
+        auto worldPos = pos.ToWorldPos();
+        worldPos.y = height;
+        mNode->SetPosition(worldPos);
+        mPosition = pos;
+    }
+
+    void DiK2RenderObject::SetPosition(const DiK2Pos& pos, bool autoHeight)
+    {
+        auto worldPos = pos.ToWorldPos();
+        if(autoHeight)
+        {
+            auto terrain = mWorld->GetTerrain();
+            float outHeight = 0;
+            if(terrain->GetHeight(worldPos.x,worldPos.z,outHeight))
+            {
+                worldPos.y = outHeight;
+            }
+        }
+        mNode->SetPosition(worldPos);
         mPosition = pos;
     }
 

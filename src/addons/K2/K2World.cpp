@@ -189,10 +189,10 @@ namespace Demi
         case GAME_HERO:
         case GAME_NPC:
         case GAME_SCENE_ITEM:
-            ret = DI_NEW DiK2AnimatedObj();
+            ret = DI_NEW DiK2AnimatedObj(this);
             break;
         case GAME_STATIC:
-            ret = DI_NEW DiK2StaticObj();
+            ret = DI_NEW DiK2StaticObj(this);
             break;
         default:
             break;
@@ -249,12 +249,15 @@ namespace Demi
         }
     }
 
-    Demi::DiVec3 DiK2World::GetSpawnPoint(int id)
+    bool DiK2World::GetSpawnPoint(int id, DiVec3& out)
     {
         auto i = mSpawnPoint.find(id);
         if (i != mSpawnPoint.end())
-            return i->second;
-        return DiVec3::ZERO;
+        {
+            out = i->second;
+            return true;
+        }
+        return false;
     }
 
 }

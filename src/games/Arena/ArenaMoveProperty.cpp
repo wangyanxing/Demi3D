@@ -57,10 +57,8 @@ namespace Demi
         if (mWalkMode != ENUM_WALK_MODE_STOP)
         {
             DiK2Pos currentPos = renderObj->GetPosition();
-
             DiK2Pos targetPos = mPosNode[mNumCurTarget];
-
-            DiK2Pos  newPos;
+            DiK2Pos newPos;
 
             float fMoveDistance = moveSpeed * dt;
             mCurrMoveDistance += fMoveDistance;
@@ -88,8 +86,8 @@ namespace Demi
                         }
                         else
                         {
-                            if (mNumCurTarget > 0 && mNumCurTarget % MAX_SENDPOSREM == 0)
-                                int nCount = std::min(mNumNode - mNumCurTarget, MAX_SENDPOS);
+                            //if (mNumCurTarget > 0 && mNumCurTarget % MAX_SENDPOSREM == 0)
+                            //    int nCount = std::min(mNumNode - mNumCurTarget, MAX_SENDPOS);
 
                             fMoveDistance -= fDistanceToTarget;
 
@@ -255,7 +253,6 @@ namespace Demi
             mModality = mod;
             auto entity = GetEntity<ArDynEntity>();
             entity->GetMotionProperty()->ModalityChange(mod);
-            DI_DEBUG("Modality changed to %d", mod);
         }
     }
 }

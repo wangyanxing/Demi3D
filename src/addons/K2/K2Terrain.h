@@ -90,11 +90,7 @@ namespace Demi
 
         DiTerrainChunk*             GetChunk(uint32 id);
 
-        bool                        CoverTerrain(const DiVec3& pos, float size);
-
         bool                        CoverTerrain(const DiVec2& pos);
-
-        bool                        CoverTerrain(const DiVec3& pos);
 
         float                       GetTerrainWidth() const;
 

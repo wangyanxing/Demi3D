@@ -443,7 +443,6 @@ namespace Demi
         head.width = mWidth;
         head.height = mHeight;
         fwrite(&head, sizeof(_NAVMAP_HEAD), 1, fp);
-        int size = sizeof(struct _NAVMAP_HEAD);
         for (int j = 0; j<mHeight; j++)
         {
             for (int i = 0; i<mWidth; i++)

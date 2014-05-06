@@ -38,13 +38,13 @@ namespace Demi
     }
 
     void ArMotionProperty::ModalityChange(ArModalityType mod)
-    {
+    {  
         if (mModality == mod)
             return;
 
         DiK2RenderObject* obj = mEntity->GetRenderObj();
         
-        K2PrefabClip::Clips clip;
+        K2PrefabClip::Clips clip = K2PrefabClip::ANIM_IDLE;
         
         if (mod == MODALITY_STAND)
             clip = K2PrefabClip::ANIM_IDLE;

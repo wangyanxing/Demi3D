@@ -58,13 +58,10 @@ namespace Demi
         }
 
         if( mRemoveOwnVertexData )
-        {
             ReleaseSourceData();
-        }
         if( mRemoveOwnIndexData )
-        {
             ReleaseIndexBuffer();
-        }
+        
         ReleaseVertexDeclaration();
     }
 
@@ -72,7 +69,7 @@ namespace Demi
     {
         if( !mInstancedModels.empty() )
         {
-            DI_ERROR("SetInstancesPerBatch Error: empty instanced model");
+            DI_WARNING("SetInstancesPerBatch Error: empty instanced model");
         }
 
         mInstancesPerBatch = instancesPerBatch;
@@ -104,8 +101,8 @@ namespace Demi
             GetParentCullNode()->NeedUpdate(true);
         }
 
-        mBoundsDirty    = false;
-        mBoundsUpdated    = true;
+        mBoundsDirty = false;
+        mBoundsUpdated = true;
     }
 
     void DiInstanceBatch::Build( const DiSubMesh* baseSubMesh )
@@ -126,8 +123,8 @@ namespace Demi
 
     void DiInstanceBatch::GetInstancedEntitiesInUse( InstancedModelVec &outEntities )
     {
-        InstancedModelVec::const_iterator itor = mInstancedModels.begin();
-        InstancedModelVec::const_iterator end  = mInstancedModels.end();
+        auto itor = mInstancedModels.begin();
+        auto end  = mInstancedModels.end();
 
         while( itor != end )
         {
@@ -152,8 +149,8 @@ namespace Demi
         }
 
         uint32 instanceId = 0;
-        InstancedModelVec::const_iterator itor = mInstancedModels.begin();
-        InstancedModelVec::const_iterator end  = mInstancedModels.end();
+        auto itor = mInstancedModels.begin();
+        auto end  = mInstancedModels.end();
 
         while( itor != end )
         {
@@ -345,8 +342,8 @@ namespace Demi
     {
         mVisible = false;
 
-        InstancedModelVec::const_iterator itor = mInstancedModels.begin();
-        InstancedModelVec::const_iterator end  = mInstancedModels.end();
+        auto itor = mInstancedModels.begin();
+        auto end  = mInstancedModels.end();
 
         while( itor != end )
         {
@@ -358,7 +355,7 @@ namespace Demi
     void DiInstanceBatch::DefragmentBatchNoCull( InstancedModelVec &usedEntities )
     {
         const uint32 maxInstancesToCopy = DiMath::Min( mInstancesPerBatch, usedEntities.size() );
-        InstancedModelVec::iterator first = usedEntities.end() - maxInstancesToCopy;
+        auto first = usedEntities.end() - maxInstancesToCopy;
 
         mInstancedModels.insert( mInstancedModels.begin(), first, usedEntities.end() );
         usedEntities.resize( usedEntities.size() - maxInstancesToCopy );    
@@ -366,8 +363,8 @@ namespace Demi
 
     void DiInstanceBatch::DefragmentBatchDoCull( InstancedModelVec &usedEntities )
     {
-        InstancedModelVec::const_iterator itor   = usedEntities.begin();
-        InstancedModelVec::const_iterator end   = usedEntities.end();
+        auto itor = usedEntities.begin();
+        auto end = usedEntities.end();
 
         DiVec3 vMinPos = DiVec3::ZERO, firstPos = DiVec3::ZERO;
         DiInstancedModelPtr first;
@@ -388,16 +385,16 @@ namespace Demi
             vMinPos.z = DiMath::Min( vMinPos.z, vPos.z );
             if( vMinPos.squaredDistance( vPos ) < vMinPos.squaredDistance( firstPos ) )
             {
-                firstPos   = vPos;
+                firstPos = vPos;
             }
             ++itor;
         }
 
         while( !usedEntities.empty() && mInstancedModels.size() < mInstancesPerBatch )
         {
-            InstancedModelVec::iterator closest= usedEntities.begin();
-            InstancedModelVec::iterator it        = usedEntities.begin();
-            InstancedModelVec::iterator e        = usedEntities.end();
+            auto closest = usedEntities.begin();
+            auto it = usedEntities.begin();
+            auto e = usedEntities.end();
 
             DiVec3 closestPos;
             closestPos = (*closest)->GetDerivedPosition();
@@ -422,23 +419,12 @@ namespace Demi
 
     bool DiInstanceBatch::HasSkeleton() const
     {
-        if(!mMotionReference)
-        {
-            return false;
-        }
-        else
-        {
-            return mMotionReference->HasSkeleton();
-        }
+        return mMotionReference ? mMotionReference->HasSkeleton() : false;
     }
 
     DiSkeleton* DiInstanceBatch::GetSkeleton()
     {
-        if (!HasSkeleton())
-        {
-            return NULL;
-        }
-        return mMotionReference->GetSkeleton();
+        return HasSkeleton()? mMotionReference->GetSkeleton():nullptr;
     }
 
     void DiInstanceBatch::DefragmentBatchDiscard()

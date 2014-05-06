@@ -155,7 +155,6 @@ namespace Demi
         float                   mSpeed;
     
         bool                    mAutoUpdateAnims;
-        
     };
 }
 

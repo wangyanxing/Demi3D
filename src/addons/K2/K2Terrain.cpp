@@ -250,7 +250,7 @@ namespace Demi
     bool DiTerrain::GetHeight( float worldX, float worldZ, float& outHeight )
     {
         DiVec3 pos(worldX,0,worldZ);
-        if(!CoverTerrain(pos))
+        if(!CoverTerrain(DiVec2(worldX, worldZ)))
             return false;
 
         DiIntVec2 vert = GetVertexPos(pos);
@@ -381,12 +381,9 @@ namespace Demi
     {
         uint32 vertx,verty;
         GetVerticesNum(vertx,verty);
-
-        float wholeSizeX = mDesc->mGridSize * mDesc->mSizeX * CHUNK_GRID_SIZE;
-        float wholeSizeY = mDesc->mGridSize * mDesc->mSizeY * CHUNK_GRID_SIZE;
-
-        float x = (WSpos.x + wholeSizeX/2) / (mDesc->mGridSize);
-        float y = (WSpos.z + wholeSizeY/2) / (mDesc->mGridSize);
+        
+        float x = WSpos.x / (mDesc->mGridSize);
+        float y = WSpos.z / (mDesc->mGridSize);
 
         DiIntVec2 tpos;
         tpos.x = int(x);
@@ -423,29 +420,6 @@ namespace Demi
         return &mDesc->mColorMap->GetBuffer()[y * vertx + x];
     }
     
-    bool DiTerrain::CoverTerrain( const DiVec3& pos, float size )
-    {
-        float half = size/2;
-        DiVec3 p;
-        
-        p = DiVec3(pos.x - half + GetTerrainWidth()/2, pos.y, pos.z - half + GetTerrainHeight()/2);
-        if (CoverTerrain(p))
-            return true;
-
-        p = DiVec3(pos.x - half + GetTerrainWidth()/2, pos.y, pos.z + half + GetTerrainHeight()/2);
-        if (CoverTerrain(p))
-            return true;
-
-        p = DiVec3(pos.x + half + GetTerrainWidth()/2, pos.y, pos.z - half + GetTerrainHeight()/2);
-        if (CoverTerrain(p))
-            return true;
-
-        p = DiVec3(pos.x + half + GetTerrainWidth()/2, pos.y, pos.z + half + GetTerrainHeight()/2);
-        if (CoverTerrain(p))
-            return true;
-
-        return false;
-    }
 
     bool DiTerrain::CoverTerrain( const DiVec2& pos )
     {
@@ -456,16 +430,7 @@ namespace Demi
             return false;
         return true;
     }
-
-    bool DiTerrain::CoverTerrain( const DiVec3& pos )
-    {
-        float width = GetTerrainWidth();
-        float height = GetTerrainHeight();
-
-        DiVec2 terrainPos(pos.x+width/2,pos.z+height/2);
-        return CoverTerrain(terrainPos);
-    }
-
+    
     float DiTerrain::GetTerrainWidth() const
     {
         float wholeSizeX = mDesc->mGridSize * mDesc->mSizeX * CHUNK_GRID_SIZE;

@@ -376,8 +376,9 @@ namespace Demi
         if (mDirtyInstanceManagers.empty())
             return;
 
-        mDirtyInstanceMgrsTmp.insert( mDirtyInstanceMgrsTmp.end(), mDirtyInstanceManagers.begin(),
-            mDirtyInstanceManagers.end() );
+        mDirtyInstanceMgrsTmp.insert( mDirtyInstanceMgrsTmp.end(),
+                                      mDirtyInstanceManagers.begin(),
+                                      mDirtyInstanceManagers.end() );
         mDirtyInstanceManagers.clear();
 
         while( !mDirtyInstanceMgrsTmp.empty() )

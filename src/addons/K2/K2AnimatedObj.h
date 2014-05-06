@@ -23,7 +23,7 @@ namespace Demi
     {
     public:
 
-        DiK2AnimatedObj();
+        DiK2AnimatedObj(DiK2World* world);
 
         virtual ~DiK2AnimatedObj();
 

@@ -40,7 +40,13 @@ namespace Demi
 #if 0
             CommandMgr->RegisterString("k2_media_folder", honMediaPath, 0);
 #else
+            #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
             CommandMgr->RegisterString("k2_media_folder", "L:/Games/new_hon_res", 0);
+            #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+            CommandMgr->RegisterString("k2_media_folder", "/Users/wangya/Projects/HONres/resources0", 0);
+            #else
+            CommandMgr->RegisterString("k2_media_folder", honMediaPath, 0);
+            #endif
 #endif
         }
 

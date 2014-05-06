@@ -306,8 +306,8 @@ namespace Demi
 
     void DiInstanceManager::UpdateDirtyBatches( void )
     {
-        InstanceBatchVec::const_iterator itor = mDirtyBatches.begin();
-        InstanceBatchVec::const_iterator end  = mDirtyBatches.end();
+        auto itor = mDirtyBatches.begin();
+        auto end  = mDirtyBatches.end();
 
         while( itor != end )
         {

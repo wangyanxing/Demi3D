@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiInstanceBatch_h__
 #define DiInstanceBatch_h__
 
-
 #include "RenderUnit.h"
 #include "TransformUnit.h"
 #include "Mesh.h"

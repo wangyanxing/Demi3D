@@ -42,17 +42,17 @@ void InitScene()
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
     world = DI_NEW DiK2World();
-    world->Load("maps/Arena_1");
+    world->Load("maps/grimmscrossing");
 
     DiVec2 worldsize = world->mTerrain->GetWorldSize();
 
     auto cameraHelper = DemiDemo::GetApp()->GetCameraHelper();
     cameraHelper->SetStyle(CS_FREELOOK);
     cameraHelper->SetTopSpeed(600);
-    //cameraHelper->GetCamera()->SetPosition(worldsize.x / 2, 500, worldsize.y / 2);
+    cameraHelper->GetCamera()->SetPosition(worldsize.x / 2, 500, worldsize.y / 2);
     cameraHelper->GetCamera()->SetPosition(3104.90723f, 1610.28467f, 4649.14502f);
     cameraHelper->GetCamera()->SetOrientation(DiQuat(0.308038354f,-0.225031450f,-0.746425748,-0.545306683f));
-    cameraHelper->Enable(false);
+    //cameraHelper->Enable(false);
 
     DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
     DiPostEffect* bloom = peMgr->GetEffect("Bloom");
