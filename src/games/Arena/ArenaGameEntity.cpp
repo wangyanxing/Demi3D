@@ -35,6 +35,7 @@ namespace Demi
     {
         mModel = model;
         mRenderObj->LoadModel(mModel);
+        mRenderObj->SetScale(DiVec3(1.3f, 1.3f, 1.3f));
     }
 
     void ArGameEntity::Init(K2ObjTypes type)
@@ -50,5 +51,4 @@ namespace Demi
 
         mRenderObj->Update(dt);
     }
-
 }

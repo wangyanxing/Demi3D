@@ -1203,7 +1203,9 @@ namespace Demi
             
             DiTexturePtr tex = DiK2Configs::GetTexture(colorPath);
             if (tex)
+            {
                 sm->WriteTexture2D("map", tex);
+            }
         }
         if (shaderFlag & SHADER_FLAG_USE_NORMALMAP)
         {

@@ -38,7 +38,7 @@ namespace Demi
     D3DTEXTUREFILTERTYPE DiD3D9Mappings::D3D9MipFilter[] =
     {
         D3DTEXF_POINT,
-        D3DTEXF_POINT,
+        D3DTEXF_LINEAR,
         D3DTEXF_LINEAR,
         D3DTEXF_ANISOTROPIC
     };

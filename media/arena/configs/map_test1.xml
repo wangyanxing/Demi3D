@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<map name="ArenaTest1">
+  <path>maps/Arena_1</path>
+  <spwanpoint>262</spwanpoint>
+  <npcpoint>263</npcpoint>
+  <npcpoint>264</npcpoint>
+  <npcpoint>265</npcpoint>
+</map>
