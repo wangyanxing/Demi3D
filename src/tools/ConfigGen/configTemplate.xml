@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template prefix="Ar">
+  
+  <Model>
+    <path type="string"></path>
+    <scale type="float"></scale>
+  </Model>
+  
+  <Motion>
+    <runspeed type="float"></runspeed>
+    <turnspeed type="float"></turnspeed>
+  </Motion>
+
+  <Hero name="true">
+    <model type="Model"></model>
+    <motion type="Motion"></motion>
+  </Hero>
+
+  <Map name="true">
+    <path type="string"></path>
+    <spwanpoint type="int"></spwanpoint>
+    <npcpoint type="int" list="true"></npcpoint>
+  </Map>
+
+</template>

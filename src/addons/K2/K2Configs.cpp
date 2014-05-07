@@ -134,7 +134,8 @@ namespace Demi
             DI_WARNING("Empty texture file!, using default texture instead");
             return DiTexture::GetDefaultTexture();
         }
-        else if(full[0] != '\\' && full[0] != '/')
+        
+        if (TEXTURE_PACK && full[0] != '\\' && full[0] != '/')
         {
             full = "/"+full;
         }

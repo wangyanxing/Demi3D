@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hero name="Aluna">
+  <model>
+    <path>heroes/aluna/model.mdf</path>
+    <scale>1.5</scale>
+  </model>
+  <motion>
+    <runspeed>9</runspeed>
+    <turnspeed>500</turnspeed>
+  </motion>
+</hero>

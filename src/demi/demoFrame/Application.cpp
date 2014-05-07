@@ -51,7 +51,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
 #   define USE_DRV     DRV_GL_ES2
 #else
-#   define USE_DRV     DRV_GL
+#   define USE_DRV     DRV_DX9
 #endif
 
 #ifdef DEMI_STATIC_API
