@@ -199,7 +199,7 @@ namespace Demi
         DiK2Configs::Init();
 
         mGame = DI_NEW ArGame();
-        mGame->OpenWorld("maps/grimmscrossing");
+        mGame->OpenWorld("maps/tutorial");
         mGame->SetHero("heroes/aluna/model.mdf");
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){

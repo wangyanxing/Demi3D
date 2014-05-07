@@ -168,6 +168,9 @@ namespace Demi
 
     bool DiK2MdfSerial::ParseMdf(const DiString& file, DiK2ModelAsset* target)
     {
+        if (file.empty())
+            return false;
+        
         auto data = DiK2Configs::GetDataStream(file, false);
         if (!data)
         {
