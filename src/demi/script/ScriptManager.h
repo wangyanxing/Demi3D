@@ -34,15 +34,19 @@ namespace Demi
             return sMgr;
         }
         
-        void    Init();
-        
-        void    Shutdown();
+        void        Init();
 
-        void    RunFile(const DiString& fileName);
+        void        Shutdown();
 
-        void    RunBuffer(DiDataStreamPtr data);
-        
-        void    RunBuffer(const char* data, uint32 size, const DiString& name);
+        void        RunFile(const DiString& fileName);
+
+        void        RunBuffer(DiDataStreamPtr data);
+
+        void        RunBuffer(const char* data, uint32 size, const DiString& name);
+
+        lua_State*  GetLuaState() { return mLuaState; }
+
+        void        SetBaseScriptPath(const DiString& path);
 
     public:
 

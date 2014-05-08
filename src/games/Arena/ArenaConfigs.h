@@ -13,6 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
     
 /*** !!!! This file was generated automatically by ConfigGen !!!! ***/
+/*** Generated time: 21:06:57 05/07/2014 ***/
 
 #ifndef ArenaConfigs__h__
 #define ArenaConfigs__h__
@@ -66,6 +67,23 @@ struct ArConfigHero
 };
 
 /**
+  NPC configs
+ **/
+struct ArConfigNpc
+{
+    ArConfigNpc()
+    {
+    }
+
+    DiString name;
+    int npcpoint;
+    int number;
+    int range;
+    ArConfigModel model;
+    ArConfigMotion motion;
+};
+
+/**
   Map configs
  **/
 struct ArConfigMap
@@ -79,6 +97,18 @@ struct ArConfigMap
     DiString path;
     int spwanpoint;
     DiVector<int> npcpoint;
+};
+
+/**
+  NPC spawning list
+ **/
+struct ArConfigSpawnNpc
+{
+    ArConfigSpawnNpc()
+    {
+    }
+
+    DiVector<ArConfigNpc> npcs;
 };
 
 } // namespace Demi

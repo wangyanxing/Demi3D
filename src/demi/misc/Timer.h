@@ -30,6 +30,8 @@ namespace Demi
 
         static const DiString&  GetCurrentTime();
 
+        static const DiString&  GetCurrentDateTime();
+
     private:
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32

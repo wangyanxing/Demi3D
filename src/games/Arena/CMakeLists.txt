@@ -46,6 +46,9 @@ if (DEMI_STATIC)
 endif()
 
 include_directories(${OIS_INCLUDE_DIRS})
+include_directories(${DEMI_EXTERNAL_SRC_PATH}/lua/src)
+include_directories(${DEMI_EXTERNAL_SRC_PATH}/lua/tolua++)
+
 target_link_libraries(Arena DiMisc DiGfx ${OIS_LIBRARIES} ${ARENA_PLATFORM_LIBS})
 
 if(NOT ${ARENA_PATH} STREQUAL "")

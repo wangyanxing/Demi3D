@@ -63,12 +63,7 @@ namespace Demi
         DI_LOG("Binding to lua...");
         tolua_ScriptMain_open(mLuaState);
         
-        // run some basic codes
-        DiString code;
-        code.Format("package.path = package.path..\";%s?.lua\"",mBasePath.c_str());
-        RunBuffer(code.c_str(), code.size(),"prerequisites");
-
-        RunFile("test.lua");
+        SetBaseScriptPath(mBasePath);
     }
     
     void DiScriptManager::Shutdown()
@@ -142,4 +137,11 @@ namespace Demi
         return 0;
     }
 
+    void DiScriptManager::SetBaseScriptPath(const DiString& path)
+    {
+        // run some basic codes
+        DiString code;
+        code.Format("package.path = package.path..\";%s?.lua\"", path.c_str());
+        RunBuffer(code.c_str(), code.size(), "prerequisites");
+    }
 }

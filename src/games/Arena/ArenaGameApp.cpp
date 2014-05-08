@@ -24,6 +24,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "LogManager.h"
 #include "Window.h"
+#include "ScriptPlugin.h"
+#include "ScriptManager.h"
+#include "ArenaBinding.h"
+#include "PathLib.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   include "ArenaGameAppOSX.h"
@@ -84,6 +88,7 @@ namespace Demi
 #elif USE_DRV == DRV_GL_ES2
         DI_INSTALL_PLUGIN(DiDrvGLES2);
 #endif
+        DI_INSTALL_PLUGIN(DiScript);
 
         mAssetManager = new DiAssetManager;
         
@@ -164,6 +169,8 @@ namespace Demi
 
         Driver->Shutdown();
 
+        DI_UNINSTALL_PLUGIN(DiScript);
+
 #if USE_DRV == DRV_DX9
         DI_UNINSTALL_PLUGIN(DiDrvD3D9);
 #elif USE_DRV == DRV_GL
@@ -199,8 +206,23 @@ namespace Demi
         DiK2Configs::Init();
 
         mGame = DI_NEW ArGame();
-        mGame->LoadLevel("map_test1.xml");
-        mGame->SetHero("hero_aluna.xml");
+        //mGame->LoadLevel("map_test1.xml");
+        //mGame->SetHero("hero_aluna.xml");
+
+        // load the scripts
+        DI_LOG("Binding Arena APIs to lua...");
+        tolua_arenaMain_open(DiScriptManager::Get()->GetLuaState());
+
+#if DEMI_PLATFORM != DEMI_PLATFORM_IOS
+        DiString baseFolder = DiPathLib::GetApplicationPath() + "../../media/arena/";
+#else
+        DiString baseFolder = DiPathLib::GetApplicationPath() + "media/arena/";
+#endif
+        baseFolder.SimplifyPath();
+        DiScriptManager::Get()->SetBaseScriptPath(baseFolder);
+
+        auto mainScript = DiAssetManager::GetInstance().OpenArchive("arena_main.lua");
+        DiScriptManager::Get()->RunBuffer(mainScript);
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){
             mGame->Update();

@@ -13,6 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
     
 /*** !!!! This file was generated automatically by ConfigGen !!!! ***/
+/*** Generated time: 21:06:57 05/07/2014 ***/
 
 #ifndef ArenaConfigsLoader__h__
 #define ArenaConfigsLoader__h__
@@ -98,6 +99,37 @@ struct ArConfigHeroLoader : public ArConfigLoaderBase
     ArConfigHero* mHero;
 };
 
+struct ArConfigNpcLoader : public ArConfigLoaderBase
+{
+    ArConfigNpcLoader(ArConfigNpc* obj)
+    {
+        mNpc = obj;
+
+        mPropOps["name"] = [this](const DiXMLElement& node){
+            mNpc->name = node.GetValue().c_str();
+        };
+        mPropOps["npcpoint"] = [this](const DiXMLElement& node){
+            mNpc->npcpoint = node.GetValue().AsInt();
+        };
+        mPropOps["number"] = [this](const DiXMLElement& node){
+            mNpc->number = node.GetValue().AsInt();
+        };
+        mPropOps["range"] = [this](const DiXMLElement& node){
+            mNpc->range = node.GetValue().AsInt();
+        };
+        mPropOps["model"] = [this](const DiXMLElement& node){
+            ArConfigModelLoader ld(&mNpc->model);
+            ld.Load(node);
+        };
+        mPropOps["motion"] = [this](const DiXMLElement& node){
+            ArConfigMotionLoader ld(&mNpc->motion);
+            ld.Load(node);
+        };
+    }
+
+    ArConfigNpc* mNpc;
+};
+
 struct ArConfigMapLoader : public ArConfigLoaderBase
 {
     ArConfigMapLoader(ArConfigMap* obj)
@@ -119,6 +151,20 @@ struct ArConfigMapLoader : public ArConfigLoaderBase
     }
 
     ArConfigMap* mMap;
+};
+
+struct ArConfigSpawnNpcLoader : public ArConfigLoaderBase
+{
+    ArConfigSpawnNpcLoader(ArConfigSpawnNpc* obj)
+    {
+        mSpawnNpc = obj;
+
+        mPropOps["npcs"] = [this](const DiXMLElement& node){
+            
+        };
+    }
+
+    ArConfigSpawnNpc* mSpawnNpc;
 };
 
 

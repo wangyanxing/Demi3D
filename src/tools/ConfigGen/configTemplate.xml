@@ -16,6 +16,15 @@
     <model type="Model"></model>
     <motion type="Motion"></motion>
   </Hero>
+  
+  <Npc desc = "NPC configs">
+    <name type="DiString"></name>
+    <npcpoint type="int"></npcpoint>
+    <number type="int"></number>
+    <range type="int"></range>
+    <model type="Model"></model>
+    <motion type="Motion"></motion>
+  </Npc>
 
   <Map desc = "Map configs">
     <name type="DiString"></name>
@@ -23,5 +32,9 @@
     <spwanpoint type="int" default="0"></spwanpoint>
     <npcpoint type="int" list="true"></npcpoint>
   </Map>
+  
+  <SpawnNpc desc = "NPC spawning list">
+    <npcs type="Npc" list="true"></npcs>
+  </SpawnNpc>
 
 </template>

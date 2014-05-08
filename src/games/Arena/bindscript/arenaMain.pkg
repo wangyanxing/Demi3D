@@ -1,0 +1,8 @@
+
+$cfile "../../games/Arena/ArenaScriptAPI.h"
+
+void ar_openLevel(const char* configFile);
+
+void ar_setHero(const char* configFile);
+
+void ar_spawnNPC(const char* configFile);

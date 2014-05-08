@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "XMLElement.h"
 #include "XMLFile.h"
 #include "PathLib.h"
+#include "Timer.h"
 
 #include <sstream>
 
@@ -117,6 +118,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     
 /*** !!!! This file was generated automatically by ConfigGen !!!! ***/
 )";
+
+    head += "/*** Generated time: ";
+    head += DiTimer::GetCurrentDateTime();
+    head += " ***/\n";
     
     stream->Write(head.c_str(), head.size());
     

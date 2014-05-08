@@ -34,6 +34,10 @@ namespace Demi
 
     void ArLevel::LoadMap(const DiString& configfile)
     {
+        DI_LOG("Loading level: %s", configfile.c_str());
+
+        DiTimer timer;
+
         // load configs
         auto file = DiAssetManager::GetInstance().OpenArchive(configfile, true);
         if (!file)
@@ -48,6 +52,9 @@ namespace Demi
         SAFE_DELETE(mWorld);
         mWorld = DI_NEW DiK2World();
         mWorld->Load(mMapConfig.path);
+
+        double loadingTime = timer.GetElapse();
+        DI_LOG("Level loading time: %f", loadingTime);
     }
 
     void ArLevel::Update(float dt)

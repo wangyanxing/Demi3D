@@ -85,6 +85,7 @@ namespace Demi
 
     void ArHeroEntity::LoadHero(const DiString& configfile)
     {
+        DI_LOG("Loading hero: %s", configfile.c_str());
         auto file = DiAssetManager::GetInstance().OpenArchive(configfile, true);
         if (!file)
             return;
