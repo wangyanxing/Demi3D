@@ -39,7 +39,7 @@ namespace Demi
 
     public:
 
-        virtual void    InitComponents();
+        virtual void    InitComponents() override;
 
     private:
     };

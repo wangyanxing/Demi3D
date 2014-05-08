@@ -35,15 +35,15 @@ namespace Demi
 
     public:
 
-        virtual void    InitComponents();
+        virtual void    InitComponents() override;
 
         virtual void    InitAttribute(const DiXMLElement& node);
 
-        virtual void    InitAttribute(const DiString& config);
+        virtual void    InitAttribute(const DiString& config) override;
 
         virtual void    SetupAttribute();
 
-        virtual void    InitAttribute();
+        virtual void    InitAttribute() override;
 
     protected:
 

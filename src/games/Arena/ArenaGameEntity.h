@@ -38,9 +38,9 @@ namespace Demi
 
         K2ObjTypes          GetType() const { return mType; }
 
-        virtual void        Update(float dt);
+        virtual void        Update(float dt) override;
 
-        virtual void        InitComponents(){}
+        virtual void        InitComponents() override {}
 
         template<typename T>
         void                SetAttribute()
