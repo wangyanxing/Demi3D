@@ -61,7 +61,7 @@ namespace Demi
 
         /** id: usually team id
          */
-        bool                GetSpawnPoint(int id, DiVec3& out);
+        bool                GetTriggerPosition(int id, DiVec3& out);
 
     private:
 
@@ -84,7 +84,7 @@ namespace Demi
         DiDebugHelperPtr    mDebugger;
 #endif
 
-        DiMap<int, DiVec3>  mSpawnPoint;
+        DiMap<int, DiVec3>  mTriggers;
 
     };
 }

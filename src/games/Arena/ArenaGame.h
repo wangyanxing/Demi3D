@@ -30,13 +30,15 @@ namespace Demi
 
     public:
 
-        void                OpenWorld(const DiString& path);
+        void                LoadLevel(const DiString& path);
 
-        DiK2World*          GetWorld(){ return mWorld; }
+        DiK2World*          GetWorld();
 
-        ArEntityManager*  GetEntityManager() { return mEntityMgr; }
+        ArLevel*            GetLevel() { return mLevel; }
 
-        void                SetHero(const DiString& model);
+        ArEntityManager*    GetEntityManager() { return mEntityMgr; }
+
+        void                SetHero(const DiString& configFile);
 
         void                Update();
 
@@ -46,7 +48,7 @@ namespace Demi
 
         void                SetCamera(ArGameCamera::Style style);
 
-        ArGameCamera*     GetCamera() { return mCamera; }
+        ArGameCamera*       GetCamera() { return mCamera; }
 
     private:
 
@@ -58,13 +60,13 @@ namespace Demi
 
         Cameras             mCameraPool;
 
-        ArGameCamera*     mCamera;
+        ArGameCamera*       mCamera;
 
-        DiK2World*          mWorld;
+        ArLevel*            mLevel;
 
-        ArHeroEntityPtr   mHero;
+        ArHeroEntityPtr     mHero;
 
-        ArEntityManager*  mEntityMgr;
+        ArEntityManager*    mEntityMgr;
     };
 }
 

@@ -42,19 +42,16 @@ struct ArConfigLoaderBase
         while (child)
         {
             DiString name = child.GetName();
-            DiString value = child.GetValue();
-            
             auto i = mPropOps.find(name);
             if(i != mPropOps.end())
             {
-                i->second(value);
+                i->second(child);
             }
-            
             child = child.GetNext();
         }
     }
     
-    DiMap<DiString, std::function<void(const DiString&)>> mPropOps;
+    DiMap<DiString, std::function<void(const DiXMLElement&)>> mPropOps;
 };
 
 )";
@@ -102,7 +99,7 @@ bool CheckBuiltinTypes(const DiString& type)
     return sBuiltins.find(type) != sBuiltins.end();
 }
 
-void WriteFileHead(DiDataStreamPtr stream, bool headFile)
+void WriteFileHead(DiDataStreamPtr stream, bool headFile, bool loader)
 {
     DiString head = R"(
 /**********************************************************************
@@ -127,8 +124,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     
     if(headFile)
     {
-        s << std::endl << "#ifndef " << gName.c_str() << "__h__" << std::endl;
-        s << "#define " << gName.c_str() << "__h__" << std::endl << std::endl;
+        DiString postfix = loader ? "Loader__h__" : "__h__";
+        s << std::endl << "#ifndef " << gName.c_str() << postfix.c_str() << std::endl;
+        s << "#define " << gName.c_str() << postfix.c_str() << std::endl << std::endl;
     }
     
     s.seekg(0, std::ios::end);
@@ -225,15 +223,16 @@ void WriteConfigFile(DiDataStreamPtr out
                      , const DiXMLElement& root)
 {
     /// file head
-    WriteFileHead(out, true);
+    WriteFileHead(out, true, false);
     
     /// include files
     for(auto i = includeList.begin(); i != includeList.end(); ++i)
     {
-        DiString str = "#include " + *i;
-        str += "\n";
+        DiString str = "#include \"" + *i;
+        str += "\"\n";
         out->Write(str.c_str(), str.size());
     }
+    out->Write("#include \"str.h\"\n", strlen("#include \"str.h\"\n"));
     out->Write("\n", 1);
     
     // namespace
@@ -252,13 +251,25 @@ void WriteConfigFile(DiDataStreamPtr out
     WriteFileEnd(out, true);
 }
 
-void WriteConfigLoaderFile(DiDataStreamPtr stream, const DiXMLElement& root)
+void WriteConfigLoaderFile(DiDataStreamPtr stream
+    , const DiVector<DiString>& includeList
+    , const DiXMLElement& root)
 {
     std::stringstream s;
     
     /// file head
-    WriteFileHead(stream, true);
+    WriteFileHead(stream, true, true);
     
+    /// include files
+    for (auto i = includeList.begin(); i != includeList.end(); ++i)
+    {
+        DiString str = "#include \"" + *i;
+        str += "\"\n";
+        stream->Write(str.c_str(), str.size());
+    }
+    stream->Write("#include \"XMLElement.h\"\n", strlen("#include \"XMLElement.h\"\n"));
+
+    stream->Write("\n", 1);
     // namespace
     DiString namespacetag = "namespace Demi{\n";
     stream->Write(namespacetag.c_str(), namespacetag.size());
@@ -282,18 +293,37 @@ void WriteConfigLoaderFile(DiDataStreamPtr stream, const DiXMLElement& root)
         
         for(auto i = gProps.begin(); i != gProps.end(); ++i)
         {
-            s << "        " << "mPropOps[\"" << i->name.c_str() << "\"] = [this](const DiString& val){" << std::endl;
+            s << "        " << "mPropOps[\"" << i->name.c_str() << "\"] = [this](const DiXMLElement& node){" << std::endl;
+
+            DiString func = GetTypeFuncs(i->type);
+
             if(i->list)
             {
-                s << "            " << "m" << child.GetName().c_str() << "->" <<
-                i->name.c_str() << ".push_back(" << "val." << GetTypeFuncs(i->type).c_str() << ");" << std::endl;
+                if (func.empty())
+                {
+                    s << "            " << std::endl;
+                }
+                else
+                {
+                    s << "            " << "m" << child.GetName().c_str() << "->" <<
+                        i->name.c_str() << ".push_back(" << "node.GetValue()." << func.c_str() << ");" << std::endl;
+                }
             }
             else
             {
-                s << "            " << "m" << child.GetName().c_str() << "->" <<
-                i->name.c_str() << " = " << "val." << GetTypeFuncs(i->type).c_str() << ";" << std::endl;
+                if (func.empty())
+                {
+                    s << "            " << gPrefix.c_str()<< i->type.c_str() << "Loader ld(&m" << 
+                        child.GetName().c_str() << "->" << i->name.c_str() << ");" << std::endl;
+                    s << "            ld.Load(node);" << std::endl;
+                }
+                else
+                {
+                    s << "            " << "m" << child.GetName().c_str() << "->" <<
+                        i->name.c_str() << " = " << "node.GetValue()." << func.c_str() << ";" << std::endl;
+                }
             }
-            s << "        }" << std::endl;
+            s << "        };" << std::endl;
         }
         
         s << "    }"<< std::endl<< std::endl;
@@ -349,7 +379,7 @@ void LoadXML(DiDataStreamPtr stream)
         return;
     }
     DiDataStreamPtr outLoader(DI_NEW DiFileHandleDataStream(fpOutLoader, DiDataStream::WRITE));
-    WriteConfigLoaderFile(outLoader, root);
+    WriteConfigLoaderFile(outLoader, includeList, root);
 }
 
 int main(int numargs, char** args)

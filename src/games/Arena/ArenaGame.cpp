@@ -13,13 +13,15 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "ArenaPch.h"
 #include "ArenaGame.h"
-#include "K2World.h"
 #include "ArenaHero.h"
 #include "ArenaGameCamera.h"
 #include "ArenaGameApp.h"
 #include "ArenaInput.h"
-#include "K2Terrain.h"
+#include "ArenaLevel.h"
 #include "ArenaEntityManager.h"
+
+#include "K2World.h"
+#include "K2Terrain.h"
 #include "K2RenderObjects.h"
 
 #include "RenderWindow.h"
@@ -33,9 +35,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     ArGame::ArGame()
-        : mWorld(nullptr)
-        , mEntityMgr(nullptr)
+        : mEntityMgr(nullptr)
         , mCamera(nullptr)
+        , mLevel(nullptr)
     {
         Init();
     }
@@ -44,7 +46,7 @@ namespace Demi
     {
         DI_DELETE mCamera;
         DI_DELETE mEntityMgr;
-        DI_DELETE mWorld;
+        DI_DELETE mLevel;
     }
 
     void ArGame::Update()
@@ -52,29 +54,21 @@ namespace Demi
         float dt = Driver->GetDeltaSecond();
         if (mCamera)
             mCamera->Update(dt);
-        mWorld->Update(dt);
+        mLevel->Update(dt);
         mEntityMgr->Update(dt);
     }
 
-    void ArGame::OpenWorld(const DiString& path)
+    void ArGame::LoadLevel(const DiString& path)
     {
-        if (mWorld)
-            DI_DELETE mWorld;
-
-        mWorld = DI_NEW DiK2World();
-        mWorld->Load(path);
+        mLevel->LoadMap(path);
     }
 
-    void ArGame::SetHero(const DiString& model)
+    void ArGame::SetHero(const DiString& configFile)
     {
-        mHero = GetEntityManager()->CreateHero(1);
-        mHero->SetModel(model);
-        DiVec3 spawnPoint = DiVec3::ZERO;
-        if(!mWorld->GetSpawnPoint(0,spawnPoint))
-        {
-            mWorld->GetSpawnPoint(1,spawnPoint);
-        }
-        mHero->GetRenderObj()->SetWorldPosition(spawnPoint);
+        if (!mHero)
+            mHero = GetEntityManager()->CreateHero(1);
+
+        mHero->LoadHero(configFile);
 
         if (mCamera)
             mCamera->SetTarget(mHero->GetRenderObj());
@@ -99,6 +93,8 @@ namespace Demi
             bloom->SetEnable(true);
 
         SetCamera(ArGameCamera::STYLE_CHARACTER);
+
+        mLevel = DI_NEW ArLevel();
     }
 
     void ArGame::OnKeyInput(const K2KeyEvent& event)
@@ -143,4 +139,9 @@ namespace Demi
             break;
         }
     }  
+
+    DiK2World* ArGame::GetWorld()
+    {
+        return mLevel->GetWorld();
+    }
 }

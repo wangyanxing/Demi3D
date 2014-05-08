@@ -127,7 +127,7 @@ namespace Demi
         {
             if (child.CheckName("entity"))
             {
-                int id = child.GetInt("id");
+                int id = child.GetInt("index");
                 int team = child.GetInt("team");
 
                 DiString model = child.GetAttribute("model");

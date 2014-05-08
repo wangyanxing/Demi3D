@@ -8,7 +8,7 @@
   
   <Motion desc = "Motion properties">
     <runspeed type="float" default="8"></runspeed>
-    <turnspeed type="float" default="500"></turnspeed>
+    <turnspeed type="int" default="500"></turnspeed>
   </Motion>
 
   <Hero desc = "Hero configs">

@@ -234,25 +234,33 @@ namespace Demi
     {
         auto subtype = K2ObjSubTypes::FromString(type);
 
-        if (subtype == K2ObjSubTypes::SUB_STATIC_CLIFF
-            || subtype == K2ObjSubTypes::SUB_STATIC_TREE
-            //|| subtype == K2ObjSubTypes::SUB_STATIC_MODEL
-            || subtype == K2ObjSubTypes::SUB_STATIC_SCENERY
-            )
+        switch (subtype)
         {
-            // directly add to the scene
+        case Demi::K2ObjSubTypes::SUB_STATIC_TREE:
+        case Demi::K2ObjSubTypes::SUB_STATIC_CLIFF:
+        case Demi::K2ObjSubTypes::SUB_STATIC_SCENERY:
+        case Demi::K2ObjSubTypes::SUB_STATIC_BUILDING:
+        //case Demi::K2ObjSubTypes::SUB_STATIC_MODEL:
+        //case Demi::K2ObjSubTypes::SUB_STATIC_WATER:
+        //case Demi::K2ObjSubTypes::SUB_SCENE_ITEM:
+        //case Demi::K2ObjSubTypes::SUB_NPC:
             AddRenderObj(mdf, subtype, trans, id);
-        }
-        else if (subtype == K2ObjSubTypes::SUB_LOGIC_TRIGGER_SPAWN_POINT)
-        {
-            mSpawnPoint[team] = trans.pos;
+            break;
+        
+        case Demi::K2ObjSubTypes::SUB_LOGIC_TRIGGER_SPAWN_POINT:
+        case Demi::K2ObjSubTypes::SUB_LOGIC_ENTITY:
+        case Demi::K2ObjSubTypes::SUB_LOGIC_TELPORT:
+            mTriggers[id] = trans.pos;
+            break;
+        default:
+            break;
         }
     }
 
-    bool DiK2World::GetSpawnPoint(int id, DiVec3& out)
+    bool DiK2World::GetTriggerPosition(int id, DiVec3& out)
     {
-        auto i = mSpawnPoint.find(id);
-        if (i != mSpawnPoint.end())
+        auto i = mTriggers.find(id);
+        if (i != mTriggers.end())
         {
             out = i->second;
             return true;

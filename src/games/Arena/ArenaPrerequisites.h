@@ -28,6 +28,7 @@ namespace Demi
     class ArGameEntity;
     class ArProperty;
     class ArAttribute;
+    class ArLevel;
 
     typedef shared_ptr<ArGameEntity>  ArGameEntityPtr;
     typedef shared_ptr<ArHeroEntity>  ArHeroEntityPtr;

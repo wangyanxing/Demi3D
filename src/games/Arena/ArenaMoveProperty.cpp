@@ -32,13 +32,13 @@ namespace Demi
         , mWalkMode(ENUM_WALK_MODE_STOP)
         , mTargetDirection(INVALID_INT_VALUE)
         , mTargetPosition(-1, -1)
-        , mCurSpeed(INVALID_FLOAT_VALUE)
-        , mTumRate(INVALID_INT_VALUE)
+        , mSpeed(INVALID_FLOAT_VALUE)
+        , mTurnSpeed(INVALID_INT_VALUE)
         , mDistance(0)
     {
-        // test
-        mCurSpeed = 7;
-        mTumRate = 500;
+        // Default value
+        mSpeed = 7;
+        mTurnSpeed = 500;
     }
 
     ArMoveProperty::~ArMoveProperty()
@@ -47,8 +47,8 @@ namespace Demi
 
     void ArMoveProperty::Update(float dt)
     {
-        float moveSpeed = mCurSpeed;
-        int turnSpeed = mTumRate;
+        float moveSpeed = mSpeed;
+        int turnSpeed = mTurnSpeed;
 
         DiK2RenderObject* renderObj = mEntity->GetRenderObj();
         if (!renderObj)
@@ -167,7 +167,6 @@ namespace Demi
         float fRange /*= 0.0f*/)
     {
         //DI_DEBUG("MOVE from <%g,%g> to <%g,%g>", source.x, source.z, target.x, target.z);
-
 
         //DiTimer timer;
         auto& pathFinder = ArGameApp::Get()->GetWorld()->GetTerrain()->GetPathFinder();

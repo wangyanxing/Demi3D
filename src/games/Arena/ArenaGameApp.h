@@ -56,6 +56,8 @@ namespace Demi
 
         DiK2World*          GetWorld() { return mGame->GetWorld(); }
 
+        ArLevel*            GetLevel() { return mGame->GetLevel(); }
+
         ArEntityManager*    GetEntityManager(){ return mGame->GetEntityManager(); }
 
         void                QuitApp() { mQuit = true; }

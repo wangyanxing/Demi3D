@@ -14,8 +14,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     
 /*** !!!! This file was generated automatically by ConfigGen !!!! ***/
 
-#ifndef ArenaConfigs__h__
-#define ArenaConfigs__h__
+#ifndef ArenaConfigsLoader__h__
+#define ArenaConfigsLoader__h__
+
+#include "ArenaPrerequisites.h"
+#include "XMLElement.h"
 
 namespace Demi{
 
@@ -27,19 +30,16 @@ struct ArConfigLoaderBase
         while (child)
         {
             DiString name = child.GetName();
-            DiString value = child.GetValue();
-            
             auto i = mPropOps.find(name);
             if(i != mPropOps.end())
             {
-                i->second(value);
+                i->second(child);
             }
-            
             child = child.GetNext();
         }
     }
     
-    DiMap<DiString, std::function<void(const DiString&)>> mPropOps;
+    DiMap<DiString, std::function<void(const DiXMLElement&)>> mPropOps;
 };
 
 struct ArConfigModelLoader : public ArConfigLoaderBase
@@ -48,12 +48,12 @@ struct ArConfigModelLoader : public ArConfigLoaderBase
     {
         mModel = obj;
 
-        mPropOps["path"] = [this](const DiString& val){
-            mModel->path = val.c_str();
-        }
-        mPropOps["scale"] = [this](const DiString& val){
-            mModel->scale = val.AsFloat();
-        }
+        mPropOps["path"] = [this](const DiXMLElement& node){
+            mModel->path = node.GetValue().c_str();
+        };
+        mPropOps["scale"] = [this](const DiXMLElement& node){
+            mModel->scale = node.GetValue().AsFloat();
+        };
     }
 
     ArConfigModel* mModel;
@@ -65,12 +65,12 @@ struct ArConfigMotionLoader : public ArConfigLoaderBase
     {
         mMotion = obj;
 
-        mPropOps["runspeed"] = [this](const DiString& val){
-            mMotion->runspeed = val.AsFloat();
-        }
-        mPropOps["turnspeed"] = [this](const DiString& val){
-            mMotion->turnspeed = val.AsFloat();
-        }
+        mPropOps["runspeed"] = [this](const DiXMLElement& node){
+            mMotion->runspeed = node.GetValue().AsFloat();
+        };
+        mPropOps["turnspeed"] = [this](const DiXMLElement& node){
+            mMotion->turnspeed = node.GetValue().AsInt();
+        };
     }
 
     ArConfigMotion* mMotion;
@@ -82,15 +82,17 @@ struct ArConfigHeroLoader : public ArConfigLoaderBase
     {
         mHero = obj;
 
-        mPropOps["name"] = [this](const DiString& val){
-            mHero->name = val.c_str();
-        }
-        mPropOps["model"] = [this](const DiString& val){
-            mHero->model = val.;
-        }
-        mPropOps["motion"] = [this](const DiString& val){
-            mHero->motion = val.;
-        }
+        mPropOps["name"] = [this](const DiXMLElement& node){
+            mHero->name = node.GetValue().c_str();
+        };
+        mPropOps["model"] = [this](const DiXMLElement& node){
+            ArConfigModelLoader ld(&mHero->model);
+            ld.Load(node);
+        };
+        mPropOps["motion"] = [this](const DiXMLElement& node){
+            ArConfigMotionLoader ld(&mHero->motion);
+            ld.Load(node);
+        };
     }
 
     ArConfigHero* mHero;
@@ -102,18 +104,18 @@ struct ArConfigMapLoader : public ArConfigLoaderBase
     {
         mMap = obj;
 
-        mPropOps["name"] = [this](const DiString& val){
-            mMap->name = val.c_str();
-        }
-        mPropOps["path"] = [this](const DiString& val){
-            mMap->path = val.c_str();
-        }
-        mPropOps["spwanpoint"] = [this](const DiString& val){
-            mMap->spwanpoint = val.AsInt();
-        }
-        mPropOps["npcpoint"] = [this](const DiString& val){
-            mMap->npcpoint.push_back(val.AsInt());
-        }
+        mPropOps["name"] = [this](const DiXMLElement& node){
+            mMap->name = node.GetValue().c_str();
+        };
+        mPropOps["path"] = [this](const DiXMLElement& node){
+            mMap->path = node.GetValue().c_str();
+        };
+        mPropOps["spwanpoint"] = [this](const DiXMLElement& node){
+            mMap->spwanpoint = node.GetValue().AsInt();
+        };
+        mPropOps["npcpoint"] = [this](const DiXMLElement& node){
+            mMap->npcpoint.push_back(node.GetValue().AsInt());
+        };
     }
 
     ArConfigMap* mMap;

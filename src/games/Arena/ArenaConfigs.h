@@ -17,7 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef ArenaConfigs__h__
 #define ArenaConfigs__h__
 
-#include ArenaPrerequisites.h
+#include "ArenaPrerequisites.h"
+#include "str.h"
 
 namespace Demi{
 
@@ -47,7 +48,7 @@ struct ArConfigMotion
     }
 
     float runspeed;
-    float turnspeed;
+    int turnspeed;
 };
 
 /**

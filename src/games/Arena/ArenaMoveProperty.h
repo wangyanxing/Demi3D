@@ -53,6 +53,14 @@ namespace Demi
         void            MoveTo(const DiK2Pos& source, const DiK2Pos& target,
                             float fRange = 0.0f);
 
+        float           GetSpeed() const { return mSpeed; }
+
+        void            SetSpeed(float val) { mSpeed = val; }
+        
+        int             GetTurnSpeed() const { return mTurnSpeed; }
+        
+        void            SetTurnSpeed(int val) { mTurnSpeed = val; }
+
     private:
 
         DiK2Pos         GetIntersectionLineRound(const DiK2Pos& linePos1, const DiK2Pos& linePos2, 
@@ -80,9 +88,9 @@ namespace Demi
 
         int             mTargetDirection;
 
-        float           mCurSpeed;
-
-        int32           mTumRate;
+        float           mSpeed;
+        
+        int             mTurnSpeed;
     };
 }
 

@@ -11,37 +11,41 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef ArenaHeroEntity_h__
-#define ArenaHeroEntity_h__
+#ifndef ArenaLevel_h__
+#define ArenaLevel_h__
 
 #include "ArenaPrerequisites.h"
-#include "ArenaNPCEntity.h"
-#include "ArenaInput.h"
 #include "ArenaConfigs.h"
 
 namespace Demi
 {
-    class ArHeroEntity : public ArNPCEntity
+    /** Game level
+     */
+    class ArLevel : public DiBase
     {
     public:
 
-        ArHeroEntity();
+        ArLevel();
 
-        ~ArHeroEntity();
+        ~ArLevel();
 
     public:
 
-        void LoadHero(const DiString& configFile);
+        void LoadMap(const DiString& configfile);
 
-        void OnKeyInput(const K2KeyEvent& event);
+        void Update(float dt);
 
-        void OnMouseInput(const K2MouseEvent& event);
+        ArConfigMap& GetConfig() { return mMapConfig; }
 
-        void InitAttribute();
+        DiK2World* GetWorld() { return mWorld; }
+
+        DiVec3 GetSpwanPosition();
 
     private:
 
-        ArConfigHero mHeroConfig;
+        ArConfigMap mMapConfig;
+
+        DiK2World* mWorld;
     };
 }
 

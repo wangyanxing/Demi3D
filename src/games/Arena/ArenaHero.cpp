@@ -17,6 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaGameApp.h"
 #include "ArenaHero.h"
 #include "ArenaGame.h"
+#include "ArenaConfigsLoader.h"
+#include "ArenaLevel.h"
 
 #include "K2Clip.h"
 #include "K2Terrain.h"
@@ -27,6 +29,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxDriver.h"
 #include "SceneManager.h"
 #include "RenderWindow.h"
+#include "XMLFile.h"
+#include "AssetManager.h"
 
 namespace Demi
 {
@@ -79,4 +83,29 @@ namespace Demi
         SetAttribute<DiK2HeroAttr>();
     }
 
+    void ArHeroEntity::LoadHero(const DiString& configfile)
+    {
+        auto file = DiAssetManager::GetInstance().OpenArchive(configfile, true);
+        if (!file)
+            return;
+
+        auto level = ArGameApp::Get()->GetLevel();
+
+        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        xmlfile->Load(file->GetAsString());
+        DiXMLElement root = xmlfile->GetRoot();
+
+        ArConfigHeroLoader loader(&mHeroConfig);
+        loader.Load(root);
+
+        SetModel(mHeroConfig.model.path);
+
+        DiVec3 position = level->GetSpwanPosition();
+        GetRenderObj()->SetWorldPosition(position);
+
+        GetRenderObj()->SetScale(DiVec3(mHeroConfig.model.scale, mHeroConfig.model.scale, mHeroConfig.model.scale));
+
+        GetMoveProperty()->SetSpeed(mHeroConfig.motion.runspeed);
+        GetMoveProperty()->SetTurnSpeed(mHeroConfig.motion.turnspeed);
+    }
 }
