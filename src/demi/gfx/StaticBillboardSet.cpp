@@ -26,15 +26,15 @@ unsigned long DiStaticBillboardSet::GUID             = 0;
 namespace Demi
 {
     DiStaticBillboardSet::DiStaticBillboardSet(DiCullNode *rootNode) :
-        mVisible                (true),
-        mFadeEnabled            (false),
-        mCullNode            (NULL),
-        mModel                (NULL),
-        mUFactor                (1.f),
-        mVFactor                (1.f),
-        mBBOrigin                (BBO_CENTER),
-        mFadeVisibleDist        (0.0f),
-        mFadeInvisibleDist    (0.0f)
+        mVisible (true),
+        mFadeEnabled (false),
+        mCullNode (NULL),
+        mModel (NULL),
+        mUFactor (1.f),
+        mVFactor (1.f),
+        mBBOrigin (BBO_CENTER),
+        mFadeVisibleDist (0.0f),
+        mFadeInvisibleDist (0.0f)
     {
         mSceneManager = rootNode->GetCreator();
 

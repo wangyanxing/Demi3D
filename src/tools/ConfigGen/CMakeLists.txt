@@ -4,11 +4,12 @@
 
 project(ConfigGen)
 
-file(GLOB _HEADERS "*.xml")
+file(GLOB _XMLS "*.xml")
 file(GLOB _SRCS "*.cpp")
-
-DI_ADD_EXECUTABLE(ConfigGen ${_HEADERS} ${_SRCS})
-include_directories(${OGRE_INCLUDE_DIRS} ${DEMI_SOURCE_DIR}/src/demi)
+  
+add_executable(ConfigGen ${_XMLS} ${_SRCS})
+include_directories(${DEMI_EXTERNAL_SRC_PATH}/LinearMath)
+include_directories(${DEMI_SOURCE_DIR}/src/demi)
 
 if (NOT APPLE)
 	set_property(TARGET ConfigGen APPEND PROPERTY DEBUG_POSTFIX "_d")

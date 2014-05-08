@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<template prefix="Ar">
+<template name = "ArenaConfigs" prefix="ArConfig" outpath = "../../src/games/Arena/" includes="ArenaPrerequisites.h">
   
-  <Model>
-    <path type="string"></path>
-    <scale type="float"></scale>
+  <Model desc = "Model properties">
+    <path type="DiString"></path>
+    <scale type="float" default="1"></scale>
   </Model>
   
-  <Motion>
-    <runspeed type="float"></runspeed>
-    <turnspeed type="float"></turnspeed>
+  <Motion desc = "Motion properties">
+    <runspeed type="float" default="8"></runspeed>
+    <turnspeed type="float" default="500"></turnspeed>
   </Motion>
 
-  <Hero name="true">
+  <Hero desc = "Hero configs">
+    <name type="DiString"></name>
     <model type="Model"></model>
     <motion type="Motion"></motion>
   </Hero>
 
-  <Map name="true">
-    <path type="string"></path>
-    <spwanpoint type="int"></spwanpoint>
+  <Map desc = "Map configs">
+    <name type="DiString"></name>
+    <path type="DiString"></path>
+    <spwanpoint type="int" default="0"></spwanpoint>
     <npcpoint type="int" list="true"></npcpoint>
   </Map>
 
