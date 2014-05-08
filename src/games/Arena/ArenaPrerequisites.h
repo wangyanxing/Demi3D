@@ -34,7 +34,6 @@ namespace Demi
 
     typedef shared_ptr<ArGameEntity>  ArGameEntityPtr;
     typedef shared_ptr<ArHeroEntity>  ArHeroEntityPtr;
-    typedef shared_ptr<ArAttribute>   ArAttributePtr;
 }
 
 #include "ArenaStateDefines.h"

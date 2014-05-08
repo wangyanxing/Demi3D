@@ -13,8 +13,25 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "ArenaPch.h"
 #include "ArenaAttribute.h"
+#include "XMLFile.h"
 
 namespace Demi
 {
+    void ArAttribute::LoadAttributeConfig(const DiString& configfile)
+    {
+        DI_LOG("Loading atribute[config = %s] for entity[id = %d]", configfile.c_str(), GetID());
 
+        auto file = DiAssetManager::GetInstance().OpenArchive(configfile, true);
+        if (!file)
+        {
+            DI_WARNING("Failed to load the attribute");
+            return;
+        }
+
+        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        xmlfile->Load(file->GetAsString());
+        DiXMLElement root = xmlfile->GetRoot();
+
+        LoadAttribute(root);
+    }
 }

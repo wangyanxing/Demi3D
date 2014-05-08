@@ -80,33 +80,11 @@ namespace Demi
 
     void ArHeroEntity::InitAttribute()
     {
-        SetAttribute<DiK2HeroAttr>();
+        SetAttribute<ArHeroAttr>();
     }
 
-    void ArHeroEntity::LoadHero(const DiString& configfile)
+    void ArHeroEntity::SetupAttribute()
     {
-        DI_LOG("Loading hero: %s", configfile.c_str());
-        auto file = DiAssetManager::GetInstance().OpenArchive(configfile, true);
-        if (!file)
-            return;
-
-        auto level = ArGameApp::Get()->GetLevel();
-
-        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
-        xmlfile->Load(file->GetAsString());
-        DiXMLElement root = xmlfile->GetRoot();
-
-        ArConfigHeroLoader loader(&mHeroConfig);
-        loader.Load(root);
-
-        SetModel(mHeroConfig.model.path);
-
-        DiVec3 position = level->GetSpwanPosition();
-        GetRenderObj()->SetWorldPosition(position);
-
-        GetRenderObj()->SetScale(DiVec3(mHeroConfig.model.scale, mHeroConfig.model.scale, mHeroConfig.model.scale));
-
-        GetMoveProperty()->SetSpeed(mHeroConfig.motion.runspeed);
-        GetMoveProperty()->SetTurnSpeed(mHeroConfig.motion.turnspeed);
+        SetupDynModelConfig(&GetAttribute<ArHeroAttr>()->mHeroConfig->dynModel);
     }
 }

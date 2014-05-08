@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaPrerequisites.h"
 #include "ArenaDynEntity.h"
 #include "ArenaAIProperty.h"
+#include "ArenaConfigs.h"
 
 namespace Demi
 {
@@ -36,7 +37,17 @@ namespace Demi
 
         virtual void    InitComponents();
 
+        virtual void    InitAttribute(const DiXMLElement& node);
+
+        virtual void    InitAttribute(const DiString& config);
+
+        virtual void    SetupAttribute();
+
         virtual void    InitAttribute();
+
+    protected:
+
+        void            SetupDynModelConfig(const ArConfigDynamicModel* dynModel);
 
     private:
     };

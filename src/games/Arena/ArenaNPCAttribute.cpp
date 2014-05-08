@@ -13,41 +13,21 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "ArenaPch.h"
 #include "ArenaNPCAttribute.h"
+#include "ArenaConfigsLoader.h"
 
 namespace Demi
 {
-    ArNPCAttr::ArNPCAttr()
-    {
-    }
-
     ArNPCAttr::~ArNPCAttr()
     {
+        SAFE_DELETE(mDynModelConfig);
     }
 
-    ArObjID ArNPCAttr::GetID() const
+    void ArNPCAttr::LoadAttribute(const DiXMLElement& node)
     {
-        return mNPCAttrs.OBjID;
+        SAFE_DELETE(mDynModelConfig);
+        mDynModelConfig = DI_NEW ArConfigDynamicModel();
 
+        ArConfigDynamicModelLoader loader(mDynModelConfig);
+        loader.Load(node);
     }
-
-    int ArNPCAttr::GetHP() const
-    {
-        return mNPCAttrs.HP;
-    }
-
-    int ArNPCAttr::GetMaxHP() const
-    {
-        return mNPCAttrs.MaxHP;
-    }
-
-    int ArNPCAttr::GetDirection() const
-    {
-        return mNPCAttrs.Direction;
-    }
-
-    float ArNPCAttr::GetMoveSpeed() const
-    {
-        return mNPCAttrs.MoveSpeed;
-    }
-
 }

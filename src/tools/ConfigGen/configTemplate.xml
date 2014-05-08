@@ -11,20 +11,26 @@
     <turnspeed type="int" default="500"></turnspeed>
   </Motion>
 
-  <Hero desc = "Hero configs">
+  <DynamicModel desc = "Dynamic model configs">
     <name type="DiString"></name>
     <model type="Model"></model>
     <motion type="Motion"></motion>
+  </DynamicModel>
+
+  <Hero desc = "Hero configs">
+    <dynModel type="DynamicModel"></dynModel>
   </Hero>
   
-  <Npc desc = "NPC configs">
-    <name type="DiString"></name>
+  <NpcGroup desc = "NPC group">
     <npcpoint type="int"></npcpoint>
     <number type="int"></number>
-    <range type="int"></range>
-    <model type="Model"></model>
-    <motion type="Motion"></motion>
-  </Npc>
+    <range type="float"></range>
+    <dynModel type="DynamicModel"></dynModel>
+  </NpcGroup>
+  
+  <SpawnNpc desc = "NPC spawning list">
+    <npcs type="NpcGroup" list="true"></npcs>
+  </SpawnNpc>
 
   <Map desc = "Map configs">
     <name type="DiString"></name>
@@ -33,8 +39,4 @@
     <npcpoint type="int" list="true"></npcpoint>
   </Map>
   
-  <SpawnNpc desc = "NPC spawning list">
-    <npcs type="Npc" list="true"></npcs>
-  </SpawnNpc>
-
 </template>

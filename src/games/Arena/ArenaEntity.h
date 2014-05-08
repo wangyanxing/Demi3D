@@ -67,6 +67,8 @@ private:                                    \
 
         virtual void InitAttribute(){}
 
+        virtual void InitAttribute(const DiString& configFile){}
+
         template<typename EntityType>
         EntityType* GetEntity()
         {

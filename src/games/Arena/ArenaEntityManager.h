@@ -45,18 +45,26 @@ namespace Demi
 
         /** usually the hero id is always 1
          */
-        ArHeroEntityPtr   CreateHero(ArObjID id);
+        ArHeroEntityPtr     CreateHero(ArObjID id, const DiString& configfile);
+
+        ArGameEntityPtr     CreateNPC(ArObjID id, const DiString& configfile);
 
         ArObjID             GetHeroID() const { return mHeroId; }
+
+        ArGameEntityPtr     FindEntity(ArObjID id);
+
+    private:
+
+        void                Release();
 
     private:
 
         typedef DiMap<ArObjID, ArGameEntityPtr> EntityMap;
         EntityMap           mEntities;
 
-        ArObjID             mHeroId;
+        ArObjID             mHeroId { INVALID_OBJ_ID };
 
-        ArHeroEntityPtr   mHeroEntity;
+        ArHeroEntityPtr     mHeroEntity;
     };
 }
 

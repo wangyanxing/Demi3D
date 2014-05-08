@@ -294,6 +294,7 @@ void WriteConfigLoaderFile(DiDataStreamPtr stream
         // constructor
         s << "    " << structName.c_str() << "Loader("<< structName.c_str() << "* obj)"<< std::endl;
         s << "    {"<< std::endl;
+        s << "        DI_ASSERT(obj);" << std::endl;
         s << "        m" << child.GetName().c_str() << " = obj;" << std::endl << std::endl;
         
         for(auto i = gProps.begin(); i != gProps.end(); ++i)

@@ -24,17 +24,21 @@ namespace Demi
     {
     public:
 
-        virtual ArObjID   GetID() const = 0;
+        ArAttribute(ArObjID id) : mID(id) {}
 
-        virtual int       GetHP() const = 0;
+    public:
 
-        virtual int       GetMaxHP() const = 0;
-
-        virtual int       GetDirection() const = 0;
-
-        virtual float     GetMoveSpeed() const = 0;
+        virtual ArObjID   GetID() const { return mID; }
 
         virtual void      Update(float dt) {}
+
+        virtual void      LoadAttribute(const DiXMLElement& node) = 0;
+
+        virtual void      LoadAttributeConfig(const DiString& configFile);
+
+    private:
+
+        ArObjID mID { INVALID_OBJ_ID };
     };
 }
 

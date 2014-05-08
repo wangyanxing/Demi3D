@@ -38,8 +38,6 @@ namespace Demi
 
         void                Update();
 
-        void                Close();
-
         bool                IsOpen();
 
         void                Open(int argc, char *argv[]);

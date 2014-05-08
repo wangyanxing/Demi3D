@@ -17,18 +17,18 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaGameApp.h"
 #include "ArenaGame.h"
 #include "K2RenderObjects.h"
+#include "ArenaAttribute.h"
 
 namespace Demi
 {
 
     ArGameEntity::ArGameEntity()
     {
-
     }
 
     ArGameEntity::~ArGameEntity()
     {
-
+        SAFE_DELETE(mAttribute);
     }
 
     void ArGameEntity::SetModel(const DiString& model)
@@ -55,5 +55,4 @@ namespace Demi
     {
         return false;
     }
-
 }

@@ -66,9 +66,7 @@ namespace Demi
     void ArGame::SetHero(const DiString& configFile)
     {
         if (!mHero)
-            mHero = GetEntityManager()->CreateHero(1);
-
-        mHero->LoadHero(configFile);
+            mHero = GetEntityManager()->CreateHero(1, configFile);
 
         if (mCamera)
             mCamera->SetTarget(mHero->GetRenderObj());

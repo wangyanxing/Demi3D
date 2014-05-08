@@ -13,40 +13,21 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "ArenaPch.h"
 #include "ArenaHeroAttribute.h"
+#include "ArenaConfigsLoader.h"
 
 namespace Demi
 {
-    DiK2HeroAttr::DiK2HeroAttr()
+    ArHeroAttr::~ArHeroAttr()
     {
+        SAFE_DELETE(mHeroConfig);
     }
 
-    DiK2HeroAttr::~DiK2HeroAttr()
+    void ArHeroAttr::LoadAttribute(const DiXMLElement& node)
     {
-    }
+        SAFE_DELETE(mHeroConfig);
+        mHeroConfig = DI_NEW ArConfigHero();
 
-    ArObjID DiK2HeroAttr::GetID() const
-    {
-        return mHeroAttrs.OBjID;
+        ArConfigHeroLoader loader(mHeroConfig);
+        loader.Load(node);
     }
-
-    int DiK2HeroAttr::GetHP() const
-    {
-        return mHeroAttrs.HP;
-    }
-
-    int DiK2HeroAttr::GetMaxHP() const
-    {
-        return mHeroAttrs.MaxHP;
-    }
-
-    int DiK2HeroAttr::GetDirection() const
-    {
-        return mHeroAttrs.Direction;
-    }
-
-    float DiK2HeroAttr::GetMoveSpeed() const
-    {
-        return mHeroAttrs.MoveSpeed;
-    }
-
 }

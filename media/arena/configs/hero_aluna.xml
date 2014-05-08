@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <hero>
-  <name>Aluna</name>
-  <model>
-    <path>heroes/aluna/model.mdf</path>
-    <scale>1.5</scale>
-  </model>
-  <motion>
-    <runspeed>9</runspeed>
-    <turnspeed>500</turnspeed>
-  </motion>
+  <dynModel>
+    <name>Aluna</name>
+    <model>
+      <path>heroes/aluna/model.mdf</path>
+      <scale>1.5</scale>
+    </model>
+    <motion>
+      <runspeed>9</runspeed>
+      <turnspeed>500</turnspeed>
+    </motion>
+  </dynModel>
 </hero>

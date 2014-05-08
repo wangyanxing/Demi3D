@@ -16,7 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "ArenaPrerequisites.h"
 #include "ArenaAttribute.h"
-#include "ArenaAttrStructure.h"
+#include "ArenaConfigs.h"
 
 namespace Demi
 {
@@ -26,27 +26,17 @@ namespace Demi
     {
     public:
 
-        ArNPCAttr();
+        ArNPCAttr(ArObjID id) : ArAttribute(id) {}
 
         virtual ~ArNPCAttr();
 
     public:
 
-        virtual ArObjID   GetID() const;
-
-        virtual int       GetHP() const;
-
-        virtual int       GetMaxHP() const;
-
-        virtual int       GetDirection() const;
-
-        virtual float     GetMoveSpeed() const;
-
         virtual void      Update(float dt) {}
 
-    protected:
+        virtual void      LoadAttribute(const DiXMLElement& node);
 
-        ArNPCAttributes   mNPCAttrs;
+        ArConfigDynamicModel*  mDynModelConfig{ nullptr };
     };
 }
 

@@ -13,7 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
     
 /*** !!!! This file was generated automatically by ConfigGen !!!! ***/
-/*** Generated time: 21:06:57 05/07/2014 ***/
+/*** Generated time: 12:52:54 05/08/2014 ***/
 
 #ifndef ArenaConfigsLoader__h__
 #define ArenaConfigsLoader__h__
@@ -47,6 +47,7 @@ struct ArConfigModelLoader : public ArConfigLoaderBase
 {
     ArConfigModelLoader(ArConfigModel* obj)
     {
+        DI_ASSERT(obj);
         mModel = obj;
 
         mPropOps["path"] = [this](const DiXMLElement& node){
@@ -64,6 +65,7 @@ struct ArConfigMotionLoader : public ArConfigLoaderBase
 {
     ArConfigMotionLoader(ArConfigMotion* obj)
     {
+        DI_ASSERT(obj);
         mMotion = obj;
 
         mPropOps["runspeed"] = [this](const DiXMLElement& node){
@@ -77,21 +79,38 @@ struct ArConfigMotionLoader : public ArConfigLoaderBase
     ArConfigMotion* mMotion;
 };
 
+struct ArConfigDynamicModelLoader : public ArConfigLoaderBase
+{
+    ArConfigDynamicModelLoader(ArConfigDynamicModel* obj)
+    {
+        DI_ASSERT(obj);
+        mDynamicModel = obj;
+
+        mPropOps["name"] = [this](const DiXMLElement& node){
+            mDynamicModel->name = node.GetValue().c_str();
+        };
+        mPropOps["model"] = [this](const DiXMLElement& node){
+            ArConfigModelLoader ld(&mDynamicModel->model);
+            ld.Load(node);
+        };
+        mPropOps["motion"] = [this](const DiXMLElement& node){
+            ArConfigMotionLoader ld(&mDynamicModel->motion);
+            ld.Load(node);
+        };
+    }
+
+    ArConfigDynamicModel* mDynamicModel;
+};
+
 struct ArConfigHeroLoader : public ArConfigLoaderBase
 {
     ArConfigHeroLoader(ArConfigHero* obj)
     {
+        DI_ASSERT(obj);
         mHero = obj;
 
-        mPropOps["name"] = [this](const DiXMLElement& node){
-            mHero->name = node.GetValue().c_str();
-        };
-        mPropOps["model"] = [this](const DiXMLElement& node){
-            ArConfigModelLoader ld(&mHero->model);
-            ld.Load(node);
-        };
-        mPropOps["motion"] = [this](const DiXMLElement& node){
-            ArConfigMotionLoader ld(&mHero->motion);
+        mPropOps["dynModel"] = [this](const DiXMLElement& node){
+            ArConfigDynamicModelLoader ld(&mHero->dynModel);
             ld.Load(node);
         };
     }
@@ -99,41 +118,51 @@ struct ArConfigHeroLoader : public ArConfigLoaderBase
     ArConfigHero* mHero;
 };
 
-struct ArConfigNpcLoader : public ArConfigLoaderBase
+struct ArConfigNpcGroupLoader : public ArConfigLoaderBase
 {
-    ArConfigNpcLoader(ArConfigNpc* obj)
+    ArConfigNpcGroupLoader(ArConfigNpcGroup* obj)
     {
-        mNpc = obj;
+        DI_ASSERT(obj);
+        mNpcGroup = obj;
 
-        mPropOps["name"] = [this](const DiXMLElement& node){
-            mNpc->name = node.GetValue().c_str();
-        };
         mPropOps["npcpoint"] = [this](const DiXMLElement& node){
-            mNpc->npcpoint = node.GetValue().AsInt();
+            mNpcGroup->npcpoint = node.GetValue().AsInt();
         };
         mPropOps["number"] = [this](const DiXMLElement& node){
-            mNpc->number = node.GetValue().AsInt();
+            mNpcGroup->number = node.GetValue().AsInt();
         };
         mPropOps["range"] = [this](const DiXMLElement& node){
-            mNpc->range = node.GetValue().AsInt();
+            mNpcGroup->range = node.GetValue().AsFloat();
         };
-        mPropOps["model"] = [this](const DiXMLElement& node){
-            ArConfigModelLoader ld(&mNpc->model);
-            ld.Load(node);
-        };
-        mPropOps["motion"] = [this](const DiXMLElement& node){
-            ArConfigMotionLoader ld(&mNpc->motion);
+        mPropOps["dynModel"] = [this](const DiXMLElement& node){
+            ArConfigDynamicModelLoader ld(&mNpcGroup->dynModel);
             ld.Load(node);
         };
     }
 
-    ArConfigNpc* mNpc;
+    ArConfigNpcGroup* mNpcGroup;
+};
+
+struct ArConfigSpawnNpcLoader : public ArConfigLoaderBase
+{
+    ArConfigSpawnNpcLoader(ArConfigSpawnNpc* obj)
+    {
+        DI_ASSERT(obj);
+        mSpawnNpc = obj;
+
+        mPropOps["npcs"] = [this](const DiXMLElement& node){
+            
+        };
+    }
+
+    ArConfigSpawnNpc* mSpawnNpc;
 };
 
 struct ArConfigMapLoader : public ArConfigLoaderBase
 {
     ArConfigMapLoader(ArConfigMap* obj)
     {
+        DI_ASSERT(obj);
         mMap = obj;
 
         mPropOps["name"] = [this](const DiXMLElement& node){
@@ -151,20 +180,6 @@ struct ArConfigMapLoader : public ArConfigLoaderBase
     }
 
     ArConfigMap* mMap;
-};
-
-struct ArConfigSpawnNpcLoader : public ArConfigLoaderBase
-{
-    ArConfigSpawnNpcLoader(ArConfigSpawnNpc* obj)
-    {
-        mSpawnNpc = obj;
-
-        mPropOps["npcs"] = [this](const DiXMLElement& node){
-            
-        };
-    }
-
-    ArConfigSpawnNpc* mSpawnNpc;
 };
 
 

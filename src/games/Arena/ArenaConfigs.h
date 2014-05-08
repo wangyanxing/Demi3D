@@ -13,7 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
     
 /*** !!!! This file was generated automatically by ConfigGen !!!! ***/
-/*** Generated time: 21:06:57 05/07/2014 ***/
+/*** Generated time: 12:52:54 05/08/2014 ***/
 
 #ifndef ArenaConfigs__h__
 #define ArenaConfigs__h__
@@ -53,11 +53,11 @@ struct ArConfigMotion
 };
 
 /**
-  Hero configs
+  Dynamic model configs
  **/
-struct ArConfigHero
+struct ArConfigDynamicModel
 {
-    ArConfigHero()
+    ArConfigDynamicModel()
     {
     }
 
@@ -67,20 +67,42 @@ struct ArConfigHero
 };
 
 /**
-  NPC configs
+  Hero configs
  **/
-struct ArConfigNpc
+struct ArConfigHero
 {
-    ArConfigNpc()
+    ArConfigHero()
     {
     }
 
-    DiString name;
+    ArConfigDynamicModel dynModel;
+};
+
+/**
+  NPC group
+ **/
+struct ArConfigNpcGroup
+{
+    ArConfigNpcGroup()
+    {
+    }
+
     int npcpoint;
     int number;
-    int range;
-    ArConfigModel model;
-    ArConfigMotion motion;
+    float range;
+    ArConfigDynamicModel dynModel;
+};
+
+/**
+  NPC spawning list
+ **/
+struct ArConfigSpawnNpc
+{
+    ArConfigSpawnNpc()
+    {
+    }
+
+    DiVector<ArConfigNpcGroup> npcs;
 };
 
 /**
@@ -97,18 +119,6 @@ struct ArConfigMap
     DiString path;
     int spwanpoint;
     DiVector<int> npcpoint;
-};
-
-/**
-  NPC spawning list
- **/
-struct ArConfigSpawnNpc
-{
-    ArConfigSpawnNpc()
-    {
-    }
-
-    DiVector<ArConfigNpc> npcs;
 };
 
 } // namespace Demi

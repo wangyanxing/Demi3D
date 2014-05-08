@@ -122,15 +122,6 @@ namespace Demi
         DI_PROFILE_END_FRAME
     }
 
-    void ArGameApp::Close()
-    {
-        CloseEngine();
-
-        DI_DELETE mGame;
-        mGame = nullptr;
-    }
-
-
     bool ArGameApp::IsOpen()
     {
         return mMainHwnd ? true : false;
@@ -165,6 +156,8 @@ namespace Demi
     {
         SAFE_DELETE(mInputMgr);
 
+        SAFE_DELETE(mGame);
+
         DiK2Configs::Shutdown();
 
         Driver->Shutdown();
@@ -193,6 +186,7 @@ namespace Demi
 
     void ArGameApp::OpenImpl()
     {
+        // iphone 5s's resolution
         bool ret = Driver->Init(1136,640, "Game", false);
         DI_ASSERT(ret);
 
@@ -206,9 +200,7 @@ namespace Demi
         DiK2Configs::Init();
 
         mGame = DI_NEW ArGame();
-        //mGame->LoadLevel("map_test1.xml");
-        //mGame->SetHero("hero_aluna.xml");
-
+        
         // load the scripts
         DI_LOG("Binding Arena APIs to lua...");
         tolua_arenaMain_open(DiScriptManager::Get()->GetLuaState());
@@ -223,6 +215,9 @@ namespace Demi
 
         auto mainScript = DiAssetManager::GetInstance().OpenArchive("arena_main.lua");
         DiScriptManager::Get()->RunBuffer(mainScript);
+
+        // test NPC
+
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){
             mGame->Update();

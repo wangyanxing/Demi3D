@@ -31,17 +31,17 @@ namespace Demi
 
     public:
 
-        void LoadHero(const DiString& configFile);
+        using ArNPCEntity::InitAttribute;
 
         void OnKeyInput(const K2KeyEvent& event);
 
         void OnMouseInput(const K2MouseEvent& event);
 
-        void InitAttribute();    
+        void InitAttribute();
+
+        void SetupAttribute();
 
     private:
-
-        ArConfigHero mHeroConfig;
     };
 }
 

@@ -45,27 +45,28 @@ namespace Demi
         template<typename T>
         void                SetAttribute()
         {
-            mAttribute = make_shared<T>();
+            SAFE_DELETE(mAttribute);
+            mAttribute = DI_NEW T(mID);
         }
 
-        ArAttributePtr    GetAttribute(){ return mAttribute; }
+        ArAttribute*        GetAttribute(){ return mAttribute; }
 
         template<typename T>
-        std::shared_ptr<T>  GetAttribute()
+        T*  GetAttribute()
         {
             DI_ASSERT(mAttribute);
-            return std::dynamic_pointer_cast<T>(mAttribute);
+            return static_cast<T*>(mAttribute);
         }
 
         bool                IsDead();
 
     protected:
 
-        DiK2RenderObject*   mRenderObj;
+        DiK2RenderObject*   mRenderObj{ nullptr };
 
-        ArAttributePtr      mAttribute;
+        ArAttribute*        mAttribute{ nullptr };
 
-        K2ObjTypes          mType;
+        K2ObjTypes          mType{ MAX_GAME_ENTITY_TYPES };
 
         DiString            mModel;
     };
