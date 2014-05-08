@@ -45,7 +45,7 @@ namespace Demi
         template<typename T>
         void                SetAttribute()
         {
-            SAFE_DELETE(mAttribute);
+            DI_ASSERT(!mAttribute);
             mAttribute = DI_NEW T(mID);
         }
 

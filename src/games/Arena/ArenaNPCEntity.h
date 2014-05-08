@@ -25,7 +25,7 @@ namespace Demi
      */
     class ArNPCEntity : public ArDynEntity
     {
-        DEF_DECLARE_PRIORITY(AIProperty);
+        DEF_DECLARE_PRIORITY(AIProperty)
 
     public:
 

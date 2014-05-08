@@ -21,7 +21,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    class ArHeroEntity : public ArNPCEntity
+    class ArHeroEntity final : public ArNPCEntity
     {
     public:
 

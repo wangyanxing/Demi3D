@@ -36,7 +36,7 @@ namespace Demi
 
         virtual void      LoadAttribute(const DiXMLElement& node);
 
-        ArConfigDynamicModel*  mDynModelConfig{ nullptr };
+        ArConfigDynamicModel*  mDynModelConfig{ DI_NEW ArConfigDynamicModel() };
     };
 }
 

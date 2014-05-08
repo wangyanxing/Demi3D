@@ -29,6 +29,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaBinding.h"
 #include "PathLib.h"
 
+#include "ArenaEntityManager.h"
+#include "ArenaGameEntity.h"
+#include "ArenaAIProperty.h"
+#include "ArenaNPCEntity.h"
+#include "K2RenderObjects.h"
+
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   include "ArenaGameAppOSX.h"
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
@@ -215,9 +221,11 @@ namespace Demi
 
         auto mainScript = DiAssetManager::GetInstance().OpenArchive("arena_main.lua");
         DiScriptManager::Get()->RunBuffer(mainScript);
-
+        
         // test NPC
-
+        auto npc = mGame->GetEntityManager()->CreateNPC(2,"npc_test.xml");
+        npc->GetRenderObj()->SetPosition(DiK2Pos(202, 42));
+        //npc->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandMoveTo(DiK2Pos(213, 32));
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){
             mGame->Update();

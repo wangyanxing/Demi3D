@@ -24,8 +24,7 @@ namespace Demi
 
     void ArNPCAttr::LoadAttribute(const DiXMLElement& node)
     {
-        SAFE_DELETE(mDynModelConfig);
-        mDynModelConfig = DI_NEW ArConfigDynamicModel();
+        mDynModelConfig = DI_NEW (mDynModelConfig) ArConfigDynamicModel();
 
         ArConfigDynamicModelLoader loader(mDynModelConfig);
         loader.Load(node);

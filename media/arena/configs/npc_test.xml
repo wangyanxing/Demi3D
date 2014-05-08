@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DynamicModel>
+    <name>testNpc</name>
+    <model>
+        <path>npcs/good_melee/model.mdf</path>
+        <scale>2.2</scale>
+    </model>
+    <motion>
+        <runspeed>9</runspeed>
+        <turnspeed>500</turnspeed>
+    </motion>
+</DynamicModel>

@@ -25,6 +25,8 @@ namespace Demi
     public:
 
         ArAttribute(ArObjID id) : mID(id) {}
+        
+        virtual ~ArAttribute(){}
 
     public:
 

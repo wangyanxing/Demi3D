@@ -594,7 +594,7 @@ namespace Demi
         DI_SERIAL_LOG("Mesh name: %s", meshName.c_str());
         DI_SERIAL_LOG("Material name: %s", materialName.c_str());
 
-        DI_LOG("MESH: %s [%d], mod[%d], bonelnk[%d], mat[%s]", meshName.c_str(), meshid, meshmod, bonelink, materialName.c_str());
+        DI_LOG("<K2 Submesh>: %s [%d], mod[%d], bonelnk[%d], mat[%s]", meshName.c_str(), meshid, meshmod, bonelink, materialName.c_str());
         
         if(materialName.empty())
         {
@@ -935,7 +935,7 @@ namespace Demi
         sm->SetMaxWeights(maxWeights);
         if(maxWeights > 4)
         {
-            DI_INFO("Mesh:%s, The number of bone weights is greater than 4, use software skinning",sm->GetParentMesh()->GetName().c_str());
+            DI_INFO("K2 Submesh: %s, The number of bone weights is greater than 4, use software skinning",sm->GetParentMesh()->GetName().c_str());
             g_hardSkin = false;
         }
     }

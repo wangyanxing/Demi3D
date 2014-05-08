@@ -34,7 +34,7 @@ namespace Demi
 
         virtual void      LoadAttribute(const DiXMLElement& node);
 
-        ArConfigHero*     mHeroConfig{ nullptr };
+        ArConfigHero*     mHeroConfig{ DI_NEW ArConfigHero() };
     };
 }
 

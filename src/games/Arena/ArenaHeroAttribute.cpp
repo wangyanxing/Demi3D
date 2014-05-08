@@ -24,8 +24,7 @@ namespace Demi
 
     void ArHeroAttr::LoadAttribute(const DiXMLElement& node)
     {
-        SAFE_DELETE(mHeroConfig);
-        mHeroConfig = DI_NEW ArConfigHero();
+        mHeroConfig = DI_NEW (mHeroConfig) ArConfigHero();
 
         ArConfigHeroLoader loader(mHeroConfig);
         loader.Load(node);

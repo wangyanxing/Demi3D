@@ -1,4 +1,4 @@
-require "/scripts/arena_common"
+require "common"
 
 DI_LOG('---------Arena main script---------')
 
