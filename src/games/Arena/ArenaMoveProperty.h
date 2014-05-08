@@ -61,6 +61,10 @@ namespace Demi
         
         void            SetTurnSpeed(int val) { mTurnSpeed = val; }
 
+        ArWalkMode      GetWalkMode() { return mWalkMode; }
+
+        void            StopAt(const DiK2Pos& pos);
+
     private:
 
         DiK2Pos         GetIntersectionLineRound(const DiK2Pos& linePos1, const DiK2Pos& linePos2, 

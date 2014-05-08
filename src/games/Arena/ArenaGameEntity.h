@@ -57,11 +57,13 @@ namespace Demi
             return std::dynamic_pointer_cast<T>(mAttribute);
         }
 
+        bool                IsDead();
+
     protected:
 
         DiK2RenderObject*   mRenderObj;
 
-        ArAttributePtr    mAttribute;
+        ArAttributePtr      mAttribute;
 
         K2ObjTypes          mType;
 

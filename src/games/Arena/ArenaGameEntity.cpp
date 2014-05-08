@@ -50,4 +50,10 @@ namespace Demi
 
         mRenderObj->Update(dt);
     }
+
+    bool ArGameEntity::IsDead()
+    {
+        return false;
+    }
+
 }

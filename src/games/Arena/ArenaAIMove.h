@@ -11,37 +11,42 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef ArenaHeroEntity_h__
-#define ArenaHeroEntity_h__
+#ifndef ArenaAIMove_h__
+#define ArenaAIMove_h__
 
 #include "ArenaPrerequisites.h"
-#include "ArenaNPCEntity.h"
-#include "ArenaInput.h"
-#include "ArenaConfigs.h"
+#include "ArenaAICommand.h"
 
 namespace Demi
 {
-    class ArHeroEntity : public ArNPCEntity
+    class ArAIMoveCommand : public ArAICommand
     {
     public:
+        ArAIMoveCommand(ArEntity* pEntity, const DiK2Pos& pos, float range = 0);
 
-        ArHeroEntity();
-
-        virtual ~ArHeroEntity();
+        ~ArAIMoveCommand();
 
     public:
 
-        void LoadHero(const DiString& configFile);
+        void        Enter();
 
-        void OnKeyInput(const K2KeyEvent& event);
+        void        Leave();
 
-        void OnMouseInput(const K2MouseEvent& event);
+        void        Update(float dt);
 
-        void InitAttribute();    
+        void        Redo();
 
-    private:
+        void        Move();
 
-        ArConfigHero mHeroConfig;
+    protected:
+
+        void	    Stop();
+
+    protected:
+        
+        DiK2Pos     mPos;
+
+        float       mRange;
     };
 }
 

@@ -12,29 +12,16 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "ArenaPch.h"
+#include "ArenaAICommand.h"
 #include "ArenaNPCEntity.h"
-#include "ArenaNPCAttribute.h"
 
 namespace Demi
 {
-    ArNPCEntity::ArNPCEntity()
-        :mAIProperty(nullptr)
+    ArAICommand::ArAICommand(ArEntity* entity)
+        : mValid(true)
+        , mType(ENUM_AI_TYPE_EMPTY)
     {
+        mEntity = dynamic_cast<ArNPCEntity*>(entity);
     }
 
-    ArNPCEntity::~ArNPCEntity()
-    {
-    }
-
-    void ArNPCEntity::InitComponents()
-    {
-        ArDynEntity::InitComponents();
-
-        mAIProperty = CreateProperty<ArAIProperty>();
-    }
-
-    void ArNPCEntity::InitAttribute()
-    {
-        SetAttribute<ArNPCAttr>();
-    }
 }

@@ -254,4 +254,10 @@ namespace Demi
             entity->GetMotionProperty()->ModalityChange(mod);
         }
     }
+
+    void ArMoveProperty::StopAt(const DiK2Pos& pos)
+    {
+
+    }
+
 }

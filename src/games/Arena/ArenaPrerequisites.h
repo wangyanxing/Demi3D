@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     class ArHeroEntity;
+    class ArNPCEntity;
     class ArGame;
     class ArGameCamera;
     class ArInput;
@@ -29,6 +30,7 @@ namespace Demi
     class ArProperty;
     class ArAttribute;
     class ArLevel;
+    class ArAICommand;
 
     typedef shared_ptr<ArGameEntity>  ArGameEntityPtr;
     typedef shared_ptr<ArHeroEntity>  ArHeroEntityPtr;
