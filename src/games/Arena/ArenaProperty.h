@@ -31,7 +31,7 @@ namespace Demi
 
     /** Property base class for game entities
      */
-    class ArProperty
+    class ArProperty : public DiBase
     {
     protected:
 

@@ -41,6 +41,7 @@ namespace Demi
 
         void        CommandMoveTo(const DiK2Pos& pos, float range = 0.0f);
 
+        void        CommandMoveTo(ArObjID targetID, float range = 0.0f);
 
     protected:
 
@@ -57,7 +58,7 @@ namespace Demi
         typedef DiVector<ArAICommand*> AICmdList;
         AICmdList   mAIList;
 
-        uint32      mLastMoveTime;
+        double      mLastMoveTime{ 0.0 };
     };
 }
 

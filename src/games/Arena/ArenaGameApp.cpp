@@ -34,6 +34,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaAIProperty.h"
 #include "ArenaNPCEntity.h"
 #include "K2RenderObjects.h"
+#include "ArenaHero.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_OSX
 #   include "ArenaGameAppOSX.h"
@@ -225,7 +226,16 @@ namespace Demi
         // test NPC
         auto npc = mGame->GetEntityManager()->CreateNPC(2,"npc_test.xml");
         npc->GetRenderObj()->SetPosition(DiK2Pos(202, 42));
-        //npc->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandMoveTo(DiK2Pos(213, 32));
+
+        mInputMgr->RegisterKeyPressEvent("movetest",
+            [&](const OIS::KeyEvent& e){
+            switch (e.key)
+            {
+            case OIS::KC_M:
+                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandMoveTo(1);
+                break;
+            }
+        });
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){
             mGame->Update();

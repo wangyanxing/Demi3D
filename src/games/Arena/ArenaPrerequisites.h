@@ -33,6 +33,7 @@ namespace Demi
     class ArAICommand;
 
     typedef shared_ptr<ArGameEntity>  ArGameEntityPtr;
+    typedef shared_ptr<ArNPCEntity>   ArNPCEntityPtr;
     typedef shared_ptr<ArHeroEntity>  ArHeroEntityPtr;
 }
 

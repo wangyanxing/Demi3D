@@ -18,6 +18,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaDynEntity.h"
 #include "ArenaNPCEntity.h"
 #include "ArenaMoveProperty.h"
+#include "ArenaGameApp.h"
+#include "ArenaEntityManager.h"
+#include "ArenaAIMove.h"
+#include "ArenaAIMoveTarget.h"
+
+// in second
+#define DEF_AI_MOVE_REQUEST_MIN_TIME 0.1
 
 namespace Demi
 {
@@ -125,6 +132,48 @@ namespace Demi
         {
             //pNpc->GetMoveProperty()->synDirection(INVALID_DIRECTION_VALUE);
         }
+    }
+
+    void ArAIProperty::CommandMoveTo(const DiK2Pos& pos, float range /*= 0.0f*/)
+    {
+        if (ArGameApp::Get()->GetEntityManager()->IsHero(GetEntity<ArGameEntity>()->GetID()))
+        {
+            double time = Driver->GetElapsedSecond();
+            if (time - mLastMoveTime < DEF_AI_MOVE_REQUEST_MIN_TIME)
+            {
+                return;
+            }
+            mLastMoveTime = time;
+        }
+        if (GetEntity<ArGameEntity>()->IsDead())
+        {
+            return;
+        }
+        ClearAIList();
+        
+        auto pCmd = DI_NEW ArAIMoveCommand(mEntity, pos, range);
+        PushCommand(pCmd);
+    }
+
+    void ArAIProperty::CommandMoveTo(ArObjID targetID, float range /*= 0.0f*/)
+    {
+        if (ArGameApp::Get()->GetEntityManager()->IsHero(GetEntity<ArGameEntity>()->GetID()))
+        {
+            double time = Driver->GetElapsedSecond();
+            if (time - mLastMoveTime < DEF_AI_MOVE_REQUEST_MIN_TIME)
+            {
+                return;
+            }
+            mLastMoveTime = time;
+        }
+        if (GetEntity<ArGameEntity>()->IsDead())
+        {
+            return;
+        }
+        ClearAIList();
+
+        auto pCmd = DI_NEW ArAIMoveToTargetCommand(mEntity, targetID, range);
+        PushCommand(pCmd);
     }
 
 }

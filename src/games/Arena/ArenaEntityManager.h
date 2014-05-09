@@ -53,6 +53,10 @@ namespace Demi
 
         ArGameEntityPtr     FindEntity(ArObjID id);
 
+        ArHeroEntityPtr     GetHero() { return mHeroEntity; }
+
+        bool                IsHero(ArObjID id) { return id == mHeroId; }
+
     private:
 
         void                Release();

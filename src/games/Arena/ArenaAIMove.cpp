@@ -54,7 +54,7 @@ namespace Demi
     void ArAIMoveCommand::Update(float dt)
     {
         DiK2Pos source = mEntity->GetRenderObj()->GetPosition();
-        if (mRange > AI_MOVE_THRESHOLD && source.Distance(mPos) <= mRange + AI_MOVE_THRESHOLD)
+        if (source.Distance(mPos) <= mRange + AI_MOVE_THRESHOLD)
         {
             EndCommand();
         }
