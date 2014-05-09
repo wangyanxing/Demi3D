@@ -22,6 +22,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaEntityManager.h"
 #include "ArenaAIMove.h"
 #include "ArenaAIMoveTarget.h"
+#include "ArenaAIFollow.h"
 
 // in second
 #define DEF_AI_MOVE_REQUEST_MIN_TIME 0.1
@@ -176,4 +177,10 @@ namespace Demi
         PushCommand(pCmd);
     }
 
+    void ArAIProperty::CommandFollowTo(ArObjID targetID, float range /*= 0.0f*/)
+    {
+        ClearAIList();
+        auto pCmd = DI_NEW ArAIFollowCommand(mEntity, targetID, range);
+        PushCommand(pCmd);
+    }
 }

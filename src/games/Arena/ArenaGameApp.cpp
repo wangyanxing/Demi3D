@@ -232,7 +232,7 @@ namespace Demi
             switch (e.key)
             {
             case OIS::KC_M:
-                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandMoveTo(1);
+                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 5);
                 break;
             }
         });
