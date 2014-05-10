@@ -171,7 +171,7 @@ namespace Demi
         if (file.empty())
             return false;
         
-        auto data = DiK2Configs::GetDataStream(file, false);
+        auto data = DiK2Configs::GetDataStream(file, K2_RES_XML);
         if (!data)
         {
             DI_WARNING("Cannot open k2 mdf: %s", file.c_str());
@@ -244,7 +244,7 @@ namespace Demi
     
     bool DiK2MdfSerial::LoadModel(const DiString& file, DiK2ModelAsset* target)
     {
-        auto data = DiK2Configs::GetDataStream(file, true);
+        auto data = DiK2Configs::GetDataStream(file, K2_RES_BINARY);
         if (!data)
         {
             DI_WARNING("Cannot open k2 model: %s", file.c_str());
@@ -1048,7 +1048,7 @@ namespace Demi
     DiMaterialPtr DiK2MdfSerial::ParseMaterial(const DiString& matFile,
         const DiString& basePath, bool needSkinning)
     {
-        DiDataStreamPtr data = DiK2Configs::GetDataStream(matFile, false);
+        DiDataStreamPtr data = DiK2Configs::GetDataStream(matFile, K2_RES_XML);
 
         uint64 shaderFlag = 0;
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
@@ -1276,7 +1276,7 @@ namespace Demi
     
     bool DiK2MdfSerial::LoadClip(const DiString& file, K2Anim* anim, DiK2ModelAsset* target)
     {
-        auto data = DiK2Configs::GetDataStream(file, true);
+        auto data = DiK2Configs::GetDataStream(file, K2_RES_BINARY);
         if (!data)
         {
             DI_WARNING("Cannot open k2 clip: %s", file.c_str());
@@ -1396,10 +1396,10 @@ namespace Demi
         DiString mateiralFile = target->GetBaseFolder() + "/" + materialName;
         mateiralFile += ".material";
 
-        if (!DiK2Configs::K2ArchiveExists(mateiralFile))
+        if (!DiK2Configs::K2ArchiveExists(mateiralFile, false))
         {
             mateiralFile = target->GetBaseFolder() + "/material.material";
-            if (!DiK2Configs::K2ArchiveExists(mateiralFile))
+            if (!DiK2Configs::K2ArchiveExists(mateiralFile, false))
             {
                 mateiralFile.clear();
             }

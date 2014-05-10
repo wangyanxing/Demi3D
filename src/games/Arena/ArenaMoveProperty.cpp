@@ -209,7 +209,7 @@ namespace Demi
         }
         else
         {
-            DI_DEBUG("No available path");
+            //DI_DEBUG("No available path");
         }
         //double loadingTime = timer.GetElapse();
         //DI_LOG("Pathfinding time: %f", loadingTime);
@@ -259,5 +259,4 @@ namespace Demi
     {
 
     }
-
 }

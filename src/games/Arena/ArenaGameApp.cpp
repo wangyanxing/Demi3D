@@ -102,7 +102,14 @@ namespace Demi
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
         mAssetManager->SetBasePath("media");
 #else
-        mAssetManager->SetBasePath("../../media");
+        if (!mAssetManager->SetBasePath("media"))
+        {
+            if (!mAssetManager->SetBasePath("../../media"))
+            {
+                DI_ERROR("Cannot locate the media folder!");
+                return;
+            }
+        }
 #endif
 
         CommandMgr->RegisterString("scene_type", "Octree", 0, "Scene manager type");

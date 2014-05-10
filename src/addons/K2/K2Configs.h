@@ -16,8 +16,18 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "K2Prerequisites.h"
 
+//#define _K2_RECORD_USED_RESOURCE
+
 namespace Demi
 {
+
+    enum K2ResourceType
+    {
+        K2_RES_XML,
+        K2_RES_BINARY,
+        K2_RES_TEXTURE
+    };
+
     /** Global configuration manager
         and some misc functions
      */
@@ -29,14 +39,16 @@ namespace Demi
 
         static void Shutdown();
 
-        static DiString GetK2MediaPath(const DiString& relativePath);
+        static void LoadConfig(const DiString& config);
+
+        static DiString GetK2MediaPath(const DiString& relativePath, bool texture);
 
         /** Get the real data stream by a relative path
             e.g. we can use "heroes/aluna/model.mdf" as the argument
          */
-        static DiDataStreamPtr GetDataStream(const DiString& relPath, bool asBinary);
+        static DiDataStreamPtr GetDataStream(const DiString& relPath, K2ResourceType type);
 
-        static bool K2ArchiveExists(const DiString& relPath);
+        static bool K2ArchiveExists(const DiString& relPath, bool texture);
 
         /** Load and get the texture file by a relative path
             we don't need extension here 
@@ -62,8 +74,11 @@ namespace Demi
         static void ReleaseK2Packs();
 
         static DiString TERRAIN_SHADER;
+
         static DiString CLIFF_SHADER;
+        
         static DiString WATER_SHADER;
+        
         static DiString MESH_SHADER;
 
         static DiZipArchive* RESOURCE_PACK;
@@ -71,6 +86,12 @@ namespace Demi
         static DiZipArchive* TEXTURE_PACK;
 
         static DiString TEXTURE_PACK_PREFIX_FOLDER;
+
+#ifdef _K2_RECORD_USED_RESOURCE
+        static DiSet<DiString> sUsedResources;
+
+        static void DumpUsedRes();
+#endif
     };
 }
 

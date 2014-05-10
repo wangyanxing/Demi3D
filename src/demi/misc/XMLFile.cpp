@@ -120,4 +120,16 @@ namespace Demi
             return DiXMLElement(shared_from_this(), root.internal_object());
     }
 
+    bool DiXMLFile::LoadFromFile(const DiString& xml)
+    {
+        FILE* fp = fopen(xml.c_str(), "r");
+        if (!fp)
+            return false;
+        
+        DiDataStreamPtr ds = std::make_shared<DiFileHandleDataStream>(fp, DiDataStream::WRITE);
+        Load(ds);
+
+        return true;
+    }
+
 }

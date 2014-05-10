@@ -31,7 +31,7 @@ namespace Demi
     {
         DI_LOG("Loading k2 world: %s", path.c_str());
         
-        if(!DiK2Configs::K2ArchiveExists(path))
+        if(!DiK2Configs::K2ArchiveExists(path, false))
         {
             DI_WARNING("Cannot locate the k2 map: %s", path.c_str());
             return;
@@ -40,19 +40,19 @@ namespace Demi
         DiTerrainDescPtr terrainDesc = make_shared<DiTerrainDesc>();
 
         terrainDesc->mHeightMap = DI_NEW DiK2HeightMap();
-        terrainDesc->mHeightMap->Load(DiK2Configs::GetDataStream(path + "/heightmap", true));
+        terrainDesc->mHeightMap->Load(DiK2Configs::GetDataStream(path + "/heightmap", K2_RES_BINARY));
 
         terrainDesc->mTextureIDMap = DI_NEW DiK2TileMap();
-        terrainDesc->mTextureIDMap->Load(DiK2Configs::GetDataStream(path + "/tilematerialmap", true));
+        terrainDesc->mTextureIDMap->Load(DiK2Configs::GetDataStream(path + "/tilematerialmap", K2_RES_BINARY));
 
         terrainDesc->mColorMap = DI_NEW DiK2VertexColorMap();
-        terrainDesc->mColorMap->Load(DiK2Configs::GetDataStream(path + "/vertexcolormap", true));
+        terrainDesc->mColorMap->Load(DiK2Configs::GetDataStream(path + "/vertexcolormap", K2_RES_BINARY));
 
         terrainDesc->mTileCliffMap = DI_NEW DiK2TileCliffMap();
-        terrainDesc->mTileCliffMap->Load(DiK2Configs::GetDataStream(path + "/tilecliffmap", true));
+        terrainDesc->mTileCliffMap->Load(DiK2Configs::GetDataStream(path + "/tilecliffmap", K2_RES_BINARY));
 
         terrainDesc->mVertBlockerMap = DI_NEW DiK2VertexBlockerMap();
-        terrainDesc->mVertBlockerMap->Load(DiK2Configs::GetDataStream(path + "/vertexblockermap", true));
+        terrainDesc->mVertBlockerMap->Load(DiK2Configs::GetDataStream(path + "/vertexblockermap", K2_RES_BINARY));
 
         // load texture list
         LoadTextureList(path, terrainDesc);
@@ -71,7 +71,7 @@ namespace Demi
 
     void DiK2WorldSerial::LoadTextureList(const DiString& path, DiTerrainDescPtr terrainDesc)
     {
-        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/texturelist", false);
+        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/texturelist", K2_RES_XML);
 
         shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
         xmlfile->Load(texListData->GetAsString());
@@ -108,7 +108,7 @@ namespace Demi
 
     void DiK2WorldSerial::LoadEntityList(const DiString& path, DiK2World* world)
     {
-        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/entitylist", false);
+        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/entitylist", K2_RES_XML);
 
         DI_LOG("Loading K2 entity lists");
 
@@ -159,7 +159,7 @@ namespace Demi
 
     void DiK2WorldSerial::LoadWorldConfig(const DiString& path, DiTerrainDescPtr terrainDesc, DiK2World* world)
     {
-        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/worldconfig", false);
+        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/worldconfig", K2_RES_XML);
 
         DI_LOG("Loading K2 worldconfig");
 

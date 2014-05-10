@@ -39,6 +39,8 @@ namespace Demi
 
         virtual bool Load(const DiString& xml);
 
+        virtual bool LoadFromFile(const DiString& xml);
+
         virtual bool Save(DiDataStreamPtr stream) const;
 
         virtual bool Save(const DiString& filepath) const;

@@ -57,6 +57,14 @@ namespace Demi
         mBasePath.SimplifyPath();
         mBasePath += "/";
 
+        if (!DiPathLib::FileExisted(mBasePath))
+        {
+            mBasePath = DiPathLib::GetApplicationPath();
+            mBasePath = appPath + "./scripts";
+            mBasePath.SimplifyPath();
+            mBasePath += "/";
+        }
+
         //BindMiscLib();
         //BindGfxLib();
 

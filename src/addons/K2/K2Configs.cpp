@@ -22,33 +22,36 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PathLib.h"
 #include "ZipArchive.h"
 #include "math/euler.h"
+#include "XMLFile.h"
+#include "XMLElement.h"
 
 namespace Demi
 {
     void DiK2Configs::Init()
     {
-        // default hon media folder
-        if (!CommandMgr->HasCommand("k2_media_folder"))
+#if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
+        LoadConfig("ConfigWin32.xml");
+#elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
+        LoadConfig("ConfigOSX.xml");
+#else
+        LoadConfig("ConfigiOS.xml");
+#endif
+
+        DiString resPath;
+        if (DiBase::CommandMgr->GetConsoleVar("k2_resource_path"))
         {
-            DiString honMediaPath = DiAssetManager::GetInstance().GetBasePath();
-#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-            honMediaPath += "../media_ios"; // default value
-#else
-            honMediaPath += "../media_hon"; // default value
-#endif
-            honMediaPath.SimplifyPath();
-#if 0
-            CommandMgr->RegisterString("k2_media_folder", honMediaPath, 0);
-#else
-            #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
-            CommandMgr->RegisterString("k2_media_folder", "L:/Games/new_hon_res", 0);
-            #elif DEMI_PLATFORM == DEMI_PLATFORM_OSX
-            CommandMgr->RegisterString("k2_media_folder", "/Users/wangya/Projects/HONres/resources0", 0);
-            #else
-            CommandMgr->RegisterString("k2_media_folder", honMediaPath, 0);
-            #endif
-#endif
+            resPath = DiBase::CommandMgr->GetConsoleVar("k2_resource_path")->GetString();
         }
+
+        DiString texPath;
+        if (DiBase::CommandMgr->GetConsoleVar("k2_texture_path"))
+        {
+            texPath = DiBase::CommandMgr->GetConsoleVar("k2_texture_path")->GetString();
+        }
+
+        // if zip
+        if (resPath.CheckFileExtension("zip") || resPath.CheckFileExtension("s2z"))
+            SetK2ResourcePack(resPath, texPath);
 
         // register the asset type
         DiAssetManager::GetInstance().RegisterAssetType(DiK2ModelAsset::TYPE, "", [](const DiString& name){
@@ -59,13 +62,24 @@ namespace Demi
     void DiK2Configs::Shutdown()
     {
         DiAssetManager::GetInstance().UnregisterAssetType(DiK2ModelAsset::TYPE);
+
+#ifdef _K2_RECORD_USED_RESOURCE
+        DumpUsedRes();
+#endif
     }
 
-    DiString DiK2Configs::GetK2MediaPath(const DiString& relativePath)
+    DiString DiK2Configs::GetK2MediaPath(const DiString& relativePath, bool texture)
     {
+        auto var = DiBase::CommandMgr->GetConsoleVar(texture ? "k2_texture_path" : "k2_resource_path");
+        if (!var)
+        {
+            DI_WARNING("Invalid k2 media path!");
+            return DiString::BLANK;
+        }
+
         if (!RESOURCE_PACK)
         {
-            DiString baseFolder = DiBase::CommandMgr->GetConsoleVar("k2_media_folder")->GetString();
+            DiString baseFolder = var->GetString();
             baseFolder += "/";
             baseFolder += relativePath;
             return baseFolder;
@@ -76,9 +90,13 @@ namespace Demi
         }
     }
 
-    DiDataStreamPtr DiK2Configs::GetDataStream(const DiString& relPath, bool asBinary)
+    DiDataStreamPtr DiK2Configs::GetDataStream(const DiString& relPath, K2ResourceType type)
     {
-        DiString full = GetK2MediaPath(relPath);
+#ifdef _K2_RECORD_USED_RESOURCE
+        sUsedResources.insert(relPath);
+#endif
+
+        DiString full = GetK2MediaPath(relPath, type == K2_RES_TEXTURE);
 
         if (RESOURCE_PACK)
         {
@@ -88,7 +106,7 @@ namespace Demi
         else
         {
             // now we just simply using OS's file system
-            FILE* fp = fopen(full.c_str(), asBinary ? "rb" : "r");
+            FILE* fp = fopen(full.c_str(), type == K2_RES_XML ? "r" : "rb");
             if (!fp)
             {
                 DI_WARNING("Cannot open the file: %s", full.c_str());
@@ -128,7 +146,7 @@ namespace Demi
         if (ret)
             return ret;
 
-        DiString full = GetK2MediaPath(relPath);
+        DiString full = GetK2MediaPath(relPath, true);
         if(full.empty())
         {
             DI_WARNING("Empty texture file!, using default texture instead");
@@ -139,14 +157,17 @@ namespace Demi
         {
             full = "/"+full;
         }
-        
-        DiString tgaFile = full + ".tga";
 
+        DiString tgaExt = ".tga";
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-        DiString ddsFile = full + ".pvr";
+        DiString compExt = ".pvr";
 #else
-        DiString ddsFile = full + ".dds";
+        DiString compExt = ".dds";
 #endif
+
+        DiString tgaFile = full + tgaExt;
+        DiString ddsFile = full + compExt;
+        bool useTga = false;
 
         if (TEXTURE_PACK)
         {
@@ -159,13 +180,20 @@ namespace Demi
             if (TEXTURE_PACK->HasFile(ddsFile))
                 data = TEXTURE_PACK->Open(ddsFile);
             else
+            {
                 data = TEXTURE_PACK->Open(tgaFile);
+                useTga = true;
+            }
 
             if (!data)
             {
                 DI_WARNING("Cannot open the texture file: %s, using default texture", ddsFile.c_str());
                 return DiTexture::GetDefaultTexture();
             }
+
+#ifdef _K2_RECORD_USED_RESOURCE
+            sUsedResources.insert(relPath + (useTga ? tgaExt : compExt));
+#endif
             ret = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(relPath);
             ret->Load(data);
             return ret;
@@ -179,13 +207,20 @@ namespace Demi
 
             // try tga
             if (!fp)
+            {
                 fp = fopen(tgaFile.c_str(), "rb");
+                useTga = true;
+            }
 
             if (!fp)
             {
                 DI_WARNING("Cannot open the texture file: %s, using default texture", ddsFile.c_str());
                 return DiTexture::GetDefaultTexture();
             }
+
+#ifdef _K2_RECORD_USED_RESOURCE
+            sUsedResources.insert(relPath + (useTga ? tgaExt : compExt));
+#endif
             DiDataStreamPtr texData(DI_NEW DiFileHandleDataStream(relPath, fp));
 
             ret = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiTexture>(relPath);
@@ -203,15 +238,18 @@ namespace Demi
         return q;
     }
 
-    bool DiK2Configs::K2ArchiveExists(const DiString& relPath)
+    bool DiK2Configs::K2ArchiveExists(const DiString& relPath, bool texture)
     {
         if (RESOURCE_PACK)
         {
-            return RESOURCE_PACK->HasFile(relPath);
+            if (texture && TEXTURE_PACK)
+                return TEXTURE_PACK->HasFile(relPath);
+            else
+                return RESOURCE_PACK->HasFile(relPath);
         }
         else
         {
-            DiString full = GetK2MediaPath(relPath);
+            DiString full = GetK2MediaPath(relPath, texture);
             return DiPathLib::FileExisted(full);
         }
     }
@@ -265,10 +303,53 @@ namespace Demi
         SAFE_DELETE(DiK2Configs::TEXTURE_PACK);
     }
 
+#ifdef _K2_RECORD_USED_RESOURCE
+    DiSet<DiString> DiK2Configs::sUsedResources;
+
+    void DiK2Configs::DumpUsedRes()
+    {
+        DiString path = DiPathLib::GetApplicationPath();
+        path += "used_k2_res.txt";
+
+        FILE* fp = fopen(path.c_str(), "w+");
+        for (auto i = sUsedResources.begin(); i != sUsedResources.end(); ++i)
+        {
+            fprintf(fp, "%s\n", i->c_str());
+        }
+        fclose(fp);
+    }
+#endif
+
+    void DiK2Configs::LoadConfig(const DiString& config)
+    {
+        auto file = DiAssetManager::GetInstance().OpenArchive(config, true);
+        if (!file)
+        {
+            DI_WARNING("Failed to load the config: %s", config.c_str());
+            return;
+        }
+
+        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        xmlfile->Load(file->GetAsString());
+        DiXMLElement node = xmlfile->GetRoot();
+        DiXMLElement child = node.GetChild();
+        while (child)
+        {
+            DiString name = child.GetName();
+            if (name == "Property")
+            {
+                DiString key = child.GetAttribute("key");
+                DiString val = child.GetAttribute("value");
+                CommandMgr->RegisterString(key, val, 0);
+            }
+
+            child = child.GetNext();
+        }
+    }
 
     DiString DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER;
 
-    DiZipArchive* DiK2Configs::TEXTURE_PACK = nullptr;
+    DiZipArchive* DiK2Configs::TEXTURE_PACK  = nullptr;
     DiZipArchive* DiK2Configs::RESOURCE_PACK = nullptr;
 
     DiString DiK2Configs::MESH_SHADER    = "k2_color";
