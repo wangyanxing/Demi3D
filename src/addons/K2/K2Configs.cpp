@@ -280,6 +280,8 @@ namespace Demi
         DiK2Configs::RESOURCE_PACK->Load();
         DiK2Configs::TEXTURE_PACK->Load();
 
+        DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER = DetectTexturePackDesc();
+
         double loadingTime = timer.GetElapse();
         DI_LOG("Zip files loading time: %f", loadingTime);
     }
@@ -345,6 +347,19 @@ namespace Demi
 
             child = child.GetNext();
         }
+    }
+
+    DiString DiK2Configs::DetectTexturePackDesc()
+    {
+        DiString ret;
+        if (TEXTURE_PACK)
+        {
+            if (TEXTURE_PACK->HasFile("descriptor"))
+            {
+                return "00000000";
+            }
+        }
+        return ret;
     }
 
     DiString DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER;

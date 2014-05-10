@@ -32,11 +32,11 @@ namespace Demi
         /// e.g. maps/test_map
         void    Load(const DiString& path, DiK2World* world);
 
-        void    LoadTextureList(const DiString& path, DiTerrainDescPtr terrainDesc);
+        void    LoadTextureList(DiDataStreamPtr data, DiTerrainDescPtr terrainDesc);
 
-        void    LoadEntityList(const DiString& path, DiK2World* world);
+        void    LoadEntityList(DiDataStreamPtr data, DiK2World* world);
 
-        void    LoadWorldConfig(const DiString& path, DiTerrainDescPtr terrainDesc, DiK2World* world);
+        void    LoadWorldConfig(DiDataStreamPtr data, DiTerrainDescPtr terrainDesc, DiK2World* world);
     };
 }
 

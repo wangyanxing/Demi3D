@@ -24,55 +24,57 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "XMLFile.h"
 #include "XMLElement.h"
 #include "CullNode.h"
+#include "AssetManager.h"
+#include "ZipArchive.h"
 
 namespace Demi
 {
     void DiK2WorldSerial::Load(const DiString& path, DiK2World* world)
     {
-        DI_LOG("Loading k2 world: %s", path.c_str());
-        
-        if(!DiK2Configs::K2ArchiveExists(path, false))
+        DiString fullpath = DiAssetManager::GetInstance().GetArchivePath(path);
+        if (fullpath.empty())
         {
-            DI_WARNING("Cannot locate the k2 map: %s", path.c_str());
+            DI_WARNING("Cannot open the map file: %s", path.c_str());
             return;
         }
+        
+        DiZipArchive* pachfile = DI_NEW DiZipArchive(fullpath);
+        pachfile->Load();
 
         DiTerrainDescPtr terrainDesc = make_shared<DiTerrainDesc>();
 
         terrainDesc->mHeightMap = DI_NEW DiK2HeightMap();
-        terrainDesc->mHeightMap->Load(DiK2Configs::GetDataStream(path + "/heightmap", K2_RES_BINARY));
+        terrainDesc->mHeightMap->Load(pachfile->Open("heightmap"));
 
         terrainDesc->mTextureIDMap = DI_NEW DiK2TileMap();
-        terrainDesc->mTextureIDMap->Load(DiK2Configs::GetDataStream(path + "/tilematerialmap", K2_RES_BINARY));
+        terrainDesc->mTextureIDMap->Load(pachfile->Open("tilematerialmap"));
 
         terrainDesc->mColorMap = DI_NEW DiK2VertexColorMap();
-        terrainDesc->mColorMap->Load(DiK2Configs::GetDataStream(path + "/vertexcolormap", K2_RES_BINARY));
+        terrainDesc->mColorMap->Load(pachfile->Open("vertexcolormap"));
 
         terrainDesc->mTileCliffMap = DI_NEW DiK2TileCliffMap();
-        terrainDesc->mTileCliffMap->Load(DiK2Configs::GetDataStream(path + "/tilecliffmap", K2_RES_BINARY));
+        terrainDesc->mTileCliffMap->Load(pachfile->Open("tilecliffmap"));
 
         terrainDesc->mVertBlockerMap = DI_NEW DiK2VertexBlockerMap();
-        terrainDesc->mVertBlockerMap->Load(DiK2Configs::GetDataStream(path + "/vertexblockermap", K2_RES_BINARY));
+        terrainDesc->mVertBlockerMap->Load(pachfile->Open("vertexblockermap"));
 
         // load texture list
-        LoadTextureList(path, terrainDesc);
+        LoadTextureList(pachfile->Open("texturelist"), terrainDesc);
 
         terrainDesc->mSizeX = (terrainDesc->mHeightMap->GetWidth() - 1) / CHUNK_GRID_SIZE;
         terrainDesc->mSizeY = (terrainDesc->mHeightMap->GetHeight() - 1) / CHUNK_GRID_SIZE;
 
-        LoadWorldConfig(path, terrainDesc, world);
+        LoadWorldConfig(pachfile->Open("worldconfig"), terrainDesc, world);
 
         world->mTerrain = make_shared<DiTerrain>();
         world->mTerrain->Load(terrainDesc);
 
         // load entities
-        LoadEntityList(path, world);
+        LoadEntityList(pachfile->Open("entitylist"), world);
     }
 
-    void DiK2WorldSerial::LoadTextureList(const DiString& path, DiTerrainDescPtr terrainDesc)
+    void DiK2WorldSerial::LoadTextureList(DiDataStreamPtr texListData, DiTerrainDescPtr terrainDesc)
     {
-        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/texturelist", K2_RES_XML);
-
         shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
         xmlfile->Load(texListData->GetAsString());
 
@@ -106,10 +108,8 @@ namespace Demi
         }
     }
 
-    void DiK2WorldSerial::LoadEntityList(const DiString& path, DiK2World* world)
+    void DiK2WorldSerial::LoadEntityList(DiDataStreamPtr texListData, DiK2World* world)
     {
-        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/entitylist", K2_RES_XML);
-
         DI_LOG("Loading K2 entity lists");
 
         shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
@@ -157,10 +157,8 @@ namespace Demi
         }
     }
 
-    void DiK2WorldSerial::LoadWorldConfig(const DiString& path, DiTerrainDescPtr terrainDesc, DiK2World* world)
+    void DiK2WorldSerial::LoadWorldConfig(DiDataStreamPtr texListData, DiTerrainDescPtr terrainDesc, DiK2World* world)
     {
-        DiDataStreamPtr texListData = DiK2Configs::GetDataStream(path + "/worldconfig", K2_RES_XML);
-
         DI_LOG("Loading K2 worldconfig");
 
         shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());

@@ -37,8 +37,6 @@ namespace Demi
 
         void              SetResourceLocation(const DiString& resPack, const DiString& texPack);
 
-        DiString          DetectTexturePackDesc();
-
         static HonViewerApp* GetViewerApp();
 
         MainPaneControl*  getMainPane(){ return mMainPane; }

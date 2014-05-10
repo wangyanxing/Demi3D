@@ -310,24 +310,9 @@ namespace Demi
         if (!texPack.empty())
         {
             GetModelViewer()->SetK2ResourcePack(resPack, texPack);
-            DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER = DetectTexturePackDesc();
         }
         else
             GetModelViewer()->SetK2ResourcePack(resPack);
-    }
-
-    DiString HonViewerApp::DetectTexturePackDesc()
-    {
-        DiString ret;
-        if (DiK2Configs::TEXTURE_PACK)
-        {
-            if (DiK2Configs::TEXTURE_PACK->HasFile("descriptor"))
-            {
-                // TODO
-                return "00000000";
-            }
-        }
-        return ret;
     }
 
     void HonViewerApp::Command_ViewHelp(const MyGUI::UString& _commandName, bool& _result)

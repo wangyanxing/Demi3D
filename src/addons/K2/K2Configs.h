@@ -71,6 +71,8 @@ namespace Demi
 
         static void SetK2ResourcePack(const DiString& resPack);
 
+        static DiString DetectTexturePackDesc();
+
         static void ReleaseK2Packs();
 
         static DiString TERRAIN_SHADER;

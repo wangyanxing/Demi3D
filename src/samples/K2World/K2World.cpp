@@ -42,7 +42,7 @@ void InitScene()
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
     world = DI_NEW DiK2World();
-    world->Load("maps/Arena_1");
+    world->Load("Arena_1.s2z");
 
     DiVec2 worldsize = world->mTerrain->GetWorldSize();
 
