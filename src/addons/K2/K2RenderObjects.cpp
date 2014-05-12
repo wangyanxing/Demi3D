@@ -24,14 +24,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SceneManager.h"
 #include "ShaderManager.h"
 
+//#define _VISUALIZE_AABB
+
 namespace Demi
 {
     DiK2RenderObject::DiK2RenderObject(DiK2World* world)
-        : mNode(nullptr)
-        , mVisible(true)
-        , mRotRadian(0)
-        , mScale(DiVec3::UNIT_SCALE)
-        , mWorld(world)
+        : mWorld(world)
     {
     }
 
@@ -115,7 +113,7 @@ namespace Demi
     {
         if (!mNode->IsCulled())
         {
-#if 0
+#ifdef _VISUALIZE_AABB
             mDebugger->Clear();
             mDebugger->AddBoundingBox(mNode->GetLocalAABB(), DiColor::Red);
 #endif
@@ -125,11 +123,20 @@ namespace Demi
 
     void DiK2RenderObject::_CreateDebugger()
     {
+#ifdef _VISUALIZE_AABB
         mDebugger = make_shared<DiDebugHelper>();
         DiMaterialPtr helpermat = DiMaterial::QuickCreate(
             "basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
         helpermat->SetDepthCheck(false);
         mDebugger->SetMaterial(helpermat);
         mNode->AttachObject(mDebugger);
+#endif
+    }
+
+    float DiK2RenderObject::GetRadius()
+    {
+        auto half = mNode->GetLocalAABB().GetHalfSize();
+        float rad = DiMath::Max(half.x, half.z);
+        return DiK2Pos::FromWorldScale(rad);
     }
 }

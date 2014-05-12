@@ -20,7 +20,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #define AI_MOVETOTARGET_MIN_TIME         0.5 
 #define AI_MOVETOTARGET_MIN_DISTANCE     1.0f
-#define AI_MOVE_THRESHOLD                0.1f
 
 namespace Demi
 {
@@ -127,7 +126,10 @@ namespace Demi
 
         DiK2Pos source = mEntity->GetRenderObj()->GetPosition();
         DiK2Pos target = mTargetEntity->GetRenderObj()->GetPosition();
-        if (source.Distance(target) <= mRange + AI_MOVE_THRESHOLD)
+        float radiusTarget = mTargetEntity->GetRenderObj()->GetRadius();
+        float radiusSource = mEntity->GetRenderObj()->GetRadius();
+
+        if (source.Distance(target) <= mRange + radiusSource + radiusTarget)
         {
             Stop();
             EndCommand();

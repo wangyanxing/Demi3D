@@ -39,6 +39,8 @@ namespace Demi
         mModel->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
         mNode->AttachObject(mModel);
 
+        _CreateDebugger();
+
         return mModel;
     }
 

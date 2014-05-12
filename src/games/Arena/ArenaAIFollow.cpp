@@ -20,7 +20,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #define AI_MOVETOTARGET_MIN_TIME         0.5 
 #define AI_MOVETOTARGET_MIN_DISTANCE     1.0f
-#define AI_MOVE_THRESHOLD                0.1f
 
 namespace Demi
 {
@@ -66,13 +65,13 @@ namespace Demi
         DiK2Pos source = mEntity->GetRenderObj()->GetPosition();
         auto walkMode = mEntity->GetMoveProperty()->GetWalkMode();
 
-        if (source.Distance(posTarget) <= mRange)
+        float radiusTarget = mTargetEntity->GetRenderObj()->GetRadius();
+        float radiusSource = mEntity->GetRenderObj()->GetRadius();
+
+        float distance = source.Distance(posTarget);
+        if (distance <= radiusTarget + radiusSource + mRange)
         {
-            if (!mPassive)
-            {
-                Stop();
-                mPassive = true;
-            }
+            Stop();
             return;
         }
 
@@ -130,12 +129,13 @@ namespace Demi
             return false;
         }
 
+        float radiusTarget = mTargetEntity->GetRenderObj()->GetRadius();
+        float radiusSource = mEntity->GetRenderObj()->GetRadius();
+
         DiK2Pos source = mEntity->GetRenderObj()->GetPosition();
         DiK2Pos target = mTargetEntity->GetRenderObj()->GetPosition();
-        if (source.Distance(target) <= mRange + AI_MOVE_THRESHOLD)
-        {
+        if (source.Distance(target) <= mRange + radiusTarget + radiusSource)
             return false;
-        }
 
         return true;
     }

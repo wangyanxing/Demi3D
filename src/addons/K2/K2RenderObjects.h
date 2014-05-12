@@ -72,19 +72,23 @@ namespace Demi
 
         void                    _CreateDebugger();
 
+        /** Radius on X-Z plane
+         */
+        float                   GetRadius();
+
     protected:
 
         DiK2ModelPtr            mModel;
 
-        DiCullNode*             mNode;
+        DiCullNode*             mNode{ nullptr };
 
-        bool                    mVisible;
+        bool                    mVisible{ true };
 
         DiQuat                  mRotation;
 
-        float                   mRotRadian;
+        float                   mRotRadian{ 0 };
 
-        DiVec3                  mScale;
+        DiVec3                  mScale{ DiVec3::UNIT_SCALE };
 
         DiK2Pos                 mPosition;
         

@@ -51,7 +51,7 @@ namespace Demi
         DiK2Animation*    mAnimation;
 
         /// the skeleton
-        DiK2Skeleton*     mSkeleton;
+        DiK2Skeleton*     mSkeleton { nullptr };
         
         /// full path to this asset folder
         DiString          mName;

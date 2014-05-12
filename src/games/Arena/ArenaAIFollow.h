@@ -54,8 +54,6 @@ namespace Demi
 
         double      mElapse{ 0.0 };
 
-        bool        mPassive{ false };
-
         ArNPCEntityPtr mTargetEntity;
     };
 }

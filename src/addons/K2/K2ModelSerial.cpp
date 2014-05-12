@@ -560,9 +560,6 @@ namespace Demi
         bool forcesoft = CommandMgr->GetIntVar("force_softskin") == 1;
         g_hardSkin = !forcesoft && numBones <= MAX_BONE_NUM;
 
-        //if (bonelink >= 0)
-        //    g_hasAnim = false;
-
         //////////////////////////////////////////////////////////////////////////
 
         DiSubMesh* submesh = nullptr;
@@ -712,7 +709,7 @@ namespace Demi
         DI_SERIAL_LOG("------------verts-----------");
         int chunkSize = ReadInt(mStream);
 
-        if (mIgnoreSubMesh)
+        if (mIgnoreSubMesh && chunkSize)
         {
             mStream->Skip(chunkSize);
             return;
@@ -743,7 +740,7 @@ namespace Demi
         DI_SERIAL_LOG("-----------face------------");
         int chunkSize = ReadInt(mStream);
 
-        if (mIgnoreSubMesh)
+        if (mIgnoreSubMesh && chunkSize)
         {
             mStream->Skip(chunkSize);
             return;
@@ -792,7 +789,7 @@ namespace Demi
         DI_SERIAL_LOG("-----------nrml------------");
         int chunkSize = ReadInt(mStream);
 
-        if (mIgnoreSubMesh)
+        if (mIgnoreSubMesh && chunkSize)
         {
             mStream->Skip(chunkSize);
             return;
@@ -827,7 +824,7 @@ namespace Demi
         DI_SERIAL_LOG("-----------texc------------");
         int chunkSize = ReadInt(mStream);
 
-        if (mIgnoreSubMesh)
+        if (mIgnoreSubMesh && chunkSize)
         {
             mStream->Skip(chunkSize);
             return;
@@ -856,7 +853,7 @@ namespace Demi
         DI_SERIAL_LOG("-----------colr------------");
         int chunkSize = ReadInt(mStream);
 
-        if (mIgnoreSubMesh)
+        if (mIgnoreSubMesh && chunkSize)
         {
             mStream->Skip(chunkSize);
             return;
@@ -886,7 +883,7 @@ namespace Demi
         DI_SERIAL_LOG("-----------lnk------------");
         int chunkSize = ReadInt(mStream);
 
-        if (mIgnoreSubMesh)
+        if (mIgnoreSubMesh && chunkSize)
         {
             mStream->Skip(chunkSize);
             return;
@@ -953,7 +950,7 @@ namespace Demi
         DI_SERIAL_LOG("-----------tang------------");
         int chunkSize = ReadInt(mStream);
 
-        if (mIgnoreSubMesh)
+        if (mIgnoreSubMesh && chunkSize)
         {
             mStream->Skip(chunkSize);
             return;

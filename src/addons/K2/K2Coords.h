@@ -80,6 +80,11 @@ namespace Demi
             z = worldPos.z / K2MapScale::GridSize;
         }
 
+        static inline float FromWorldScale(float worldScale)
+        {
+            return worldScale / K2MapScale::GridSize;
+        }
+
         inline DiVec3 ToWorldPos() const
         {
             DiVec3 ret;

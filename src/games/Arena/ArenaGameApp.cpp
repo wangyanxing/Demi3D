@@ -233,13 +233,14 @@ namespace Demi
         // test NPC
         auto npc = mGame->GetEntityManager()->CreateNPC(2,"npc_test.xml");
         npc->GetRenderObj()->SetPosition(DiK2Pos(202, 42));
+        //npc->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 1);
 
         mInputMgr->RegisterKeyPressEvent("movetest",
             [&](const OIS::KeyEvent& e){
             switch (e.key)
             {
             case OIS::KC_M:
-                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 5);
+                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 1);
                 break;
             }
         });
