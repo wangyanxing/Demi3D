@@ -66,6 +66,10 @@ namespace Demi
         virtual void            RemoveUnit(DiCullUnitPtr unit) {}
 
         virtual void            LoadScene(const DiString& scene) = 0;
+
+        virtual bool            RayQuery(const DiRay& ray, DiVector<DiPair<DiTransUnitPtr,float>>& results, uint32 queryFlag) = 0;
+
+        virtual bool            RayQuery(const DiRay& ray, DiTransUnitPtr& result, uint32 queryFlag) = 0;
         
     protected:
         

@@ -19,6 +19,120 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    enum Intersection
+    {
+        OUTSIDE = 0,
+        INSIDE = 1,
+        INTERSECT = 2
+    };
+
+    Intersection intersect(const DiRay &one, const DiAABB &two)
+    {
+        DiSceneManager::intersect_call++;
+
+        if (two.IsNull())
+            return OUTSIDE;
+
+        if (two.IsInfinite())
+            return INTERSECT;
+
+        bool inside = true;
+        const DiVec3& twoMin = two.GetMinimum();
+        const DiVec3& twoMax = two.GetMaximum();
+        DiVec3 origin = one.getOrigin();
+        DiVec3 dir = one.getDirection();
+
+        DiVec3 maxT(-1, -1, -1);
+
+        int i = 0;
+        for (i = 0; i<3; i++)
+        {
+            if (origin[i] < twoMin[i])
+            {
+                inside = false;
+                if (dir[i] > 0)
+                    maxT[i] = (twoMin[i] - origin[i]) / dir[i];
+            }
+            else if (origin[i] > twoMax[i])
+            {
+                inside = false;
+                if (dir[i] < 0)
+                    maxT[i] = (twoMax[i] - origin[i]) / dir[i];
+            }
+        }
+
+        if (inside)
+            return INTERSECT;
+
+        int whichPlane = 0;
+        if (maxT[1] > maxT[whichPlane])
+            whichPlane = 1;
+
+        if (maxT[2] > maxT[whichPlane])
+            whichPlane = 2;
+
+        if (((int)maxT[whichPlane]) & 0x80000000)
+            return OUTSIDE;
+
+        for (i = 0; i < 3; i++)
+        {
+            if (i != whichPlane)
+            {
+                float f = origin[i] + maxT[whichPlane] * dir[i];
+                if (f < (twoMin[i] - 0.00001f) ||
+                    f >(twoMax[i] + 0.00001f))
+                {
+                    return OUTSIDE;
+                }
+            }
+        }
+
+        return INTERSECT;
+
+    }
+
+    void _findNodes(const DiRay &t, DiList< DiCullNode * >&list, DiCullNode *exclude, bool full, DiOctreePtr octant)
+    {
+        if (!full)
+        {
+            DiAABB obox;
+            octant->GetCullBounds(&obox);
+
+            Intersection isect = intersect(t, obox);
+
+            if (isect == OUTSIDE)
+                return;
+
+            full = (isect == INSIDE);
+        }
+
+        DiOctreeCullUnitPtr nodeUnit = octant->mNodes.mHead;
+        for (; nodeUnit; nodeUnit = nodeUnit->mNext)
+        {
+            if (nodeUnit->mParent != exclude)
+            {
+                if (full)
+                    list.push_back(nodeUnit->mParent);
+                else
+                {
+                    Intersection nsect = intersect(t, nodeUnit->mParent->GetWorldAABB());
+                    if (nsect != OUTSIDE)
+                    {
+                        list.push_back(nodeUnit->mParent);
+                    }
+                }
+
+            }
+        }
+
+        DiOctreePtr child;
+        for (uint16 i = 0; i < 8; i++)
+        {
+            if ((child = octant->mChildren[i]))
+                _findNodes(t, list, exclude, full, child);
+        }
+    }
+
     DiOctreeCuller::DiOctreeCuller(DiSceneManager* sm)
         :DiSceneCuller(sm)
     {
@@ -194,6 +308,66 @@ namespace Demi
     void DiOctreeCuller::LoadScene(const DiString& scene)
     {
         //TODO
+    }
+
+    bool DiOctreeCuller::RayQuery(const DiRay& ray, DiVector<DiPair<DiTransUnitPtr,
+        float>>& results, uint32 queryFlag)
+    {
+        DiList<DiCullNode*> list;
+        _findNodes(ray, list, nullptr, false, mOctree);
+
+        auto it = list.begin();
+        while (it != list.end())
+        {
+            uint32 numObjects = (*it)->NumAttachedObjects();
+            for (uint32 i = 0; i < numObjects; ++i)
+            {
+                DiTransUnitPtr tu = (*it)->GetAttachedObject(i);
+                DI_ASSERT(tu);
+
+                if (tu->GetQueryFlags() & queryFlag)
+                {
+                    auto res = ray.intersects(tu->GetWorldBoundingBox());
+                    if (res.first)
+                    {
+                        results.push_back(DiPair<DiTransUnitPtr, float>(tu, res.second));
+                    }
+                }
+            }
+            ++it;
+        }
+
+        return false;
+    }
+
+    bool DiOctreeCuller::RayQuery(const DiRay& ray, DiTransUnitPtr& result, uint32 queryFlag)
+    {
+        DiList<DiCullNode*> list;
+        _findNodes(ray, list, nullptr, false, mOctree);
+
+        auto it = list.begin();
+        while (it != list.end())
+        {
+            uint32 numObjects = (*it)->NumAttachedObjects();
+            for (uint32 i = 0; i < numObjects; ++i)
+            {
+                DiTransUnitPtr tu = (*it)->GetAttachedObject(i);
+                DI_ASSERT(tu);
+
+                if (tu->GetQueryFlags() & queryFlag)
+                {
+                    auto res = ray.intersects(tu->GetWorldBoundingBox());
+                    if (res.first)
+                    {
+                        result = tu;
+                        return true;
+                    }
+                }
+            }
+            ++it;
+        }
+
+        return false;
     }
 
     DiOctreeCullUnit::DiOctreeCullUnit(DiCullNode* parentNode, DiSceneCuller* culler)

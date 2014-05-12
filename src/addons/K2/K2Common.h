@@ -94,6 +94,21 @@ namespace Demi
 
         static K2ObjTypes GetObjType(Type t);
     };
+
+    /** Query flag
+     */
+    enum K2QueryFlags
+    {
+        QUERY_TERRAIN        = 1 << 0,
+        QUERY_TREE           = 1 << 1,
+        QUERY_STATIC_MODEL   = 1 << 2,
+        QUERY_ANIMATED_MODEL = 1 << 3,
+        QUERY_NPC            = 1 << 4,
+        QUERY_HERO           = 1 << 5,
+
+        QUERY_SCENE_MODEL    = QUERY_STATIC_MODEL | QUERY_ANIMATED_MODEL,
+        QUERY_CHARACTER      = QUERY_HERO | QUERY_NPC
+    };
 }
 
 #endif

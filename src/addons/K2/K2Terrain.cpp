@@ -59,6 +59,8 @@ namespace Demi
         SetShadowCastEnable(false);
         CreateVertexDecl();
 
+        AddQueryFlags(QUERY_TERRAIN);
+
         Demi::DiRenderBatchGroup* group = DiBase::Driver->GetPipeline()->GetBatchGroup(Demi::BATCH_TERRAIN);
         group->SetExtraProcess([this](){
             Render();

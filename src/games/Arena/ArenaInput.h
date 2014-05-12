@@ -125,6 +125,8 @@ namespace Demi
 
         OIS::Mouse* GetMouse() { return mMouse; }
 
+        static DiRay GetPickupRay(const K2MouseEvent& event);
+
     private:
 
 #ifdef DEMI_KEYMOUSE

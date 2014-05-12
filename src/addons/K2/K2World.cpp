@@ -94,7 +94,8 @@ namespace Demi
 #endif
     }
 
-    DiK2RenderObject* DiK2World::AddRenderObj(const DiString& mdf, K2ObjSubTypes::Type subtype, const Trans& trans, int id)
+    DiK2RenderObject* DiK2World::AddRenderObj(const DiString& mdf, 
+        K2ObjSubTypes::Type subtype, const Trans& trans, int id, uint32 queryFlag)
     {
         auto objtype = K2ObjSubTypes::GetObjType(subtype);
 
@@ -104,6 +105,8 @@ namespace Demi
         renderObj->SetWorldPosition(trans.pos);
         renderObj->SetRotation(trans.rot);
         renderObj->SetScale(trans.scale);
+
+        renderObj->GetModel()->AddQueryFlags(queryFlag);
 
         if (subtype == K2ObjSubTypes::SUB_STATIC_TREE)
             ProcessTrees(renderObj);
@@ -237,14 +240,17 @@ namespace Demi
         switch (subtype)
         {
         case Demi::K2ObjSubTypes::SUB_STATIC_TREE:
+            AddRenderObj(mdf, subtype, trans, id, QUERY_TREE);
         case Demi::K2ObjSubTypes::SUB_STATIC_CLIFF:
+            AddRenderObj(mdf, subtype, trans, id, QUERY_TERRAIN);
         case Demi::K2ObjSubTypes::SUB_STATIC_SCENERY:
         case Demi::K2ObjSubTypes::SUB_STATIC_BUILDING:
+            AddRenderObj(mdf, subtype, trans, id, QUERY_STATIC_MODEL);
+
         //case Demi::K2ObjSubTypes::SUB_STATIC_MODEL:
         //case Demi::K2ObjSubTypes::SUB_STATIC_WATER:
         //case Demi::K2ObjSubTypes::SUB_SCENE_ITEM:
         //case Demi::K2ObjSubTypes::SUB_NPC:
-            AddRenderObj(mdf, subtype, trans, id);
             break;
         
         case Demi::K2ObjSubTypes::SUB_LOGIC_TRIGGER_SPAWN_POINT:

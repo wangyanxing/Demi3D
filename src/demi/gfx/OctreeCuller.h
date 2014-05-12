@@ -43,6 +43,10 @@ namespace Demi
         void            AddUnit(DiCullUnitPtr unit, DiOctreePtr octree, int depth = 0);
 
         void            LoadScene(const DiString& scene);
+
+        bool            RayQuery(const DiRay& ray, DiVector<DiPair<DiTransUnitPtr, float>>& results, uint32 queryFlag);
+
+        bool            RayQuery(const DiRay& ray, DiTransUnitPtr& result, uint32 queryFlag);
         
     protected:
         

@@ -46,6 +46,7 @@ namespace Demi
         });
     }
 
+#if 0
     enum Intersection
     {
         OUTSIDE   = 0,
@@ -252,6 +253,7 @@ namespace Demi
         else
             return INTERSECT;
     }
+#endif
 
     //////////////////////////////////////////////////////////////////////////
 

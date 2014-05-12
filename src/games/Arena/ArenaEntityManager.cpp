@@ -16,6 +16,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaEntityManager.h"
 #include "ArenaHero.h"
 
+#include "K2RenderObjects.h"
+#include "K2Model.h"
+
 namespace Demi
 {
     ArEntityManager::ArEntityManager()
@@ -39,6 +42,9 @@ namespace Demi
         mHeroEntity->SetID(id);
         mHeroEntity->InitComponents();
         mHeroEntity->InitAttribute(configfile);
+
+        if (mHeroEntity->GetRenderObj())
+            mHeroEntity->GetRenderObj()->GetModel()->AddQueryFlags(QUERY_HERO);
 
         mHeroId = id;
         return mHeroEntity;
@@ -70,6 +76,9 @@ namespace Demi
             entity->SetID(id);
             entity->InitComponents();
             entity->InitAttribute(configfile);
+
+            if (entity->GetRenderObj())
+                entity->GetRenderObj()->GetModel()->AddQueryFlags(QUERY_NPC);
         }
         return entity;
     }

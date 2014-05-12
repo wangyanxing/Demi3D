@@ -364,4 +364,19 @@ namespace Demi
     {
         return mKeyReleases.removeKey(name);
     }
+
+    DiRay ArInput::GetPickupRay(const K2MouseEvent& event)
+    {
+        DiRenderWindow* rw = Driver->GetMainRenderWindow();
+
+        float screenPosX = float(event.state.X.abs) / float(rw->GetWidth());
+        float screenPosY = float(event.state.Y.abs) / float(rw->GetHeight());
+
+        screenPosX = DiMath::Clamp<float>(screenPosX, 0, 1);
+        screenPosY = DiMath::Clamp<float>(screenPosY, 0, 1);
+
+        auto camera = Driver->GetSceneManager()->GetCamera();
+        DiRay ray = camera->GetCameraToViewportRay(screenPosX, screenPosY);
+        return ray;
+    }
 }

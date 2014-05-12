@@ -49,7 +49,8 @@ namespace Demi
 
         /** add a map model (not NPCs or heroes)
          */
-        DiK2RenderObject*   AddRenderObj(const DiString& mdf, K2ObjSubTypes::Type type, const Trans& trans, int id);
+        DiK2RenderObject*   AddRenderObj(const DiString& mdf, K2ObjSubTypes::Type type, 
+                                const Trans& trans, int id, uint32 queryFlag = 0);
 
         /** Remove and delete
          */

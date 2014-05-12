@@ -133,6 +133,6 @@ namespace Demi
     }
 
     uint32 DiTransformUnit::sDefaultVisibilityFlags = 0xFFFFFFFF;
-    uint32 DiTransformUnit::sDefaultQueryFlags = 0xFFFFFFFF;
+    uint32 DiTransformUnit::sDefaultQueryFlags = 0;
 
 }

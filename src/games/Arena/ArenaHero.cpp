@@ -57,16 +57,8 @@ namespace Demi
             // click on map
             auto terrain = ArGameApp::Get()->GetWorld()->GetTerrain();
             
-            DiRenderWindow* rw = Driver->GetMainRenderWindow();
+            DiRay ray = ArInput::GetPickupRay(event);
 
-            float screenPosX = float(event.state.X.abs) / float(rw->GetWidth());
-            float screenPosY = float(event.state.Y.abs) / float(rw->GetHeight());
-
-            screenPosX = DiMath::Clamp<float>(screenPosX, 0, 1);
-            screenPosY = DiMath::Clamp<float>(screenPosY, 0, 1);
-
-            auto camera = Driver->GetSceneManager()->GetCamera();
-            DiRay ray = camera->GetCameraToViewportRay(screenPosX, screenPosY);
             DiVec3 clickout;
             if (terrain->RayIntersects(ray, clickout))
             {
@@ -75,6 +67,13 @@ namespace Demi
                 DiK2Pos source = mRenderObj->GetPosition();
                 GetMoveProperty()->MoveTo(source, k2pos);
             }
+
+//             // test pickup
+//             DiTransUnitPtr out;
+//             if (Driver->GetSceneManager()->GetSceneCuller()->RayQuery(ray, out, QUERY_CHARACTER))
+//             {
+//                 DI_DEBUG("Pickuped something");
+//             }
         }
     }
 
