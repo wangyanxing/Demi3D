@@ -327,7 +327,10 @@ namespace Demi
 
                 if (tu->GetQueryFlags() & queryFlag)
                 {
-                    auto res = ray.intersects(tu->GetWorldBoundingBox());
+                    auto manualFunc = tu->GetManualQueryFunc();
+                    auto res =  manualFunc ? manualFunc(ray):
+                        ray.intersects(tu->GetWorldBoundingBox());
+                    
                     if (res.first)
                     {
                         results.push_back(DiPair<DiTransUnitPtr, float>(tu, res.second));
@@ -356,7 +359,10 @@ namespace Demi
 
                 if (tu->GetQueryFlags() & queryFlag)
                 {
-                    auto res = ray.intersects(tu->GetWorldBoundingBox());
+                    auto manualFunc = tu->GetManualQueryFunc();
+                    auto res =  manualFunc ? manualFunc(ray):
+                        ray.intersects(tu->GetWorldBoundingBox());
+                    
                     if (res.first)
                     {
                         result = tu;

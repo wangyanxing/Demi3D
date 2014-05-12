@@ -70,7 +70,7 @@ namespace Demi
 
         void                    PlayClip(const DiString& clip);
 
-        void                    InitDebuggers();
+        void                    PostInit();
 
         /** Radius on X-Z plane
          */

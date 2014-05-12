@@ -42,9 +42,9 @@ namespace Demi
     enum ArModalityType
     {
         MODALITY_STAND = 0,
-        MODALITY_WALK = 1,
-        MODALITY_RUN = 2,
-        MODALITY_JUMP = 3,
+        MODALITY_WALK  = 1,
+        MODALITY_RUN   = 2,
+        MODALITY_JUMP  = 3,
     };
 }
 

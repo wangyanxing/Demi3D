@@ -24,7 +24,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SceneManager.h"
 #include "ShaderManager.h"
 
-#define _VISUALIZE_AABB
+//#define _VISUALIZE_AABB
 
 namespace Demi
 {
@@ -61,6 +61,11 @@ namespace Demi
         mRotation = quat;
         mRotRadian = mRotation.getYaw().valueRadians();
         mNode->SetOrientation(mRotation);
+    }
+    
+    DiVec3 DiK2RenderObject::GetWorldPosition()
+    {
+        return mNode->GetPosition();
     }
 
     void DiK2RenderObject::SetWorldPosition(const DiVec3& pos)
@@ -121,8 +126,18 @@ namespace Demi
         }
     }
 
-    void DiK2RenderObject::InitDebuggers()
+    void DiK2RenderObject::PostInit()
     {
+        if(mModel)
+        {
+            mModel->SetManualQueryFunc([this](const DiRay& ray){
+                DiAABB b = mSelectBounds;
+                b.mMaximum += GetWorldPosition();
+                b.mMinimum += GetWorldPosition();
+                return ray.intersects(b);
+            });
+        }
+        
 #ifdef _VISUALIZE_AABB
         mDebugger = make_shared<DiDebugHelper>();
         DiMaterialPtr helpermat = DiMaterial::QuickCreate(

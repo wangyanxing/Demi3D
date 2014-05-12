@@ -68,12 +68,12 @@ namespace Demi
                 GetMoveProperty()->MoveTo(source, k2pos);
             }
 
-//             // test pickup
-//             DiTransUnitPtr out;
-//             if (Driver->GetSceneManager()->GetSceneCuller()->RayQuery(ray, out, QUERY_CHARACTER))
-//             {
-//                 DI_DEBUG("Pickuped something");
-//             }
+            // test pickup
+            DiTransUnitPtr out;
+            if (Driver->GetSceneManager()->GetSceneCuller()->RayQuery(ray, out, QUERY_CHARACTER))
+            {
+                DI_DEBUG("Pickuped something");
+            }
         }
     }
 

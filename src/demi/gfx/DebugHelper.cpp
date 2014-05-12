@@ -102,6 +102,8 @@ namespace Demi
     
     void DiDebugHelper::AddBoundingBox(const DiAABB& bounds, const DiColor& lineColor)
     {
+        mBounds.Merge(bounds);
+        
         DiVec3 min = bounds.GetMaximum();
         DiVec3 max = bounds.GetMinimum();
         
