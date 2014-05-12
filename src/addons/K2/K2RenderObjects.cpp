@@ -24,7 +24,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SceneManager.h"
 #include "ShaderManager.h"
 
-//#define _VISUALIZE_AABB
+#define _VISUALIZE_AABB
 
 namespace Demi
 {
@@ -115,13 +115,13 @@ namespace Demi
         {
 #ifdef _VISUALIZE_AABB
             mDebugger->Clear();
-            mDebugger->AddBoundingBox(mNode->GetLocalAABB(), DiColor::Red);
+            mDebugger->AddBoundingBox(mSelectBounds, DiColor::Red);
 #endif
             mModel->UpdateAnimation(dt);
         }
     }
 
-    void DiK2RenderObject::_CreateDebugger()
+    void DiK2RenderObject::InitDebuggers()
     {
 #ifdef _VISUALIZE_AABB
         mDebugger = make_shared<DiDebugHelper>();
@@ -132,10 +132,17 @@ namespace Demi
         mNode->AttachObject(mDebugger);
 #endif
     }
+    
+    void DiK2RenderObject::SetSelectionBounds(float radius, float height)
+    {
+        mSelectBounds.SetNull();
+        mSelectBounds.Merge(DiVec3(-radius,0,-radius));
+        mSelectBounds.Merge(DiVec3(radius,height,radius));
+    }
 
     float DiK2RenderObject::GetRadius()
     {
-        auto half = mNode->GetLocalAABB().GetHalfSize();
+        auto half = mSelectBounds.GetHalfSize();
         float rad = DiMath::Max(half.x, half.z);
         return DiK2Pos::FromWorldScale(rad);
     }

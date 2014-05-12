@@ -31,6 +31,7 @@ namespace Demi
     class ArAttribute;
     class ArLevel;
     class ArAICommand;
+    class ArEntityConfigs;
 
     typedef shared_ptr<ArGameEntity>  ArGameEntityPtr;
     typedef shared_ptr<ArNPCEntity>   ArNPCEntityPtr;

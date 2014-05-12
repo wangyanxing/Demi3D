@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define ArenaAttribute_h__
 
 #include "ArenaPrerequisites.h"
+#include "ArenaEntityConfig.h"
 
 namespace Demi
 {
@@ -37,10 +38,14 @@ namespace Demi
         virtual void      LoadAttribute(const DiXMLElement& node) = 0;
 
         virtual void      LoadAttributeConfig(const DiString& configFile);
+        
+        ArEntityConfigs*  GetEntityConfig() {return &mEntityConfig;}
 
-    private:
+    protected:
 
         ArObjID mID { INVALID_OBJ_ID };
+
+        ArEntityConfigs   mEntityConfig;
     };
 }
 

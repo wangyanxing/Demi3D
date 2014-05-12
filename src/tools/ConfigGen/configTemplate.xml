@@ -32,6 +32,11 @@
     <npcs type="NpcGroup" list="true"></npcs>
   </SpawnNpc>
 
+  <Entity desc = "Game entities">
+    <model type="DiString"></model>
+    <entity type="DiString"></entity>
+  </Entity>
+
   <Map desc = "Map configs">
     <name type="DiString"></name>
     <path type="DiString"></path>

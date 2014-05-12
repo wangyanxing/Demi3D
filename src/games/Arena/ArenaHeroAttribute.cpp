@@ -24,9 +24,11 @@ namespace Demi
 
     void ArHeroAttr::LoadAttribute(const DiXMLElement& node)
     {
-        mHeroConfig = DI_NEW (mHeroConfig) ArConfigHero();
+        mHeroConfig = DI_NEW (mHeroConfig) ArConfigEntity();
 
-        ArConfigHeroLoader loader(mHeroConfig);
+        ArConfigEntityLoader loader(mHeroConfig);
         loader.Load(node);
+        
+        mEntityConfig.Load(mHeroConfig->entity);
     }
 }

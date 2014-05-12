@@ -22,7 +22,7 @@ namespace Demi
 {
     /** Attribute interface for entities
      */
-    class ArNPCAttr : public ArAttribute
+    class ArNPCAttr final: public ArAttribute
     {
     public:
 
@@ -32,11 +32,11 @@ namespace Demi
 
     public:
 
-        virtual void      Update(float dt) {}
+        virtual void      Update(float dt) override {}
 
-        virtual void      LoadAttribute(const DiXMLElement& node);
+        virtual void      LoadAttribute(const DiXMLElement& node) override;
 
-        ArConfigDynamicModel*  mDynModelConfig{ DI_NEW ArConfigDynamicModel() };
+        ArConfigEntity*   mNpcEntityConfig { DI_NEW ArConfigEntity() };
     };
 }
 

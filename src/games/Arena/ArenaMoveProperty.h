@@ -24,9 +24,6 @@ namespace Demi
 #define MAX_POS_NODE_NUMBER (MAX_PATH_NODE_NUMBER + 1)
 #define	MAX_SENDPOS	5
 #define	MAX_SENDPOSREM (MAX_SENDPOS - 1)
-        
-#define SUPERSONIC_SPEED   10.0f
-#define RUN_SPEED          1.5f
 
     /** Moving and path finding property
      */

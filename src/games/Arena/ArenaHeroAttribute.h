@@ -30,11 +30,11 @@ namespace Demi
 
     public:
 
-        virtual void      Update(float dt) {}
+        virtual void      Update(float dt) override {}
 
-        virtual void      LoadAttribute(const DiXMLElement& node);
+        virtual void      LoadAttribute(const DiXMLElement& node) override;
 
-        ArConfigHero*     mHeroConfig{ DI_NEW ArConfigHero() };
+        ArConfigEntity*   mHeroConfig{ DI_NEW ArConfigEntity() };
     };
 }
 

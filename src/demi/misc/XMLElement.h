@@ -173,6 +173,8 @@ namespace Demi
 
         /// Return names of all attributes.
         DiVector<DiString> GetAttributeNames() const;
+        
+        void IterateAttributes(std::function<void(const DiString&, const DiString&)> func) const;
 
         /// Return bool attribute, or false if missing.
         bool GetBool(const DiString& name) const;

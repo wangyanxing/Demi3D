@@ -13,7 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
     
 /*** !!!! This file was generated automatically by ConfigGen !!!! ***/
-/*** Generated time: 12:52:54 05/08/2014 ***/
+/*** Generated time: 11:44:58 05/12/2014 ***/
 
 #ifndef ArenaConfigs__h__
 #define ArenaConfigs__h__
@@ -103,6 +103,19 @@ struct ArConfigSpawnNpc
     }
 
     DiVector<ArConfigNpcGroup> npcs;
+};
+
+/**
+  Game entities
+ **/
+struct ArConfigEntity
+{
+    ArConfigEntity()
+    {
+    }
+
+    DiString model;
+    DiString entity;
 };
 
 /**

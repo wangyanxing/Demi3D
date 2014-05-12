@@ -376,6 +376,20 @@ namespace Demi
     {
         return DiString(GetAttribute(name)).AsUpper();
     }
+    
+    void DiXMLElement::IterateAttributes(std::function<void(const DiString&, const DiString&)> func) const
+    {
+        if (!mFile || !mNode)
+            return;
+        
+        const pugi::xml_node& node = pugi::xml_node(mNode);
+        pugi::xml_attribute attr = node.first_attribute();
+        while (!attr.empty())
+        {
+            func(attr.name(), attr.value());
+            attr = attr.next_attribute();
+        }
+    }
 
     DiVector<DiString> DiXMLElement::GetAttributeNames() const
     {

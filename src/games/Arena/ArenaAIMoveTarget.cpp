@@ -66,7 +66,6 @@ namespace Demi
         if (mLastPos.x == INVALID_FLOAT_VALUE)
             mLastPos = posTarget;
 
-        DiK2Pos source = mEntity->GetRenderObj()->GetPosition();
         auto walkMode = mEntity->GetMoveProperty()->GetWalkMode();
 
         if (walkMode == ENUM_WALK_MODE_STOP)

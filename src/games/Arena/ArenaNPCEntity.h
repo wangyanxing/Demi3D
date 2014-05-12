@@ -47,7 +47,7 @@ namespace Demi
 
     protected:
 
-        void            SetupDynModelConfig(const ArConfigDynamicModel* dynModel);
+        void            SetupEntityConfig(const ArEntityConfigs* ett);
 
     private:
     };

@@ -70,11 +70,13 @@ namespace Demi
 
         void                    PlayClip(const DiString& clip);
 
-        void                    _CreateDebugger();
+        void                    InitDebuggers();
 
         /** Radius on X-Z plane
          */
         float                   GetRadius();
+        
+        void                    SetSelectionBounds(float radius, float height);
 
     protected:
 
@@ -96,6 +98,8 @@ namespace Demi
 
         // for debug
         DiDebugHelperPtr        mDebugger;
+        
+        DiAABB                  mSelectBounds;
     };
 }
 

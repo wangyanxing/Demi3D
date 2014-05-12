@@ -84,6 +84,8 @@ namespace Demi
 
     void ArHeroEntity::SetupAttribute()
     {
-        SetupDynModelConfig(&GetAttribute<ArHeroAttr>()->mHeroConfig->dynModel);
+        auto attr = GetAttribute<ArHeroAttr>();
+        SetModel(attr->mHeroConfig->model);
+        SetupEntityConfig(attr->GetEntityConfig());
     }
 }

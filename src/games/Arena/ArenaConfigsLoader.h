@@ -13,7 +13,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
     
 /*** !!!! This file was generated automatically by ConfigGen !!!! ***/
-/*** Generated time: 12:52:54 05/08/2014 ***/
+/*** Generated time: 11:44:58 05/12/2014 ***/
 
 #ifndef ArenaConfigsLoader__h__
 #define ArenaConfigsLoader__h__
@@ -156,6 +156,24 @@ struct ArConfigSpawnNpcLoader : public ArConfigLoaderBase
     }
 
     ArConfigSpawnNpc* mSpawnNpc;
+};
+
+struct ArConfigEntityLoader : public ArConfigLoaderBase
+{
+    ArConfigEntityLoader(ArConfigEntity* obj)
+    {
+        DI_ASSERT(obj);
+        mEntity = obj;
+
+        mPropOps["model"] = [this](const DiXMLElement& node){
+            mEntity->model = node.GetValue().c_str();
+        };
+        mPropOps["entity"] = [this](const DiXMLElement& node){
+            mEntity->entity = node.GetValue().c_str();
+        };
+    }
+
+    ArConfigEntity* mEntity;
 };
 
 struct ArConfigMapLoader : public ArConfigLoaderBase
