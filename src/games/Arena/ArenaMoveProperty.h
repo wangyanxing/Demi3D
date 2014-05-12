@@ -62,6 +62,8 @@ namespace Demi
 
         void            StopAt(const DiK2Pos& pos);
 
+        static void     UpdateRotation(ArGameEntity* srcEntity, const DiK2Pos& targetPos, float dt, int turnRate);
+
     private:
 
         DiK2Pos         GetIntersectionLineRound(const DiK2Pos& linePos1, const DiK2Pos& linePos2, 

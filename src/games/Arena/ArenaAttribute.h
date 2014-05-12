@@ -45,6 +45,7 @@ namespace Demi
 
         ArObjID mID { INVALID_OBJ_ID };
 
+        /// Common configuration
         ArEntityConfigs   mEntityConfig;
     };
 }

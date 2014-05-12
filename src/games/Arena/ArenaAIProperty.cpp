@@ -23,6 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaAIMove.h"
 #include "ArenaAIMoveTarget.h"
 #include "ArenaAIFollow.h"
+#include "ArenaAIAttack.h"
 
 // in second
 #define DEF_AI_MOVE_REQUEST_MIN_TIME 0.1
@@ -181,6 +182,13 @@ namespace Demi
     {
         ClearAIList();
         auto pCmd = DI_NEW ArAIFollowCommand(mEntity, targetID, range);
+        PushCommand(pCmd);
+    }
+
+    void ArAIProperty::CommandAttack(ArObjID targetID)
+    {
+        ClearAIList();
+        auto pCmd = DI_NEW ArAIAttackCommand(mEntity, targetID);
         PushCommand(pCmd);
     }
 }

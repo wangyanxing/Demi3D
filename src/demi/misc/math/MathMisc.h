@@ -315,6 +315,8 @@ namespace Demi
 
         static float UnitRandom ();  // in [0,1]
 
+        static int Random(int range);
+
         static float RangeRandom (float fLow, float fHigh);  // in [fLow,fHigh]
 
         static float SymmetricRandom ();  // in [-1,1]

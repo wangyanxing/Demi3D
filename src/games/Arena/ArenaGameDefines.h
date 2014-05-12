@@ -35,16 +35,18 @@ namespace Demi
 
     enum ArWalkMode
     {
-        ENUM_WALK_MODE_STOP = 0,
+        ENUM_WALK_MODE_STOP,
         ENUM_WALK_MODE_WALK,
     };
 
     enum ArModalityType
     {
-        MODALITY_STAND = 0,
-        MODALITY_WALK  = 1,
-        MODALITY_RUN   = 2,
-        MODALITY_JUMP  = 3,
+        MODALITY_STAND   ,
+        MODALITY_WALK    ,
+        MODALITY_RUN     ,
+        MODALITY_JUMP    ,
+
+        MODALITY_INVALID ,
     };
 }
 

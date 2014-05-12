@@ -11,20 +11,20 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef ArenaAIFollowTarget_h__
-#define ArenaAIFollowTarget_h__
+#ifndef ArenaAIAttack_h__
+#define ArenaAIAttack_h__
 
 #include "ArenaPrerequisites.h"
 #include "ArenaAICommand.h"
 
 namespace Demi
 {
-    class ArAIFollowCommand : public ArAICommand
+    class ArAIAttackCommand : public ArAICommand
     {
     public:
-        ArAIFollowCommand(ArEntity* pEntity, ArObjID target, float range = 0);
+        ArAIAttackCommand(ArEntity* pEntity, ArObjID target);
 
-        ~ArAIFollowCommand();
+        ~ArAIAttackCommand();
 
     public:
 
@@ -36,23 +36,19 @@ namespace Demi
 
         void        Redo();
 
-        void        Move();
-
-    protected:
-
-        void	    Stop();
-
-        bool        CheckDistance();
+        void        PlayClip();
 
     protected:
         
-        ArObjID     mTargetID{ INVALID_OBJ_ID };
+        ArObjID     mTarget{ INVALID_OBJ_ID };
 
-        float       mRange{ 0.0f };
+        float       mCoolDownTime{ 0.0f };
 
-        DiK2Pos     mLastPos{ INVALID_FLOAT_VALUE, INVALID_FLOAT_VALUE };
+        int         mNumAttackAnims{ 0 };
 
-        double      mElapse{ 0.0 };
+        int         mLastAnimID{ -1 };
+
+        float       mTimer{ 0.0f };
     };
 }
 

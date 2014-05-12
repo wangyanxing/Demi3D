@@ -26,7 +26,7 @@ namespace Demi
         ENUM_AI_TYPE_USESKILL,
         ENUM_AI_TYPE_USESKILLWITHPOS,
         ENUM_AI_TYPE_TALKTO,
-        ENUM_AI_TYPE_PICKPACKAGE,
+        ENUM_AI_TYPE_ATTACK,
 
         ENUM_AI_TYPE_COUNT,
     };

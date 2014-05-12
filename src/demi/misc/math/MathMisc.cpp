@@ -156,6 +156,11 @@ namespace Demi
         return  float( rand() ) / float( RAND_MAX );
     }
 
+    int DiMath::Random(int range)
+    {
+        return rand() % range;
+    }
+
     float DiMath::RangeRandom( float fLow, float fHigh )
     {
         return (fHigh-fLow)*UnitRandom() + fLow;

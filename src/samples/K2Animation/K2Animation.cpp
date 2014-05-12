@@ -78,7 +78,7 @@ void InitScene()
                       break;
                   case OIS::KC_2:
                       //k2md->GetAnimation()->Play(K2PrefabClip::ANIM_WALK);
-                      k2md2->GetAnimation()->Play(K2PrefabClip::ANIM_WALK);
+                      k2md2->GetAnimation()->Play(K2PrefabClip::ANIM_ATTACK_1);
                       break;
               }
           });

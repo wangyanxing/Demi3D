@@ -30,13 +30,6 @@ namespace Demi
     {
         mType = ENUM_AI_TYPE_MOVETOTARGET;
 
-        auto entityPtr = ArGameApp::Get()->GetEntityManager()->FindEntity(mTargetID);
-        mTargetEntity = std::dynamic_pointer_cast<ArNPCEntity>(entityPtr);
-
-        if (!mTargetEntity)
-        {
-            DI_WARNING("Cannot lotate the NPC target[id=%d]", mTargetID);
-        }
     }
 
     ArAIFollowCommand::~ArAIFollowCommand()
@@ -58,14 +51,21 @@ namespace Demi
     {
         mElapse += dt;
 
-        DiK2Pos posTarget = mTargetEntity->GetRenderObj()->GetPosition();
+        auto entityPtr = ArGameApp::Get()->GetEntityManager()->FindEntity(mTargetID);
+        auto targetEntity = std::dynamic_pointer_cast<ArNPCEntity>(entityPtr);
+        if (!targetEntity)
+        {
+            DI_WARNING("Cannot lotate the NPC target[id=%d]", mTargetID);
+        }
+
+        DiK2Pos posTarget = targetEntity->GetRenderObj()->GetPosition();
         if (mLastPos.x == INVALID_FLOAT_VALUE)
             mLastPos = posTarget;
 
         DiK2Pos source = mEntity->GetRenderObj()->GetPosition();
         auto walkMode = mEntity->GetMoveProperty()->GetWalkMode();
 
-        float radiusTarget = mTargetEntity->GetRenderObj()->GetRadius();
+        float radiusTarget = targetEntity->GetRenderObj()->GetRadius();
         float radiusSource = mEntity->GetRenderObj()->GetRadius();
 
         float distance = source.Distance(posTarget);
@@ -109,31 +109,35 @@ namespace Demi
 
     void ArAIFollowCommand::Move()
     {
-        if (!mTargetEntity)
+        auto entityPtr = ArGameApp::Get()->GetEntityManager()->FindEntity(mTargetID);
+        auto targetEntity = std::dynamic_pointer_cast<ArNPCEntity>(entityPtr);
+        if (!targetEntity)
         {
             Stop();
             EndCommand();
             return;
         }
         DiK2Pos source = mEntity->GetRenderObj()->GetPosition();
-        DiK2Pos target = mTargetEntity->GetRenderObj()->GetPosition();
+        DiK2Pos target = targetEntity->GetRenderObj()->GetPosition();
         mEntity->GetMoveProperty()->MoveTo(source, target, mRange);
     }
 
     bool ArAIFollowCommand::CheckDistance()
     {
-        if (!mTargetEntity)
+        auto entityPtr = ArGameApp::Get()->GetEntityManager()->FindEntity(mTargetID);
+        auto targetEntity = std::dynamic_pointer_cast<ArNPCEntity>(entityPtr);
+        if (!targetEntity)
         {
             Stop();
             EndCommand();
             return false;
         }
 
-        float radiusTarget = mTargetEntity->GetRenderObj()->GetRadius();
+        float radiusTarget = targetEntity->GetRenderObj()->GetRadius();
         float radiusSource = mEntity->GetRenderObj()->GetRadius();
 
         DiK2Pos source = mEntity->GetRenderObj()->GetPosition();
-        DiK2Pos target = mTargetEntity->GetRenderObj()->GetPosition();
+        DiK2Pos target = targetEntity->GetRenderObj()->GetPosition();
         if (source.Distance(target) <= mRange + radiusTarget + radiusSource)
             return false;
 

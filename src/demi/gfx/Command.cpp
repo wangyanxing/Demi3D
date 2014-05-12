@@ -235,11 +235,16 @@ namespace Demi
         if (it != mMapVariables.end())
             consVar = it->second;
 
-        if (consVar)
-            return consVar;
-
-        consVar = DI_NEW DiConsoleVariableString(this,varName,varValue,flags,desc);
-        RegisterVar( consVar,callFunc );
+        if (!consVar)
+        {
+            consVar = DI_NEW DiConsoleVariableString(this, varName, varValue, flags, desc);
+            RegisterVar(consVar, callFunc);
+        }
+        else
+        {
+            consVar->Set(varValue.c_str());
+        }
+         
         return consVar;
     }
 
@@ -252,11 +257,16 @@ namespace Demi
         if (it != mMapVariables.end())
             consVar = it->second;
         
-        if (consVar)
-            return consVar;
+        if (!consVar)
+        {
+            consVar = DI_NEW DiConsoleVariableInt(this, varName, iValue, flags, desc);
+            RegisterVar(consVar, callFunc);
+        }
+        else
+        {
+            consVar->Set(iValue);
+        }
 
-        consVar = DI_NEW DiConsoleVariableInt(this,varName,iValue,flags,desc);
-        RegisterVar( consVar,callFunc );
         return consVar;
     }
 
@@ -269,11 +279,16 @@ namespace Demi
         if (it != mMapVariables.end())
             consVar = it->second;
         
-        if (consVar)
-            return consVar;
+        if (!consVar)
+        {
+            consVar = DI_NEW DiConsoleVariableFloat(this, varName, fValue, flags, desc);
+            RegisterVar(consVar, callFunc);
+        }
+        else
+        {
+            consVar->Set(fValue);
+        }
 
-        consVar = DI_NEW DiConsoleVariableFloat(this,varName,fValue,flags,desc);
-        RegisterVar( consVar,callFunc );
         return consVar;
     }
 

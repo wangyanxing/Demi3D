@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiXMLElement_h__
 #define DiXMLElement_h__
 
+#include <functional>
 
 namespace pugi
 {

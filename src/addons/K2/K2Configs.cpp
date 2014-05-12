@@ -153,10 +153,12 @@ namespace Demi
             return DiTexture::GetDefaultTexture();
         }
         
+#if 0
         if (TEXTURE_PACK && full[0] != '\\' && full[0] != '/')
         {
             full = "/"+full;
         }
+#endif
 
         DiString tgaExt = ".tga";
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
@@ -277,6 +279,9 @@ namespace Demi
         DiK2Configs::RESOURCE_PACK = DI_NEW DiZipArchive(resPack);
         DiK2Configs::TEXTURE_PACK = DI_NEW DiZipArchive(texturePack);
 
+        CommandMgr->RegisterString("k2_resource_path", resPack, 0);
+        CommandMgr->RegisterString("k2_texture_path", texturePack, 0);
+
         DiK2Configs::RESOURCE_PACK->Load();
         DiK2Configs::TEXTURE_PACK->Load();
 
@@ -292,6 +297,9 @@ namespace Demi
 
         DiK2Configs::RESOURCE_PACK = DI_NEW DiZipArchive(resPack);
         DiK2Configs::TEXTURE_PACK = RESOURCE_PACK;
+
+        CommandMgr->RegisterString("k2_resource_path", resPack, 0);
+        CommandMgr->RegisterString("k2_texture_path", resPack, 0);
 
         DiK2Configs::RESOURCE_PACK->Load();
 

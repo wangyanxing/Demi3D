@@ -45,6 +45,8 @@ namespace Demi
 
         void        CommandFollowTo(ArObjID targetID, float range = 0.0f);
 
+        void        CommandAttack(ArObjID targetID);
+
     protected:
 
         void        ClearAIList();

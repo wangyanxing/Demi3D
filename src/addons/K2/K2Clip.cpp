@@ -20,10 +20,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     DiK2Animation::DiK2Animation()
-        : mSource(nullptr)
-        , mTarget(nullptr)
-        , mBlendElapsed(0)
-        , mBlendTime(0.3f)  // a default value
     {
         for (int i = 0; i < K2PrefabClip::MAX_PREFAB_ANIM; ++i)
             mClips[i] = nullptr;
@@ -35,8 +31,7 @@ namespace Demi
         {
             if (mClips[i])
             {
-                DI_DELETE mClips[i];
-                mClips[i] = nullptr;
+                SAFE_DELETE(mClips[i]);
             }
         }
 
@@ -71,6 +66,7 @@ namespace Demi
             mTarget = clip;
         }
 
+        mCurrentClipElapsed = 0;
         clip->Cleanup();
 
         mBlendElapsed = 0;
@@ -92,6 +88,8 @@ namespace Demi
         if (!mSource && !mTarget)
             return;
         
+        mCurrentClipElapsed += deltaTime;
+
         if (mSource && mTarget)
         {
             mBlendElapsed += deltaTime;
@@ -102,6 +100,8 @@ namespace Demi
                 mTarget = nullptr;
             }
         }
+
+        OnAnimationTime(mSource);
         
         if (mSource)
             mSource->Update(deltaTime);
@@ -117,16 +117,34 @@ namespace Demi
         {
             auto i = mExtraClips.find(name);
             DI_ASSERT(i == mExtraClips.end());
-            DiK2Clip* c = DI_NEW DiK2Clip();
+            DiK2Clip* c = DI_NEW DiK2Clip(this);
             mExtraClips[name] = c;
             return c;
         }
         else
         {
             DI_ASSERT(!mClips[prefabClip]);
-            DiK2Clip* c = DI_NEW DiK2Clip();
+            DiK2Clip* c = DI_NEW DiK2Clip(this);
             mClips[prefabClip] = c;
             return c;
+        }
+    }
+
+    void DiK2Animation::OnAnimationEnd(DiK2Clip* clip)
+    {
+        for (auto& animevent : mEvents[EVENT_ANIM_END])
+        {
+            animevent.func(DiAny(clip));
+        }
+    }
+
+    void DiK2Animation::OnAnimationTime(DiK2Clip* clip)
+    {
+        for (auto& animevent : mEvents[EVENT_TIME])
+        {
+            float triggetTime = any_cast<float>(animevent.param);
+            if (mCurrentClipElapsed >= triggetTime)
+                animevent.func(DiAny(clip));
         }
     }
 
@@ -138,6 +156,9 @@ namespace Demi
             float length = mNumFrames / mFPS;
             if (mTime >= length)
             {
+                // trigger an event
+                mAnimation->OnAnimationEnd(this);
+
                 if (mLoop)
                     mTime = 0;
                 else
@@ -150,13 +171,14 @@ namespace Demi
         }
     }
 
-    DiK2Clip::DiK2Clip() : 
+    DiK2Clip::DiK2Clip(DiK2Animation* animation) :
           mLoop(false)
         , mCurFrame(0)
         , mFPS(0)
         , mNumFrames(0)
         , mTime(0)
         , mInterpFactor(0)
+        , mAnimation(animation)
     {
     }
 

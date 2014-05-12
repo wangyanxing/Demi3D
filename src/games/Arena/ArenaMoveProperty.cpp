@@ -121,31 +121,7 @@ namespace Demi
                 
                 renderObj->SetPosition(newPos);
 
-                DiVec3 direction = DiVec3(targetPos.x, 0, targetPos.z) - DiVec3(newPos.x, 0, newPos.z);
-                direction.y = 0;
-                direction.normalise();
-                float yawToGoal;
-                DiVec3 srcVec = renderObj->GetRotQuat() * DiVec3::UNIT_Z;
-
-                if ((1.0f + srcVec.dotProduct(direction)) < 0.0001f)
-                    yawToGoal = 180;
-                else
-                {
-                    DiQuat toGoal = renderObj->GetRotQuat().zAxis().getRotationTo(direction);
-                    yawToGoal = toGoal.getYaw().valueDegrees();
-                }
-
-                float yawAtSpeed = yawToGoal / DiMath::Abs(yawToGoal) * dt * ((float)turnSpeed);
-                if (yawToGoal < 0)
-                    yawToGoal = std::min<float>(0, std::max<float>(yawToGoal, yawAtSpeed));
-                else if (yawToGoal > 0)
-                    yawToGoal = std::max<float>(0, std::min<float>(yawToGoal, yawAtSpeed));
-                
-                DiQuat actorOrientation = renderObj->GetRotQuat();
-                actorOrientation = DiQuat(DiDegree(yawToGoal), DiVec3::UNIT_Y) * actorOrientation;
-
-                float rotrad = actorOrientation.getYaw().valueRadians();
-                renderObj->SetRotation(rotrad);
+                UpdateRotation(mEntity, targetPos, dt, turnSpeed);
 
                 if (mWalkMode != ENUM_WALK_MODE_STOP)
                     ModalityChange(MODALITY_WALK);
@@ -259,4 +235,37 @@ namespace Demi
     {
 
     }
+
+    void ArMoveProperty::UpdateRotation(ArGameEntity* srcEntity, const DiK2Pos& targetPos, float dt, int turnRate)
+    {
+        DiK2RenderObject* renderObj = srcEntity->GetRenderObj();
+        auto newPos = renderObj->GetPosition();
+
+        DiVec3 direction = DiVec3(targetPos.x, 0, targetPos.z) - DiVec3(newPos.x, 0, newPos.z);
+        direction.y = 0;
+        direction.normalise();
+        float yawToGoal;
+        DiVec3 srcVec = renderObj->GetRotQuat() * DiVec3::UNIT_Z;
+
+        if ((1.0f + srcVec.dotProduct(direction)) < 0.0001f)
+            yawToGoal = 180;
+        else
+        {
+            DiQuat toGoal = renderObj->GetRotQuat().zAxis().getRotationTo(direction);
+            yawToGoal = toGoal.getYaw().valueDegrees();
+        }
+
+        float yawAtSpeed = yawToGoal / DiMath::Abs(yawToGoal) * dt * ((float)turnRate);
+        if (yawToGoal < 0)
+            yawToGoal = std::min<float>(0, std::max<float>(yawToGoal, yawAtSpeed));
+        else if (yawToGoal > 0)
+            yawToGoal = std::max<float>(0, std::min<float>(yawToGoal, yawAtSpeed));
+
+        DiQuat actorOrientation = renderObj->GetRotQuat();
+        actorOrientation = DiQuat(DiDegree(yawToGoal), DiVec3::UNIT_Y) * actorOrientation;
+
+        float rotrad = actorOrientation.getYaw().valueRadians();
+        renderObj->SetRotation(rotrad);
+    }
+
 }

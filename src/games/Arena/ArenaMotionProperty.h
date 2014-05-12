@@ -37,9 +37,11 @@ namespace Demi
 
         void            ModalityChange(ArModalityType mod);
 
+        void            PlayClip(K2PrefabClip::Clips clip);
+
     private:
 
-        ArModalityType  mModality;
+        ArModalityType  mModality { MODALITY_STAND };
     };
 }
 

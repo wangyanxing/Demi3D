@@ -78,7 +78,8 @@ namespace Demi
             cf->attackdamagemax = node.AsVector2();
         };
         sPropOps["attacknumanims"] = [](const DiString& node, ArEntityConfigs* cf){
-            cf->attacknumanims = node.AsFloat();
+            cf->attacknumanims = node.AsInt();
+            DI_ASSERT(cf->attacknumanims <= 4);
         };
         sPropOps["attackoffset"] = [](const DiString& node, ArEntityConfigs* cf){
             cf->attackoffset = node.AsVector3();

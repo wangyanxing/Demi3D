@@ -23,18 +23,16 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     ArMotionProperty::ArMotionProperty()
-        :mModality(MODALITY_STAND)
     {
-
     }
 
     ArMotionProperty::~ArMotionProperty()
     {
-
     }
 
     void ArMotionProperty::Update(float dt)
     {
+        ArProperty::Update(dt);
     }
 
     void ArMotionProperty::ModalityChange(ArModalityType mod)
@@ -43,6 +41,7 @@ namespace Demi
             return;
 
         DiK2RenderObject* obj = mEntity->GetRenderObj();
+        DI_ASSERT(obj);
         
         K2PrefabClip::Clips clip = K2PrefabClip::ANIM_IDLE;
         
@@ -56,4 +55,12 @@ namespace Demi
         mModality = mod;
     }
 
+    void ArMotionProperty::PlayClip(K2PrefabClip::Clips clip)
+    {
+        mModality = MODALITY_INVALID;
+
+        DiK2RenderObject* obj = mEntity->GetRenderObj();
+        DI_ASSERT(obj);
+        obj->PlayClip(clip);
+    }
 }

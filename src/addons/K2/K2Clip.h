@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiK2Clip_h__
 
 #include "K2Prerequisites.h"
+#include "Any.h"
 
 namespace Demi
 {
@@ -90,7 +91,7 @@ namespace Demi
     {
     public:
 
-        DiK2Clip();
+        DiK2Clip(DiK2Animation* animation);
 
         ~DiK2Clip();
 
@@ -128,7 +129,9 @@ namespace Demi
             mTime = 0;
         }
 
-        K2KeyFrames* mKeyFrames;
+        K2KeyFrames* mKeyFrames{ nullptr };
+
+        DiK2Animation* mAnimation{ nullptr };
     };
 
     /** k2 animation class
@@ -141,6 +144,22 @@ namespace Demi
         DiK2Animation();
 
         ~DiK2Animation();
+
+        enum AnimEvent
+        {
+            EVENT_TIME,
+            EVENT_ANIM_END,
+
+            EVENT_MAX_NUM
+        };
+
+        typedef std::function<void(DiAny& param)> AnimEventFunc;
+
+        struct Event
+        {
+            AnimEventFunc func;
+            DiAny param;
+        };
 
     public:
 
@@ -156,22 +175,32 @@ namespace Demi
 
     public:
 
+        void        OnAnimationEnd(DiK2Clip* clip);
+
+        void        OnAnimationTime(DiK2Clip* clip);
+
+    public:
+
         /// source clip (for blending)
-        DiK2Clip*         mSource;
+        DiK2Clip*         mSource{ nullptr };
 
         /// target clip (for blending)
-        DiK2Clip*         mTarget;
+        DiK2Clip*         mTarget{ nullptr };
         
-        float             mBlendTime;
+        float             mBlendTime{ 0.3f }; //default value
         
-        float             mBlendElapsed;
+        float             mBlendElapsed{ 0 };
+
+        float             mCurrentClipElapsed{ 0 };
 
         DiK2BonesData     mSkeleton;
         
         /// prefab clips
         DiK2Clip*         mClips[K2PrefabClip::MAX_PREFAB_ANIM];
 
-        DiStrHash<DiK2Clip*> mExtraClips;
+        DiStrHash<DiK2Clip*>    mExtraClips;
+
+        DiVector<Event>         mEvents[EVENT_MAX_NUM];
     };
 }
 

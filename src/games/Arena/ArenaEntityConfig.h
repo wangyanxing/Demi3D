@@ -22,13 +22,16 @@ namespace Demi
     /** Entity configs
         For now we don't need all attributes
      */
-    struct ArEntityConfigs
+    class ArEntityConfigs
     {
+    public:
         void Load(const DiXMLElement& element);
         
         void Load(const DiString& relPath);
         
         float GetMaxPreGlobalScale() const;
+
+    public:
         
         DiString    name;
         
@@ -51,7 +54,7 @@ namespace Demi
         float       attackcooldown {0.0f};
         DiVec2      attackdamagemin {0, 0};
         DiVec2      attackdamagemax {0, 0};
-        float       attacknumanims {0.0f};
+        int         attacknumanims {0};
         DiVec3      attackoffset {0.0f};
         DiString    attackprojectile;
         float       attackrange {0.0f};
