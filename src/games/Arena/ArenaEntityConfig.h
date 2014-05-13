@@ -63,6 +63,11 @@ namespace Demi
         StringVec   attackimpacteffect;
         DiString    attacktype;
         DiString    combattype;
+
+        float       aggrorange{ 0.0f };
+        float       proximityrange{ 0.0f };
+        float       sightrangeday{ 0.0f };
+        float       sightrangenight{ 0.0f };
         
         static DiMap<DiString, std::function<void(const DiString&, ArEntityConfigs*)>> sPropOps;
         static void InitPropOperations();

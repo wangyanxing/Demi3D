@@ -30,7 +30,6 @@ namespace Demi
         DEF_DECLARE_PRIORITY(StateProperty)
         DEF_DECLARE_PRIORITY(MoveProperty)
 
-
     public:
 
         ArDynEntity();

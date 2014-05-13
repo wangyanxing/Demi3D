@@ -16,13 +16,13 @@
 #ifndef IntCondition_h__
 #define IntCondition_h__
 
+#include <functional>
 #include "BehaviorTree/Common.h"
 
 namespace BehaviorTree
 {
 	/// These are the numerical tests that are available for integers
 	enum INT_TEST {LESS_THAN,GREATER_THAN,LESS_OR_EQ,GREATER_OR_EQ,EQUAL,NOT_EQUAL};
-	template <class T = NoClass>
 	/// Wraps a function or member pointer that returns an integer value into a conditional node
 	/** To wrap a function pointer or static class member that takes 
     no arguments and returns an int, instantiate IntCondition without a type argument.
@@ -42,9 +42,8 @@ namespace BehaviorTree
 		/// Runs the test given in the constructor, and returns BT_SUCCESS if the test passes, or BT_FAILURE if the test fails.
 		BEHAVIOR_STATUS execute(void* agent)
 		{
-			T* obj = (T*) agent;
 			bool status;
-			int objVal = (obj->*func)();
+			int objVal = func(agent);
 			switch (test)
 			{
 				case LESS_THAN:		status = (objVal < val); break;
@@ -68,55 +67,18 @@ namespace BehaviorTree
 			\param _test the mathematical operation to perform on the return value of _func
 			\param _val the 'right side' of the mathematical expression the node performs
 		*/
-		IntCondition(int(T::* const _func)(), INT_TEST _test, int _val) : func(_func), func2(NULL)
+        IntCondition(std::function<int(void*)> _func, INT_TEST _test, int _val) : func(_func)
 		{
 			test = _test;
 			val = _val;
 		}
-		/** \param _func the address of the function or static class member
-			\param _test the mathematical operation to perform on the return value of _func
-			\param _val the 'right side' of the mathematical expression the node performs
-		*/
-		IntCondition(int(* const _func)(), INT_TEST _test, int _val) : func2(_func), func(NULL)
-		{
-			test = _test;
-			val = _val;
-		}
-		/** \param _func the address of the const class member
-			\param _test the mathematical operation to perform on the return value of _func
-			\param _val the 'right side' of the mathematical expression the node performs
-		*/
-		IntCondition(int(T::* const _func)() const, INT_TEST _test, int _val) : func(reinterpret_cast<int(T::* const)()>(_func)), func2(NULL)
-		{
-			test = _test;
-			val = _val;
-		}
+	
 	private:
-		int (T::* const func)() ; //A member function pointer of the class T, being stored as const since we don't modify it
-		int (* const func2)();   //A static method or function pointer, being stored as const since we don't modify it
+
+        std::function<int(void*)> func;
 		INT_TEST test;
 		int val;
 
 	};
-
-	template<>
-	BEHAVIOR_STATUS IntCondition<NoClass>::execute(void* agent)
-	{
-		bool status;
-		switch (test)
-		{
-		case LESS_THAN:		status = ((*func2)() < val); break;
-		case GREATER_THAN:	status = ((*func2)() > val); break;
-		case LESS_OR_EQ:	status = ((*func2)() <= val); break;
-		case GREATER_OR_EQ: status = ((*func2)() >= val); break;
-		case EQUAL:			status = ((*func2)() == val); break;
-		case NOT_EQUAL:		status = ((*func2)() != val); break;
-		}
-
-		if (status)
-			return BT_SUCCESS;
-		else
-			return BT_FAILURE;
-	}
 }
 #endif // IntCondition_h__

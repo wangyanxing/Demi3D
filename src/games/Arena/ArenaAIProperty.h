@@ -21,7 +21,7 @@ namespace Demi
 {
     /** AI property
      */
-    class ArAIProperty : public ArProperty
+    class ArAIProperty final : public ArProperty
     {
         DEFINE_PROPERTY_ID(PROPERTY_AI)
 
@@ -47,6 +47,10 @@ namespace Demi
 
         void        CommandAttack(ArObjID targetID);
 
+    public:
+
+        void        InitNPCBehaviorTree();
+
     protected:
 
         void        ClearAIList();
@@ -63,6 +67,8 @@ namespace Demi
         AICmdList   mAIList;
 
         double      mLastMoveTime{ 0.0 };
+
+        BehaviorTreeInternalNode* mAIRoot{ nullptr };
     };
 }
 

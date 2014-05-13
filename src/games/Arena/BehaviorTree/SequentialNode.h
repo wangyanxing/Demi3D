@@ -30,8 +30,10 @@ namespace BehaviorTree
     public:
 	    /// construct a sequentialNode
 	    SequentialNode::SequentialNode();
+
 	    BEHAVIOR_STATUS execute(void* agent);
-	    void init(void* agent);
+	    
+        void init(void* agent);
 
 	    /// Where the SequentialNode currently is executing. -1 indicates the SequentialNode is not executing any child.
 	    int currentPosition;

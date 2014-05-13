@@ -38,6 +38,16 @@ namespace Demi
     typedef shared_ptr<ArHeroEntity>  ArHeroEntityPtr;
 }
 
+namespace BehaviorTree
+{
+    class ParallelNode;
+    class PriorityNode;
+    class ProbabilityNode;
+    class BoolCondition;
+    class FloatCondition;
+    class IntCondition;
+}
+
 #include "ArenaStateDefines.h"
 #include "ArenaGameDefines.h"
 

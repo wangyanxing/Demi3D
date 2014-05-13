@@ -49,7 +49,7 @@ namespace Demi
 
         ArGameEntityPtr     CreateNPC(ArObjID id, const DiString& configfile);
 
-        ArObjID             GetHeroID() const { return mHeroId; }
+        static ArObjID      GetHeroID() { return mHeroId; }
 
         ArGameEntityPtr     FindEntity(ArObjID id);
 
@@ -66,7 +66,7 @@ namespace Demi
         typedef DiMap<ArObjID, ArGameEntityPtr> EntityMap;
         EntityMap           mEntities;
 
-        ArObjID             mHeroId { INVALID_OBJ_ID };
+        static ArObjID      mHeroId;
 
         ArHeroEntityPtr     mHeroEntity;
     };

@@ -42,6 +42,22 @@ namespace Demi
 
         virtual void        InitComponents() override {}
 
+        /** Check the distance between two entities
+            including both radius
+
+            return false if far from the specific distance
+         */
+        bool                CheckDistance(ArGameEntity* entity, float distance);
+
+        bool                CheckDistance(ArObjID target, float distance);
+
+        /** Check the pure distance between two entities' origin 
+            return false if far from the specific distance
+        */
+        bool                CheckAbsDistance(ArGameEntity* entity, float distance);
+
+        bool                CheckAbsDistance(ArObjID target, float distance);
+
         template<typename T>
         void                SetAttribute()
         {

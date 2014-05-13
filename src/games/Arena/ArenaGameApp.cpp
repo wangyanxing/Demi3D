@@ -233,7 +233,9 @@ namespace Demi
         // test NPC
         auto npc = mGame->GetEntityManager()->CreateNPC(2,"npc_test.xml");
         npc->GetRenderObj()->SetPosition(DiK2Pos(202, 42));
+
         //npc->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 1);
+        //mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(1);
 
         mInputMgr->RegisterKeyPressEvent("movetest",
             [&](const OIS::KeyEvent& e){
@@ -244,6 +246,9 @@ namespace Demi
                 break;
             case OIS::KC_N:
                 mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 2);
+                break;
+            case OIS::KC_1:
+                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
                 break;
             default:
                 break;

@@ -28,7 +28,7 @@ namespace BehaviorTree
     This weight system is intended to facilitate the fine-tuning of behaviors.
     */
 
-    class ProbabilityNode:public BehaviorTreeInternalNode
+    class ProbabilityNode : public BehaviorTreeInternalNode
     {
     public:
 	    void init(void* object);

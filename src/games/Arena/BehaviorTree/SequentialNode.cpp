@@ -18,6 +18,7 @@
 
 using namespace BehaviorTree;
 using namespace std;
+
 void SequentialNode::init(void* agent)
 {
 	currentPosition = -1;
@@ -29,7 +30,6 @@ SequentialNode::SequentialNode()
 {
 	currentPosition = -1;
 }
-
 
 BEHAVIOR_STATUS SequentialNode::execute(void* agent)
 {

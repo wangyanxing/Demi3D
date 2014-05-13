@@ -54,7 +54,8 @@ BehaviorTreeInternalNode* BehaviorTree::RepeatNode::addChild( BehaviorTreeNode* 
 	return this;
 }
 
-/** \param repeats The number of times to repeat. An argument of -1 indicates the node should repeat indefinitely. Other negative numbers have undefined behavior */
+/** \param repeats The number of times to repeat. An argument of -1 indicates
+the node should repeat indefinitely. Other negative numbers have undefined behavior */
 RepeatNode::RepeatNode(int repeats)
 {
 	target = repeats;

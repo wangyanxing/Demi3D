@@ -28,7 +28,7 @@ namespace Demi
         , mTargetID(target)
         , mRange(range)
     {
-        mType = ENUM_AI_TYPE_MOVETOTARGET;
+        mType = ENUM_AI_TYPE_FOLLOWTOTARGET;
 
     }
 

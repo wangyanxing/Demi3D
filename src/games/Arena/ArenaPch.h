@@ -19,4 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Demi.h"
 #include "K2Pch.h"
 
+#include "BehaviorTree/BehaviorTree.h"
+using namespace BehaviorTree;
+
 #endif

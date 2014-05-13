@@ -19,11 +19,15 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaNPCEntity.h"
 #include "ArenaMoveProperty.h"
 #include "ArenaGameApp.h"
+#include "ArenaHero.h"
 #include "ArenaEntityManager.h"
 #include "ArenaAIMove.h"
 #include "ArenaAIMoveTarget.h"
 #include "ArenaAIFollow.h"
 #include "ArenaAIAttack.h"
+#include "ArenaEntityConfig.h"
+#include "ArenaAttribute.h"
+#include "ArenaMoveProperty.h"
 
 // in second
 #define DEF_AI_MOVE_REQUEST_MIN_TIME 0.1
@@ -33,12 +37,12 @@ namespace Demi
     ArAIProperty::ArAIProperty()
         : mLastMoveTime(0)
     {
-
+        mAIRoot = DI_NEW SequentialNode();
     }
 
     ArAIProperty::~ArAIProperty()
     {
-
+        SAFE_DELETE(mAIRoot);
     }
 
     void ArAIProperty::ClearAIList()
@@ -79,6 +83,9 @@ namespace Demi
     void ArAIProperty::Update(float dt)
     {
         ArProperty::Update(dt);
+
+        // update the behavior tree
+        mAIRoot->execute((void*) this);
 
         auto gameEntity = GetEntity<ArGameEntity>();
         if (gameEntity->IsDead())
@@ -159,6 +166,12 @@ namespace Demi
 
     void ArAIProperty::CommandMoveTo(ArObjID targetID, float range /*= 0.0f*/)
     {
+        if (!mAIList.empty())
+        {
+            if (mAIList.front()->GetType() == ENUM_AI_TYPE_MOVETOTARGET)
+                return;
+        }
+
         if (ArGameApp::Get()->GetEntityManager()->IsHero(GetEntity<ArGameEntity>()->GetID()))
         {
             double time = Driver->GetElapsedSecond();
@@ -180,6 +193,12 @@ namespace Demi
 
     void ArAIProperty::CommandFollowTo(ArObjID targetID, float range /*= 0.0f*/)
     {
+        if (!mAIList.empty())
+        {
+            if (mAIList.front()->GetType() == ENUM_AI_TYPE_FOLLOWTOTARGET)
+                return;
+        }
+
         ClearAIList();
         auto pCmd = DI_NEW ArAIFollowCommand(mEntity, targetID, range);
         PushCommand(pCmd);
@@ -187,8 +206,60 @@ namespace Demi
 
     void ArAIProperty::CommandAttack(ArObjID targetID)
     {
+        if (!mAIList.empty())
+        {
+            if (mAIList.front()->GetType() == ENUM_AI_TYPE_ATTACK)
+                return;
+        }
+
         ClearAIList();
         auto pCmd = DI_NEW ArAIAttackCommand(mEntity, targetID);
         PushCommand(pCmd);
+    }
+
+    void ArAIProperty::InitNPCBehaviorTree()
+    {
+        mAIRoot->addChild(DI_NEW BoolCondition([this](void*){
+            
+            float sight = DiK2Pos::FromWorldScale(mEntity->GetAttribute()->GetEntityConfig()->sightrangenight);
+            float range = DiK2Pos::FromWorldScale(mEntity->GetAttribute()->GetEntityConfig()->attackrange);
+            if (!mEntity->CheckDistance(ArEntityManager::GetHeroID(), sight))
+            {
+                // change to idle
+                mEntity->GetEntity<ArDynEntity>()->GetMotionProperty()->ModalityChange(MODALITY_STAND);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }, true));
+
+        mAIRoot->addChild(DI_NEW BoolCondition([this](void*){
+            float range = DiK2Pos::FromWorldScale(mEntity->GetAttribute()->GetEntityConfig()->attackrange);
+            auto heroEntity = ArGameApp::Get()->GetEntityManager()->GetHero();
+            auto thisEntity = dynamic_cast<ArDynEntity*>(mEntity);
+            if (!thisEntity)
+            {
+                return false;
+            }
+
+            if (!mEntity->CheckDistance(ArEntityManager::GetHeroID(), range))
+            {
+                // change to follow
+                CommandFollowTo(ArEntityManager::GetHeroID(), 2.5f);
+                return false;
+            }
+            else
+            {
+                if (!heroEntity->GetMoveProperty()->GetWalkMode() == ENUM_WALK_MODE_WALK)
+                {
+                    // attack
+                    CommandAttack(ArEntityManager::GetHeroID());
+                }
+
+                return true;
+            }
+        }, true));
     }
 }

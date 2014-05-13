@@ -23,7 +23,7 @@ namespace BehaviorTree
     For failure, the options are "fail when one child fails" and "fail when all children fail".
     For success, the options are similarly "complete when one child completes", and "complete when all children complete".
     */
-    class ParallelNode:public BehaviorTreeInternalNode
+    class ParallelNode : public BehaviorTreeInternalNode
     {
     public:
 	    BEHAVIOR_STATUS execute(void* agent);

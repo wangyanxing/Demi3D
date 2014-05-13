@@ -27,7 +27,13 @@ namespace BehaviorTree
 	- BT_FAILURE indicates the node has determined it will not be able to complete its task.
 	- BT_RUNNING indicates that the node has successfully moved forward during this time step, but the task is not yet complete.
 	*/
-	enum BEHAVIOR_STATUS {BT_SUCCESS,BT_FAILURE,BT_RUNNING};
+	enum BEHAVIOR_STATUS 
+    {
+        BT_SUCCESS,
+        BT_FAILURE,
+        BT_RUNNING
+    };
+
 	class BehaviorTreeNode;
 	/// A standard vector of Behavior Tree nodes. Provided for convenience.
 	typedef std::vector<BehaviorTreeNode*> BehaviorTreeList;
@@ -74,16 +80,18 @@ namespace BehaviorTree
 			return this;
 		};
 
+        virtual ~BehaviorTreeInternalNode()
+        {
+            BehaviorTreeListIter iter;
+            for (iter = children.begin(); iter != children.end(); iter++)
+            {
+                delete *iter;
+            }
+        }
+
 	protected:
 		BehaviorTreeList children;
-		~BehaviorTreeInternalNode()
-		{
-			BehaviorTreeListIter iter;
-			for (iter = children.begin(); iter!= children.end(); iter++)
-			{
-				delete *iter;
-			}
-		}
+		
 	};
 
 	///Always returns the BT_RUNNING status

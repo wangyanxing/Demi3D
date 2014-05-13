@@ -364,7 +364,7 @@ namespace Demi
         {
             if (TEXTURE_PACK->HasFile("descriptor"))
             {
-                return "00000000";
+                return "00000000/";
             }
         }
         return ret;

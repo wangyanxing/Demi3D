@@ -105,6 +105,19 @@ namespace Demi
         sPropOps["combattype"] = [](const DiString& node, ArEntityConfigs* cf){
             cf->combattype = node;
         };
+
+        sPropOps["aggrorange"] = [](const DiString& node, ArEntityConfigs* cf){
+            cf->aggrorange = node.AsFloat();
+        };
+        sPropOps["proximityrange"] = [](const DiString& node, ArEntityConfigs* cf){
+            cf->proximityrange = node.AsFloat();
+        };
+        sPropOps["sightrangeday"] = [](const DiString& node, ArEntityConfigs* cf){
+            cf->sightrangeday = node.AsFloat();
+        };
+        sPropOps["sightrangenight"] = [](const DiString& node, ArEntityConfigs* cf){
+            cf->sightrangenight = node.AsFloat();
+        };
     }
     
     void ArEntityConfigs::Load(const DiString& relPath)

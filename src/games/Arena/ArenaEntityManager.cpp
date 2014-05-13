@@ -85,6 +85,9 @@ namespace Demi
 
     ArGameEntityPtr ArEntityManager::FindEntity(ArObjID id)
     {
+        if (id == mHeroId)
+            return mHeroEntity;
+        
         auto it = mEntities.find(id);
         return it != mEntities.end() ? it->second : nullptr;
     }
@@ -96,5 +99,6 @@ namespace Demi
         mHeroId = INVALID_OBJ_ID;
     }
 
+    Demi::ArObjID ArEntityManager::mHeroId = INVALID_OBJ_ID;
     Demi::ArObjID ArAutoID::sID = 0;
 }

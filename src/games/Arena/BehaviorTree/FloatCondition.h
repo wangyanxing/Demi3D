@@ -16,6 +16,7 @@
 #ifndef FloatCondition_h__
 #define FloatCondition_h__
 
+#include <functional>
 #include "BehaviorTree/Common.h"
 #include "BehaviorTree/FPCompare.h"
 
@@ -25,7 +26,6 @@ namespace BehaviorTree
 	/**Because of Floating Point precision and rounding issues, testing for exact equalities 
     is unwise. Therefore, the FloatCondition constructor accepts an optional value to determine how strict equality checks are. */
 	enum FLOAT_TEST {LESS_THAN_FP,GREATER_THAN_FP,LESS_OR_CLOSE,GREATER_OR_CLOSE,CLOSE,NOT_CLOSE};
-	template <class T = NoClass>
 
 	/// Wraps a function or member pointer that returns a float value into a conditional node
 	/** To wrap a function pointer or static class member that takes no arguments
@@ -76,64 +76,24 @@ namespace BehaviorTree
             5.000001 to be 'close'. However, the number of digits the numbers can differ by will
             vary depending on their size, due to how they are stored on the computer. 
 		*/
-		FloatCondition(float(T::* const _func)() const, FLOAT_TEST _test, float _val,int _ulps = 2^22) 
-            : func(reinterpret_cast<float(T::* const)()>(_func)), func2(NULL)
+        FloatCondition(std::function<float(void*)> _func, FLOAT_TEST _test, float _val, int _ulps = 2 ^ 22)
+            : func(_func)
 		{
 			test = _test;
 			val = _val;
 			ulps = _ulps;
 		}
 
-		/** \param _func the address of the class member
-			\param _test the mathematical operation to perform on the return value of _func
-			\param _val the 'right side' of the mathematical expression the node performs
-			\param _ulps the number of "units in the last place" two floating point numbers can differ by and 
-            still be considered 'close' The default value of 2^25 will consider 5.000000000 and 5.000001 to be
-            'close'. However, the number of digits the numbers can differ by will vary 
-            depending on their size, due to how they are stored on the computer. 
-		*/
-		FloatCondition(float(T::*_func)(), FLOAT_TEST _test, float _val,int _ulps = 2^22)
-            : func(_func), func2(NULL)
-		{
-			test = _test;
-			val = _val;
-			ulps = _ulps;
-
-		}
-		/** \param _func the address of the function or static class member
-		\param _test the mathematical operation to perform on the return value of _func
-		\param _val the 'right side' of the mathematical expression the node performs
-		\param _ulps the number of "units in the last place" two floating point numbers can differ by and still 
-        be considered 'close' The default value of 2^25 will consider 5.000000000 and 5.000001 to be 'close'. 
-        However, the number of digits the numbers can differ by will vary 
-        depending on their size, due to how they are stored on the computer. 
-		*/
-		FloatCondition(float(*_func)(), FLOAT_TEST _test, float _val,int _ulps = 2^22)
-            : func2(_func), func(NULL)
-		{
-			test = _test;
-			val = _val;
-			ulps = _ulps;
-		}
-
-		
 	private:
-		float (T::* const func)();
-		float (* const func2)();
+        std::function<float(void*)> func;
+
 		FLOAT_TEST test;
 		float val;
 		int ulps;
 		float getObjVal(void* agent)
 		{
-			T* obj = (T*) agent;
-			return (obj->*func)();
+            return func(agent);
 		}
 	};
-
-	template<>
-	float FloatCondition<NoClass>::getObjVal(void* agent)
-	{
-		return (*func2)();
-	}
 }
 #endif // FloatCondition_h__

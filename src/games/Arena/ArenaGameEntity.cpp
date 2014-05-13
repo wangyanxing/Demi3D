@@ -18,6 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaGame.h"
 #include "K2RenderObjects.h"
 #include "ArenaAttribute.h"
+#include "ArenaEntityManager.h"
 
 namespace Demi
 {
@@ -54,5 +55,45 @@ namespace Demi
     bool ArGameEntity::IsDead()
     {
         return false;
+    }
+
+    bool ArGameEntity::CheckDistance(ArGameEntity* entity, float distance)
+    {
+        if (!entity || !entity->GetRenderObj() | !GetRenderObj())
+            return false;
+
+        DiK2Pos source = GetRenderObj()->GetPosition();
+        DiK2Pos target = entity->GetRenderObj()->GetPosition();
+        float radiusTarget = entity->GetRenderObj()->GetRadius();
+        float radiusSource = GetRenderObj()->GetRadius();
+
+        if (source.Distance(target) <= distance + radiusSource + radiusTarget)
+            return true;
+        return false;
+    }
+
+    bool ArGameEntity::CheckDistance(ArObjID target, float distance)
+    {
+        auto entityPtr = ArGameApp::Get()->GetEntityManager()->FindEntity(target);
+        return CheckDistance(entityPtr.get(), distance);
+    }
+
+    bool ArGameEntity::CheckAbsDistance(ArGameEntity* entity, float distance)
+    {
+        if (!entity || !entity->GetRenderObj() | !GetRenderObj())
+            return false;
+
+        DiK2Pos source = GetRenderObj()->GetPosition();
+        DiK2Pos target = entity->GetRenderObj()->GetPosition();
+
+        if (source.Distance(target) <= distance)
+            return true;
+        return false;
+    }
+
+    bool ArGameEntity::CheckAbsDistance(ArObjID target, float distance)
+    {
+        auto entityPtr = ArGameApp::Get()->GetEntityManager()->FindEntity(target);
+        return CheckAbsDistance(entityPtr.get(), distance);
     }
 }
