@@ -45,11 +45,22 @@ namespace Demi
 
         virtual void    InitAttribute() override;
 
+        virtual void    Update(float dt) override;
+
+        void            UpdateBlocks(const DiVec3& pos);
+
     protected:
 
         void            SetupEntityConfig(const ArEntityConfigs* ett);
 
     private:
+
+        /**
+        Four block points
+        **/
+        DiIntVec2       mLastBlocksVerts[9];
+
+        int             mLastBlockValues[9];
     };
 }
 

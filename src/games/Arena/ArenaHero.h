@@ -41,6 +41,8 @@ namespace Demi
 
         void SetupAttribute() override;
 
+        void Update(float dt) override;
+
     private:
     };
 }

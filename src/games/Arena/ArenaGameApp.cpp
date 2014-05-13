@@ -234,6 +234,12 @@ namespace Demi
         auto npc = mGame->GetEntityManager()->CreateNPC(2,"npc_test.xml");
         npc->GetRenderObj()->SetPosition(DiK2Pos(202, 42));
 
+        auto npc2 = mGame->GetEntityManager()->CreateNPC(3, "npc_test.xml");
+        npc2->GetRenderObj()->SetPosition(DiK2Pos(208, 42));
+
+        auto npc3 = mGame->GetEntityManager()->CreateNPC(4, "npc_test.xml");
+        npc3->GetRenderObj()->SetPosition(DiK2Pos(200, 49));
+
         //npc->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 1);
         //mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(1);
 
@@ -248,7 +254,9 @@ namespace Demi
                 mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 2);
                 break;
             case OIS::KC_1:
-                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
+                //mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
+                //mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
+                mGame->GetEntityManager()->FindEntity(4)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
                 break;
             default:
                 break;

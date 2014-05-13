@@ -108,8 +108,6 @@ namespace Demi
 
         float                       GetMinHeight() const { return mMinHeight; }
 
-        void                        UpdateMaxMinHeight(float newheight);
-
         float                       GetGridSize() const { return mDesc->mGridSize; }
 
         float                       GetTextureScale() const { return mDesc->mTextureScale; }

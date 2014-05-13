@@ -41,7 +41,6 @@ namespace Demi
 
     ArAIMoveToTargetCommand::~ArAIMoveToTargetCommand()
     {
-
     }
 
     void ArAIMoveToTargetCommand::Enter()
@@ -52,7 +51,6 @@ namespace Demi
 
     void ArAIMoveToTargetCommand::Leave()
     {
-
     }
 
     void ArAIMoveToTargetCommand::Update(float dt)

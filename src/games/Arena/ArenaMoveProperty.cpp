@@ -267,5 +267,4 @@ namespace Demi
         float rotrad = actorOrientation.getYaw().valueRadians();
         renderObj->SetRotation(rotrad);
     }
-
 }

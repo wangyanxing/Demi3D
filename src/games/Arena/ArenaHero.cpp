@@ -88,4 +88,10 @@ namespace Demi
         SetModel(attr->mHeroConfig->model);
         SetupEntityConfig(attr->GetEntityConfig());
     }
+
+    void ArHeroEntity::Update(float dt)
+    {
+        ArGameEntity::Update(dt);
+    }
+
 }

@@ -177,7 +177,7 @@ namespace Demi
             {
                 uint8 block = blockerBuffer[y*vertY + x];
                 if (block > 0)
-                    mPathFinder.SetLevel(x, y, 15);
+                    mPathFinder.SetLevel(x, y, 10);
             }
         }
 
@@ -863,14 +863,6 @@ namespace Demi
         x = DiMath::Max(x, 0);
         y = DiMath::Max(y, 0);
         out = GetPoint(x, y);
-    }
-
-    void DiTerrain::UpdateMaxMinHeight( float newheight )
-    {
-        if (newheight > mMaxHeight)
-            mMaxHeight = newheight;
-        if (newheight < mMinHeight)
-            mMinHeight = newheight;
     }
 
     DiMap<DiString,int> DiTerrain::GetTextureUsages( int layer )

@@ -21,12 +21,19 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaEntityConfig.h"
 
 #include "K2RenderObjects.h"
+#include "K2Terrain.h"
+#include "K2World.h"
 
 namespace Demi
 {
     ArNPCEntity::ArNPCEntity()
         :mAIProperty(nullptr)
     {
+        for (int i = 0; i < 9; ++i)
+        {
+            mLastBlockValues[i] = 0;
+            mLastBlocksVerts[i] = DiIntVec2(-1, -1);
+        }
     }
 
     ArNPCEntity::~ArNPCEntity()
@@ -80,5 +87,53 @@ namespace Demi
         auto attr = GetAttribute<ArNPCAttr>();
         SetModel(attr->mNpcEntityConfig->model);
         SetupEntityConfig(attr->GetEntityConfig());
+    }
+
+    void ArNPCEntity::Update(float dt)
+    {
+        auto renderObj = GetRenderObj();
+        
+        DiVec3 pos = renderObj->GetWorldPosition();
+        UpdateBlocks(pos);
+
+        ArGameEntity::Update(dt);
+
+
+    }
+
+    void ArNPCEntity::UpdateBlocks(const DiVec3& pos)
+    {
+        return;
+        auto terrain = ArGameApp::Get()->GetWorld()->GetTerrain();
+        auto& pathFinder = terrain->GetPathFinder();
+
+        DiIntVec2 vertPos = terrain->GetVertexPos(pos);
+        int x = vertPos.x;
+        int y = vertPos.y;
+
+        // reset the last value
+        for (int i = 0; i < 9; ++i)
+        {
+            if (mLastBlocksVerts[i].x > 0 && mLastBlocksVerts[i].y > 0)
+            {
+                pathFinder.SetLevel(mLastBlocksVerts[i].x, mLastBlocksVerts[i].y, mLastBlockValues[i]);
+            }
+        }
+
+        uint32 vx, vy;
+        terrain->GetVerticesNum(vx, vy);
+        int offset_x[9] = { -1, 0, 1, -1, 0, 1, -1, 0, 1 };
+        int offset_y[9] = { -1, -1, -1, 0, 0, 0, 1, 1, 1 };
+        for (int i = 0; i < 9; i++)
+        {
+            mLastBlocksVerts[i].x = DiMath::Clamp(x + offset_x[i], 0, (int)vx - 1);
+            mLastBlocksVerts[i].y = DiMath::Clamp(y + offset_y[i], 0, (int)vy - 1);
+        }
+
+        for (int i = 0; i < 9; ++i)
+        {
+            mLastBlockValues[i] = pathFinder.GetLevel(mLastBlocksVerts[i].x, mLastBlocksVerts[i].y);
+            pathFinder.SetLevel(mLastBlocksVerts[i].x, mLastBlocksVerts[i].y, mLastBlockValues[i] + 5);
+        }
     }
 }
