@@ -240,8 +240,10 @@ namespace Demi
             switch (e.key)
             {
             case OIS::KC_M:
-                //mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 1);
                 mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(1);
+                break;
+            case OIS::KC_N:
+                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 2);
                 break;
             default:
                 break;

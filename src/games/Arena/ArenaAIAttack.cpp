@@ -73,11 +73,15 @@ namespace Demi
     void ArAIAttackCommand::PlayClip()
     {
         mTimer = 0;
-        int animID = DiMath::Random(mNumAttackAnims);
-        while (animID == mLastAnimID)
+
+        int animID = 0;
+        if (mLastAnimID >= 0)
         {
             animID = DiMath::Random(mNumAttackAnims);
+            while (animID == mLastAnimID)
+                animID = DiMath::Random(mNumAttackAnims);
         }
+
         mLastAnimID = animID;
 
         K2PrefabClip::Clips clip = K2PrefabClip::Clips(K2PrefabClip::ANIM_ATTACK_1 + animID);
