@@ -91,14 +91,7 @@ namespace Demi
 
     void ArNPCEntity::Update(float dt)
     {
-        auto renderObj = GetRenderObj();
-        
-        DiVec3 pos = renderObj->GetWorldPosition();
-        UpdateBlocks(pos);
-
         ArGameEntity::Update(dt);
-
-
     }
 
     void ArNPCEntity::UpdateBlocks(const DiVec3& pos)

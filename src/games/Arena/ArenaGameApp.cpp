@@ -254,8 +254,8 @@ namespace Demi
                 mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 2);
                 break;
             case OIS::KC_1:
-                //mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
-                //mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
+                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
+                mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
                 mGame->GetEntityManager()->FindEntity(4)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
                 break;
             default:
