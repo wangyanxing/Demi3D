@@ -60,6 +60,9 @@ namespace BehaviorTree
 	class BehaviorTreeNode
 	{
 	public:
+        
+        virtual ~BehaviorTreeNode(){}
+        
 		/// This method is invoked by the node's parent when the node should be run.
 		virtual BEHAVIOR_STATUS execute(void* agent) = 0;
 		/// This method will be invoked before the node is executed for the first time.
@@ -74,7 +77,7 @@ namespace BehaviorTree
 		virtual BEHAVIOR_STATUS execute(void* agent) = 0;
 		virtual void init(void* object) = 0;
 		/// Add a child to this node. Takes ownership of the child.
-		virtual BehaviorTreeInternalNode* BehaviorTreeInternalNode::addChild(BehaviorTreeNode* newChild)
+		virtual BehaviorTreeInternalNode* addChild(BehaviorTreeNode* newChild)
 		{
 			children.push_back(newChild);
 			return this;
@@ -85,7 +88,7 @@ namespace BehaviorTree
             BehaviorTreeListIter iter;
             for (iter = children.begin(); iter != children.end(); iter++)
             {
-                delete *iter;
+                DI_DELETE *iter;
             }
         }
 
@@ -146,7 +149,7 @@ namespace BehaviorTree
 		{
 			n = total;
 		};
-		SuccessAfter::SuccessAfter(int t)
+		SuccessAfter(int t)
 		{
 			total = t;
 			n = total;
@@ -175,7 +178,7 @@ namespace BehaviorTree
 		{
 			n = total;
 		};
-		FailureAfter::FailureAfter(int t)
+		FailureAfter(int t)
 		{
 			total = t;
 			n = total;

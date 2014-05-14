@@ -222,7 +222,6 @@ namespace Demi
         mAIRoot->addChild(DI_NEW BoolCondition([this](void*){
             
             float sight = DiK2Pos::FromWorldScale(mEntity->GetAttribute()->GetEntityConfig()->sightrangenight);
-            float range = DiK2Pos::FromWorldScale(mEntity->GetAttribute()->GetEntityConfig()->attackrange);
             if (!mEntity->CheckDistance(ArEntityManager::GetHeroID(), sight))
             {
                 // change to idle
@@ -252,7 +251,7 @@ namespace Demi
             }
             else
             {
-                if (!heroEntity->GetMoveProperty()->GetWalkMode() == ENUM_WALK_MODE_WALK)
+                if (!(heroEntity->GetMoveProperty()->GetWalkMode() == ENUM_WALK_MODE_WALK))
                 {
                     // attack
                     CommandAttack(ArEntityManager::GetHeroID());

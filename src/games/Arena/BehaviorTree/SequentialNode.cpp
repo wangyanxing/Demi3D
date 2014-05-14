@@ -47,7 +47,7 @@ BEHAVIOR_STATUS SequentialNode::execute(void* agent)
 
 	while(result == BT_SUCCESS)
 	{
-		if (currentPosition == children.size()-1) //finished last task
+		if (currentPosition == (int)children.size()-1) //finished last task
 		{
 			currentPosition = -1; //indicate we are not running anything
 			return BT_SUCCESS;

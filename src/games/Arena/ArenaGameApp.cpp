@@ -77,7 +77,7 @@ namespace Demi
         , mInputMgr(nullptr)
         , mQuit(false)
         , mGame(nullptr)
-    {
+    {        
         DI_INIT_PROFILER;
 
         DI_ASSERT(!sApp);
