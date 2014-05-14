@@ -128,7 +128,7 @@ namespace Demi
 
         virtual DiString&           GetType();
 
-        HeavyPathFinder&            GetPathFinder() { return mPathFinder; }
+        LightPathFinder&            GetPathFinder() { return mPathFinder; }
 
     public:
 
@@ -193,7 +193,7 @@ namespace Demi
 
         DiQuadNode*                 mRoot;
 
-        HeavyPathFinder             mPathFinder;
+        LightPathFinder             mPathFinder;
     };
 }
 

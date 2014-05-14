@@ -110,6 +110,15 @@ namespace Demi
                     }
                 }
 
+                auto& pathFinder = ArGameApp::Get()->GetWorld()->GetTerrain()->GetPathFinder();
+                if (!pathFinder.IsReachable(newPos, HeavyPathFinder::BLOCK_LEVEL_WALK))
+                {
+                    UpdateRotation(mEntity, targetPos, dt, turnSpeed);
+                    Stop();
+                    mNumCurTarget = 0;
+                    return;
+                }
+
 #if 0
                 if (!pathFinder.IsReachable(newPos, HeavyPathFinder::BLOCK_LEVEL_WALK))
                 {
@@ -168,7 +177,8 @@ namespace Demi
                     DiK2Pos endTruePos(INVALID_FLOAT_VALUE, INVALID_FLOAT_VALUE);
                     for (int i = mNumNode - 2; i >= 0; i--)
                     {
-                        if (mPosNode[i].Distance(target) >= fRange)
+                        if (mPosNode[i].Distance(target) >= fRange ||
+                            !pathFinder.IsReachable(mPosNode[i], HeavyPathFinder::BLOCK_LEVEL_WALK))
                         {
                             nEndNodeIndex = i + 1;
                             endTruePos = GetIntersectionLineRound(mPosNode[i], mPosNode[i + 1], target, fRange);

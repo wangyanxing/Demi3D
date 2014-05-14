@@ -174,7 +174,11 @@ namespace Demi
 
         void Reset(int startz, int endz);
         
+#if 0
         bool FindPath(const DiK2Pos* startPt, const DiK2Pos* endPos, DiK2Pos* posNode, int& numNode, int nLevel, bool bLine = false, int maxRoute = MAX_ROUTES_t);
+#else
+        bool FindPath(const DiK2Pos* startPt, const DiK2Pos* endPos, DiK2Pos* posNode, int& numNode, int nLevel, bool bIgnoreReachable = true, int maxRoute = MAX_ROUTES_t);
+#endif
         
         bool IsReachable(const DiK2Pos& pos, const int nLevel);
         
@@ -680,7 +684,11 @@ namespace Demi
     }
 
     template< int MAX_ROUTES_t, int MAX_PATH_NODE_NUMBER_t, int OFFSETZ_t >
+#if 0
     bool PathFinder<MAX_ROUTES_t, MAX_PATH_NODE_NUMBER_t, OFFSETZ_t>::FindPath(const DiK2Pos* startPt, const DiK2Pos* endPt, DiK2Pos* posNode, int& numNode, int nLevel, bool bLine, int maxRoute)
+#else
+    bool PathFinder<MAX_ROUTES_t, MAX_PATH_NODE_NUMBER_t, OFFSETZ_t>::FindPath(const DiK2Pos* startPt, const DiK2Pos* endPt, DiK2Pos* posNode, int& numNode, int nLevel, bool bIgnoreReachable, int maxRoute)
+#endif
     {
         if (startPt->x < 1.0 || startPt->x >(mWidth - 1) / DEF_CollisionGrid_Scale || startPt->z < 1.0 || startPt->z >(mHeight - 1) / DEF_CollisionGrid_Scale ||
             endPt->x < 1.0 || endPt->x >(mWidth - 1) / DEF_CollisionGrid_Scale || endPt->z < 1.0 || endPt->z >(mHeight - 1) / DEF_CollisionGrid_Scale)
@@ -712,6 +720,7 @@ namespace Demi
 
         mDistance = 0;
 
+#if 0
         if (bLine)
         {
             //if( mWorld[mStartzx].state != IMPASSABLE)
@@ -735,9 +744,10 @@ namespace Demi
                 return false;
             }
         }
+#endif
 
         // A*
-        if (!IsReachable(mWorld[mEndzx].state, nLevel))
+        if (!IsReachable(mWorld[mEndzx].state, nLevel) && !bIgnoreReachable)
         {
             return false;
         }
@@ -776,9 +786,6 @@ namespace Demi
                 if (pparent_node->zx == mEndzx)
                 {
                     return PackRoute(posNode, numNode, nLevel);
-                    //INFO_LOG("count = %d" ,count);
-
-                    //return true;
                 }
 
                 mWorkWorld[pparent_node->zx].state = CLOSED;
@@ -830,7 +837,8 @@ namespace Demi
                 if (mLastHeapLeaf <= 0)
                 {
                     posNode[numNode++] = *mFirstCanGoPos;
-                    mDistance = RealDistance(mStartzx, (unsigned short)((mFirstCanGoPos->z - mLeftTopz) * mInvGridSize) * mWidth + (unsigned short)((mFirstCanGoPos->x - mLeftTopx) * mInvGridSize));
+                    mDistance = RealDistance(mStartzx, (unsigned short)((mFirstCanGoPos->z - mLeftTopz) * 
+                        mInvGridSize) * mWidth + (unsigned short)((mFirstCanGoPos->x - mLeftTopx) * mInvGridSize));
                     return true;
                 }
             } while (--count>0);

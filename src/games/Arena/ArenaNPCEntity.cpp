@@ -92,14 +92,11 @@ namespace Demi
     void ArNPCEntity::Update(float dt)
     {
         ArGameEntity::Update(dt);
-        
-        auto renderObj = GetRenderObj();
-        DiVec3 pos = renderObj->GetWorldPosition();
-        UpdateBlocks(pos);
     }
 
     void ArNPCEntity::UpdateBlocks(const DiVec3& pos)
     {
+        return;
         auto terrain = ArGameApp::Get()->GetWorld()->GetTerrain();
         auto& pathFinder = terrain->GetPathFinder();
 
@@ -125,6 +122,7 @@ namespace Demi
             mLastBlocksVerts[i].x = DiMath::Clamp(x + offset_x[i], 0, (int)vx - 1);
             mLastBlocksVerts[i].y = DiMath::Clamp(y + offset_y[i], 0, (int)vy - 1);
         }
+
         for (int i = 0; i < 9; ++i)
         {
             mLastBlockValues[i] = pathFinder.GetLevel(mLastBlocksVerts[i].x, mLastBlocksVerts[i].y);
