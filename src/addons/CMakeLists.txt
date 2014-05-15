@@ -3,3 +3,4 @@
 #
 add_subdirectory(K2)
 add_subdirectory(MyGUI)
+add_subdirectory(Effects)

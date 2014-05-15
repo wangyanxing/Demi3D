@@ -41,15 +41,15 @@ namespace Demi
         
     private:
 
-		/// Decode PVRTCV3 image format
+        /// Decode PVRTCV3 image format
         void DecodeV2(DiDataStreamPtr& stream);
         
-		/// Decode PVRTCV3 image format
-		void DecodeV3(DiDataStreamPtr& stream);
+        /// Decode PVRTCV3 image format
+        void DecodeV3(DiDataStreamPtr& stream);
         
         void FlipEndian(void * pData, size_t size, size_t count) const;
         
-	    void FlipEndian(void * pData, size_t size) const;
+        void FlipEndian(void * pData, size_t size) const;
 
     public:
         

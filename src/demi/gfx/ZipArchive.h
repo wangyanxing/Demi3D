@@ -16,8 +16,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Archive.h"
 
-typedef struct zzip_dir		ZZIP_DIR;
-typedef struct zzip_file	ZZIP_FILE;
+typedef struct zzip_dir        ZZIP_DIR;
+typedef struct zzip_file    ZZIP_FILE;
 typedef union _zzip_plugin_io zzip_plugin_io_handlers;
 
 namespace Demi
@@ -78,19 +78,19 @@ namespace Demi
     {
     protected:
         ZZIP_FILE* mZzipFile;
-		
-		DiStaticCache<256> mCache;
+        
+        DiStaticCache<256> mCache;
     public:
         
         DiZipDataStream(ZZIP_FILE* zzipFile, size_t uncompressedSize);
         
         DiZipDataStream(const DiString& name, ZZIP_FILE* zzipFile, size_t uncompressedSize);
         
-		~DiZipDataStream();
+        ~DiZipDataStream();
         
         size_t  Read(void* buf, size_t count);
         
-		size_t  Write(void* buf, size_t count);
+        size_t  Write(void* buf, size_t count);
         
         void    Skip(long count);
         

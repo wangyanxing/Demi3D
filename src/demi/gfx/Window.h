@@ -78,7 +78,7 @@ namespace Demi
 
         bool                mDestroyWindow;
 
-        bool	            mVSync;
+        bool                mVSync;
     };
 
     class DI_GFX_API DiWindowManager

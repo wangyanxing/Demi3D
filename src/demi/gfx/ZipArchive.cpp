@@ -95,7 +95,7 @@ namespace Demi
             while (zzip_dir_read(mZzipDir, &zzipEntry))
             {
                 DiFileInfo info;
-				info.archive = this;
+                info.archive = this;
                 
                 info.filename = zzipEntry.d_name;
                 info.basename = info.filename.ExtractFileName();
@@ -116,7 +116,7 @@ namespace Demi
                     // the compressed size of a folder, and if he does, its useless anyway
                     info.compressedSize = size_t (-1);
                 }
-			
+            
                 mFileList.push_back(info);
                 
             }
@@ -158,16 +158,16 @@ namespace Demi
         }
         
         if (!zzipFile)
-		{
+        {
             int zerr = zzip_error(mZzipDir);
             DiString zzDesc = GetZzipErrorDescription((zzip_error_t)zerr);
             DI_WARNING("Unable to open zip archive: %s. Error: %s", lookUpFileName.c_str(), zzDesc.c_str());
-			return nullptr;
-		}
+            return nullptr;
+        }
         
-		// Get uncompressed size too
-		ZZIP_STAT zstat;
-		zzip_dir_stat(mZzipDir, lookUpFileName.c_str(), &zstat, ZZIP_CASEINSENSITIVE);
+        // Get uncompressed size too
+        ZZIP_STAT zstat;
+        zzip_dir_stat(mZzipDir, lookUpFileName.c_str(), &zstat, ZZIP_CASEINSENSITIVE);
         
         // Construct & return stream
         return DiDataStreamPtr(DI_NEW DiZipDataStream(lookUpFileName, zzipFile, static_cast<size_t>(zstat.st_size)));
@@ -251,7 +251,7 @@ namespace Demi
         // If pattern contains a directory name, do a full match
         bool full_match = (pattern.find ('/') != DiString::npos) ||
             (pattern.find ('\\') != DiString::npos);
-		bool wildCard = pattern.find("*") != DiString::npos;
+        bool wildCard = pattern.find("*") != DiString::npos;
         
         for (auto i = mFileList.begin(); i != mFileList.end(); ++i)
             if ((dirs == (i->compressedSize == size_t (-1))) &&
@@ -270,7 +270,7 @@ namespace Demi
         // If pattern contains a directory name, do a full match
         bool full_match = (pattern.find ('/') != DiString::npos) ||
         (pattern.find ('\\') != DiString::npos);
-		bool wildCard = pattern.find("*") != DiString::npos;
+        bool wildCard = pattern.find("*") != DiString::npos;
         
         for (auto i = mFileList.begin(); i != mFileList.end(); ++i)
             if ((dirs == (i->compressedSize == size_t (-1))) &&
@@ -292,82 +292,82 @@ namespace Demi
     DiZipDataStream::DiZipDataStream(ZZIP_FILE* zzipFile, size_t uncompressedSize)
     : mZzipFile(zzipFile)
     {
-		mSize = uncompressedSize;
+        mSize = uncompressedSize;
     }
   
     DiZipDataStream::DiZipDataStream(const DiString& name, ZZIP_FILE* zzipFile, size_t uncompressedSize)
         :DiDataStream(name), mZzipFile(zzipFile)
     {
-		mSize = uncompressedSize;
+        mSize = uncompressedSize;
     }
 
-	DiZipDataStream::~DiZipDataStream()
-	{
-		Close();
-	}
+    DiZipDataStream::~DiZipDataStream()
+    {
+        Close();
+    }
  
     size_t DiZipDataStream::Read(void* buf, size_t count)
     {
-		size_t was_avail = mCache.Read(buf, count);
-		zzip_ssize_t r = 0;
-		if (was_avail < count)
-		{
-			r = zzip_file_read(mZzipFile, (char*)buf + was_avail, count - was_avail);
-			if (r < 0)
+        size_t was_avail = mCache.Read(buf, count);
+        zzip_ssize_t r = 0;
+        if (was_avail < count)
+        {
+            r = zzip_file_read(mZzipFile, (char*)buf + was_avail, count - was_avail);
+            if (r < 0)
             {
-				ZZIP_DIR *dir = zzip_dirhandle(mZzipFile);
-				DiString msg = zzip_strerror_of(dir);
+                ZZIP_DIR *dir = zzip_dirhandle(mZzipFile);
+                DiString msg = zzip_strerror_of(dir);
                 DI_WARNING("Error from zziplib: %s", msg.c_str());
-			}
-			mCache.CacheData((char*)buf + was_avail, (size_t)r);
-		}
-		return was_avail + (size_t)r;
+            }
+            mCache.CacheData((char*)buf + was_avail, (size_t)r);
+        }
+        return was_avail + (size_t)r;
     }
 
-	size_t DiZipDataStream::Write(void* buf, size_t count)
-	{
-		// not supported
-		return 0;
-	}
+    size_t DiZipDataStream::Write(void* buf, size_t count)
+    {
+        // not supported
+        return 0;
+    }
  
     void DiZipDataStream::Skip(long count)
     {
         long was_avail = static_cast<long>(mCache.Avail());
-		if (count > 0)
-		{
-			if (!mCache.Ff(count))
-				zzip_seek(mZzipFile, static_cast<zzip_off_t>(count - was_avail), SEEK_CUR);
-		}
-		else if (count < 0)
-		{
-			if (!mCache.Rewind((size_t)(-count)))
-				zzip_seek(mZzipFile, static_cast<zzip_off_t>(count + was_avail), SEEK_CUR);
-		}
+        if (count > 0)
+        {
+            if (!mCache.Ff(count))
+                zzip_seek(mZzipFile, static_cast<zzip_off_t>(count - was_avail), SEEK_CUR);
+        }
+        else if (count < 0)
+        {
+            if (!mCache.Rewind((size_t)(-count)))
+                zzip_seek(mZzipFile, static_cast<zzip_off_t>(count + was_avail), SEEK_CUR);
+        }
     }
  
     void DiZipDataStream::Seek( size_t pos )
     {
-		zzip_off_t newPos = static_cast<zzip_off_t>(pos);
-		zzip_off_t prevPos = static_cast<zzip_off_t>(Tell());
-		if (prevPos < 0)
-		{
-			// seek set after invalid pos
-			mCache.Clear();
-			zzip_seek(mZzipFile, newPos, SEEK_SET);
-		}
-		else
-		{
-			// everything is going all right, relative seek
-			Skip((long)(newPos - prevPos));
-		}
+        zzip_off_t newPos = static_cast<zzip_off_t>(pos);
+        zzip_off_t prevPos = static_cast<zzip_off_t>(Tell());
+        if (prevPos < 0)
+        {
+            // seek set after invalid pos
+            mCache.Clear();
+            zzip_seek(mZzipFile, newPos, SEEK_SET);
+        }
+        else
+        {
+            // everything is going all right, relative seek
+            Skip((long)(newPos - prevPos));
+        }
     }
 
     size_t DiZipDataStream::Tell(void) const
     {
-		zzip_off_t pos = zzip_tell(mZzipFile);
-		if (pos<0)
-			return (size_t)(-1);
-		return static_cast<size_t>(pos) - mCache.Avail();
+        zzip_off_t pos = zzip_tell(mZzipFile);
+        if (pos<0)
+            return (size_t)(-1);
+        return static_cast<size_t>(pos) - mCache.Avail();
     }
 
     bool DiZipDataStream::Eof(void) const
@@ -377,11 +377,11 @@ namespace Demi
 
     void DiZipDataStream::Close(void)
     {
-		if (mZzipFile != 0)
-		{
-			zzip_file_close(mZzipFile);
-			mZzipFile = 0;
-		}
-		mCache.Clear();
+        if (mZzipFile != 0)
+        {
+            zzip_file_close(mZzipFile);
+            mZzipFile = 0;
+        }
+        mCache.Clear();
     }
 }

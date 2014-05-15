@@ -51,7 +51,7 @@ namespace Demi
     {
         return (slotIdx & 0xFF000000) | ((slotIdx & 0x00FFFFFF) / ARRAY_PACKED_REALS);
     }
-	
+    
     inline uint32 SkeletonAnimationDef::blockIdxToSlotStart( uint32 blockIdx ) const
     {
         return (blockIdx & 0xFF000000) | ((blockIdx & 0x00FFFFFF) * ARRAY_PACKED_REALS);
@@ -173,7 +173,7 @@ namespace Demi
             KeyFrameRigVec::iterator enKeys = keyFrames.end();
 
             uint32 blockIdx = itTrack->getBoneBlockIdx();
-			uint32 slotStart= blockIdxToSlotStart( blockIdx );
+            uint32 slotStart= blockIdxToSlotStart( blockIdx );
 
             while( itKeys != enKeys )
             {
@@ -188,9 +188,9 @@ namespace Demi
                     if( it != slotToBone.end() )
                         boneIdx = it->second;
 
-					if( animation->HasNodeClip( boneIdx ) )
+                    if( animation->HasNodeClip( boneIdx ) )
                     {
-						auto *oldTrack = animation->GetNodeClip( boneIdx );
+                        auto *oldTrack = animation->GetNodeClip( boneIdx );
 
                         DiTransformKeyFrame originalKF( 0, fTime );
                         oldTrack->GetInterpolatedKeyFrame( animation->GetTimeIndex( fTime ),

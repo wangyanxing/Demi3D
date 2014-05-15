@@ -186,63 +186,63 @@ namespace Demi
         typedef DiVector<DiBillboard*>  BillboardPool;
         typedef DiVector<DiFloatRect>   TextureCoordSets;
 
-        DiAABB                           mAABB;
+        DiAABB                          mAABB;
 
-        float                            mBoundingRaidus;
+        float                           mBoundingRaidus;
 
-        BillboardOrigin                  mOriginType;
-        
-        BillboardRotationType            mRotationType;
+        BillboardOrigin                 mOriginType;
 
-        float                            mDefaultWidth;
+        BillboardRotationType           mRotationType;
 
-        float                            mDefaultHeight;
+        float                           mDefaultWidth;
 
-        bool                             mAllDefaultSize;
+        float                           mDefaultHeight;
 
-        bool                             mAutoExtendPool;
+        bool                            mAllDefaultSize;
 
-        bool                             mSortingEnabled;
+        bool                            mAutoExtendPool;
 
-        bool                             mAccurateFacing;
+        bool                            mSortingEnabled;
 
-        bool                             mAllDefaultRotation;
+        bool                            mAccurateFacing;
 
-        bool                             mWorldSpace;
+        bool                            mAllDefaultRotation;
 
-        ActiveBillboardList              mActiveBillboards;
+        bool                            mWorldSpace;
 
-        FreeBillboardList                mFreeBillboards;
+        ActiveBillboardList             mActiveBillboards;
 
-        BillboardPool                    mBillboardPool;
+        FreeBillboardList               mFreeBillboards;
 
-        float*                           mLockPtr;
+        BillboardPool                   mBillboardPool;
 
-        uint32                           mLockSize;
+        float*                          mLockPtr;
 
-        DiVec3                           mVOffset[4];
-        
-        DiCamera*                        mCurrentCamera;
-        
-        float                            mLeftOff, mRightOff, mTopOff, mBottomOff;
-        
-        DiVec3                           mCamX, mCamY;
-        
-        DiVec3                           mCamDir;
-        
-        DiQuat                           mCamQ;
-        
-        DiVec3                           mCamPos;
+        uint32                          mLockSize;
 
-        TextureCoordSets                 mTextureCoords;
+        DiVec3                          mVOffset[4];
 
-        BillboardType                    mBillboardType;
-       
-        DiVec3                           mCommonDirection;
-       
-        DiVec3                           mCommonUpVector;
+        DiCamera*                       mCurrentCamera;
 
-        unsigned short                   mNumVisibleBillboards;
+        float                           mLeftOff, mRightOff, mTopOff, mBottomOff;
+
+        DiVec3                          mCamX, mCamY;
+
+        DiVec3                          mCamDir;
+
+        DiQuat                          mCamQ;
+
+        DiVec3                          mCamPos;
+
+        TextureCoordSets                mTextureCoords;
+
+        BillboardType                   mBillboardType;
+
+        DiVec3                          mCommonDirection;
+
+        DiVec3                          mCommonUpVector;
+
+        unsigned short                  mNumVisibleBillboards;
 
     private:
 

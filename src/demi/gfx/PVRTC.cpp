@@ -18,7 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Texture.h"
 
 #define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
-#define PVR_TEXTURE_FLAG_TYPE_MASK	0xff
+#define PVR_TEXTURE_FLAG_TYPE_MASK    0xff
 
 namespace Demi
 {
@@ -32,7 +32,7 @@ namespace Demi
     const uint32 PVR2_MAGIC = FOURCC('P', 'V', 'R', '!');
     const uint32 PVR3_MAGIC = FOURCC('P', 'V', 'R', 3);
     
-	enum
+    enum
     {
         kPVRTextureFlagTypePVRTC_2 = 24,
         kPVRTextureFlagTypePVRTC_4
@@ -48,7 +48,7 @@ namespace Demi
         kPVRTC2_PF_4BPP
     };
     
-	typedef struct _PVRTCTexHeaderV2
+    typedef struct _PVRTCTexHeaderV2
     {
         uint32 headerLength;
         uint32 height;
@@ -123,7 +123,7 @@ namespace Demi
         {
             DI_WARNING("Mipmap index out of range");
         }
-		if(face >= mNumFaces)
+        if(face >= mNumFaces)
         {
             DI_WARNING("Face index out of range");
         }
@@ -131,15 +131,15 @@ namespace Demi
         // Calculate mipmap offset and size
         uint8 *offset = mData->GetPtr();
         
-		// Figure out the offsets
+        // Figure out the offsets
         uint32 width = mWidth;
         uint32 height = mHeight;
-		uint32 finalWidth = 0, finalHeight = 0;
+        uint32 finalWidth = 0, finalHeight = 0;
         
         uint32 mipOffset = 0;
         uint32 lastLevelSize = 0;
         
-		for(uint32 mip = 0; mip < mMipmaps; ++mip)
+        for(uint32 mip = 0; mip < mMipmaps; ++mip)
         {
             mipOffset += lastLevelSize * mNumFaces;
             lastLevelSize = DiPixelBox::ComputeImageByteSize(width, height, mFormat);
@@ -157,16 +157,16 @@ namespace Demi
         }
         offset += mipOffset;
 
-		// Return subface as pixelbox
-		DiPixelBox src(finalWidth, finalHeight, mFormat, offset);
-		return src;
+        // Return subface as pixelbox
+        DiPixelBox src(finalWidth, finalHeight, mFormat, offset);
+        return src;
 
     }
     
     void DiPVRTC::FlipEndian(void * pData, size_t size, size_t count) const
     {
 #if DEMI_ENDIAN == DEMI_BIG_ENDIAN
-		for(unsigned int index = 0; index < count; index++)
+        for(unsigned int index = 0; index < count; index++)
         {
             FlipEndian((void *)((long)pData + (index * size)), size);
         }
@@ -188,26 +188,26 @@ namespace Demi
     bool DiPVRTC::Load(DiDataStreamPtr& stream)
     {
         // Assume its a pvr 2 header
-		PVRTCTexHeaderV2 headerV2;
-		stream->Read(&headerV2, sizeof(PVRTCTexHeaderV2));
-		stream->Seek(0);
+        PVRTCTexHeaderV2 headerV2;
+        stream->Read(&headerV2, sizeof(PVRTCTexHeaderV2));
+        stream->Seek(0);
         
-		if (PVR2_MAGIC == headerV2.pvrTag)
-		{
+        if (PVR2_MAGIC == headerV2.pvrTag)
+        {
             DecodeV2(stream);
             return true;
-		}
+        }
         
-		// Try it as pvr 3 header
-		PVRTCTexHeaderV3 headerV3;
-		stream->Read(&headerV3, sizeof(PVRTCTexHeaderV3));
-		stream->Seek(0);
+        // Try it as pvr 3 header
+        PVRTCTexHeaderV3 headerV3;
+        stream->Read(&headerV3, sizeof(PVRTCTexHeaderV3));
+        stream->Seek(0);
         
-		if (PVR3_MAGIC == headerV3.version)
-		{
+        if (PVR3_MAGIC == headerV3.version)
+        {
             DecodeV3(stream);
             return true;
-		}
+        }
 
         DI_WARNING("Invalid pvr format");
         return false;
@@ -313,17 +313,17 @@ namespace Demi
         uint32 size = DiPixelBox::ComputeImageByteSize(mMipmaps, mNumFaces,
                                              mWidth, mHeight, mFormat);
         
-		// Bind output buffer
+        // Bind output buffer
         auto output = make_shared<DiMemoryDataStream>(size);
         
-		// Now deal with the data
-		void *destPtr = output->GetPtr();
+        // Now deal with the data
+        void *destPtr = output->GetPtr();
     
         uint32 w = mWidth;
         uint32 h = mHeight;
         // All mips for a surface, then each face
         for(size_t mip = 0; mip <= mMipmaps; ++mip)
-		{
+        {
             size_t pvrSize = DiPixelBox::ComputeImageByteSize(w, h, mFormat);
             for(size_t surface = 0; surface < header.numSurfaces; ++surface)
             {
@@ -338,7 +338,7 @@ namespace Demi
             // Next mip
             if(h!=1) h /= 2;
             if(w!=1) w /= 2;
-		}
+        }
         
         mData = output;
         mData->Seek(0);

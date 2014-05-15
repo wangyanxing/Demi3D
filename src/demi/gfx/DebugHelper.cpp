@@ -75,25 +75,25 @@ namespace Demi
         AddLine(pts[7],pts[6],lineColor);
         AddLine(pts[6],pts[5],lineColor);
         
-		// left
+        // left
         AddLine(pts[5],pts[6],lineColor);
         AddLine(pts[6],pts[2],lineColor);
         AddLine(pts[2],pts[1],lineColor);
         AddLine(pts[1],pts[5],lineColor);
-		
+        
         // right
         AddLine(pts[4],pts[0],lineColor);
         AddLine(pts[0],pts[3],lineColor);
         AddLine(pts[3],pts[7],lineColor);
         AddLine(pts[7],pts[4],lineColor);
         
-		// bottom
-		AddLine(pts[6],pts[7],lineColor);
+        // bottom
+        AddLine(pts[6],pts[7],lineColor);
         AddLine(pts[7],pts[3],lineColor);
         AddLine(pts[3],pts[2],lineColor);
         AddLine(pts[2],pts[6],lineColor);
         
-		// top
+        // top
         AddLine(pts[4],pts[5],lineColor);
         AddLine(pts[5],pts[1],lineColor);
         AddLine(pts[1],pts[0],lineColor);

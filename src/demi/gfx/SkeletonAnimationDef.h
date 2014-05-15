@@ -39,7 +39,7 @@ namespace Demi
         KfTransformArrayMemoryManager *mKfTransformMemoryManager;
 
         inline uint32 slotToBlockIdx( uint32 slotIdx ) const;
-		inline uint32 blockIdxToSlotStart( uint32 blockIdx ) const;
+        inline uint32 blockIdxToSlotStart( uint32 blockIdx ) const;
 
         typedef DiVector<float> TimestampVec;
         typedef DiMap<size_t, TimestampVec> TimestampsPerBlock;

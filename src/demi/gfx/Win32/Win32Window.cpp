@@ -44,7 +44,7 @@ namespace Demi
             DiBase::CommandMgr->ExecuteCommand("quit");
             break;
         case WM_ACTIVATE:
-	    {
+        {
             bool active = (LOWORD(wParam) != WA_INACTIVE);
             if( active )
             {
@@ -56,8 +56,8 @@ namespace Demi
                 if (renderWnd)
                     renderWnd->GetRenderBuffer()->SetActive(false);
             }
-		    break;
-	    }
+            break;
+        }
 
         // for command manager
         case WM_COPYDATA:
