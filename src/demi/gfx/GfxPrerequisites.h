@@ -163,6 +163,7 @@ namespace Demi
     typedef shared_ptr<DiSkyLight>          DiSkyLightPtr;
     typedef shared_ptr<DiTexture>           DiTexturePtr;
     typedef shared_ptr<DiTransformUnit>     DiTransUnitPtr;
+    typedef shared_ptr<DiBillboardSet>      DiBillboardSetPtr;
 }
 
 #include "GfxBase.h"
