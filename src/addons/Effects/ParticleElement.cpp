@@ -615,13 +615,24 @@ namespace Demi
         }
     }
     
-    void DiParticleElement::UpdateBatchGroup(DiRenderBatchGroup* queue,DiCamera* cam)
+    void DiParticleElement::Update(DiCamera* cam)
     {
         if (mRenderer && mRenderer->IsRendererInitialised())
         {
             if (mEnabled || mParentSystem->IsSmoothLod())
             {
-                mRenderer->UpdateBatchGroup(queue, cam, &mPool);
+                mRenderer->Update(cam, &mPool);
+            }
+        }
+    }
+    
+    void DiParticleElement::AddToBatchGroup(DiRenderBatchGroup* group)
+    {
+        if (mRenderer && mRenderer->IsRendererInitialised())
+        {
+            if (mEnabled || mParentSystem->IsSmoothLod())
+            {
+                mRenderer->AddToBatchGroup(group);
             }
         }
     }

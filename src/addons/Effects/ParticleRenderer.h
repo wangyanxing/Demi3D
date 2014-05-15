@@ -30,11 +30,11 @@ namespace Demi
     public:
         bool autoRotate;
 
-        static const uint8    DEFAULT_RENDER_QUEUE_GROUP;
-        static const bool    DEFAULT_SORTED;
+        static const uint8     DEFAULT_RENDER_QUEUE_GROUP;
+        static const bool      DEFAULT_SORTED;
         static const uint8     DEFAULT_TEXTURECOORDS_ROWS;
         static const uint8     DEFAULT_TEXTURECOORDS_COLUMNS;
-        static const bool    DEFAULT_USE_SOFT_PARTICLES;
+        static const bool      DEFAULT_USE_SOFT_PARTICLES;
         static const float     DEFAULT_SOFT_PARTICLES_CONTRAST_POWER;
         static const float     DEFAULT_SOFT_PARTICLES_SCALE;
         static const float     DEFAULT_SOFT_PARTICLES_DELTA;
@@ -88,8 +88,10 @@ namespace Demi
         void                    SetSoftParticlesScale(float softParticlesScale);
 
         void                    SetSoftParticlesDelta(float softParticlesDelta);
-
-        inline virtual void     UpdateBatchGroup(DiRenderBatchGroup*, DiCamera*, DiParticlePool*);
+        
+        virtual void            Update(DiCamera*, DiParticlePool*){}
+        
+        virtual void            AddToBatchGroup(DiRenderBatchGroup*){}
 
         virtual void            SetMaterialName(const DiString& materialName) = 0;
 

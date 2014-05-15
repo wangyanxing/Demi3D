@@ -2,7 +2,7 @@
 # Copyright (c) 2013-2014 the Demi3D project.
 #
 
-add_subdirectory(Car)
+add_subdirectory(ParticleSystem)
 add_subdirectory(EnvironmentMap)
 add_subdirectory(FresnelMaterial)
 add_subdirectory(Hierarchy)

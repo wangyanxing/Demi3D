@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<material>
- <shader name="vertex">lambert_v</shader>
- <shader name="pixel">lambert_p</shader>
- <diffuse>0.2 0.02 0.0 1.000000</diffuse>
-</material>

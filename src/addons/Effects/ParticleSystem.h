@@ -84,7 +84,7 @@ namespace Demi
 
         inline float            GetTimeElapsedSinceStart(void) const {return mTimeElapsedSinceStart;};
 
-        DiParticleSystem&       operator=(const DiParticleSystem& ps);
+        DiParticleSystem&       operator = (const DiParticleSystem& ps);
 
         DiParticleElement*      CreateElement(void);
 
@@ -109,11 +109,13 @@ namespace Demi
         virtual void            NotifyCurrentCamera(DiCamera* cam);
 
         const DiAABB&           GetBoundingBox(void) const;
-
-        inline virtual void     CullingUpdate(DiRenderBatchGroup*, DiCamera*);
-
+        
+        virtual void            Update(DiCamera* camera);
+        
+        virtual void            AddToBatchGroup(DiRenderBatchGroup* bg);
+        
         virtual void            SetBatchGroup(DiBatchGroupType gt);
-
+        
         void                    Update(float timeElapsed);
 
         size_t                  UpdateTechniques(float timeElapsed);

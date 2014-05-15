@@ -15,7 +15,7 @@ endif ()
 
 set_property(TARGET ${TARGETNAME} PROPERTY FOLDER "Samples")
 
-target_link_libraries(${TARGETNAME} DemoFramework DiMisc DiGfx DiK2 DiScript ${OIS_LIBRARIES})
+target_link_libraries(${TARGETNAME} DemoFramework DiMisc DiGfx DiK2 DiScript DiFx ${OIS_LIBRARIES})
 
 ENDMACRO(DI_ADD_SAMPLE)
 
