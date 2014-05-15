@@ -31,7 +31,8 @@ namespace Demi
 
         virtual                 ~DiTransformUnit();
         
-        typedef std::function<DiPair<bool,float> (const DiRay&)> ManualQueryFunc;
+        typedef std::function<DiPair<bool,float> (const DiRay&)> ManualRayQueryFunc;
+        typedef std::function<DiPair<bool, float>(const DiAABB&)> ManualAABBQueryFunc;
 
     public:
 
@@ -99,9 +100,13 @@ namespace Demi
 
         virtual void            SetShadowCastEnable(bool val){mShadowCastEnable = val;}
         
-        ManualQueryFunc         GetManualQueryFunc() {return mManualQueryFunc;}
+        ManualRayQueryFunc      GetManualRayQueryFunc() {return mManualRayFunc;}
+
+        ManualAABBQueryFunc     GetManualAABBQueryFunc() { return mManualAABBFunc; }
         
-        void                    SetManualQueryFunc(ManualQueryFunc func) {mManualQueryFunc = func;}
+        void                    SetManualRayQueryFunc(ManualRayQueryFunc func) {mManualRayFunc = func;}
+
+        void                    SetManualAABBQueryFunc(ManualAABBQueryFunc func) { mManualAABBFunc = func; }
 
         static void             SetDefaultVisibilityFlags(uint32 flags) { sDefaultVisibilityFlags = flags; }
 
@@ -133,7 +138,9 @@ namespace Demi
 
         uint32                  mVisibilityFlags;
         
-        ManualQueryFunc         mManualQueryFunc;
+        ManualRayQueryFunc      mManualRayFunc;
+
+        ManualAABBQueryFunc     mManualAABBFunc;
 
         static uint32           sDefaultQueryFlags;
 

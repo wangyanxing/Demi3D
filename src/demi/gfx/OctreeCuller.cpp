@@ -327,7 +327,7 @@ namespace Demi
 
                 if (tu->GetQueryFlags() & queryFlag)
                 {
-                    auto manualFunc = tu->GetManualQueryFunc();
+                    auto manualFunc = tu->GetManualRayQueryFunc();
                     auto res =  manualFunc ? manualFunc(ray):
                         ray.intersects(tu->GetWorldBoundingBox());
                     
@@ -359,7 +359,7 @@ namespace Demi
 
                 if (tu->GetQueryFlags() & queryFlag)
                 {
-                    auto manualFunc = tu->GetManualQueryFunc();
+                    auto manualFunc = tu->GetManualRayQueryFunc();
                     auto res =  manualFunc ? manualFunc(ray):
                         ray.intersects(tu->GetWorldBoundingBox());
                     

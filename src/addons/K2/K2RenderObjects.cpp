@@ -130,7 +130,7 @@ namespace Demi
     {
         if(mModel)
         {
-            mModel->SetManualQueryFunc([this](const DiRay& ray){
+            mModel->SetManualRayQueryFunc([this](const DiRay& ray){
                 DiAABB b = mSelectBounds;
                 b.mMaximum += GetWorldPosition();
                 b.mMinimum += GetWorldPosition();
