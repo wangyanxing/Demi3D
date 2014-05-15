@@ -222,7 +222,6 @@ namespace Demi
         mAIRoot->addChild(DI_NEW BoolCondition([this](void*){
             
             float sight = DiK2Pos::FromWorldScale(mEntity->GetAttribute()->GetEntityConfig()->sightrangenight);
-            float range = DiK2Pos::FromWorldScale(mEntity->GetAttribute()->GetEntityConfig()->attackrange);
             if (!mEntity->CheckDistance(ArEntityManager::GetHeroID(), sight))
             {
                 // change to idle
@@ -236,7 +235,7 @@ namespace Demi
         }, true));
 
         mAIRoot->addChild(DI_NEW BoolCondition([this](void*){
-            float range = DiK2Pos::FromWorldScale(mEntity->GetAttribute()->GetEntityConfig()->attackrange);
+            float range = DiK2Pos::FromWorldScale(mEntity->GetAttribute()->GetEntityConfig()->attackrange*1.3f);
             auto heroEntity = ArGameApp::Get()->GetEntityManager()->GetHero();
             auto thisEntity = dynamic_cast<ArDynEntity*>(mEntity);
             if (!thisEntity)
@@ -244,20 +243,19 @@ namespace Demi
                 return false;
             }
 
-            if (!mEntity->CheckDistance(ArEntityManager::GetHeroID(), range))
+            if (!mEntity->CheckAbsDistance(ArEntityManager::GetHeroID(), range))
             {
                 // change to follow
-                CommandFollowTo(ArEntityManager::GetHeroID(), 2.5f);
+                CommandFollowTo(ArEntityManager::GetHeroID(), range-0.1f);
                 return false;
             }
             else
             {
-                if (!heroEntity->GetMoveProperty()->GetWalkMode() == ENUM_WALK_MODE_WALK)
+                if (!(heroEntity->GetMoveProperty()->GetWalkMode() == ENUM_WALK_MODE_WALK))
                 {
                     // attack
                     CommandAttack(ArEntityManager::GetHeroID());
                 }
-
                 return true;
             }
         }, true));

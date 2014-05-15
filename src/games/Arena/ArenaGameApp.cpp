@@ -77,7 +77,7 @@ namespace Demi
         , mInputMgr(nullptr)
         , mQuit(false)
         , mGame(nullptr)
-    {
+    {        
         DI_INIT_PROFILER;
 
         DI_ASSERT(!sApp);
@@ -250,8 +250,10 @@ namespace Demi
             case OIS::KC_M:
                 mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(1);
                 break;
-            case OIS::KC_N:
-                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 2);
+            case OIS::KC_2:
+                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1,3);
+                mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1,3);
+                mGame->GetEntityManager()->FindEntity(4)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1,3);
                 break;
             case OIS::KC_1:
                 mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();

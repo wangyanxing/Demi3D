@@ -177,7 +177,7 @@ namespace Demi
             {
                 uint8 block = blockerBuffer[y*vertY + x];
                 if (block > 0)
-                    mPathFinder.SetLevel(x, y, 10);
+                    mPathFinder.SetLevel(x, y, 15);
             }
         }
 

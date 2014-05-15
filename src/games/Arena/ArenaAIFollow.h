@@ -36,7 +36,7 @@ namespace Demi
 
         void        Redo();
 
-        void        Move();
+        void        Move(ArGameEntityPtr target);
 
     protected:
 

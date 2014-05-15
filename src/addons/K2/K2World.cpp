@@ -69,29 +69,6 @@ namespace Demi
         DiK2WorldSerial serial;
         serial.Load(path,this);
         mRootNode->AttachObject(mTerrain);
-
-        DiTerrainDescPtr desc = mTerrain->GetDesc();
-        uint8* blockerBuffer = desc->mVertBlockerMap->GetBuffer();
-        uint32 vertX = CHUNK_GRID_SIZE*desc->mSizeX + 1;
-        uint32 vertY = CHUNK_GRID_SIZE*desc->mSizeY + 1;
-#ifdef _DEBUG_CLIFF_POS
-//         for (uint32 x = 0; x < vertX; ++x)
-//         {
-//             for (uint32 y = 0; y < vertY; ++y)
-//             {
-//                 uint8 block = blockerBuffer[y*vertY + x];
-//                 if (block > 0)
-//                 {
-//                     DiVec3 pos = mTerrain->GetPoint(x, y);
-//                     mDebugger->AddBoundingBox(pos, 1.5f, DiColor::Red);
-//                 }
-//             }
-//         }
-        for (auto i = DiTerrainChunk::sAABBs.begin(); i != DiTerrainChunk::sAABBs.end(); ++i)
-        {
-            mDebugger->AddBoundingBox(*i, DiColor::Red);
-        }
-#endif
     }
 
     DiK2RenderObject* DiK2World::AddRenderObj(const DiString& mdf, 
@@ -230,9 +207,28 @@ namespace Demi
 
     void DiK2World::Update(float dt)
     {
+#ifdef _DEBUG_CLIFF_POS
+        mDebugger->Clear();
+        DiTerrainDescPtr desc = mTerrain->GetDesc();
+        //uint8* blockerBuffer = desc->mVertBlockerMap->GetBuffer();
+        uint32 vertX = CHUNK_GRID_SIZE*desc->mSizeX + 1;
+        uint32 vertY = CHUNK_GRID_SIZE*desc->mSizeY + 1;
+        for (uint32 x = 0; x < vertX; ++x)
+        {
+            for (uint32 y = 0; y < vertY; ++y)
+            {
+                auto block = mTerrain->GetPathFinder().GetLevel(x, y);
+                if (block > 0 && block <= 10)
+                {
+                    DiVec3 pos = mTerrain->GetPoint(x, y);
+                    mDebugger->AddBoundingBox(pos, 1.5f, DiColor::Red);
+                }
+            }
+        }
+#endif
     }
 
-    void DiK2World::ProcessWorldEntity(const DiString& mdf, const DiString& type, 
+    void DiK2World::ProcessWorldEntity(const DiString& mdf, const DiString& type,
         const Trans& trans, int id, int team)
     {
         auto subtype = K2ObjSubTypes::FromString(type);

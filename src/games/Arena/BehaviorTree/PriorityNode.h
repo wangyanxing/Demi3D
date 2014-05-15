@@ -30,7 +30,7 @@ namespace BehaviorTree
     public:
 	    BEHAVIOR_STATUS execute(void* agent);
 	    int currentPosition;
-	    PriorityNode::PriorityNode();
+	    PriorityNode();
 	    void init(void* agent);
 
     };

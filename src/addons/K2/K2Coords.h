@@ -61,6 +61,21 @@ namespace Demi
         {
             return !((*this) == Ref);
         }
+        
+        inline DiK2Pos operator + ( const DiK2Pos& rkVector ) const
+        {
+            return DiK2Pos(x + rkVector.x, z + rkVector.z);
+        }
+        
+        inline DiK2Pos operator - ( const DiK2Pos& rkVector ) const
+        {
+            return DiK2Pos(x - rkVector.x, z - rkVector.z);
+        }
+        
+        inline DiK2Pos operator * ( const float fScalar ) const
+        {
+            return DiK2Pos(x * fScalar, z * fScalar);
+        }
 
         inline float Distance(const DiK2Pos& rhs) const
         {
@@ -72,6 +87,50 @@ namespace Demi
             double dx = x - rhs.x;
             double dz = z - rhs.z;
             return (float)(dx * dx + dz * dz);
+        }
+        
+        inline float Length () const
+        {
+            return DiMath::Sqrt( x * x + z * z );
+        }
+        
+        inline float DotProduct(const DiK2Pos& vec) const
+        {
+            return x * vec.x + z * vec.z;
+        }
+        
+        inline DiRadian AngleBetween(const DiK2Pos& dest)
+        {
+            float lenProduct = Length() * dest.Length();
+            
+            // Divide by zero check
+            if(lenProduct < 1e-6f)
+                lenProduct = 1e-6f;
+            
+            float f = DotProduct(dest) / lenProduct;
+            
+            f = DiMath::Clamp(f, (float)-1.0, (float)1.0);
+            return DiRadian(DiMath::ACos(f));
+        }
+        
+        inline DiK2Pos Perpendicular(void) const
+        {
+            return DiK2Pos (-z, x);
+        }
+        
+        inline float Normalise()
+        {
+            float fLength = DiMath::Sqrt( x * x + z * z);
+            
+            // Will also work for zero-sized vectors, but will change nothing
+            if ( fLength > 1e-08 )
+            {
+                float fInvLength = 1.0f / fLength;
+                x *= fInvLength;
+                z *= fInvLength;
+            }
+            
+            return fLength;
         }
 
         inline void FromWorldPos(const DiVec3& worldPos)

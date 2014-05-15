@@ -134,7 +134,8 @@ namespace Demi
     {
         for (auto& animevent : mEvents[EVENT_ANIM_END])
         {
-            animevent.func(DiAny(clip));
+            DiAny c(clip);
+            animevent.func(c);
         }
     }
 
@@ -144,7 +145,10 @@ namespace Demi
         {
             float triggetTime = any_cast<float>(animevent.param);
             if (mCurrentClipElapsed >= triggetTime)
-                animevent.func(DiAny(clip));
+            {
+                DiAny c(clip);
+                animevent.func(c);
+            }
         }
     }
 

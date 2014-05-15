@@ -355,10 +355,7 @@ struct btMatrixX
 				{
 					T dotProd=0;
 					T dotProd2=0;
-					int waste=0,waste2=0;
-
 					{
-						bool useOtherCol = true;
 						{
 							for (int v=0;v<rows();v++)
 							{

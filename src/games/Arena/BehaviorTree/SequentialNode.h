@@ -29,7 +29,7 @@ namespace BehaviorTree
     {
     public:
 	    /// construct a sequentialNode
-	    SequentialNode::SequentialNode();
+	    SequentialNode();
 
 	    BEHAVIOR_STATUS execute(void* agent);
 	    

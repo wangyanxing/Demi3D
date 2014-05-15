@@ -33,7 +33,7 @@ namespace BehaviorTree
     public:
 	    void init(void* object);
 	    BEHAVIOR_STATUS execute(void* object);
-	    ProbabilityNode::ProbabilityNode();
+	    ProbabilityNode();
 	    ///Add a child to this node, with the given weight.
 	    BehaviorTreeInternalNode* addChild( BehaviorTreeNode* node, double weighting);
 	    ///Add a child to this node, with a weight of 1.
