@@ -94,6 +94,10 @@ namespace Demi
         float           mSpeed;
         
         int             mTurnSpeed;
+        
+        DiK2Pos         mVelocity;
+        
+        DiK2Pos         mNormalPos;
     };
 }
 

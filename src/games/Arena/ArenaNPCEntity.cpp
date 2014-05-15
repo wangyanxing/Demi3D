@@ -74,8 +74,9 @@ namespace Demi
         float scale = ett->GetMaxPreGlobalScale();
         GetRenderObj()->SetScale(DiVec3(scale));
 
+        
         // TODO: figure out the real scale between K2's move speed and our speed
-        GetMoveProperty()->SetSpeed(ett->movespeed * 0.04f);
+        GetMoveProperty()->SetSpeed(DiK2Pos::FromWorldScale(ett->movespeed));
         GetMoveProperty()->SetTurnSpeed(ett->turnrate);
         
         // picking bounds

@@ -18,6 +18,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaEntity.h"
 #include "ArenaGameDefines.h"
 
+#define DEFAULT_FOLLOWER_NUM 5
+
 namespace Demi
 {
     class ArGameEntity : public ArEntity
@@ -75,6 +77,12 @@ namespace Demi
         }
 
         bool                IsDead();
+        
+        void                AddFollower(ArObjID follower, const DiK2Pos& pos);
+        
+        DiK2Pos             GetFollowTarget(ArObjID follower, float radius);
+        
+        void                RemoveFollower(ArObjID follower);
 
     protected:
 
@@ -85,6 +93,12 @@ namespace Demi
         K2ObjTypes          mType{ MAX_GAME_ENTITY_TYPES };
 
         DiString            mModel;
+        
+        DiVector<ArObjID>   mFollowers{ DEFAULT_FOLLOWER_NUM, INVALID_OBJ_ID };
+        
+#if 1
+        DiDebugHelperPtr    mDebugger;
+#endif
     };
 }
 

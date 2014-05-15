@@ -22,7 +22,7 @@ namespace Demi
 {
     ArGameCamera::ArGameCamera(DiCamera* camera)
         : mCamera(camera)
-        , mHeight(600)
+        , mHeight(1000)
         , mStyle(STYLE_FIXED)
         , mTarget(nullptr)
     {
@@ -170,11 +170,13 @@ namespace Demi
         if (!mTarget)
             return;
 
-        DiVec3 pos = mTarget->GetNode()->GetPosition();
+        DiVec3 pos = mTarget->GetWorldPosition();
         pos.y += mHeight;
-        pos.z += mHeight;
+        //pos.z += mHeight;
         mCamera->SetPosition(pos);
-        mCamera->LookAt(mTarget->GetNode()->GetPosition());
-
+        //mCamera->LookAt(mTarget->GetWorldPosition());
+        DiQuat q;
+        q.FromAngleAxis(DiRadian(-DiMath::HALF_PI), DiVec3::UNIT_X);
+        mCamera->SetOrientation(q);
     }
 }

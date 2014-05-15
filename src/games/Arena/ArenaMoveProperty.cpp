@@ -56,9 +56,18 @@ namespace Demi
 
         if (mWalkMode != ENUM_WALK_MODE_STOP)
         {
+            DI_ASSERT(mNumCurTarget > 0);
+            DiK2Pos lastPos = mPosNode[mNumCurTarget-1];
             DiK2Pos currentPos = renderObj->GetPosition();
             DiK2Pos targetPos = mPosNode[mNumCurTarget];
-            DiK2Pos newPos;
+            //DiK2Pos newPos;
+            
+            DiK2Pos normalVelocity = targetPos - lastPos;
+            normalVelocity.Normalise();
+            
+            mVelocity = targetPos - currentPos;
+            mVelocity.Normalise();
+            bool finished = false;
 
             float fMoveDistance = moveSpeed * dt;
             mCurrMoveDistance += fMoveDistance;
@@ -81,14 +90,12 @@ namespace Demi
                         {
                             Stop();
                             mNumCurTarget = 0;
-                            newPos = targetPos;
+                            //newPos = targetPos;
+                            finished = true;
                             break;
                         }
                         else
                         {
-                            //if (mNumCurTarget > 0 && mNumCurTarget % MAX_SENDPOSREM == 0)
-                            //    int nCount = std::min(mNumNode - mNumCurTarget, MAX_SENDPOS);
-
                             fMoveDistance -= fDistanceToTarget;
 
                             mNumCurTarget++;
@@ -101,34 +108,36 @@ namespace Demi
                     {
                         if (fDistanceToTarget > 0.0f)
                         {
-                            newPos.x = currentPos.x + (fMoveDistance * (targetPos.x - currentPos.x)) / fDistanceToTarget;
-                            newPos.z = currentPos.z + (fMoveDistance * (targetPos.z - currentPos.z)) / fDistanceToTarget;
+                            //newPos.x = currentPos.x + (fMoveDistance * (targetPos.x - currentPos.x)) / fDistanceToTarget;
+                            //newPos.z = currentPos.z + (fMoveDistance * (targetPos.z - currentPos.z)) / fDistanceToTarget;
                         }
                         else
-                            newPos = targetPos;
+                        {
+                            finished = true;
+                        }
+                        //    newPos = targetPos;
                         break;
                     }
                 }
+                
+                DiK2Pos direction = normalVelocity.Perpendicular();
+                direction.Normalise();
+                
+                //mVelocity = mVelocity + direction*.9;
+                
+                mNormalPos = mNormalPos + mVelocity*fMoveDistance;
+//                newPos = newPos + direction*0.5f;
 
                 auto& pathFinder = ArGameApp::Get()->GetWorld()->GetTerrain()->GetPathFinder();
-                if (!pathFinder.IsReachable(newPos, HeavyPathFinder::BLOCK_LEVEL_WALK))
+                if (!pathFinder.IsReachable(mNormalPos, HeavyPathFinder::BLOCK_LEVEL_WALK))
                 {
                     UpdateRotation(mEntity, targetPos, dt, turnSpeed);
                     Stop();
                     mNumCurTarget = 0;
                     return;
                 }
-
-#if 0
-                if (!pathFinder.IsReachable(newPos, HeavyPathFinder::BLOCK_LEVEL_WALK))
-                {
-                    int gridx = (unsigned short)(newPos.x);
-                    int gridz = (unsigned short)(newPos.z);
-                    DI_WARNING("Cannot reach %f %f,%d %d", newPos.x, newPos.z, gridx, gridz);
-                }
-#endif
                 
-                renderObj->SetPosition(newPos);
+                renderObj->SetPosition(mNormalPos);
 
                 UpdateRotation(mEntity, targetPos, dt, turnSpeed);
 
@@ -151,8 +160,6 @@ namespace Demi
     void ArMoveProperty::MoveTo(const DiK2Pos& source, const DiK2Pos& target,
         float fRange /*= 0.0f*/)
     {
-        //DI_DEBUG("MOVE from <%g,%g> to <%g,%g>", source.x, source.z, target.x, target.z);
-
         //DiTimer timer;
         auto& pathFinder = ArGameApp::Get()->GetWorld()->GetTerrain()->GetPathFinder();
         bool found = pathFinder.FindPath(&source, &target, mPosNode + 1, mNumNode, HeavyPathFinder::BLOCK_LEVEL_WALK);
@@ -164,7 +171,8 @@ namespace Demi
             mTargetPosition = target;
             mWalkMode = ENUM_WALK_MODE_WALK;
             mTargetDirection = INVALID_INT_VALUE;
-            mNumCurTarget = 0;
+            mNormalPos = mEntity->GetRenderObj()->GetPosition();
+            mNumCurTarget = 1;
             mDistance = 0;
 
             if (mNumNode > 0)
@@ -192,10 +200,6 @@ namespace Demi
                     mPosNode[mNumNode - 1] = endTruePos;
                 }
             }
-        }
-        else
-        {
-            //DI_DEBUG("No available path");
         }
         //double loadingTime = timer.GetElapse();
         //DI_LOG("Pathfinding time: %f", loadingTime);

@@ -187,7 +187,7 @@ namespace Demi
         /// target clip (for blending)
         DiK2Clip*         mTarget{ nullptr };
         
-        float             mBlendTime{ 0.3f }; //default value
+        float             mBlendTime{ 0.5f }; //default value
         
         float             mBlendElapsed{ 0 };
 
