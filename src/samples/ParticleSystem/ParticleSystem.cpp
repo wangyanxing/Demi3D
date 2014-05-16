@@ -14,9 +14,16 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Demi.h"
 #include "DemoFrame.h"
 #include "BillboardSet.h"
+#include "EffectManager.h"
+#include "ParticleSystem.h"
+#include "ParticleElement.h"
+
+DiParticleSystem* _ps = nullptr;
 
 void AddMeshes()
 {
+    DiEffectManager* effectMgr = DI_NEW DiEffectManager();
+    
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 	   
 	DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
@@ -27,8 +34,18 @@ void AddMeshes()
     
     bs->CreateBillboard(0,0,0);
     bs->CreateBillboard(0,10,0);
+    
+    _ps = effectMgr->CreateParticleSystemTemplate("test");
+    std::shared_ptr<DiTransformUnit> ps(_ps);
+    cullnode->AttachObject(ps);
+    _ps->Start();
+    
+    DiParticleElement* element = _ps->CreateElement();
+    element->SetRenderer("Billboard");
+    element->CreateEmitter("Point");
+    element->SetMaterialName(mat->GetName());
 
-	cullnode->AttachObject(bs);
+	//cullnode->AttachObject(bs);
 }
 
 void InitScene()
@@ -40,10 +57,16 @@ void InitScene()
 	AddMeshes();
 }
 
+void Update()
+{
+    _ps->Update(DiBase::Driver->GetDeltaSecond());
+}
+
 int main(int argc, char *argv[])
 {
     DemiDemo app( DemoConfig("Demi3D Sample - Particle System"));
 	app.SetInitCallback(InitScene);
+	app.SetUpdateCallback(Update);
 	app.Open(argc, argv);
 
 	return 0;

@@ -402,7 +402,6 @@ namespace Demi
     
     void DiEffectManager::ParticleSystemTemplateNames(DiVector<DiString>& v)
     {
-        DiVector<DiString>::iterator;
         auto itEnd = mParticleSystemTemplates.end();
         for (auto it = mParticleSystemTemplates.begin(); it != itEnd; ++it)
         {
