@@ -195,11 +195,11 @@ namespace MyGUI
 		friend std::istream& operator >> ( std::istream& _stream, Align&  _value )
 		{
 			_value.value = Enum(0);
-			std::string value;
-			_stream >> value;
+			std::string valuestr;
+			_stream >> valuestr;
 
 			const MapAlign& map_names = _value.getValueNames();
-			MapAlign::const_iterator iter = map_names.find(value);
+			MapAlign::const_iterator iter = map_names.find(valuestr);
 			if (iter != map_names.end())
 				_value.value = Enum(int(_value.value) | int(iter->second));
 

@@ -86,9 +86,9 @@ namespace MyGUI
 
 		friend std::istream& operator >> ( std::istream& _stream, FlowDirection&  _value )
 		{
-			std::string value;
-			_stream >> value;
-			_value = parse(value);
+			std::string valuestr;
+			_stream >> valuestr;
+			_value = parse(valuestr);
 			return _stream;
 		}
 
