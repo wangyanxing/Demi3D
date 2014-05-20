@@ -27,18 +27,19 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ParticleSystem.h"
 #include "RenderBatchGroup.h"
 
-#pragma warning(disable:4706)
+#if DEMI_COMPILER == DEMI_COMPILER_MSVC
+#   pragma warning(disable:4706)
+#endif
 
 namespace Demi
 {
-    const BillboardType            DiBillboardRenderer::DEFAULT_BILLBOARD_TYPE = BBT_POINT;
-    const bool                    DiBillboardRenderer::DEFAULT_ACCURATE_FACING = false;
+    const BillboardType          DiBillboardRenderer::DEFAULT_BILLBOARD_TYPE = BBT_POINT;
+    const bool                   DiBillboardRenderer::DEFAULT_ACCURATE_FACING = false;
     const BillboardOrigin        DiBillboardRenderer::DEFAULT_ORIGIN = BBO_CENTER;
-    const BillboardRotationType    DiBillboardRenderer::DEFAULT_ROTATION_TYPE = BBR_TEXCOORD;
+    const BillboardRotationType  DiBillboardRenderer::DEFAULT_ROTATION_TYPE = BBR_TEXCOORD;
     const DiVec3                 DiBillboardRenderer::DEFAULT_COMMON_DIRECTION = DiVec3::UNIT_Z;
     const DiVec3                 DiBillboardRenderer::DEFAULT_COMMON_UP_VECTOR = DiVec3::UNIT_Y;
-    const bool                    DiBillboardRenderer::DEFAULT_POINT_RENDERING = false;
-
+    const bool                   DiBillboardRenderer::DEFAULT_POINT_RENDERING = false;
     
     DiBillboardRenderer::DiBillboardRenderer(void) : 
         DiParticleRenderer(),
@@ -130,26 +131,26 @@ namespace Demi
         return mBillboardSet->GetCommonUpVector();
     }
     
-    void DiBillboardRenderer::UpdateBatchGroup(DiRenderBatchGroup* group, DiCamera* cam, DiParticlePool* pool)
+    void DiBillboardRenderer::Update(DiCamera* cam, DiParticlePool* pool)
     {
-        DiParticleRenderer::UpdateBatchGroup(group, cam, pool);
-
+        DiParticleRenderer::Update(cam, pool);
+        
         if (!mVisible)
             return;
-
+        
         if (pool->IsEmpty(DiParticle::PT_VISUAL))
             return;
-
+        
         mBillboardSet->BeginBillboards();
         DiBillboard bb;
-
+        
         DiVisualParticle* particle = static_cast<DiVisualParticle*>(pool->GetFirst(DiParticle::PT_VISUAL));
         while (!pool->End(DiParticle::PT_VISUAL))
         {
             if (particle)
             {
                 bb.mPosition = particle->position;
-
+                
                 if (mBillboardType == BBT_ORIENTED_SELF || mBillboardType == BBT_PERPENDICULAR_SELF)
                 {
                     bb.mDirection = particle->direction;
@@ -160,30 +161,34 @@ namespace Demi
                     bb.mDirection = DiVec3(particle->orientation.x, particle->orientation.y, particle->orientation.z);
                     bb.mDirection.normalise();
                 }
-
-
-                bb.mColour    = particle->colour;
-                bb.mRotation    = particle->zRotation;
-
+                
+                
+                bb.mColour   = particle->colour;
+                bb.mRotation = particle->zRotation;
+                
                 // this 'assignment' operator usage is not a bug
-                if (bb.mOwnDimensions = particle->ownDimensions)
+                if ((bb.mOwnDimensions = particle->ownDimensions))
                 {
                     bb.mOwnDimensions = true;
                     bb.mWidth = particle->width;
                     bb.mHeight = particle->height;
                 }
-
+                
                 bb.SetTexcoordIndex(particle->textureCoordsCurrent);
-
+                
                 mBillboardSet->InjectBillboard(bb);
             }
-
+            
             particle = static_cast<DiVisualParticle*>(pool->GetNext(DiParticle::PT_VISUAL));
         }
-
+        
         mBillboardSet->EndBillboards();
-
         mBillboardSet->Update(cam);
+    }
+    
+    void DiBillboardRenderer::AddToBatchGroup(DiRenderBatchGroup* group)
+    {
+        DiParticleRenderer::AddToBatchGroup(group);
         mBillboardSet->AddToBatchGroup(group);
     }
     

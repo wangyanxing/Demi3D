@@ -31,11 +31,9 @@ namespace Demi
     
     void DiParticlePool::DestroyParticles(const DiParticle::ParticleType particleType)
     {
-        switch(particleType)
+        if(particleType == DiParticle::PT_VISUAL)
         {
-            case DiParticle::PT_VISUAL:
-                DestroyAllVisualParticles();
-                break;
+            DestroyAllVisualParticles();
         }
     }
     

@@ -582,12 +582,21 @@ namespace Demi
         return mAABB;
     }
     
-    void DiParticleSystem::CullingUpdate(DiRenderBatchGroup* g, DiCamera* c)
+    void DiParticleSystem::Update(DiCamera* camera)
     {
         auto itEnd = mElements.end();
         for (auto it = mElements.begin(); it != itEnd; ++it)
         {
-            (*it)->UpdateBatchGroup(g,c);
+            (*it)->Update(camera);
+        }
+    }
+    
+    void DiParticleSystem::AddToBatchGroup(DiRenderBatchGroup* bg)
+    {
+        auto itEnd = mElements.end();
+        for (auto it = mElements.begin(); it != itEnd; ++it)
+        {
+            (*it)->AddToBatchGroup(bg);
         }
     }
     

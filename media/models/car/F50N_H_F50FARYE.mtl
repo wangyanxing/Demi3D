@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<material>
- <shader name="vertex">lambert_v</shader>
- <shader name="pixel">lambert_p</shader>
- <blendMode>ALPHA</blendMode>
- <diffuse>0.988235 0.513726 0.007843 1.000000</diffuse>
- <opacity>0.500000</opacity>
-</material>

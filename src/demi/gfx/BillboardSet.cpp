@@ -116,17 +116,16 @@ namespace Demi
         mCamDir = mCamQ * DiVec3::NEGATIVE_UNIT_Z;
 
         mPrimitiveCount = mNumVisibleBillboards * 2;
-
+        
         if (!mExternalData && (mAutoUpdate || mBillboardDataChanged || !mBuffersCreated))
         {
             BeginBillboards(mActiveBillboards.size());
-            ActiveBillboardList::iterator it;
-            for (it = mActiveBillboards.begin();
-                it != mActiveBillboards.end();
-                ++it)
+            
+            for (auto it = mActiveBillboards.begin(); it != mActiveBillboards.end(); ++it)
             {
                 InjectBillboard(*(*it));
             }
+            
             EndBillboards();
             mBillboardDataChanged = false;
         }
@@ -366,19 +365,16 @@ namespace Demi
         {
             numBillboards = DiMath::Min(mPoolSize, numBillboards);
 
-            size_t billboardSize;
+            size_t stride = mSourceData[0]->GetStride();
+            DI_ASSERT (numBillboards * stride * 4 <= mSourceData[0]->GetBufferSize());
             
-            billboardSize = mSourceData[0]->GetStride() * sizeof(float);
-            
-            DI_ASSERT (numBillboards * billboardSize <= mSourceData[0]->GetBufferSize());
-
-            mLockPtr = DI_NEW float[mSourceData[0]->GetStride() * numBillboards];
-            mLockSize = billboardSize*numBillboards;
+            mLockSize = stride * numBillboards * 4;
+            mLockPtr = (float*)mSourceData[0]->Lock(0, mLockSize);
         }
         else
         {
-            mLockPtr = DI_NEW float[mSourceData[0]->GetBufferSize() / sizeof(float)];
             mLockSize = mSourceData[0]->GetBufferSize();
+            mLockPtr = (float*)mSourceData[0]->Lock(0, mLockSize);
         }
     }
 
@@ -426,9 +422,7 @@ namespace Demi
 
     void DiBillboardSet::EndBillboards( void )
     {
-        mSourceData[0]->WriteData(0, mLockSize, mLockPtr);
-        
-        DI_DELETE[] mLockPtr;
+        mSourceData[0]->Unlock();
         mLockPtr = nullptr;
         mLockSize = 0;
     }
@@ -750,6 +744,7 @@ namespace Demi
             pCol = static_cast<RGBA*>(static_cast<void*>(mLockPtr));
             *pCol++ = colour;
             mLockPtr = static_cast<float*>(static_cast<void*>(pCol));
+
             // UV
             *mLockPtr++ = r.left;
             *mLockPtr++ = r.top;

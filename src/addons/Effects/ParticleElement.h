@@ -115,7 +115,10 @@ namespace Demi
 
         inline float              GetCameraSquareDistance(void) const {return mCameraSquareDistance;}
 
-        void                      SetCameraSquareDistance(float cameraSquareDistance){mCameraSquareDistance = cameraSquareDistance;}
+        void                      SetCameraSquareDistance(float cameraSquareDistance)
+        {
+            mCameraSquareDistance = cameraSquareDistance;
+        }
 
         void                      SuppressNotifyEmissionChange(bool suppress);
 
@@ -174,8 +177,10 @@ namespace Demi
         void                      SetRenderer(DiParticleRenderer* renderer);
 
         void                      DestroyRenderer(void);
-
-        void                      UpdateBatchGroup(DiRenderBatchGroup* queue, DiCamera* cam);
+        
+        void                      Update(DiCamera* cam);
+        
+        void                      AddToBatchGroup(DiRenderBatchGroup*);
 
         void                      SetBatchGroupID(uint8 queueId);
 

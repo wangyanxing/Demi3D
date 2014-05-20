@@ -186,11 +186,6 @@ namespace Demi
         return mUVList;
     }
     
-    void DiParticleRenderer::UpdateBatchGroup(DiRenderBatchGroup*, DiCamera*, DiParticlePool*)
-    {
-        // TODO: soft particle
-    }
-    
     bool DiParticleRenderer::GetUseSoftParticles(void) const
     {
         return mUseSoftParticles;

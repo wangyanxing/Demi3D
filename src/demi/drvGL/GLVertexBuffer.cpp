@@ -128,13 +128,13 @@ namespace Demi
 
     void DiGLVertexBuffer::ReadData(uint32 offset, uint32 length, void* pDest)
     {
-        glBindBufferARB(GL_ARRAY_BUFFER, mBufferId);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, mBufferId);
         glGetBufferSubDataARB(GL_ARRAY_BUFFER_ARB, offset, length, pDest);
     }
 
     void DiGLVertexBuffer::WriteData(uint32 offset, uint32 length, const void* pSource, bool discardWholeBuffer /*= false*/)
     {
-        glBindBufferARB(GL_ARRAY_BUFFER, mBufferId);
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, mBufferId);
 
         if (offset == 0 && length == mBufferSize)
         {

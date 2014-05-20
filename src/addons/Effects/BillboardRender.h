@@ -32,43 +32,45 @@ namespace Demi
     {
     public:
 
-        static const BillboardType            DEFAULT_BILLBOARD_TYPE;
-        static const bool                    DEFAULT_ACCURATE_FACING;
+        static const BillboardType          DEFAULT_BILLBOARD_TYPE;
+        static const bool                   DEFAULT_ACCURATE_FACING;
         static const BillboardOrigin        DEFAULT_ORIGIN;
-        static const BillboardRotationType    DEFAULT_ROTATION_TYPE;
+        static const BillboardRotationType  DEFAULT_ROTATION_TYPE;
         static const DiVec3                 DEFAULT_COMMON_DIRECTION;
         static const DiVec3                 DEFAULT_COMMON_UP_VECTOR;
-        static const bool                    DEFAULT_POINT_RENDERING;
+        static const bool                   DEFAULT_POINT_RENDERING;
 
         DiBillboardRenderer(void);
 
-        virtual                        ~DiBillboardRenderer(void);
+        virtual                      ~DiBillboardRenderer(void);
 
         virtual void                 Prepare(DiParticleElement* ele);
 
         virtual void                 Unprepare(DiParticleElement* ele);
 
-        void                        SetBillboardType(BillboardType bbt);
+        void                         SetBillboardType(BillboardType bbt);
 
         BillboardType                GetBillboardType(void) const;
 
         void                         SetBillboardOrigin(BillboardOrigin origin);
 
-        BillboardOrigin                GetBillboardOrigin(void) const;
+        BillboardOrigin              GetBillboardOrigin(void) const;
 
-        void                        SetBillboardRotationType(BillboardRotationType rotationType);
+        void                         SetBillboardRotationType(BillboardRotationType rotationType);
 
         BillboardRotationType        GetBillboardRotationType(void) const;
 
-        void                        SetCommonDirection(const DiVec3& vec);
+        void                         SetCommonDirection(const DiVec3& vec);
 
         const DiVec3&                GetCommonDirection(void) const;
 
-        void                        SetCommonUpVector(const DiVec3& vec);
+        void                         SetCommonUpVector(const DiVec3& vec);
 
         const DiVec3&                GetCommonUpVector(void) const;
-
-        inline virtual void         UpdateBatchGroup(DiRenderBatchGroup*, DiCamera*, DiParticlePool*);
+        
+        virtual void                 Update(DiCamera*, DiParticlePool*);
+        
+        virtual void                 AddToBatchGroup(DiRenderBatchGroup*);
 
         virtual void                 NotifyAttached(DiNode* parent);
 
@@ -86,17 +88,17 @@ namespace Demi
 
         virtual void                 SetBatchGroupID(uint8 queueId);
 
-        virtual DiSortMode            GetSortMode(void) const;
+        virtual DiSortMode           GetSortMode(void) const;
 
-        virtual void                CopyTo (DiParticleRenderer* renderer);
+        virtual void                 CopyTo (DiParticleRenderer* renderer);
 
-        DiBillboardSet*                GetBillboardSet(void) const { return mBillboardSet; }
+        DiBillboardSet*              GetBillboardSet(void) const { return mBillboardSet; }
 
-        virtual void                SetVisible(bool visible);
+        virtual void                 SetVisible(bool visible);
 
     protected:
 
-        DiBillboardSet*                mBillboardSet;
+        DiBillboardSet*              mBillboardSet;
 
         BillboardType                mBillboardType;
     };
@@ -108,9 +110,9 @@ namespace Demi
     public:
         DiBillboardRendererFactory(void) {}
 
-        virtual                ~DiBillboardRendererFactory(void) {}
+        virtual    ~DiBillboardRendererFactory(void) {}
 
-        DiString            GetRendererType(void) const
+        DiString   GetRendererType(void) const
         {
             static DiString type = "Billboard";
             return type;
