@@ -481,7 +481,7 @@ namespace Demi
         return true;
     }
 
-    bool DiK2MdfSerial::CheckFourcc(char* sig)
+    bool DiK2MdfSerial::CheckFourcc(const char* sig)
     {
         char hed[4];
         mStream->Read(hed, 4);
@@ -495,7 +495,7 @@ namespace Demi
         return true;
     }
     
-    bool DiK2MdfSerial::CheckFourcc(char* hed, char* sig)
+    bool DiK2MdfSerial::CheckFourcc(const char* hed, const char* sig)
     {
         if (sig[0] != hed[0] ||
             sig[1] != hed[1] ||
@@ -721,7 +721,7 @@ namespace Demi
         float* vertics = new float[3 * numverts];
         mStream->Read(vertics, sizeof(float)* 3 * numverts);
 
-        DI_ASSERT(gCurrentVerts.size() == numverts);
+        DI_ASSERT(gCurrentVerts.size() == (size_t)numverts);
         for (int i = 0; i < numverts; i++)
         {
             gCurrentVerts[i].pos.x = vertics[i * 3 + 0];
@@ -805,7 +805,7 @@ namespace Demi
         float* vertics = new float[3 * numverts];
         mStream->Read(vertics, sizeof(float)* 3 * numverts);
 
-        DI_ASSERT(gCurrentVerts.size() == numverts);
+        DI_ASSERT(gCurrentVerts.size() == (size_t)numverts);
         for (int i = 0; i < numverts; i++)
         {
             gCurrentVerts[i].normal.x = vertics[i * 3 + 0];
@@ -839,7 +839,7 @@ namespace Demi
         float* vertics = new float[2 * numverts];
         mStream->Read(vertics, sizeof(float)* 2 * numverts);
 
-        DI_ASSERT(gCurrentVerts.size() == numverts);
+        DI_ASSERT(gCurrentVerts.size() == (size_t)numverts);
         for (int i = 0; i < numverts; i++)
         {
             gCurrentVerts[i].uv.x = vertics[i * 2 + 0];
@@ -967,7 +967,7 @@ namespace Demi
         float* vertics = new float[3 * numverts];
         mStream->Read(vertics, sizeof(float)* 3 * numverts);
 
-        DI_ASSERT(gCurrentVerts.size() == numverts);
+        DI_ASSERT(gCurrentVerts.size() == (size_t)numverts);
         for (int i = 0; i < numverts; i++)
         {
             gCurrentTangents[i].x = vertics[i * 3 + 0];

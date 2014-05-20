@@ -383,7 +383,6 @@ namespace MyGUI
 
 		int mWidthSeparator;
 		std::string mSkinSeparator;
-		int mOffsetButtonSeparator;
 
 		size_t mItemSelected;
 

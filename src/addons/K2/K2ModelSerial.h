@@ -50,9 +50,9 @@ namespace Demi
 
         DiString    TryMaterialFile(const DiString& name, DiK2ModelAsset* target);
 
-        bool    CheckFourcc(char* sig);
+        bool    CheckFourcc(const char* sig);
         
-        bool    CheckFourcc(char* hed, char* sig);
+        bool    CheckFourcc(const char* hed, const char* sig);
 
         void    ReadVertices();
 
