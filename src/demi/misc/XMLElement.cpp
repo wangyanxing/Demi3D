@@ -357,6 +357,20 @@ namespace Demi
         return node.attribute(name).value();
     }
 
+    bool DiXMLElement::GetAttribute(const DiString& name, DiString& out)
+    {
+        if (!mFile || !mNode)
+            return false;
+
+        const pugi::xml_node& node = pugi::xml_node(mNode);
+        auto& attrNode = node.attribute(name.c_str());
+        if (attrNode.empty())
+            return false;
+
+        out = attrNode.value();
+        return true;
+    }
+
     DiString DiXMLElement::GetAttributeLower(const DiString& name) const
     {
         return GetAttribute(name).AsLower();
@@ -414,6 +428,20 @@ namespace Demi
         return GetAttribute(name).AsBool();
     }
 
+    bool DiXMLElement::GetBool(const DiString& name, bool& out)
+    {
+        if (!mFile || !mNode)
+            return false;
+
+        const pugi::xml_node& node = pugi::xml_node(mNode);
+        auto& attrNode = node.attribute(name.c_str());
+        if (attrNode.empty())
+            return false;
+
+        out = DiString(attrNode.value()).AsBool();
+        return true;
+    }
+
     DiAABB DiXMLElement::GetBoundingBox() const
     {
         DiAABB ret;
@@ -428,14 +456,56 @@ namespace Demi
         return GetAttribute(name).AsColourValue();
     }
 
+    bool DiXMLElement::GetColor(const DiString& name, DiColor& out)
+    {
+        if (!mFile || !mNode)
+            return false;
+
+        const pugi::xml_node& node = pugi::xml_node(mNode);
+        auto& attrNode = node.attribute(name.c_str());
+        if (attrNode.empty())
+            return false;
+
+        out = DiString(attrNode.value()).AsColourValue();
+        return true;
+    }
+
     float DiXMLElement::GetFloat(const DiString& name) const
     {
         return GetAttribute(name).AsFloat();
     }
 
+    bool DiXMLElement::GetFloat(const DiString& name, float& out)
+    {
+        if (!mFile || !mNode)
+            return false;
+
+        const pugi::xml_node& node = pugi::xml_node(mNode);
+        auto& attrNode = node.attribute(name.c_str());
+        if (attrNode.empty())
+            return false;
+
+        out = DiString(attrNode.value()).AsFloat();
+        return true;
+    }
+
     int DiXMLElement::GetInt(const DiString& name) const
     {
         return GetAttribute(name).AsInt();
+    }
+
+    bool DiXMLElement::GetInt(const DiString& name, int& out)
+    {
+        if (!mFile || !mNode)
+            return false;
+
+        const pugi::xml_node& node = pugi::xml_node(mNode);
+        auto& attrNode = node.attribute(name.c_str());
+        if (attrNode.empty())
+            return false;
+
+        out = DiString(attrNode.value()).AsInt();
+        return true;
     }
 
     DiQuat DiXMLElement::GetQuaternion(const DiString& name) const
@@ -451,6 +521,20 @@ namespace Demi
     DiVec3 DiXMLElement::GetVector3(const DiString& name) const
     {
         return GetAttribute(name).AsVector3();
+    }
+
+    bool DiXMLElement::GetVector3(const DiString& name, DiVec3& out)
+    {
+        if (!mFile || !mNode)
+            return false;
+
+        const pugi::xml_node& node = pugi::xml_node(mNode);
+        auto& attrNode = node.attribute(name.c_str());
+        if (attrNode.empty())
+            return false;
+
+        out = DiString(attrNode.value()).AsVector3();
+        return true;
     }
 
     DiVec4 DiXMLElement::GetVector4(const DiString& name) const

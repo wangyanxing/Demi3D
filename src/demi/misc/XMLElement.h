@@ -160,6 +160,9 @@ namespace Demi
         /// Return attribute, or empty if missing.
         DiString GetAttribute(const char* name) const;
 
+        /// Return the attribute if possible
+        bool GetAttribute(const DiString& name, DiString& out);
+
         /// Return attribute in lowercase, or empty if missing.
         DiString GetAttributeLower(const DiString& name) const;
 
@@ -180,17 +183,25 @@ namespace Demi
         /// Return bool attribute, or false if missing.
         bool GetBool(const DiString& name) const;
 
+        bool GetBool(const DiString& name, bool& out);
+
         /// Return bounding box attribute, or empty if missing.
         DiAABB GetBoundingBox() const;
 
         /// Return a color attribute, or default if missing.
         DiColor GetColor(const DiString& name) const;
 
+        bool GetColor(const DiString& name, DiColor& out);
+
         /// Return a float attribute, or zero if missing.
         float GetFloat(const DiString& name) const;
 
+        bool GetFloat(const DiString& name, float& out);
+
         /// Return an integer attribute, or zero if missing.
         int GetInt(const DiString& name) const;
+
+        bool GetInt(const DiString& name, int& out);
 
         uint32 GetUint(const DiString& name) const;
 
@@ -202,6 +213,8 @@ namespace Demi
 
         /// Return a DiVec3 attribute, or default if missing.
         DiVec3 GetVector3(const DiString& name) const;
+
+        bool GetVector3(const DiString& name, DiVec3& out);
 
         /// Return a Vector4 attribute, or default if missing.
         DiVec4 GetVector4(const DiString& name) const;

@@ -1,6 +1,9 @@
 
 #include "EmitterDefs.h"
 
+typedef unsigned long _DWORD;
+typedef unsigned char _BYTE;
+
 int __cdecl M_Randnum(int a1, int a2)
 {
     int result; // eax@2
@@ -18,30 +21,29 @@ public:
 
     CSimpleEmitter(uint var, CParticleSystem* particleSys, IEmitter* emitter, CSimpleEmitterDef const& simplerEmitterDef)
     {
-        v101 = *(_DWORD *)(simplerEmitterDef + 768);
-        v102 = *(_BYTE *)(simplerEmitterDef + 128);
+        _DWORD v101 = *(_DWORD *)(simplerEmitterDef + 768);
+        _BYTE v102 = *(_BYTE *)(simplerEmitterDef + 128);
 
-        int v5 = *(DWORD *)(simplerEmitterDef + 120);
-        int v6 = *(DWORD *)(simplerEmitterDef + 124);
-
-        int v104 = *(DWORD *)(simplerEmitterDef + 124);
+        _DWORD v5 = *(_DWORD *)(simplerEmitterDef + 120);
+        _DWORD v6 = *(_DWORD *)(simplerEmitterDef + 124);
+        _DWORD v104 = *(_DWORD *)(simplerEmitterDef + 124);
         if (v5 < v6)
             v104 = M_Randnum(v5, v6);
 
-        int v7 = *(DWORD *)(simplerEmitterDef + 112);
-        int v8 = *(DWORD *)(simplerEmitterDef + 116);
+        _DWORD v7 = *(_DWORD *)(simplerEmitterDef + 112);
+        _DWORD v8 = *(_DWORD *)(simplerEmitterDef + 116);
         if (v7 < v8)
-            v8 = M_Randnum(v7, *(DWORD *)(simplerEmitterDef + 116));
+            v8 = M_Randnum(v7, *(_DWORD *)(simplerEmitterDef + 116));
 
-        int v9 = *(DWORD *)(simplerEmitterDef + 96);
-        int v10 = *(DWORD *)(simplerEmitterDef + 100);
+        _DWORD v9 = *(_DWORD *)(simplerEmitterDef + 96);
+        _DWORD v10 = *(_DWORD *)(simplerEmitterDef + 100);
         if (v9 < v10)
-            v10 = M_Randnum(v9, *(DWORD *)(simplerEmitterDef + 100));
+            v10 = M_Randnum(v9, *(_DWORD *)(simplerEmitterDef + 100));
 
-        int v11 = *(DWORD *)(simplerEmitterDef + 88);
-        int v12 = *(DWORD *)(simplerEmitterDef + 92);
+        _DWORD v11 = *(_DWORD *)(simplerEmitterDef + 88);
+        _DWORD v12 = *(_DWORD *)(simplerEmitterDef + 92);
         if (v11 < v12)
-            v12 = M_Randnum(v11, *(DWORD *)(simplerEmitterDef + 92));
+            v12 = M_Randnum(v11, *(_DWORD *)(simplerEmitterDef + 92));
 
         IEmitter::IEmitter(
             this,

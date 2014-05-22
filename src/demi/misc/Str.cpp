@@ -913,11 +913,17 @@ namespace Demi
         DiVector<DiString> tokens; 
         this->Tokenize(", \t\n", tokens);
 
-        DI_ASSERT (tokens.size() == 4);
-
-        DiColor v(tokens[0].AsFloat(),  tokens[1].AsFloat(),  tokens[2].AsFloat(),  tokens[3].AsFloat());
-        
-        return v;
+        if (tokens.size() == 1)
+        {
+            DiColor v(tokens[0].AsFloat(), tokens[0].AsFloat(), tokens[0].AsFloat());
+            return v;
+        }
+        else
+        {
+            DI_ASSERT(tokens.size() == 4);
+            DiColor v(tokens[0].AsFloat(), tokens[1].AsFloat(), tokens[2].AsFloat(), tokens[3].AsFloat());
+            return v;
+        }
     } 
     //------------------------------------------------------------------------------
     DiString
