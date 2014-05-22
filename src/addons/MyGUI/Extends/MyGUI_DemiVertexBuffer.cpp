@@ -20,8 +20,6 @@ namespace MyGUI
 
 	DemiVertexBuffer::DemiVertexBuffer(DemiRenderManager* _pRenderManager) :
 		mNeedVertexCount(0),
-		mVertexCount(RENDER_ITEM_STEEP_REALLOCK),
-		pRenderManager(_pRenderManager),
         mVertexBuffer(nullptr)
 	{
 	}

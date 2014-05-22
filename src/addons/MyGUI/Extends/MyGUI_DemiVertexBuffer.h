@@ -35,9 +35,7 @@ namespace MyGUI
 
 	private:
         DiVertexBuffer* mVertexBuffer;
-		DemiRenderManager* pRenderManager;
 
-		size_t mVertexCount;
 		size_t mNeedVertexCount;
 	};
 
