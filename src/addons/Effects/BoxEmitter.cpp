@@ -40,31 +40,16 @@ namespace Demi
     {
     }
     
-    const float DiBoxEmitter::GetHeight(void) const
-    {
-        return mHeight;
-    }
-    
     void DiBoxEmitter::SetHeight(const float height)
     {
         mHeight = height;
         mYRange = 0.5f * height;
     }
     
-    const float DiBoxEmitter::GetWidth(void) const
-    {
-        return mWidth;
-    }
-    
     void DiBoxEmitter::SetWidth(const float width)
     {
         mWidth = width;
         mXRange = 0.5f * width;
-    }
-    
-    const float DiBoxEmitter::GetDepth(void) const
-    {
-        return mDepth;
     }
     
     void DiBoxEmitter::SetDepth(const float depth)

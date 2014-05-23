@@ -25,6 +25,7 @@ void AddMeshes()
     DiEffectManager* effectMgr = DI_NEW DiEffectManager();
     
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+    //sm->GetCamera()->SetNearClipDistance(0.0001f);
 	   
 	DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
     DiBillboardSetPtr bs = make_shared<DiBillboardSet>();

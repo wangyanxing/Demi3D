@@ -36,23 +36,23 @@ namespace Demi
 
         DiBoxEmitter(void);
 
-        virtual            ~DiBoxEmitter(void) {}
+        virtual           ~DiBoxEmitter(void) {}
 
-        const float        GetHeight(void) const;
+        float             GetHeight(void) const {return mHeight;}
 
-        void            SetHeight(const float height);
+        void              SetHeight(const float height);
 
-        const float        GetWidth(void) const;
+        float             GetWidth(void) const {return mWidth;}
 
-        void            SetWidth(const float width);
+        void              SetWidth(const float width);
 
-        const float        GetDepth(void) const;
+        float             GetDepth(void) const {return mDepth;}
 
-        void            SetDepth(const float depth);
+        void              SetDepth(const float depth);
 
-        virtual void    InitParticlePosition(DiParticle* particle);
+        virtual void      InitParticlePosition(DiParticle* particle);
 
-        virtual void    CopyTo (DiParticleEmitter* emitter);
+        virtual void      CopyTo (DiParticleEmitter* emitter);
 
     protected:
         float             mHeight;
@@ -71,7 +71,7 @@ namespace Demi
     public:
         DiBoxEmitterFactory(void) {}
 
-        virtual                ~DiBoxEmitterFactory(void) {}
+        virtual             ~DiBoxEmitterFactory(void) {}
 
         DiString            GetEmitterType(void) const
         {
@@ -79,7 +79,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleEmitter*    CreateEmitter(void)
+        DiParticleEmitter*  CreateEmitter(void)
         {
             return CreateEmitterImpl<DiBoxEmitter>();
         }

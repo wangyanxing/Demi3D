@@ -363,7 +363,7 @@ namespace Demi
             return false;
 
         const pugi::xml_node& node = pugi::xml_node(mNode);
-        auto& attrNode = node.attribute(name.c_str());
+        const auto& attrNode = node.attribute(name.c_str());
         if (attrNode.empty())
             return false;
 
@@ -434,7 +434,7 @@ namespace Demi
             return false;
 
         const pugi::xml_node& node = pugi::xml_node(mNode);
-        auto& attrNode = node.attribute(name.c_str());
+        const auto& attrNode = node.attribute(name.c_str());
         if (attrNode.empty())
             return false;
 
@@ -462,7 +462,7 @@ namespace Demi
             return false;
 
         const pugi::xml_node& node = pugi::xml_node(mNode);
-        auto& attrNode = node.attribute(name.c_str());
+        const auto& attrNode = node.attribute(name.c_str());
         if (attrNode.empty())
             return false;
 
@@ -481,7 +481,7 @@ namespace Demi
             return false;
 
         const pugi::xml_node& node = pugi::xml_node(mNode);
-        auto& attrNode = node.attribute(name.c_str());
+        const auto& attrNode = node.attribute(name.c_str());
         if (attrNode.empty())
             return false;
 
@@ -500,7 +500,7 @@ namespace Demi
             return false;
 
         const pugi::xml_node& node = pugi::xml_node(mNode);
-        auto& attrNode = node.attribute(name.c_str());
+        const auto& attrNode = node.attribute(name.c_str());
         if (attrNode.empty())
             return false;
 
@@ -529,7 +529,7 @@ namespace Demi
             return false;
 
         const pugi::xml_node& node = pugi::xml_node(mNode);
-        auto& attrNode = node.attribute(name.c_str());
+        const auto& attrNode = node.attribute(name.c_str());
         if (attrNode.empty())
             return false;
 

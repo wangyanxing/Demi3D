@@ -918,6 +918,11 @@ namespace Demi
             DiColor v(tokens[0].AsFloat(), tokens[0].AsFloat(), tokens[0].AsFloat());
             return v;
         }
+        else if (tokens.size() == 3)
+        {
+            DiColor v(tokens[0].AsFloat(), tokens[1].AsFloat(), tokens[2].AsFloat());
+            return v;
+        }
         else
         {
             DI_ASSERT(tokens.size() == 4);

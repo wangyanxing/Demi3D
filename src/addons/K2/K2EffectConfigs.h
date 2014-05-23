@@ -18,6 +18,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    struct DiK2EmitterConfig
+    {
+        virtual void        Load(DiXMLElement& element);
+        
+        
+    };
+    
     struct DiK2BillboardConfig
     {
         void        Load(DiXMLElement& element);
@@ -87,6 +94,21 @@ namespace Demi
         DiVec3      direction;
 
         DiVector<DiK2ParticleConfig> particles;
+    };
+    
+    struct DiK2EffectTemplateConfig
+    {
+        
+    };
+    
+    struct DiK2ParticleSystemConfig
+    {
+        DiString    name;
+        DiString    space;
+        float       scale{ 1.0f };
+        
+        DiMap<DiString, DiK2ParticleSystemConfig> templates;
+        
     };
 }
 
