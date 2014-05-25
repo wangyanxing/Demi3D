@@ -28,13 +28,12 @@ void AddMeshes()
     //sm->GetCamera()->SetNearClipDistance(0.0001f);
 	   
 	DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
-    DiBillboardSetPtr bs = make_shared<DiBillboardSet>();
     
-    auto mat = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
-    bs->SetMaterial(mat);
-    
-    bs->CreateBillboard(0,0,0);
-    bs->CreateBillboard(0,10,0);
+    auto mat = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR | SHADER_FLAG_USE_MAP);
+    mat->GetShaderParameter()->WriteTexture2D("map", "glow_01.dds");
+    //mat->GetShaderParameter()->WriteTexture2D("map", "mysticenergy2.dds");
+    mat->SetBlendMode(BLEND_ADD);
+    mat->SetDepthWrite(false);
     
     _ps = effectMgr->CreateParticleSystemTemplate("test");
     std::shared_ptr<DiTransformUnit> ps(_ps);
