@@ -81,29 +81,27 @@ namespace Demi
 
         DiParticleEmitter*    parentEmitter;
 
-        DiVec3                 position;
+        DiVec3                position;
 
-        DiVec3                 direction;
+        DiVec3                direction;
 
-        // 质量，特殊情况下需要这个参数，比如重力控制器
-        float                mass;
+        // some special controller (gravity) may use this
+        float                 mass;
 
-        // 粒子剩余存活时间
-        float                timeToLive;
+        float                 timeToLive;
 
-        // 总存活时间
-        float                totalTimeToLive;
+        float                 totalTimeToLive;
 
-        // 时间比例，一般由控制器使用
-        float                timeFraction;
+        // usually used by the controllers
+        float                 timeFraction;
 
-        ParticleType        particleType;
+        ParticleType          particleType;
 
         DiIVisualData*        visualData;
 
-        DiVec3                 originalPosition;
+        DiVec3                originalPosition;
 
-        DiVec3                 originalDirection;
+        DiVec3                originalDirection;
 
         float                 originalVelocity;
 
@@ -115,57 +113,55 @@ namespace Demi
 
     public:
 
-        inline bool            IsMarkedForEmission(void) const {return mMarkedForEmission;}
+        inline bool           IsMarkedForEmission(void) const { return mMarkedForEmission; }
 
-        inline void            SetMarkedForEmission(bool markedForEmission) {mMarkedForEmission = markedForEmission;}
+        inline void           SetMarkedForEmission(bool markedForEmission) { mMarkedForEmission = markedForEmission; }
 
-        virtual void         InitForEmission(void);
+        virtual void          InitForEmission(void);
 
-        virtual void         InitForExpiration(DiParticleElement* technique, float timeElapsed);
+        virtual void          InitForExpiration(DiParticleElement* technique, float timeElapsed);
 
-        virtual bool         IsEnabled(void) const;
+        virtual bool          IsEnabled(void) const;
 
-        virtual void         SetEnabled(bool enabled);
+        virtual void          SetEnabled(bool enabled);
 
-        void                 SetOriginalEnabled(bool originalEnabled);
+        void                  SetOriginalEnabled(bool originalEnabled);
 
-        bool                 GetOriginalEnabled(void) const;
+        bool                  GetOriginalEnabled(void) const;
 
-        bool                 IsFreezed(void) const;
+        bool                  IsFreezed(void) const;
 
-        void                 SetFreezed(bool freezed);
+        void                  SetFreezed(bool freezed);
 
-        inline void         SetEventFlags(uint32 flags) {mEventFlags = flags;}
+        inline void           SetEventFlags(uint32 flags) { mEventFlags = flags; }
 
-        inline void         AddEventFlags(uint32 flags) {mEventFlags |= flags;}
+        inline void           AddEventFlags(uint32 flags) { mEventFlags |= flags; }
 
-        inline void         RemoveEventFlags(uint32 flags) {mEventFlags &= ~flags;}
+        inline void           RemoveEventFlags(uint32 flags) { mEventFlags &= ~flags; }
 
-        inline uint32        GetEventFlags(void) const {return mEventFlags;}
+        inline uint32         GetEventFlags(void) const {return mEventFlags;}
 
-        inline bool            HasEventFlags(uint32 flags) const {return mEventFlags & flags;}
+        inline bool           HasEventFlags(uint32 flags) const {return mEventFlags & flags;}
 
-        virtual void        Process(DiParticleElement* technique, float timeElapsed);
+        virtual void          Process(DiParticleElement* technique, float timeElapsed);
 
-        float                CalculateVelocity(void) const;
+        float                 CalculateVelocity(void) const;
 
-        virtual void        CopyTo (DiParticle* particle);
+        virtual void          CopyTo (DiParticle* particle);
 
     protected:
 
-        // 事件标记
         uint32                mEventFlags;
 
-        // 是否发射的标记
-        bool                 mMarkedForEmission;
+        bool                  mMarkedForEmission;
 
-        bool                 mEnabled;
+        bool                  mEnabled;
 
-        bool                 mFreezed;
+        bool                  mFreezed;
 
-        bool                 mOriginalEnabled;
+        bool                  mOriginalEnabled;
 
-        bool                 mOriginalEnabledSet;
+        bool                  mOriginalEnabledSet;
 
         DiVec3                mDerivedPosition;
     };

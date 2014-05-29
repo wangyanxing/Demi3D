@@ -43,11 +43,13 @@ namespace Demi
     public:
         DiVisualParticle(void);
 
-        virtual            ~DiVisualParticle(void) {};
+        virtual         ~DiVisualParticle(void);;
 
     public:
 
         void            SetOwnDimensions(float newWidth, float newHeight, float newDepth);
+
+        void            SetScaleDimensions(float newWidth, float newHeight, float newDepth);
 
         virtual void    InitForEmission(void);
 
@@ -57,46 +59,51 @@ namespace Demi
 
     public:
 
-        // 当前颜色和原始颜色
         DiColor         colour;
 
         DiColor         originalColour;
 
-        // zRotation用于在2D空间旋转粒子，即z方向
-        // 注意zRotation和下面的orientation之间没有关系，各自独立
+        // 2D rotation
         DiRadian        zRotation;
 
         DiRadian        zRotationSpeed;
 
-        // 粒子的朝向，对一些特殊渲染器，如box渲染器有效
-        DiQuat             orientation;
+        DiQuat          orientation;
 
-        DiQuat             originalOrientation;
+        DiQuat          originalOrientation;
 
-        // 与orientation有关的旋转速度
-        float            rotationSpeed;
+        // rotation speed, for orientation calculation
+        float           rotationSpeed;
 
-        // 旋转轴，也与orientation相关
-        DiVec3            rotationAxis;
+        // rotation axis, for orientation calculation
+        DiVec3          rotationAxis;
 
         bool            ownDimensions;
 
-        float             width;
+        float           width;
 
-        float             height;
+        float           height;
 
-        float             depth;
+        float           depth;
 
-        // 粒子半径，用于内粒子碰撞
-        float            radius;
+        float           originWidth{ 0 };
 
-        float             textureAnimationTimeStep;
+        float           originHeight{ 0 };
 
-        float             textureAnimationTimeStepCount;
+        float           originDepth{ 0 };
 
-        uint16            textureCoordsCurrent;
+        // used for collision detection
+        float           radius;
+
+        float           textureAnimationTimeStep;
+
+        float           textureAnimationTimeStepCount;
+
+        uint16          textureCoordsCurrent;
 
         bool            textureAnimationDirectionUp;
+
+        DiAttributeCurved   scale;
     };
 }
 

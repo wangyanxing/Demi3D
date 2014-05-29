@@ -32,6 +32,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "PointEmitter.h"
 #include "LineEmitter.h"
+#include "BoxEmitter.h"
 #include "CircleEmitter.h"
 
 #include "BoxColliderController.h"
@@ -46,6 +47,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SineForceController.h"
 #include "SphereColliderController.h"
 #include "VortexController.h"
+#include "TextureRotatorController.h"
 
 #include "SceneManager.h"
 #include "RenderWindow.h"
@@ -553,6 +555,8 @@ namespace Demi
         AddEmitterFactory(particleEmitterFactory);
         particleEmitterFactory = DI_NEW DiCircleEmitterFactory();
         AddEmitterFactory(particleEmitterFactory);
+        particleEmitterFactory = DI_NEW DiBoxEmitterFactory();
+        AddEmitterFactory(particleEmitterFactory);
 
         DiParticleControllerFactory* particleControllerFactory = NULL;
         particleControllerFactory = DI_NEW DiBoxColliderControllerFactory();
@@ -578,6 +582,8 @@ namespace Demi
         particleControllerFactory = DI_NEW DiSphereColliderControllerFactory();
         AddControllerFactory(particleControllerFactory);
         particleControllerFactory = DI_NEW DiVortexControllerFactory();
+        AddControllerFactory(particleControllerFactory);
+        particleControllerFactory = DI_NEW DiTextureRotatorControllerFactory();
         AddControllerFactory(particleControllerFactory);
     }
 

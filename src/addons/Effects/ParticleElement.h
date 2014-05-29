@@ -238,9 +238,9 @@ namespace Demi
 
         virtual void              CopyTo(DiParticleElement* technique);
 
-        inline unsigned short     GetLodIndex(void) const {return m_usLodIndex;};
+        inline unsigned short     GetLodIndex(void) const {return mLodIndex;};
 
-        void                      SetLodIndex(unsigned short lodIndex) {m_usLodIndex = lodIndex;};
+        void                      SetLodIndex(unsigned short lodIndex) {mLodIndex = lodIndex;};
 
         // 标记element 控制器和发射器可以被发射
         // 由于设计原因可能会废除除了visualParticle以外所有的MarkForEmission方法
@@ -393,7 +393,7 @@ namespace Demi
                                  
         float                    mDefaultDepth;
                                  
-        unsigned short           m_usLodIndex;
+        unsigned short           mLodIndex;
                                  
         float                    mCameraSquareDistance;
 
@@ -403,7 +403,7 @@ namespace Demi
 
         DiAABB                   mWorldAABB;
 
-        // 是否需要更新
+        // need update?
         bool                     mUpdateWorldAABB;
 
         DiVec3                   mMinWorldExtend;
@@ -412,7 +412,6 @@ namespace Demi
 
         bool                     mHasExtents;
 
-        // 保持本地，决定了移动的粒子特效是否有拖尾效果
         bool                     mKeepLocal;
 
         DiVec3                   mParticleSystemScale;
@@ -425,7 +424,6 @@ namespace Demi
 
         ElementListenerList      mElementListenerList;
 
-        // 发射粒子的记录
         size_t                   mMaxNumVisualParticles;
 
         size_t                   mMaxNumEmitterParticles;

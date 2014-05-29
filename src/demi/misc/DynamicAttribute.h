@@ -98,19 +98,19 @@ namespace Demi
 
         DiAttributeRandom(const DiAttributeRandom& rhs);
 
-        virtual                    ~DiAttributeRandom();
+        virtual                 ~DiAttributeRandom();
 
     public:
 
-        virtual    float            GetValue(float x = 0);
+        virtual    float        GetValue(float x = 0);
 
         void                    SetMin (float min);
 
-        float                    GetMin (void) const;
+        float                   GetMin (void) const;
 
         void                    SetMax (float max);
 
-        float                    GetMax (void) const;
+        float                   GetMax (void) const;
 
         void                    SetMinMax (float min, float max);
 
@@ -118,9 +118,9 @@ namespace Demi
 
     protected:
 
-        float                    mMin;
+        float                   mMin;
 
-        float                    mMax;
+        float                   mMax;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -143,9 +143,9 @@ namespace Demi
 
         void                    SetInterpolationType (InterpolationType interpolationType);
 
-        InterpolationType        GetInterpolationType (void) const;
+        InterpolationType       GetInterpolationType (void) const;
 
-        virtual float            GetValue (float x = 0);
+        virtual float           GetValue (float x = 0);
 
         virtual void            AddControlPoint (float x, float y);
 
@@ -153,7 +153,7 @@ namespace Demi
 
         void                    ProcessControlPoints (void);
 
-        size_t                    GetNumControlPoints(void) const;
+        size_t                  GetNumControlPoints(void) const;
 
         void                    RemoveAllControlPoints(void);
 
@@ -161,11 +161,11 @@ namespace Demi
 
     protected:
 
-        float                    mRange;
+        float                   mRange;
 
         DiSpline                mSpline;
 
-        InterpolationType        mInterpolationType;
+        InterpolationType       mInterpolationType;
 
         ControlPointList        mControlPoints;
 

@@ -99,24 +99,24 @@ namespace Demi
 
     void DiParticle::CopyTo( DiParticle* particle )
     {
-        particle->position                        = position;
-        particle->originalPosition                = originalPosition;
-        particle->mDerivedPosition                = mDerivedPosition;
-        particle->direction                        = direction;
+        particle->position                      = position;
+        particle->originalPosition              = originalPosition;
+        particle->mDerivedPosition              = mDerivedPosition;
+        particle->direction                     = direction;
         particle->originalDirection             = originalDirection;
-        particle->originalDirectionLength        = originalDirectionLength;
+        particle->originalDirectionLength       = originalDirectionLength;
         particle->originalScaledDirectionLength = originalScaledDirectionLength;
-        particle->originalVelocity                = originalVelocity;
-        particle->mass                            = mass;
+        particle->originalVelocity              = originalVelocity;
+        particle->mass                          = mass;
         particle->timeToLive                    = timeToLive;
-        particle->totalTimeToLive                = totalTimeToLive;
-        particle->mEventFlags                    = mEventFlags;
+        particle->totalTimeToLive               = totalTimeToLive;
+        particle->mEventFlags                   = mEventFlags;
         particle->mMarkedForEmission            = mMarkedForEmission;
-        particle->mEnabled                        = mEnabled;
-        particle->mOriginalEnabled                = mOriginalEnabled;
-        particle->mOriginalEnabledSet            = mOriginalEnabledSet;
-        particle->mFreezed                        = mFreezed;
-        particle->timeFraction                    = timeFraction;
+        particle->mEnabled                      = mEnabled;
+        particle->mOriginalEnabled              = mOriginalEnabled;
+        particle->mOriginalEnabledSet           = mOriginalEnabledSet;
+        particle->mFreezed                      = mFreezed;
+        particle->timeFraction                  = timeFraction;
     }
 
     float DiParticle::DEFAULT_MASS = 1.0f;

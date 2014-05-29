@@ -29,16 +29,16 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    const bool        DiParticleSystem::DEFAULT_KEEP_LOCAL                    = false;
-    const float     DiParticleSystem::DEFAULT_ITERATION_INTERVAL            = 0.0f;
-    const float     DiParticleSystem::DEFAULT_FIXED_TIMEOUT                    = 0.0f;
-    const float     DiParticleSystem::DEFAULT_NON_VISIBLE_UPDATE_TIMEOUT    = 0.0f;
-    const bool        DiParticleSystem::DEFAULT_SMOOTH_LOD                    = false;
-    const float     DiParticleSystem::DEFAULT_FAST_FORWARD_TIME                = 0.0f;
-    const float     DiParticleSystem::DEFAULT_SCALE_VELOCITY                = 1.0f;
-    const float     DiParticleSystem::DEFAULT_SCALE_TIME                    = 1.0f;
-    const DiVec3    DiParticleSystem::DEFAULT_SCALE                            = DiVec3::UNIT_SCALE;
-    const bool        DiParticleSystem::DEFAULT_TIGHT_BOUNDINGBOX                = false;
+    const bool      DiParticleSystem::DEFAULT_KEEP_LOCAL                 = false;
+    const float     DiParticleSystem::DEFAULT_ITERATION_INTERVAL         = 0.0f;
+    const float     DiParticleSystem::DEFAULT_FIXED_TIMEOUT              = 0.0f;
+    const float     DiParticleSystem::DEFAULT_NON_VISIBLE_UPDATE_TIMEOUT = 0.0f;
+    const bool      DiParticleSystem::DEFAULT_SMOOTH_LOD                 = false;
+    const float     DiParticleSystem::DEFAULT_FAST_FORWARD_TIME          = 0.0f;
+    const float     DiParticleSystem::DEFAULT_SCALE_VELOCITY             = 1.0f;
+    const float     DiParticleSystem::DEFAULT_SCALE_TIME                 = 1.0f;
+    const DiVec3    DiParticleSystem::DEFAULT_SCALE                      = DiVec3::UNIT_SCALE;
+    const bool      DiParticleSystem::DEFAULT_TIGHT_BOUNDINGBOX          = false;
     
     DiParticleSystem::DiParticleSystem(const DiString& name) :
         mAABB(),
@@ -80,6 +80,7 @@ namespace Demi
         mLastLodIndex(0)
     {
         particleType = PT_UNUSED;
+        mGroupType = BATCH_EFFECT;
     }
     
     DiParticleSystem::~DiParticleSystem(void)

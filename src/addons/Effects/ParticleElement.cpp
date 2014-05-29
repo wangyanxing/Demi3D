@@ -32,23 +32,23 @@ namespace Demi
 {
     DiRadixSort<DiParticlePoolBase<DiVisualParticle>::PoolList, DiParticle*, float> DiParticleElement::mRadixSorter;
     
-    const bool                DiParticleElement::DEFAULT_ENABLED                        = true;
-    const DiVec3            DiParticleElement::DEFAULT_POSITION                        = DiVec3::ZERO;
-    const bool                DiParticleElement::DEFAULT_KEEP_LOCAL                    = false;
-    const size_t             DiParticleElement::DEFAULT_VISUAL_PARTICLE_QUOTA         = 500;
-    const size_t             DiParticleElement::DEFAULT_EMITTED_EMITTER_QUOTA         = 50;
-    const size_t             DiParticleElement::DEFAULT_EMITTED_TECHNIQUE_QUOTA        = 10;
-    const size_t             DiParticleElement::DEFAULT_EMITTED_AFFECTOR_QUOTA        = 10;
-    const size_t             DiParticleElement::DEFAULT_EMITTED_SYSTEM_QUOTA            = 10;
+    const bool              DiParticleElement::DEFAULT_ENABLED                      = true;
+    const DiVec3            DiParticleElement::DEFAULT_POSITION                     = DiVec3::ZERO;
+    const bool              DiParticleElement::DEFAULT_KEEP_LOCAL                   = false;
+    const size_t            DiParticleElement::DEFAULT_VISUAL_PARTICLE_QUOTA        = 500;
+    const size_t            DiParticleElement::DEFAULT_EMITTED_EMITTER_QUOTA        = 50;
+    const size_t            DiParticleElement::DEFAULT_EMITTED_TECHNIQUE_QUOTA      = 10;
+    const size_t            DiParticleElement::DEFAULT_EMITTED_AFFECTOR_QUOTA       = 10;
+    const size_t            DiParticleElement::DEFAULT_EMITTED_SYSTEM_QUOTA         = 10;
     const unsigned short    DiParticleElement::DEFAULT_LOD_INDEX                    = 0;
-    const float             DiParticleElement::DEFAULT_DEFAULT_WIDTH                = 50;
-    const float             DiParticleElement::DEFAULT_DEFAULT_HEIGHT                = 50;
-    const float             DiParticleElement::DEFAULT_DEFAULT_DEPTH                = 50;
-    const unsigned short     DiParticleElement::DEFAULT_SPATIAL_HASHING_CELL_DIM     = 15;
-    const unsigned short     DiParticleElement::DEFAULT_SPATIAL_HASHING_CELL_OVERLAP = 0;
-    const size_t            DiParticleElement::DEFAULT_SPATIAL_HASHING_TABLE_SIZE    = 50;
-    const float             DiParticleElement::DEFAULT_SPATIAL_HASHING_INTERVAL        = 0.05f;
-    const float             DiParticleElement::DEFAULT_MAX_VELOCITY                    = 9999.0f;
+    const float             DiParticleElement::DEFAULT_DEFAULT_WIDTH                = 10;
+    const float             DiParticleElement::DEFAULT_DEFAULT_HEIGHT               = 10;
+    const float             DiParticleElement::DEFAULT_DEFAULT_DEPTH                = 10;
+    const unsigned short    DiParticleElement::DEFAULT_SPATIAL_HASHING_CELL_DIM     = 15;
+    const unsigned short    DiParticleElement::DEFAULT_SPATIAL_HASHING_CELL_OVERLAP = 0;
+    const size_t            DiParticleElement::DEFAULT_SPATIAL_HASHING_TABLE_SIZE   = 50;
+    const float             DiParticleElement::DEFAULT_SPATIAL_HASHING_INTERVAL     = 0.05f;
+    const float             DiParticleElement::DEFAULT_MAX_VELOCITY                 = 9999.0f;
 
     DiParticleElement::DiParticleElement(void) : 
         DiParticle(),
@@ -66,7 +66,7 @@ namespace Demi
         mDefaultHeight(DEFAULT_DEFAULT_HEIGHT),
         mDefaultDepth(DEFAULT_DEFAULT_DEPTH),
         mMaterialName(DiString::BLANK),
-        m_usLodIndex(DEFAULT_LOD_INDEX),
+        mLodIndex(DEFAULT_LOD_INDEX),
         mCameraSquareDistance(0),
         mPrepareController(false),
         mPrepareEmitter(false),
@@ -1212,9 +1212,7 @@ namespace Demi
     void DiParticleElement::ExecuteEmitParticles(DiParticleEmitter* emitter, unsigned requested, float timeElapsed)
     {
         if (!(mEnabled && emitter->IsEnabled()))
-        {
             return;
-        }
 
         float timePoint = 0.0f;
         float timeInc = timeElapsed / requested;
@@ -1223,9 +1221,7 @@ namespace Demi
             DiParticle* particle = mPool.ReleaseParticle(emitter->GetEmitsType(), emitter->GetEmitsName());
 
             if (!particle)
-            {
                 return;
-            }
 
             particle->InitForEmission();
 
@@ -1236,14 +1232,10 @@ namespace Demi
 
             if (!mControllers.empty())
             {
-                ParticleAffectorIterator affectorIt;
-                ParticleAffectorIterator affectorItEnd = mControllers.end();
-                for (affectorIt = mControllers.begin(); affectorIt != affectorItEnd; ++affectorIt)
+                for (auto affectorIt = mControllers.begin(); affectorIt != mControllers.end(); ++affectorIt)
                 {
                     if ((*affectorIt)->IsEnabled())
-                    {
                         (*affectorIt)->InitParticleForEmission(particle);
-                    }
                 }
             }
 
@@ -1258,15 +1250,12 @@ namespace Demi
     const DiVec3& DiParticleElement::GetDerivedPosition(void)
     {
         if (mMarkedForEmission)
-        {
             mDerivedPosition = position;
-        }
         else
         {
             if (mParentSystem)
-            {
-                mDerivedPosition = mParentSystem->GetDerivedPosition() + GetParentSystem()->GetDerivedOrientation() * (mParticleSystemScale * position);
-            }
+                mDerivedPosition = mParentSystem->GetDerivedPosition() +
+                GetParentSystem()->GetDerivedOrientation() * (mParticleSystemScale * position);
         }
         return mDerivedPosition;
     }
@@ -1274,24 +1263,18 @@ namespace Demi
     void DiParticleElement::ProcessMotion(DiParticle* particle, float timeElapsed, bool firstParticle)
     {
         if (particle->IsFreezed())
-        {
             return;
-        }
 
         if (!particle->parentEmitter->MakeParticleLocal(particle))
         {
             if (!MakeParticleLocal(particle))
-            {
                 GetParentSystem()->MakeParticleLocal(particle);
-            }
         }
 
         if (GetParentSystem()->IsKeepLocal() || mKeepLocal)
         {
             if (!mRenderer->autoRotate)
-            {
                 GetParentSystem()->RotationOffset(particle->position);
-            }
         }
 
         if (particle->HasEventFlags(DiParticle::PEF_EMITTED))
@@ -1464,7 +1447,7 @@ namespace Demi
         technique->mDefaultWidth = mDefaultWidth;
         technique->mDefaultHeight = mDefaultHeight;
         technique->mDefaultDepth = mDefaultDepth;
-        technique->m_usLodIndex = m_usLodIndex;
+        technique->mLodIndex = mLodIndex;
         technique->mKeepLocal = mKeepLocal;
         technique->mMaxVelocity = mMaxVelocity;
         technique->mMaxVelocitySet = mMaxVelocitySet;

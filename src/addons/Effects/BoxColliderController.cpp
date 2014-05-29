@@ -176,7 +176,6 @@ namespace Demi
         {
         case DiBaseColliderController::CT_BOUNCE:
             {
-                // 计算最近边，并取反方向
                 if (IsSmallestValue (particle->position.x - mXmin, particle->position))
                 {        
                     particle->direction.x *= -1;

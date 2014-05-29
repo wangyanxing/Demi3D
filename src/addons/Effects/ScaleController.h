@@ -41,60 +41,96 @@ namespace Demi
         
     public:
 
-        virtual void                 CopyTo (DiParticleController* affector);
+        virtual void                  CopyTo (DiParticleController* affector);
 
-        virtual void                 Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
+        virtual void                  Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
 
-        DiDynamicAttribute*            GetDynScaleX(void) const {return mDynScaleX;}
+        DiDynamicAttribute*           GetDynScaleX(void) const {return mDynScaleX;}
 
-        void                         SetDynScaleX(DiDynamicAttribute* dynScaleX);
+        void                          SetDynScaleX(DiDynamicAttribute* dynScaleX);
 
-        void                         ResetDynScaleX(bool resetToDefault = true);
+        void                          ResetDynScaleX(bool resetToDefault = true);
 
-        DiDynamicAttribute*            GetDynScaleY(void) const {return mDynScaleY;}
+        DiDynamicAttribute*           GetDynScaleY(void) const {return mDynScaleY;}
 
-        void                         SetDynScaleY(DiDynamicAttribute* dynScaleY);
+        void                          SetDynScaleY(DiDynamicAttribute* dynScaleY);
 
-        void                         ResetDynScaleY(bool resetToDefault = true);
+        void                          ResetDynScaleY(bool resetToDefault = true);
 
-        DiDynamicAttribute*            GetDynScaleZ(void) const {return mDynScaleZ;}
+        DiDynamicAttribute*           GetDynScaleZ(void) const {return mDynScaleZ;}
 
-        void                         SetDynScaleZ(DiDynamicAttribute* dynScaleZ);
+        void                          SetDynScaleZ(DiDynamicAttribute* dynScaleZ);
 
-        void                         ResetDynScaleZ(bool resetToDefault = true);
+        void                          ResetDynScaleZ(bool resetToDefault = true);
 
-        DiDynamicAttribute*            GetDynScaleXYZ(void) const {return mDynScaleXYZ;}
+        DiDynamicAttribute*           GetDynScaleXYZ(void) const {return mDynScaleXYZ;}
 
-        void                         SetDynScaleXYZ(DiDynamicAttribute* dynScaleXYZ);
+        void                          SetDynScaleXYZ(DiDynamicAttribute* dynScaleXYZ);
 
-        void                         ResetDynScaleXYZ(bool resetToDefault = true);
+        void                          ResetDynScaleXYZ(bool resetToDefault = true);
 
-        bool                         IsSinceStartSystem(void) const {return mSinceStartSystem;}
+        bool                          IsSinceStartSystem(void) const {return mSinceStartSystem;}
 
-        void                         SetSinceStartSystem(bool sinceStartSystem){mSinceStartSystem = sinceStartSystem;}
+        void                          SetSinceStartSystem(bool sinceStartSystem){mSinceStartSystem = sinceStartSystem;}
+
+        virtual void                  InitParticleForEmission(DiParticle* particle);
+
+        void                          SetScale(const DiVec2& begin, const DiVec2& med, const DiVec2& end)
+        {
+            mBeginScale = begin;
+            mMedScale = med;
+            mEndScale = end;
+        }
+
+        void                          SetScale(const DiVec2& scale)
+        {
+            mBeginScale = scale;
+            mMedScale = scale;
+            mEndScale = scale;
+        }
+
+        void                          SetScale(const DiVec2& begin, const DiVec2& end)
+        {
+            mBeginScale = begin;
+            mMedScale = (begin + end) * 0.5f;
+            mEndScale = end;
+        }
 
     protected:
 
-        float                        CalculateScale(DiDynamicAttribute* dynScale, DiParticle* particle);
+        float                         CalculateScale(DiDynamicAttribute* dynScale, DiParticle* particle);
 
     protected:
-        DiDynamicAttribute*         mDynScaleX;
-        DiDynamicAttribute*         mDynScaleY;
-        DiDynamicAttribute*         mDynScaleZ;
-        DiDynamicAttribute*         mDynScaleXYZ;
         
-        bool                         mDynScaleXSet;
-        bool                         mDynScaleYSet;
-        bool                         mDynScaleZSet;
-        bool                         mDynScaleXYZSet;
-        
-        DiDynamicAttributeFactory    mDynamicAttributeFactory;
-        
-        DiDynamicAttributeHelper    mDynamicAttributeHelper;
-        
-        bool                        mSinceStartSystem;
+        DiDynamicAttribute*           mDynScaleX;
 
-        float                        mLatestTimeElapsed;
+        DiDynamicAttribute*           mDynScaleY;
+        
+        DiDynamicAttribute*           mDynScaleZ;
+        
+        DiDynamicAttribute*           mDynScaleXYZ;
+        
+        bool                          mDynScaleXSet;
+        
+        bool                          mDynScaleYSet;
+        
+        bool                          mDynScaleZSet;
+        
+        bool                          mDynScaleXYZSet;
+
+        DiDynamicAttributeFactory     mDynamicAttributeFactory;
+        
+        DiDynamicAttributeHelper      mDynamicAttributeHelper;
+        
+        bool                          mSinceStartSystem;
+
+        float                         mLatestTimeElapsed;
+
+        DiVec2                        mBeginScale{ 0, 0 };
+
+        DiVec2                        mMedScale{ 0, 0 };
+
+        DiVec2                        mEndScale{ 0, 0 };
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -104,14 +140,14 @@ namespace Demi
     public:
         DiScaleControllerFactory(void) {}
 
-        virtual                        ~DiScaleControllerFactory(void) {}
+        virtual    ~DiScaleControllerFactory(void) {}
 
-        DiString                    GetControllerType(void) const
+        DiString   GetControllerType(void) const
         {
             return "Scale";
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController* CreateController(void)
         {
             return CreateControllerImpl<DiScaleController>();
         }

@@ -27,22 +27,22 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    const bool        DiParticleEmitter::DEFAULT_ENABLED = true;
+    const bool      DiParticleEmitter::DEFAULT_ENABLED = true;
     const DiVec3    DiParticleEmitter::DEFAULT_POSITION = DiVec3::ZERO;
-    const bool        DiParticleEmitter::DEFAULT_KEEP_LOCAL = false;
-    const DiVec3     DiParticleEmitter::DEFAULT_DIRECTION = DiVec3::UNIT_Y;
-    const DiQuat     DiParticleEmitter::DEFAULT_ORIENTATION = DiQuat::IDENTITY;
-    const DiQuat     DiParticleEmitter::DEFAULT_ORIENTATION_RANGE_START = DiQuat::IDENTITY;
-    const DiQuat     DiParticleEmitter::DEFAULT_ORIENTATION_RANGE_END = DiQuat::IDENTITY;
+    const bool      DiParticleEmitter::DEFAULT_KEEP_LOCAL = false;
+    const DiVec3    DiParticleEmitter::DEFAULT_DIRECTION = DiVec3::UNIT_Y;
+    const DiQuat    DiParticleEmitter::DEFAULT_ORIENTATION = DiQuat::IDENTITY;
+    const DiQuat    DiParticleEmitter::DEFAULT_ORIENTATION_RANGE_START = DiQuat::IDENTITY;
+    const DiQuat    DiParticleEmitter::DEFAULT_ORIENTATION_RANGE_END = DiQuat::IDENTITY;
     const DiParticle::ParticleType DiParticleEmitter::DEFAULT_EMITS = DiVisualParticle::PT_VISUAL;
-    const uint16     DiParticleEmitter::DEFAULT_START_TEXTURE_COORDS = 0;
-    const uint16     DiParticleEmitter::DEFAULT_END_TEXTURE_COORDS = 0;
-    const uint16     DiParticleEmitter::DEFAULT_TEXTURE_COORDS = 0;
-    const DiColor     DiParticleEmitter::DEFAULT_START_COLOUR_RANGE = DiColor::Black;
-    const DiColor     DiParticleEmitter::DEFAULT_END_COLOUR_RANGE = DiColor::White;
-    const DiColor     DiParticleEmitter::DEFAULT_COLOUR = DiColor::White;
-    const bool         DiParticleEmitter::DEFAULT_AUTO_DIRECTION = false;
-    const bool         DiParticleEmitter::DEFAULT_FORCE_EMISSION = false;
+    const uint16    DiParticleEmitter::DEFAULT_START_TEXTURE_COORDS = 0;
+    const uint16    DiParticleEmitter::DEFAULT_END_TEXTURE_COORDS = 0;
+    const uint16    DiParticleEmitter::DEFAULT_TEXTURE_COORDS = 0;
+    const DiColor   DiParticleEmitter::DEFAULT_START_COLOUR_RANGE = DiColor::Black;
+    const DiColor   DiParticleEmitter::DEFAULT_END_COLOUR_RANGE = DiColor::White;
+    const DiColor   DiParticleEmitter::DEFAULT_COLOUR = DiColor::White;
+    const bool      DiParticleEmitter::DEFAULT_AUTO_DIRECTION = false;
+    const bool      DiParticleEmitter::DEFAULT_FORCE_EMISSION = false;
     const float     DiParticleEmitter::DEFAULT_EMISSION_RATE = 10.0f;
     const float     DiParticleEmitter::DEFAULT_TIME_TO_LIVE = 3.0f;
     const float     DiParticleEmitter::DEFAULT_MASS = 1.0f;
@@ -62,7 +62,6 @@ namespace Demi
         mRepeatDelayRemain(0),
         mDynDurationSet(false),
         mDynRepeatDelaySet(false),
-        mEnabled(DEFAULT_ENABLED),
         mParticleDirection(DEFAULT_DIRECTION),
         mOriginalParticleDirection(DEFAULT_DIRECTION),
         mParticleOrientation(DiQuat::IDENTITY),
@@ -189,16 +188,11 @@ namespace Demi
     bool DiParticleEmitter::MakeParticleLocal(DiParticle* particle)
     {
         if (!particle)
-        {
             return true;
-        }
 
         if (!mKeepLocal)
-        {
             return false;
-        }
 
-        
         DiVec3 diff = GetDerivedPosition() - GetDerivedPosition()/*latestPosition*/;
         particle->position += diff;
         return true;
@@ -450,7 +444,7 @@ namespace Demi
     
     void DiParticleEmitter::SetEnabled(bool enabled)
     {
-        mEnabled = enabled;
+        DiParticle::SetEnabled(enabled);
         InitTimeBased();
     }
     
@@ -534,14 +528,27 @@ namespace Demi
 
     DiVec3 DiParticleEmitter::GetDerivedPosition() 
     {
-        return mParentElement->GetDerivedPosition();
+        if (mMarkedForEmission)
+        {
+            // Use the emitter position, because it is emitted
+            // If a particle is emitted, position and derived position are the same
+            mDerivedPosition = position;
+        }
+        else
+        {
+            // Add the techniques' derived position. Use the emitters' own 'position' as offset.
+            mDerivedPosition = mParentElement->GetDerivedPosition() + 
+                mParentElement->GetParentSystem()->GetDerivedOrientation() *
+                (mEmitterScale * position);
+        }
+        return mDerivedPosition;
     }
 
     void DiParticleEmitter::InitParticlePosition(DiParticle* particle)
     {
-        particle->position = GetDerivedPosition();
+        particle->position         = GetDerivedPosition();
         particle->originalPosition = particle->position;
-        particle->latestPosition = particle->position;
+        particle->latestPosition   = particle->position;
     }
     
     void DiParticleEmitter::InitParticleForEmission(DiParticle* particle)
@@ -734,10 +741,68 @@ namespace Demi
         }
         else
         {
-            visualParticle->width    = mEmitterScale.x * mParentElement->GetDefaultWidth();
-            visualParticle->height    = mEmitterScale.y * mParentElement->GetDefaultHeight();
-            visualParticle->depth    = mEmitterScale.z * mParentElement->GetDefaultDepth();
+            visualParticle->originWidth  = visualParticle->width  = mEmitterScale.x * mParentElement->GetDefaultWidth();
+            visualParticle->originHeight = visualParticle->height = mEmitterScale.y * mParentElement->GetDefaultHeight();
+            visualParticle->originDepth  = visualParticle->depth  = mEmitterScale.z * mParentElement->GetDefaultDepth();
             visualParticle->CalculateBoundingSphereRadius();
+        }
+    }
+
+    void DiParticleEmitter::InitForEmission(void)
+    {
+        // The emitter itself is emitted.
+        DiParticle::InitForEmission();
+
+        // Emitting an emitter is similar as starting one.
+        NotifyStart();
+    }
+
+    void DiParticleEmitter::InitForExpiration(DiParticleElement* element, float timeElapsed)
+    {
+        // The emitter itself is expired.
+        DiParticle::InitForExpiration(element, timeElapsed);
+
+        // Expiring an emitter is similar as stopping one.
+        NotifyStop();
+    }
+
+    void DiParticleEmitter::NotifyStart(void)
+    {
+        latestPosition = GetDerivedPosition(); // V1.3.1
+        mForceEmission = mOriginalForceEmission;
+        mForceEmissionExecuted = mOriginalForceEmissionExecuted;
+        mRemainder = 0;
+        mDurationRemain = 0;
+        mRepeatDelayRemain = 0;
+        SetEnabled(mOriginalEnabled); // Also calls _initTimeBased
+
+        // Generate the event
+        _pushEmitterEvent(PU_EVT_EMITTER_STARTED);
+    }
+
+    void DiParticleEmitter::NotifyStop(void)
+    {
+        _pushEmitterEvent(PU_EVT_EMITTER_STOPPED);
+    }
+
+    void DiParticleEmitter::_pushEmitterEvent(EventType eventType)
+    {
+        // Create the event
+        ParticleUniverseEvent evt;
+        evt.eventType = eventType;
+        evt.componentType = CT_EMITTER;
+        evt.componentName = GetName();
+        evt.technique = 0;
+        evt.emitter = this;
+        PushEvent(evt);
+    }
+
+    void DiParticleEmitter::PushEvent(ParticleUniverseEvent& particleUniverseEvent)
+    {
+        // Forward the event
+        if (mParentElement)
+        {
+            mParentElement->PushEvent(particleUniverseEvent);
         }
     }
 }

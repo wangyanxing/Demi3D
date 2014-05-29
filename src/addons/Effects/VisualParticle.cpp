@@ -54,6 +54,28 @@ namespace Demi
         ownDimensions = true;
         if (newWidth)
         {
+            originWidth = newWidth;
+            width = newWidth;
+        }
+        if (newHeight)
+        {
+            originHeight = newHeight;
+            height = newHeight;
+        }
+        if (newDepth)
+        {
+            originDepth = newDepth;
+            depth = newDepth;
+        }
+        CalculateBoundingSphereRadius();
+        parentEmitter->GetParentElement()->NotifyParticleResized();
+    }
+
+    void DiVisualParticle::SetScaleDimensions(float newWidth, float newHeight, float newDepth)
+    {
+        ownDimensions = true;
+        if (newWidth)
+        {
             width = newWidth;
         }
         if (newHeight)
@@ -90,6 +112,10 @@ namespace Demi
     {
         //radius = 0.5 * DiMath::Sqrt(width*width + height*height + depth*depth);
         radius = 0.5f * std::max(depth, std::max(width, height)); // ½üËÆÖµ
+    }
+
+    DiVisualParticle::~DiVisualParticle(void)
+    {
     }
 }
 

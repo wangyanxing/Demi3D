@@ -162,7 +162,6 @@ namespace Demi
                     bb.mDirection.normalise();
                 }
                 
-                
                 bb.mColour   = particle->colour;
                 bb.mRotation = particle->zRotation;
                 

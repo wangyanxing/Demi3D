@@ -20,18 +20,18 @@ namespace Demi
         : mQueryFlags(sDefaultQueryFlags)
         , mVisibilityFlags(sDefaultVisibilityFlags)
         , mShadowCastEnable(false)
+        , mGroupType(BATCH_MODEL)
     {
         mParentNode = NULL;
-        mGroupType = BATCH_MODEL;
         mVisible = true;
         mVisibilityFlags = std::numeric_limits<uint32>::max();
     }
 
     DiTransformUnit::DiTransformUnit( const DiString& name )
+        :mGroupType(BATCH_MODEL)
     {
         mParentNode = NULL;
         mName = name;
-        mGroupType = BATCH_MODEL;
         mVisible = true;
         mVisibilityFlags = std::numeric_limits<uint32>::max();
     }

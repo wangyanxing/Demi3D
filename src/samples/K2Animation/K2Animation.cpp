@@ -41,12 +41,9 @@ void InitScene()
 #endif
 
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-    
-    DiDirLightPtr dirlight;
-    
     sm->SetAmbientColor(DiColor(0.3f, 0.3f, 0.3f));
     
-    dirlight = make_shared<DiDirLight>();
+    DiDirLightPtr dirlight = make_shared<DiDirLight>();
     DiCullNode* dirNode = sm->GetRootNode()->CreateChild();
     dirNode->AttachObject(dirlight);
     dirlight->SetColor(DiColor());

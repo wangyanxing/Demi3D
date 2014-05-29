@@ -42,31 +42,31 @@ namespace Demi
 
         DiColorController(void);
 
-        virtual                        ~DiColorController(void) {}
+        virtual                     ~DiColorController(void) {}
 
     public:
 
         void                        AddColour(float timeFraction, const DiColor& colour);
 
-        const ColorMap&                GetTimeAndColour(void) const;
+        const ColorMap&             GetTimeAndColour(void) const;
 
         void                        ClearColourMap (void);
 
         inline ColourMapIterator    FindNearestColourMapIterator(float timeFraction);
 
-        const ColourOperation&        GetColourOperation (void) const;
+        const ColourOperation&      GetColourOperation (void) const;
 
         void                        SetColourOperation (const ColourOperation& colourOperation);
 
-        virtual void                 Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
+        virtual void                Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
 
-        virtual void                 CopyTo (DiParticleController* affector);
+        virtual void                CopyTo(DiParticleController* affector);
 
     protected:
 
         ColorMap                    mColourMap;
 
-        ColourOperation                mColourOperation;
+        ColourOperation             mColourOperation;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ namespace Demi
     public:
         DiColorControllerFactory(void) {}
 
-        virtual                        ~DiColorControllerFactory(void) {}
+        virtual                     ~DiColorControllerFactory(void) {}
 
         DiString                    GetControllerType(void) const
         {
@@ -84,7 +84,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController*       CreateController(void)
         {
             return CreateControllerImpl<DiColorController>();
         }

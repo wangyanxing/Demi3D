@@ -22,6 +22,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ColorController.h"
 #include "ParticleElement.h"
 #include "VisualParticle.h"
+#include "ParticleSystem.h"
 
 namespace Demi
 {
@@ -83,6 +84,9 @@ namespace Demi
 
         DiColor colour = DiColor::White;
         float timeFraction = (visualParticle->totalTimeToLive - visualParticle->timeToLive) / visualParticle->totalTimeToLive;
+
+        timeFraction = particle->timeFraction;
+
         ColourMapIterator it1 = FindNearestColourMapIterator(timeFraction);
         ColourMapIterator it2 = it1;
         it2++;
