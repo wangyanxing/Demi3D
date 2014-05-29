@@ -6,7 +6,7 @@
 #ifndef __SETTINGS_SECTOR_H__
 #define __SETTINGS_SECTOR_H__
 
-#include "ViewerPrerequisites.h"
+#include "MyGUI_Prerequest.h"
 
 namespace tools
 {
@@ -15,7 +15,7 @@ namespace tools
 	typedef std::vector<SettingsSector*> VectorSettingsSector;
 	typedef MyGUI::Enumerator<VectorSettingsSector> EnumeratorSettingsSector;
 
-	class SettingsSector :
+    class MYGUI_EXPORT SettingsSector :
 		public MyGUI::ISerializable
 	{
 	public:

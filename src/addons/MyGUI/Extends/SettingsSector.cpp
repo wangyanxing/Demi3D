@@ -3,7 +3,9 @@
 	@author		Albert Semenov
 	@date		08/2010
 */
-#include "ViewerPch.h"
+#include "MyGUI_Precompiled.h"
+#include "MyGUI_Constants.h"
+
 #include "SettingsSector.h"
 
 namespace tools

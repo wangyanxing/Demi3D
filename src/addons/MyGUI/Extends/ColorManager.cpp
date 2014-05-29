@@ -3,7 +3,7 @@
 	@author		Albert Semenov
 	@date		09/2010
 */
-#include "ViewerPch.h"
+#include "MyGUI_Precompiled.h"
 #include "ColorManager.h"
 #include "SettingsManager.h"
 #include "CommandManager.h"

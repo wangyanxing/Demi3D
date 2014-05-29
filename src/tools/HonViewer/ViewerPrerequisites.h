@@ -14,6 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef HonViewerPrerequisites_h__
 #define HonViewerPrerequisites_h__
 
+#include "MyGUI_Prerequest.h"
+
 namespace Demi
 {
     class HonViewerApp;
@@ -28,11 +30,9 @@ namespace tools
     class AnimationView;
     class ModelView;
     class KeyFrameBarControl;
-    class ColourManager;
     class CommonToolsControl;
     class SetResLocWindow;
     class SettingsManager;
-    class Dialog;
     class ViewerHelper;
     class SetGameLocWindow;
 }

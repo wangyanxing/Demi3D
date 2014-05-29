@@ -6,14 +6,14 @@
 #ifndef __TEXTURE_CONTROL_H__
 #define __TEXTURE_CONTROL_H__
 
+#include "MyGUI_Prerequest.h"
 #include "BaseLayout.h"
 #include "SelectorControl.h"
 #include "Dialog.h"
 
 namespace tools
 {
-
-	class TextureControl : public wraps::BaseLayout
+    class MYGUI_EXPORT TextureControl : public wraps::BaseLayout
 	{
 	public:
 		TextureControl(const std::string& _layout, MyGUI::Widget* _parent);

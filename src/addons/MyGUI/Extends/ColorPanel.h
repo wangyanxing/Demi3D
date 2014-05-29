@@ -14,8 +14,7 @@ namespace tools
 	typedef MyGUI::delegates::CDelegate1<const MyGUI::Colour&> Event_PreviewColour;
 
 	ATTRIBUTE_CLASS_LAYOUT(ColourPanel, "ColourPanel.layout");
-	class ColourPanel :
-		public Dialog
+    class MYGUI_EXPORT ColourPanel : public Dialog
 	{
 	public:
 		ColourPanel();

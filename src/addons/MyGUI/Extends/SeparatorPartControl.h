@@ -6,7 +6,7 @@
 namespace tools
 {
 
-	class SeparatorPartControl :
+    class MYGUI_EXPORT SeparatorPartControl :
 		public wraps::BaseLayout
 	{
 	public:

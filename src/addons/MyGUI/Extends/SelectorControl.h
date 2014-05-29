@@ -10,12 +10,11 @@
 
 namespace tools
 {
-
 	class SelectorControl;
 
 	typedef MyGUI::delegates::CMultiDelegate0 EventHandle_ChangePosition;
 
-	class SelectorControl :
+    class MYGUI_EXPORT SelectorControl :
 		public wraps::BaseLayout
 	{
 	public:

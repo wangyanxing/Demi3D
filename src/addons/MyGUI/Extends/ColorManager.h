@@ -6,12 +6,12 @@
 #ifndef __COLOUR_MANAGER_H__
 #define __COLOUR_MANAGER_H__
 
-#include "ViewerPrerequisites.h"
+#include "MyGUI_Prerequest.h"
 #include "ColorPanel.h"
 
 namespace tools
 {
-	class ColourManager :
+    class MYGUI_EXPORT ColourManager :
 		public MyGUI::Singleton<ColourManager>
 	{
 	public:

@@ -3,8 +3,9 @@
 	@author		Albert Semenov
 	@date		08/2010
 */
-#include "ViewerPch.h"
+#include "MyGUI_Precompiled.h"
 #include "SettingsManager.h"
+#include "MyGUI_DataManager.h"
 
 template <> tools::SettingsManager* MyGUI::Singleton<tools::SettingsManager>::msInstance = nullptr;
 template <> const char* MyGUI::Singleton<tools::SettingsManager>::mClassTypeName("SettingsManager");

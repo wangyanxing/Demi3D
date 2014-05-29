@@ -6,14 +6,14 @@
 #ifndef __SETTINGS_MANAGER_H__
 #define __SETTINGS_MANAGER_H__
 
-#include "ViewerPrerequisites.h"
+#include "MyGUI_Prerequest.h"
 #include "SettingsSector.h"
 
 namespace tools
 {
 	typedef MyGUI::delegates::CMultiDelegate2<const MyGUI::UString&, const MyGUI::UString&> EventSectorSettingsChanged;
 
-	class SettingsManager :
+    class MYGUI_EXPORT SettingsManager :
 		public MyGUI::Singleton<SettingsManager>
 	{
 	public:

@@ -3,7 +3,7 @@
 	@author		Albert Semenov
 	@date		08/2008
 */
-#include "ViewerPch.h"
+#include "MyGUI_Precompiled.h"
 #include "ColorPanel.h"
 
 namespace tools

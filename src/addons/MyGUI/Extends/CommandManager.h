@@ -6,14 +6,13 @@
 #ifndef __COMMAND_MANAGER_H__
 #define __COMMAND_MANAGER_H__
 
-#include "ViewerPrerequisites.h"
+#include "MyGUI_Prerequest.h"
 
 namespace tools
 {
 	typedef MyGUI::delegates::CMultiDelegate2<const MyGUI::UString&, bool&> CommandDelegate;
 
-	class CommandManager :
-		public MyGUI::Singleton<CommandManager>
+    class MYGUI_EXPORT CommandManager : public MyGUI::Singleton<CommandManager>
 	{
 	public:
 		CommandManager();

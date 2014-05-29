@@ -114,6 +114,13 @@ namespace MyGUI
 
 } // namespace MyGUI
 
+// extensions
+namespace tools
+{
+    class ColourManager;
+    class Dialog;
+}
+
 #include "MyGUI_DeprecatedTypes.h"
 
 #endif // __MYGUI_PREREQUEST_H__

@@ -1,4 +1,5 @@
-#include "ViewerPch.h"
+
+#include "MyGUI_Precompiled.h"
 #include "SeparatorPartControl.h"
 
 namespace tools

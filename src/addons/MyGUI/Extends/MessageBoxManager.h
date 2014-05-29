@@ -11,7 +11,6 @@
 
 namespace tools
 {
-
     class MYGUI_EXPORT MessageBoxManager :
 		public MyGUI::Singleton<MessageBoxManager>
 	{
@@ -22,12 +21,17 @@ namespace tools
 		void initialise();
 		void shutdown();
 
-		MyGUI::Message* create(const MyGUI::UString& _caption, const MyGUI::UString& _message, MyGUI::MessageBoxStyle _style);
+		MyGUI::Message* create(const MyGUI::UString& _caption, 
+            const MyGUI::UString& _message, MyGUI::MessageBoxStyle _style);
+
 		bool hasAny();
-		void endTop(MyGUI::MessageBoxStyle _button);
+		
+        void endTop(MyGUI::MessageBoxStyle _button);
 
 	private:
-		void registerMessageBox(MyGUI::Message* _message);
+		
+        void registerMessageBox(MyGUI::Message* _message);
+
 		void notifMessageBoxResultRegister(MyGUI::Message* _sender, MyGUI::MessageBoxStyle _result);
 
 	private:
