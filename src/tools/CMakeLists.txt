@@ -8,6 +8,7 @@ endif()
 
 if (NOT DEMI_BUILD_PLATFORM_APPLE_IOS)
 add_subdirectory(HonViewer)
+add_subdirectory(HonFxer)
 endif()
 
 add_subdirectory(ConfigGen)
