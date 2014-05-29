@@ -16,7 +16,7 @@ namespace MyGUI
 
 	typedef delegates::CMultiDelegate2<Message*, MessageBoxStyle> EventHandle_MessageBoxPtrMessageStyle;
 
-	class Message :
+    class MYGUI_EXPORT Message :
 		public wraps::BaseLayout
 	{
 	public:

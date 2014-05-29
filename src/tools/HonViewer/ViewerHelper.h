@@ -15,8 +15,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define _VIEWER_HELPER_H_
 
 #include "ViewerPrerequisites.h"
-#include "BaseLayout/BaseLayout.h"
-#include "Tools/Dialog.h"
+#include "BaseLayout.h"
+#include "Dialog.h"
 
 namespace tools
 {

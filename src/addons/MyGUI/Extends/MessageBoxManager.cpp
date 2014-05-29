@@ -3,7 +3,7 @@
 	@author		Albert Semenov
 	@date		08/2010
 */
-#include "ViewerPch.h"
+#include "MyGUI_Precompiled.h"
 #include "MessageBoxManager.h"
 
 template <> tools::MessageBoxManager* MyGUI::Singleton<tools::MessageBoxManager>::msInstance = nullptr;

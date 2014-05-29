@@ -7,11 +7,11 @@
 #define __DIALOG_H__
 
 #include <MyGUI.h>
-#include "BaseLayout/BaseLayout.h"
+#include "BaseLayout.h"
 
 namespace tools
 {
-	class Dialog :
+    class MYGUI_EXPORT Dialog :
 		public wraps::BaseLayout
 	{
 	public:

@@ -3,7 +3,7 @@
 	@author		Albert Semenov
 	@date		08/2010
 */
-#include "ViewerPch.h"
+#include "MyGUI_Precompiled.h"
 #include "DialogManager.h"
 
 template <> tools::DialogManager* MyGUI::Singleton<tools::DialogManager>::msInstance = nullptr;

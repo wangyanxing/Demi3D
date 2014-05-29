@@ -7,7 +7,7 @@
 #define __BACKGROUND_CONTROL_H__
 
 #include <MyGUI.h>
-#include "BaseLayout/BaseLayout.h"
+#include "BaseLayout.h"
 
 namespace tools
 {

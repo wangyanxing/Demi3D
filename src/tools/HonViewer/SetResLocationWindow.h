@@ -15,8 +15,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define __SET_RES_LOCATION_WINDOW_H__
 
 #include "ViewerPrerequisites.h"
-#include "BaseLayout/BaseLayout.h"
-#include "Tools/Dialog.h"
+#include "BaseLayout.h"
+#include "Dialog.h"
 
 namespace tools
 {

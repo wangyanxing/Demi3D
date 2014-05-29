@@ -14,7 +14,7 @@
 namespace wraps
 {
 
-	class BaseLayout
+    class MYGUI_EXPORT BaseLayout
 	{
 	protected:
 		BaseLayout() : mMainWidget(nullptr)

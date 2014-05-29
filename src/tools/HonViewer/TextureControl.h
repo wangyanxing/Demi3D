@@ -6,9 +6,9 @@
 #ifndef __TEXTURE_CONTROL_H__
 #define __TEXTURE_CONTROL_H__
 
-#include "BaseLayout/BaseLayout.h"
+#include "BaseLayout.h"
 #include "SelectorControl.h"
-#include "Tools/Dialog.h"
+#include "Dialog.h"
 
 namespace tools
 {
