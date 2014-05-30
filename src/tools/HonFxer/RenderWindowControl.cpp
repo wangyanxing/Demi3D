@@ -17,18 +17,18 @@ namespace tools
 #define MAX_BONE_NAME_NUMS 100
 
     RenderWindowControl::RenderWindowControl(MyGUI::Widget* _parent) :
-        wraps::BaseLayout("RenderWindow.layout", _parent)
+        wraps::BaseLayout("FxRenderWindow.layout", _parent)
     {
         mCanvas = mMainWidget->createWidget<MyGUI::Canvas>("Canvas",
-            MyGUI::IntCoord(0, 0, mMainWidget->getClientCoord().width, mMainWidget->getClientCoord().height-51), MyGUI::Align::Stretch);
+            MyGUI::IntCoord(0, 0, mMainWidget->getClientCoord().width, mMainWidget->getClientCoord().height), MyGUI::Align::Stretch);
 
-        mInfo = mCanvas->createWidget<MyGUI::TextBox>("TextBox", MyGUI::IntCoord(100, 10, 100, 70), MyGUI::Align::Default);
-        mInfo->setTextShadow(true);
-        mInfo->setTextShadowColour(MyGUI::Colour::Black);
-        mInfoStatic = mCanvas->createWidget<MyGUI::TextBox>("TextBox", MyGUI::IntCoord(10, 10, 80, 70), MyGUI::Align::Default);
-        mInfoStatic->setTextShadow(true);
-        mInfoStatic->setTextShadowColour(MyGUI::Colour::Black);
-        mInfoStatic->setCaption("Vertices :\nFaces:\nSub Models:\nBones:");
+//         mInfo = mCanvas->createWidget<MyGUI::TextBox>("TextBox", MyGUI::IntCoord(100, 10, 100, 70), MyGUI::Align::Default);
+//         mInfo->setTextShadow(true);
+//         mInfo->setTextShadowColour(MyGUI::Colour::Black);
+//         mInfoStatic = mCanvas->createWidget<MyGUI::TextBox>("TextBox", MyGUI::IntCoord(10, 10, 80, 70), MyGUI::Align::Default);
+//         mInfoStatic->setTextShadow(true);
+//         mInfoStatic->setTextShadowColour(MyGUI::Colour::Black);
+//         mInfoStatic->setCaption("Vertices :\nFaces:\nSub Models:\nBones:");
         updateInfo();
 
         uint32 width = (uint32)mCanvas->getWidth();

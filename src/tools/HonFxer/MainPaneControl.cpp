@@ -5,7 +5,7 @@
 namespace tools
 {
 	MainPaneControl::MainPaneControl() :
-		wraps::BaseLayout("MainPane.layout"),
+		wraps::BaseLayout("FxMainPane.layout"),
 		mMainMenuControl(nullptr),
 		mMainWorkspaceControl(nullptr)
 	{

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout">
+	<Widget type="Widget" skin="PanelEmpty" position="10 10 300 26" align="Stretch" layer="Overlapped" name="_Main">
+		<UserString key="SnapTo" value="Stretch"/>
+		<Widget type="MenuBar" skin="MenuBar" position="0 0 300 26" align="Stretch" name="Menu">
+			<Widget type="MenuItem" skin="">
+				<Property key="Caption" value="#{File}"/>
+				<Property key="MenuItemType" value="Popup"/>
+				<Property key="MenuItemId" value="File"/>
+				<Widget type="PopupMenu" skin="PopupMenu" style="Popup" layer="Popup">
+          <Widget type="MenuItem" skin="PopupMenuNormal">
+            <Property key="Caption" value="Set Game Locations..."/>
+            <Property key="MenuItemId" value="Command_GameLocation"/>
+          </Widget>
+          <Widget type="MenuItem" skin="PopupMenuNormal">
+						<Property key="Caption" value="Set Resource Locations..."/>
+						<Property key="MenuItemId" value="Command_ResLocation"/>
+					</Widget>
+					<Widget type="MenuItem" skin="PopupMenuNormal">
+						<Property key="Caption" value="Export..."/>
+						<Property key="MenuItemId" value="Command_Export"/>
+					</Widget>
+					<Widget type="MenuItem" skin="PopupMenuSeparator">
+						<Property key="MenuItemType" value="Separator"/>
+					</Widget>
+					<Widget type="MenuItem" skin="PopupMenuNormal">
+						<Property key="Caption" value="#{Quit}"/>
+						<Property key="MenuItemId" value="Command_Quit"/>
+					</Widget>
+				</Widget>
+			</Widget>
+			<Widget type="MenuItem" skin="MenuBarButton">
+				<Property key="Caption" value="Settings"/>
+				<Property key="MenuItemType" value="Popup"/>
+				<Property key="MenuItemId" value="Colours"/>
+				<Widget type="PopupMenu" skin="PopupMenu" style="Popup" layer="Popup">
+					<Widget type="MenuItem" skin="PopupMenuNormal">
+						<Property key="Caption" value="#{MenuColourBackground}"/>
+						<Property key="MenuItemId" value="Command_ChangeColourBackground"/>
+					</Widget>
+				</Widget>
+			</Widget>
+      <Widget type="MenuItem" skin="MenuBarButton">
+        <Property key="Caption" value="Help"/>
+        <Property key="MenuItemType" value="Popup"/>
+        <Property key="MenuItemId" value="Help"/>
+        <Widget type="PopupMenu" skin="PopupMenu" style="Popup" layer="Popup">
+          <Widget type="MenuItem" skin="PopupMenuNormal">
+            <Property key="Caption" value="View Help..."/>
+            <Property key="MenuItemId" value="Command_ViewHelp"/>
+          </Widget>
+        </Widget>
+      </Widget>
+		</Widget>
+	</Widget>
+</MyGUI>

@@ -11,7 +11,7 @@
 namespace tools
 {
 	MainMenuControl::MainMenuControl(MyGUI::Widget* _parent) :
-		wraps::BaseLayout("MainMenuControl.layout", _parent)
+		wraps::BaseLayout("FxMainMenuControl.layout", _parent)
 	{
 		assignWidget(mBar, "Menu");
 		createMainMenu();

@@ -30,7 +30,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     HonFxerApp::HonFxerApp()
-        : DemiDemo(DemoConfig("Hon Fxer"))
+        : DemiDemo(DemoConfig("Hon Fxer",1400, 800))
     {
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32 && !DEMI_DEBUG
         ShowWindow(GetConsoleWindow(), SW_HIDE);
@@ -155,29 +155,29 @@ namespace Demi
 
     void HonFxerApp::mouseMoved(const OIS::MouseEvent& evt)
     {
-        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
-        if (incanvas)
-        {
-            DemiDemo::mouseMoved(evt);
-        }
+//         bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+//         if (incanvas)
+//         {
+//             DemiDemo::mouseMoved(evt);
+//         }
     }
 
     void HonFxerApp::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
-        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
-        if (incanvas)
-        {
-            DemiDemo::mousePressed(evt,id);
-        }
+//         bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+//         if (incanvas)
+//         {
+//             DemiDemo::mousePressed(evt,id);
+//         }
     }
 
     void HonFxerApp::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
-        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
-        if (incanvas)
-        {
-            DemiDemo::mouseReleased(evt, id);
-        }
+//         bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+//         if (incanvas)
+//         {
+//             DemiDemo::mouseReleased(evt, id);
+//         }
     }
 
     void HonFxerApp::Command_QuitApp(const MyGUI::UString& _commandName, bool& _result)

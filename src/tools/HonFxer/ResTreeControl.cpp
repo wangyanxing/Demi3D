@@ -12,16 +12,16 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "FxerPch.h"
-#include "ToolsControl.h"
+#include "ResTreeControl.h"
 
 namespace tools
 {
-	ToolsControl::ToolsControl(MyGUI::Widget* _parent) :
-		wraps::BaseLayout("FxToolsControl.layout", _parent)
+    ResTreeControl::ResTreeControl(MyGUI::Widget* _parent) :
+		wraps::BaseLayout("FxResTreeControl.layout", _parent)
 	{
 	}
 
-	ToolsControl::~ToolsControl()
+    ResTreeControl::~ResTreeControl()
 	{
 	}
 
