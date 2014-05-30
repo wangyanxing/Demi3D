@@ -172,7 +172,7 @@ namespace MyGUI
 		if (root->findAttribute("type", type))
 		{
 			Version version = Version::parse(root->findAttribute("version"));
-			MapLoadXmlDelegate::iterator iter = mMapLoadXmlDelegate.find(type);
+			auto iter = mMapLoadXmlDelegate.find(type);
 			if (iter != mMapLoadXmlDelegate.end())
 			{
 				if ((!_match) || (type == _type))
@@ -185,7 +185,7 @@ namespace MyGUI
 			}
 			else
 			{
-				MYGUI_LOG(Error, _instance << " : '" << _file << "', delegate for type '" << type << "'not found");
+				//MYGUI_LOG(Error, _instance << " : '" << _file << "', delegate for type '" << type << "'not found");
 				return false;
 			}
 		}
@@ -198,7 +198,7 @@ namespace MyGUI
 				if (node->findAttribute("type", type))
 				{
 					Version version = Version::parse(root->findAttribute("version"));
-					MapLoadXmlDelegate::iterator iter = mMapLoadXmlDelegate.find(type);
+					auto iter = mMapLoadXmlDelegate.find(type);
 					if (iter != mMapLoadXmlDelegate.end())
 					{
 						(*iter).second(node.current(), _file, version);

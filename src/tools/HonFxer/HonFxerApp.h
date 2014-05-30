@@ -67,6 +67,7 @@ namespace Demi
 
     private:
 
+        MainPaneControl*    mMainPane{ nullptr };
     };
 }
 

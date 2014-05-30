@@ -25,6 +25,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ZipArchive.h"
 #include "SettingsManager.h"
 #include "CommandManager.h"
+#include "MainPaneControl.h"
 
 namespace Demi
 {
@@ -43,10 +44,15 @@ namespace Demi
     void HonFxerApp::Update()
     {
         DemiDemo::Update();
+
+        if (mMainPane)
+            mMainPane->update();
     }
 
     void HonFxerApp::Close()
     {
+        SAFE_DELETE(mMainPane);
+
         DialogManager::getInstance().shutdown();
         delete DialogManager::getInstancePtr();
 
@@ -66,27 +72,20 @@ namespace Demi
         MyGUI::FactoryManager::getInstance().unregisterFactory<MyGUI::RTTLayer>("Layer");
 
         DI_UNINSTALL_PLUGIN(DiK2);
-
         DemiDemo::Close();
     }
 
     void HonFxerApp::OpenImpl()
     {
         DemiDemo::OpenImpl();
-
         DI_INSTALL_PLUGIN(DiK2);
 
         Driver->GetMainRenderWindow()->SetForceRenderToCanvas(true);
-
-        // use software skinning for editor
-        DiBase::CommandMgr->SetIntVar("force_softskin", 0);
         
         DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
         peMgr->SetManualOutputTarget(DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas());
 
         DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.2f, 0.2f, 0.2f));
-
-        //DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0,0,0));
 
         DiSceneManager* sm = DiBase::Driver->GetSceneManager();
         sm->SetAmbientColor(DiColor(0.3f, 0.3f, 0.3f));
@@ -101,12 +100,12 @@ namespace Demi
 
         MyGUI::FactoryManager::getInstance().registerFactory<MyGUI::RTTLayer>("Layer");
         MyGUI::FactoryManager::getInstance().registerFactory<MyGUI::FilterNone>("BasisSkin");
-        MyGUI::ResourceManager::getInstance().load("EditorLayers.xml");
+        MyGUI::ResourceManager::getInstance().load("FxEditorLayers.xml");
 
         new CommandManager();
         CommandManager::getInstance().initialise();
 
-        DiString userSettings = DiPathLib::GetApplicationPath() + "ViewerSettings.xml";
+        DiString userSettings = DiPathLib::GetApplicationPath() + "FxSettings.xml";
         new SettingsManager();
         SettingsManager::getInstance().initialise(userSettings.c_str());
 
@@ -119,7 +118,7 @@ namespace Demi
         new ColourManager();
         ColourManager::getInstance().initialise();
 
-        MyGUI::ResourceManager::getInstance().load("Initialise.xml");
+        MyGUI::ResourceManager::getInstance().load("FxInitialise.xml");
 
         MyGUI::FactoryManager& factory = MyGUI::FactoryManager::getInstance();
         factory.registerFactory<MyGUI::TreeControl>("Widget");
@@ -133,8 +132,7 @@ namespace Demi
         CommandManager::getInstance().registerCommand("Command_GameLocation", MyGUI::newDelegate(this, &HonFxerApp::Command_GameLocation));
         CommandManager::getInstance().registerCommand("Command_ViewHelp", MyGUI::newDelegate(this, &HonFxerApp::Command_ViewHelp));
 
-        //mBackground = new BackgroundControl();
-        //mMainPane = new MainPaneControl();
+        mMainPane = new MainPaneControl();
 
         //mModelViewer = DI_NEW K2ModelViewer();
 
@@ -157,29 +155,29 @@ namespace Demi
 
     void HonFxerApp::mouseMoved(const OIS::MouseEvent& evt)
     {
-//         bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
-//         if (incanvas)
-//         {
-//             DemiDemo::mouseMoved(evt);
-//         }
+        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+        if (incanvas)
+        {
+            DemiDemo::mouseMoved(evt);
+        }
     }
 
     void HonFxerApp::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
-//         bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
-//         if (incanvas)
-//         {
-//             DemiDemo::mousePressed(evt,id);
-//         }
+        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+        if (incanvas)
+        {
+            DemiDemo::mousePressed(evt,id);
+        }
     }
 
     void HonFxerApp::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
-//         bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
-//         if (incanvas)
-//         {
-//             DemiDemo::mouseReleased(evt, id);
-//         }
+        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+        if (incanvas)
+        {
+            DemiDemo::mouseReleased(evt, id);
+        }
     }
 
     void HonFxerApp::Command_QuitApp(const MyGUI::UString& _commandName, bool& _result)

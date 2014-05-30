@@ -71,8 +71,6 @@ namespace Demi
 
     private:
 
-        //BackgroundControl*  mBackground;
-
         SetResLocWindow*    mSetResLocWindow;
 
         SetGameLocWindow*   mSetGameLocWindow;

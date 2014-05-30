@@ -3,7 +3,7 @@
 	@author		Albert Semenov
 	@date		08/2010
 */
-#include "ViewerPch.h"
+#include "FxerPch.h"
 #include "MainMenuControl.h"
 #include "Localise.h"
 #include "CommandManager.h"
