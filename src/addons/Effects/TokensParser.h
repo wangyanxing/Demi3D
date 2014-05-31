@@ -44,13 +44,13 @@ namespace Demi
 
     public:
 
-        void    WriteElement(DiParticleElement* val, DiXMLElement& node);
-
-        void    ReadElement(DiParticleElement* val, DiXMLElement& node);
-
         void    WriteSystem(DiParticleSystem* val, DiXMLElement& node);
 
         void    ReadSystem(DiParticleSystem* val, DiXMLElement& node);
+
+        void    WriteElement(DiParticleElement* val, DiXMLElement& node);
+
+        void    ReadElement(DiParticleElement* val, DiXMLElement& node);
 
     public:
 

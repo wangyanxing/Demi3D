@@ -146,6 +146,9 @@ void InitFx_Repeater02()
         scaleCtrl->SetScale(DiVec2(1, 1.5), DiVec2(4, 8));
         scaleCtrl->SetSinceStartSystem(true);
     }
+
+    DiFxTokensParser parser;
+    parser.WriteSystem(_ps, "D:/Demi3D_release/ps2.xml");
 }
 
 void InitFx_Repeater01()
@@ -270,8 +273,8 @@ void InitScene()
 
     DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.5f, 0.5f, 0.5f));
 	
-    InitFx_Repeater01();
-    //InitFx_Repeater02();
+    //InitFx_Repeater01();
+    InitFx_Repeater02();
     //InitFx_Torch();
 }
 

@@ -225,8 +225,9 @@ namespace Demi
         DiParticleRenderer* renderer = technique->GetRenderer();
         if (renderer->GetRendererType() == "Billboard")
         {
-            node.SetAttribute("type", "billboard");
-            WriteBillboardRenderer((DiBillboardRenderer*)renderer, node.CreateChild("Renderer"));
+            auto rendererNode = node.CreateChild("Renderer");
+            rendererNode.SetAttribute("type", "billboard");
+            WriteBillboardRenderer((DiBillboardRenderer*)renderer, rendererNode);
         }
         else
         {
@@ -243,22 +244,22 @@ namespace Demi
 
             if (type == "Point")
             {
-                emitterNode.SetAttribute("type", "Point");
+                emitterNode.SetAttribute("type", "point");
                 WriteBaseEmitter(emitter, emitterNode);
             }
             else if (type == "Box")
             {
-                emitterNode.SetAttribute("type", "Box");
+                emitterNode.SetAttribute("type", "box");
                 WriteBoxEmitter(emitter, emitterNode);
             }
             else if (type == "Circle")
             {
-                emitterNode.SetAttribute("type", "Circle");
+                emitterNode.SetAttribute("type", "circle");
                 WriteCircleEmitter(emitter, emitterNode);
             }
             else if (type == "Line")
             {
-                emitterNode.SetAttribute("type", "Line");
+                emitterNode.SetAttribute("type", "line");
                 WriteLineEmitter(emitter, emitterNode);
             }
             else
@@ -277,67 +278,67 @@ namespace Demi
 
             if (type == "Scale")
             {
-                controllerNode.SetAttribute("type", "Scale");
+                controllerNode.SetAttribute("type", "scale");
                 WriteScaleController(controller, controllerNode);
             }
             else if (type == "Color")
             {
-                controllerNode.SetAttribute("type", "Color");
+                controllerNode.SetAttribute("type", "color");
                 WriteColorController(controller, controllerNode);
             }
             else if (type == "TextureRotator")
             {
-                controllerNode.SetAttribute("type", "TextureRotator");
+                controllerNode.SetAttribute("type", "textureRotator");
                 WriteTextureRotatorController(controller, controllerNode);
             }
             else if (type == "GeometryRotator")
             {
-                controllerNode.SetAttribute("type", "GeometryRotator");
+                controllerNode.SetAttribute("type", "geometryRotator");
                 WriteGeometryRotatorController(controller, controllerNode);
             }
             else if (type == "Gravity")
             {
-                controllerNode.SetAttribute("type", "Gravity");
+                controllerNode.SetAttribute("type", "gravity");
                 WriteGravityController(controller, controllerNode);
             }
             else if (type == "Jet")
             {
-                controllerNode.SetAttribute("type", "Jet");
+                controllerNode.SetAttribute("type", "jet");
                 WriteJetController(controller, controllerNode);
             }
             else if (type == "Randomiser")
             {
-                controllerNode.SetAttribute("type", "Randomiser");
+                controllerNode.SetAttribute("type", "randomiser");
                 WriteRandomiserController(controller, controllerNode);
             }
             else if (type == "Vortex")
             {
-                controllerNode.SetAttribute("type", "Vortex");
+                controllerNode.SetAttribute("type", "vortex");
                 WriteVortexController(controller, controllerNode);
             }
             else if (type == "LinearForce")
             {
-                controllerNode.SetAttribute("type", "LinearForce");
+                controllerNode.SetAttribute("type", "linearForce");
                 WriteLinearForceController(controller, controllerNode);
             }
             else if (type == "SineForce")
             {
-                controllerNode.SetAttribute("type", "SineForce");
+                controllerNode.SetAttribute("type", "sineForce");
                 WriteSinForceController(controller, controllerNode);
             }
             else if (type == "PlaneCollider")
             {
-                controllerNode.SetAttribute("type", "PlaneCollider");
+                controllerNode.SetAttribute("type", "planeCollider");
                 WritePlaneColliderController(controller, controllerNode);
             }
             else if (type == "BoxCollider")
             {
-                controllerNode.SetAttribute("type", "BoxCollider");
+                controllerNode.SetAttribute("type", "boxCollider");
                 WriteBoxColliderController(controller, controllerNode);
             }
             else if (type == "SphereCollider")
             {
-                controllerNode.SetAttribute("type", "SphereCollider");
+                controllerNode.SetAttribute("type", "sphereCollider");
                 WriteSphereColliderController(controller, controllerNode);
             }
             else
@@ -419,6 +420,7 @@ namespace Demi
 
     void DiFxTokensParser::ReadSystem(DiParticleSystem* val, DiXMLElement& node)
     {
+        
     }
 
     void DiFxTokensParser::WriteBaseEmitter(DiParticleEmitter* emitter, DiXMLElement& node)
