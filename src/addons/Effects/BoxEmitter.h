@@ -56,11 +56,15 @@ namespace Demi
 
     protected:
         float             mHeight;
+        
         float             mWidth;
+        
         float             mDepth;
 
         float             mXRange;
+
         float             mYRange;
+        
         float             mZRange;
     };
 

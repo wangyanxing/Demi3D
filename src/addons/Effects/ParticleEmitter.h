@@ -127,14 +127,6 @@ namespace Demi
 
         void                        SetParticleOrientation(const DiQuat& orientation);
 
-        const DiQuat&               GetParticleOrientationRangeStart(void) const;
-
-        void                        SetParticleOrientationRangeStart(const DiQuat& orientationRangeStart);
-
-        const DiQuat&               GetParticleOrientationRangeEnd(void) const;
-
-        void                        SetParticleOrientationRangeEnd(const DiQuat& orientationRangeEnd);
-
         virtual void                SetEnabled (bool enabled);
 
         bool                        IsEnabled()const{return mEnabled;}

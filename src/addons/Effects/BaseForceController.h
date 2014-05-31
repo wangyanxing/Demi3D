@@ -31,14 +31,13 @@ namespace Demi
     {
     public:
 
-        // 力的施加方式
         enum ForceApplication
         {
             FA_AVERAGE,
             FA_ADD
         };
 
-        static const DiVec3                DEFAULT_FORCE_VECTOR;
+        static const DiVec3              DEFAULT_FORCE_VECTOR;
         static const ForceApplication    DEFAULT_FORCE_APPL;
 
         DiBaseForceController(void);
@@ -47,22 +46,22 @@ namespace Demi
 
     public:
 
-        virtual void        CopyTo (DiParticleController* affector);
+        virtual void         CopyTo (DiParticleController* affector);
 
         const DiVec3&        GetForceVector(void) const;
 
-        void                SetForceVector(const DiVec3& forceVector);
+        void                 SetForceVector(const DiVec3& forceVector);
 
-        ForceApplication    GetForceApplication(void) const;
+        ForceApplication     GetForceApplication(void) const;
 
-        void                SetForceApplication(ForceApplication forceApplication);
+        void                 SetForceApplication(ForceApplication forceApplication);
 
     protected:
-        DiVec3                mForceVector;
+        DiVec3               mForceVector;
 
-        DiVec3                mScaledVector;
+        DiVec3               mScaledVector;
 
-        ForceApplication    mForceApplication;
+        ForceApplication     mForceApplication;
     };
 }
 

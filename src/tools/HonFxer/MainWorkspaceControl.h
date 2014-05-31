@@ -19,6 +19,8 @@ namespace tools
 
         void update();
 
+        RenderWindowControl* getRenderWndControl(){ return mRenderWndCtrl; }
+
     private:
         void notifyMouseButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
 

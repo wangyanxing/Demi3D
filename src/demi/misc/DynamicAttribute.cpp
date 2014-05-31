@@ -10,8 +10,10 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "MiscPch.h"
 #include "DynamicAttribute.h"
+#include "XMLElement.h"
 
 namespace Demi
 {
@@ -52,6 +54,10 @@ namespace Demi
         dynAttr->mValue = mValue;
     }
 
+    void DiAttributeFixed::Write(DiString& ret)
+    {
+        ret.Format("fixed|%f", mValue);
+    }
 
     DiAttributeRandom::DiAttributeRandom() : mMin(0),mMax(0)
     {
@@ -67,7 +73,6 @@ namespace Demi
 
     DiAttributeRandom::~DiAttributeRandom()
     {
-
     }
 
     float DiAttributeRandom::GetValue( float x /*= 0*/ )
@@ -111,6 +116,11 @@ namespace Demi
         DiAttributeRandom* dynAttr = static_cast<DiAttributeRandom*>(att);
         dynAttr->mMin = mMin;
         dynAttr->mMax = mMax;
+    }
+
+    void DiAttributeRandom::Write(DiString& ret)
+    {
+        ret.Format("random|%f,%f", mMin, mMax);
     }
 
     DiAttributeCurved::DiAttributeCurved( void ):
@@ -237,9 +247,7 @@ namespace Demi
         dynAttr->mSpline = mSpline;
         dynAttr->mRange = mRange;
 
-        DiAttributeCurved::ControlPointList::const_iterator it;
-        DiAttributeCurved::ControlPointList::const_iterator itEnd = mControlPoints.end();
-        for (it = mControlPoints.begin(); it != itEnd; ++it)
+        for (auto it = mControlPoints.begin(); it != mControlPoints.end(); ++it)
         {
             DiVec2 controlPoint = *it;
             dynAttr->mControlPoints.push_back(controlPoint);
@@ -252,11 +260,10 @@ namespace Demi
         mType = DiDynamicAttribute::DAT_CURVED;
         mInterpolationType = dynamicAttributeCurved.mInterpolationType;
         mSpline = dynamicAttributeCurved.mSpline;
-        mRange    = dynamicAttributeCurved.mRange;
+        mRange = dynamicAttributeCurved.mRange;
 
-        DiAttributeCurved::ControlPointList::const_iterator it;
-        DiAttributeCurved::ControlPointList::const_iterator itEnd = dynamicAttributeCurved.mControlPoints.end();
-        for (it = dynamicAttributeCurved.mControlPoints.begin(); it != itEnd; ++it)
+        for (auto it = dynamicAttributeCurved.mControlPoints.begin(); 
+            it != dynamicAttributeCurved.mControlPoints.end(); ++it)
         {
             DiVec2 controlPoint = *it;
             mControlPoints.push_back (controlPoint);
@@ -264,13 +271,63 @@ namespace Demi
         ProcessControlPoints();
     }
 
+    void DiAttributeCurved::Write(DiString& ret)
+    {
+        ret = "curved|";
+        for (size_t i = 0; i < mControlPoints.size(); ++i)
+        {
+            ret.AppendVector2(mControlPoints[i]);
+            if (i != mControlPoints.size() - 1)
+            {
+                ret += ",";
+            }
+        }
+    }
+
     float DiDynamicAttributeHelper::Calculate( DiDynamicAttribute* dyn, float x,float defaultValue /*= 0.0f*/ )
     {
         if (dyn)
-        {
             return dyn->GetValue(x);
-        }
 
         return defaultValue;
+    }
+
+    DiDynamicAttribute* DiDynamicAttribute::Read(const DiString& str)
+    {
+        auto tokens = str.Tokenize("|");
+        DI_ASSERT(tokens.size() == 2);
+
+        DiString type = tokens[0];
+        DiString value = tokens[1];
+
+        DiDynamicAttribute* ret = nullptr;
+
+        if (type == "fixed")
+        {
+            ret = DI_NEW DiAttributeFixed();
+            static_cast<DiAttributeFixed*>(ret)->SetValue(value.AsFloat());
+        }
+        else if (type == "random")
+        {
+            ret = DI_NEW DiAttributeRandom();
+            auto minmax = value.AsVector2();
+            static_cast<DiAttributeRandom*>(ret)->SetMinMax(minmax.x, minmax.y);
+        }
+        else if (type == "curved")
+        {
+            ret = DI_NEW DiAttributeCurved();
+            auto values = value.Tokenize(",");
+            for (auto v : values)
+            {
+                auto tv = v.AsVector2();
+                static_cast<DiAttributeCurved*>(ret)->AddControlPoint(tv.x, tv.y);
+            }
+        }
+        else
+        {
+            DI_WARNING("Invalid attribute type: %s", type.c_str());
+        }
+
+        return ret;
     }
 }

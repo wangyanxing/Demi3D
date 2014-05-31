@@ -35,33 +35,33 @@ namespace Demi
 
         DiSphereColliderController(void);
 
-        virtual                ~DiSphereColliderController(void){}
+        virtual             ~DiSphereColliderController(void){}
 
     public:
 
-        const float            GetRadius(void) const;
+        const float         GetRadius(void) const;
 
         void                SetRadius(const float radius);
 
-        bool                 IsInnerCollision(void) const;
+        bool                IsInnerCollision(void) const;
 
-        void                 SetInnerCollision(bool innerCollision);
+        void                SetInnerCollision(bool innerCollision);
 
         void                CalculateDirectionAfterCollision(DiParticle* particle, DiVec3 distance, float distanceLength);
 
-        virtual void         PreProcessParticles(DiParticleElement* particleTechnique, float timeElapsed);
+        virtual void        PreProcessParticles(DiParticleElement* particleTechnique, float timeElapsed);
 
-        virtual void         Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
+        virtual void        Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
 
-        virtual void         CopyTo (DiParticleController* affector);
+        virtual void        CopyTo (DiParticleController* affector);
 
     protected:
         
-        float                mRadius;
+        float               mRadius;
         
         DiSphere            mSphere;
 
-        DiVec3                mPredictedPosition;
+        DiVec3              mPredictedPosition;
 
         bool                mInnerCollision;
     };
@@ -73,15 +73,15 @@ namespace Demi
     public:
         DiSphereColliderControllerFactory(void) {}
 
-        virtual                        ~DiSphereColliderControllerFactory(void) {}
+        virtual               ~DiSphereColliderControllerFactory(void) {}
 
-        DiString                    GetControllerType(void) const
+        DiString              GetControllerType(void) const
         {
             static DiString type = "SphereCollider";
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController* CreateController(void)
         {
             return CreateControllerImpl<DiSphereColliderController>();
         }

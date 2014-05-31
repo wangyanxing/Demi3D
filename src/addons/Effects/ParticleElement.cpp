@@ -41,9 +41,9 @@ namespace Demi
     const size_t            DiParticleElement::DEFAULT_EMITTED_AFFECTOR_QUOTA       = 10;
     const size_t            DiParticleElement::DEFAULT_EMITTED_SYSTEM_QUOTA         = 10;
     const unsigned short    DiParticleElement::DEFAULT_LOD_INDEX                    = 0;
-    const float             DiParticleElement::DEFAULT_DEFAULT_WIDTH                = 10;
-    const float             DiParticleElement::DEFAULT_DEFAULT_HEIGHT               = 10;
-    const float             DiParticleElement::DEFAULT_DEFAULT_DEPTH                = 10;
+    const float             DiParticleElement::DEFAULT_WIDTH                = 10;
+    const float             DiParticleElement::DEFAULT_HEIGHT               = 10;
+    const float             DiParticleElement::DEFAULT_DEPTH                = 10;
     const unsigned short    DiParticleElement::DEFAULT_SPATIAL_HASHING_CELL_DIM     = 15;
     const unsigned short    DiParticleElement::DEFAULT_SPATIAL_HASHING_CELL_OVERLAP = 0;
     const size_t            DiParticleElement::DEFAULT_SPATIAL_HASHING_TABLE_SIZE   = 50;
@@ -62,9 +62,9 @@ namespace Demi
         mEmittedSystemQuota(DEFAULT_EMITTED_SYSTEM_QUOTA),
         mVisualParticlePoolIncreased(false),
         mSuppressNotifyEmissionChange(true),
-        mDefaultWidth(DEFAULT_DEFAULT_WIDTH),
-        mDefaultHeight(DEFAULT_DEFAULT_HEIGHT),
-        mDefaultDepth(DEFAULT_DEFAULT_DEPTH),
+        mDefaultWidth(DEFAULT_WIDTH),
+        mDefaultHeight(DEFAULT_HEIGHT),
+        mDefaultDepth(DEFAULT_DEPTH),
         mMaterialName(DiString::BLANK),
         mLodIndex(DEFAULT_LOD_INDEX),
         mCameraSquareDistance(0),
@@ -227,7 +227,7 @@ namespace Demi
         //mParticleEmitterPoolIncreased = false;
     }
     
-    size_t DiParticleElement::GetEmittedTechniqueQuota(void) const
+    size_t DiParticleElement::GetEmittedElementQuota(void) const
     {
         return mEmittedTechniqueQuota;
     }
@@ -238,7 +238,7 @@ namespace Demi
         //mParticleTechniquePoolIncreased = false;
     }
     
-    size_t DiParticleElement::GetEmittedAffectorQuota(void) const
+    size_t DiParticleElement::GetEmittedControllerQuota(void) const
     {
         return mEmittedAffectorQuota;
     }

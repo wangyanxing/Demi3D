@@ -930,6 +930,22 @@ namespace Demi
             return v;
         }
     } 
+
+    DiFloatRect DiString::AsFloatRect() const
+    {
+        DiVector<DiString> tokens;
+        this->Tokenize(", \t\n", tokens);
+
+        DI_ASSERT(tokens.size() == 4);
+
+        DiFloatRect ret;
+        ret.left   = tokens[0].AsFloat();
+        ret.top    = tokens[1].AsFloat();
+        ret.right  = tokens[2].AsFloat();
+        ret.bottom = tokens[3].AsFloat();
+        return ret;
+    }
+
     //------------------------------------------------------------------------------
     DiString
     DiString::Concatenate(const DiVector<DiString>& strArray, const DiString& whiteSpace)
@@ -1391,4 +1407,5 @@ namespace Demi
         DiString l = GetFileExtension();
         return stricmp(l.c_str(), ext.c_str()) == 0;
     }
+
 }

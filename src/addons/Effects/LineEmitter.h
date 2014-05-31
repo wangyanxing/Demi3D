@@ -31,42 +31,42 @@ namespace Demi
     {
     public:
         
-        static const DiVec3 DEFAULT_END;
+        static const DiVec3    DEFAULT_END;
         static const float     DEFAULT_MIN_INCREMENT;
         static const float     DEFAULT_MAX_INCREMENT;
         static const float     DEFAULT_MAX_DEVIATION;
 
         DiLineEmitter(void);
 
-        virtual                    ~DiLineEmitter(void) {}
+        virtual                 ~DiLineEmitter(void) {}
 
     public:
 
-        virtual unsigned short    CalculateRequestedParticles(float timeElapsed);
+        virtual unsigned short  CalculateRequestedParticles(float timeElapsed);
 
-        float                    GetMaxDeviation(void) const;
+        float                   GetMaxDeviation(void) const;
 
         void                    SetMaxDeviation(float maxDeviation);
 
-        float                    GetMaxIncrement(void) const;
+        float                   GetMaxIncrement(void) const;
 
         void                    SetMaxIncrement(float maxIncrement);
 
-        float                    GetMinIncrement(void) const;
+        float                   GetMinIncrement(void) const;
 
         void                    SetMinIncrement(float minIncrement);
 
-        const DiVec3&            GetEnd(void) const;
+        const DiVec3&           GetEnd(void) const;
 
         void                    SetEnd(const DiVec3& end);
 
-        virtual void             NotifyRescaled(const DiVec3& scale);
+        virtual void            NotifyRescaled(const DiVec3& scale);
 
-        virtual void             InitParticlePosition(DiParticle* particle);
+        virtual void            InitParticlePosition(DiParticle* particle);
 
-        virtual void             InitParticleDirection(DiParticle* particle);
+        virtual void            InitParticleDirection(DiParticle* particle);
 
-        virtual void             CopyTo (DiParticleEmitter* emitter);
+        virtual void            CopyTo (DiParticleEmitter* emitter);
         
         void                    NotifyStart();
 
@@ -85,10 +85,10 @@ namespace Demi
         float                     mMaxIncrement;
         float                     mIncrement;
         float                     mLength;
-        bool                    mIncrementsLeft;
+        bool                      mIncrementsLeft;
         
         // 内部标记，第一个粒子是否已经发射
-        bool                    mFirst;
+        bool                      mFirst;
 
         DiVec3                    mScaledEnd;
         float                     mScaledMaxDeviation;

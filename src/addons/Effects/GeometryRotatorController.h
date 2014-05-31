@@ -32,22 +32,22 @@ namespace Demi
     {
     public:
         static const bool            DEFAULT_USE_OWN;
-        static const float            DEFAULT_ROTATION_SPEED;
-        static const DiVec3            DEFAULT_ROTATION_AXIS;
+        static const float           DEFAULT_ROTATION_SPEED;
+        static const DiVec3          DEFAULT_ROTATION_AXIS;
 
         DiGeometryRotatorController(void);
-        virtual                        ~DiGeometryRotatorController(void);
+
+        virtual                      ~DiGeometryRotatorController(void);
 
     public:
 
-        DiDynamicAttribute*            GetRotationSpeed(void) const;
+        DiDynamicAttribute*          GetRotationSpeed(void) const;
 
         void                         SetRotationSpeed(DiDynamicAttribute* dynRotationSpeed);
 
         bool                         UseOwnRotationSpeed (void) const;
 
-        // 是否使用粒子自身的旋转速度
-        void                        SetUseOwnRotationSpeed (bool useOwnRotationSpeed);
+        void                         SetUseOwnRotationSpeed (bool useOwnRotationSpeed);
 
         const DiVec3&                GetRotationAxis(void) const;
 
@@ -66,19 +66,19 @@ namespace Demi
     protected:
         float                        mScaledRotationSpeed;
 
-        bool                        mUseOwnRotationSpeed;
+        bool                         mUseOwnRotationSpeed;
         
-        DiDynamicAttribute*         mDynRotationSpeed;
+        DiDynamicAttribute*          mDynRotationSpeed;
         
-        DiQuat                         mQuat;
+        DiQuat                       mQuat;
         
-        DiVec3                         mRotationAxis;
+        DiVec3                       mRotationAxis;
         
-        bool                        mRotationAxisSet;
+        bool                         mRotationAxisSet;
 
         DiDynamicAttributeFactory    mDynamicAttributeFactory;
         
-        DiDynamicAttributeHelper    mDynamicAttributeHelper;
+        DiDynamicAttributeHelper     mDynamicAttributeHelper;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ namespace Demi
     public:
         DiGeometryRotatorControllerFactory(void) {}
 
-        virtual                        ~DiGeometryRotatorControllerFactory(void) {}
+        virtual                     ~DiGeometryRotatorControllerFactory(void) {}
 
         DiString                    GetControllerType(void) const
         {
@@ -96,7 +96,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController*       CreateController(void)
         {
             return CreateControllerImpl<DiGeometryRotatorController>();
         }

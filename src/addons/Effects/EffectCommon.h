@@ -59,11 +59,11 @@ namespace Demi
 
     struct ParticleUniverseEvent
     {
-        EventType            eventType;
+        EventType             eventType;
         
-        ComponentType        componentType;
+        ComponentType         componentType;
         
-        DiString            componentName;
+        DiString              componentName;
 
         DiParticleElement*    technique;
         

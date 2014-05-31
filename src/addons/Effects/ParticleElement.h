@@ -45,9 +45,9 @@ namespace Demi
         static const size_t         DEFAULT_EMITTED_AFFECTOR_QUOTA;
         static const size_t         DEFAULT_EMITTED_SYSTEM_QUOTA;
         static const unsigned short DEFAULT_LOD_INDEX;
-        static const float          DEFAULT_DEFAULT_WIDTH;
-        static const float          DEFAULT_DEFAULT_HEIGHT;
-        static const float          DEFAULT_DEFAULT_DEPTH;
+        static const float          DEFAULT_WIDTH;
+        static const float          DEFAULT_HEIGHT;
+        static const float          DEFAULT_DEPTH;
         static const unsigned short DEFAULT_SPATIAL_HASHING_CELL_DIM;
         static const unsigned short DEFAULT_SPATIAL_HASHING_CELL_OVERLAP;
         static const size_t         DEFAULT_SPATIAL_HASHING_TABLE_SIZE;
@@ -67,7 +67,7 @@ namespace Demi
 
         DiParticleElement(void);
 
-        virtual                    ~DiParticleElement(void);
+        virtual                   ~DiParticleElement(void);
 
     public:
 
@@ -87,11 +87,11 @@ namespace Demi
 
         void                      SetEmittedEmitterQuota(size_t quota);
 
-        size_t                    GetEmittedTechniqueQuota(void) const;
+        size_t                    GetEmittedElementQuota(void) const;
 
         void                      SetEmittedTechniqueQuota(size_t quota);
 
-        size_t                    GetEmittedAffectorQuota(void) const;
+        size_t                    GetEmittedControllerQuota(void) const;
 
         void                      SetEmittedAffectorQuota(size_t quota);
 

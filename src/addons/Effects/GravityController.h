@@ -34,7 +34,7 @@ namespace Demi
 
         DiGravityController(void);
 
-        virtual            ~DiGravityController(void) {}
+        virtual          ~DiGravityController(void) {}
 
     public:
 
@@ -46,7 +46,7 @@ namespace Demi
 
         float            GetGravity(void) const;
 
-        void            SetGravity(float gravity);
+        void             SetGravity(float gravity);
 
     protected:
         float            mGravity;
@@ -59,7 +59,7 @@ namespace Demi
     public:
         DiGravityControllerFactory(void) {}
 
-        virtual                        ~DiGravityControllerFactory(void) {}
+        virtual                     ~DiGravityControllerFactory(void) {}
 
         DiString                    GetControllerType(void) const
         {
@@ -67,7 +67,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController*       CreateController(void)
         {
             return CreateControllerImpl<DiGravityController>();
         }

@@ -60,11 +60,9 @@ namespace Demi
     
     DiParticleRenderer::~DiParticleRenderer(void)
     {
-        DiVector<DiFloatRect*>::iterator it;
-        DiVector<DiFloatRect*>::iterator itEnd = mUVList.end();
-        for (it = mUVList.begin(); it != itEnd; ++it)
+        for (auto it = mUVList.begin(); it != mUVList.end(); ++it)
         {
-            delete *it;
+            DI_DELETE(*it);
         }
 
         if (mUseSoftParticles)

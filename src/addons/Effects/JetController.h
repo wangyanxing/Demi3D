@@ -30,11 +30,11 @@ namespace Demi
     class DEMI_FX_API DiJetController : public DiParticleController
     {
     public:
-        static const float            DEFAULT_ACCELERATION;
+        static const float          DEFAULT_ACCELERATION;
 
         DiJetController(void);
 
-        virtual                        ~DiJetController(void);
+        virtual                     ~DiJetController(void);
 
     public:
 
@@ -48,11 +48,11 @@ namespace Demi
 
     protected:
 
-        float                        mScaled;
+        float                       mScaled;
 
-        DiDynamicAttribute*            mDynAcceleration;
+        DiDynamicAttribute*         mDynAcceleration;
 
-        DiDynamicAttributeFactory    mDynamicAttributeFactory;
+        DiDynamicAttributeFactory   mDynamicAttributeFactory;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ namespace Demi
     public:
         DiJetControllerFactory(void) {}
 
-        virtual                        ~DiJetControllerFactory(void) {}
+        virtual                     ~DiJetControllerFactory(void) {}
 
         DiString                    GetControllerType(void) const
         {
@@ -70,7 +70,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController*       CreateController(void)
         {
             return CreateControllerImpl<DiJetController>();
         }

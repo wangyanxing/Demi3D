@@ -44,6 +44,8 @@ namespace Demi
 
         virtual                      ~DiBillboardRenderer(void);
 
+    public:
+
         virtual void                 Prepare(DiParticleElement* ele);
 
         virtual void                 Unprepare(DiParticleElement* ele);

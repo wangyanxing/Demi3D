@@ -49,7 +49,7 @@ namespace Demi
     public:
         DiLinearForceControllerFactory(void) {}
 
-        virtual                        ~DiLinearForceControllerFactory(void) {}
+        virtual                     ~DiLinearForceControllerFactory(void) {}
 
         DiString                    GetControllerType(void) const
         {
@@ -57,7 +57,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController*       CreateController(void)
         {
             return CreateControllerImpl<DiLinearForceController>();
         }

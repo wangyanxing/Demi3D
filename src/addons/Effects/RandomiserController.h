@@ -32,29 +32,29 @@ namespace Demi
     {
     public:
         static const DiVec3 DEFAULT_MAX_DEVIATION;
-        static const float    DEFAULT_TIME_STEP;
-        static const bool    DEFAULT_RANDOM_DIRECTION;
+        static const float  DEFAULT_TIME_STEP;
+        static const bool   DEFAULT_RANDOM_DIRECTION;
 
         DiRandomiserController(void);
 
-        virtual            ~DiRandomiserController(void) {}
+        virtual         ~DiRandomiserController(void) {}
 
     public:
 
-        float            GetMaxDeviationX(void) const;
+        float           GetMaxDeviationX(void) const;
 
         void            SetMaxDeviationX(const float maxDeviationX);
 
-        float            GetMaxDeviationY(void) const;
-        
+        float           GetMaxDeviationY(void) const;
+
         void            SetMaxDeviationY(const float maxDeviationZ);
 
-        float            GetMaxDeviationZ(void) const;
-        
+        float           GetMaxDeviationZ(void) const;
+
         void            SetMaxDeviationZ(const float maxDeviationZ);
 
-        float            GetTimeStep(void) const;
-        
+        float           GetTimeStep(void) const;
+
         void            SetTimeStep(const float timeStep);
 
         bool            IsRandomDirection(void) const;
@@ -70,19 +70,19 @@ namespace Demi
         virtual void    CopyTo (DiParticleController* affector);
 
     protected:
-        float             mMaxDeviationX;
+        float           mMaxDeviationX;
 
-        float             mMaxDeviationY;
+        float           mMaxDeviationY;
 
-        float             mMaxDeviationZ;
+        float           mMaxDeviationZ;
 
-        float             mTimeSinceLastUpdate;
+        float           mTimeSinceLastUpdate;
 
-        float             mTimeStep;
+        float           mTimeStep;
 
-        bool             mRandomDirection;
+        bool            mRandomDirection;
 
-        bool             mUpdate;
+        bool            mUpdate;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ namespace Demi
     public:
         DiRandomiserControllerFactory(void) {}
 
-        virtual                        ~DiRandomiserControllerFactory(void) {}
+        virtual                     ~DiRandomiserControllerFactory(void) {}
 
         DiString                    GetControllerType(void) const
         {
@@ -100,7 +100,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController*       CreateController(void)
         {
             return CreateControllerImpl<DiRandomiserController>();
         }

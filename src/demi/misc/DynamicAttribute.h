@@ -48,19 +48,23 @@ namespace Demi
 
         virtual                    ~DiDynamicAttribute(){}
 
-        virtual    float            GetValue(float x = 0) = 0;
+        virtual float              GetValue(float x = 0) = 0;
 
-        DynamicAttributeType    GetType() const{return mType;}
+        DynamicAttributeType       GetType() const{ return mType; }
 
-        void                    SetType(DynamicAttributeType type){mType = type;}
+        void                       SetType(DynamicAttributeType type){ mType = type; }
 
-        virtual void            CopyTo(DiDynamicAttribute* att) = 0;
+        virtual void               CopyTo(DiDynamicAttribute* att) = 0;
 
-        bool                    IsValueChangedExternally() const;
+        bool                       IsValueChangedExternally() const;
 
-        DynamicAttributeType    mType;
+        virtual void               Write(DiString& ret) = 0;
 
-        bool                    mValueChangedExternally;
+        static DiDynamicAttribute* Read(const DiString& str);
+
+        DynamicAttributeType       mType;
+
+        bool                       mValueChangedExternally;
     };
     
     //////////////////////////////////////////////////////////////////////////
@@ -73,19 +77,21 @@ namespace Demi
 
         DiAttributeFixed(const DiAttributeFixed& rhs);
 
-        virtual                    ~DiAttributeFixed();
+        virtual     ~DiAttributeFixed();
 
     public:
 
-        virtual    float            GetValue(float x = 0);
+        float       GetValue(float x = 0);
 
-        virtual void            SetValue(float value);
+        void        SetValue(float value);
 
-        virtual void            CopyTo(DiDynamicAttribute* att);
+        void        CopyTo(DiDynamicAttribute* att);
+
+        void        Write(DiString& ret);
 
     protected:
 
-        float                    mValue;
+        float       mValue;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -115,6 +121,8 @@ namespace Demi
         void                    SetMinMax (float min, float max);
 
         virtual void            CopyTo(DiDynamicAttribute* att);
+
+        void                    Write(DiString& ret);
 
     protected:
 
@@ -159,6 +167,8 @@ namespace Demi
 
         virtual void            CopyTo(DiDynamicAttribute* dynamicAttribute);
 
+        void                    Write(DiString& ret);
+
     protected:
 
         float                   mRange;
@@ -173,9 +183,8 @@ namespace Demi
 
         inline ControlPointList::iterator FindNearestControlPointIterator(float x)
         {
-            ControlPointList::iterator it;
-            ControlPointList::iterator itEnd = mControlPoints.end();
-            for (it = mControlPoints.begin(); it != itEnd; ++it)
+            auto it = mControlPoints.begin();
+            for (; it != mControlPoints.end(); ++it)
             {
                 if (x < (*it).x)
                 {

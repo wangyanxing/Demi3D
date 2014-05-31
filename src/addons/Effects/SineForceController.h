@@ -36,7 +36,7 @@ namespace Demi
 
         DiSineForceController(void);
 
-        virtual            ~DiSineForceController(void) {}
+        virtual          ~DiSineForceController(void) {}
 
     public:
 
@@ -46,22 +46,22 @@ namespace Demi
 
         virtual void     Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
 
-        const float     GetFrequencyMin(void) const;
+        const float      GetFrequencyMin(void) const;
 
-        void            SetFrequencyMin(const float frequencyMin);
+        void             SetFrequencyMin(const float frequencyMin);
 
-        const float     GetFrequencyMax(void) const;
+        const float      GetFrequencyMax(void) const;
 
-        void            SetFrequencyMax(const float frequencyMax);
+        void             SetFrequencyMax(const float frequencyMax);
 
     protected:
-        float             mAngle;
+        float            mAngle;
 
-        float             mFrequencyMin;
+        float            mFrequencyMin;
 
-        float             mFrequencyMax;
+        float            mFrequencyMax;
 
-        float             mFrequency;
+        float            mFrequency;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -71,15 +71,15 @@ namespace Demi
     public:
         DiSineForceControllerFactory(void) {}
 
-        virtual                        ~DiSineForceControllerFactory(void) {}
+        virtual                 ~DiSineForceControllerFactory(void) {}
 
-        DiString                    GetControllerType(void) const
+        DiString                GetControllerType(void) const
         {
             static DiString type = "SineForce";
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController*   CreateController(void)
         {
             return CreateControllerImpl<DiSineForceController>();
         }

@@ -32,10 +32,14 @@ namespace Demi
 
     public:
         static const float     DEFAULT_RADIUS;
+        
         static const float     DEFAULT_STEP;
+        
         static const float     DEFAULT_ANGLE;
-        static const bool    DEFAULT_RANDOM;
-        static const DiVec3 DEFAULT_NORMAL;
+        
+        static const bool      DEFAULT_RANDOM;
+
+        static const DiVec3    DEFAULT_NORMAL;
 
         DiCircleEmitter(void);
 
@@ -45,43 +49,51 @@ namespace Demi
 
         const float        GetRadius(void) const;
 
-        void            SetRadius(const float radius);
+        void               SetRadius(const float radius);
 
         const float        GetCircleAngle(void) const;
 
-        void            SetCircleAngle(const float circleAngle);
+        void               SetCircleAngle(const float circleAngle);
 
         const float        GetStep(void) const;
 
-        void            SetStep(const float step);
+        void               SetStep(const float step);
 
-        const bool        IsRandom(void) const;
+        const bool         IsRandom(void) const;
 
-        void            SetRandom(const bool random);
+        void               SetRandom(const bool random);
 
-        const DiQuat&     GetOrientation(void) const;
+        const DiQuat&      GetOrientation(void) const;
 
-        const DiVec3&     GetNormal(void) const;
+        const DiVec3&      GetNormal(void) const;
 
-        void            SetNormal(const DiVec3 &normal); 
+        void               SetNormal(const DiVec3 &normal); 
 
-        void            NotifyStart(void);
+        void               NotifyStart(void);
 
-        virtual void     InitParticlePosition(DiParticle* particle);
+        virtual void       InitParticlePosition(DiParticle* particle);
 
-        virtual void     InitParticleDirection(DiParticle* particle);
+        virtual void       InitParticleDirection(DiParticle* particle);
 
-        virtual void     CopyTo (DiParticleEmitter* emitter);
+        virtual void       CopyTo (DiParticleEmitter* emitter);
 
     protected:
-        float             mRadius;
-        float             mCircleAngle;
-        float             mOriginalCircleAngle;
-        float             mStep;
-        float             mX;
-        float             mZ;
-        bool            mRandom;
+        float              mRadius;
+
+        float              mCircleAngle;
+        
+        float              mOriginalCircleAngle;
+        
+        float              mStep;
+        
+        float              mX;
+        
+        float              mZ;
+        
+        bool               mRandom;
+        
         DiQuat             mOrientation;
+        
         DiVec3             mNormal;
     };
 
@@ -92,7 +104,7 @@ namespace Demi
     public:
         DiCircleEmitterFactory(void) {}
 
-        virtual                ~DiCircleEmitterFactory(void) {}
+        virtual             ~DiCircleEmitterFactory(void) {}
 
         DiString            GetEmitterType(void) const
         {
@@ -100,7 +112,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleEmitter*    CreateEmitter(void)
+        DiParticleEmitter*  CreateEmitter(void)
         {
             return CreateEmitterImpl<DiCircleEmitter>();
         }
