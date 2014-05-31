@@ -28,6 +28,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ColorController.h"
 #include "TextureRotatorController.h"
 #include "ScaleController.h"
+#include "TokensParser.h"
 
 DiVector<DiParticleSystem*> g_fxs;
 DiK2ModelPtr k2md = nullptr;
@@ -247,6 +248,9 @@ void InitFx_Repeater01()
         rot->SetMinMax(0, 300);
         texrotCtrl->SetRotation(rot);
     }
+
+    DiFxTokensParser parser;
+    parser.WriteSystem(_ps, "D:/Demi3D_release/ps.xml");
 }
 
 void InitScene()
@@ -266,9 +270,9 @@ void InitScene()
 
     DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.5f, 0.5f, 0.5f));
 	
-    //InitFx_Repeater01();
+    InitFx_Repeater01();
     //InitFx_Repeater02();
-    InitFx_Torch();
+    //InitFx_Torch();
 }
 
 int main(int argc, char *argv[])

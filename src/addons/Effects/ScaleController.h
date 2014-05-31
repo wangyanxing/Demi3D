@@ -30,14 +30,11 @@ namespace Demi
     class DEMI_FX_API DiScaleController : public DiParticleController
     {
     public:
-        static const float             DEFAULT_X_SCALE;
-        static const float             DEFAULT_Y_SCALE;
-        static const float             DEFAULT_Z_SCALE;
-        static const float             DEFAULT_XYZ_SCALE;
+        static const DiVec2           DEFAULT_SCALE;
 
         DiScaleController(void);
 
-        virtual                        ~DiScaleController(void);
+        virtual                       ~DiScaleController(void);
         
     public:
 
@@ -45,35 +42,13 @@ namespace Demi
 
         virtual void                  Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
 
-        DiDynamicAttribute*           GetDynScaleX(void) const {return mDynScaleX;}
+        virtual void                  InitParticleForEmission(DiParticle* particle);
 
-        void                          SetDynScaleX(DiDynamicAttribute* dynScaleX);
-
-        void                          ResetDynScaleX(bool resetToDefault = true);
-
-        DiDynamicAttribute*           GetDynScaleY(void) const {return mDynScaleY;}
-
-        void                          SetDynScaleY(DiDynamicAttribute* dynScaleY);
-
-        void                          ResetDynScaleY(bool resetToDefault = true);
-
-        DiDynamicAttribute*           GetDynScaleZ(void) const {return mDynScaleZ;}
-
-        void                          SetDynScaleZ(DiDynamicAttribute* dynScaleZ);
-
-        void                          ResetDynScaleZ(bool resetToDefault = true);
-
-        DiDynamicAttribute*           GetDynScaleXYZ(void) const {return mDynScaleXYZ;}
-
-        void                          SetDynScaleXYZ(DiDynamicAttribute* dynScaleXYZ);
-
-        void                          ResetDynScaleXYZ(bool resetToDefault = true);
+    public:
 
         bool                          IsSinceStartSystem(void) const {return mSinceStartSystem;}
 
         void                          SetSinceStartSystem(bool sinceStartSystem){mSinceStartSystem = sinceStartSystem;}
-
-        virtual void                  InitParticleForEmission(DiParticle* particle);
 
         void                          SetScale(const DiVec2& begin, const DiVec2& med, const DiVec2& end)
         {
@@ -96,41 +71,29 @@ namespace Demi
             mEndScale = end;
         }
 
+        DiVec2                       GetBeginScale() { return mBeginScale; }
+
+        DiVec2                       GetMedianScale() { return mMedScale; }
+
+        DiVec2                       GetEndScale() { return mEndScale; }
+
     protected:
 
-        float                         CalculateScale(DiDynamicAttribute* dynScale, DiParticle* particle);
+        float                        CalculateScale(DiDynamicAttribute* dynScale, DiParticle* particle);
 
     protected:
-        
-        DiDynamicAttribute*           mDynScaleX;
 
-        DiDynamicAttribute*           mDynScaleY;
-        
-        DiDynamicAttribute*           mDynScaleZ;
-        
-        DiDynamicAttribute*           mDynScaleXYZ;
-        
-        bool                          mDynScaleXSet;
-        
-        bool                          mDynScaleYSet;
-        
-        bool                          mDynScaleZSet;
-        
-        bool                          mDynScaleXYZSet;
+        DiDynamicAttributeFactory    mDynamicAttributeFactory;
 
-        DiDynamicAttributeFactory     mDynamicAttributeFactory;
-        
-        DiDynamicAttributeHelper      mDynamicAttributeHelper;
-        
-        bool                          mSinceStartSystem;
+        DiDynamicAttributeHelper     mDynamicAttributeHelper;
 
-        float                         mLatestTimeElapsed;
+        bool                         mSinceStartSystem;
 
-        DiVec2                        mBeginScale{ 0, 0 };
+        DiVec2                       mBeginScale{ 0, 0 };
 
-        DiVec2                        mMedScale{ 0, 0 };
+        DiVec2                       mMedScale{ 0, 0 };
 
-        DiVec2                        mEndScale{ 0, 0 };
+        DiVec2                       mEndScale{ 0, 0 };
     };
 
     //////////////////////////////////////////////////////////////////////////

@@ -427,7 +427,7 @@ namespace Demi
     inline void
     DiString::SetFloat(float val)
     {
-        this->Format("%.6f", val);
+        this->Format("%g", val);
     }
 
     //------------------------------------------------------------------------------
@@ -447,34 +447,34 @@ namespace Demi
     inline void
     DiString::SetVector2(const DiVec2& v)
     {
-        this->Format("%.6f %.6f",v.x,v.y);
+        this->Format("%g %g",v.x,v.y);
     }
 
     inline void
     DiString::SetVector3(const DiVec3& v)
     {
-        //this->Format("%.6f %.6f %.6f",v.x,v.y,v.z);
+        //this->Format("%g %g %g",v.x,v.y,v.z);
         this->Format("%g %g %g",v.x,v.y,v.z);
     }
 
     inline void
     DiString::SetVector4(const DiVec4& v)
     {
-        this->Format("%.6f %.6f %.6f %.6f",v.x,v.y,v.z,v.w);
+        this->Format("%g %g %g %g",v.x,v.y,v.z,v.w);
     }
 
     inline void
     DiString::SetQuaternion(const DiQuat& v)
     {
-        this->Format("%.6f %.6f %.6f %.6f",v.w,v.x,v.y,v.z);
+        this->Format("%g %g %g %g",v.w,v.x,v.y,v.z);
     }
 
     inline void
     DiString::SetMatrix3(const DiMat3& val)
     {
-        this->Format("%.6f %.6f %.6f "
-                     "%.6f %.6f %.6f "
-                     "%.6f %.6f %.6f ",
+        this->Format("%g %g %g "
+                     "%g %g %g "
+                     "%g %g %g ",
             val[0][0],
             val[0][1],           
             val[0][2],            
@@ -489,10 +489,10 @@ namespace Demi
     inline void
     DiString::SetMatrix4(const DiMat4& val)
     {
-        this->Format("%.6f %.6f %.6f %.6f "
-                     "%.6f %.6f %.6f %.6f "
-                     "%.6f %.6f %.6f %.6f "
-                     "%.6f %.6f %.6f %.6f",
+        this->Format("%g %g %g %g "
+                     "%g %g %g %g "
+                     "%g %g %g %g "
+                     "%g %g %g %g",
             val[0][0],
             val[0][1],
             val[0][2],
@@ -514,12 +514,12 @@ namespace Demi
     inline void
     DiString::SetColourValue(const DiColor& v)
     {
-        this->Format("%.6f %.6f %.6f %.6f",v.r,v.g,v.b,v.a);
+        this->Format("%g %g %g %g",v.r,v.g,v.b,v.a);
     }
 
     inline void DiString::SetFloatRect(const DiFloatRect& v)
     {
-        this->Format("%.6f %.6f %.6f %.6f", v.left, v.top, v.right, v.bottom);
+        this->Format("%g %g %g %g", v.left, v.top, v.right, v.bottom);
     }
         
     //------------------------------------------------------------------------------

@@ -56,7 +56,7 @@ namespace Demi
 
     void DiAttributeFixed::Write(DiString& ret)
     {
-        ret.Format("fixed|%f", mValue);
+        ret.Format("fixed|%g", mValue);
     }
 
     DiAttributeRandom::DiAttributeRandom() : mMin(0),mMax(0)
@@ -120,7 +120,7 @@ namespace Demi
 
     void DiAttributeRandom::Write(DiString& ret)
     {
-        ret.Format("random|%f,%f", mMin, mMax);
+        ret.Format("random|%g,%g", mMin, mMax);
     }
 
     DiAttributeCurved::DiAttributeCurved( void ):

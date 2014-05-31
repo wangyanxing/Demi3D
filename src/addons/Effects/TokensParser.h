@@ -28,7 +28,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    class DiFxTokensParser
+    class DEMI_FX_API DiFxTokensParser
     {
     public:
 
@@ -40,13 +40,9 @@ namespace Demi
 
     public:
 
-        void    WriteRenderer(DiParticleRenderer* val, DiXMLElement& node);
+        void    WriteSystem(DiParticleSystem* val, const DiString& filePath);
 
-        void    ReadRenderer(DiParticleRenderer* val, DiXMLElement& node);
-
-        void    WriteBillboardRenderer(DiBillboardRenderer* val, DiXMLElement& node);
-
-        void    ReadBillboardRenderer(DiBillboardRenderer* val, DiXMLElement& node);
+    public:
 
         void    WriteElement(DiParticleElement* val, DiXMLElement& node);
 
@@ -55,6 +51,16 @@ namespace Demi
         void    WriteSystem(DiParticleSystem* val, DiXMLElement& node);
 
         void    ReadSystem(DiParticleSystem* val, DiXMLElement& node);
+
+    public:
+
+        void    WriteRenderer(DiParticleRenderer* val, DiXMLElement& node);
+
+        void    ReadRenderer(DiParticleRenderer* val, DiXMLElement& node);
+
+        void    WriteBillboardRenderer(DiBillboardRenderer* val, DiXMLElement& node);
+
+        void    ReadBillboardRenderer(DiBillboardRenderer* val, DiXMLElement& node);
 
     public:
 
@@ -107,6 +113,38 @@ namespace Demi
         void    WriteVortexController(DiParticleController* val, DiXMLElement& node);
 
         void    ReadVortexController(DiParticleController* val, DiXMLElement& node);
+
+        void    WriteTextureRotatorController(DiParticleController* val, DiXMLElement& node);
+
+        void    ReadTextureRotatorController(DiParticleController* val, DiXMLElement& node);
+
+        void    WriteBaseColliderController(DiParticleController* val, DiXMLElement& node);
+
+        void    ReadBaseColliderController(DiParticleController* val, DiXMLElement& node);
+
+        void    WritePlaneColliderController(DiParticleController* val, DiXMLElement& node);
+
+        void    ReadPlaneColliderController(DiParticleController* val, DiXMLElement& node);
+
+        void    WriteBoxColliderController(DiParticleController* val, DiXMLElement& node);
+
+        void    ReadBoxColliderController(DiParticleController* val, DiXMLElement& node);
+
+        void    WriteSphereColliderController(DiParticleController* val, DiXMLElement& node);
+
+        void    ReadSphereColliderController(DiParticleController* val, DiXMLElement& node);
+
+        void    WriteGeometryRotatorController(DiParticleController* val, DiXMLElement& node);
+
+        void    ReadGeometryRotatorController(DiParticleController* val, DiXMLElement& node);
+
+        void    WriteColorController(DiParticleController* val, DiXMLElement& node);
+
+        void    ReadColorController(DiParticleController* val, DiXMLElement& node);
+
+        void    WriteScaleController(DiParticleController* val, DiXMLElement& node);
+
+        void    ReadScaleController(DiParticleController* val, DiXMLElement& node);
 
     protected:
 

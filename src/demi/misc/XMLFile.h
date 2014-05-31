@@ -33,21 +33,23 @@ namespace Demi
 
         DiXMLFile();
 
-        virtual ~DiXMLFile();
+        virtual             ~DiXMLFile();
 
-        virtual bool Load(DiDataStreamPtr stream);
+    public:
 
-        virtual bool Load(const DiString& xml);
+        virtual bool        Load(DiDataStreamPtr stream);
 
-        virtual bool LoadFromFile(const DiString& xml);
+        virtual bool        Load(const DiString& xml);
 
-        virtual bool Save(DiDataStreamPtr stream) const;
+        virtual bool        LoadFromFile(const DiString& xml);
 
-        virtual bool Save(const DiString& filepath) const;
-        
-        DiXMLElement CreateRoot(const DiString& name);
-        
-        DiXMLElement GetRoot(const DiString& name = DiString::BLANK);
+        virtual bool        Save(DiDataStreamPtr stream) const;
+
+        virtual bool        Save(const DiString& filepath) const;
+
+        DiXMLElement        CreateRoot(const DiString& name);
+
+        DiXMLElement        GetRoot(const DiString& name = DiString::BLANK);
 
         pugi::xml_document* GetDocument() const { return mDocument; }
         

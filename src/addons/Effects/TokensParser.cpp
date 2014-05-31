@@ -22,6 +22,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "TokensParser.h"
 #include "ParticleElement.h"
 #include "ParticleSystem.h"
+#include "XMLFile.h"
 #include "BoxEmitter.h"
 #include "CircleEmitter.h"
 #include "LineEmitter.h"
@@ -37,6 +38,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RandomiserController.h"
 #include "JetController.h"
 #include "RandomiserController.h"
+#include "PlaneColliderController.h"
+#include "BoxColliderController.h"
+#include "SphereColliderController.h"
 
 namespace Demi
 {
@@ -229,7 +233,7 @@ namespace Demi
             DI_ERROR("No suitable renderer founded!");
         }
 
-        // write emitter
+        // write emitters
         size_t numEmitters = technique->GetNumEmitters();
         for (size_t i = 0; i < numEmitters; ++i)
         {
@@ -245,14 +249,100 @@ namespace Demi
             else if (type == "Box")
             {
                 emitterNode.SetAttribute("type", "Box");
+                WriteBoxEmitter(emitter, emitterNode);
             }
             else if (type == "Circle")
             {
                 emitterNode.SetAttribute("type", "Circle");
+                WriteCircleEmitter(emitter, emitterNode);
             }
             else if (type == "Line")
             {
                 emitterNode.SetAttribute("type", "Line");
+                WriteLineEmitter(emitter, emitterNode);
+            }
+            else
+            {
+                DI_ERROR("Invalid emitter type!");
+            }
+        }
+
+        // write controllers
+        size_t numCtrls = technique->GetNumControllers();
+        for (size_t i = 0; i < numCtrls; ++i)
+        {
+            auto controller = technique->GetController(i);
+            auto type = controller->GetControllerType();
+            auto controllerNode = node.CreateChild("Controller");
+
+            if (type == "Scale")
+            {
+                controllerNode.SetAttribute("type", "Scale");
+                WriteScaleController(controller, controllerNode);
+            }
+            else if (type == "Color")
+            {
+                controllerNode.SetAttribute("type", "Color");
+                WriteColorController(controller, controllerNode);
+            }
+            else if (type == "TextureRotator")
+            {
+                controllerNode.SetAttribute("type", "TextureRotator");
+                WriteTextureRotatorController(controller, controllerNode);
+            }
+            else if (type == "GeometryRotator")
+            {
+                controllerNode.SetAttribute("type", "GeometryRotator");
+                WriteGeometryRotatorController(controller, controllerNode);
+            }
+            else if (type == "Gravity")
+            {
+                controllerNode.SetAttribute("type", "Gravity");
+                WriteGravityController(controller, controllerNode);
+            }
+            else if (type == "Jet")
+            {
+                controllerNode.SetAttribute("type", "Jet");
+                WriteJetController(controller, controllerNode);
+            }
+            else if (type == "Randomiser")
+            {
+                controllerNode.SetAttribute("type", "Randomiser");
+                WriteRandomiserController(controller, controllerNode);
+            }
+            else if (type == "Vortex")
+            {
+                controllerNode.SetAttribute("type", "Vortex");
+                WriteVortexController(controller, controllerNode);
+            }
+            else if (type == "LinearForce")
+            {
+                controllerNode.SetAttribute("type", "LinearForce");
+                WriteLinearForceController(controller, controllerNode);
+            }
+            else if (type == "SineForce")
+            {
+                controllerNode.SetAttribute("type", "SineForce");
+                WriteSinForceController(controller, controllerNode);
+            }
+            else if (type == "PlaneCollider")
+            {
+                controllerNode.SetAttribute("type", "PlaneCollider");
+                WritePlaneColliderController(controller, controllerNode);
+            }
+            else if (type == "BoxCollider")
+            {
+                controllerNode.SetAttribute("type", "BoxCollider");
+                WriteBoxColliderController(controller, controllerNode);
+            }
+            else if (type == "SphereCollider")
+            {
+                controllerNode.SetAttribute("type", "SphereCollider");
+                WriteSphereColliderController(controller, controllerNode);
+            }
+            else
+            {
+                DI_ERROR("Invalid controller type!");
             }
         }
     }
@@ -319,16 +409,19 @@ namespace Demi
         }
     }
 
+    void DiFxTokensParser::WriteSystem(DiParticleSystem* val, const DiString& filePath)
+    {
+        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        DiXMLElement root = xmlfile->CreateRoot("ParticleSystem");
+        WriteSystem(val, root);
+        xmlfile->Save(filePath);
+    }
+
     void DiFxTokensParser::ReadSystem(DiParticleSystem* val, DiXMLElement& node)
     {
     }
 
-    void DiFxTokensParser::WriteBaseEmitter(DiParticleEmitter* val, DiXMLElement& node)
-    {
-
-    }
-
-    void DiFxTokensParser::ReadBaseEmitter(DiParticleEmitter* emitter, DiXMLElement& node)
+    void DiFxTokensParser::WriteBaseEmitter(DiParticleEmitter* emitter, DiXMLElement& node)
     {
         node.SetAttribute("name", emitter->GetName());
 
@@ -415,16 +508,16 @@ namespace Demi
 
         if (emitter->position != DiParticleEmitter::DEFAULT_POSITION)
             node.SetVector3("position", emitter->position);
-        
+
         if (emitter->IsKeepLocal() != DiParticleEmitter::DEFAULT_KEEP_LOCAL)
             node.SetBool("keepLocal", emitter->IsKeepLocal());
-        
+
         if (emitter->GetOriginalParticleDirection() != DiParticleEmitter::DEFAULT_DIRECTION)
             node.SetVector3("originalParticleDirection", emitter->GetOriginalParticleDirection());
-        
+
         if (emitter->GetParticleOrientation() != DiParticleEmitter::DEFAULT_ORIENTATION)
             node.SetQuaternion("orientation", emitter->GetParticleOrientation());
-        
+
         if (emitter->GetEmitsType() != DiParticleEmitter::DEFAULT_EMITS)
         {
             DiString particle = "particle";
@@ -433,15 +526,20 @@ namespace Demi
 
         if (emitter->GetParticleTextureCoords() != DiParticleEmitter::DEFAULT_TEXTURE_COORDS)
             node.SetInt("particleTextureCoords", emitter->GetParticleTextureCoords());
-        
+
         if (emitter->GetParticleColour() != DiParticleEmitter::DEFAULT_COLOUR)
             node.SetColor("color", emitter->GetParticleColour());
-       
+
         if (emitter->IsAutoDirection() != DiParticleEmitter::DEFAULT_AUTO_DIRECTION)
             node.SetBool("autoDirection", emitter->IsAutoDirection());
-       
+
         if (emitter->IsForceEmission() != DiParticleEmitter::DEFAULT_FORCE_EMISSION)
             node.SetBool("forceEmission", emitter->IsForceEmission());
+    }
+
+    void DiFxTokensParser::ReadBaseEmitter(DiParticleEmitter* emitter, DiXMLElement& node)
+    {
+        
     }
 
     void DiFxTokensParser::WriteCircleEmitter(DiParticleEmitter* val, DiXMLElement& node)
@@ -701,6 +799,221 @@ namespace Demi
     }
 
     void DiFxTokensParser::ReadVortexController(DiParticleController* val, DiXMLElement& node)
+    {
+
+    }
+
+    void DiFxTokensParser::WriteTextureRotatorController(DiParticleController* val, DiXMLElement& node)
+    {
+        DiTextureRotatorController* affector = static_cast<DiTextureRotatorController*>(val);
+
+        WriteController(affector, node);
+
+        if (affector->UseOwnRotationSpeed() != DiTextureRotatorController::DEFAULT_USE_OWN_SPEED)
+            node.SetBool("ownRotationSpeed", affector->UseOwnRotationSpeed());
+
+        DiDynamicAttributeFactory dynamicAttributeFactory;
+        if (dynamicAttributeFactory.GetDefaultValue(affector->GetRotation()) != DiTextureRotatorController::DEFAULT_ROTATION)
+        {
+            DiString att;
+            affector->GetRotation()->Write(att);
+            node.SetAttribute("rotation", att);
+        }
+        if (dynamicAttributeFactory.GetDefaultValue(affector->GetRotationSpeed()) != DiTextureRotatorController::DEFAULT_ROTATION_SPEED)
+        {
+            DiString att;
+            affector->GetRotationSpeed()->Write(att);
+            node.SetAttribute("rotationSpeed", att);
+        }
+    }
+
+    void DiFxTokensParser::ReadTextureRotatorController(DiParticleController* val, DiXMLElement& node)
+    {
+
+    }
+
+    void DiFxTokensParser::WriteBaseColliderController(DiParticleController* val, DiXMLElement& node)
+    {
+        DiBaseColliderController* affector = static_cast<DiBaseColliderController*>(val);
+
+        WriteController(affector, node);
+
+        // Write own attributes
+        if (affector->GetFriction() != DiBaseColliderController::DEFAULT_FRICTION)
+            node.SetFloat("friction", affector->GetFriction());
+
+        if (affector->GetBouncyness() != DiBaseColliderController::DEFAULT_BOUNCYNESS)
+            node.SetFloat("bouncyness", affector->GetBouncyness());
+        
+        if (affector->GetIntersectionType() != DiBaseColliderController::DEFAULT_INTERSECTION_TYPE)
+        {
+            DiString intersectionType = "point";
+            if (affector->GetIntersectionType() == DiBaseColliderController::IT_BOX)
+                intersectionType = "box";
+            node.SetAttribute("intersectionType", intersectionType);
+        }
+
+        if (affector->GetCollisionType() != DiBaseColliderController::DEFAULT_COLLISION_TYPE)
+        {
+            DiString collisionType = "bounce";
+            if (affector->GetCollisionType() == DiBaseColliderController::CT_FLOW)
+                collisionType = "flow";
+            else if (affector->GetCollisionType() == DiBaseColliderController::CT_NONE)
+                collisionType = "none";
+            node.SetAttribute("collisionType", collisionType);
+        }
+    }
+
+    void DiFxTokensParser::ReadBaseColliderController(DiParticleController* val, DiXMLElement& node)
+    {
+
+    }
+
+    void DiFxTokensParser::WritePlaneColliderController(DiParticleController* val, DiXMLElement& node)
+    {
+        DiPlaneColliderController* affector = static_cast<DiPlaneColliderController*>(val);
+
+        WriteBaseColliderController(affector, node);
+
+        if (affector->GetNormal() != DiPlaneColliderController::DEFAULT_NORMAL)
+            node.SetVector3("normal", affector->GetNormal());
+    }
+
+    void DiFxTokensParser::ReadPlaneColliderController(DiParticleController* val, DiXMLElement& node)
+    {
+
+    }
+
+    void DiFxTokensParser::WriteBoxColliderController(DiParticleController* val, DiXMLElement& node)
+    {
+        DiBoxColliderController* affector = static_cast<DiBoxColliderController*>(val);
+
+        WriteBaseColliderController(affector, node);
+
+        if (affector->GetWidth() != DiBoxColliderController::DEFAULT_WIDTH)
+            node.SetFloat("width", affector->GetWidth());
+
+        if (affector->GetHeight() != DiBoxColliderController::DEFAULT_HEIGHT)
+            node.SetFloat("height", affector->GetHeight());
+
+        if (affector->GetDepth() != DiBoxColliderController::DEFAULT_DEPTH)
+            node.SetFloat("depth", affector->GetDepth());
+
+        if (affector->IsInnerCollision() != false)
+            node.SetBool("isInnerCollision", affector->IsInnerCollision());
+    }
+
+    void DiFxTokensParser::ReadBoxColliderController(DiParticleController* val, DiXMLElement& node)
+    {
+
+    }
+
+    void DiFxTokensParser::WriteSphereColliderController(DiParticleController* val, DiXMLElement& node)
+    {
+        DiSphereColliderController* affector = static_cast<DiSphereColliderController*>(val);
+
+        WriteBaseColliderController(affector, node);
+
+        if (affector->GetRadius() != DiSphereColliderController::DEFAULT_RADIUS)
+            node.SetFloat("radius", affector->GetRadius());
+
+        if (affector->IsInnerCollision() != false)
+            node.SetBool("isInnerCollision", affector->IsInnerCollision());
+    }
+
+    void DiFxTokensParser::ReadSphereColliderController(DiParticleController* val, DiXMLElement& node)
+    {
+
+    }
+
+    void DiFxTokensParser::WriteGeometryRotatorController(DiParticleController* val, DiXMLElement& node)
+    {
+        DiGeometryRotatorController* affector = static_cast<DiGeometryRotatorController*>(val);
+
+        WriteController(affector, node);
+
+        if (affector->UseOwnRotationSpeed() != DiGeometryRotatorController::DEFAULT_USE_OWN)
+            node.SetBool("speed", affector->UseOwnRotationSpeed());
+
+        if (affector->GetRotationAxis() != DiGeometryRotatorController::DEFAULT_ROTATION_AXIS)
+            node.SetVector3("rotationAxis", affector->GetRotationAxis());
+
+        DiDynamicAttributeFactory dynamicAttributeFactory;
+        if (dynamicAttributeFactory.GetDefaultValue(affector->GetRotationSpeed()) !=
+            DiGeometryRotatorController::DEFAULT_ROTATION_SPEED)
+        {
+            DiString att;
+            affector->GetRotationSpeed()->Write(att);
+            node.SetAttribute("rotationSpeed", att);
+        }
+    }
+
+    void DiFxTokensParser::ReadGeometryRotatorController(DiParticleController* val, DiXMLElement& node)
+    {
+
+    }
+
+    void DiFxTokensParser::WriteColorController(DiParticleController* val, DiXMLElement& node)
+    {
+        DiColorController* affector = static_cast<DiColorController*>(val);
+
+        WriteController(affector, node);
+
+        DiString times;
+        auto& colorMap = affector->GetTimeAndColour();
+        for (auto it = colorMap.begin(); it != colorMap.end(); ++it)
+        {
+            auto time = it->first;
+            if (it != colorMap.begin())
+                times += ",";
+            times.AppendFloat(time);
+        }
+        node.SetAttribute("times", times);
+
+        DiString colors;
+        for (auto it = colorMap.begin(); it != colorMap.end(); ++it)
+        {
+            auto colour = it->second;
+            if (it != colorMap.begin())
+                colors += ",";
+            colors.AppendColourValue(colour);
+        }
+        node.SetAttribute("colors", colors);
+
+        if (affector->GetColourOperation() != DiColorController::DEFAULT_COLOUR_OPERATION)
+        {
+            DiString colourOperation = "multiply";
+            if (affector->GetColourOperation() == DiColorController::CAO_SET) 
+                colourOperation = "set";
+            node.SetAttribute("operation", colourOperation);
+        }
+    }
+
+    void DiFxTokensParser::ReadColorController(DiParticleController* val, DiXMLElement& node)
+    {
+
+    }
+
+    void DiFxTokensParser::WriteScaleController(DiParticleController* val, DiXMLElement& node)
+    {
+        DiScaleController* affector = static_cast<DiScaleController*>(val);
+
+        WriteController(affector, node);
+
+        if (affector->IsSinceStartSystem())
+            node.SetBool("sinceStartSystem", affector->IsSinceStartSystem());
+
+        if (affector->GetBeginScale() != DiScaleController::DEFAULT_SCALE)
+            node.SetVector2("beginScale", affector->GetBeginScale());
+
+        if (affector->GetMedianScale() != DiScaleController::DEFAULT_SCALE)
+            node.SetVector2("medScale", affector->GetMedianScale());
+
+        if (affector->GetEndScale() != DiScaleController::DEFAULT_SCALE)
+            node.SetVector2("endScale", affector->GetEndScale());
+    }
+
+    void DiFxTokensParser::ReadScaleController(DiParticleController* val, DiXMLElement& node)
     {
 
     }

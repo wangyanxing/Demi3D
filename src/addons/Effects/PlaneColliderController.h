@@ -35,28 +35,28 @@ namespace Demi
 
         DiPlaneColliderController(void);
 
-        virtual            ~DiPlaneColliderController(void){}
+        virtual          ~DiPlaneColliderController(void){}
 
     public:
 
-        const DiVec3    GetNormal(void) const;
+        const DiVec3     GetNormal(void) const;
 
-        void            SetNormal(const DiVec3& normal);
+        void             SetNormal(const DiVec3& normal);
 
-        virtual void    NotifyRescaled(const DiVec3& scale);
+        virtual void     NotifyRescaled(const DiVec3& scale);
 
-        void            CalculateDirectionAfterCollision(DiParticle* particle, float timeElapsed);
+        void             CalculateDirectionAfterCollision(DiParticle* particle, float timeElapsed);
 
         virtual void     Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
 
         virtual void     CopyTo (DiParticleController* affector);
 
     protected:
-        DiVec3            mNormal;
-        
-        DiVec3            mPredictedPosition;
+        DiVec3           mNormal;
 
-        DiPlane            mPlane;
+        DiVec3           mPredictedPosition;
+
+        DiPlane          mPlane;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@ namespace Demi
     public:
         DiPlaneColliderControllerFactory(void) {}
 
-        virtual                        ~DiPlaneColliderControllerFactory(void) {}
+        virtual                     ~DiPlaneColliderControllerFactory(void) {}
 
         DiString                    GetControllerType(void) const
         {
@@ -74,7 +74,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController*       CreateController(void)
         {
             return CreateControllerImpl<DiPlaneColliderController>();
         }
