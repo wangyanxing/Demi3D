@@ -133,6 +133,8 @@ namespace Demi
 
         void                    AddTextureCoords(const float u, const float v, const float width, const float height);
 
+        void                    AddTextureCoords(const DiVector<DiFloatRect*>& rect);
+
         const DiVector<DiFloatRect*>& GetTextureCoords(void) const;
 
     protected:

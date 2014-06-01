@@ -89,11 +89,11 @@ namespace Demi
 
         size_t                    GetEmittedElementQuota(void) const;
 
-        void                      SetEmittedTechniqueQuota(size_t quota);
+        void                      SetEmittedElementQuota(size_t quota);
 
         size_t                    GetEmittedControllerQuota(void) const;
 
-        void                      SetEmittedAffectorQuota(size_t quota);
+        void                      SetEmittedControllerQuota(size_t quota);
 
         size_t                    GetEmittedSystemQuota(void) const;
 

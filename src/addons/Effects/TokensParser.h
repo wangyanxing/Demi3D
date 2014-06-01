@@ -46,19 +46,19 @@ namespace Demi
 
         void    WriteSystem(DiParticleSystem* val, DiXMLElement& node);
 
-        void    ReadSystem(DiParticleSystem* val, DiXMLElement& node);
-
         void    WriteElement(DiParticleElement* val, DiXMLElement& node);
 
-        void    ReadElement(DiParticleElement* val, DiXMLElement& node);
+        DiParticleElement*   ReadElement(DiParticleSystem* val, DiXMLElement& node);
+
+        DiParticleSystem*    ReadSystem(DiXMLElement& node);
 
     public:
 
         void    WriteRenderer(DiParticleRenderer* val, DiXMLElement& node);
 
-        void    ReadRenderer(DiParticleRenderer* val, DiXMLElement& node);
-
         void    WriteBillboardRenderer(DiBillboardRenderer* val, DiXMLElement& node);
+
+        DiParticleRenderer*    ReadRenderer(DiParticleElement* val, DiXMLElement& node);
 
         void    ReadBillboardRenderer(DiBillboardRenderer* val, DiXMLElement& node);
 
@@ -80,11 +80,13 @@ namespace Demi
 
         void    ReadLineEmitter(DiParticleEmitter* val, DiXMLElement& node);
 
+        DiParticleEmitter*  ReadEmitter(DiParticleElement* val, DiXMLElement& node);
+
     public:
 
-        void    WriteController(DiParticleController* val, DiXMLElement& node);
+        void    WriteBaseController(DiParticleController* val, DiXMLElement& node);
 
-        void    ReadController(DiParticleController* val, DiXMLElement& node);
+        void    ReadBaseController(DiParticleController* val, DiXMLElement& node);
 
         void    WriteBaseForceController(DiParticleController* val, DiXMLElement& node);
 
@@ -145,6 +147,8 @@ namespace Demi
         void    WriteScaleController(DiParticleController* val, DiXMLElement& node);
 
         void    ReadScaleController(DiParticleController* val, DiXMLElement& node);
+
+        DiParticleController* ReadController(DiParticleElement* val, DiXMLElement& node);
 
     protected:
 

@@ -178,7 +178,13 @@ namespace Demi
         mUVList.push_back(new DiFloatRect(u, v, u+width, v+height));
         mTextureCoordsSet = true;
     }
-    
+
+    void DiParticleRenderer::AddTextureCoords(const DiVector<DiFloatRect*>& rect)
+    {
+        mUVList = rect;
+        mTextureCoordsSet = true;
+    }
+
     const DiVector<DiFloatRect*>& DiParticleRenderer::GetTextureCoords(void) const
     {
         return mUVList;

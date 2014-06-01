@@ -41,6 +41,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PlaneColliderController.h"
 #include "BoxColliderController.h"
 #include "SphereColliderController.h"
+#include "EffectManager.h"
 
 namespace Demi
 {
@@ -132,13 +133,43 @@ namespace Demi
             node.SetAttribute("uvlist", WriteFloatRectVector(uvList));
     }
 
-    void DiFxTokensParser::ReadBillboardRenderer(DiBillboardRenderer* val, DiXMLElement& node)
+    void DiFxTokensParser::ReadBillboardRenderer(DiBillboardRenderer* renderer, DiXMLElement& node)
     {
-        ReadRenderer(val, node);
+        node.IterateAttributes([renderer, this](const DiString& name, const DiString& value){
+            if (name == "billboardType")
+                renderer->SetBillboardType(sStrBillboardType[value]);
+            else if (name == "origin")
+                renderer->SetBillboardOrigin(sStrBillboardOrigin[value]);
+            else if (name == "rotationType")
+                renderer->SetBillboardRotationType(sStrBillboardRotationType[value]);
+            else if (name == "commonDirection")
+                renderer->SetCommonDirection(value.AsVector3());
+            else if (name == "commonUpVector")
+                renderer->SetCommonUpVector(value.AsVector3());
+        });
     }
 
-    void DiFxTokensParser::ReadRenderer(DiParticleRenderer* val, DiXMLElement& node)
+    DiParticleRenderer* DiFxTokensParser::ReadRenderer(DiParticleElement* element, DiXMLElement& node)
     {
+        DiString type = node.GetAttribute("type");
+        element->SetRenderer(type);
+        auto renderer = element->GetRenderer();
+
+        node.IterateAttributes([renderer, this](const DiString& name, const DiString& value){
+            if (name == "sorted")
+                renderer->SetSorted(value.AsBool());
+            else if (name == "texcoordRows")
+                renderer->SetTextureCoordsRows(value.AsInt());
+            else if (name == "texcoordColumns")
+                renderer->SetTextureCoordsColumns(value.AsInt());
+            else if (name == "uvlist")
+                renderer->AddTextureCoords(ReadFloatRectVector(value));
+        });
+
+        if (type == "Billboard")
+            ReadBillboardRenderer(static_cast<DiBillboardRenderer*>(renderer), node);
+
+        return renderer;
     }
 
     using FloatRectVec = DiVector<DiFloatRect*>;
@@ -226,7 +257,7 @@ namespace Demi
         if (renderer->GetRendererType() == "Billboard")
         {
             auto rendererNode = node.CreateChild("Renderer");
-            rendererNode.SetAttribute("type", "billboard");
+            rendererNode.SetAttribute("type", "Billboard");
             WriteBillboardRenderer((DiBillboardRenderer*)renderer, rendererNode);
         }
         else
@@ -244,22 +275,22 @@ namespace Demi
 
             if (type == "Point")
             {
-                emitterNode.SetAttribute("type", "point");
+                emitterNode.SetAttribute("type", "Point");
                 WriteBaseEmitter(emitter, emitterNode);
             }
             else if (type == "Box")
             {
-                emitterNode.SetAttribute("type", "box");
+                emitterNode.SetAttribute("type", "Box");
                 WriteBoxEmitter(emitter, emitterNode);
             }
             else if (type == "Circle")
             {
-                emitterNode.SetAttribute("type", "circle");
+                emitterNode.SetAttribute("type", "Circle");
                 WriteCircleEmitter(emitter, emitterNode);
             }
             else if (type == "Line")
             {
-                emitterNode.SetAttribute("type", "line");
+                emitterNode.SetAttribute("type", "Line");
                 WriteLineEmitter(emitter, emitterNode);
             }
             else
@@ -278,67 +309,67 @@ namespace Demi
 
             if (type == "Scale")
             {
-                controllerNode.SetAttribute("type", "scale");
+                controllerNode.SetAttribute("type", "Scale");
                 WriteScaleController(controller, controllerNode);
             }
             else if (type == "Color")
             {
-                controllerNode.SetAttribute("type", "color");
+                controllerNode.SetAttribute("type", "Color");
                 WriteColorController(controller, controllerNode);
             }
             else if (type == "TextureRotator")
             {
-                controllerNode.SetAttribute("type", "textureRotator");
+                controllerNode.SetAttribute("type", "TextureRotator");
                 WriteTextureRotatorController(controller, controllerNode);
             }
             else if (type == "GeometryRotator")
             {
-                controllerNode.SetAttribute("type", "geometryRotator");
+                controllerNode.SetAttribute("type", "GeometryRotator");
                 WriteGeometryRotatorController(controller, controllerNode);
             }
             else if (type == "Gravity")
             {
-                controllerNode.SetAttribute("type", "gravity");
+                controllerNode.SetAttribute("type", "Gravity");
                 WriteGravityController(controller, controllerNode);
             }
             else if (type == "Jet")
             {
-                controllerNode.SetAttribute("type", "jet");
+                controllerNode.SetAttribute("type", "Jet");
                 WriteJetController(controller, controllerNode);
             }
             else if (type == "Randomiser")
             {
-                controllerNode.SetAttribute("type", "randomiser");
+                controllerNode.SetAttribute("type", "Randomiser");
                 WriteRandomiserController(controller, controllerNode);
             }
             else if (type == "Vortex")
             {
-                controllerNode.SetAttribute("type", "vortex");
+                controllerNode.SetAttribute("type", "Vortex");
                 WriteVortexController(controller, controllerNode);
             }
             else if (type == "LinearForce")
             {
-                controllerNode.SetAttribute("type", "linearForce");
+                controllerNode.SetAttribute("type", "LinearForce");
                 WriteLinearForceController(controller, controllerNode);
             }
             else if (type == "SineForce")
             {
-                controllerNode.SetAttribute("type", "sineForce");
+                controllerNode.SetAttribute("type", "SineForce");
                 WriteSinForceController(controller, controllerNode);
             }
             else if (type == "PlaneCollider")
             {
-                controllerNode.SetAttribute("type", "planeCollider");
+                controllerNode.SetAttribute("type", "PlaneCollider");
                 WritePlaneColliderController(controller, controllerNode);
             }
             else if (type == "BoxCollider")
             {
-                controllerNode.SetAttribute("type", "boxCollider");
+                controllerNode.SetAttribute("type", "BoxCollider");
                 WriteBoxColliderController(controller, controllerNode);
             }
             else if (type == "SphereCollider")
             {
-                controllerNode.SetAttribute("type", "sphereCollider");
+                controllerNode.SetAttribute("type", "SphereCollider");
                 WriteSphereColliderController(controller, controllerNode);
             }
             else
@@ -348,9 +379,58 @@ namespace Demi
         }
     }
 
-    void DiFxTokensParser::ReadElement(DiParticleElement* val, DiXMLElement& node)
+    DiParticleElement* DiFxTokensParser::ReadElement(DiParticleSystem* ps, DiXMLElement& node)
     {
+        auto element = ps->CreateElement();
 
+        node.IterateAttributes([element](const DiString& name, const DiString& value){
+            if (name == "name")
+                element->SetName(value);
+            else if (name == "originalEnabled")
+                element->SetOriginalEnabled(value.AsBool());
+            else if (name == "position")
+                element->position = value.AsVector3();
+            else if (name == "keepLocal")
+                element->SetKeepLocal(value.AsBool());
+            else if (name == "visualParticleQuota")
+                element->SetVisualParticleQuota(value.AsInt());
+            else if (name == "emittedEmitterQuota")
+                element->SetEmittedEmitterQuota(value.AsInt());
+            else if (name == "emittedElementQuota")
+                element->SetEmittedElementQuota(value.AsInt());
+            else if (name == "emittedControllerQuota")
+                element->SetEmittedControllerQuota(value.AsInt());
+            else if (name == "emittedSystemQuota")
+                element->SetEmittedSystemQuota(value.AsInt());
+            else if (name == "material")
+                element->SetMaterialName(value);
+            else if (name == "lodIndex")
+                element->SetLodIndex(value.AsInt());
+            else if (name == "defaultWidth")
+                element->SetDefaultWidth(value.AsFloat());
+            else if (name == "defaultHeight")
+                element->SetDefaultHeight(value.AsFloat());
+            else if (name == "defaultDepth")
+                element->SetDefaultDepth(value.AsFloat());
+            else if (name == "maxVelocity")
+                element->SetMaxVelocity(value.AsFloat());
+        });
+
+        auto child = node.GetChild();
+        while (child)
+        {
+            if (child.CheckName("Renderer"))
+                ReadRenderer(element, child);
+            else if (child.CheckName("Emitter"))
+                ReadEmitter(element, child);
+            else if (child.CheckName("Emitter"))
+                ReadController(element, child);
+
+            child = child.GetNext();
+        }
+
+
+        return element;
     }
 
     void DiFxTokensParser::WriteSystem(DiParticleSystem* system, DiXMLElement& node)
@@ -418,9 +498,61 @@ namespace Demi
         xmlfile->Save(filePath);
     }
 
-    void DiFxTokensParser::ReadSystem(DiParticleSystem* val, DiXMLElement& node)
+    DiParticleSystem* DiFxTokensParser::ReadSystem(DiXMLElement& node)
     {
-        
+        DiString name = node.GetAttribute("name");
+        if (name.empty())
+        {
+            DI_WARNING("The name of the particle system cannot be empty!");
+            return nullptr;
+        }
+
+        auto ps = DiEffectManager::GetInstance().GetParticleSystemTemplate(name);
+        if (ps)
+        {
+            DI_WARNING("The particle system: %s has already existed!", name.c_str());
+            return ps;
+        }
+
+        // create a new one
+        ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate(name);
+        DI_LOG("Creating particle system template: %s", name.c_str());
+
+        node.IterateAttributes([ps](const DiString& name, const DiString& value){
+            if (name == "keepLocal")
+                ps->SetKeepLocal(value.AsBool());
+            else if (name == "fixedTimeout")
+                ps->SetFixedTimeout(value.AsFloat());
+            else if (name == "iterationInterval")
+                ps->SetIterationInterval(value.AsFloat());
+            else if (name == "nonVisibleUpdateTimeout")
+                ps->SetNonVisibleUpdateTimeout(value.AsFloat());
+            else if (name == "isSmoothLod")
+                ps->SetSmoothLod(value.AsFloat());
+            else if (name == "fastForward")
+            {
+                auto v = value.AsVector2();
+                ps->SetFastForward(v.x, v.y);
+            }
+            else if (name == "scaleVelocity")
+                ps->SetScaleVelocity(value.AsFloat());
+            else if (name == "scaleTime")
+                ps->SetScaleTime(value.AsFloat());
+            else if (name == "scale")
+                ps->SetScale(value.AsVector3());
+            else if (name == "hasTightBoundingBox")
+                ps->SetTightBoundingBox(value.AsBool());
+        });
+
+        auto child = node.GetChild();
+        while (child)
+        {
+            if (child.CheckName("Element"))
+                ReadElement(ps, child);
+            child = child.GetNext();
+        }
+
+        return ps;
     }
 
     void DiFxTokensParser::WriteBaseEmitter(DiParticleEmitter* emitter, DiXMLElement& node)
@@ -541,7 +673,55 @@ namespace Demi
 
     void DiFxTokensParser::ReadBaseEmitter(DiParticleEmitter* emitter, DiXMLElement& node)
     {
-        
+        node.IterateAttributes([emitter](const DiString& name, const DiString& value){
+            if (name == "name")
+                emitter->SetName(value);
+            else if (name == "emissionRate")
+                emitter->SetDynEmissionRate(DiDynamicAttribute::Read(value));
+            else if (name == "angle")
+                emitter->SetDynAngle(DiDynamicAttribute::Read(value));
+            else if (name == "totalTimeToLive")
+                emitter->SetDynTotalTimeToLive(DiDynamicAttribute::Read(value));
+            else if (name == "mass")
+                emitter->SetDynParticleMass(DiDynamicAttribute::Read(value));
+            else if (name == "velocity")
+                emitter->SetDynVelocity(DiDynamicAttribute::Read(value));
+            else if (name == "duration")
+                emitter->SetDynDuration(DiDynamicAttribute::Read(value));
+            else if (name == "repeatDelay")
+                emitter->SetDynRepeatDelay(DiDynamicAttribute::Read(value));
+            else if (name == "allDimensions")
+                emitter->SetDynParticleAllDimensions(DiDynamicAttribute::Read(value));
+            else if (name == "width")
+                emitter->SetDynParticleWidth(DiDynamicAttribute::Read(value));
+            else if (name == "height")
+                emitter->SetDynParticleHeight(DiDynamicAttribute::Read(value));
+            else if (name == "depth")
+                emitter->SetDynParticleDepth(DiDynamicAttribute::Read(value));
+            else if (name == "originalEnabled")
+                emitter->SetOriginalEnabled(value.AsBool());
+            else if (name == "position")
+                emitter->position = value.AsVector3();
+            else if (name == "keepLocal")
+                emitter->SetKeepLocal(value.AsBool());
+            else if (name == "originalParticleDirection")
+                emitter->SetParticleDirection(value.AsVector3());
+            else if (name == "orientation")
+                emitter->SetParticleOrientation(value.AsQuaternion());
+            else if (name == "emitsType")
+            {
+                DiParticle::ParticleType type = DiParticleEmitter::DEFAULT_EMITS;
+                emitter->SetEmitsType(type);
+            }
+            else if (name == "particleTextureCoords")
+                emitter->SetParticleTextureCoords(value.AsInt());
+            else if (name == "color")
+                emitter->SetParticleColour(value.AsColourValue());
+            else if (name == "autoDirection")
+                emitter->SetAutoDirection(value.AsBool());
+            else if (name == "forceEmission")
+                emitter->SetForceEmission(value.AsBool());
+        });
     }
 
     void DiFxTokensParser::WriteCircleEmitter(DiParticleEmitter* val, DiXMLElement& node)
@@ -568,7 +748,22 @@ namespace Demi
 
     void DiFxTokensParser::ReadCircleEmitter(DiParticleEmitter* val, DiXMLElement& node)
     {
+        ReadBaseEmitter(val, node);
 
+        DiCircleEmitter* emitter = static_cast<DiCircleEmitter*>(val);
+
+        node.IterateAttributes([emitter](const DiString& name, const DiString& value){
+            if (name == "radius")
+                emitter->SetRadius(value.AsFloat());
+            else if (name == "step")
+                emitter->SetStep(value.AsFloat());
+            else if (name == "circleAngle")
+                emitter->SetCircleAngle(value.AsFloat());
+            else if (name == "isRandom")
+                emitter->SetRandom(value.AsFloat());
+            else if (name == "normal")
+                emitter->SetNormal(value.AsVector3());
+        });
     }
 
     void DiFxTokensParser::WriteBoxEmitter(DiParticleEmitter* val, DiXMLElement& node)
@@ -589,7 +784,18 @@ namespace Demi
 
     void DiFxTokensParser::ReadBoxEmitter(DiParticleEmitter* val, DiXMLElement& node)
     {
+        ReadBaseEmitter(val, node);
 
+        DiBoxEmitter* emitter = static_cast<DiBoxEmitter*>(val);
+
+        node.IterateAttributes([emitter](const DiString& name, const DiString& value){
+            if (name == "width")
+                emitter->SetWidth(value.AsFloat());
+            else if (name == "height")
+                emitter->SetHeight(value.AsFloat());
+            else if (name == "depth")
+                emitter->SetDepth(value.AsFloat());
+        });
     }
 
     void DiFxTokensParser::WriteLineEmitter(DiParticleEmitter* val, DiXMLElement& node)
@@ -613,13 +819,26 @@ namespace Demi
 
     void DiFxTokensParser::ReadLineEmitter(DiParticleEmitter* val, DiXMLElement& node)
     {
+        ReadBaseEmitter(val, node);
 
+        DiLineEmitter* emitter = static_cast<DiLineEmitter*>(val);
+
+        node.IterateAttributes([emitter](const DiString& name, const DiString& value){
+            if (name == "end")
+                emitter->SetEnd(value.AsVector3());
+            else if (name == "minIncrement")
+                emitter->SetMinIncrement(value.AsFloat());
+            else if (name == "maxIncrement")
+                emitter->SetMinIncrement(value.AsFloat());
+            else if (name == "maxDeviation")
+                emitter->SetMaxDeviation(value.AsFloat());
+        });
     }
 
     void DiFxTokensParser::WriteBaseForceController(DiParticleController* val, DiXMLElement& node)
     {
         DiBaseForceController* controller = static_cast<DiBaseForceController*>(val);
-        WriteController(controller, node);
+        WriteBaseController(controller, node);
 
         if (controller->GetForceVector() != DiBaseForceController::DEFAULT_FORCE_VECTOR)
             node.SetVector3("vector", controller->GetForceVector());
@@ -636,7 +855,21 @@ namespace Demi
 
     void DiFxTokensParser::ReadBaseForceController(DiParticleController* val, DiXMLElement& node)
     {
+        DiBaseForceController* ctrl = static_cast<DiBaseForceController*>(val);
 
+        ReadBaseController(ctrl, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "vector")
+                ctrl->SetForceVector(value.AsVector3());
+            else if (name == "application")
+            {
+                auto t = DiBaseForceController::FA_ADD;
+                if (value == "average")
+                    t = DiBaseForceController::FA_AVERAGE;
+                ctrl->SetForceApplication(t);
+            }
+        });
     }
 
     void DiFxTokensParser::WriteLinearForceController(DiParticleController* val, DiXMLElement& node)
@@ -646,7 +879,7 @@ namespace Demi
 
     void DiFxTokensParser::ReadLinearForceController(DiParticleController* val, DiXMLElement& node)
     {
-
+        ReadBaseForceController(val, node);
     }
 
     void DiFxTokensParser::WriteSinForceController(DiParticleController* val, DiXMLElement& node)
@@ -664,10 +897,19 @@ namespace Demi
 
     void DiFxTokensParser::ReadSinForceController(DiParticleController* val, DiXMLElement& node)
     {
+        DiSineForceController* controller = static_cast<DiSineForceController*>(val);
 
+        ReadBaseForceController(controller, node);
+
+        node.IterateAttributes([controller](const DiString& name, const DiString& value) {
+            if (name == "freqMin")
+                controller->SetFrequencyMin(value.AsFloat());
+            else if (name == "freqMax")
+                controller->SetFrequencyMax(value.AsFloat());
+        });
     }
 
-    void DiFxTokensParser::WriteController(DiParticleController* affector, DiXMLElement& node)
+    void DiFxTokensParser::WriteBaseController(DiParticleController* affector, DiXMLElement& node)
     {
         node.SetAttribute("name", affector->GetName());
 
@@ -703,9 +945,7 @@ namespace Demi
             for (auto it = excludedEmitters.begin(); it != excludedEmitters.end(); ++it)
             {
                 if (it != excludedEmitters.begin())
-                {
                     emitterList += ",";
-                }
 
                 emitterList += *it;
             }
@@ -714,16 +954,50 @@ namespace Demi
         }
     }
 
-    void DiFxTokensParser::ReadController(DiParticleController* affector, DiXMLElement& node)
+    DiParticleController* DiFxTokensParser::ReadController(DiParticleElement* ele, DiXMLElement& controllerNode)
     {
-        
+        DiString type = controllerNode.GetAttribute("type");
+        DiParticleController* controller = ele->CreateController(type);
+
+        if (type == "Scale")
+            ReadScaleController(controller, controllerNode);
+        else if (type == "Color")
+            ReadColorController(controller, controllerNode);
+        else if (type == "TextureRotator")
+            ReadTextureRotatorController(controller, controllerNode);
+        else if (type == "GeometryRotator")
+            ReadGeometryRotatorController(controller, controllerNode);
+        else if (type == "Gravity")
+            ReadGravityController(controller, controllerNode);
+        else if (type == "Jet")
+            ReadJetController(controller, controllerNode);
+        else if (type == "Randomiser")
+            ReadRandomiserController(controller, controllerNode);
+        else if (type == "Vortex")
+            ReadVortexController(controller, controllerNode);
+        else if (type == "LinearForce")
+            ReadLinearForceController(controller, controllerNode);
+        else if (type == "SineForce")
+            ReadSinForceController(controller, controllerNode);
+        else if (type == "PlaneCollider")
+            ReadPlaneColliderController(controller, controllerNode);
+        else if (type == "BoxCollider")
+            ReadBoxColliderController(controller, controllerNode);
+        else if (type == "SphereCollider")
+            ReadSphereColliderController(controller, controllerNode);
+        else
+        {
+            DI_ERROR("Invalid controller type!");
+        }
+
+        return controller;
     }
 
     void DiFxTokensParser::WriteGravityController(DiParticleController* val, DiXMLElement& node)
     {
         DiGravityController* controller = static_cast<DiGravityController*>(val);
 
-        WriteController(controller, node);
+        WriteBaseController(controller, node);
 
         if (controller->GetGravity() != DiGravityController::DEFAULT_GRAVITY)
             node.SetFloat("gravity", controller->GetGravity());
@@ -731,14 +1005,21 @@ namespace Demi
 
     void DiFxTokensParser::ReadGravityController(DiParticleController* val, DiXMLElement& node)
     {
+        DiGravityController* ctrl = static_cast<DiGravityController*>(val);
 
+        ReadBaseController(ctrl, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "gravity")
+                ctrl->SetGravity(value.AsFloat());
+        });
     }
 
     void DiFxTokensParser::WriteJetController(DiParticleController* val, DiXMLElement& node)
     {
         DiJetController* controller = static_cast<DiJetController*>(val);
 
-        WriteController(controller, node);
+        WriteBaseController(controller, node);
 
         // Write own attributes
         DiDynamicAttributeFactory dynamicAttributeFactory;
@@ -752,14 +1033,21 @@ namespace Demi
 
     void DiFxTokensParser::ReadJetController(DiParticleController* val, DiXMLElement& node)
     {
+        DiJetController* ctrl = static_cast<DiJetController*>(val);
 
+        ReadBaseController(ctrl, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "acceleration")
+                ctrl->SetDynAcceleration(DiDynamicAttribute::Read(value));
+        });
     }
 
     void DiFxTokensParser::WriteRandomiserController(DiParticleController* val, DiXMLElement& node)
     {
         DiRandomiserController* affector = static_cast<DiRandomiserController*>(val);
 
-        WriteController(affector, node);
+        WriteBaseController(affector, node);
 
         if (affector->GetMaxDeviationX() != DiRandomiserController::DEFAULT_MAX_DEVIATION.x)
             node.SetFloat("maxDeviationX", affector->GetMaxDeviationX());
@@ -774,19 +1062,34 @@ namespace Demi
             node.SetFloat("timeStep", affector->GetTimeStep());
        
         if (affector->IsRandomDirection() != DiRandomiserController::DEFAULT_RANDOM_DIRECTION)
-            node.SetBool("timeStep", affector->IsRandomDirection());
+            node.SetBool("randomDirection", affector->IsRandomDirection());
     }
 
     void DiFxTokensParser::ReadRandomiserController(DiParticleController* val, DiXMLElement& node)
     {
+        DiRandomiserController* ctrl = static_cast<DiRandomiserController*>(val);
 
+        ReadBaseController(ctrl, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "maxDeviationX")
+                ctrl->SetMaxDeviationX(value.AsFloat());
+            else if (name == "maxDeviationY")
+                ctrl->SetMaxDeviationY(value.AsFloat());
+            else if (name == "maxDeviationZ")
+                ctrl->SetMaxDeviationZ(value.AsFloat());
+            else if (name == "timeStep")
+                ctrl->SetTimeStep(value.AsFloat());
+            else if (name == "randomDirection")
+                ctrl->SetRandomDirection(value.AsBool());
+        });
     }
 
     void DiFxTokensParser::WriteVortexController(DiParticleController* val, DiXMLElement& node)
     {
         DiVortexController* affector = static_cast<DiVortexController*>(val);
 
-        WriteController(affector, node);
+        WriteBaseController(affector, node);
 
         if (affector->GetRotationVector() != DiVortexController::DEFAULT_ROTATION_VECTOR)
             node.SetVector3("rotationVector", affector->GetRotationVector());
@@ -802,14 +1105,23 @@ namespace Demi
 
     void DiFxTokensParser::ReadVortexController(DiParticleController* val, DiXMLElement& node)
     {
+        DiVortexController* ctrl = static_cast<DiVortexController*>(val);
 
+        ReadBaseController(ctrl, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "rotationVector")
+                ctrl->SetRotationVector(value.AsVector3());
+            else if (name == "rotationSpeed")
+                ctrl->SetRotationSpeed(DiDynamicAttribute::Read(value));
+        });
     }
 
     void DiFxTokensParser::WriteTextureRotatorController(DiParticleController* val, DiXMLElement& node)
     {
         DiTextureRotatorController* affector = static_cast<DiTextureRotatorController*>(val);
 
-        WriteController(affector, node);
+        WriteBaseController(affector, node);
 
         if (affector->UseOwnRotationSpeed() != DiTextureRotatorController::DEFAULT_USE_OWN_SPEED)
             node.SetBool("ownRotationSpeed", affector->UseOwnRotationSpeed());
@@ -831,14 +1143,25 @@ namespace Demi
 
     void DiFxTokensParser::ReadTextureRotatorController(DiParticleController* val, DiXMLElement& node)
     {
+        DiTextureRotatorController* ctrl = static_cast<DiTextureRotatorController*>(val);
 
+        ReadBaseController(ctrl, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "ownRotationSpeed")
+                ctrl->SetUseOwnRotationSpeed(value.AsBool());
+            else if (name == "rotation")
+                ctrl->SetRotation(DiDynamicAttribute::Read(value));
+            else if (name == "rotationSpeed")
+                ctrl->SetRotationSpeed(DiDynamicAttribute::Read(value));
+        });
     }
 
     void DiFxTokensParser::WriteBaseColliderController(DiParticleController* val, DiXMLElement& node)
     {
         DiBaseColliderController* affector = static_cast<DiBaseColliderController*>(val);
 
-        WriteController(affector, node);
+        WriteBaseController(affector, node);
 
         // Write own attributes
         if (affector->GetFriction() != DiBaseColliderController::DEFAULT_FRICTION)
@@ -868,7 +1191,32 @@ namespace Demi
 
     void DiFxTokensParser::ReadBaseColliderController(DiParticleController* val, DiXMLElement& node)
     {
+        DiBaseColliderController* ctrl = static_cast<DiBaseColliderController*>(val);
 
+        ReadBaseController(ctrl, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "friction")
+                ctrl->SetFriction(value.AsFloat());
+            else if (name == "bouncyness")
+                ctrl->SetBouncyness(value.AsFloat());
+            else if (name == "intersectionType")
+            {
+                auto t = DiBaseColliderController::IT_POINT;
+                if (value == "box")
+                    t = DiBaseColliderController::IT_BOX;
+                ctrl->SetIntersectionType(t);
+            }
+            else if (name == "collisionType")
+            {
+                auto t = DiBaseColliderController::CT_BOUNCE;
+                if (value == "flow")
+                    t = DiBaseColliderController::CT_FLOW;
+                else if (value == "none")
+                    t = DiBaseColliderController::CT_NONE;
+                ctrl->SetCollisionType(t);
+            }
+        });
     }
 
     void DiFxTokensParser::WritePlaneColliderController(DiParticleController* val, DiXMLElement& node)
@@ -883,7 +1231,14 @@ namespace Demi
 
     void DiFxTokensParser::ReadPlaneColliderController(DiParticleController* val, DiXMLElement& node)
     {
+        DiPlaneColliderController* affector = static_cast<DiPlaneColliderController*>(val);
 
+        ReadBaseColliderController(affector, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "normal")
+                affector->SetNormal(value.AsVector3());
+        });
     }
 
     void DiFxTokensParser::WriteBoxColliderController(DiParticleController* val, DiXMLElement& node)
@@ -907,7 +1262,20 @@ namespace Demi
 
     void DiFxTokensParser::ReadBoxColliderController(DiParticleController* val, DiXMLElement& node)
     {
+        DiBoxColliderController* affector = static_cast<DiBoxColliderController*>(val);
 
+        ReadBaseColliderController(affector, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "width")
+                affector->SetWidth(value.AsFloat());
+            else if (name == "height")
+                affector->SetHeight(value.AsFloat());
+            else if (name == "depth")
+                affector->SetDepth(value.AsFloat());
+            else if (name == "isInnerCollision")
+                affector->SetInnerCollision(value.AsBool());
+        });
     }
 
     void DiFxTokensParser::WriteSphereColliderController(DiParticleController* val, DiXMLElement& node)
@@ -925,14 +1293,23 @@ namespace Demi
 
     void DiFxTokensParser::ReadSphereColliderController(DiParticleController* val, DiXMLElement& node)
     {
+        DiSphereColliderController* affector = static_cast<DiSphereColliderController*>(val);
 
+        ReadBaseColliderController(affector, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "radius")
+                affector->SetRadius(value.AsFloat());
+            else if (name == "isInnerCollision")
+                affector->SetInnerCollision(value.AsBool());
+        });
     }
 
     void DiFxTokensParser::WriteGeometryRotatorController(DiParticleController* val, DiXMLElement& node)
     {
         DiGeometryRotatorController* affector = static_cast<DiGeometryRotatorController*>(val);
 
-        WriteController(affector, node);
+        WriteBaseController(affector, node);
 
         if (affector->UseOwnRotationSpeed() != DiGeometryRotatorController::DEFAULT_USE_OWN)
             node.SetBool("speed", affector->UseOwnRotationSpeed());
@@ -952,14 +1329,25 @@ namespace Demi
 
     void DiFxTokensParser::ReadGeometryRotatorController(DiParticleController* val, DiXMLElement& node)
     {
+        DiGeometryRotatorController* ctrl = static_cast<DiGeometryRotatorController*>(val);
 
+        ReadBaseController(ctrl, node);
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "speed")
+                ctrl->SetUseOwnRotationSpeed(value.AsBool());
+            else if (name == "rotationAxis")
+                ctrl->SetRotationAxis(value.AsVector3());
+            else if (name == "rotationSpeed")
+                ctrl->SetRotationSpeed(DiDynamicAttribute::Read(value));
+        });
     }
 
     void DiFxTokensParser::WriteColorController(DiParticleController* val, DiXMLElement& node)
     {
         DiColorController* affector = static_cast<DiColorController*>(val);
 
-        WriteController(affector, node);
+        WriteBaseController(affector, node);
 
         DiString times;
         auto& colorMap = affector->GetTimeAndColour();
@@ -993,14 +1381,45 @@ namespace Demi
 
     void DiFxTokensParser::ReadColorController(DiParticleController* val, DiXMLElement& node)
     {
+        DiColorController* ctrl = static_cast<DiColorController*>(val);
 
+        ReadBaseController(ctrl, node);
+
+        DiVector<float> times;
+        DiVector<DiColor> colors;
+
+        node.IterateAttributes([&](const DiString& name, const DiString& value) {
+            if (name == "times")
+            {
+                auto tokens = value.Tokenize(",");
+                for (auto& t : tokens)
+                    times.push_back(t.AsFloat());
+            }
+            else if (name == "colors")
+            {
+                auto tokens = value.Tokenize(",");
+                for (auto& t : tokens)
+                    colors.push_back(t.AsColourValue());
+            }
+            else if (name == "operation")
+            {
+                auto op = DiColorController::CAO_MULTIPLY;
+                if (value == "set")
+                    op = DiColorController::CAO_SET;
+                ctrl->SetColourOperation(op);
+            }
+        });
+
+        DI_ASSERT(times.size() == colors.size());
+        for (size_t i = 0; i < times.size(); ++i)
+            ctrl->AddColour(times[i], colors[i]);
     }
 
     void DiFxTokensParser::WriteScaleController(DiParticleController* val, DiXMLElement& node)
     {
         DiScaleController* affector = static_cast<DiScaleController*>(val);
 
-        WriteController(affector, node);
+        WriteBaseController(affector, node);
 
         if (affector->IsSinceStartSystem())
             node.SetBool("sinceStartSystem", affector->IsSinceStartSystem());
@@ -1017,7 +1436,68 @@ namespace Demi
 
     void DiFxTokensParser::ReadScaleController(DiParticleController* val, DiXMLElement& node)
     {
+        DiScaleController* ctrl = static_cast<DiScaleController*>(val);
+        
+        ReadBaseController(ctrl, node);
 
+        node.IterateAttributes([ctrl](const DiString& name, const DiString& value) {
+            if (name == "sinceStartSystem")
+                ctrl->SetSinceStartSystem(value.AsBool());
+            else if (name == "beginScale")
+                ctrl->SetBeginScale(value.AsVector2());
+            else if (name == "medScale")
+                ctrl->SetMedianScale(value.AsVector2());
+            else if (name == "endScale")
+                ctrl->SetEndScale(value.AsVector2());
+        });
+    }
+
+    DiParticleEmitter* DiFxTokensParser::ReadEmitter(DiParticleElement* val, DiXMLElement& node)
+    {
+        DiString type = node.GetAttribute("type");
+        DiParticleEmitter* emitter = val->CreateEmitter(type);
+
+        if (type == "Point")
+            ReadBaseEmitter(emitter, node);
+        else if (type == "Circle")
+            ReadCircleEmitter(emitter, node);
+        else if (type == "Box")
+            ReadBoxEmitter(emitter, node);
+        else if (type == "Line")
+            ReadLineEmitter(emitter, node);
+
+        return emitter;
+    }
+
+    void DiFxTokensParser::ReadBaseController(DiParticleController* val, DiXMLElement& node)
+    {
+        node.IterateAttributes([val](const DiString& name, const DiString& value) {
+            if (name == "name")
+                val->SetName(value);
+            else if (name == "originalEnabled")
+                val->SetOriginalEnabled(value.AsBool());
+            else if (name == "position")
+                val->position = value.AsVector3();
+            else if (name == "mass")
+                val->mass = value.AsFloat();
+            else if (name == "mass")
+                val->mass = value.AsFloat();
+            else if (name == "specialisation")
+            {
+                auto v = DiParticleController::AFSP_DEFAULT;
+                if (value == "ttlIncrease")
+                    v = DiParticleController::AFSP_TTL_INCREASE;
+                else if (value == "ttlDecrease")
+                    v = DiParticleController::AFSP_TTL_DECREASE;
+                val->SetControllerSpecialisation(v);
+            }
+            else if (name == "excludedEmitters")
+            {
+                auto tokens = value.Tokenize(",");
+                for (auto& t : tokens)
+                    val->AddEmitterToExclude(t);
+            }
+        });
     }
 
     DiFxTokensParser* DiFxTokensParser::sParser = nullptr;

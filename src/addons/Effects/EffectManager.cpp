@@ -385,11 +385,9 @@ namespace Demi
     {
         auto i = mParticleSystemTemplates.find(templateName);
         if (i != mParticleSystemTemplates.end())
-        {
             return i->second;
-        }
-    
-        return 0;
+
+        return nullptr;
     }
     
     void DiEffectManager::DestroyParticleSystemTemplate(const DiString& templateName)

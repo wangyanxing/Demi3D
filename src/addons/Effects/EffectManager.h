@@ -95,8 +95,6 @@ namespace Demi
 
         void                        DestroyRenderer(DiParticleRenderer* renderer);
 
-        // 创建粒子系统模板，一个模板可以创建出多个特效
-        // 模板最终表现为文件
         DiParticleSystem*           CreateParticleSystemTemplate(const DiString& name);
 
         void                        ReplaceParticleSystemTemplate(const DiString& name, DiParticleSystem* system);
@@ -111,11 +109,10 @@ namespace Demi
 
         void                        ParticleSystemTemplateNames(DiVector<DiString>& v);
 
-        // 由模板名来创建特效
-        DiParticleSystem*           CreateParticleSystem(const DiString& name,
-            const DiString& templateName);
+        // create the particle system instance from the template
+        DiParticleSystem*           CreateParticleSystem(const DiString& name, const DiString& templateName);
 
-        // 创建一个默认的特效
+        // create a default particle system
         DiParticleSystem*           CreateParticleSystem(const DiString& name);
 
         DiParticleSystem*           GetParticleSystem(const DiString& name);

@@ -232,7 +232,7 @@ namespace Demi
         return mEmittedTechniqueQuota;
     }
     
-    void DiParticleElement::SetEmittedTechniqueQuota(size_t quota)
+    void DiParticleElement::SetEmittedElementQuota(size_t quota)
     {
         mEmittedTechniqueQuota = quota;
         //mParticleTechniquePoolIncreased = false;
@@ -243,7 +243,7 @@ namespace Demi
         return mEmittedAffectorQuota;
     }
     
-    void DiParticleElement::SetEmittedAffectorQuota(size_t quota)
+    void DiParticleElement::SetEmittedControllerQuota(size_t quota)
     {
         mEmittedAffectorQuota = quota;
         //mParticleAffectorPoolIncreased = false;

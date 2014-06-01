@@ -71,6 +71,12 @@ namespace Demi
             mEndScale = end;
         }
 
+        void                         SetBeginScale(const DiVec2& scale){ mBeginScale = scale; }
+
+        void                         SetMedianScale(const DiVec2& scale){ mMedScale = scale; }
+
+        void                         SetEndScale(const DiVec2& scale){ mEndScale = scale; }
+
         DiVec2                       GetBeginScale() { return mBeginScale; }
 
         DiVec2                       GetMedianScale() { return mMedScale; }

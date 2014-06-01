@@ -34,9 +34,9 @@ namespace Demi
         {
         }
 
-        virtual            ~DiPointEmitter(void) {}
+        virtual ~DiPointEmitter(void) {}
 
-        virtual void    CopyTo (DiPointEmitter* emitter);
+        virtual void CopyTo (DiPointEmitter* emitter);
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -48,13 +48,13 @@ namespace Demi
 
         virtual ~DiPointEmitterFactory(void) {}
 
-        DiString            GetEmitterType(void) const
+        DiString GetEmitterType(void) const
         {
             static DiString type = "Point";
             return type;
         }
 
-        DiParticleEmitter*    CreateEmitter(void)
+        DiParticleEmitter* CreateEmitter(void)
         {
             return CreateEmitterImpl<DiPointEmitter>();
         }
