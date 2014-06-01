@@ -180,7 +180,7 @@ namespace Demi
 
     bool DiShaderParameter::HasVariableType(DiShaderParameter::ParamType varType)
     {
-        return !mShaderParams[VARIABLE_SAMPLERCUBE].empty();
+        return !mShaderParams[varType].empty();
     }
 
     void DiShaderParameter::CloneVarsTo( DiShaderParameter* ps )

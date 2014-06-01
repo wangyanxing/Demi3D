@@ -145,6 +145,13 @@ namespace Demi
         if (!mFile || !mNode)
             return false;
 
+#if DEMI_DEBUG
+        if (HasAttribute(name))
+        {
+            DI_WARNING("Same attribute: %s", name);
+        }
+#endif
+
         const pugi::xml_node& node = pugi::xml_node(mNode);
         pugi::xml_attribute attr = node.attribute(name);
         if (attr.empty())

@@ -42,6 +42,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "BoxColliderController.h"
 #include "SphereColliderController.h"
 #include "EffectManager.h"
+#include "AssetManager.h"
+#include "MaterialSerial.h"
 
 namespace Demi
 {
@@ -235,8 +237,6 @@ namespace Demi
         if (technique->GetEmittedSystemQuota() != DiParticleElement::DEFAULT_EMITTED_SYSTEM_QUOTA)
             node.SetInt("emittedSystemQuota", technique->GetEmittedSystemQuota());
 
-        node.SetAttribute("material", technique->GetMaterialName());
-
         if (technique->GetLodIndex() != DiParticleElement::DEFAULT_LOD_INDEX) 
             node.SetInt("lodIndex", technique->GetLodIndex());
 
@@ -251,6 +251,12 @@ namespace Demi
         
         if (technique->GetMaxVelocity() != DiParticleElement::DEFAULT_MAX_VELOCITY) 
             node.SetFloat("maxVelocity", technique->GetMaxVelocity());
+
+        // write material
+        DI_ASSERT(technique->GetMaterial());
+        auto matNode = node.CreateChild("Material");
+        DiMaterialSerializer matseral;
+        matseral.SaveMaterial(matNode, technique->GetMaterial().get());
 
         // write renderer
         DiParticleRenderer* renderer = technique->GetRenderer();
@@ -402,8 +408,6 @@ namespace Demi
                 element->SetEmittedControllerQuota(value.AsInt());
             else if (name == "emittedSystemQuota")
                 element->SetEmittedSystemQuota(value.AsInt());
-            else if (name == "material")
-                element->SetMaterialName(value);
             else if (name == "lodIndex")
                 element->SetLodIndex(value.AsInt());
             else if (name == "defaultWidth")
@@ -423,14 +427,52 @@ namespace Demi
                 ReadRenderer(element, child);
             else if (child.CheckName("Emitter"))
                 ReadEmitter(element, child);
-            else if (child.CheckName("Emitter"))
+            else if (child.CheckName("Controller"))
                 ReadController(element, child);
+            else if (child.CheckName("Material"))
+            {
+                // read material
+                DiMaterialSerializer matseral;
+                static int elementid = 0;
+                DiString name;
+                name.Format("_psmat%d", elementid++);
+                DiMaterialPtr mat = DiAssetManager::GetInstance().CreateOrReplaceAsset<DiMaterial>(name);
+                matseral.ParseMaterial(child, mat.get());
+                element->SetMaterialName(name);
+            }
 
             child = child.GetNext();
         }
 
 
         return element;
+    }
+
+
+    DiVector<DiParticleSystem*> DiFxTokensParser::LoadEffects(const DiString& file)
+    {
+        DiVector<DiParticleSystem*> ret;
+
+        auto stream = DiAssetManager::GetInstance().OpenArchive(file);
+        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        xmlfile->Load(stream->GetAsString());
+        DiXMLElement root = xmlfile->GetRoot();
+
+        if (!root.CheckName("Effects"))
+        {
+            DI_WARNING("Bad effect file: %s", file.c_str());
+        }
+
+        auto child = root.GetChild();
+        while (child)
+        {
+            if (child.CheckName("ParticleSystem"))
+                ret.push_back(ReadSystem(child));
+
+            child = child.GetNext();
+        }
+
+        return ret;
     }
 
     void DiFxTokensParser::WriteSystem(DiParticleSystem* system, DiXMLElement& node)
@@ -493,8 +535,8 @@ namespace Demi
     void DiFxTokensParser::WriteSystem(DiParticleSystem* val, const DiString& filePath)
     {
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
-        DiXMLElement root = xmlfile->CreateRoot("ParticleSystem");
-        WriteSystem(val, root);
+        DiXMLElement root = xmlfile->CreateRoot("Effects");
+        WriteSystem(val, root.CreateChild("ParticleSystem"));
         xmlfile->Save(filePath);
     }
 
@@ -773,13 +815,13 @@ namespace Demi
         WriteBaseEmitter(emitter, node);
 
         if (emitter->GetWidth() != DiBoxEmitter::DEFAULT_WIDTH)
-            node.SetFloat("width", emitter->GetWidth());
+            node.SetFloat("boxWidth", emitter->GetWidth());
         
         if (emitter->GetHeight() != DiBoxEmitter::DEFAULT_HEIGHT)
-            node.SetFloat("height", emitter->GetHeight());
+            node.SetFloat("boxHeight", emitter->GetHeight());
 
         if (emitter->GetDepth() != DiBoxEmitter::DEFAULT_DEPTH)
-            node.SetFloat("depth", emitter->GetDepth());
+            node.SetFloat("boxDepth", emitter->GetDepth());
     }
 
     void DiFxTokensParser::ReadBoxEmitter(DiParticleEmitter* val, DiXMLElement& node)
@@ -789,11 +831,11 @@ namespace Demi
         DiBoxEmitter* emitter = static_cast<DiBoxEmitter*>(val);
 
         node.IterateAttributes([emitter](const DiString& name, const DiString& value){
-            if (name == "width")
+            if (name == "boxWidth")
                 emitter->SetWidth(value.AsFloat());
-            else if (name == "height")
+            else if (name == "boxHeight")
                 emitter->SetHeight(value.AsFloat());
-            else if (name == "depth")
+            else if (name == "boxDepth")
                 emitter->SetDepth(value.AsFloat());
         });
     }

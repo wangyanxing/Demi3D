@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<Effects
+>
+	<ParticleSystem
+		name="Fx_repeater2"
+	>
+		<Element
+		>
+			<Material
+			>
+				<shader
+					name="vertex"
+				>basic_v</shader>
+				<shader
+					name="pixel"
+				>basic_p</shader>
+				<depthWrite
+				>false</depthWrite>
+				<blendMode
+				>ALPHA</blendMode>
+				<ambient
+				>0 0 0 1</ambient>
+				<shininess
+				>16</shininess>
+				<flag
+				>USE_COLOR,USE_MAP</flag>
+				<variables
+				>
+					<sampler2D
+					>
+						<texture
+							name="map"
+						>smoke.dds</texture>
+						<addressing
+							name="u"
+						>CLAMP</addressing>
+						<addressing
+							name="v"
+						>CLAMP</addressing>
+					</sampler2D>
+				</variables>
+			</Material>
+			<Renderer
+				type="Billboard"
+			 />
+			<Emitter
+				type="Box"
+				name=""
+				emissionRate="fixed|15"
+				angle="fixed|0"
+				totalTimeToLive="random|2.5,3.5"
+				velocity="fixed|60"
+				position="100 240 -60"
+				boxWidth="12"
+				boxHeight="12"
+				boxDepth="12"
+			 />
+			<Controller
+				type="Color"
+				name=""
+				times="0,0.5,1"
+				colors="0.6 0.5 0.4 0,0.3 0.25 0.2 0.4,0 0 0 0"
+			 />
+			<Controller
+				type="TextureRotator"
+				name=""
+				ownRotationSpeed="true"
+				rotation="random|0,300"
+				rotationSpeed="random|-100,100"
+			 />
+			<Controller
+				type="Scale"
+				name=""
+				sinceStartSystem="true"
+				beginScale="1 1.5"
+				medScale="2.5 4.75"
+				endScale="4 8"
+			 />
+		</Element>
+	</ParticleSystem>
+</Effects>

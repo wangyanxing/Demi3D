@@ -345,7 +345,8 @@ namespace Demi
         DiString expName = name;
         while (mParticleSystemTemplates.find(expName) != mParticleSystemTemplates.end())
         {
-            expName = DiString("CopyOf") + expName;
+            DI_INFO("Copying particle system template: %s", name.c_str());
+            expName = expName + "_copy";
         }
 
         DiParticleSystem* particleSystemTemplate = DI_NEW DiParticleSystem(expName);

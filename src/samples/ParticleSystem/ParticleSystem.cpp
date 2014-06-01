@@ -88,6 +88,7 @@ void InitFx_Repeater02()
     nd1->AttachObject(k2md);
     k2md->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
 
+#if 0
     // effect
     auto _ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate("Fx_repeater2");
     g_fxs.push_back(_ps);
@@ -149,6 +150,16 @@ void InitFx_Repeater02()
 
     DiFxTokensParser parser;
     parser.WriteSystem(_ps, "D:/Demi3D_release/ps2.xml");
+#else
+    DiFxTokensParser parser;
+    auto pss = parser.LoadEffects("ps2.effect");
+    auto _ps = pss[0];
+    g_fxs.push_back(_ps);
+    std::shared_ptr<DiTransformUnit> ps(_ps);
+    DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
+    cullnode->AttachObject(ps);
+    _ps->Start();
+#endif
 }
 
 void InitFx_Repeater01()
@@ -160,6 +171,7 @@ void InitFx_Repeater01()
     auto k2md = make_shared<DiK2Model>("buildings/legion/repeater1/model.mdf");
     nd1->AttachObject(k2md);
 
+#if 0
     // effect
     auto _ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate("Fx_repeater1");
     g_fxs.push_back(_ps);
@@ -254,6 +266,16 @@ void InitFx_Repeater01()
 
     DiFxTokensParser parser;
     parser.WriteSystem(_ps, "D:/Demi3D_release/ps.xml");
+#else
+    DiFxTokensParser parser;
+    auto pss = parser.LoadEffects("ps1.effect");
+    auto _ps = pss[0];
+    g_fxs.push_back(_ps);
+    std::shared_ptr<DiTransformUnit> ps(_ps);
+    DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
+    cullnode->AttachObject(ps);
+    _ps->Start();
+#endif
 }
 
 void InitScene()
@@ -273,8 +295,8 @@ void InitScene()
 
     DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.5f, 0.5f, 0.5f));
 	
-    //InitFx_Repeater01();
-    InitFx_Repeater02();
+    InitFx_Repeater01();
+    //InitFx_Repeater02();
     //InitFx_Torch();
 }
 

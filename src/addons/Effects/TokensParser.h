@@ -40,7 +40,10 @@ namespace Demi
 
     public:
 
+        /// write one particle system
         void    WriteSystem(DiParticleSystem* val, const DiString& filePath);
+
+        DiVector<DiParticleSystem*>  LoadEffects(const DiString& file);
 
     public:
 

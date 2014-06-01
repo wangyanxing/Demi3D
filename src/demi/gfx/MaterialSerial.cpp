@@ -72,11 +72,11 @@ namespace Demi
 
         DiXMLElement vp = rootNode.CreateChild("shader");
         vp.SetAttribute("name","vertex");
-        vp.SetValue(source->GetVertexShaderName());
+        vp.SetValue(source->GetVertexShaderName().ExtractBaseName());
 
         DiXMLElement fp = rootNode.CreateChild("shader");
         fp.SetAttribute("name","pixel");
-        fp.SetValue(source->GetPixelShaderName());
+        fp.SetValue(source->GetPixelShaderName().ExtractBaseName());
 
         if (source->IsWireframe())
         {
@@ -325,7 +325,8 @@ namespace Demi
 
     void DiMaterialSerializer::ParseXml(DiXMLElement rootNode, DiMaterial* target)
     {
-        if(rootNode.GetName() != "material")
+        if(rootNode.GetName() != "material" &&
+            rootNode.GetName() != "Material")
         {
             DI_WARNING("Invalid material script.");
             return;

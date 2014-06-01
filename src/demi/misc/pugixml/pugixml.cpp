@@ -3170,7 +3170,6 @@ PUGI__NS_BEGIN
                 writer.write(name);
                 writer.write('>', '\n');
             }
-            writer.write('\n');
 
             break;
         }
