@@ -36,13 +36,15 @@ namespace Demi
 
         DiString            GenerateElementName();
 
-        DiString            GenerateEmitterName();
+        DiString            GenerateEmitterName(const DiString& type);
 
-        DiString            GenerateControllerName();
+        DiString            GenerateControllerName(const DiString& type);
 
         DiBaseEditorObj*    GetMenuHost() { return mMenuHost; }
 
         void                SetMenuHost(DiBaseEditorObj* sel) { mMenuHost = sel; }
+
+        void                Update();
 
     protected:
 
@@ -57,6 +59,8 @@ namespace Demi
         DiBaseEditorObj*    mMenuHost{ nullptr };
 
         DiBaseEditorObj*    mRootObject{ nullptr };
+
+        DiGridPlanePtr      mGridPlane;
     };
 }
 

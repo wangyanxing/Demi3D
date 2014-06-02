@@ -46,6 +46,11 @@ namespace tools
 
     void ResTreeControl::NotifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)
     {
+        if (pNode)
+        {
+            DiBaseEditorObj* obj = *(pNode->getData<DiBaseEditorObj*>());
+            obj->OnSelect();
+        }
     }
 
     void ResTreeControl::NotifyMenuCtrlAccept(ContextMenu* _sender, const std::string& _id)

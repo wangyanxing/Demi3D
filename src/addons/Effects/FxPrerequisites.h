@@ -36,6 +36,10 @@ namespace Demi
     class DiParticleEmitterFactory;
     class DiParticleControllerFactory;
     class DiParticleRendererFactory;
+    class DiPointEmitter;
+    class DiBoxEmitter;
+    class DiCircleEmitter;
+    class DiLineEmitter;
 }
 
 

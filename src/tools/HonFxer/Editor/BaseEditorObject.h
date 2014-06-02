@@ -65,6 +65,8 @@ namespace Demi
 
         UINode*                     GetUINode() { return mUINode; }
 
+        virtual void                Update(float dt);
+
     protected:
 
         DiVector<DiBaseEditorObj*>  mChildren;

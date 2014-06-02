@@ -47,6 +47,13 @@ namespace Demi
         DI_ASSERT(!mParticleSystem);
         mParticleSystem = DiEffectManager::GetInstance().CreateParticleSystemTemplate(
             HonFxerApp::GetEditorManager()->GenerateSystemName());
+
+        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+
+        std::shared_ptr<DiTransformUnit> ps(mParticleSystem);
+        mSceneNode = sm->GetRootNode()->CreateChild();
+        mSceneNode->AttachObject(ps);
+        mParticleSystem->Start();
     }
 
     void DiParticleSystemObj::OnDestroy()
@@ -56,11 +63,16 @@ namespace Demi
 
     void DiParticleSystemObj::OnSelect()
     {
-
     }
 
     Demi::DiString DiParticleSystemObj::GetUICaption()
     {
         return mParticleSystem->GetName();
+    }
+
+    void DiParticleSystemObj::Update(float dt)
+    {
+        DiBaseEditorObj::Update(dt);
+        mParticleSystem->Update(dt);
     }
 }

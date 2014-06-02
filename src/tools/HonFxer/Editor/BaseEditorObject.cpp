@@ -93,4 +93,12 @@ namespace Demi
     {
         mUINode->getParent()->remove(mUINode, true);
     }
+
+    void DiBaseEditorObj::Update(float dt)
+    {
+        for (auto ch : mChildren)
+        {
+            ch->Update(dt);
+        }
+    }
 }

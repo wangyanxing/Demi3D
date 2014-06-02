@@ -50,6 +50,8 @@ namespace Demi
 
         if (mMainPane)
             mMainPane->Update();
+
+        mEditorMgr->Update();
     }
 
     void HonFxerApp::Close()

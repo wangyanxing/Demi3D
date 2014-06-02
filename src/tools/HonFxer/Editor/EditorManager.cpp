@@ -15,6 +15,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "EditorManager.h"
 #include "ParticleSystemObj.h"
 #include "ParticleElementObj.h"
+#include "PointEmitterObj.h"
+#include "EffectManager.h"
+#include "Grid.h"
 
 namespace Demi
 {
@@ -26,6 +29,13 @@ namespace Demi
         mRootObject = CreateEditorObject("Base");
         mRootObject->OnCreate();
         mRootObject->OnCreateUI();
+
+        DiMaterialPtr dbgHelperMat = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
+        dbgHelperMat->SetDepthCheck(false);
+        mGridPlane = make_shared<DiGridPlane>(30, 10, DiColor(0.1f, 0.1f, 0.1f), DiColor(0.5f, 0.5f, 0.5f));
+        mGridPlane->SetMaterial(dbgHelperMat);
+        Driver->GetSceneManager()->GetRootNode()->AttachObject(mGridPlane);
+
     }
 
     DiEditorManager::~DiEditorManager()
@@ -60,6 +70,7 @@ namespace Demi
         mObjFactories["Base"]            = [](){return DI_NEW DiBaseEditorObj(); };
         mObjFactories["ParticleSystem"]  = [](){return DI_NEW DiParticleSystemObj(); };
         mObjFactories["ParticleElement"] = [](){return DI_NEW DiParticleElementObj(); };
+        mObjFactories["PointEmitter"]    = [](){return DI_NEW DiPointEmitterObj(); };
     }
 
     DiString DiEditorManager::GenerateSystemName()
@@ -78,19 +89,19 @@ namespace Demi
         return ret;
     }
 
-    DiString DiEditorManager::GenerateEmitterName()
+    DiString DiEditorManager::GenerateEmitterName(const DiString& type)
     {
         static int id = 0;
         DiString ret;
-        ret.Format("Emitter_%d", id++);
+        ret.Format("%s_%d", type.c_str(), id++);
         return ret;
     }
 
-    DiString DiEditorManager::GenerateControllerName()
+    DiString DiEditorManager::GenerateControllerName(const DiString& type)
     {
         static int id = 0;
         DiString ret;
-        ret.Format("Controller_%d", id++);
+        ret.Format("%s_%d", type.c_str(), id++);
         return ret;
     }
 
@@ -122,5 +133,12 @@ namespace Demi
                 return false;
             }
         });
+    }
+
+    void DiEditorManager::Update()
+    {
+        DiEffectManager::GetInstance().Update();
+
+        mRootObject->Update(Driver->GetDeltaSecond());
     }
 }

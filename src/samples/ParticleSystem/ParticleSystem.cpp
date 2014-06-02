@@ -35,6 +35,22 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 DiVector<DiParticleSystem*> g_fxs;
 DiK2ModelPtr k2md = nullptr;
 
+void InitFx()
+{
+    DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+    
+    auto _ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate("fx_simple");
+    g_fxs.push_back(_ps);
+    std::shared_ptr<DiTransformUnit> ps(_ps);
+    DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
+    cullnode->AttachObject(ps);
+    _ps->Start();
+
+    DiParticleElement* element = _ps->CreateElement();
+    element->SetRenderer("Billboard");
+    auto emitter = element->CreateEmitter("Point");
+}
+
 void InitFx_Torch()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
@@ -296,7 +312,8 @@ void InitScene()
 
     DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.5f, 0.5f, 0.5f));
 	
-    InitFx_Repeater01();
+    InitFx();
+    //InitFx_Repeater01();
     //InitFx_Repeater02();
     //InitFx_Torch();
 }

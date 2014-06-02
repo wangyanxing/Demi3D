@@ -11,21 +11,21 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef ParticleSystemObject_h__
-#define ParticleSystemObject_h__
+#ifndef EmitterBaseObject_h__
+#define EmitterBaseObject_h__
 
 #include "FxerPrerequisites.h"
 #include "BaseEditorObject.h"
 
 namespace Demi 
 {
-    class DiParticleSystemObj : public DiBaseEditorObj
+    class DiEmitterBaseObj : public DiBaseEditorObj
     {
     public:
 
-        DiParticleSystemObj();
+        DiEmitterBaseObj();
 
-        virtual              ~DiParticleSystemObj();
+        virtual              ~DiEmitterBaseObj();
 
     public:
 
@@ -37,21 +37,21 @@ namespace Demi
 
         virtual void         OnSelect() override;
 
-        virtual DiString     GetType() override { return "ParticleSystem"; }
+        virtual DiString     GetType() override { return "EmitterBase"; }
+
+        virtual DiString     GetEmitterType() { return ""; }
 
         virtual DiString     GetUICaption() override;
 
-        virtual void         Update(float dt);
+        virtual DiString     GetUINodeType() { return "File"; }
 
     public:
 
-        DiParticleSystem*    GetParticleSystem() { return mParticleSystem; }
+        DiParticleEmitter*   GetEmitter() { return mEmitter; }
 
     protected:
 
-        DiParticleSystem*    mParticleSystem{ nullptr };
-
-        DiCullNode*          mSceneNode{ nullptr };
+        DiParticleEmitter*   mEmitter{ nullptr };
     };
 }
 
