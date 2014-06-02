@@ -39,6 +39,8 @@ namespace Demi
 
         static HonFxerApp* GetViewerApp();
 
+        static DiEditorManager* GetEditorManager() { return mEditorMgr; }
+
         virtual void      mouseMoved(const OIS::MouseEvent& evt);
 
         virtual void      mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
@@ -68,6 +70,8 @@ namespace Demi
     private:
 
         MainPaneControl*    mMainPane{ nullptr };
+
+        static DiEditorManager* mEditorMgr;
     };
 }
 

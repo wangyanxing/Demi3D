@@ -29,8 +29,6 @@ namespace tools
 
         mResourcesTree->eventTreeNodePrepare += newDelegate(this, &FilesView::notifyTreeNodePrepare);
         mResourcesTree->eventTreeNodeSelected += newDelegate(this, &FilesView::notifyTreeNodeSelected);
-
-        //scanFiles();
 	}
 
     FilesView::~FilesView()

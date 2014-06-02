@@ -12,19 +12,19 @@ namespace tools
         auto paneWidth = 250;
 
         mLeftPanel = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(0, 0,
-            paneWidth, parentHeight), MyGUI::Align::Stretch);
+            paneWidth, parentHeight), MyGUI::Align::Left | MyGUI::Align::VStretch);
 
         mSeparatorHLeft = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(paneWidth, 0,
-            4, parentHeight), MyGUI::Align::Stretch);
+            4, parentHeight), MyGUI::Align::Left | MyGUI::Align::VStretch);
 
         mMiddlePanel = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(paneWidth + 4, 0,
             parentWidth - 4 * 2 - paneWidth * 2, parentHeight), MyGUI::Align::Stretch);
 
         mSeparatorHRight = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidth - 4, 0,
-            4, parentHeight), MyGUI::Align::Stretch);
+            4, parentHeight), MyGUI::Align::Right | MyGUI::Align::VStretch);
 
         mRightPanel = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidth, 0,
-            paneWidth, parentHeight), MyGUI::Align::Stretch);
+            paneWidth, parentHeight), MyGUI::Align::Right | MyGUI::Align::VStretch);
 
         mResTreeCtrl = new ResTreeControl(mLeftPanel);
         mRenderWndCtrl = new RenderWindowControl(mMiddlePanel);
@@ -39,6 +39,10 @@ namespace tools
 
     WorkSpaceControl::~WorkSpaceControl()
     {
+        SAFE_DELETE(mResTreeCtrl);
+        SAFE_DELETE(mRenderWndCtrl);
+        SAFE_DELETE(mToolsCtrl);
+
         mSeparatorHLeft->eventMouseButtonPressed -= MyGUI::newDelegate(this, &WorkSpaceControl::notifyMouseButtonPressed);
         mSeparatorHLeft->eventMouseDrag -= MyGUI::newDelegate(this, &WorkSpaceControl::notifyMouseDragLeft);
 

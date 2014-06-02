@@ -74,6 +74,8 @@ namespace MyGUI
 		virtual void setSize(const IntSize& Size);
 		virtual void setCoord(const IntCoord& Bounds);
 
+        Widget* getClient(){ return mClient; }
+
 		EventHandle_TreeControlPtrNodePtr eventTreeNodeMouseSetFocus;
 		EventHandle_TreeControlPtrNodePtr eventTreeNodeMouseLostFocus;
 		EventHandle_TreeControlPtrNodePtr eventTreeNodeSelected;

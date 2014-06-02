@@ -20,6 +20,9 @@ namespace Demi
 {
     class HonFxerApp;
     class K2ModelViewer;
+    class ContextMenu;
+    class DiEditorManager;
+    class DiBaseEditorObj;
 }
 
 namespace tools

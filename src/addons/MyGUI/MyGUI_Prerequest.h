@@ -94,6 +94,9 @@ namespace MyGUI
 	class DDContainer;
 	class Canvas;
 
+    class TreeControl;
+    class TreeControlItem;
+
 	// Define version
 	#define MYGUI_VERSION_MAJOR 3
 	#define MYGUI_VERSION_MINOR 2

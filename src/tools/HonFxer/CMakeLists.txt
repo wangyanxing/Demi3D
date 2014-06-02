@@ -6,8 +6,8 @@ project(HonFxer)
 
 include(PrecompiledHeader)
 
-file(GLOB SAMPLE_HEADERS "*.h" )
-file(GLOB SAMPLE_SRCS "*.cpp" )
+file(GLOB SAMPLE_HEADERS "*.h" "UI/*.h" "Editor/*.h")
+file(GLOB SAMPLE_SRCS "*.cpp" "UI/*.cpp" "Editor/*.cpp")
 
 function( add_filtered_h filterName fileString )
 	file(GLOB TMP_FILES ${fileString})
@@ -30,6 +30,8 @@ function( add_filtered_std relativePath )
 	set(SOURCE_FILES ${SOURCE_FILES} PARENT_SCOPE)
 endfunction( add_filtered_std )
 
+add_filtered_std("Editor")
+add_filtered_std("UI")
 
 if (WIN32)
 	include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Win32)
@@ -48,9 +50,9 @@ endif()
 DI_ADD_EXECUTABLE(HonFxer ${SAMPLE_HEADERS} ${SAMPLE_SRCS} ${RESOURCE_FILES})
 include_directories(${OIS_INCLUDE_DIRS} ${DEMI_SOURCE_DIR}/src/demi ${DEMI_SOURCE_DIR}/src/demi/demoFrame ${DEMI_SOURCE_DIR}/src/addons/K2 ${DEMI_SOURCE_DIR}/src/demi/script)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/MessageBox)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/BaseLayout)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Tools)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Editor)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/UI)
+
 
 if (NOT APPLE)
 	set_property(TARGET HonFxer APPEND PROPERTY DEBUG_POSTFIX "_d")

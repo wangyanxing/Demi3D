@@ -26,9 +26,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SettingsManager.h"
 #include "CommandManager.h"
 #include "MainPaneControl.h"
+#include "EditorManager.h"
 
 namespace Demi
 {
+    DiEditorManager* HonFxerApp::mEditorMgr = nullptr;
+
     HonFxerApp::HonFxerApp()
         : DemiDemo(DemoConfig("Hon Fxer",1400, 800))
     {
@@ -51,6 +54,7 @@ namespace Demi
 
     void HonFxerApp::Close()
     {
+        SAFE_DELETE(mEditorMgr);
         SAFE_DELETE(mMainPane);
 
         DialogManager::getInstance().shutdown();
@@ -146,6 +150,8 @@ namespace Demi
         //mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetGameLocWindowEndDialog);
 
         //mHelpWindow = new ViewerHelper();
+
+        mEditorMgr = DI_NEW DiEditorManager();
     }
 
     HonFxerApp* HonFxerApp::GetViewerApp()

@@ -37,12 +37,6 @@ namespace tools
     class SetGameLocWindow;
 }
 
-namespace MyGUI
-{
-    class TreeControl;
-    class TreeControlItem;
-}
-
 using namespace tools;
 
 #endif

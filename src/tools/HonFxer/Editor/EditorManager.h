@@ -11,25 +11,33 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef __FXER_RES_TREE_CONTROL_H__
-#define __FXER_RES_TREE_CONTROL_H__
+#ifndef EditorManager_h__
+#define EditorManager_h__
 
 #include "FxerPrerequisites.h"
-#include "BaseLayout.h"
 
-namespace tools
+namespace Demi 
 {
-	class ResTreeControl : public wraps::BaseLayout
-	{
-	public:
-        ResTreeControl(MyGUI::Widget* _parent = nullptr);
+    class DiEditorManager
+    {
+    public:
 
-        virtual ~ResTreeControl();
+        DiEditorManager();
 
-	private:
+        ~DiEditorManager();
 
-	};
+    public:
 
-} // namespace tools
+        DiBaseEditorObj*    CreateEditorObject(const DiString& type);
 
-#endif // __TOOLS_CONTROL_H__
+    protected:
+
+        void                InitFactories();
+
+    protected:
+
+        DiStrHash<std::function<DiBaseEditorObj*(const DiString&)>> mObjFactories;
+    };
+}
+
+#endif

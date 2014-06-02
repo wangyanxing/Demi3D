@@ -30,6 +30,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ScaleController.h"
 #include "TokensParser.h"
 
+#include "Property.h"
+
 DiVector<DiParticleSystem*> g_fxs;
 DiK2ModelPtr k2md = nullptr;
 
@@ -86,7 +88,7 @@ void InitFx_Repeater02()
     auto k2md = make_shared<DiK2Model>("buildings/legion/repeater2/model.mdf");
     //k2md = make_shared<DiK2Model>("heroes/aluna/model.mdf");
     nd1->AttachObject(k2md);
-    k2md->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
+    //k2md->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
 
 #if 0
     // effect
@@ -283,7 +285,6 @@ void InitScene()
     DI_INSTALL_PLUGIN(DiK2);    
 
     DiEffectManager* effectMgr = DI_NEW DiEffectManager();
-
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
     sm->SetAmbientColor(DiColor(0.3f, 0.3f, 0.3f));
@@ -306,9 +307,7 @@ int main(int argc, char *argv[])
 	app.SetInitCallback(InitScene);
     app.SetUpdateCallback([&](){
         for (auto ps : g_fxs)
-        {
             ps->Update(DiBase::Driver->GetDeltaSecond());
-        }
         //k2md->UpdateAnimation(DiBase::Driver->GetDeltaSecond());
     });
     app.SetShutdownCallback([&](){

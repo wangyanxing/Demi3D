@@ -7,11 +7,11 @@
 
 namespace tools
 {
-	class MainPaneControl :
-		public wraps::BaseLayout
+	class MainPaneControl : public wraps::BaseLayout
 	{
 	public:
 		MainPaneControl();
+
 		virtual ~MainPaneControl();
 
 		void setVisible(bool _value);
@@ -22,6 +22,7 @@ namespace tools
 
 	private:
 		MainMenuControl* mMainMenuControl;
+
 		WorkSpaceControl* mMainWorkspaceControl;
 	};
 
