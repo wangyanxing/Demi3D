@@ -345,7 +345,7 @@ namespace Demi
         DiString expName = name;
         while (mParticleSystemTemplates.find(expName) != mParticleSystemTemplates.end())
         {
-            DI_INFO("Copying particle system template: %s", name.c_str());
+            DI_INFO("Repetitive particle system template name: %s", name.c_str());
             expName = expName + "_copy";
         }
 

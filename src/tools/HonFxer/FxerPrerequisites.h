@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define HonFxerPrerequisites_h__
 
 #include "MyGUI_Prerequest.h"
+#include "FxPrerequisites.h"
 
 namespace Demi
 {

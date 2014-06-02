@@ -133,12 +133,11 @@ namespace Demi
         CommandMgr = nullptr;
     }
 
-    bool DiCommandManager::AddCommand(const DiString& cmd, DiCmdFuntion pFunction, const char* pcHelp)
+    bool DiCommandManager::AddCommand(const DiString& cmd, DiCmdFuntion function, const DiString& help)
     {
-        DI_ASSERT(pcHelp);
-        DI_ASSERT(pFunction);
+        DI_ASSERT(function);
 
-        if (!pFunction || !pcHelp)
+        if (!function)
             return false;
 
         DiVector<DiString> splitList = cmd.Tokenize(" ");
@@ -149,8 +148,8 @@ namespace Demi
         DiCmdInfo kCmdInfo;
 
         kCmdInfo.mName = splitList[0];
-        kCmdInfo.mDesc = pcHelp;
-        kCmdInfo.mFunc = pFunction;
+        kCmdInfo.mDesc = help;
+        kCmdInfo.mFunc = function;
 
         kCmdInfo.mName.ToLower();
 

@@ -31,15 +31,6 @@ namespace Demi
 
 		void setVisible(bool _value)
 		{
-//            mMenu->removeAllItems();
-//            mMenu->addItem("menu1");
-//            mMenu->addItem("menu1");
-//            mMenu->addItem("menu1", MyGUI::MenuItemType::Separator);
-//            mMenu->addItem("menu1");
-//            auto item = mMenu->addItem("menu1", MyGUI::MenuItemType::Popup);
-//            auto subMenu = mMenu->createItemChild(item);
-//            subMenu->addItem("menu2");
-
 			mMenu->setPosition(MyGUI::InputManager::getInstance().getMousePosition());
 			mMenu->setVisibleSmooth(_value);
 		}

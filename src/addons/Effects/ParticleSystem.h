@@ -21,7 +21,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef ParticleSystem_h__
 #define ParticleSystem_h__
 
-
 #include "FxPrerequisites.h"
 #include "TransformUnit.h"
 #include "Particle.h"

@@ -94,7 +94,7 @@ namespace Demi
                                  
         static void              DestroyConsoleLogger();
                                  
-        bool                     AddCommand(const DiString& command, DiCmdFuntion pFunction, const char* pcHelp);
+        bool                     AddCommand(const DiString& command, DiCmdFuntion function, const DiString& help = "");
                                  
         bool                     ExecuteCommand(const DiString& command);
                                  

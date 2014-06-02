@@ -18,7 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    class DiEditorManager
+    class DiEditorManager : public DiBase
     {
     public:
 
@@ -30,13 +30,29 @@ namespace Demi
 
         DiBaseEditorObj*    CreateEditorObject(const DiString& type);
 
+        void                DeleteEditorObject(DiBaseEditorObj* obj);
+
+        DiString            GenerateSystemName();
+
+        DiString            GenerateEmitterName();
+
+        DiString            GenerateControllerName();
+
+        DiBaseEditorObj*    GetMenuHost() { return mMenuHost; }
+
+        void                SetMenuHost(DiBaseEditorObj* sel) { mMenuHost = sel; }
+
     protected:
 
         void                InitFactories();
 
+        void                InitCommands();
+
     protected:
 
-        DiStrHash<std::function<DiBaseEditorObj*(const DiString&)>> mObjFactories;
+        DiStrHash<std::function<DiBaseEditorObj*()>> mObjFactories;
+
+        DiBaseEditorObj*    mMenuHost{ nullptr };
     };
 }
 

@@ -48,7 +48,7 @@ elseif(APPLE)
 endif()
 
 DI_ADD_EXECUTABLE(HonFxer ${SAMPLE_HEADERS} ${SAMPLE_SRCS} ${RESOURCE_FILES})
-include_directories(${OIS_INCLUDE_DIRS} ${DEMI_SOURCE_DIR}/src/demi ${DEMI_SOURCE_DIR}/src/demi/demoFrame ${DEMI_SOURCE_DIR}/src/addons/K2 ${DEMI_SOURCE_DIR}/src/demi/script)
+include_directories(${OIS_INCLUDE_DIRS} ${DEMI_SOURCE_DIR}/src/demi ${DEMI_SOURCE_DIR}/src/demi/demoFrame ${DEMI_SOURCE_DIR}/src/addons/K2 ${DEMI_SOURCE_DIR}/src/addons/Effects ${DEMI_SOURCE_DIR}/src/demi/script)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Editor)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/UI)
@@ -68,7 +68,7 @@ endif ()
 
 set_property(TARGET HonFxer PROPERTY FOLDER "Tools")
 
-target_link_libraries(HonFxer DemoFramework DiMisc DiGfx DiK2 DiScript MyGUI ${OIS_LIBRARIES})
+target_link_libraries(HonFxer DemoFramework DiMisc DiGfx DiK2 DiScript DiFx MyGUI ${OIS_LIBRARIES})
 
 # specify a precompiled header to use
 use_precompiled_header(HonFxer 

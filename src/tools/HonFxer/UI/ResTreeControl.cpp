@@ -51,6 +51,7 @@ namespace tools
 
     void ResTreeControl::NotifyMenuCtrlAccept(ContextMenu* _sender, const std::string& _id)
     {
+        DiBase::CommandMgr->ExecuteCommand(_id);
     }
 
     void ResTreeControl::NotifyTreeNodeContextMenu(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)
