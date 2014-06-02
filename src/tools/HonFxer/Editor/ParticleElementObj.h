@@ -39,6 +39,8 @@ namespace Demi
 
         virtual DiString     GetType() override { return "ParticleElement"; }
 
+        virtual DiString     GetUICaption() override;
+
     public:
 
         DiParticleElement*   GetParticleElement() { return mParticleElement; }

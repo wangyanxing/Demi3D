@@ -32,12 +32,13 @@ namespace Demi
     {
         HonFxerApp::GetEditorManager()->SetMenuHost(this);
 
+        menu->removeAllItems();
         menu->addItem("Delete", MyGUI::MenuItemType::Normal, "removeObj");
 
         if (!multiSelection)
         {
             menu->addItem("", MyGUI::MenuItemType::Separator);
-            menu->addItem("Create Element", MyGUI::MenuItemType::Popup, "createChild ParticleElement");
+            menu->addItem("Create Element", MyGUI::MenuItemType::Normal, "createChild ParticleElement");
         }
     }
 
@@ -56,5 +57,10 @@ namespace Demi
     void DiParticleSystemObj::OnSelect()
     {
 
+    }
+
+    Demi::DiString DiParticleSystemObj::GetUICaption()
+    {
+        return mParticleSystem->GetName();
     }
 }

@@ -17,9 +17,11 @@ namespace tools
 
     public:
 
-        void update();
+        void Update();
 
-        RenderWindowControl* getRenderWndControl(){ return mRenderWndCtrl; }
+        RenderWindowControl* GetRenderWndControl(){ return mRenderWndCtrl; }
+
+        ResTreeControl* GetResourceTree(){ return mResTreeCtrl; }
 
     private:
         void notifyMouseButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);

@@ -34,6 +34,8 @@ namespace Demi
 
         DiString            GenerateSystemName();
 
+        DiString            GenerateElementName();
+
         DiString            GenerateEmitterName();
 
         DiString            GenerateControllerName();
@@ -53,6 +55,8 @@ namespace Demi
         DiStrHash<std::function<DiBaseEditorObj*()>> mObjFactories;
 
         DiBaseEditorObj*    mMenuHost{ nullptr };
+
+        DiBaseEditorObj*    mRootObject{ nullptr };
     };
 }
 

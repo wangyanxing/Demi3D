@@ -35,6 +35,7 @@ namespace Demi
     {
         HonFxerApp::GetEditorManager()->SetMenuHost(this);
 
+        menu->removeAllItems();
         menu->addItem("Delete", MyGUI::MenuItemType::Normal, "removeObj");
 
         if (!multiSelection)
@@ -75,6 +76,7 @@ namespace Demi
         
         auto parent = dynamic_cast<DiParticleSystemObj*>(GetParent());
         mParticleElement = parent->GetParticleSystem()->CreateElement();
+        mParticleElement->SetName(HonFxerApp::GetEditorManager()->GenerateElementName());
         mParticleElement->SetRenderer("Billboard");
     }
 
@@ -87,5 +89,10 @@ namespace Demi
     void DiParticleElementObj::OnSelect()
     {
 
+    }
+
+    Demi::DiString DiParticleElementObj::GetUICaption()
+    {
+        return mParticleElement->GetName();
     }
 }

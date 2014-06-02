@@ -37,6 +37,8 @@ namespace tools
 
         void NotifyMenuCtrlAccept(ContextMenu* _sender, const std::string& _id);
 
+        MyGUI::TreeControl* GetTreeCtrl(){ return mResourcesTree; }
+
     private:
 
         MyGUI::TreeControl* mResourcesTree{ nullptr };

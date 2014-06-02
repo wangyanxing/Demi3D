@@ -37,7 +37,7 @@ namespace Demi
 
         void              SetResourceLocation(const DiString& resPack, const DiString& texPack);
 
-        static HonFxerApp* GetViewerApp();
+        static HonFxerApp* GetFxApp();
 
         static DiEditorManager* GetEditorManager() { return mEditorMgr; }
 
@@ -48,6 +48,8 @@ namespace Demi
         virtual void      mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id);
 
         virtual void      keyPressed(const OIS::KeyEvent &arg);
+
+        MainPaneControl*  GetMainPane(){ return mMainPane; };
 
     private:
 

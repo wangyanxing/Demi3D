@@ -49,7 +49,7 @@ namespace Demi
         DemiDemo::Update();
 
         if (mMainPane)
-            mMainPane->update();
+            mMainPane->Update();
     }
 
     void HonFxerApp::Close()
@@ -76,12 +76,14 @@ namespace Demi
         MyGUI::FactoryManager::getInstance().unregisterFactory<MyGUI::RTTLayer>("Layer");
 
         DI_UNINSTALL_PLUGIN(DiK2);
+        DI_UNINSTALL_PLUGIN(DiFx);
         DemiDemo::Close();
     }
 
     void HonFxerApp::OpenImpl()
     {
         DemiDemo::OpenImpl();
+        DI_INSTALL_PLUGIN(DiFx);
         DI_INSTALL_PLUGIN(DiK2);
 
         Driver->GetMainRenderWindow()->SetForceRenderToCanvas(true);
@@ -154,14 +156,14 @@ namespace Demi
         mEditorMgr = DI_NEW DiEditorManager();
     }
 
-    HonFxerApp* HonFxerApp::GetViewerApp()
+    HonFxerApp* HonFxerApp::GetFxApp()
     {
         return (HonFxerApp*)sTheApp;
     }
 
     void HonFxerApp::mouseMoved(const OIS::MouseEvent& evt)
     {
-        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+        bool incanvas = mMainPane->GetWorkspaceControl()->GetRenderWndControl()->mouseInCanvas();
         if (incanvas)
         {
             DemiDemo::mouseMoved(evt);
@@ -170,7 +172,7 @@ namespace Demi
 
     void HonFxerApp::mousePressed(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
-        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+        bool incanvas = mMainPane->GetWorkspaceControl()->GetRenderWndControl()->mouseInCanvas();
         if (incanvas)
         {
             DemiDemo::mousePressed(evt,id);
@@ -179,7 +181,7 @@ namespace Demi
 
     void HonFxerApp::mouseReleased(const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     {
-        bool incanvas = mMainPane->getMainWorkspaceControl()->getRenderWndControl()->mouseInCanvas();
+        bool incanvas = mMainPane->GetWorkspaceControl()->GetRenderWndControl()->mouseInCanvas();
         if (incanvas)
         {
             DemiDemo::mouseReleased(evt, id);

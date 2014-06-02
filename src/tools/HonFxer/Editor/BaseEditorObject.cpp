@@ -15,6 +15,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "BaseEditorObject.h"
 #include "HonFxerApp.h"
 #include "EditorManager.h"
+#include "ResTreeControl.h"
+#include "MainWorkspaceControl.h"
+#include "MainPaneControl.h"
 
 namespace Demi
 {
@@ -24,6 +27,17 @@ namespace Demi
 
     DiBaseEditorObj::~DiBaseEditorObj()
     {
+        OnDestroyUI();
+        OnDestroy();
+
+        for (auto ch : mChildren)
+        {
+            DI_DELETE ch;
+        }
+        mChildren.clear();
+
+        if (mParent)
+            mParent->RemoveChild(this);
     }
 
     void DiBaseEditorObj::OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection)
@@ -43,6 +57,7 @@ namespace Demi
         
         ret->mParent = this;
         ret->OnCreate();
+        ret->OnCreateUI();
 
         mChildren.push_back(ret);
         return ret;
@@ -54,7 +69,6 @@ namespace Demi
             [child](const DiBaseEditorObj* o) { return o == child; });
         if (it != mChildren.end())
         {
-            (*it)->OnDestroy();
             SAFE_DELETE(*it);
             mChildren.erase(it);
         }
@@ -62,5 +76,21 @@ namespace Demi
         {
             DI_WARNING("Cannot remove the editor object");
         }
+    }
+
+    void DiBaseEditorObj::OnCreateUI()
+    {
+        auto resTree = HonFxerApp::GetFxApp()->GetMainPane()->GetWorkspaceControl()->GetResourceTree();
+        auto treeCtrl = resTree->GetTreeCtrl();
+
+        auto root = !mParent ? treeCtrl->getRoot() : mParent->GetUINode();
+        mUINode = new MyGUI::TreeControl::Node(GetUICaption().c_str(), GetUINodeType().c_str());
+        mUINode->setData((DiBaseEditorObj*)this);
+        root->add(mUINode);
+    }
+
+    void DiBaseEditorObj::OnDestroyUI()
+    {
+        mUINode->getParent()->remove(mUINode, true);
     }
 }

@@ -40,6 +40,8 @@ namespace Demi
 			return mMenu->getVisible();
 		}
 
+        MyGUI::PopupMenu* getMenu() { return mMenu; }
+
 		/** Event : Menu accept.\n
 			signature : void method(wraps::ContextMenu* _sender, const std::string& _id)
 			@param _sender

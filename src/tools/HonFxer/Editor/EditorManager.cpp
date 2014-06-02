@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "FxerPch.h"
 #include "EditorManager.h"
 #include "ParticleSystemObj.h"
+#include "ParticleElementObj.h"
 
 namespace Demi
 {
@@ -21,11 +22,15 @@ namespace Demi
     {
         InitFactories();
         InitCommands();
+
+        mRootObject = CreateEditorObject("Base");
+        mRootObject->OnCreate();
+        mRootObject->OnCreateUI();
     }
 
     DiEditorManager::~DiEditorManager()
     {
-
+        SAFE_DELETE(mRootObject);
     }
 
     DiBaseEditorObj* DiEditorManager::CreateEditorObject(const DiString& type)
@@ -33,7 +38,9 @@ namespace Demi
         DiBaseEditorObj* ret = nullptr;
         auto it = mObjFactories.find(type);
         if (it != mObjFactories.end())
+        {
             ret = it->second();
+        }
         else
         {
             DI_WARNING("Cannot create the object [type = %s]", type.c_str());
@@ -44,16 +51,15 @@ namespace Demi
     void DiEditorManager::DeleteEditorObject(DiBaseEditorObj* obj)
     {
         DI_ASSERT(obj);
-        obj->GetParent()->RemoveChild(obj);
-        DI_DELETE obj;
-
+        SAFE_DELETE(obj);
         mMenuHost = nullptr;
     }
 
     void DiEditorManager::InitFactories()
     {
-        mObjFactories["Base"]           = [](){return DI_NEW DiBaseEditorObj(); };
-        mObjFactories["ParticleSystem"] = [](){return DI_NEW DiParticleSystemObj(); };
+        mObjFactories["Base"]            = [](){return DI_NEW DiBaseEditorObj(); };
+        mObjFactories["ParticleSystem"]  = [](){return DI_NEW DiParticleSystemObj(); };
+        mObjFactories["ParticleElement"] = [](){return DI_NEW DiParticleElementObj(); };
     }
 
     DiString DiEditorManager::GenerateSystemName()
@@ -61,6 +67,14 @@ namespace Demi
         static int id = 0;
         DiString ret;
         ret.Format("ParticleSystem_%d", id++);
+        return ret;
+    }
+
+    DiString DiEditorManager::GenerateElementName()
+    {
+        static int id = 0;
+        DiString ret;
+        ret.Format("Element_%d", id++);
         return ret;
     }
 
@@ -98,8 +112,8 @@ namespace Demi
         CommandMgr->AddCommand("createChild", [&](Demi::DiCmdArgs* args){
             if (mMenuHost)
             {
-                DI_ASSERT(args->GetArgCount() == 1);
-                mMenuHost->_CreateChild(args->GetArg(0));
+                DI_ASSERT(args->GetArgCount() == 2);
+                mMenuHost->_CreateChild(args->GetArg(1));
                 return true;
             }
             else

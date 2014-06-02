@@ -15,9 +15,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define BaseEditorObject_h__
 
 #include "FxerPrerequisites.h"
+#include "MyGUI_TreeControl.h"
 
 namespace Demi 
 {
+    typedef MyGUI::TreeControl::Node UINode;
+
     class DiBaseEditorObj : public DiBase
     {
     public:
@@ -48,15 +51,27 @@ namespace Demi
 
         virtual void                OnDestroy() {}
 
+        virtual void                OnDestroyUI();
+
         virtual void                OnSelect() {}
 
+        virtual void                OnCreateUI();
+
+        virtual DiString            GetUICaption() { return "Scene Root"; }
+
+        virtual DiString            GetUINodeType() { return "Folder"; }
+
         virtual DiString            GetType() { return "Base"; }
+
+        UINode*                     GetUINode() { return mUINode; }
 
     protected:
 
         DiVector<DiBaseEditorObj*>  mChildren;
 
         DiBaseEditorObj*            mParent{ nullptr };
+
+        UINode*                     mUINode{ nullptr };
     };
 }
 

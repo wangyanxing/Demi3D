@@ -129,7 +129,7 @@ namespace tools
         }
     }
 
-    void WorkSpaceControl::update()
+    void WorkSpaceControl::Update()
     {
         mRenderWndCtrl->update();
     }

@@ -22,9 +22,9 @@ namespace tools
 		mMainWidget->setVisible(_value);
 	}
 
-    void MainPaneControl::update()
+    void MainPaneControl::Update()
     {
-        mMainWorkspaceControl->update();
+        mMainWorkspaceControl->Update();
     }
 
 } // namespace tools

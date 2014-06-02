@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ResTreeControl.h"
 #include "MyGUI_TreeControlItem.h"
 #include "ContextMenu.h"
+#include "BaseEditorObject.h"
 
 namespace tools
 {
@@ -29,8 +30,6 @@ namespace tools
 
         MyGUI::TreeControl::Node* root = mResourcesTree->getRoot();
         root->removeAll();
-        MyGUI::TreeControl::Node* pNode = new MyGUI::TreeControl::Node("Scene", "Folder");
-        root->add(pNode);
 
         mContextMenu = DI_NEW ContextMenu(mResourcesTree);
         mContextMenu->eventMenuAccept = MyGUI::newDelegate(this, &ResTreeControl::NotifyMenuCtrlAccept);
@@ -56,7 +55,12 @@ namespace tools
 
     void ResTreeControl::NotifyTreeNodeContextMenu(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)
     {
-        mContextMenu->setVisible(true);
+        if (pNode)
+        {
+            DiBaseEditorObj* obj = *(pNode->getData<DiBaseEditorObj*>());
+            mContextMenu->setVisible(true);
+            obj->OnMenuPopup(mContextMenu->getMenu(), false);
+        }
     }
 
 } // namespace tools

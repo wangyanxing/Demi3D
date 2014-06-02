@@ -16,9 +16,9 @@ namespace tools
 
 		void setVisible(bool _value);
 
-        WorkSpaceControl* getMainWorkspaceControl(){ return mMainWorkspaceControl; }
+        WorkSpaceControl* GetWorkspaceControl(){ return mMainWorkspaceControl; }
 
-        virtual void update();
+        virtual void Update();
 
 	private:
 		MainMenuControl* mMainMenuControl;
