@@ -16,6 +16,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ParticleSystemObj.h"
 #include "ParticleElementObj.h"
 #include "PointEmitterObj.h"
+#include "CircleEmitterObj.h"
+#include "LineEmitterObj.h"
+#include "BoxEmitterObj.h"
 #include "EffectManager.h"
 #include "Grid.h"
 
@@ -71,6 +74,9 @@ namespace Demi
         mObjFactories["ParticleSystem"]  = [](){return DI_NEW DiParticleSystemObj(); };
         mObjFactories["ParticleElement"] = [](){return DI_NEW DiParticleElementObj(); };
         mObjFactories["PointEmitter"]    = [](){return DI_NEW DiPointEmitterObj(); };
+        mObjFactories["BoxEmitter"]      = [](){return DI_NEW DiBoxEmitterObj(); };
+        mObjFactories["CircleEmitter"]   = [](){return DI_NEW DiCircleEmitterObj(); };
+        mObjFactories["LineEmitter"]     = [](){return DI_NEW DiLineEmitterObj(); };
     }
 
     DiString DiEditorManager::GenerateSystemName()
