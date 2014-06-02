@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "FxerPrerequisites.h"
 #include "MyGUI_TreeControl.h"
+#include "PropertyTable.h"
 
 namespace Demi 
 {
@@ -74,6 +75,8 @@ namespace Demi
         DiBaseEditorObj*            mParent{ nullptr };
 
         UINode*                     mUINode{ nullptr };
+
+        PropertyGroups              mPropGroups;
     };
 }
 

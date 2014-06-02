@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "FxerPrerequisites.h"
 #include "BaseEditorObject.h"
+#include "PropertyTypes.h"
 
 namespace Demi 
 {
@@ -25,33 +26,37 @@ namespace Demi
 
         DiEmitterBaseObj();
 
-        virtual              ~DiEmitterBaseObj();
+        virtual             ~DiEmitterBaseObj();
 
     public:
 
-        virtual void         OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection) override;
+        virtual void        OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection) override;
 
-        virtual void         OnCreate() override;
+        virtual void        OnCreate() override;
 
-        virtual void         OnDestroy() override;
+        virtual void        OnDestroy() override;
 
-        virtual void         OnSelect() override;
+        virtual void        OnSelect() override;
 
-        virtual DiString     GetType() override { return "EmitterBase"; }
+        virtual DiString    GetType() override { return "EmitterBase"; }
 
-        virtual DiString     GetEmitterType() { return ""; }
+        virtual DiString    GetEmitterType() { return ""; }
 
-        virtual DiString     GetUICaption() override;
+        virtual DiString    GetUICaption() override;
 
-        virtual DiString     GetUINodeType() { return "File"; }
+        virtual DiString    GetUINodeType() { return "File"; }
 
     public:
 
-        DiParticleEmitter*   GetEmitter() { return mEmitter; }
+        DiParticleEmitter*  GetEmitter() { return mEmitter; }
 
     protected:
 
-        DiParticleEmitter*   mEmitter{ nullptr };
+        void                InitPropertyTable();
+
+    protected:
+
+        DiParticleEmitter*  mEmitter{ nullptr };
     };
 }
 

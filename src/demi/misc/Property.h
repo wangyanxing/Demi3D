@@ -17,8 +17,8 @@ OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef Property_h__
-#define Property_h__
+#ifndef DiProperty_h__
+#define DiProperty_h__
 
 #include <functional>
 #include <unordered_set>
@@ -26,7 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace Demi
 {
-    class DiPropertyBase
+    class DI_MISC_API DiPropertyBase
     {
         /* Set of properties which are subscribed to this one.
            When this property is changed, subscriptions are refreshed */
@@ -36,49 +36,25 @@ namespace Demi
         std::unordered_set<DiPropertyBase *> dependencies;
 
     public:
-        virtual ~DiPropertyBase()
-        {
-            clearSubscribers(); clearDependencies();
-        }
+        virtual ~DiPropertyBase();
 
         // re-evaluate this property
         virtual void evaluate() = 0;
 
         DiPropertyBase() = default;
-        DiPropertyBase(const DiPropertyBase &other) : dependencies(other.dependencies) {
-            for (DiPropertyBase *p : dependencies)
-                p->subscribers.insert(this);
-        }
+        DiPropertyBase(const DiPropertyBase &other);
 
     protected:
         /* This function is called by the derived class when the property has changed
            The default implementation re-evaluates all the property subscribed to this one. */
-        virtual void notify() {
-            auto copy = subscribers;
-            for (DiPropertyBase *p : copy) {
-                p->evaluate();
-            }
-        }
+        virtual void notify();
 
         /* Derived class call this function whenever this property is accessed.
            It register the dependencies. */
-        void accessed() {
-            if (current && current != this) {
-                subscribers.insert(current);
-                current->dependencies.insert(this);
-            }
-        }
+        void accessed();
 
-        void clearSubscribers() {
-            for (DiPropertyBase *p : subscribers)
-                p->dependencies.erase(this);
-            subscribers.clear();
-        }
-        void clearDependencies() {
-            for (DiPropertyBase *p : dependencies)
-                p->subscribers.erase(this);
-            dependencies.clear();
-        }
+        void clearSubscribers();
+        void clearDependencies();
 
         /* Helper class that is used on the stack to set the current property being evaluated */
         struct evaluation_scope {
@@ -93,35 +69,37 @@ namespace Demi
         /* thread_local */ static DiPropertyBase *current;
     };
 
-    //FIXME move to .cpp file
-    DiPropertyBase *DiPropertyBase::current = 0;
-
     /** The property class represents a property of type T that can be assigned a value, or a bindings.
         When assigned a bindings, the binding is re-evaluated whenever one of the property used in it
         is changed */
     template <typename T>
     struct DiProperty : DiPropertyBase{
-        typedef std::function<T()> binding_t;
+        typedef std::function<T()> getter_t;
+        typedef std::function<void(T&)> setter_t;
 
         DiProperty() = default;
         DiProperty(const T &t) : value(t) {}
-        DiProperty(const binding_t &b) : binding(b) { evaluate(); }
+        DiProperty(const getter_t &gter) : getter(gter) { evaluate(); }
+        DiProperty(const getter_t &gter, const setter_t &ster) : getter(gter), setter(ster) { evaluate(); }
 
         void operator=(const T &t) {
             value = t;
+            if (setter){
+                setter(t);
+            }
             clearDependencies();
             notify();
         }
-        void operator=(const binding_t &b) {
-            binding = b;
+        void operator=(const getter_t &b) {
+            getter = b;
             evaluate();
         }
 
         //make it possible to initialize directly with lamda without any casts
         template<typename B> DiProperty(const B &b, typename std::enable_if<std::is_constructible<T, B>::value, int*>::type = nullptr) : DiProperty(T(b)) {}
         template<typename B> typename std::enable_if<std::is_constructible<T, B>::value>::type operator= (const B &b) { *this = T(b); }
-        template<typename B> DiProperty(const B &b, typename std::enable_if<std::is_constructible<binding_t, B>::value && !std::is_constructible<T, B>::value, int*>::type = nullptr) : DiProperty(binding_t(b)) {}
-        template<typename B> typename std::enable_if<std::is_constructible<binding_t, B>::value && !std::is_constructible<T, B>::value>::type operator= (const B &b) { *this = binding_t(b); }
+        template<typename B> DiProperty(const B &b, typename std::enable_if<std::is_constructible<getter_t, B>::value && !std::is_constructible<T, B>::value, int*>::type = nullptr) : DiProperty(getter_t(b)) {}
+        template<typename B> typename std::enable_if<std::is_constructible<getter_t, B>::value && !std::is_constructible<T, B>::value>::type operator= (const B &b) { *this = getter_t(b); }
 
         const T &get() const {
             const_cast<DiProperty*>(this)->accessed();
@@ -133,23 +111,24 @@ namespace Demi
         operator const T&() const { return get(); }
 
         void evaluate() override {
-            if (binding) {
+            if (getter) {
                 clearDependencies();
                 evaluation_scope scope(this);
-                value = binding();
+                value = getter();
             }
             notify();
         }
 
     protected:
         T value;
-        binding_t binding;
+        getter_t getter;
+        setter_t setter;
     };
 
     template<typename T>
     struct DiPropertyHook : DiProperty<T> {
         typedef std::function<void()> hook_t;
-        typedef typename DiProperty<T>::binding_t binding_t;
+        typedef typename DiProperty<T>::getter_t binding_t;
         void notify() override {
             DiProperty<T>::notify();
             hook();
@@ -202,7 +181,6 @@ namespace Demi
         const read_hook_t read_hook;
         binding_t binding;
     };
-
 }
 
 #endif // Property_h__

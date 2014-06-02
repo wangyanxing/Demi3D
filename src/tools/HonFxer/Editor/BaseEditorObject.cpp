@@ -27,13 +27,15 @@ namespace Demi
 
     DiBaseEditorObj::~DiBaseEditorObj()
     {
+        for (auto p : mPropGroups)
+            DI_DELETE p;
+        mPropGroups.clear();
+
         OnDestroyUI();
         OnDestroy();
 
         for (auto ch : mChildren)
-        {
             DI_DELETE ch;
-        }
         mChildren.clear();
 
         if (mParent)
