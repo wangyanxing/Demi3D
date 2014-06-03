@@ -12,18 +12,21 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "FxerPch.h"
-#include "ToolsControl.h"
 #include "PropertiesControl.h"
+#include "PanelView.h"
 
 namespace tools
 {
-	ToolsControl::ToolsControl(MyGUI::Widget* _parent) :
-		wraps::BaseLayout("FxToolsControl.layout", _parent)
+	PropertiesControl::PropertiesControl(MyGUI::Widget* _parent) :
+		wraps::BaseLayout("FxPropertiesControl.layout", _parent)
 	{
-        assignBase(mPropertiesCtrl, "PropertiesControl");
+        assignBase(mPanelView, "_Main");
+
+        auto s = _parent->getSize();
+        mPanelView->getMainWidget()->setSize(s);
 	}
 
-	ToolsControl::~ToolsControl()
+	PropertiesControl::~PropertiesControl()
 	{
 	}
 

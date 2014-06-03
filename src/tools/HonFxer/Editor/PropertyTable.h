@@ -24,16 +24,9 @@ namespace Demi
     {
     public:
 
-        DiEditProperty(const DiString& caption, DiPropertyBase* prop)
-            : mCaption(caption)
-            , mProperty(prop)
-        {
-        }
+        DiEditProperty(const DiString& caption, DiPropertyBase* prop);
 
-        ~DiEditProperty()
-        {
-            DI_DELETE mProperty;
-        }
+        ~DiEditProperty();
 
         DiString mCaption;
 
@@ -46,23 +39,13 @@ namespace Demi
     {
     public:
 
-        DiPropertyGroup(const DiString& name)
-            :mGroupName(name)
-        {
-        }
+        DiPropertyGroup(const DiString& name);
 
-        ~DiPropertyGroup()
-        {
-            for (auto p : mProperties)
-            {
-                DI_DELETE p;
-            }
-        }
+        ~DiPropertyGroup();
 
-        void AddProperty(const DiString& caption, DiPropertyBase* prop)
-        {
-            mProperties.push_back(DI_NEW DiEditProperty(caption, prop));
-        }
+        void AddProperty(const DiString& caption, DiPropertyBase* prop);
+
+        void CreateUI();
 
         DiString mGroupName;
 

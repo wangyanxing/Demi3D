@@ -26,6 +26,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 namespace Demi
 {
+    enum DiPropertyType
+    {
+        PROPERTY_STRING,
+        PROPERTY_INT,
+        PROPERTY_FLOAT,
+        PROPERTY_BOOL,
+        PROPERTY_VEC2,
+        PROPERTY_VEC3,
+        PROPERTY_VEC4,
+        PROPERTY_QUAT,
+        PROPERTY_COLOR,
+        PROPERTY_DYN_ATTR,
+
+        PROPERTY_MAX,
+    };
+
     class DI_MISC_API DiPropertyBase
     {
         /* Set of properties which are subscribed to this one.
@@ -43,6 +59,7 @@ namespace Demi
 
         DiPropertyBase() = default;
         DiPropertyBase(const DiPropertyBase &other);
+        DiPropertyType getType() { return type; }
 
     protected:
         /* This function is called by the derived class when the property has changed
@@ -64,6 +81,9 @@ namespace Demi
             ~evaluation_scope() { current = previous; }
             DiPropertyBase *previous;
         };
+
+        DiPropertyType type;
+
     private:
         friend struct evaluation_scope;
         /* thread_local */ static DiPropertyBase *current;
@@ -72,15 +92,15 @@ namespace Demi
     /** The property class represents a property of type T that can be assigned a value, or a bindings.
         When assigned a bindings, the binding is re-evaluated whenever one of the property used in it
         is changed */
-    template <typename T>
+    template <typename T, DiPropertyType p_type = PROPERTY_MAX>
     struct DiProperty : DiPropertyBase{
         typedef std::function<T()> getter_t;
         typedef std::function<void(T&)> setter_t;
 
-        DiProperty() = default;
-        DiProperty(const T &t) : value(t) {}
-        DiProperty(const getter_t &gter) : getter(gter) { evaluate(); }
-        DiProperty(const getter_t &gter, const setter_t &ster) : getter(gter), setter(ster) { evaluate(); }
+        DiProperty() { type = p_type; }
+        DiProperty(const T &t) : value(t) { type = p_type; }
+        DiProperty(const getter_t &gter) : getter(gter) { type = p_type; evaluate(); }
+        DiProperty(const getter_t &gter, const setter_t &ster) : getter(gter), setter(ster) { type = p_type; evaluate(); }
 
         void operator=(const T &t) {
             value = t;
@@ -125,24 +145,24 @@ namespace Demi
         setter_t setter;
     };
 
-    template<typename T>
-    struct DiPropertyHook : DiProperty<T> {
+    template<typename T, DiPropertyType p_type = PROPERTY_MAX>
+    struct DiPropertyHook : DiProperty<T,p_type> {
         typedef std::function<void()> hook_t;
-        typedef typename DiProperty<T>::getter_t binding_t;
+        typedef typename DiProperty<T, p_type>::getter_t binding_t;
         void notify() override {
-            DiProperty<T>::notify();
+            DiProperty<T, p_type>::notify();
             hook();
         }
         DiPropertyHook(hook_t h) : hook(h) { }
-        DiPropertyHook(hook_t h, const T &t) : DiProperty<T>(t), hook(h) { }
-        DiPropertyHook(hook_t h, binding_t b) : DiProperty<T>(b), hook(h) { }
-        using DiProperty<T>::operator=;
+        DiPropertyHook(hook_t h, const T &t) : DiProperty<T, p_type>(t), hook(h) { }
+        DiPropertyHook(hook_t h, binding_t b) : DiProperty<T, p_type>(b), hook(h) { }
+        using DiProperty<T, p_type>::operator=;
     private:
         hook_t hook;
     };
 
     /** property_wrapper do not own the property, but use a getter and a setter */
-    template <typename T>
+    template <typename T, DiPropertyType p_type = PROPERTY_MAX>
     struct DiPropertyWrapper : DiPropertyBase {
         typedef std::function<T()> binding_t;
         typedef std::function<void(const T&)> write_hook_t;

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout">
+  <Widget type="ScrollView" skin="ScrollView" position="0 0 594 756" align="Stretch" name="_Main">
+    <Property key="VisibleHScroll" value="false"/>
+  </Widget>
+</MyGUI>

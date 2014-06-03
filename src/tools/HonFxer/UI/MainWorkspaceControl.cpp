@@ -11,19 +11,19 @@ namespace tools
         auto parentWidth = _parent->getClientCoord().width;
         auto paneWidth = 250;
 
-        mLeftPanel = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(0, 0,
+        mLeftPanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(0, 0,
             paneWidth, parentHeight), MyGUI::Align::Left | MyGUI::Align::VStretch);
 
-        mSeparatorHLeft = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(paneWidth, 0,
+        mSeparatorHLeft = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(paneWidth, 0,
             4, parentHeight), MyGUI::Align::Left | MyGUI::Align::VStretch);
 
-        mMiddlePanel = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(paneWidth + 4, 0,
+        mMiddlePanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(paneWidth + 4, 0,
             parentWidth - 4 * 2 - paneWidth * 2, parentHeight), MyGUI::Align::Stretch);
 
-        mSeparatorHRight = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidth - 4, 0,
+        mSeparatorHRight = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidth - 4, 0,
             4, parentHeight), MyGUI::Align::Right | MyGUI::Align::VStretch);
 
-        mRightPanel = _parent->createWidget<MyGUI::ScrollBar>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidth, 0,
+        mRightPanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidth, 0,
             paneWidth, parentHeight), MyGUI::Align::Right | MyGUI::Align::VStretch);
 
         mResTreeCtrl = new ResTreeControl(mLeftPanel);

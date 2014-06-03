@@ -23,6 +23,8 @@ namespace tools
 
         ResTreeControl* GetResourceTree(){ return mResTreeCtrl; }
 
+        ToolsControl* GetToolsControl(){ return mToolsCtrl; };
+
     private:
         void notifyMouseButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
 

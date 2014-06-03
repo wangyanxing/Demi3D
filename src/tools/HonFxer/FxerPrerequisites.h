@@ -23,7 +23,7 @@ namespace Demi
     class K2ModelViewer;
     class ContextMenu;
     class DiEditorManager;
-    class DiBaseEditorObj;
+    class DiBaseEditorObj; 
 }
 
 namespace tools
@@ -39,6 +39,9 @@ namespace tools
     class SettingsManager;
     class ViewerHelper;
     class SetGameLocWindow;
+    class PanelView;
+    class PropertiesControl;
+    class PanelGroup;
 }
 
 namespace MyGUI

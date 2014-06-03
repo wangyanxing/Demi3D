@@ -26,8 +26,11 @@ namespace tools
 
 		virtual ~ToolsControl();
 
-	private:
+        PropertiesControl* getPropertiesCtrl() { return mPropertiesCtrl; }
 
+    private:
+
+        PropertiesControl*  mPropertiesCtrl{ nullptr };
 	};
 
 } // namespace tools

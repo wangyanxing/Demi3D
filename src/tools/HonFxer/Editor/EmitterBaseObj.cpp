@@ -24,7 +24,6 @@ namespace Demi
 {
     DiEmitterBaseObj::DiEmitterBaseObj()
     {
-        InitPropertyTable();
     }
 
     DiEmitterBaseObj::~DiEmitterBaseObj()
@@ -59,6 +58,8 @@ namespace Demi
         auto parent = dynamic_cast<DiParticleElementObj*>(GetParent());
         mEmitter = parent->GetParticleElement()->CreateEmitter(GetEmitterType());
         mEmitter->SetName(HonFxerApp::GetEditorManager()->GenerateEmitterName(GetEmitterType()));
+
+        InitPropertyTable();
     }
 
     void DiEmitterBaseObj::InitPropertyTable()
@@ -122,6 +123,8 @@ namespace Demi
         g->AddProperty("Force Emission"  , DI_NEW DiBoolProperty([&]{ return mEmitter->IsForceEmission(); },
                                                                  [&](bool& val){ mEmitter->SetForceEmission(val); }));
      
+        g->CreateUI();
+
         mPropGroups.push_back(g);
     }
 

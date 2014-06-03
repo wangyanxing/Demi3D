@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Widget" skin="PanelEmpty" position="25 25 600 456" align="Stretch" name="_Main">
+    <Widget type="Widget" skin="PanelEmpty" position="25 25 600 756" align="Stretch" name="_Main">
         <UserString key="SnapTo" value="Stretch"/>
-        <Widget type="TabControl" skin="TabControl" position="0 0 600 456" align="Stretch">
-            <Widget type="TabItem" skin="" position="2 24 594 287">
-                <Property key="Caption" value="#{Files}"/>
-                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="FilesControl"/>
+        <Widget type="TabControl" skin="TabControl" position="0 0 600 756" align="Stretch">
+            <Widget type="TabItem" skin="" position="2 24 594 756">
+                <Property key="Caption" value="Properties"/>
+                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 756" align="Stretch" name="PropertiesControl"/>
             </Widget>
-            <Widget type="TabItem" skin="" position="2 24 594 287">
-                <Property key="Caption" value="#{Animation}"/>
-                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 287" align="Stretch" name="AnimationControl"/>
+            <Widget type="TabItem" skin="" position="2 24 594 756">
+                <Property key="Caption" value="Timeline"/>
+                <Widget type="Widget" skin="PanelEmpty" position="0 0 594 756" align="Stretch" name="TimelineControl"/>
             </Widget>
         </Widget>
     </Widget>

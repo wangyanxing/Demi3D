@@ -225,6 +225,8 @@ namespace wraps
 			shutdown();
 		}
 
+        MyGUI::Widget* getMainWidget() { return mMainWidget; }
+
 	protected:
 		MyGUI::Widget* mMainWidget;
 
