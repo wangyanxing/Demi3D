@@ -67,7 +67,7 @@ namespace MyGUI
 		virtual void end();
 
 		/** @see IRenderTarget::doRender */
-		virtual void doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count);
+        virtual void doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count, bool renderLineList = false);
 
 		/** @see IRenderTarget::getInfo */
 		virtual const RenderTargetInfo& getInfo()

@@ -40,7 +40,7 @@ namespace MyGUI
 		virtual ~PolygonalSkin();
 
 		/** Set line points. */
-		void setPoints(const std::vector<FloatPoint>& _points);
+		void setPoints(const std::vector<FloatPoint>& _points, bool lineMode = false);
 
 		/** Set line width in pixels. */
 		void setWidth(float _width);
@@ -93,7 +93,9 @@ namespace MyGUI
 		IntCoord mCurrentCoord;
 
 		ILayerNode* mNode;
-		RenderItem* mRenderItem;
+        RenderItem* mRenderItem;
+
+        bool mLineMode{ false };
 	};
 
 } // namespace MyGUI

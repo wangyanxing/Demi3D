@@ -1,6 +1,7 @@
 
 #include "FxerPch.h"
 #include "MainPaneControl.h"
+#include "CurveEditor.h"
 
 namespace tools
 {
@@ -11,6 +12,8 @@ namespace tools
 	{
 		assignBase(mMainMenuControl, "MainMenuControl");
 		assignBase(mMainWorkspaceControl, "MainWorkspaceControl");
+
+        mCurveEditor = new CurveEditor();
 	}
 
 	MainPaneControl::~MainPaneControl()

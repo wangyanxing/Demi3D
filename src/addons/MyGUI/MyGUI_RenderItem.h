@@ -67,6 +67,9 @@ namespace MyGUI
 
 		bool getCompression();
 
+        bool isRenderLineList(){ return mRenderLineList; }
+        void setRenderLineList(bool v){ mRenderLineList = v; }
+
 	private:
 #if MYGUI_DEBUG_MODE == 1
 		std::string mTextureName;
@@ -90,7 +93,8 @@ namespace MyGUI
 		IRenderTarget* mRenderTarget;
 
 		bool mCompression;
-		bool mManualRender;
+        bool mManualRender;
+        bool mRenderLineList{ false };
 	};
 
 } // namespace MyGUI

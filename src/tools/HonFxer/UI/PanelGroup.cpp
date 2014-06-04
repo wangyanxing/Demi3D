@@ -61,6 +61,7 @@ namespace Demi
             item = DI_NEW DiColorPropertyItem(this, prop, propType);
             break;
         case Demi::PROPERTY_DYN_ATTR:
+            item = DI_NEW DiDynamicPropertyItem(this, prop, propType);
             break;
         default:
             DI_WARNING("Invalid item type: %d", propType);

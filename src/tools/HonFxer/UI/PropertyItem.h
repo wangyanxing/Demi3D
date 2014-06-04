@@ -60,6 +60,14 @@ namespace Demi
 
         virtual void RearrangeUI(int height);
 
+        void RefreshUI();
+
+        void RefreshValue();
+
+        void NotifyEditAccept(MyGUI::EditBox* _sender);
+
+        void NotifyKeyLostFocus(MyGUI::Widget* _sender, MyGUI::Widget* _old);
+
     protected:
 
         MyGUI::TextBox* mTextBox{ nullptr };
@@ -82,6 +90,12 @@ namespace Demi
         virtual void CreateUI(const DiString& caption) override;
 
         virtual void RearrangeUI(int height);
+
+        void RefreshUI();
+
+        void RefreshValue();
+
+        void NotifyButtonClick(MyGUI::Widget* _sender);
 
     protected:
 
@@ -116,6 +130,16 @@ namespace Demi
 
         void Expand(bool val);
 
+        void RefreshUI();
+
+        void RefreshValue();
+
+        void RefreshSubValue();
+
+        void NotifyEditAccept(MyGUI::EditBox* _sender);
+
+        void NotifyKeyLostFocus(MyGUI::Widget* _sender, MyGUI::Widget* _old);
+
     protected:
 
         MyGUI::Button*  mExpandBtn{ nullptr };
@@ -128,7 +152,7 @@ namespace Demi
 
         MyGUI::TextBox* mValueLabel[4];
 
-        bool            mExpanded{ false };
+        bool mExpanded{ false };
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -153,9 +177,56 @@ namespace Demi
 
     protected:
 
+        void RefreshUI();
+
         MyGUI::TextBox* mTextBox{ nullptr };
 
         MyGUI::Button* mColorButton{ nullptr };
+
+        MyGUI::EditBox* mColorValue{ nullptr };
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+
+    class DiDynamicPropertyItem : public DiPropertyItem
+    {
+    public:
+
+        DiDynamicPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type);
+
+        virtual ~DiDynamicPropertyItem();
+
+    public:
+
+        virtual void CreateUI(const DiString& caption) override;
+
+        virtual void RearrangeUI(int height);
+
+        virtual int GetHeight();
+
+        void NotifyTypeChanged(MyGUI::ComboBox* _sender, size_t _index);
+
+        void NotfyCurveButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+
+        void RefreshValue();
+    
+        void RefreshUI();
+
+    protected:
+
+        MyGUI::TextBox* mTextBox{ nullptr };
+
+        MyGUI::ComboBox* mDynType{ nullptr };
+
+        MyGUI::EditBox* mFixedValue{ nullptr };
+
+        MyGUI::EditBox* mValueBox[2];
+
+        MyGUI::TextBox* mValueLabel[2];
+
+        MyGUI::Button* mCurveButton{ nullptr };
+
+        DiDynamicAttribute::DynamicAttributeType mType{ DiDynamicAttribute::DAT_FIXED };
     };
 }
 

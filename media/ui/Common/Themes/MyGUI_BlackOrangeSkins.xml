@@ -44,6 +44,28 @@
             <State name="pushed_checked" colour="0.66 0.46 0.1" shift="0"/>
         </BasisSkin>
     </Resource>
+    <Resource type="ResourceSkin" name="RoundButtonSkin" size="15 15" texture="MyGUI_BlackOrangeSkins.png">
+        <BasisSkin type="SubSkin" offset="0 0 15 15" align="Left Top">
+            <State name="disabled" offset="51 87 15 15"/>
+            <State name="normal" offset="51 108 15 15"/>
+            <State name="highlighted" offset="51 129 15 15"/>
+            <State name="pushed" offset="51 150 15 15"/>
+            <State name="disabled_checked" offset="51 150 15 15"/>
+            <State name="normal_checked" offset="51 150 15 15"/>
+            <State name="highlighted_checked" offset="51 150 15 15"/>
+            <State name="pushed_checked" offset="51 150 15 15"/>
+        </BasisSkin>
+        <BasisSkin type="SimpleText" offset="20 0 1 20" align="Stretch">
+            <State name="disabled" colour="0.5 0.5 0.5" shift="0"/>
+            <State name="normal" colour="1 1 1" shift="0"/>
+            <State name="highlighted" colour="1 0.66 0.15" shift="0"/>
+            <State name="pushed" colour="0.66 0.46 0.1" shift="0"/>
+            <State name="disabled_checked" colour="0.5 0.5 0.5" shift="0"/>
+            <State name="normal_checked" colour="1 1 1" shift="0"/>
+            <State name="highlighted_checked" colour="1 0.66 0.15" shift="0"/>
+            <State name="pushed_checked" colour="0.66 0.46 0.1" shift="0"/>
+        </BasisSkin>
+    </Resource>
     <Resource type="ResourceSkin" name="ButtonCloseSkin" size="18 17" texture="MyGUI_BlackOrangeSkins.png">
         <BasisSkin type="SubSkin" offset="0 0 18 17" align="Stretch">
             <State name="disabled" offset="72 1 18 17"/>

@@ -51,7 +51,7 @@ namespace Demi
 
         DiVector<DiPropertyItem*>   mItems;
                            
-        int mHeight        { 20 };
+        int mHeight        { 23 };
                            
         int mHeightStep    { 26 };
                            

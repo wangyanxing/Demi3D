@@ -105,7 +105,7 @@ namespace MyGUI
 			}
 			else
 			{
-				_target->doRender(mVertexBuffer, mTexture, mCountVertex);
+				_target->doRender(mVertexBuffer, mTexture, mCountVertex, mRenderLineList);
 			}
 		}
 	}

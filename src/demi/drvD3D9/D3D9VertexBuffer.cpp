@@ -46,7 +46,6 @@ namespace Demi
 
         if (size > 0)
             mVertexBuffer = DiD3D9Driver::CreateVertexBuffer(size, mUsage, mPool);
-        
     }
 
     void DiD3D9VertexBuffer::Bind()

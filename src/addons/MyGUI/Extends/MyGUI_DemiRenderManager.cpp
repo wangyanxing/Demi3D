@@ -84,7 +84,7 @@ namespace MyGUI
 		delete _buffer;
 	}
 
-	void DemiRenderManager::doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count)
+    void DemiRenderManager::doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count, bool renderLineList)
 	{
 		DemiTexture* tex = static_cast<DemiTexture*>(_texture);
         mSharedMaterial->GetShaderParameter()->WriteTexture2D("map", tex->getTexture());
@@ -95,6 +95,7 @@ namespace MyGUI
         mSharedUnit->mSourceData[0] = vb->getVertexBuffer();
         mSharedUnit->mVerticesNum = _count;
         mSharedUnit->mPrimitiveCount = mSharedUnit->mVerticesNum / 3;
+        mSharedUnit->mPrimitiveType = renderLineList ? PT_LINELIST : PT_TRIANGLELIST;
 		
         DiBase::Driver->RenderGeometry(mSharedUnit);
 	}

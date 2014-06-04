@@ -20,6 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     class HonFxerApp;
+    class CurveEditor;
     class K2ModelViewer;
     class ContextMenu;
     class DiEditorManager;

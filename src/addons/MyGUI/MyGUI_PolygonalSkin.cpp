@@ -51,8 +51,15 @@ namespace MyGUI
 		return sqrt(x * x + y * y);
 	}
 
-	void PolygonalSkin::setPoints(const std::vector<FloatPoint>& _points)
+    void PolygonalSkin::setPoints(const std::vector<FloatPoint>& _points, bool lineMode)
 	{
+        mLineMode = lineMode;
+
+        if (_points.size() % 2 != 0)
+            mLineMode = false;
+
+        mRenderItem->setRenderLineList(mLineMode);
+
 		if (_points.size() < 2)
 		{
 			mVertexCount = 0;
@@ -255,19 +262,30 @@ namespace MyGUI
 
 		float vertex_z = info.maximumDepth;
 
-		if (mGeometryOutdated)
-		{
-			_rebuildGeometry();
-		}
+        if (mLineMode)
+        {
+            size_t size = mLinePoints.size();
+            for (size_t i = 0; i < size; ++i)
+            {
+                verticies[i].set(mLinePoints[i].left, mLinePoints[i].top, vertex_z, mLinePoints[i].left, mLinePoints[i].top, mCurrentColour);
+            }
+            mRenderItem->setLastVertexCount(size);
+        }
+        else
+        {
+            if (mGeometryOutdated)
+            {
+                _rebuildGeometry();
+            }
 
-		size_t size = mResultVerticiesPos.size();
+            size_t size = mResultVerticiesPos.size();
+            for (size_t i = 0; i < size; ++i)
+            {
+                verticies[i].set(mResultVerticiesPos[i].left, mResultVerticiesPos[i].top, vertex_z, mResultVerticiesUV[i].left, mResultVerticiesUV[i].top, mCurrentColour);
+            }
+            mRenderItem->setLastVertexCount(size);
+        }
 
-		for (size_t i = 0; i < size; ++i)
-		{
-			verticies[i].set(mResultVerticiesPos[i].left, mResultVerticiesPos[i].top, vertex_z, mResultVerticiesUV[i].left, mResultVerticiesUV[i].top, mCurrentColour);
-		}
-
-		mRenderItem->setLastVertexCount(size);
 	}
 
 	void PolygonalSkin::_setColour(const Colour& _value)

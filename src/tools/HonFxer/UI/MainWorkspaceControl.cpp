@@ -10,7 +10,7 @@ namespace tools
         auto parentHeight = _parent->getClientCoord().height;
         auto parentWidth = _parent->getClientCoord().width;
         auto paneWidthLeft = 250;
-        auto paneWidthRight = 300;
+        auto paneWidthRight = 350;
 
         mLeftPanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(0, 0,
             paneWidthLeft, parentHeight), MyGUI::Align::Left | MyGUI::Align::VStretch);

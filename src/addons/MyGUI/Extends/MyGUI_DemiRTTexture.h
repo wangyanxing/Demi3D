@@ -24,7 +24,7 @@ namespace MyGUI
 		virtual void begin();
 		virtual void end();
 
-		virtual void doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count);
+        virtual void doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count, bool renderLineList = false);
 
 		virtual const RenderTargetInfo& getInfo()
 		{
