@@ -9,22 +9,23 @@ namespace tools
     {
         auto parentHeight = _parent->getClientCoord().height;
         auto parentWidth = _parent->getClientCoord().width;
-        auto paneWidth = 250;
+        auto paneWidthLeft = 250;
+        auto paneWidthRight = 300;
 
         mLeftPanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(0, 0,
-            paneWidth, parentHeight), MyGUI::Align::Left | MyGUI::Align::VStretch);
+            paneWidthLeft, parentHeight), MyGUI::Align::Left | MyGUI::Align::VStretch);
 
-        mSeparatorHLeft = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(paneWidth, 0,
+        mSeparatorHLeft = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(paneWidthLeft, 0,
             4, parentHeight), MyGUI::Align::Left | MyGUI::Align::VStretch);
 
-        mMiddlePanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(paneWidth + 4, 0,
-            parentWidth - 4 * 2 - paneWidth * 2, parentHeight), MyGUI::Align::Stretch);
+        mMiddlePanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(paneWidthLeft + 4, 0,
+            parentWidth - 4 * 2 - paneWidthLeft * 2, parentHeight), MyGUI::Align::Stretch);
 
-        mSeparatorHRight = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidth - 4, 0,
+        mSeparatorHRight = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidthRight - 4, 0,
             4, parentHeight), MyGUI::Align::Right | MyGUI::Align::VStretch);
 
-        mRightPanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidth, 0,
-            paneWidth, parentHeight), MyGUI::Align::Right | MyGUI::Align::VStretch);
+        mRightPanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidthRight, 0,
+            paneWidthRight, parentHeight), MyGUI::Align::Right | MyGUI::Align::VStretch);
 
         mResTreeCtrl = new ResTreeControl(mLeftPanel);
         mRenderWndCtrl = new RenderWindowControl(mMiddlePanel);

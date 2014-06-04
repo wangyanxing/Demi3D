@@ -18,32 +18,46 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "BasePanelViewItem.h"
 #include "Property.h"
 
-namespace tools
+namespace Demi
 {
-	class PanelGroup : public wraps::BasePanelViewItem
+	class DiPanelGroup : public wraps::BasePanelViewItem
 	{
 	public:
-		PanelGroup();
+		DiPanelGroup();
 
-        virtual ~PanelGroup(){}
+        virtual             ~DiPanelGroup();
 
     public:
 
-        void SetCaption(const DiString& cap);
+        void                SetCaption(const DiString& cap);
 
-        void AddItem(const DiString& caption, DiPropertyBase* prop);
+        void                AddItem(const DiString& caption, DiPropertyBase* prop);
 
-        void FinishAddItem();
+        MyGUI::Widget*      GetClientWidget() { return mWidgetClient; }
+
+        void                NotifyRearrangeHeight();
+
+        int                 GetHeight() { return mHeight; }
+
+        int                 GetHeightStep() { return mHeightStep; }
+
+        int                 GetWidth() { return mWidth; }
+
+        int                 GetWidthStep() { return mWidthStep; }
+
+        int                 GetCurrentHeight();
 
     protected:
 
-        void AddSimpleInputItem(const DiString& caption, DiPropertyBase* prop);
-
-        void AddCheckItem(const DiString& caption, DiPropertyBase* prop);
-
-    protected:
-
-        int mCurrentHeight{ 0 };
+        DiVector<DiPropertyItem*>   mItems;
+                           
+        int mHeight        { 20 };
+                           
+        int mHeightStep    { 26 };
+                           
+        int mWidth         { 125 };
+                           
+        int mWidthStep     { 8 };
 	};
 }
 

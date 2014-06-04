@@ -102,7 +102,7 @@ namespace Demi
         DiProperty(const getter_t &gter) : getter(gter) { type = p_type; evaluate(); }
         DiProperty(const getter_t &gter, const setter_t &ster) : getter(gter), setter(ster) { type = p_type; evaluate(); }
 
-        void operator=(const T &t) {
+        void operator=(T &t) {
             value = t;
             if (setter){
                 setter(t);

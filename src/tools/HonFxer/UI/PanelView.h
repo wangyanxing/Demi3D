@@ -23,7 +23,7 @@ namespace tools
 
     public:
 
-        PanelGroup* AddGroup();
+        Demi::DiPanelGroup* AddGroup();
 	};
 
     

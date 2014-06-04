@@ -29,4 +29,24 @@
 			<State name="pushed_checked" offset="96 149 18 18"/>
 		</BasisSkin>
 	</Resource>
+  <Resource type="ResourceSkin" name="ButtonRoundExpand" size="14 14" texture="FrameworkSkin.png" >
+    <BasisSkin type="SubSkin" offset="0 0 14 14" align="Stretch">
+      <State name="disabled" offset="329 134 14 14"/>
+      <State name="normal" offset="329 134 14 14"/>
+      <State name="highlighted" offset="329 148 14 14"/>
+      <State name="pushed" offset="329 162 14 14"/>
+      <State name="disabled_checked" offset="344 134 14 14"/>
+      <State name="normal_checked" offset="344 134 14 14"/>
+      <State name="highlighted_checked" offset="344 148 14 14"/>
+      <State name="pushed_checked" offset="344 162 14 14"/>
+    </BasisSkin>
+  </Resource>
+  <Resource type="ResourceSkin" name="ColorButton" size="23 19" texture="FrameworkSkin.png" >
+    <BasisSkin type="SubSkin" offset="0 0 23 19" align="Stretch">
+      <State name="disabled" offset="409 172 23 19"/>
+      <State name="normal" offset="409 172 23 19"/>
+      <State name="highlighted" offset="409 172 23 19"/>
+      <State name="pushed" offset="409 172 23 19"/>
+    </BasisSkin>
+  </Resource>
 </MyGUI>

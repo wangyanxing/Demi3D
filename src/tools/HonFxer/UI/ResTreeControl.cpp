@@ -37,7 +37,7 @@ namespace tools
 
     ResTreeControl::~ResTreeControl()
 	{
-        SAFE_DELETE(mContextMenu);
+        //SAFE_DELETE(mContextMenu);
 	}
 
     void ResTreeControl::NotifyTreeNodePrepare(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)

@@ -51,7 +51,8 @@ namespace Demi
         if (mMainPane)
             mMainPane->Update();
 
-        mEditorMgr->Update();
+        if (Driver)
+            mEditorMgr->Update();
     }
 
     void HonFxerApp::Close()

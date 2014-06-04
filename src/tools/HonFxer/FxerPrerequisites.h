@@ -24,6 +24,8 @@ namespace Demi
     class ContextMenu;
     class DiEditorManager;
     class DiBaseEditorObj; 
+    class DiPanelGroup;
+    class DiPropertyItem;
 }
 
 namespace tools
@@ -41,7 +43,6 @@ namespace tools
     class SetGameLocWindow;
     class PanelView;
     class PropertiesControl;
-    class PanelGroup;
 }
 
 namespace MyGUI

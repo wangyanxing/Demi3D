@@ -31,15 +31,12 @@ namespace Demi
             DI_DELETE p;
         mPropGroups.clear();
 
-        OnDestroyUI();
-        OnDestroy();
-
         for (auto ch : mChildren)
             DI_DELETE ch;
         mChildren.clear();
 
-        if (mParent)
-            mParent->RemoveChild(this);
+        OnDestroyUI();
+        OnDestroy();
     }
 
     void DiBaseEditorObj::OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection)
@@ -71,7 +68,6 @@ namespace Demi
             [child](const DiBaseEditorObj* o) { return o == child; });
         if (it != mChildren.end())
         {
-            SAFE_DELETE(*it);
             mChildren.erase(it);
         }
         else

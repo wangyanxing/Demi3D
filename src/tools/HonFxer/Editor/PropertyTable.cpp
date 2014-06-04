@@ -59,7 +59,5 @@ namespace Demi
         
         for (auto p : mProperties)
             group->AddItem(p->mCaption, p->mProperty);
-
-        group->FinishAddItem();
     }
 }

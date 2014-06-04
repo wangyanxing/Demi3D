@@ -13,76 +13,87 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "FxerPch.h"
 #include "PanelGroup.h"
+#include "PropertyItem.h"
 
-namespace tools
+namespace Demi
 {
-    const int height      = 24;
-    const int height_step = 26;
-    const int width       = 55;
-    const int width_step  = 3;
-
-	PanelGroup::PanelGroup() : BasePanelViewItem("")
+	DiPanelGroup::DiPanelGroup() : BasePanelViewItem("")
 	{
 	}
 
-    void PanelGroup::SetCaption(const DiString& cap)
+    DiPanelGroup::~DiPanelGroup()
+    {
+        for (auto r : mItems)
+        {
+            DI_DELETE r;
+        }
+    }
+
+    void DiPanelGroup::SetCaption(const DiString& cap)
     {
         mPanelCell->setCaption(cap.c_str());
     }
 
-    void PanelGroup::AddItem(const DiString& caption, DiPropertyBase* prop)
+    void DiPanelGroup::AddItem(const DiString& caption, DiPropertyBase* prop)
     {
         auto propType = prop->getType();
+
+        DiPropertyItem* item = nullptr;
 
         switch (propType)
         {
         case Demi::PROPERTY_STRING:
         case Demi::PROPERTY_INT:
         case Demi::PROPERTY_FLOAT:
-            AddSimpleInputItem(caption, prop);
+            item = DI_NEW DiNumericPropertyItem(this, prop, propType);
             break;
         case Demi::PROPERTY_BOOL:
-            AddCheckItem(caption, prop);
+            item = DI_NEW DiBoolPropertyItem(this, prop, propType);
             break;
         case Demi::PROPERTY_VEC2:
-            break;
         case Demi::PROPERTY_VEC3:
-            break;
         case Demi::PROPERTY_VEC4:
-            break;
         case Demi::PROPERTY_QUAT:
+            item = DI_NEW DiVectorPropertyItem(this, prop, propType);
+            break;
             break;
         case Demi::PROPERTY_COLOR:
+            item = DI_NEW DiColorPropertyItem(this, prop, propType);
             break;
         case Demi::PROPERTY_DYN_ATTR:
             break;
         default:
             DI_WARNING("Invalid item type: %d", propType);
         }
+
+        if (item)
+        {
+            item->CreateUI(caption);
+            mItems.push_back(item);
+            mPanelCell->setClientHeight(GetCurrentHeight(), false);
+        }
     }
 
-    void PanelGroup::AddSimpleInputItem(const DiString& caption, DiPropertyBase* prop)
+    int DiPanelGroup::GetCurrentHeight()
     {
-        MyGUI::TextBox* text = mWidgetClient->createWidget<MyGUI::TextBox>("TextBox",
-            MyGUI::IntCoord(width_step, mCurrentHeight, width, height), MyGUI::Align::Left | MyGUI::Align::Top);
-        text->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
-        text->setCaption(caption.c_str());
-
-        MyGUI::EditBox* edit = mWidgetClient->createWidget<MyGUI::EditBox>("Edit",
-            MyGUI::IntCoord(width_step + width_step + width, mCurrentHeight,
-            mWidgetClient->getWidth() - (width_step + width_step + width_step + width), height),
-            MyGUI::Align::HStretch | MyGUI::Align::Top);
-
-        mCurrentHeight += height_step;
+        int ret = 0;
+        for (auto item : mItems)
+        {
+            ret += item->GetHeight();
+        }
+        return ret;
     }
 
-    void PanelGroup::AddCheckItem(const DiString& caption, DiPropertyBase* prop)
+    void DiPanelGroup::NotifyRearrangeHeight()
     {
+        int height = 0;
+        for (auto item : mItems)
+        {
+            item->RearrangeUI(height);
+            height += item->GetHeight();
+        }
 
+        mPanelCell->setClientHeight(GetCurrentHeight(), false);
     }
 
-    void PanelGroup::FinishAddItem()
-    {
-        mPanelCell->setClientHeight(mCurrentHeight, false);
-    }
 }

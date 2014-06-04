@@ -9,9 +9,9 @@
 
 namespace tools
 {
-    PanelGroup* PanelView::AddGroup()
+    Demi::DiPanelGroup* PanelView::AddGroup()
     {
-        PanelGroup* g = new PanelGroup();
+        Demi::DiPanelGroup* g = new Demi::DiPanelGroup();
         addItem(g);
         return g;
     }
