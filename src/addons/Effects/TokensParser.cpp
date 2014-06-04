@@ -528,7 +528,8 @@ namespace Demi
         for (size_t i = 0; i < elements; ++i)
         {
             auto ele = system->GetElement(i);
-            WriteElement(ele, node.CreateChild("Element"));
+            auto nd = node.CreateChild("Element");
+            WriteElement(ele, nd);
         }
     }
 
@@ -536,7 +537,8 @@ namespace Demi
     {
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
         DiXMLElement root = xmlfile->CreateRoot("Effects");
-        WriteSystem(val, root.CreateChild("ParticleSystem"));
+        auto nd = root.CreateChild("ParticleSystem");
+        WriteSystem(val, nd);
         xmlfile->Save(filePath);
     }
 
