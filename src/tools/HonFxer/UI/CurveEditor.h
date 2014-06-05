@@ -30,8 +30,6 @@ namespace Demi
 	//%LE Widget_Declaration list start
         ATTRIBUTE_FIELD_WIDGET_NAME(CurveEditor, mCurveCanvasWidget, "CurveCanvas");
         MyGUI::Widget* mCurveCanvasWidget;
-        ATTRIBUTE_FIELD_WIDGET_NAME(CurveEditor, mCurveTypeComboBox, "CurveType");
-        MyGUI::ComboBox* mCurveTypeComboBox;
         ATTRIBUTE_FIELD_WIDGET_NAME(CurveEditor, mEditTimeEditBox, "EditTime");
         MyGUI::EditBox* mEditTimeEditBox;
         ATTRIBUTE_FIELD_WIDGET_NAME(CurveEditor, mEditValueEditBox, "EditValue");
@@ -52,7 +50,31 @@ namespace Demi
 
         void RefreshNumbers();
 
-        void DeleteNumbers();
+        void RefreshCurve();
+
+        void DeleteNumbersX();
+
+        void DeleteNumbersY();
+
+        void NotifyRangeEditAccept(MyGUI::EditBox* _sender);
+
+        void NotifyRangeLostFocus(MyGUI::Widget* _sender, MyGUI::Widget* _old);
+
+        void NotfyMousePressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+
+        void NotifyPointMove(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+
+        void NotifyPointPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+
+        void NotifySplineChecked(MyGUI::Widget* _sender);
+
+        void AddButton(int _left, int _top);
+
+        bool CheckPosition(int _left, int _top);
+
+        DiVec2 GetValue(int _left, int _top);
+
+        void RefreshRange();
 
     protected:
 
@@ -65,6 +87,12 @@ namespace Demi
         DiVector<MyGUI::TextBox*> mNumbersX;
 
         DiVector<MyGUI::TextBox*> mNumbersY;
+
+        MyGUI::Widget* mCanvasWidget{ nullptr };
+
+        DiVector<MyGUI::Button*> mButtons;
+
+        MyGUI::Button* mSplineButton;
     };
 
 } // namespace Demi
