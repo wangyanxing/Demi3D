@@ -97,6 +97,8 @@ namespace MyGUI
         DiRenderUnit* mSharedUnit;
         
         DiMaterialPtr mSharedMaterial;
+
+        DiMaterialPtr mSharedLineMaterial;
 	};
 
 } // namespace MyGUI

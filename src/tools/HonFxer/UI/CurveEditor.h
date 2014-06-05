@@ -50,10 +50,22 @@ namespace Demi
 
         void InitGrid();
 
+        void RefreshNumbers();
+
+        void DeleteNumbers();
+
+    protected:
+
+        DiVec2 mValueRange;
+
         MyGUI::PolygonalSkin* mCurveCanvas{ nullptr };
 
         MyGUI::PolygonalSkin* mCurveLines{ nullptr };
-	};
+
+        DiVector<MyGUI::TextBox*> mNumbersX;
+
+        DiVector<MyGUI::TextBox*> mNumbersY;
+    };
 
 } // namespace Demi
 

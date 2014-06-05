@@ -238,7 +238,8 @@ namespace MyGUI
 		MYGUI_ASSERT(!mRenderItem, "mRenderItem must be nullptr");
 
 		mNode = _node;
-		mRenderItem = mNode->addToRenderItem(_texture, true, false);
+        mRenderItem = mNode->addToRenderItem(_texture, true, CreateLineSets);
+        mRenderItem->setManualRender(false);
 		mRenderItem->addDrawItem(this, mVertexCount);
 	}
 
@@ -264,19 +265,24 @@ namespace MyGUI
 
         if (mLineMode)
         {
-            size_t size = mLinePoints.size();
+            if (mGeometryOutdated)
+                _rebuildLines();
+
+            size_t size = mResultVerticiesPos.size();
             for (size_t i = 0; i < size; ++i)
             {
-                verticies[i].set(mLinePoints[i].left, mLinePoints[i].top, vertex_z, mLinePoints[i].left, mLinePoints[i].top, mCurrentColour);
+                uint32 colour = texture_utility::toColourARGB(mResultVerticiesColors[i]);
+                texture_utility::convertColour(colour, mVertexFormat);
+
+                verticies[i].set(mResultVerticiesPos[i].left, mResultVerticiesPos[i].top, 
+                    vertex_z, mResultVerticiesPos[i].left, mResultVerticiesPos[i].top, colour);
             }
             mRenderItem->setLastVertexCount(size);
         }
         else
         {
             if (mGeometryOutdated)
-            {
                 _rebuildGeometry();
-            }
 
             size_t size = mResultVerticiesPos.size();
             for (size_t i = 0; i < size; ++i)
@@ -312,6 +318,26 @@ namespace MyGUI
 		if (nullptr != mNode)
 			mNode->outOfDate(mRenderItem);
 	}
+
+    void PolygonalSkin::_rebuildLines()
+    {
+        if (mLinePoints.size() < 2) return;
+        if (!mRenderItem || !mRenderItem->getRenderTarget()) return;
+
+        mGeometryOutdated = false;
+
+        // now calculate widget base offset and then resulting position in screen coordinates
+        const RenderTargetInfo& info = mRenderItem->getRenderTarget()->getInfo();
+        float vertex_left_base = ((info.pixScaleX * (float)(mCroppedParent->getAbsoluteLeft()) + info.hOffset) * 2) - 1;
+        float vertex_top_base = -(((info.pixScaleY * (float)(mCroppedParent->getAbsoluteTop()) + info.vOffset) * 2) - 1);
+
+        mResultVerticiesPos.resize(mLinePoints.size());
+        for (size_t i = 0; i < mLinePoints.size(); ++i)
+        {
+            mResultVerticiesPos[i].left = vertex_left_base + mLinePoints[i].left * info.pixScaleX * 2;
+            mResultVerticiesPos[i].top = vertex_top_base + mLinePoints[i].top * info.pixScaleY * -2;
+        }
+    }
 
 	void PolygonalSkin::_rebuildGeometry()
 	{
@@ -557,5 +583,7 @@ namespace MyGUI
 		result.top *= width;
 		return result;
 	}
+
+    bool PolygonalSkin::CreateLineSets = false;
 
 } // namespace MyGUI

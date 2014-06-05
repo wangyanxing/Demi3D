@@ -74,17 +74,13 @@ namespace MyGUI
 #if MYGUI_DEBUG_MODE == 1
 		std::string mTextureName;
 #endif
-
 		ITexture* mTexture;
 
-		size_t mNeedVertexCount;
-
-		bool mOutOfDate;
 		VectorDrawItem mDrawItems;
 
-		// колличество отрендренных реально вершин
-		size_t mCountVertex;
-
+        size_t mNeedVertexCount;
+        bool mOutOfDate;
+        size_t mCountVertex;
 		bool mCurrentUpdate;
 		Vertex* mCurrentVertex;
 		size_t mLastVertexCount;

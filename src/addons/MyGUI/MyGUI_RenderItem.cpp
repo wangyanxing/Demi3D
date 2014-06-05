@@ -67,21 +67,24 @@ namespace MyGUI
 			mCountVertex = 0;
 			Vertex* buffer = (Vertex*)mVertexBuffer->lock();
 
-			for (VectorDrawItem::iterator iter = mDrawItems.begin(); iter != mDrawItems.end(); ++iter)
-			{
-				// перед вызовом запоминаем позицию в буфере
-				mCurrentVertex = buffer;
-				mLastVertexCount = 0;
+            if (buffer)
+            {
+                for (VectorDrawItem::iterator iter = mDrawItems.begin(); iter != mDrawItems.end(); ++iter)
+                {
+                    // перед вызовом запоминаем позицию в буфере
+                    mCurrentVertex = buffer;
+                    mLastVertexCount = 0;
 
-				(*iter).first->doRender();
+                    (*iter).first->doRender();
 
-				// колличество отрисованных вершин
-				MYGUI_DEBUG_ASSERT(mLastVertexCount <= (*iter).second, "It is too much vertexes");
-				buffer += mLastVertexCount;
-				mCountVertex += mLastVertexCount;
-			}
+                    // колличество отрисованных вершин
+                    MYGUI_DEBUG_ASSERT(mLastVertexCount <= (*iter).second, "It is too much vertexes");
+                    buffer += mLastVertexCount;
+                    mCountVertex += mLastVertexCount;
+                }
 
-			mVertexBuffer->unlock();
+                mVertexBuffer->unlock();
+            }
 
 			mOutOfDate = false;
 		}
@@ -138,7 +141,6 @@ namespace MyGUI
 	void RenderItem::addDrawItem(ISubWidget* _item, size_t _count)
 	{
 
-// проверяем только в дебаге
 #if MYGUI_DEBUG_MODE == 1
 		for (VectorDrawItem::iterator iter = mDrawItems.begin(); iter != mDrawItems.end(); ++iter)
 		{
@@ -159,7 +161,6 @@ namespace MyGUI
 		{
 			if ((*iter).first == _item)
 			{
-				// если нужно меньше, то ниче не делаем
 				if ((*iter).second < _count)
 				{
 					mNeedVertexCount -= (*iter).second;

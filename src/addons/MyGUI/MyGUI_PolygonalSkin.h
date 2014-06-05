@@ -30,8 +30,7 @@
 namespace MyGUI
 {
 
-	class MYGUI_EXPORT PolygonalSkin :
-		public ISubWidgetRect
+	class MYGUI_EXPORT PolygonalSkin : public ISubWidgetRect
 	{
 		MYGUI_RTTI_DERIVED( PolygonalSkin )
 
@@ -41,6 +40,8 @@ namespace MyGUI
 
 		/** Set line points. */
 		void setPoints(const std::vector<FloatPoint>& _points, bool lineMode = false);
+
+        void setColors(const std::vector<Colour>& _colours) { mResultVerticiesColors = _colours; }
 
 		/** Set line width in pixels. */
 		void setWidth(float _width);
@@ -54,7 +55,6 @@ namespace MyGUI
 		virtual void createDrawItem(ITexture* _texture, ILayerNode* _node);
 		virtual void destroyDrawItem();
 
-		// метод для отрисовки себя
 		virtual void doRender();
 
 		/*internal:*/
@@ -66,8 +66,14 @@ namespace MyGUI
 		virtual void _setUVSet(const FloatRect& _rect);
 		virtual void _setColour(const Colour& _value);
 
+        // yep, it's pretty fucking ugly
+        static bool CreateLineSets;
+
 	protected:
 		void _rebuildGeometry();
+
+        void _rebuildLines();
+
 		FloatPoint _getPerpendicular(const FloatPoint& _point1, const FloatPoint& _point2);
 		// line from center of p1-p2 line to p3
 		FloatPoint _getMiddleLine(const FloatPoint& _point1, const FloatPoint& _point2, const FloatPoint& _point3);
@@ -80,6 +86,7 @@ namespace MyGUI
 		float mLineLength;
 
 		std::vector<FloatPoint> mResultVerticiesPos;
+        std::vector<Colour> mResultVerticiesColors;
 		std::vector<FloatPoint> mResultVerticiesUV;
 
 		size_t mVertexCount;

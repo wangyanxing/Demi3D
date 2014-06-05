@@ -45,6 +45,8 @@ namespace MyGUI
 
 	Vertex* DemiVertexBuffer::lock()
 	{
+        if (!mVertexBuffer)
+            return nullptr;
 		void* lockPtr = mVertexBuffer->Lock(0,mVertexBuffer->GetBufferSize());
 		return (Vertex*)lockPtr;
 	}

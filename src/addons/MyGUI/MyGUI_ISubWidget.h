@@ -59,10 +59,16 @@ namespace MyGUI
 		{
 			mAlign = _value;
 		}
+
 		virtual void setVisible(bool _value)
 		{
 			mVisible = _value;
 		}
+
+        virtual void setAsLine(bool _value)
+        {
+            mAsLines = _value;
+        }
 
 		virtual void _updateView() { }
 		virtual void _correctView() { }
@@ -72,8 +78,9 @@ namespace MyGUI
 		virtual void doManualRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count) { }
 
 	protected:
-		Align mAlign;
-		bool mVisible;
+        Align mAlign;
+        bool mVisible{ true };
+        bool mAsLines{ false };
 	};
 
 } // namespace MyGUI

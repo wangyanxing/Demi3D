@@ -54,6 +54,11 @@ namespace MyGUI
         mSharedMaterial->SetCullMode(CULL_NONE);
         mSharedMaterial->SetDepthCheck(false);
 
+        mSharedLineMaterial = DiMaterial::QuickCreate("gui_v", "guiline_p");
+        mSharedLineMaterial->SetBlendMode(BLEND_ALPHA);
+        mSharedLineMaterial->SetCullMode(CULL_NONE);
+        mSharedLineMaterial->SetDepthCheck(false);
+
 		mUpdate = false;
 
 		MYGUI_PLATFORM_LOG(Info, getClassTypeName() << " successfully initialized");
@@ -86,15 +91,21 @@ namespace MyGUI
 
     void DemiRenderManager::doRender(IVertexBuffer* _buffer, ITexture* _texture, size_t _count, bool renderLineList)
 	{
-		DemiTexture* tex = static_cast<DemiTexture*>(_texture);
-        mSharedMaterial->GetShaderParameter()->WriteTexture2D("map", tex->getTexture());
-//        mSharedMaterial->GetShaderParameter()->Bind();
-        mSharedMaterial->Bind();
+        if (renderLineList)
+        {
+            mSharedLineMaterial->Bind();
+        }
+        else
+        {
+            DemiTexture* tex = static_cast<DemiTexture*>(_texture);
+            mSharedMaterial->GetShaderParameter()->WriteTexture2D("map", tex->getTexture());
+            mSharedMaterial->Bind();
+        }
         
 		DemiVertexBuffer* vb = static_cast<DemiVertexBuffer*>(_buffer);
         mSharedUnit->mSourceData[0] = vb->getVertexBuffer();
         mSharedUnit->mVerticesNum = _count;
-        mSharedUnit->mPrimitiveCount = mSharedUnit->mVerticesNum / 3;
+        mSharedUnit->mPrimitiveCount = renderLineList ? mSharedUnit->mVerticesNum / 2 : mSharedUnit->mVerticesNum / 3;
         mSharedUnit->mPrimitiveType = renderLineList ? PT_LINELIST : PT_TRIANGLELIST;
 		
         DiBase::Driver->RenderGeometry(mSharedUnit);
