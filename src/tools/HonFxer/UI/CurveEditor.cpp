@@ -69,6 +69,10 @@ namespace Demi
 
         RefreshNumbers();
 
+        MyGUI::Window* window = mMainWidget->castType<MyGUI::Window>(false);
+        if (window != nullptr) 
+            window->eventWindowButtonPressed += newDelegate(this, &CurveEditor::NotifyWindowButtonPressed);
+
         mSplineButton = mMainWidget->createWidget<MyGUI::Button>("CheckBox",
             MyGUI::IntCoord(15, 10, 95, 25),
             MyGUI::Align::Left | MyGUI::Align::Top);
@@ -171,7 +175,7 @@ namespace Demi
     void CurveEditor::DeleteNumbersX()
     {
         for (auto i : mNumbersX)
-            delete i;
+            mCurveCanvasWidget->_destroyChildWidget(i);
         mNumbersX.clear();
     }
 
@@ -190,9 +194,7 @@ namespace Demi
     void CurveEditor::DeleteNumbersY()
     {
         for (auto i : mNumbersY)
-        {
             mCurveCanvasWidget->_destroyChildWidget(i);
-        }
         mNumbersY.clear();
     }
 
@@ -364,6 +366,14 @@ namespace Demi
         mValueRange.y = maxStr.AsFloat();
 
         RefreshNumbers();
+    }
+
+    void CurveEditor::NotifyWindowButtonPressed(MyGUI::Window* _sender, const std::string& _button)
+    {
+        if (_button == "close")
+        {
+            mMainWidget->setVisible(false);
+        }
     }
 
 } // Demi

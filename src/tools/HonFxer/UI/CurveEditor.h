@@ -68,6 +68,8 @@ namespace Demi
 
         void NotifySplineChecked(MyGUI::Widget* _sender);
 
+        void NotifyWindowButtonPressed(MyGUI::Window* _sender, const std::string& _button);
+
         void AddButton(int _left, int _top);
 
         bool CheckPosition(int _left, int _top);
