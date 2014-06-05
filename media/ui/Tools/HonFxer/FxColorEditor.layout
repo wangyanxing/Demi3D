@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="WindowCSX" position="15 65 785 300" layer="Popup" name="_Main">
+        <Property key="Caption" value="Color Editor"/>
+        <Property key="MinSize" value="785 300"/>
+        <Property key="MaxSize" value="785 300"/>
+        <Widget type="Widget" skin="PanelSkin" position="15 15 750 240" align="Stretch" name="CurveCanvas"/>
+    </Widget>
+</MyGUI>

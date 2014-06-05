@@ -73,29 +73,39 @@ namespace MyGUI
 		finalPoints.reserve(_points.size());
 
 		mLineLength = 0.0f;
-		FloatPoint point = _points[0];
-		finalPoints.push_back(point);
-		// ignore repeating points
-		for (std::vector<FloatPoint>::const_iterator iter = _points.begin() + 1; iter != _points.end(); ++iter)
-		{
-			if (point != *iter)
-			{
-				finalPoints.push_back(*iter);
-				mLineLength += len(iter->left - point.left, iter->top - point.top);
-				point = *iter;
-			}
-		}
+        if(mLineMode)
+        {
+            mLinePoints = _points;
+        }
+        else
+        {
+            FloatPoint point = _points[0];
+            finalPoints.push_back(point);
+            // ignore repeating points
+            for (std::vector<FloatPoint>::const_iterator iter = _points.begin() + 1; iter != _points.end(); ++iter)
+            {
+                if (point != *iter)
+                {
+                    finalPoints.push_back(*iter);
+                    mLineLength += len(iter->left - point.left, iter->top - point.top);
+                    point = *iter;
+                }
+            }
+            mLinePoints = finalPoints;
+        }
 
-		mLinePoints = finalPoints;
-
+        size_t count = mLinePoints.size();
+        if (!mLineMode)
+        {
 #ifdef MYGUI_NO_POLYGONAL_SKIN_CROPPING
-		size_t count = (mLinePoints.size() - 1) * VertexQuad::VertexCount * 2;
+            count = (mLinePoints.size() - 1) * VertexQuad::VertexCount * 2;
 #else
-		// it's too hard to calculate maximum possible verticies count and worst
-		// approximation gives 7 times more verticies than in not cropped geometry
-		// so we multiply count by 2, because this looks enough
-		size_t count = (mLinePoints.size() - 1) * VertexQuad::VertexCount * 2 * 2;
+            // it's too hard to calculate maximum possible verticies count and worst
+            // approximation gives 7 times more verticies than in not cropped geometry
+            // so we multiply count by 2, because this looks enough
+            count = (mLinePoints.size() - 1) * VertexQuad::VertexCount * 2 * 2;
 #endif
+        }
 		if (count > mVertexCount)
 		{
 			mVertexCount = count;

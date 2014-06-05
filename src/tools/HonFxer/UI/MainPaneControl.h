@@ -40,6 +40,8 @@ namespace tools
         WorkSpaceControl* mMainWorkspaceControl{ nullptr };
 
         CurveEditor* mCurveEditor{ nullptr };
+        
+        ColorEditor* mColorEditor{ nullptr };
 	};
 
 } // namespace tools

@@ -38,9 +38,9 @@ namespace Demi
     {
         DiParticleController::CopyTo(affector);
 
-        DiColorController* colourAffector        = static_cast<DiColorController*>(affector);
+        DiColorController* colourAffector = static_cast<DiColorController*>(affector);
         colourAffector->mColourMap        = mColourMap;
-        colourAffector->mColourOperation    = mColourOperation;
+        colourAffector->mColourOperation  = mColourOperation;
     }
     
     const DiColorController::ColourOperation& DiColorController::GetColourOperation (void) const
@@ -90,23 +90,16 @@ namespace Demi
         ColourMapIterator it1 = FindNearestColourMapIterator(timeFraction);
         ColourMapIterator it2 = it1;
         it2++;
+        
         if (it2 != mColourMap.end())
-        {
             colour = it1->second + ((it2->second - it1->second) * ((timeFraction - it1->first)/(it2->first - it1->first)));
-        }
         else
-        {
             colour = it1->second;
-        }
 
         if (mColourOperation == CAO_SET)
-        {
             visualParticle->colour = colour;
-        }
         else
-        {
             visualParticle->colour = colour * visualParticle->originalColour;
-        }
     }
     
     DiColorController::ColourMapIterator DiColorController::FindNearestColourMapIterator(float timeFraction)
@@ -117,13 +110,9 @@ namespace Demi
             if (timeFraction < it->first)
             {
                 if (it == mColourMap.begin())
-                {
                     return it;
-                }
                 else
-                {
                     return --it;
-                }
             }
         }
 

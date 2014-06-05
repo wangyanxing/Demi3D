@@ -12,7 +12,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "FxerPch.h"
-#include "CurveEditor.h"
+#include "ColorEditor.h"
 #include "MyGUI_PolygonalSkin.h"
 
 #define gridNumX 20
@@ -20,50 +20,36 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-	CurveEditor::CurveEditor(MyGUI::Widget* _parent)
+	ColorEditor::ColorEditor(MyGUI::Widget* _parent)
 	{
         initialiseByAttributes(this, _parent);
 
-        mEditTimeEditBox->setEditReadOnly(true);
-        mEditValueEditBox->setEditReadOnly(true);
-
-        mRangeMinEditBox->eventKeyLostFocus     += MyGUI::newDelegate(this, &CurveEditor::NotifyRangeLostFocus);
-        mRangeMinEditBox->eventEditSelectAccept += MyGUI::newDelegate(this, &CurveEditor::NotifyRangeEditAccept);
-        mRangeMaxEditBox->eventKeyLostFocus     += MyGUI::newDelegate(this, &CurveEditor::NotifyRangeLostFocus);
-        mRangeMaxEditBox->eventEditSelectAccept += MyGUI::newDelegate(this, &CurveEditor::NotifyRangeEditAccept);
-
-        MyGUI::PolygonalSkin::CreateLineSets = false;
+        MyGUI::PolygonalSkin::CreateLineSets = true;
         MyGUI::Widget* widget = mCurveCanvasWidget->createWidget<MyGUI::Widget>("PolygonalSkin",
             MyGUI::IntCoord(MyGUI::IntPoint(), mCurveCanvasWidget->getSize()), MyGUI::Align::Stretch);
         widget->setColour(MyGUI::Colour::Red);
         MyGUI::ISubWidget* main = widget->getSubWidgetMain();
         mCurveLines = main->castType<MyGUI::PolygonalSkin>();
-
+        
         MyGUI::PolygonalSkin::CreateLineSets = true;
         widget = mCurveCanvasWidget->createWidget<MyGUI::Widget>("PolygonalSkin",
             MyGUI::IntCoord(MyGUI::IntPoint(), mCurveCanvasWidget->getSize()), MyGUI::Align::Stretch);
         widget->setColour(MyGUI::Colour::Red);
         main = widget->getSubWidgetMain();
         mCurveCanvas = main->castType<MyGUI::PolygonalSkin>();
-        widget->eventMouseButtonPressed += MyGUI::newDelegate(this, &CurveEditor::NotfyMousePressed);
+        widget->eventMouseButtonPressed += MyGUI::newDelegate(this, &ColorEditor::NotfyMousePressed);
         MyGUI::PolygonalSkin::CreateLineSets = false;
         mCanvasWidget = widget;
 
-        mCurveCanvas->setWidth(5.0f);
+        mCurveCanvas->setWidth(10.0f);
         std::vector<MyGUI::FloatPoint> mLinePoints;
         mLinePoints.push_back(MyGUI::FloatPoint(0, 0));
         mLinePoints.push_back(MyGUI::FloatPoint(0, 1));
-        mCurveCanvas->setPoints(mLinePoints);
+        mCurveCanvas->setPoints(mLinePoints,true);
         mLinePoints.clear();
-        mCurveCanvas->setPoints(mLinePoints); // todo fix it 
+        mCurveCanvas->setPoints(mLinePoints,true); // todo fix it
 
         mCurveLines->_setColour(MyGUI::Colour(0.2f, 0.2f, 0.2f));
-
-        // default range
-        mValueRange.x = 0;
-        mValueRange.y = 10;
-        mRangeMinEditBox->setCaption("0");
-        mRangeMaxEditBox->setCaption("10");
 
         InitGrid();
 
@@ -71,22 +57,26 @@ namespace Demi
 
         MyGUI::Window* window = mMainWidget->castType<MyGUI::Window>(false);
         if (window != nullptr) 
-            window->eventWindowButtonPressed += newDelegate(this, &CurveEditor::NotifyWindowButtonPressed);
-
-        mSplineButton = mMainWidget->createWidget<MyGUI::Button>("CheckBox",
-            MyGUI::IntCoord(15, 10, 95, 25),
-            MyGUI::Align::Left | MyGUI::Align::Top);
-        mSplineButton->setCaption("Use Spline");
-        mSplineButton->eventMouseButtonClick += MyGUI::newDelegate(this, &CurveEditor::NotifySplineChecked);
+            window->eventWindowButtonPressed += newDelegate(this, &ColorEditor::NotifyWindowButtonPressed);
+        
+        auto pos = mCanvasWidget->getAbsolutePosition();
+        auto size = mCurveCanvasWidget->getSize();
+        auto width = size.width;
+        auto height = size.height;
+        auto inteveralX = width / (gridNumX + 2);
+        auto inteveralY = height / (gridNumY + 2);
+        
+        AddButton(inteveralX - 1, inteveralY + 3);
+        AddButton(inteveralX * (gridNumX + 1) - 1, inteveralY + 3);
     }
 
-	CurveEditor::~CurveEditor()
+	ColorEditor::~ColorEditor()
 	{
         DeleteNumbersX();
         DeleteNumbersY();
     }
 
-    void CurveEditor::InitGrid()
+    void ColorEditor::InitGrid()
     {
         auto size = mCurveCanvasWidget->getSize();
         auto width = size.width;
@@ -145,7 +135,7 @@ namespace Demi
         }
     }
 
-    void CurveEditor::RefreshNumbers()
+    void ColorEditor::RefreshNumbers()
     {
         DeleteNumbersY();
 
@@ -172,39 +162,38 @@ namespace Demi
         }
     }
 
-    void CurveEditor::DeleteNumbersX()
+    void ColorEditor::DeleteNumbersX()
     {
         for (auto i : mNumbersX)
             mCurveCanvasWidget->_destroyChildWidget(i);
         mNumbersX.clear();
     }
 
-    void CurveEditor::NotfyMousePressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    void ColorEditor::NotfyMousePressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
     {
         if (_id != MyGUI::MouseButton::Left)
             return;
 
         auto pos = _sender->getAbsolutePosition();
+        
         if (CheckPosition(_left, _top))
-        {
             AddButton(_left - pos.left, _top - pos.top);
-        }
     }
 
-    void CurveEditor::DeleteNumbersY()
+    void ColorEditor::DeleteNumbersY()
     {
         for (auto i : mNumbersY)
             mCurveCanvasWidget->_destroyChildWidget(i);
         mNumbersY.clear();
     }
 
-    void CurveEditor::AddButton(int _left, int _top)
+    void ColorEditor::AddButton(int _left, int _top)
     {
         auto btn = mCanvasWidget->createWidget<MyGUI::Button>("RoundButtonSkin",
             MyGUI::IntCoord(_left - 7, _top - 7, 15, 15),
             MyGUI::Align::Left | MyGUI::Align::Top);
-        btn->eventMouseDrag += newDelegate(this, &CurveEditor::NotifyPointMove);
-        btn->eventMouseButtonPressed += newDelegate(this, &CurveEditor::NotifyPointPressed);
+        btn->eventMouseDrag += newDelegate(this, &ColorEditor::NotifyPointMove);
+        btn->eventMouseButtonPressed += newDelegate(this, &ColorEditor::NotifyPointPressed);
 
         mButtons.push_back(btn);
         std::sort(mButtons.begin(), mButtons.end(),
@@ -215,64 +204,54 @@ namespace Demi
         RefreshCurve();
     }
 
-    void CurveEditor::RefreshCurve()
+    void ColorEditor::RefreshCurve()
     {
         if (mButtons.size() < 2)
             return;
 
-        std::vector<MyGUI::FloatPoint> mLinePoints;
-
+        std::vector<MyGUI::FloatPoint> linePoints;
+        std::vector<MyGUI::Colour> colors;
+        
         // line
-        if (!mSplineButton->getStateSelected())
+        for (size_t i = 0; i < mButtons.size() - 1; ++i)
         {
-            for (auto btn : mButtons)
-            {
-                auto pos = btn->getPosition();
-                mLinePoints.push_back(MyGUI::FloatPoint(pos.left + 7, pos.top + 7));
-            }
+            auto pos0 = mButtons[i]->getPosition();
+            auto pos1 = mButtons[i+1]->getPosition();
+            
+            linePoints.push_back(MyGUI::FloatPoint(pos0.left + 7, pos0.top + 7));
+            colors.push_back(MyGUI::Colour::White);
+            
+            linePoints.push_back(MyGUI::FloatPoint(pos1.left + 7, pos1.top + 7));
+            colors.push_back(MyGUI::Colour::White);
         }
-        else
-        {
-            int nums = 100;
-            float step = 1.0f / nums;
-
-            DiSpline spline;
-            for (auto btn : mButtons)
-            {
-                auto pos = btn->getPosition();
-                spline.AddPoint(DiVec3(pos.left + 7, pos.top + 7, 0));
-            }
-
-            for (int i = 0; i < nums; i++)
-            {
-                auto v = spline.Interpolate(i*step);
-                mLinePoints.push_back(MyGUI::FloatPoint(v.x, v.y));
-            }
-        }
-
-        mCurveCanvas->setPoints(mLinePoints);
+        
+        mCurveCanvas->setPoints(linePoints,true);
+        mCurveCanvas->setColors(colors);
     }
 
-    void CurveEditor::NotifyPointMove(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    void ColorEditor::NotifyPointMove(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
     {
         if (_id != MyGUI::MouseButton::Left)
             return;
 
         if (!CheckPosition(_left, _top))
             return;
-
+        
+        auto size = mCurveCanvasWidget->getSize();
+        auto inteveralX = size.width / (gridNumX + 2);
+        auto inteveralY = size.height / (gridNumY + 2);
+    
         auto pos = MyGUI::IntPoint(_left, _top) - _sender->getCroppedParent()->getAbsolutePosition();
-        auto value = GetValue(pos.left, pos.top);
 
+        if(_sender == mButtons.front())
+            pos.left = inteveralX - 1;
+        else if(_sender == mButtons.back())
+            pos.left = inteveralX * (gridNumX + 1) - 1;
+        
         pos.left -= 7;
         pos.top -= 7;
+        
         _sender->setPosition(pos);
-
-        DiString str;
-        str.Format("%.3g", value.x);
-        mEditTimeEditBox->setCaption(str.c_str());
-        str.Format("%.3g", value.y);
-        mEditValueEditBox->setCaption(str.c_str());
 
         std::sort(mButtons.begin(), mButtons.end(),
             [](MyGUI::Button* a, MyGUI::Button* b) {
@@ -282,7 +261,7 @@ namespace Demi
         RefreshCurve();
     }
 
-    bool CurveEditor::CheckPosition(int _left, int _top)
+    bool ColorEditor::CheckPosition(int _left, int _top)
     {
         auto pos = mCanvasWidget->getAbsolutePosition();
 
@@ -304,9 +283,17 @@ namespace Demi
         return false;
     }
 
-    void CurveEditor::NotifyPointPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    void ColorEditor::NotifyPointPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
     {
         if (_id != MyGUI::MouseButton::Right)
+            return;
+        
+        if (mButtons.size() <= 2)
+            return;
+        
+        DI_ASSERT(mButtons.size() >= 2);
+        if(_sender == mButtons.front() ||
+           _sender == mButtons.back())
             return;
 
         auto it = std::find(mButtons.begin(), mButtons.end(), _sender);
@@ -318,13 +305,7 @@ namespace Demi
         }
     }
 
-    void CurveEditor::NotifySplineChecked(MyGUI::Widget* _sender)
-    {
-        mSplineButton->setStateSelected(!mSplineButton->getStateSelected());
-        RefreshCurve();
-    }
-
-    DiVec2 CurveEditor::GetValue(int _left, int _top)
+    DiVec2 ColorEditor::GetValue(int _left, int _top)
     {
         DiVec2 ret;
 
@@ -347,33 +328,10 @@ namespace Demi
         return ret;
     }
 
-    void CurveEditor::NotifyRangeEditAccept(MyGUI::EditBox* _sender)
-    {
-        RefreshRange();
-    }
-
-    void CurveEditor::NotifyRangeLostFocus(MyGUI::Widget* _sender, MyGUI::Widget* _old)
-    {
-        RefreshRange();
-    }
-
-    void CurveEditor::RefreshRange()
-    {
-        DiString minStr = mRangeMinEditBox->getCaption().asUTF8_c_str();
-        DiString maxStr = mRangeMaxEditBox->getCaption().asUTF8_c_str();
-
-        mValueRange.x = minStr.AsFloat();
-        mValueRange.y = maxStr.AsFloat();
-
-        RefreshNumbers();
-    }
-
-    void CurveEditor::NotifyWindowButtonPressed(MyGUI::Window* _sender, const std::string& _button)
+    void ColorEditor::NotifyWindowButtonPressed(MyGUI::Window* _sender, const std::string& _button)
     {
         if (_button == "close")
-        {
             mMainWidget->setVisible(false);
-        }
     }
 
 } // Demi

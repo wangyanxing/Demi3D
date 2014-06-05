@@ -21,6 +21,7 @@ namespace Demi
 {
     class HonFxerApp;
     class CurveEditor;
+    class ColorEditor;
     class K2ModelViewer;
     class ContextMenu;
     class DiEditorManager;
