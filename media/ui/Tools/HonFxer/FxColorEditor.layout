@@ -1,9 +1,61 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Window" skin="WindowCSX" position="15 65 785 300" layer="Popup" name="_Main">
+    <Widget type="Window" skin="WindowCSX" position="15 65 785 270" layer="Popup" name="_Main">
         <Property key="Caption" value="Color Editor"/>
-        <Property key="MinSize" value="785 300"/>
-        <Property key="MaxSize" value="785 300"/>
-        <Widget type="Widget" skin="PanelSkin" position="15 15 750 240" align="Stretch" name="CurveCanvas"/>
+        <Property key="MinSize" value="785 270"/>
+        <Property key="MaxSize" value="785 270"/>
+        <Widget type="Widget" skin="PanelSkin" position="15 15 520 210" align="Stretch" name="CurveCanvas"/>
+
+        <Widget type="Widget" skin="PanelSkin" position="552 15 177 177" align="Left VStretch">
+            <Widget type="ImageBox" skin="ImageBox" position="2 2 171 171" align="Stretch" name="widget_ColourRect">
+                <Widget type="ImageBox" skin="ImageBox" position="0 0 16 16" name="image_Picker">
+                    <Property key="ImageTexture" value="Pick.png"/>
+                    <Property key="ImageCoord" value="0 0 16 16"/>
+                    <Property key="ImageTile" value="16 16"/>
+                    <Property key="ImageIndex" value="0"/>
+                </Widget>
+            </Widget>
+        </Widget>
+
+        <Widget type="Widget" skin="PanelSkin" position="740 15 22 177" align="Left VStretch">
+            <Widget type="ImageBox" skin="ImageBox" position="2 2 16 171" align="Stretch">
+                <Property key="ImageTexture" value="ColourSlider.png"/>
+                <Widget type="ScrollBar" skin="SliderVEmpty" position="0 0 16 171" align="Stretch" name="scroll_Range">
+                    <Property key="Range" value="512"/>
+                    <Property key="RangePosition" value="0"/>
+                    <Property key="Page" value="1"/>
+                    <Property key="ViewPage" value="32"/>
+                </Widget>
+            </Widget>
+        </Widget>
+
+        <Widget type="TextBox" skin="TextBox" position="704 200 72 26" align="Left Top">
+            <Property key="TextAlign" value="Left VCenter"/>
+            <Property key="Caption" value="B"/>
+        </Widget>
+        <Widget type="TextBox" skin="TextBox" position="627 200 72 26" align="Left Top">
+            <Property key="TextAlign" value="Left VCenter"/>
+            <Property key="Caption" value="G"/>
+        </Widget>
+        <Widget type="TextBox" skin="TextBox" position="552 200 72 24" align="Left Top">
+            <Property key="TextAlign" value="Left VCenter"/>
+            <Property key="Caption" value="R"/>
+        </Widget>
+        <Widget type="EditBox" skin="EditBox" position="721 200 44 26" align="Left Top" name="edit_Blue">
+            <Property key="Caption" value="255"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="MaxTextLength" value="3"/>
+        </Widget>
+        <Widget type="EditBox" skin="EditBox" position="644 200 44 26" align="Left Top" name="edit_Green">
+            <Property key="TextAlign" value="Center"/>
+            <Property key="Caption" value="255"/>
+            <Property key="MaxTextLength" value="3"/>
+        </Widget>
+        <Widget type="EditBox" skin="EditBox" position="569 200 44 26" align="Left Top" name="edit_Red">
+            <Property key="Caption" value="255"/>
+            <Property key="TextAlign" value="Center"/>
+            <Property key="MaxTextLength" value="3"/>
+        </Widget>
+
     </Widget>
 </MyGUI>

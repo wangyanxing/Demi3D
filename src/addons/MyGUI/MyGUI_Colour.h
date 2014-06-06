@@ -38,6 +38,42 @@ namespace MyGUI
 		Colour& operator = (Colour const& _value);
 		bool operator == (Colour const& _value) const;
 		bool operator != (Colour const& _value) const;
+        
+        inline Colour operator + ( const Colour& rkVector ) const
+        {
+            Colour kSum;
+            
+            kSum.red = red + rkVector.red;
+            kSum.green = green + rkVector.green;
+            kSum.blue = blue + rkVector.blue;
+            kSum.alpha = alpha + rkVector.alpha;
+            
+            return kSum;
+        }
+        
+        inline Colour operator - ( const Colour& rkVector ) const
+        {
+            Colour kDiff;
+            
+            kDiff.red = red - rkVector.red;
+            kDiff.green = green - rkVector.green;
+            kDiff.blue = blue - rkVector.blue;
+            kDiff.alpha = alpha - rkVector.alpha;
+            
+            return kDiff;
+        }
+        
+        inline Colour operator * (const float fScalar ) const
+        {
+            Colour kProd;
+            
+            kProd.red = fScalar*red;
+            kProd.green = fScalar*green;
+            kProd.blue = fScalar*blue;
+            kProd.alpha = fScalar*alpha;
+            
+            return kProd;
+        }
 
 		void set(float _red, float _green, float _blue, float _alpha = 1);
 

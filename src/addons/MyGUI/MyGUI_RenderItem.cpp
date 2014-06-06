@@ -100,6 +100,12 @@ namespace MyGUI
 				return;
 			}
 #endif
+            if(mRenderLineList)
+            {
+                int x = 0;
+                x++;
+            }
+            
 			// непосредственный рендринг
 			if (mManualRender)
 			{
