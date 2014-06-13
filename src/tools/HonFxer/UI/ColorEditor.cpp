@@ -80,8 +80,7 @@ namespace Demi
         
         InitColorPane();
         
-        AddButton(0, 0);
-        AddButton(mBackground->getSize().width, 0);
+        ResetButtons();
     }
 
 	ColorEditor::~ColorEditor()
@@ -89,6 +88,68 @@ namespace Demi
         DeleteNumbersX();
         DeleteNumbersY();
         DestroyTexture();
+    }
+    
+    void ColorEditor::ResetButtons()
+    {
+        for (auto btn : mButtons)
+            mCanvasWidget->_destroyChildWidget(btn);
+        mButtons.clear();
+        
+        AddButton(0, 0);
+        AddButton(mBackground->getSize().width, 0);
+    }
+    
+    void ColorEditor::SetColors(const ColorEditor::ColorMap& colors)
+    {
+        ResetButtons();
+        
+        auto size = mBackground->getSize();
+        auto width = size.width;
+        auto height = size.height;
+        
+        for (auto i = colors.begin(); i != colors.end(); ++i)
+        {
+            MyGUI::Button* btn = nullptr;
+            
+            if(DiMath::RealEqual(i->first, 0.0f))
+            {
+                mButtons.front()->setPosition(MyGUI::IntPoint(-7, (1.0f - i->second.a) * height - 7));
+                btn = mButtons.front();
+            }
+            else if(DiMath::RealEqual(i->first, 1.0f))
+            {
+                mButtons.back()->setPosition(MyGUI::IntPoint(width - 7, (1.0f - i->second.a) * height - 7));
+                btn = mButtons.back();
+            }
+            else
+            {
+                btn = AddButton(width * i->first, (1.0f - i->second.a) * height);
+            }
+            
+            MyGUI::Colour color(i->second.r,i->second.g,i->second.b,i->second.a);
+            btn->setUserData(MyGUI::Any(color));
+        }
+        
+        RefreshCurve();
+    }
+    
+    ColorEditor::ColorMap ColorEditor::GetColors()
+    {
+        ColorMap ret;
+        auto size = mBackground->getSize();
+        auto width = size.width;
+        
+        for (size_t i = 0; i < mButtons.size(); ++i)
+        {
+            auto pos = mButtons[i]->getPosition();
+            float timePos = (float)(pos.left+7) / (float)width;
+            auto col = *(mButtons[i]->getUserData<MyGUI::Colour>());
+            auto diCol = DiColor(col.red, col.green, col.blue, col.alpha);
+            ret[timePos] = diCol;
+        }
+        
+        return ret;
     }
 
     void ColorEditor::InitGrid()
@@ -278,7 +339,7 @@ namespace Demi
         SetColour(buttonCol);
     }
 
-    void ColorEditor::AddButton(int _left, int _top)
+    MyGUI::Button* ColorEditor::AddButton(int _left, int _top)
     {
         auto btn = mCanvasWidget->createWidget<MyGUI::Button>("RoundButtonSkin",
             MyGUI::IntCoord(_left - 7, _top - 7, 15, 15),
@@ -302,6 +363,8 @@ namespace Demi
         if(mButtons.size() > 2)
             HighlightButton(btn);
         RefreshCurve();
+        
+        return btn;
     }
 
     void ColorEditor::RefreshCurve()
@@ -422,7 +485,7 @@ namespace Demi
 
         ret.x = posX / rangeX;
         ret.y = posY / rangeY;
-        ret.y = mValueRange.x + ret.y*(mValueRange.y - mValueRange.x);
+        ret.y = ret.y;
 
         return ret;
     }
@@ -587,7 +650,7 @@ namespace Demi
     {
         auto final = GetColorAtPoint(_left);
         
-        final.alpha = (_top) / (float)mBackground->getSize().height;
+        final.alpha = 1.0f - (_top+7) / (float)mBackground->getSize().height;
         DiMath::Clamp(final.alpha, 0.0f, 1.0f);
         
         return final;

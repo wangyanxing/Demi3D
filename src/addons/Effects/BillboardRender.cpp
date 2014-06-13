@@ -45,14 +45,13 @@ namespace Demi
         DiParticleRenderer(),
         mBillboardType(DEFAULT_BILLBOARD_TYPE)
     {
-        mBillboardSet = DI_NEW DiBillboardSet("", 0, true);
+        mBillboardSet = make_shared<DiBillboardSet>("", 0, true);
         mBillboardSet->SetBillboardsInWorldSpace(true);
         autoRotate = false;
     }
     
     DiBillboardRenderer::~DiBillboardRenderer(void)
     {
-        SAFE_DELETE(mBillboardSet);
     }
     
     void DiBillboardRenderer::Prepare(DiParticleElement* element)
@@ -250,9 +249,7 @@ namespace Demi
         DiBillboardRenderer* billboardRenderer = static_cast<DiBillboardRenderer*>(renderer);
 
         if (!billboardRenderer->GetBillboardSet())
-        {
             return;
-        }
 
         billboardRenderer->SetBillboardType(GetBillboardType());
         billboardRenderer->SetBillboardOrigin(GetBillboardOrigin());

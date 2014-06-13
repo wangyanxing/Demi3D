@@ -14,12 +14,17 @@ namespace tools
 		assignBase(mMainMenuControl, "MainMenuControl");
 		assignBase(mMainWorkspaceControl, "MainWorkspaceControl");
 
-        //mCurveEditor = new CurveEditor();
+        mCurveEditor = new CurveEditor();
+        mCurveEditor->getMainWidget()->setVisible(false);
+
         mColorEditor = new ColorEditor();
+        mColorEditor->getMainWidget()->setVisible(false);
 	}
 
 	MainPaneControl::~MainPaneControl()
 	{
+        delete mCurveEditor;
+        delete mColorEditor;
 	}
 
 	void MainPaneControl::setVisible(bool _value)

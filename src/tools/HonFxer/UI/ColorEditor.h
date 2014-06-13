@@ -25,6 +25,12 @@ namespace Demi
 	public:
         ColorEditor(MyGUI::Widget* _parent = nullptr);
         virtual ~ColorEditor();
+        
+        typedef DiMap<float, DiColor> ColorMap;
+        
+        void SetColors(const ColorMap& colors);
+        
+        ColorMap GetColors();
 
 	private:
 	//%LE Widget_Declaration list start
@@ -51,6 +57,8 @@ namespace Demi
 	//%LE Widget_Declaration list end
 
     private:
+        
+        void ResetButtons();
         
         void InitColorPane();
 
@@ -82,7 +90,7 @@ namespace Demi
         
         void NotifyScrollChangePosition(MyGUI::ScrollBar* _sender, size_t _position);
 
-        void AddButton(int _left, int _top);
+        MyGUI::Button* AddButton(int _left, int _top);
 
         bool CheckPosition(int _left, int _top);
 
@@ -115,8 +123,6 @@ namespace Demi
         void UpdateButtonColor(const MyGUI::Colour& value);
 
     protected:
-
-        DiVec2 mValueRange{ 0, 1 };
 
         MyGUI::PolygonalSkin* mCurveCanvas{ nullptr };
 

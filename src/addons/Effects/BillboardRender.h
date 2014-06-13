@@ -94,13 +94,13 @@ namespace Demi
 
         virtual void                 CopyTo (DiParticleRenderer* renderer);
 
-        DiBillboardSet*              GetBillboardSet(void) const { return mBillboardSet; }
+        DiBillboardSetPtr            GetBillboardSet(void) const { return mBillboardSet; }
 
         virtual void                 SetVisible(bool visible);
 
     protected:
 
-        DiBillboardSet*              mBillboardSet;
+        DiBillboardSetPtr            mBillboardSet;
 
         BillboardType                mBillboardType;
     };
