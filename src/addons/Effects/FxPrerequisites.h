@@ -40,6 +40,8 @@ namespace Demi
     class DiBoxEmitter;
     class DiCircleEmitter;
     class DiLineEmitter;
+    
+    typedef shared_ptr<DiParticleSystem> DiParticleSystemPtr;
 }
 
 

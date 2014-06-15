@@ -33,7 +33,7 @@ namespace Demi
     friend class DiParticleSystemFactory;
 
     public:
-        DiEffectManager ();
+        DiEffectManager();
 
         ~DiEffectManager (void);
 
@@ -59,8 +59,6 @@ namespace Demi
 
         DiParticleEmitter*          CloneEmitter(DiParticleEmitter* emitter);
 
-        void                        DestroyEmitter(DiParticleEmitter* emitter);
-
         void                        AddControllerFactory(DiParticleControllerFactory* factory);
 
         DiParticleControllerFactory*GetControllerFactory(const DiString& affectorType);
@@ -73,13 +71,9 @@ namespace Demi
 
         DiParticleController*       CloneController(DiParticleController* affector);
 
-        void                        DestroyController(DiParticleController* affector);
-
         DiParticleElement*          CreateElement(void);
 
         DiParticleElement*          CloneElement(DiParticleElement* technique);
-
-        void                        DestroyElement(DiParticleElement* technique);
 
         void                        AddRendererFactory(DiParticleRendererFactory* factory);
 
@@ -93,31 +87,29 @@ namespace Demi
 
         DiParticleRenderer*         CloneRenderer(DiParticleRenderer* renderer);
 
-        void                        DestroyRenderer(DiParticleRenderer* renderer);
+        DiParticleSystemPtr         CreateParticleSystemTemplate(const DiString& name);
 
-        DiParticleSystem*           CreateParticleSystemTemplate(const DiString& name);
-
-        void                        ReplaceParticleSystemTemplate(const DiString& name, DiParticleSystem* system);
+        void                        ReplaceParticleSystemTemplate(const DiString& name, DiParticleSystemPtr system);
 
         const DiString&             GetLastCreatedTemplateName(void);
 
-        void                        AddParticleSystemTemplate(const DiString& name, DiParticleSystem* systemTemplate);
+        void                        AddParticleSystemTemplate(const DiString& name, DiParticleSystemPtr systemTemplate);
 
-        DiParticleSystem*           GetParticleSystemTemplate(const DiString& templateName);
+        DiParticleSystemPtr         GetParticleSystemTemplate(const DiString& templateName);
 
         void                        DestroyParticleSystemTemplate(const DiString& templateName);
 
         void                        ParticleSystemTemplateNames(DiVector<DiString>& v);
 
         // create the particle system instance from the template
-        DiParticleSystem*           CreateParticleSystem(const DiString& name, const DiString& templateName);
+        DiParticleSystemPtr         CreateParticleSystem(const DiString& name, const DiString& templateName);
 
         // create a default particle system
-        DiParticleSystem*           CreateParticleSystem(const DiString& name);
+        DiParticleSystemPtr         CreateParticleSystem(const DiString& name);
 
-        DiParticleSystem*           GetParticleSystem(const DiString& name);
+        DiParticleSystemPtr         GetParticleSystem(const DiString& name);
 
-        void                        DestroyParticleSystem(DiParticleSystem* particleSystem);
+        void                        DestroyParticleSystem(DiParticleSystemPtr particleSystem);
 
         void                        DestroyParticleSystem(const DiString& particleSystemName);
 
@@ -129,11 +121,9 @@ namespace Demi
         
     protected:
         
-        DiParticleSystem*           CreateSystemImpl(const DiString& name);
+        DiParticleSystemPtr         CreateSystemImpl(const DiString& name);
 
-        DiParticleSystem*           CreateSystemImpl(const DiString& name, const DiString& templateName);
-
-        void                        DestroySystemImpl(DiParticleSystem* particleSystem);
+        DiParticleSystemPtr         CreateSystemImpl(const DiString& name, const DiString& templateName);
 
     protected:
 
@@ -146,10 +136,10 @@ namespace Demi
         typedef DiMap<DiString, DiParticleRendererFactory*> RendererFactoryMap;
         RendererFactoryMap          mRendererFactories;
 
-        typedef DiMap<DiString, DiParticleSystem*> ParticleSystemTemplateMap;
+        typedef DiMap<DiString, DiParticleSystemPtr> ParticleSystemTemplateMap;
         ParticleSystemTemplateMap   mParticleSystemTemplates;
 
-        typedef DiMap<DiString, DiParticleSystem*> ParticleSystemMap;
+        typedef DiMap<DiString, DiParticleSystemPtr> ParticleSystemMap;
         ParticleSystemMap           mParticleSystems;
 
         DiParticleSystemFactory*    mParticleSystemFactory;

@@ -45,11 +45,11 @@ namespace Demi
 
     public:
 
-        DiParticleSystem*    GetParticleSystem() { return mParticleSystem; }
+        DiParticleSystemPtr  GetParticleSystem() { return mParticleSystem; }
 
     protected:
 
-        DiParticleSystem*    mParticleSystem{ nullptr };
+        DiParticleSystemPtr  mParticleSystem{ nullptr };
 
         DiCullNode*          mSceneNode{ nullptr };
     };

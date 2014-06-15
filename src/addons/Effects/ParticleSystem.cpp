@@ -407,7 +407,7 @@ namespace Demi
         {
             if ((*it) == element)
             {
-                GetEffectManager()->DestroyElement(*it);
+                DI_DELETE(*it);
                 mElements.erase(it);
                 break;
             }
@@ -426,17 +426,17 @@ namespace Demi
         ParticleTechniqueIterator it;
         for (it = mElements.begin(); it != mElements.end(); ++it)
         {
-            GetEffectManager()->DestroyElement(*it);
+            DI_DELETE(*it);
         }
         mElements.clear();
     }
     
-    const float DiParticleSystem::GetFastForwardTime(void) const
+    float DiParticleSystem::GetFastForwardTime(void) const
     {
         return mFastForwardTime;
     }
     
-    const float DiParticleSystem::GetFastForwardInterval(void) const
+    float DiParticleSystem::GetFastForwardInterval(void) const
     {
         return mFastForwardInterval;
     }
@@ -938,7 +938,7 @@ namespace Demi
         }
     }
     
-    const float DiParticleSystem::GetNonVisibleUpdateTimeout(void) const
+    float DiParticleSystem::GetNonVisibleUpdateTimeout(void) const
     {
         return mNonvisibleUpdateTimeout;
     }
@@ -1066,7 +1066,7 @@ namespace Demi
         MarkForEmission();
     }
     
-    const float DiParticleSystem::GetIterationInterval(void) const
+    float DiParticleSystem::GetIterationInterval(void) const
     {
         return mIterationInterval;
     }
@@ -1085,7 +1085,7 @@ namespace Demi
         }
     }
     
-    const float DiParticleSystem::GetFixedTimeout(void) const
+    float DiParticleSystem::GetFixedTimeout(void) const
     {
         return mFixedTimeout;
     }

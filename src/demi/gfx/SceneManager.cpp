@@ -283,6 +283,8 @@ namespace Demi
     DiSceneManager::~DiSceneManager(void)
     {
         //DestroyTerrain();
+        
+        mVisibleObjects.objs.clear();
 
         ClearNodes();
         DestroyCamera("_sm_camera");

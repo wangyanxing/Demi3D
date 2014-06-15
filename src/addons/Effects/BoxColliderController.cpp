@@ -232,6 +232,8 @@ namespace Demi
                 particle->direction *= -mFriction;
             }
             break;
+        default:
+            break;
         }
     }
     

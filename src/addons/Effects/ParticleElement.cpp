@@ -422,7 +422,7 @@ namespace Demi
             {
                 notify = emitter->GetEmitsName() != DiString::BLANK;
 
-                GetParentSystem()->GetEffectManager()->DestroyEmitter(*it);
+                DI_DELETE(*it);
                 mEmitters.erase(it);
                 break;
             }
@@ -445,7 +445,7 @@ namespace Demi
         ParticleEmitterList::iterator itEnd = mEmitters.end();
         for (it = mEmitters.begin(); it != itEnd; ++it)
         {
-            GetParentSystem()->GetEffectManager()->DestroyEmitter(*it);
+            DI_DELETE(*it);
         }
         mEmitters.clear();
     }
@@ -470,9 +470,8 @@ namespace Demi
     void DiParticleElement::RemoveController (DiParticleController* affector)
     {
         DI_ASSERT(affector);
-        ParticleControllerList::iterator it;
-        ParticleControllerList::iterator itEnd = mControllers.end();
-        for (it = mControllers.begin(); it != itEnd; ++it)
+        auto itEnd = mControllers.end();
+        for (auto it = mControllers.begin(); it != itEnd; ++it)
         {
             if (*it == affector)
             {
@@ -481,7 +480,7 @@ namespace Demi
             }
         }
 
-        affector->SetParentElement(NULL);
+        affector->SetParentElement(nullptr);
     }
     
     DiParticleController* DiParticleElement::GetController (size_t index) const
@@ -534,13 +533,12 @@ namespace Demi
     void DiParticleElement::DestroyController(DiParticleController* affector)
     {
         DI_ASSERT(affector);
-        ParticleControllerList::iterator it;
-        ParticleControllerList::iterator itEnd = mControllers.end();
-        for (it = mControllers.begin(); it != itEnd; ++it)
+        auto itEnd = mControllers.end();
+        for (auto it = mControllers.begin(); it != itEnd; ++it)
         {
             if (*it == affector)
             {
-                GetParentSystem()->GetEffectManager()->DestroyController(*it);
+                DI_DELETE(*it);
                 mControllers.erase(it);
                 break;
             }
@@ -554,11 +552,10 @@ namespace Demi
     
     void DiParticleElement::DestroyAllControllers(void)
     {
-        ParticleAffectorIterator it;
-        ParticleAffectorIterator itEnd = mControllers.end();
-        for (it = mControllers.begin(); it != itEnd; ++it)
+        auto itEnd = mControllers.end();
+        for (auto it = mControllers.begin(); it != itEnd; ++it)
         {
-            GetParentSystem()->GetEffectManager()->DestroyController(*it);
+            DI_DELETE(*it);
         }
         mControllers.clear();
     }
@@ -602,15 +599,15 @@ namespace Demi
     
     void DiParticleElement::RemoveRenderer(DiParticleRenderer* renderer)
     {
-        mRenderer = NULL;
-        renderer->SetParentElement(NULL);
+        mRenderer = nullptr;
+        renderer->SetParentElement(nullptr);
     }
     
     void DiParticleElement::DestroyRenderer(void)
     {
         if (mRenderer)
         {
-            GetParentSystem()->GetEffectManager()->DestroyRenderer(mRenderer);
+            DI_DELETE(mRenderer);
             mRenderer = 0;
         }
     }

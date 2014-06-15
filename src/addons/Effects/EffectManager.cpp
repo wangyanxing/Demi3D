@@ -71,11 +71,6 @@ namespace Demi
 
     void DiEffectManager::DestroyAllParticleSystemTemplates() 
     {
-        ParticleSystemTemplateMap::iterator t;
-        for (t = mParticleSystemTemplates.begin(); t != mParticleSystemTemplates.end(); ++t)
-        {
-            SAFE_DELETE(t->second);
-        }
         mParticleSystemTemplates.clear();
     }
     
@@ -145,19 +140,6 @@ namespace Demi
         return clonedEmitter;
     }
     
-    void DiEffectManager::DestroyEmitter(DiParticleEmitter* emitter)
-    {
-        auto it = mEmitterFactories.find(emitter->GetEmitterType());
-
-        if (it == mEmitterFactories.end())
-        {
-            DI_WARNING("Cannot find the emitter, cannot destroy");
-            return;
-        }
-
-        it->second->DestroyEmitter(emitter);
-    }
-    
     DiParticleElement* DiEffectManager::CreateElement(void)
     {
         DiParticleElement* technique = DI_NEW DiParticleElement();
@@ -175,11 +157,6 @@ namespace Demi
         DiParticleElement* clonedTechnique = CreateElement();
         element->CopyTo(clonedTechnique);
         return clonedTechnique;
-    }
-    
-    void DiEffectManager::DestroyElement(DiParticleElement* element)
-    {
-        DI_DELETE element;
     }
     
     void DiEffectManager::AddControllerFactory(DiParticleControllerFactory* factory)
@@ -248,19 +225,6 @@ namespace Demi
         return clonedAffector;
     }
     
-    void DiEffectManager::DestroyController(DiParticleController* affector)
-    {
-        auto it = mControllerFactories.find(affector->GetControllerType());
-
-        if (it == mControllerFactories.end())
-        {
-            DI_WARNING("Cannot find the controller type: %s", affector->GetControllerType().c_str());
-            return;
-        }
-
-        it->second->DestroyController(affector);
-    }
-    
     void DiEffectManager::AddRendererFactory(DiParticleRendererFactory* factory)
     {
         DiString type = factory->GetRendererType();
@@ -327,20 +291,7 @@ namespace Demi
         return clonedRenderer;
     }
     
-    void DiEffectManager::DestroyRenderer(DiParticleRenderer* renderer)
-    {
-        auto it = mRendererFactories.find(renderer->GetRendererType());
-
-        if (it == mRendererFactories.end())
-        {
-            DI_WARNING("Cannot find the renderer type: %s", renderer->GetRendererType().c_str());
-            return;
-        }
-
-        it->second->DestroyRenderer(renderer);
-    }
-    
-    DiParticleSystem* DiEffectManager::CreateParticleSystemTemplate(const DiString& name)
+    DiParticleSystemPtr DiEffectManager::CreateParticleSystemTemplate(const DiString& name)
     {
         DiString expName = name;
         while (mParticleSystemTemplates.find(expName) != mParticleSystemTemplates.end())
@@ -349,20 +300,20 @@ namespace Demi
             expName = expName + "_copy";
         }
 
-        DiParticleSystem* particleSystemTemplate = DI_NEW DiParticleSystem(expName);
+        DiParticleSystemPtr particleSystemTemplate = make_shared<DiParticleSystem>(expName);
 
         AddParticleSystemTemplate(expName, particleSystemTemplate);
         mLastCreatedTemplateName = expName;
         return particleSystemTemplate;
     }
     
-    void DiEffectManager::ReplaceParticleSystemTemplate(const DiString& name, DiParticleSystem* system)
+    void DiEffectManager::ReplaceParticleSystemTemplate(const DiString& name, DiParticleSystemPtr system)
     {
-        DiParticleSystem* systemTemplate = GetParticleSystemTemplate(name);
+        DiParticleSystemPtr systemTemplate = GetParticleSystemTemplate(name);
         if (systemTemplate)
         {
             *systemTemplate = *system;
-            system->CopyTo(systemTemplate);
+            system->CopyTo(systemTemplate.get());
         }
     }
     
@@ -371,7 +322,7 @@ namespace Demi
         return mLastCreatedTemplateName;
     }
     
-    void DiEffectManager::AddParticleSystemTemplate(const DiString& name, DiParticleSystem* systemTemplate)
+    void DiEffectManager::AddParticleSystemTemplate(const DiString& name, DiParticleSystemPtr systemTemplate)
     {
         if (mParticleSystemTemplates.find(name) != mParticleSystemTemplates.end())
         {
@@ -382,7 +333,7 @@ namespace Demi
         mParticleSystemTemplates[name] = systemTemplate;
     }
     
-    DiParticleSystem* DiEffectManager::GetParticleSystemTemplate(const DiString& templateName)
+    DiParticleSystemPtr DiEffectManager::GetParticleSystemTemplate(const DiString& templateName)
     {
         auto i = mParticleSystemTemplates.find(templateName);
         if (i != mParticleSystemTemplates.end())
@@ -396,7 +347,6 @@ namespace Demi
         auto i = mParticleSystemTemplates.find(templateName);
         if (i != mParticleSystemTemplates.end())
         {
-            SAFE_DELETE(i->second);
             mParticleSystemTemplates.erase(i);
         }
     }
@@ -410,7 +360,7 @@ namespace Demi
         }
     }
     
-    DiParticleSystem* DiEffectManager::CreateParticleSystem(const DiString& name,
+    DiParticleSystemPtr DiEffectManager::CreateParticleSystem(const DiString& name,
         const DiString& templateName)
     {
         if (mParticleSystems.find(name) != mParticleSystems.end())
@@ -419,13 +369,13 @@ namespace Demi
             return nullptr;
         }
 
-        DiParticleSystem* system = CreateSystemImpl(name,templateName);
+        auto system = CreateSystemImpl(name,templateName);
         system->SetTemplateName(templateName);
         mParticleSystems[name] = system;
         return system;
     }
     
-    DiParticleSystem* DiEffectManager::CreateParticleSystem(const DiString& name)
+    DiParticleSystemPtr DiEffectManager::CreateParticleSystem(const DiString& name)
     {
         if (mParticleSystems.find(name) != mParticleSystems.end())
         {
@@ -433,12 +383,12 @@ namespace Demi
             return nullptr;
         }
 
-        DiParticleSystem* system = CreateSystemImpl(name);
+        auto system = CreateSystemImpl(name);
         mParticleSystems[name] = system;
         return system;
     }
     
-    DiParticleSystem* DiEffectManager::GetParticleSystem(const DiString& name)
+    DiParticleSystemPtr DiEffectManager::GetParticleSystem(const DiString& name)
     {
         if (name == DiString::BLANK)
         {
@@ -454,30 +404,24 @@ namespace Demi
         return nullptr;
     }
     
-    void DiEffectManager::DestroyParticleSystem(DiParticleSystem* particleSystem)
+    void DiEffectManager::DestroyParticleSystem(DiParticleSystemPtr particleSystem)
     {
         if (!particleSystem)
-        {
             return;
-        }
 
         auto i = mParticleSystems.find(particleSystem->GetName());
         if (i != mParticleSystems.end())
-        {
             mParticleSystems.erase(i);
-        }
-
-        DestroySystemImpl(particleSystem);
     }
     
     void DiEffectManager::DestroyParticleSystem(const DiString& particleSystemName)
     {
-        DiParticleSystem* ps = nullptr;
+        DiParticleSystemPtr ps = nullptr;
         auto i = mParticleSystems.find(particleSystemName);
         if (i != mParticleSystems.end())
         {
+            ps = i->second;
             mParticleSystems.erase(i);
-            DestroySystemImpl(ps);
             return;
         }
         DI_WARNING("Cannot find the particle system:%s",particleSystemName.c_str());
@@ -488,38 +432,30 @@ namespace Demi
         auto t = mParticleSystems.begin();
         while ( t != mParticleSystems.end() )
         {
-            DiParticleSystem* particleSystem = t->second;
-            DestroySystemImpl(particleSystem);
+            auto particleSystem = t->second;
             ++t;
         }
         mParticleSystems.clear();
     }
     
-    DiParticleSystem* DiEffectManager::CreateSystemImpl(const DiString& name)
+    DiParticleSystemPtr DiEffectManager::CreateSystemImpl(const DiString& name)
     {
-        DiParticleSystem* sys = DI_NEW DiParticleSystem(name);
-        return sys;
+        return make_shared<DiParticleSystem>(name);
     }
     
-    DiParticleSystem* DiEffectManager::CreateSystemImpl(const DiString& name, const DiString& templateName)
+    DiParticleSystemPtr DiEffectManager::CreateSystemImpl(const DiString& name, const DiString& templateName)
     {
-        DiParticleSystem* pTemplate = GetParticleSystemTemplate(templateName);
+        auto pTemplate = GetParticleSystemTemplate(templateName);
         if (!pTemplate)
         {
-            DI_WARNING("Cannot find particle template£º%s", templateName.c_str());
+            DI_WARNING("Cannot find particle template: %s", templateName.c_str());
             return nullptr;
         }
 
-        DiParticleSystem* sys = DI_NEW DiParticleSystem(name);
-        
+        auto sys = make_shared<DiParticleSystem>(name);
         *sys = *pTemplate;
-        pTemplate->CopyTo(sys);
+        pTemplate->CopyTo(sys.get());
         return sys;
-    }
-    
-    void DiEffectManager::DestroySystemImpl(DiParticleSystem* particleSystem)
-    {
-        SAFE_DELETE(particleSystem);
     }
     
     DiDynamicAttribute* DiEffectManager::CreateDynamicAttribute(DiDynamicAttribute::DynamicAttributeType type)

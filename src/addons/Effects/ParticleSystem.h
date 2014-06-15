@@ -119,7 +119,7 @@ namespace Demi
 
         size_t                  UpdateTechniques(float timeElapsed);
 
-        const float             GetNonVisibleUpdateTimeout(void) const;
+        float                   GetNonVisibleUpdateTimeout(void) const;
 
         void                    SetNonVisibleUpdateTimeout(float timeout);
 
@@ -147,9 +147,9 @@ namespace Demi
 
         ParticleSystemState     GetState(void) const { return mState; };
 
-        const float             GetFastForwardTime(void) const;
+        float                   GetFastForwardTime(void) const;
 
-        const float             GetFastForwardInterval(void) const;
+        float                   GetFastForwardInterval(void) const;
 
         void                    SetFastForward(float time, float interval);
 
@@ -179,11 +179,11 @@ namespace Demi
 
         void                    NotifyEmissionChange(void);
 
-        const float             GetIterationInterval(void) const;
+        float                   GetIterationInterval(void) const;
 
         void                    SetIterationInterval(const float iterationInterval);
 
-        const float             GetFixedTimeout(void) const;
+        float                   GetFixedTimeout(void) const;
         
         void                    SetFixedTimeout(const float fixedTimeout);
 
@@ -247,10 +247,8 @@ namespace Demi
 
     protected:
         
-        // LOD索引
         unsigned short          GetLodIndex(float distance) const;
-
-        // 根据摄像机距离平方计算LOD索引
+        
         unsigned short          GetLodIndexSquaredDistance(float squaredDistance) const;
 
         inline void             CalulateRotationOffset(void);

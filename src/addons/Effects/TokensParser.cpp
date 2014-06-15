@@ -385,7 +385,7 @@ namespace Demi
         }
     }
 
-    DiParticleElement* DiFxTokensParser::ReadElement(DiParticleSystem* ps, DiXMLElement& node)
+    DiParticleElement* DiFxTokensParser::ReadElement(DiParticleSystemPtr ps, DiXMLElement& node)
     {
         auto element = ps->CreateElement();
 
@@ -449,9 +449,9 @@ namespace Demi
     }
 
 
-    DiVector<DiParticleSystem*> DiFxTokensParser::LoadEffects(const DiString& file)
+    DiVector<DiParticleSystemPtr> DiFxTokensParser::LoadEffects(const DiString& file)
     {
-        DiVector<DiParticleSystem*> ret;
+        DiVector<DiParticleSystemPtr> ret;
 
         auto stream = DiAssetManager::GetInstance().OpenArchive(file);
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
@@ -475,7 +475,7 @@ namespace Demi
         return ret;
     }
 
-    void DiFxTokensParser::WriteSystem(DiParticleSystem* system, DiXMLElement& node)
+    void DiFxTokensParser::WriteSystem(DiParticleSystemPtr system, DiXMLElement& node)
     {
         auto name = system->GetTemplateName();
         if (name.empty())
@@ -533,7 +533,7 @@ namespace Demi
         }
     }
 
-    void DiFxTokensParser::WriteSystem(DiParticleSystem* val, const DiString& filePath)
+    void DiFxTokensParser::WriteSystem(DiParticleSystemPtr val, const DiString& filePath)
     {
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
         DiXMLElement root = xmlfile->CreateRoot("Effects");
@@ -542,7 +542,7 @@ namespace Demi
         xmlfile->Save(filePath);
     }
 
-    DiParticleSystem* DiFxTokensParser::ReadSystem(DiXMLElement& node)
+    DiParticleSystemPtr DiFxTokensParser::ReadSystem(DiXMLElement& node)
     {
         DiString name = node.GetAttribute("name");
         if (name.empty())

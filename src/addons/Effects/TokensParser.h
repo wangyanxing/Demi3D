@@ -41,19 +41,19 @@ namespace Demi
     public:
 
         /// write one particle system
-        void    WriteSystem(DiParticleSystem* val, const DiString& filePath);
+        void    WriteSystem(DiParticleSystemPtr val, const DiString& filePath);
 
-        DiVector<DiParticleSystem*>  LoadEffects(const DiString& file);
+        DiVector<DiParticleSystemPtr>  LoadEffects(const DiString& file);
 
     public:
 
-        void    WriteSystem(DiParticleSystem* val, DiXMLElement& node);
+        void    WriteSystem(DiParticleSystemPtr val, DiXMLElement& node);
 
         void    WriteElement(DiParticleElement* val, DiXMLElement& node);
 
-        DiParticleElement*   ReadElement(DiParticleSystem* val, DiXMLElement& node);
+        DiParticleElement*   ReadElement(DiParticleSystemPtr val, DiXMLElement& node);
 
-        DiParticleSystem*    ReadSystem(DiXMLElement& node);
+        DiParticleSystemPtr  ReadSystem(DiXMLElement& node);
 
     public:
 

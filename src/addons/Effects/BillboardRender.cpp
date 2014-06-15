@@ -52,21 +52,19 @@ namespace Demi
     
     DiBillboardRenderer::~DiBillboardRenderer(void)
     {
+        DI_DEBUG("billboard renderer releasing");
     }
     
     void DiBillboardRenderer::Prepare(DiParticleElement* element)
     {
         if (!element || mRendererInitialised)
-        {
             return;
-        }
 
         NotifyParticleQuota(element->GetVisualParticleQuota());
 
         if (element->GetParentSystem()->GetParentNode())
-        {        
             NotifyAttached(element->GetParentSystem()->GetParentNode());
-        }
+        
         NotifyDefaultDimensions(mRendererScale.x * element->GetDefaultWidth(),
             mRendererScale.y * element->GetDefaultHeight(),
             mRendererScale.z * element->GetDefaultDepth());
@@ -74,13 +72,9 @@ namespace Demi
         mBillboardSet->SetBatchGroup((DiBatchGroupType)mQueueId);
 
         if (mTextureCoordsSet)
-        {
             mBillboardSet->SetTextureCoords(*mUVList.begin(), static_cast<uint16>(mUVList.size()));
-        }
         else if (mTextureCoordsRowsAndColumnsSet)
-        {
             mBillboardSet->SetTextureStacksAndSlices(mTextureCoordsRows, mTextureCoordsColumns);
-        }
 
         mRendererInitialised = true;
     }
@@ -192,7 +186,7 @@ namespace Demi
     
     void DiBillboardRenderer::NotifyAttached(DiNode* parent)
     {
-        mBillboardSet->NotifyAttached(parent);
+        //mBillboardSet->NotifyAttached(parent);
     }
     
     void DiBillboardRenderer::SetMaterialName(const DiString& materialName)

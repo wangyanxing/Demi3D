@@ -88,10 +88,11 @@ namespace Demi
 
     void* DiBase::operator new( size_t stSize )
     {
-        void* pMemory = DI_MALLOC( stSize );
-        DI_ASSERT(pMemory != 0);
+        //void* pMemory = DI_MALLOC( stSize );
+        //DI_ASSERT(pMemory != 0);
 
-        return pMemory;
+        //return pMemory;
+        return ::operator new(stSize);
     }
 
     void* DiBase::operator new[]( size_t stSize )
@@ -102,8 +103,9 @@ namespace Demi
 
     void DiBase::operator delete[]( void* pMemory )
     {
-        DI_ASSERT(pMemory != 0);
-        DI_FREE(pMemory);
+        //DI_ASSERT(pMemory != 0);
+        //DI_FREE(pMemory);
+        ::operator delete(pMemory);
     }
 
     void DiBase::operator delete( void* pMemory )

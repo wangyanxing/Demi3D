@@ -125,7 +125,6 @@ namespace Demi
         {
         case DiBaseColliderController::CT_BOUNCE:
             {
-                // 如果粒子在面上或者背面，则反弹，公式与sphere collider一样
                 particle->direction.normalise();
                 particle->direction = 2 * (-particle->direction.dotProduct(-mNormal)) * -mNormal + particle->direction;
 
@@ -135,9 +134,10 @@ namespace Demi
             break;
         case DiBaseColliderController::CT_FLOW:
             {
-                // 修改位置值，但是方向不变
                 particle->position += timeElapsed * directionLength * mNormal;
             }
+            break;
+        default:
             break;
         }
     }

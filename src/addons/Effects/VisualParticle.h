@@ -43,7 +43,7 @@ namespace Demi
     public:
         DiVisualParticle(void);
 
-        virtual         ~DiVisualParticle(void);;
+        virtual         ~DiVisualParticle(void);
 
     public:
 
