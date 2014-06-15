@@ -292,7 +292,7 @@ namespace Demi
     DiNode* DiCullNode::RemoveChild( const DiString & name )
     {
         DiCullNode *on = static_cast<DiCullNode*>( DiNode::RemoveChild(  name ) );
-        on -> RemoveNodeAndChildren( ); 
+        on->RemoveNodeAndChildren( ); 
         return on; 
     }
 

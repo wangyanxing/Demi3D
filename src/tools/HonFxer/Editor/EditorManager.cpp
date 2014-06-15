@@ -64,6 +64,7 @@ namespace Demi
     void DiEditorManager::DeleteEditorObject(DiBaseEditorObj* obj)
     {
         DI_ASSERT(obj);
+        obj->Release();
         SAFE_DELETE(obj);
         mMenuHost = nullptr;
     }

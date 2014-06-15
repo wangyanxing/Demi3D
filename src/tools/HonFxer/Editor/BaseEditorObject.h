@@ -67,6 +67,8 @@ namespace Demi
         UINode*                     GetUINode() { return mUINode; }
 
         virtual void                Update(float dt);
+        
+        void                        Release();
 
     protected:
 
@@ -74,6 +76,7 @@ namespace Demi
 
         DiBaseEditorObj*            mParent{ nullptr };
 
+        /// Tree control node
         UINode*                     mUINode{ nullptr };
 
         PropertyGroups              mPropGroups;

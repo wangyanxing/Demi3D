@@ -61,7 +61,6 @@ namespace Demi
         {
         case DiBaseColliderController::IT_POINT:
             {
-                // 点/平面相交检测(在平面上或这在平面背面)
                 if (mPlane.getDistance(particle->position) <= 0.0f)
                 {
                     particle->position -= mVelocityScale * particle->direction;
@@ -76,11 +75,8 @@ namespace Demi
 
         case DiBaseColliderController::IT_BOX:
             {
-                // 立方体/平面相交检测
                 if (particle->particleType != DiParticle::PT_VISUAL)
-                {
                     break;
-                }
 
                 DiVisualParticle* visualParticle = static_cast<DiVisualParticle*>(particle);
                 DiAABB box;

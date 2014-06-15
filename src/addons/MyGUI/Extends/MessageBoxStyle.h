@@ -92,9 +92,9 @@ namespace MyGUI
 
 		friend std::istream& operator >> (std::istream& _stream, MessageBoxStyle&  _value)
 		{
-			std::string value;
-			_stream >> value;
-			_value = parse(value);
+			std::string val;
+			_stream >> val;
+			_value = parse(val);
 			return _stream;
 		}
 

@@ -32,7 +32,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Property.h"
 
-DiVector<DiParticleSystem*> g_fxs;
+DiVector<DiParticleSystemPtr> g_fxs;
 DiK2ModelPtr k2md = nullptr;
 
 void InitFx()
