@@ -7,9 +7,9 @@ namespace tools
     WorkSpaceControl::WorkSpaceControl(MyGUI::Widget* _parent) 
         : wraps::BaseLayout("FxMainWorkspaceControl.layout", _parent)
     {
-        auto parentHeight = _parent->getClientCoord().height;
-        auto parentWidth = _parent->getClientCoord().width;
-        auto paneWidthLeft = 250;
+        auto parentHeight   = _parent->getClientCoord().height;
+        auto parentWidth    = _parent->getClientCoord().width;
+        auto paneWidthLeft  = 250;
         auto paneWidthRight = 350;
 
         mLeftPanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(0, 0,
@@ -27,9 +27,9 @@ namespace tools
         mRightPanel = _parent->createWidget<MyGUI::Widget>("PanelEmpty", MyGUI::IntCoord(parentWidth - paneWidthRight, 0,
             paneWidthRight, parentHeight), MyGUI::Align::Right | MyGUI::Align::VStretch);
 
-        mResTreeCtrl = new ResTreeControl(mLeftPanel);
+        mResTreeCtrl   = new ResTreeControl(mLeftPanel);
         mRenderWndCtrl = new RenderWindowControl(mMiddlePanel);
-        mToolsCtrl = new ToolsControl(mRightPanel);
+        mToolsCtrl     = new ToolsControl(mRightPanel);
 
         mSeparatorHLeft->eventMouseButtonPressed += MyGUI::newDelegate(this, &WorkSpaceControl::notifyMouseButtonPressed);
         mSeparatorHLeft->eventMouseDrag += MyGUI::newDelegate(this, &WorkSpaceControl::notifyMouseDragLeft);
@@ -55,14 +55,14 @@ namespace tools
     {
         if (_id == MyGUI::MouseButton::Left)
         {
-            mStartLeftPanel = mLeftPanel->getCoord();
-            mStartMiddlePanel = mMiddlePanel->getCoord();
-            mStartRightPanel = mRightPanel->getCoord();
+            mStartLeftPanel       = mLeftPanel->getCoord();
+            mStartMiddlePanel     = mMiddlePanel->getCoord();
+            mStartRightPanel      = mRightPanel->getCoord();
 
-            mStartSeparatorHLeft = mSeparatorHLeft->getCoord();
+            mStartSeparatorHLeft  = mSeparatorHLeft->getCoord();
             mStartSeparatorHRight = mSeparatorHRight->getCoord();
 
-            mStartMousePosition = MyGUI::InputManager::getInstance().getMousePosition();
+            mStartMousePosition   = MyGUI::InputManager::getInstance().getMousePosition();
         }
     }
 

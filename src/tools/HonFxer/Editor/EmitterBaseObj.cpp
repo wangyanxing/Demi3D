@@ -40,6 +40,7 @@ namespace Demi
 
     void DiEmitterBaseObj::OnDestroy()
     {
+        mEmitter->SetParentElement(nullptr);
         auto parent = dynamic_cast<DiParticleElementObj*>(GetParent());
         parent->GetParticleElement()->DestroyEmitter(mEmitter);
     }

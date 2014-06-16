@@ -232,62 +232,50 @@ namespace Demi
     void DiParticleEmitter::CopyParentTo(DiParticleEmitter* emitter)
     {
         emitter->SetName(mName);
-        emitter->mParticleDirection = mParticleDirection;
-        emitter->mOriginalParticleDirection = mOriginalParticleDirection;
-        emitter->mParticleOrientation = mParticleOrientation;
-        emitter->mParentElement = mParentElement;
-        emitter->mAutoDirection = mAutoDirection;
-        emitter->mForceEmission = mForceEmission;
-        emitter->mOriginalForceEmission = mOriginalForceEmission;
-        emitter->mForceEmissionExecuted = mForceEmissionExecuted;
+        emitter->mParticleDirection             = mParticleDirection;
+        emitter->mOriginalParticleDirection     = mOriginalParticleDirection;
+        emitter->mParticleOrientation           = mParticleOrientation;
+        emitter->mParentElement                 = mParentElement;
+        emitter->mAutoDirection                 = mAutoDirection;
+        emitter->mForceEmission                 = mForceEmission;
+        emitter->mOriginalForceEmission         = mOriginalForceEmission;
+        emitter->mForceEmissionExecuted         = mForceEmissionExecuted;
         emitter->mOriginalForceEmissionExecuted = mOriginalForceEmissionExecuted;
-        emitter->mDynDurationSet = mDynDurationSet;
-        emitter->mDynRepeatDelaySet = mDynRepeatDelaySet;
-        emitter->mDynParticleAllDimensionsSet = mDynParticleAllDimensionsSet;
-        emitter->mDynParticleWidthSet = mDynParticleWidthSet;
-        emitter->mDynParticleHeightSet = mDynParticleHeightSet;
-        emitter->mDynParticleDepthSet = mDynParticleDepthSet;
-        emitter->mEmitterScale = mEmitterScale;
-        emitter->mParticleColour = mParticleColour;
-        emitter->mParticleTextureCoords = mParticleTextureCoords;
-        emitter->mKeepLocal = mKeepLocal;
+        emitter->mDynDurationSet                = mDynDurationSet;
+        emitter->mDynRepeatDelaySet             = mDynRepeatDelaySet;
+        emitter->mDynParticleAllDimensionsSet   = mDynParticleAllDimensionsSet;
+        emitter->mDynParticleWidthSet           = mDynParticleWidthSet;
+        emitter->mDynParticleHeightSet          = mDynParticleHeightSet;
+        emitter->mDynParticleDepthSet           = mDynParticleDepthSet;
+        emitter->mEmitterScale                  = mEmitterScale;
+        emitter->mParticleColour                = mParticleColour;
+        emitter->mParticleTextureCoords         = mParticleTextureCoords;
+        emitter->mKeepLocal                     = mKeepLocal;
 
         emitter->SetDynEmissionRate(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynEmissionRate()));
-
         emitter->SetDynTotalTimeToLive(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynTotalTimeToLive()));
-
         emitter->SetDynVelocity(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynVelocity()));
 
         if (mDynDurationSet)
-        {
             emitter->SetDynDuration(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynDuration()));
-        }
 
         if (mDynRepeatDelaySet)
-        {
             emitter->SetDynRepeatDelay(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynRepeatDelay()));
-        }
 
         emitter->SetDynParticleMass(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynParticleMass()));
-
         emitter->SetDynAngle(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynAngle()));
 
         if (mDynParticleAllDimensionsSet)
-        {
             emitter->SetDynParticleAllDimensions(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynParticleAllDimensions()));
-        }
+        
         if (mDynParticleWidthSet)
-        {
             emitter->SetDynParticleWidth(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynParticleWidth()));
-        }
+        
         if (mDynParticleHeightSet)
-        {
             emitter->SetDynParticleHeight(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynParticleHeight()));
-        }
+        
         if (mDynParticleDepthSet)
-        {
             emitter->SetDynParticleDepth(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynParticleDepth()));
-        }
     }
     
     void DiParticleEmitter::SetParentElement(DiParticleElement* parentTechnique)
@@ -572,13 +560,10 @@ namespace Demi
         DiRadian angle;
         GenerateAngle(angle);
         if (angle != DiRadian(0))
-        {
             particle->direction = mParticleDirection.randomDeviant(angle, mUpVector);
-        }
         else
-        {
             particle->direction = mParticleDirection;
-        }
+        
         particle->originalDirection = particle->direction;
         particle->originalDirectionLength = particle->direction.length();
     }
@@ -587,10 +572,9 @@ namespace Demi
     {
         DiRadian a = DiAngle(mDynamicAttributeHelper.Calculate(mDynAngle, mParentElement->GetParentSystem()->GetTimeElapsedSinceStart()));
         angle = a;
+        
         if (mDynAngle->GetType() == DiDynamicAttribute::DAT_FIXED)
-        {
             angle = DiMath::UnitRandom() * angle;
-        }
     }
     
     void DiParticleEmitter::InitParticleVelocity(DiParticle* particle)
@@ -609,7 +593,6 @@ namespace Demi
 
         DiVisualParticle* visualParticle = static_cast<DiVisualParticle*>(particle);
         visualParticle->orientation = mParticleOrientation;
-
         visualParticle->originalOrientation = visualParticle->orientation;
     }
     
@@ -681,18 +664,14 @@ namespace Demi
             {
                 mDurationRemain -= timeElapsed;
                 if (mDurationRemain <= 0)
-                {
                     SetEnabled(false);
-                }
             }
         }
         else if (mDynRepeatDelaySet)
         {
             mRepeatDelayRemain -= timeElapsed;
             if (mRepeatDelayRemain <= 0)
-            {
                 SetEnabled(true);
-            }
         }
 
         return requestedParticles;
@@ -701,9 +680,7 @@ namespace Demi
     void DiParticleEmitter::InitParticleDimensions(DiParticle* particle)
     {
         if (particle->particleType != DiParticle::PT_VISUAL)
-        {
             return;
-        }
 
         DiVisualParticle* visualParticle = static_cast<DiVisualParticle*>(particle);
         if (mDynParticleAllDimensionsSet || mDynParticleWidthSet || mDynParticleHeightSet || mDynParticleDepthSet)
@@ -722,22 +699,16 @@ namespace Demi
             float height = 0;
             float depth = 0;
             if (mDynParticleWidthSet && mDynParticleWidth)
-            {
                 width = mDynamicAttributeHelper.Calculate(mDynParticleWidth, mParentElement->GetParentSystem()->GetTimeElapsedSinceStart());
-            }
+            
             if (mDynParticleHeightSet && mDynParticleHeight)
-            {
                 height = mDynamicAttributeHelper.Calculate(mDynParticleHeight, mParentElement->GetParentSystem()->GetTimeElapsedSinceStart());
-            }
+            
             if (mDynParticleDepthSet && mDynParticleDepth)
-            {
                 depth = mDynamicAttributeHelper.Calculate(mDynParticleDepth, mParentElement->GetParentSystem()->GetTimeElapsedSinceStart());
-            }
 
             if (mDynParticleWidthSet || mDynParticleHeightSet || mDynParticleDepthSet)
-            {
                 visualParticle->SetOwnDimensions(mEmitterScale.x * width, mEmitterScale.y * height, mEmitterScale.z * depth);
-            }
         }
         else
         {
@@ -801,9 +772,7 @@ namespace Demi
     {
         // Forward the event
         if (mParentElement)
-        {
             mParentElement->PushEvent(particleUniverseEvent);
-        }
     }
 }
 

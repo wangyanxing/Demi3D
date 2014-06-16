@@ -428,9 +428,7 @@ namespace Demi
         }
 
         if (notify)
-        {
             NotifyEmissionChange();
-        }
     }
     
     void DiParticleElement::DestroyEmitter (size_t index)
@@ -1044,14 +1042,10 @@ namespace Demi
     {
         if (!mControllers.empty())
         {
-            ParticleAffectorIterator affectorIt;
-            ParticleAffectorIterator affectorItEnd = mControllers.end();
-            for (affectorIt = mControllers.begin(); affectorIt != affectorItEnd; ++affectorIt)
+            for (auto affectorIt = mControllers.begin(); affectorIt != mControllers.end(); ++affectorIt)
             {
                 if (!(*affectorIt)->IsMarkedForEmission() && (*affectorIt)->IsEnabled())
-                {
                     (*affectorIt)->PreProcessParticles(this, timeElapsed);
-                }
             }
         }
         
@@ -1067,14 +1061,10 @@ namespace Demi
 
         if (!mControllers.empty())
         {
-            ParticleAffectorIterator affectorIt;
-            ParticleAffectorIterator affectorItEnd = mControllers.end();
-            for (affectorIt = mControllers.begin(); affectorIt != affectorItEnd; ++affectorIt)
+            for (auto affectorIt = mControllers.begin(); affectorIt != mControllers.end(); ++affectorIt)
             {
                 if (!(*affectorIt)->IsMarkedForEmission() && (*affectorIt)->IsEnabled())
-                {
                     (*affectorIt)->PostProcessParticles(this, timeElapsed);
-                }
             }
         }
     }
@@ -1130,9 +1120,8 @@ namespace Demi
 
         if (!mElementListenerList.empty())
         {
-            ElementListenerIterator it;
-            ElementListenerIterator itEnd = mElementListenerList.end();
-            for (it = mElementListenerList.begin(); it != itEnd; ++it)
+            auto itEnd = mElementListenerList.end();
+            for (auto it = mElementListenerList.begin(); it != itEnd; ++it)
             {
                 (*it)->ParticleExpired(this, particle);
             }
@@ -1158,10 +1147,9 @@ namespace Demi
         if (mEmitters.empty())
             return;
 
-        ParticleEmitterIterator itEmitter;
-        ParticleEmitterIterator itEmitterBegin = mEmitters.begin();
-        ParticleEmitterIterator itEmitterEnd = mEmitters.end();
-        for (itEmitter = itEmitterBegin; itEmitter != itEmitterEnd; ++itEmitter)
+        auto itEmitterBegin = mEmitters.begin();
+        auto itEmitterEnd = mEmitters.end();
+        for (auto itEmitter = itEmitterBegin; itEmitter != itEmitterEnd; ++itEmitter)
         {
             ExecuteEmitParticles(*itEmitter, (*itEmitter)->CalculateRequestedParticles(timeElapsed), timeElapsed);
         }
@@ -1170,9 +1158,7 @@ namespace Demi
     void DiParticleElement::ForceEmission(DiParticleEmitter* emitter, unsigned requested)
     {
         if (!mEnabled)
-        {
             return;
-        }
 
         ExecuteEmitParticles(emitter, requested, 0);
     }
@@ -1180,18 +1166,13 @@ namespace Demi
     void DiParticleElement::ForceEmission(const DiParticle::ParticleType particleType, unsigned requested)
     {
         if (!mEnabled)
-        {
             return;
-        }
 
         if (mEmitters.empty())
-        {
             return;
-        }
 
-        ParticleEmitterIterator emitterIt;
-        ParticleEmitterIterator emitterItEnd = mEmitters.end();
-        for (emitterIt = mEmitters.begin(); emitterIt != emitterItEnd; ++emitterIt)
+        auto emitterItEnd = mEmitters.end();
+        for (auto emitterIt = mEmitters.begin(); emitterIt != emitterItEnd; ++emitterIt)
         {
             if ((*emitterIt)->GetEmitsType() == particleType)
             {
@@ -1270,14 +1251,10 @@ namespace Demi
         }
 
         if (particle->HasEventFlags(DiParticle::PEF_EMITTED))
-        {
             return;
-        }
 
         if (mMaxVelocitySet && particle->CalculateVelocity() > mMaxVelocity)
-        {
             particle->direction *= (mMaxVelocity / particle->direction.length());
-        }
 
         particle->position += (particle->direction * mParticleSystemScaleVelocity * timeElapsed);
     }
