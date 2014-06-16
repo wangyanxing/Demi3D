@@ -34,11 +34,16 @@ namespace Demi
 
     DiPropertyGroup::DiPropertyGroup(const DiString& name) :mGroupName(name)
     {
-
     }
 
     DiPropertyGroup::~DiPropertyGroup()
     {
+        auto toolsCtrl = HonFxerApp::GetFxApp()->GetMainPane()->GetWorkspaceControl()->GetToolsControl();
+        auto propCtrl = toolsCtrl->getPropertiesCtrl();
+        propCtrl->getPanelView()->RemoveGroup(mUIGroup);
+        delete mUIGroup;
+        mUIGroup = nullptr;
+        
         for (auto p : mProperties)
         {
             DI_DELETE p;
@@ -54,10 +59,10 @@ namespace Demi
     {
         auto toolsCtrl = HonFxerApp::GetFxApp()->GetMainPane()->GetWorkspaceControl()->GetToolsControl();
         auto propCtrl = toolsCtrl->getPropertiesCtrl();
-        auto group = propCtrl->getPanelView()->AddGroup();
-        group->SetCaption(mGroupName);
+        mUIGroup = propCtrl->getPanelView()->AddGroup();
+        mUIGroup->SetCaption(mGroupName);
         
         for (auto p : mProperties)
-            group->AddItem(p->mCaption, p->mProperty);
+            mUIGroup->AddItem(p->mCaption, p->mProperty);
     }
 }

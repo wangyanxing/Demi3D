@@ -52,7 +52,9 @@ namespace Demi
 
     protected:
 
-        void                InitPropertyTable();
+        virtual void        InitPropertyTable() override;
+        
+        virtual void        DestroyPropertyTable() override;
 
     protected:
 

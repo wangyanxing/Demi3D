@@ -15,4 +15,9 @@ namespace tools
         addItem(g);
         return g;
     }
+    
+    void PanelView::RemoveGroup(Demi::DiPanelGroup* group)
+    {
+        removeItem(group);
+    }
 }

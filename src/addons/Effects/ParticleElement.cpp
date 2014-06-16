@@ -413,10 +413,9 @@ namespace Demi
     void DiParticleElement::DestroyEmitter(DiParticleEmitter* emitter)
     {
         DI_ASSERT(emitter);
-        ParticleEmitterList::iterator it;
-        ParticleEmitterList::iterator itEnd = mEmitters.end();
+        auto itEnd = mEmitters.end();
         bool notify = false;
-        for (it = mEmitters.begin(); it != itEnd; ++it)
+        for (auto it = mEmitters.begin(); it != itEnd; ++it)
         {
             if (*it == emitter)
             {
@@ -1154,14 +1153,10 @@ namespace Demi
     void DiParticleElement::EmitParticles(float timeElapsed)
     {
         if (!mEnabled)
-        {
             return;
-        }
 
         if (mEmitters.empty())
-        {
             return;
-        }
 
         ParticleEmitterIterator itEmitter;
         ParticleEmitterIterator itEmitterBegin = mEmitters.begin();

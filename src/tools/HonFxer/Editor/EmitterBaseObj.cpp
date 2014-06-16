@@ -58,8 +58,15 @@ namespace Demi
         auto parent = dynamic_cast<DiParticleElementObj*>(GetParent());
         mEmitter = parent->GetParticleElement()->CreateEmitter(GetEmitterType());
         mEmitter->SetName(HonFxerApp::GetEditorManager()->GenerateEmitterName(GetEmitterType()));
-
-        InitPropertyTable();
+    }
+    
+    void DiEmitterBaseObj::DestroyPropertyTable()
+    {
+        for (auto g : mPropGroups)
+        {
+            DI_DELETE g;
+        }
+        mPropGroups.clear();
     }
 
     void DiEmitterBaseObj::InitPropertyTable()

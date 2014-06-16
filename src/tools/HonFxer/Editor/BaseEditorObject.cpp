@@ -85,6 +85,7 @@ namespace Demi
 
     void DiBaseEditorObj::OnCreateUI()
     {
+        // tree control node
         auto resTree = HonFxerApp::GetFxApp()->GetMainPane()->GetWorkspaceControl()->GetResourceTree();
         auto treeCtrl = resTree->GetTreeCtrl();
 
@@ -92,11 +93,16 @@ namespace Demi
         mUINode = new MyGUI::TreeControl::Node(GetUICaption().c_str(), GetUINodeType().c_str());
         mUINode->setData((DiBaseEditorObj*)this);
         root->add(mUINode);
+        
+        // property table
+        InitPropertyTable();
     }
 
     void DiBaseEditorObj::OnDestroyUI()
     {
         mUINode->getParent()->remove(mUINode, true);
+        
+        DestroyPropertyTable();
     }
 
     void DiBaseEditorObj::Update(float dt)

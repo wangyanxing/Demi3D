@@ -37,5 +37,4 @@ namespace Demi
     {
         return static_cast<DiPointEmitter*>(mEmitter);
     }
-
 }

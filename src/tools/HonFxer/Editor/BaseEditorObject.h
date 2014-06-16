@@ -69,6 +69,12 @@ namespace Demi
         virtual void                Update(float dt);
         
         void                        Release();
+        
+    protected:
+        
+        virtual void                InitPropertyTable(){}
+        
+        virtual void                DestroyPropertyTable(){}
 
     protected:
 

@@ -50,6 +50,8 @@ namespace Demi
         DiString mGroupName;
 
         DiVector<DiEditProperty*> mProperties;
+        
+        Demi::DiPanelGroup* mUIGroup{nullptr};
     };
 
     using PropertyGroups = DiVector<DiPropertyGroup*>;

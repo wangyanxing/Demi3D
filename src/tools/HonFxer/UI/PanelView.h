@@ -24,6 +24,8 @@ namespace tools
     public:
 
         Demi::DiPanelGroup* AddGroup();
+        
+        void RemoveGroup(Demi::DiPanelGroup* group);
 	};
 
     
