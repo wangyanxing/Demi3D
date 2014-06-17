@@ -101,7 +101,7 @@ namespace Demi
 
         void                    DestroyElement(size_t index);
 
-        void                    DestroyAllTechniques(void);
+        void                    DestroyAllElements(void);
 
         void                    NotifyAttached(DiNode* parent);
 
@@ -117,7 +117,7 @@ namespace Demi
         
         void                    Update(float timeElapsed);
 
-        size_t                  UpdateTechniques(float timeElapsed);
+        size_t                  UpdateElements(float timeElapsed);
 
         float                   GetNonVisibleUpdateTimeout(void) const;
 

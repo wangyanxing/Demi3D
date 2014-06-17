@@ -132,9 +132,14 @@ namespace Demi
             return;
         
         if (pool->IsEmpty(DiParticle::PT_VISUAL))
+        {
+            mBillboardSet->MakeEmpty();
             return;
+        }
         
-        mBillboardSet->BeginBillboards();
+        size_t sz = pool->GetSize(DiParticle::PT_VISUAL);
+        
+        mBillboardSet->BeginBillboards(sz);
         DiBillboard bb;
         
         DiVisualParticle* particle = static_cast<DiVisualParticle*>(pool->GetFirst(DiParticle::PT_VISUAL));
@@ -167,10 +172,8 @@ namespace Demi
                 }
                 
                 bb.SetTexcoordIndex(particle->textureCoordsCurrent);
-                
                 mBillboardSet->InjectBillboard(bb);
             }
-            
             particle = static_cast<DiVisualParticle*>(pool->GetNext(DiParticle::PT_VISUAL));
         }
         
@@ -261,6 +264,4 @@ namespace Demi
     {
         return mBillboardSet->GetBillboardOrigin();
     }
-
 }
-

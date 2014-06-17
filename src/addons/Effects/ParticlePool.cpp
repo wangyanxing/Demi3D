@@ -58,16 +58,16 @@ namespace Demi
         return mVisualParticlesPool.IsEmpty();
     }
     
-    bool DiParticlePool::IsEmpty(const DiParticle::ParticleType particleType)
+    bool DiParticlePool::IsEmpty(const DiParticle::ParticleType pType)
     {
-        switch(particleType)
+        switch(pType)
         {
             case DiParticle::PT_VISUAL:
                 return mVisualParticlesPool.IsEmpty();
                 break;
+            default:
+                return true;
         }
-
-        return true;
     }
     
     size_t DiParticlePool::GetSize(void)
@@ -117,6 +117,8 @@ namespace Demi
             case DiParticle::PT_VISUAL:
                 IncreaseVisualParticlePool(size);
                 break;
+            default:
+                break;
         }
         ResetIterator();
     }
@@ -127,10 +129,9 @@ namespace Demi
         {
             case DiParticle::PT_VISUAL:
                 return mVisualParticlesPool.ReleaseElement();
-                break;
+            default:
+                return nullptr;
         }
-        
-        return 0;
     }
     
     void DiParticlePool::ReleaseAllParticles (void)
@@ -148,6 +149,8 @@ namespace Demi
             {
                 case DiParticle::PT_VISUAL:
                     mVisualParticlesPool.LockLatestElement();
+                    break;
+                default:
                     break;
             }
         }

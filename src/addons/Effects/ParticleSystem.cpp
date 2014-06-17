@@ -86,12 +86,12 @@ namespace Demi
     DiParticleSystem::~DiParticleSystem(void)
     {
         PushSystemEvent(PU_EVT_SYSTEM_DELETING);
-        DestroyAllTechniques();
+        DestroyAllElements();
     }
     
     DiParticleSystem& DiParticleSystem::operator=(const DiParticleSystem& ps)
     {
-        DestroyAllTechniques();
+        DestroyAllElements();
 
         size_t i = 0;
         DiParticleElement* psTechnique = 0;
@@ -103,32 +103,32 @@ namespace Demi
             AddElement(clonedTechnique);
         }
 
-        mNonvisibleUpdateTimeout = ps.mNonvisibleUpdateTimeout;
-        mNonvisibleUpdateTimeoutSet = ps.mNonvisibleUpdateTimeoutSet;
-        mLodDistanceList = ps.mLodDistanceList;
-        mSmoothLod  = ps.mSmoothLod;
-        mIterationIntervalSet = ps.mIterationIntervalSet;
-        mIterationInterval = ps.mIterationInterval;
-        mTimeSinceLastUpdate = ps.mTimeSinceLastUpdate;
-        mFixedTimeout = ps.mFixedTimeout;
-        mFixedTimeoutSet = ps.mFixedTimeoutSet;
-        mState = ps.mState;
-        mTimeElapsedSinceStart = ps.mTimeElapsedSinceStart;
+        mNonvisibleUpdateTimeout      = ps.mNonvisibleUpdateTimeout;
+        mNonvisibleUpdateTimeoutSet   = ps.mNonvisibleUpdateTimeoutSet;
+        mLodDistanceList              = ps.mLodDistanceList;
+        mSmoothLod                    = ps.mSmoothLod;
+        mIterationIntervalSet         = ps.mIterationIntervalSet;
+        mIterationInterval            = ps.mIterationInterval;
+        mTimeSinceLastUpdate          = ps.mTimeSinceLastUpdate;
+        mFixedTimeout                 = ps.mFixedTimeout;
+        mFixedTimeoutSet              = ps.mFixedTimeoutSet;
+        mState                        = ps.mState;
+        mTimeElapsedSinceStart        = ps.mTimeElapsedSinceStart;
         mSuppressNotifyEmissionChange = ps.mSuppressNotifyEmissionChange;
-        mFastForwardSet = ps.mFastForwardSet;
-        mOriginalFastForwardSet = ps.mOriginalFastForwardSet;
-        mFastForwardTime = ps.mFastForwardTime;
-        mFastForwardInterval = ps.mFastForwardInterval;
-        mParticleSystemScale = ps.mParticleSystemScale;
-        mParticleSystemScaleVelocity = ps.mParticleSystemScaleVelocity;
-        mParticleSystemScaleTime = ps.mParticleSystemScaleTime;
-        mKeepLocal = ps.mKeepLocal;
-        mTightBoundingBox = ps.mTightBoundingBox;
-        mPauseTime = ps.mPauseTime;
-        mPauseTimeSet = ps.mPauseTimeSet;
-        mPauseTimeElapsed = ps.mPauseTimeElapsed;
-        mTemplateName = ps.mTemplateName;
-        mStopFadeSet = ps.mStopFadeSet;
+        mFastForwardSet               = ps.mFastForwardSet;
+        mOriginalFastForwardSet       = ps.mOriginalFastForwardSet;
+        mFastForwardTime              = ps.mFastForwardTime;
+        mFastForwardInterval          = ps.mFastForwardInterval;
+        mParticleSystemScale          = ps.mParticleSystemScale;
+        mParticleSystemScaleVelocity  = ps.mParticleSystemScaleVelocity;
+        mParticleSystemScaleTime      = ps.mParticleSystemScaleTime;
+        mKeepLocal                    = ps.mKeepLocal;
+        mTightBoundingBox             = ps.mTightBoundingBox;
+        mPauseTime                    = ps.mPauseTime;
+        mPauseTimeSet                 = ps.mPauseTimeSet;
+        mPauseTimeElapsed             = ps.mPauseTimeElapsed;
+        mTemplateName                 = ps.mTemplateName;
+        mStopFadeSet                  = ps.mStopFadeSet;
 
         mSuppressNotifyEmissionChange = false;
         NotifyEmissionChange();
@@ -145,10 +145,10 @@ namespace Demi
     
     void DiParticleSystem::RemoveParticleSystemListener (DiParticleSystemListener* particleSystemListener)
     {
-        assert(particleSystemListener && "ParticleSystemListener is null!");
-        ParticleSystemListenerIterator it;
-        ParticleSystemListenerIterator itEnd = mParticleSystemListenerList.end();
-        for (it = mParticleSystemListenerList.begin(); it != itEnd; ++it)
+        DI_ASSERT(particleSystemListener && "ParticleSystemListener is null!");
+
+        for (auto it = mParticleSystemListenerList.begin();
+             it != mParticleSystemListenerList.end(); ++it)
         {
             if (*it == particleSystemListener)
             {
@@ -161,24 +161,21 @@ namespace Demi
     void DiParticleSystem::PushSystemEvent(EventType eventType)
     {
         ParticleUniverseEvent evt;
-        evt.eventType = eventType;
+        evt.eventType     = eventType;
         evt.componentType = CT_SYSTEM;
         evt.componentName = GetName();
-        evt.technique = 0;
-        evt.emitter = 0;
+        evt.technique     = 0;
+        evt.emitter       = 0;
         PushEvent(evt);
     }
     
     void DiParticleSystem::PushEvent(ParticleUniverseEvent& particleUniverseEvent)
     {
         if (mParticleSystemListenerList.empty())
-        {
             return;
-        }
 
-        ParticleSystemListenerIterator it;
-        ParticleSystemListenerIterator itEnd = mParticleSystemListenerList.end();
-        for (it = mParticleSystemListenerList.begin(); it != itEnd; ++it)
+        for (auto it = mParticleSystemListenerList.begin();
+             it != mParticleSystemListenerList.end(); ++it)
         {
             (*it)->HandleParticleSystemEvent(this, particleUniverseEvent);
         }
@@ -219,13 +216,9 @@ namespace Demi
     {
         DiParticle::SetEnabled(enabled);
         if (enabled && mState != PSS_STARTED)
-        {
             Start();
-        }
         else
-        {
             Stop();
-        }
     }
     
     bool DiParticleSystem::IsKeepLocal(void) const
@@ -241,14 +234,10 @@ namespace Demi
     bool DiParticleSystem::MakeParticleLocal(DiParticle* particle)
     {
         if (!particle)
-        {
             return true;
-        }
 
         if (!mKeepLocal || HasEventFlags(DiParticle::PEF_EXPIRED))
-        {
             return false;
-        }
 
         DiVec3 diff = GetDerivedPosition() - latestPosition;
         particle->position += diff;
@@ -259,19 +248,14 @@ namespace Demi
     {
         if (mMarkedForEmission)
         {
-            // 作为粒子发射
             mDerivedPosition = position;
         }
         else
         {
             if (mParentNode)
-            {
                 mDerivedPosition = mParentNode->GetDerivedPosition();
-            }
             else
-            {
                 mDerivedPosition = DiVec3::ZERO;
-            }
         }
         return mDerivedPosition;
     }
@@ -281,24 +265,16 @@ namespace Demi
         if (mMarkedForEmission)
         {
             if (parentEmitter)
-            {
                 return parentEmitter->GetParentElement()->GetParentSystem()->GetDerivedOrientation();
-            }
             else
-            {
                 return DiQuat::IDENTITY;
-            }
         }
         else
         {
             if (mParentNode)
-            {
                 return mParentNode->GetDerivedOrientation();
-            }
             else
-            {
                 return DiQuat::IDENTITY;
-            }
         }
     }
     
@@ -315,17 +291,10 @@ namespace Demi
     void DiParticleSystem::CalulateRotationOffset(void)
     {
         if (mMarkedForEmission)
-        {
-            // 使用发射这个ps的发射器的父ps的世界坐标
             mRotationCentre = parentEmitter->GetParentElement()->GetParentSystem()->GetDerivedPosition();
-        }
         else
-        {
-            // 使用自己的位置
             mRotationCentre = GetDerivedPosition();
-        }
 
-        // 计算旋转偏移
         mRotationOffset = GetDerivedOrientation() * mLatestOrientation.Inverse();
     }
     
@@ -377,21 +346,15 @@ namespace Demi
     DiParticleElement* DiParticleSystem::GetElement (const DiString& techniqueName) const
     {
         if (techniqueName == DiString::BLANK)
-        {
-            return 0;
-        }
+            return nullptr;
 
-        ParticleTechniqueConstIterator it;
-        ParticleTechniqueConstIterator itEnd = mElements.end();
-        for (it = mElements.begin(); it != itEnd; ++it)
+        for (auto it = mElements.begin(); it != mElements.end(); ++it)
         {
             if ((*it)->GetName() == techniqueName)
-            {
                 return *it;
-            }
         }
 
-        return 0;
+        return nullptr;
     }
     
     size_t DiParticleSystem::GetNumElements (void) const
@@ -421,10 +384,9 @@ namespace Demi
         DestroyElement(GetElement(index));
     }
     
-    void DiParticleSystem::DestroyAllTechniques (void)
+    void DiParticleSystem::DestroyAllElements (void)
     {
-        ParticleTechniqueIterator it;
-        for (it = mElements.begin(); it != mElements.end(); ++it)
+        for (auto it = mElements.begin(); it != mElements.end(); ++it)
         {
             DI_DELETE(*it);
         }
@@ -443,10 +405,10 @@ namespace Demi
     
     void DiParticleSystem::SetFastForward(float time, float interval)
     {
-        mFastForwardSet = true;
+        mFastForwardSet         = true;
         mOriginalFastForwardSet = true;
-        mFastForwardTime = time;
-        mFastForwardInterval = interval;
+        mFastForwardTime        = time;
+        mFastForwardInterval    = interval;
     }
 
     DiCamera* DiParticleSystem::GetMainCamera(void)
@@ -456,15 +418,13 @@ namespace Demi
             mCurrentCamera = Driver->GetSceneManager()->GetCamera();
             return mCurrentCamera;
         }
-        return NULL;
+        return nullptr;
     }
     
     void DiParticleSystem::SetMainCamera(DiCamera* camera)
     {
         if (!camera)
-        {
             return;
-        }
         
         mCurrentCamera = camera;
     }
@@ -477,14 +437,10 @@ namespace Demi
     void DiParticleSystem::FastForward(void)
     {
         if (!mFastForwardSet)
-        {
             return;
-        }
 
         for (float ftime = 0; ftime < mFastForwardTime; ftime += mFastForwardInterval)
-        {
             Update(mFastForwardInterval);
-        }
         
         mFastForwardSet = false;
     }
@@ -501,9 +457,8 @@ namespace Demi
             mLastVisibleFrame = Driver->GetFrameNum();
         }
 
-        ParticleTechniqueIterator it;
-        ParticleTechniqueIterator itEnd = mElements.end();
-        for (it = mElements.begin(); it != itEnd; ++it)
+        for (auto it = mElements.begin();
+             it != mElements.end(); ++it)
         {
             (*it)->NotifyAttached(parent);
         }
@@ -541,11 +496,8 @@ namespace Demi
             }
 
             if (doCamera)
-            {
                 (*it)->SetCameraSquareDistance(squareDistance);
-            }
 
-            // 检查LOD列表，是否有LOD需要
             if (!mLodDistanceList.empty())
             {
                 if (doCamera)
@@ -558,11 +510,11 @@ namespace Demi
                         if (index != mLastLodIndex)
                         {
                             ParticleUniverseEvent evt;
-                            evt.eventType = PU_EVT_LOD_TRANSITION;
+                            evt.eventType     = PU_EVT_LOD_TRANSITION;
                             evt.componentType = CT_TECHNIQUE;
                             evt.componentName = (*it)->GetName();
-                            evt.technique = *it;
-                            evt.emitter = 0;
+                            evt.technique     = *it;
+                            evt.emitter       = 0;
                             PushEvent(evt);
                         }
                         mLastLodIndex = index;
@@ -587,18 +539,16 @@ namespace Demi
     {
         auto itEnd = mElements.end();
         for (auto it = mElements.begin(); it != itEnd; ++it)
-        {
             (*it)->Update(camera);
-        }
+        
+        Update(Driver->GetDeltaSecond());
     }
     
     void DiParticleSystem::AddToBatchGroup(DiRenderBatchGroup* bg)
     {
         auto itEnd = mElements.end();
         for (auto it = mElements.begin(); it != itEnd; ++it)
-        {
             (*it)->AddToBatchGroup(bg);
-        }
     }
     
     void DiParticleSystem::SetBatchGroup(DiBatchGroupType gt)
@@ -675,14 +625,14 @@ namespace Demi
                 while (mTimeSinceLastUpdate >= mIterationInterval)
                 {
                     // Update all techniques using the iteration interval value
-                    particlesLeft = UpdateTechniques(mIterationInterval);
+                    particlesLeft = UpdateElements(mIterationInterval);
                     mTimeSinceLastUpdate -= mIterationInterval;
                 }
             }
             else
             {
                 // Update all techniques using the time elapsed (since last frame)
-                particlesLeft = UpdateTechniques(timeElapsed);
+                particlesLeft = UpdateElements(timeElapsed);
             }
 
             // Handle situation when no particles are emitted anymore
@@ -748,7 +698,7 @@ namespace Demi
         mLatestOrientation = GetDerivedOrientation();
     }
     
-    size_t DiParticleSystem::UpdateTechniques(float timeElapsed)
+    size_t DiParticleSystem::UpdateElements(float timeElapsed)
     {
         /** Update all techniques if particle system is started (only if the techniques aren't emitted 
             themselves) and return the total number of emitted particles.

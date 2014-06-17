@@ -29,7 +29,7 @@ namespace Demi
 
     
     DiGravityController::DiGravityController(void) : 
-    DiParticleController(),
+        DiParticleController(),
         mGravity(DEFAULT_GRAVITY)
     {
     }
@@ -51,11 +51,11 @@ namespace Demi
     {
         DiVec3 distance = mDerivedPosition - particle->position;
         float length = distance.squaredLength();
+        
         float scaleVelocity = 1.0f;
         if (mParentElement)
-        {
             scaleVelocity = mParentElement->GetParticleSystemScaleVelocity();
-        }
+        
         if (length > 0 && mParentElement)
         {
             //float force = (mGravity * particle->mass * mass) / length;
@@ -74,4 +74,3 @@ namespace Demi
         mGravity = gravity;
     }
 }
-

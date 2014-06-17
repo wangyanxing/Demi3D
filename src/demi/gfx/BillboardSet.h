@@ -94,6 +94,8 @@ namespace Demi
         unsigned int            GetPoolSize(void) const;
 
         void                    Clear();
+        
+        void                    MakeEmpty();
 
         DiBillboard*            GetBillboard(unsigned int index) const;
 

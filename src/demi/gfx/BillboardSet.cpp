@@ -224,6 +224,14 @@ namespace Demi
     {
         return static_cast< unsigned int >( mBillboardPool.size() );
     }
+    
+    void DiBillboardSet::MakeEmpty()
+    {
+        mPrimitiveCount = 0;
+        mVertexOffset = 0;
+        mIndexOffset = 0;
+        mVerticesNum = 0;
+    }
 
     void DiBillboardSet::Clear()
     {
@@ -342,9 +350,7 @@ namespace Demi
     void DiBillboardSet::BeginBillboards( size_t numBillboards /*= 0*/ )
     {
         if(!mBuffersCreated)
-        {
             CreateBuffers();
-        }
 
         GetParametricOffsets(mLeftOff, mRightOff, mTopOff, mBottomOff);
 

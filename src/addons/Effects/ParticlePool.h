@@ -41,9 +41,9 @@ namespace Demi
 
         bool                             IsEmpty(const DiParticle::ParticleType particleType);
 
-        size_t                             GetSize(void);
+        size_t                           GetSize(void);
 
-        size_t                             GetSize(const DiParticle::ParticleType particleType);
+        size_t                           GetSize(const DiParticle::ParticleType particleType);
 
         void                             InitialisePool(void);
 
@@ -55,7 +55,7 @@ namespace Demi
 
         void                             DestroyAllVisualParticles(void);
 
-        DiParticle*                        ReleaseParticle (const DiParticle::ParticleType particleType, const DiString& name);
+        DiParticle*                      ReleaseParticle (const DiParticle::ParticleType particleType, const DiString& name);
 
         void                             ReleaseAllParticles (void);
 
@@ -65,13 +65,13 @@ namespace Demi
 
         void                             ResetIterator(void);
 
-        DiParticle*                     GetFirst(void);
+        DiParticle*                      GetFirst(void);
 
-        DiParticle*                     GetNext(void);
+        DiParticle*                      GetNext(void);
 
-        DiParticle*                     GetFirst(const DiParticle::ParticleType particleType);
+        DiParticle*                      GetFirst(const DiParticle::ParticleType particleType);
 
-        DiParticle*                     GetNext(const DiParticle::ParticleType particleType);
+        DiParticle*                      GetNext(const DiParticle::ParticleType particleType);
 
         bool                             End(void);
 
@@ -89,11 +89,11 @@ namespace Demi
 
         DiParticlePoolBase<DiVisualParticle>    mVisualParticlesPool;
 
-        DiVector<DiVisualParticle*>                mVisualParticles;
+        DiVector<DiVisualParticle*>             mVisualParticles;
 
         void            IncreaseVisualParticlePool(size_t size);
 
-        DiParticle*        mLatestParticle;
+        DiParticle*     mLatestParticle;
 
     };
 }

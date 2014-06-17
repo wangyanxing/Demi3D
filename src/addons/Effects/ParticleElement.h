@@ -99,15 +99,15 @@ namespace Demi
 
         void                      SetEmittedSystemQuota(size_t quota);
 
-        const float               GetDefaultWidth(void) const;
+        float                     GetDefaultWidth(void) const;
 
         void                      SetDefaultWidth(const float width);
 
-        const float               GetDefaultHeight(void) const;
+        float                     GetDefaultHeight(void) const;
 
         void                      SetDefaultHeight(const float height);
 
-        const float               GetDefaultDepth(void) const;
+        float                     GetDefaultDepth(void) const;
 
         void                      SetDefaultDepth(const float depth);
 

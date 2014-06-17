@@ -637,7 +637,8 @@ namespace Demi
         {
             if (mDynEmissionRate && mParentElement && mParentElement->GetParentSystem())
             {
-                float rate = mDynEmissionRate->GetValue(mParentElement->GetParentSystem()->GetTimeElapsedSinceStart());
+                float rate = mDynEmissionRate->GetValue(
+                                mParentElement->GetParentSystem()->GetTimeElapsedSinceStart());
                 
                 if (mForceEmission)
                 {

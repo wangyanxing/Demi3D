@@ -88,13 +88,9 @@ namespace Demi
     float DiParticle::CalculateVelocity( void ) const
     {
         if (originalScaledDirectionLength != 0)
-        {
             return originalVelocity * (direction.length() / originalScaledDirectionLength);
-        }
         else
-        {
             return originalVelocity * direction.length();
-        }
     }
 
     void DiParticle::CopyTo( DiParticle* particle )

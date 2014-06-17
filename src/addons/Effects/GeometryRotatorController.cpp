@@ -30,7 +30,7 @@ namespace Demi
     const DiVec3 DiGeometryRotatorController::DEFAULT_ROTATION_AXIS = DiVec3::ZERO;
 
     DiGeometryRotatorController::DiGeometryRotatorController(void) : 
-    DiParticleController(),
+        DiParticleController(),
         mScaledRotationSpeed(0.0f),
         mUseOwnRotationSpeed(DEFAULT_USE_OWN),
         mQuat(DiQuat::IDENTITY),
@@ -103,6 +103,7 @@ namespace Demi
             visualParticle->orientation.y = DiMath::RangeRandom(-1, 1);
             visualParticle->orientation.z = DiMath::RangeRandom(-1, 1);
             visualParticle->orientation.w = DiMath::RangeRandom(-1, 1);
+            
             visualParticle->rotationAxis.x = DiMath::UnitRandom();
             visualParticle->rotationAxis.y = DiMath::UnitRandom();
             visualParticle->rotationAxis.z = DiMath::UnitRandom();
@@ -110,38 +111,27 @@ namespace Demi
         visualParticle->orientation.normalise();
 
         if (mUseOwnRotationSpeed)
-        {
             visualParticle->rotationSpeed = CalculateRotationSpeed(particle);
-        }
     }
     
     void DiGeometryRotatorController::Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed)
     {
         if (particle->particleType != DiParticle::PT_VISUAL)
-        {
             return;
-        }
 
         DiVisualParticle* visualParticle = static_cast<DiVisualParticle*>(particle);
 
         if (mUseOwnRotationSpeed)
-        {
             mScaledRotationSpeed = visualParticle->rotationSpeed * timeElapsed;
-        }
         else
-        {
             mScaledRotationSpeed = CalculateRotationSpeed(particle) * timeElapsed;
-        }
 
         mQuat = DiQuat::IDENTITY;
+        
         if (mRotationAxisSet)
-        {
             mQuat.FromAngleAxis(DiRadian(mScaledRotationSpeed), mRotationAxis);
-        }
         else
-        {
             mQuat.FromAngleAxis(DiRadian(mScaledRotationSpeed), visualParticle->rotationAxis);
-        }
 
         visualParticle->orientation = mQuat * visualParticle->orientation;
     }

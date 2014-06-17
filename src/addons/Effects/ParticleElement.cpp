@@ -260,7 +260,7 @@ namespace Demi
         //mParticleSystemPoolIncreased = false;
     }
     
-    const float DiParticleElement::GetDefaultWidth(void) const
+    float DiParticleElement::GetDefaultWidth(void) const
     {
         return mDefaultWidth;
     }
@@ -276,7 +276,7 @@ namespace Demi
         }
     }
     
-    const float DiParticleElement::GetDefaultHeight(void) const
+    float DiParticleElement::GetDefaultHeight(void) const
     {
         return mDefaultHeight;
     }
@@ -292,7 +292,7 @@ namespace Demi
         }
     }
     
-    const float DiParticleElement::GetDefaultDepth(void) const
+    float DiParticleElement::GetDefaultDepth(void) const
     {
         return mDefaultDepth;
     }
@@ -326,10 +326,9 @@ namespace Demi
     void DiParticleElement::SetMaterialName(const DiString& materialName)
     {
         mMaterialName = materialName;
+        
         if (mRenderer)
-        {
             mRenderer->SetMaterialName(mMaterialName);
-        }
     }
     
     DiParticleEmitter* DiParticleElement::CreateEmitter(const DiString& emitterType)
@@ -352,10 +351,9 @@ namespace Demi
     void DiParticleElement::RemoveEmitter(DiParticleEmitter* emitter)
     {
         DI_ASSERT(emitter);
-        ParticleEmitterList::iterator it;
-        ParticleEmitterList::iterator itEnd = mEmitters.end();
+
         bool notify = false;
-        for (it = mEmitters.begin(); it != itEnd; ++it)
+        for (auto it = mEmitters.begin(); it != mEmitters.end(); ++it)
         {
             if (*it == emitter)
             {
@@ -369,9 +367,7 @@ namespace Demi
         emitter->SetParentElement(0);
 
         if (notify)
-        {
             NotifyEmissionChange();
-        }
     }
     
     DiParticleEmitter* DiParticleElement::GetEmitter (size_t index) const
@@ -383,21 +379,15 @@ namespace Demi
     DiParticleEmitter* DiParticleElement::GetEmitter (const DiString& emitterName) const
     {
         if (emitterName == DiString::BLANK)
-        {
-            return 0;
-        }
+            return nullptr;
 
-        ParticleEmitterIterator it;
-        ParticleEmitterIterator itEnd = mEmitters.end();
-        for (it = mEmitters.begin(); it != itEnd; ++it)
+        for (auto it = mEmitters.begin(); it != mEmitters.end(); ++it)
         {
             if ((*it)->GetName() == emitterName)
-            {
                 return *it;
-            }
         }
         
-        return 0;
+        return nullptr;
     }
     
     size_t DiParticleElement::GetNumEmitters (void) const
@@ -438,9 +428,7 @@ namespace Demi
     
     void DiParticleElement::DestroyAllEmitters(void)
     {
-        ParticleEmitterList::iterator it;
-        ParticleEmitterList::iterator itEnd = mEmitters.end();
-        for (it = mEmitters.begin(); it != itEnd; ++it)
+        for (auto it = mEmitters.begin(); it != mEmitters.end(); ++it)
         {
             DI_DELETE(*it);
         }
@@ -489,21 +477,15 @@ namespace Demi
     DiParticleController* DiParticleElement::GetController (const DiString& controllerName) const
     {
         if (controllerName == DiString::BLANK)
-        {
-            return 0;
-        }
+            return nullptr;
 
-        ParticleAffectorIterator it;
-        ParticleAffectorIterator itEnd = mControllers.end();
-        for (it = mControllers.begin(); it != itEnd; ++it)
+        for (auto it = mControllers.begin(); it != mControllers.end(); ++it)
         {
             if ((*it)->GetName() == controllerName)
-            {
                 return *it;
-            }
         }
         
-        return 0;
+        return nullptr;
     }
     
     size_t DiParticleElement::GetNumControllers (void) const
@@ -519,9 +501,7 @@ namespace Demi
         for (it = mControllers.begin(); it != itEnd; ++it)
         {
             if ((*it)->IsMarkedForEmission())
-            {
                 count++;
-            }
         }
 
         return count;
@@ -565,9 +545,7 @@ namespace Demi
     void DiParticleElement::SetRenderer(const DiString& rendererType)
     {
         if (mRenderer)
-        {
             DestroyRenderer();
-        }
 
         if (rendererType != DiString::BLANK)
         {
@@ -580,14 +558,10 @@ namespace Demi
     void DiParticleElement::SetRenderer(DiParticleRenderer* renderer)
     {
         if (!renderer)
-        {
             return;
-        }
 
         if (mRenderer)
-        {
             DestroyRenderer();
-        }
 
         mRenderer = renderer;
         mRenderer->SetParentElement(this);
@@ -602,11 +576,7 @@ namespace Demi
     
     void DiParticleElement::DestroyRenderer(void)
     {
-        if (mRenderer)
-        {
-            DI_DELETE(mRenderer);
-            mRenderer = 0;
-        }
+        SAFE_DELETE(mRenderer);
     }
     
     void DiParticleElement::Update(DiCamera* cam)
@@ -614,9 +584,7 @@ namespace Demi
         if (mRenderer && mRenderer->IsRendererInitialised())
         {
             if (mEnabled || mParentSystem->IsSmoothLod())
-            {
                 mRenderer->Update(cam, &mPool);
-            }
         }
     }
     
@@ -625,18 +593,14 @@ namespace Demi
         if (mRenderer && mRenderer->IsRendererInitialised())
         {
             if (mEnabled || mParentSystem->IsSmoothLod())
-            {
                 mRenderer->AddToBatchGroup(group);
-            }
         }
     }
     
     void DiParticleElement::SetBatchGroupID(uint8 queueId)
     {
         if (mRenderer)
-        {
             mRenderer->SetBatchGroupID(queueId);
-        }
     }
     
     void DiParticleElement::Prepare(void)
@@ -722,28 +686,19 @@ namespace Demi
         if (!mEnabled)
         {
             if (!mParentSystem->IsSmoothLod())
-            {
                 return;
-            }
             else if (mPool.IsEmpty())
-            {
                 return;
-            }
         }
 
         Prepare();
 
         if (mParentSystem && mParentSystem->HasTightBoundingBox())
-        {
             ResetBounds();
-        }
 
         EmitParticles(timeElapsed);
-
         PreProcessParticles(timeElapsed);
-
         ProcessParticles(timeElapsed);
-
         PostProcessParticles(timeElapsed);
 
         latestPosition = GetDerivedPosition();
@@ -752,18 +707,12 @@ namespace Demi
     void DiParticleElement::NotifyEmissionChange(void)
     {
         if (mSuppressNotifyEmissionChange)
-        {
             return;
-        }
 
         if (GetParentSystem())
-        {
             GetParentSystem()->NotifyEmissionChange();
-        }
         else
-        {
             MarkForEmission();
-        }
     }
     
     void DiParticleElement::NotifyAttached(DiNode* parent)
@@ -858,9 +807,7 @@ namespace Demi
     void DiParticleElement::NotifyStartPooledComponents(void)
     {
         if (mPool.IsEmpty())
-        {
             return;
-        }
 
         DiParticle* particle = static_cast<DiParticle*>(mPool.GetFirst());
         while (!mPool.End())
@@ -896,9 +843,7 @@ namespace Demi
     void DiParticleElement::NotifyStopPooledComponents(void)
     {
         if (mPool.IsEmpty())
-        {
             return;
-        }
 
         DiParticle* particle = static_cast<DiParticle*>(mPool.GetFirst());
         while (!mPool.End())
@@ -928,9 +873,7 @@ namespace Demi
     void DiParticleElement::NotifyPausePooledComponents(void)
     {
         if (mPool.IsEmpty())
-        {
             return;
-        }
 
         DiParticle* particle = static_cast<DiParticle*>(mPool.GetFirst());
         while (!mPool.End())
@@ -960,9 +903,7 @@ namespace Demi
     void DiParticleElement::NotifyResumePooledComponents(void)
     {
         if (mPool.IsEmpty())
-        {
             return;
-        }
 
         DiParticle* particle = static_cast<DiParticle*>(mPool.GetFirst());
         while (!mPool.End())
@@ -974,9 +915,7 @@ namespace Demi
     void DiParticleElement::ProcessParticles(float timeElapsed)
     {
         if (mPool.IsEmpty())
-        {
             return;
-        }
 
         DiParticle* particle = mPool.GetFirst();
         bool firstParticle = true; 
@@ -1072,9 +1011,7 @@ namespace Demi
     void DiParticleElement::ProcessRenderer(DiParticle* particle, float timeElapsed, bool firstParticle)
     {
         if (!mRenderer)
-        {
             return;
-        }
 
         mRenderer->ProcessParticle(this, particle, timeElapsed, firstParticle);
     }
@@ -1147,12 +1084,8 @@ namespace Demi
         if (mEmitters.empty())
             return;
 
-        auto itEmitterBegin = mEmitters.begin();
-        auto itEmitterEnd = mEmitters.end();
-        for (auto itEmitter = itEmitterBegin; itEmitter != itEmitterEnd; ++itEmitter)
-        {
+        for (auto itEmitter = mEmitters.begin(); itEmitter != mEmitters.end(); ++itEmitter)
             ExecuteEmitParticles(*itEmitter, (*itEmitter)->CalculateRequestedParticles(timeElapsed), timeElapsed);
-        }
     }
     
     void DiParticleElement::ForceEmission(DiParticleEmitter* emitter, unsigned requested)
@@ -1200,8 +1133,8 @@ namespace Demi
 
             emitter->InitParticleForEmission(particle);
 
-            particle->direction = (GetParentSystem()->GetDerivedOrientation() * particle->direction);
-            particle->originalDirection = (GetParentSystem()->GetDerivedOrientation() * particle->originalDirection);
+            particle->direction = GetParentSystem()->GetDerivedOrientation() * particle->direction;
+            particle->originalDirection = GetParentSystem()->GetDerivedOrientation() * particle->originalDirection;
 
             if (!mControllers.empty())
             {
@@ -1237,14 +1170,18 @@ namespace Demi
     {
         if (particle->IsFreezed())
             return;
+        
+        if (!particle->HasEventFlags(DiParticle::PEF_EMITTED))
+		{
+			if (particle->parentEmitter &&
+                !particle->parentEmitter->MakeParticleLocal(particle))
+			{
+				if (!MakeParticleLocal(particle))
+					GetParentSystem()->MakeParticleLocal(particle);
+			}
+		}
 
-        if (!particle->parentEmitter->MakeParticleLocal(particle))
-        {
-            if (!MakeParticleLocal(particle))
-                GetParentSystem()->MakeParticleLocal(particle);
-        }
-
-        if (GetParentSystem()->IsKeepLocal() || mKeepLocal)
+		if (mRenderer && GetParentSystem()->IsKeepLocal() && !mKeepLocal)
         {
             if (!mRenderer->autoRotate)
                 GetParentSystem()->RotationOffset(particle->position);

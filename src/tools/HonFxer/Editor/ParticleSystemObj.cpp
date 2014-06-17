@@ -73,6 +73,6 @@ namespace Demi
     void DiParticleSystemObj::Update(float dt)
     {
         DiBaseEditorObj::Update(dt);
-        mParticleSystem->Update(dt);
+        //mParticleSystem->Update(dt);
     }
 }
