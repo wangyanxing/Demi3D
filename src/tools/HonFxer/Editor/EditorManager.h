@@ -20,13 +20,15 @@ namespace Demi
 {
     class DiEditorManager : public DiBase
     {
-    public:
+    public: 
 
         DiEditorManager();
 
         ~DiEditorManager();
 
     public:
+        
+        static DiEditorManager*    Get() {return sEditorMgr;}
 
         DiBaseEditorObj*    CreateEditorObject(const DiString& type);
 
@@ -44,6 +46,10 @@ namespace Demi
 
         void                SetMenuHost(DiBaseEditorObj* sel) { mMenuHost = sel; }
 
+        DiBaseEditorObj*    GetRootObject() { return mRootObject; }
+        
+        DiBaseEditorObj*    GetLastCreatedObject() { return mLastCreatedObject; }
+        
         void                Update();
 
     protected:
@@ -59,8 +65,12 @@ namespace Demi
         DiBaseEditorObj*    mMenuHost{ nullptr };
 
         DiBaseEditorObj*    mRootObject{ nullptr };
+        
+        DiBaseEditorObj*    mLastCreatedObject{ nullptr };
 
         DiGridPlanePtr      mGridPlane;
+        
+        static DiEditorManager* sEditorMgr;
     };
 }
 

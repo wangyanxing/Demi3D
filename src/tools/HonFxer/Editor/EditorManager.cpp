@@ -24,8 +24,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    DiEditorManager* DiEditorManager::sEditorMgr = nullptr;
+    
     DiEditorManager::DiEditorManager()
     {
+        sEditorMgr = this;
+        
         InitFactories();
         InitCommands();
 
@@ -44,6 +48,8 @@ namespace Demi
     DiEditorManager::~DiEditorManager()
     {
         SAFE_DELETE(mRootObject);
+        
+        sEditorMgr = nullptr;
     }
 
     DiBaseEditorObj* DiEditorManager::CreateEditorObject(const DiString& type)
@@ -58,14 +64,20 @@ namespace Demi
         {
             DI_WARNING("Cannot create the object [type = %s]", type.c_str());
         }
+        
+        mLastCreatedObject = ret;
         return ret;
     }
 
     void DiEditorManager::DeleteEditorObject(DiBaseEditorObj* obj)
     {
+        if(mLastCreatedObject == obj)
+            mLastCreatedObject = nullptr;
+        
         DI_ASSERT(obj);
         obj->Release();
         SAFE_DELETE(obj);
+        
         mMenuHost = nullptr;
     }
 

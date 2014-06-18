@@ -30,7 +30,7 @@ namespace Demi
 
     void DiParticleSystemObj::OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection)
     {
-        HonFxerApp::GetEditorManager()->SetMenuHost(this);
+        DiEditorManager::Get()->SetMenuHost(this);
 
         menu->removeAllItems();
         menu->addItem("Delete", MyGUI::MenuItemType::Normal, "removeObj");
@@ -46,7 +46,7 @@ namespace Demi
     {
         DI_ASSERT(!mParticleSystem);
         mParticleSystem = DiEffectManager::GetInstance().CreateParticleSystemTemplate(
-            HonFxerApp::GetEditorManager()->GenerateSystemName());
+            DiEditorManager::Get()->GenerateSystemName());
 
         DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 

@@ -23,6 +23,7 @@ namespace Demi
 {
     DiBaseEditorObj::DiBaseEditorObj()
     {
+        DiEditorManager::Get()->SetMenuHost(this);
     }
 
     DiBaseEditorObj::~DiBaseEditorObj()
@@ -48,7 +49,7 @@ namespace Demi
 
     void DiBaseEditorObj::OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection)
     {
-        HonFxerApp::GetEditorManager()->SetMenuHost(this);
+        DiEditorManager::Get()->SetMenuHost(this);
 
         menu->removeAllItems();
 
@@ -59,7 +60,7 @@ namespace Demi
     DiBaseEditorObj* DiBaseEditorObj::_CreateChild(const DiString& type)
     {
         DI_LOG("Creating child object [type = %s]", type.c_str());
-        auto ret = HonFxerApp::GetEditorManager()->CreateEditorObject(type);
+        auto ret = DiEditorManager::Get()->CreateEditorObject(type);
         
         ret->mParent = this;
         ret->OnCreate();

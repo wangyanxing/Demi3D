@@ -32,7 +32,7 @@ namespace Demi
 
     void DiEmitterBaseObj::OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection)
     {
-        HonFxerApp::GetEditorManager()->SetMenuHost(this);
+        DiEditorManager::Get()->SetMenuHost(this);
 
         menu->removeAllItems();
         menu->addItem("Delete", MyGUI::MenuItemType::Normal, "removeObj");
@@ -58,7 +58,7 @@ namespace Demi
     {
         auto parent = dynamic_cast<DiParticleElementObj*>(GetParent());
         mEmitter = parent->GetParticleElement()->CreateEmitter(GetEmitterType());
-        mEmitter->SetName(HonFxerApp::GetEditorManager()->GenerateEmitterName(GetEmitterType()));
+        mEmitter->SetName(DiEditorManager::Get()->GenerateEmitterName(GetEmitterType()));
     }
     
     void DiEmitterBaseObj::DestroyPropertyTable()

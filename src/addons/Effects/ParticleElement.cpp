@@ -455,8 +455,7 @@ namespace Demi
     void DiParticleElement::RemoveController (DiParticleController* affector)
     {
         DI_ASSERT(affector);
-        auto itEnd = mControllers.end();
-        for (auto it = mControllers.begin(); it != itEnd; ++it)
+        for (auto it = mControllers.begin(); it != mControllers.end(); ++it)
         {
             if (*it == affector)
             {
@@ -495,10 +494,8 @@ namespace Demi
     
     size_t DiParticleElement::GetNumEmittedControllers (void) const
     {
-        ParticleAffectorIterator it;
-        ParticleAffectorIterator itEnd = mControllers.end();
         size_t count = 0;
-        for (it = mControllers.begin(); it != itEnd; ++it)
+        for (auto it = mControllers.begin(); it != mControllers.end(); ++it)
         {
             if ((*it)->IsMarkedForEmission())
                 count++;
@@ -510,8 +507,7 @@ namespace Demi
     void DiParticleElement::DestroyController(DiParticleController* affector)
     {
         DI_ASSERT(affector);
-        auto itEnd = mControllers.end();
-        for (auto it = mControllers.begin(); it != itEnd; ++it)
+        for (auto it = mControllers.begin(); it != mControllers.end(); ++it)
         {
             if (*it == affector)
             {
@@ -529,8 +525,7 @@ namespace Demi
     
     void DiParticleElement::DestroyAllControllers(void)
     {
-        auto itEnd = mControllers.end();
-        for (auto it = mControllers.begin(); it != itEnd; ++it)
+        for (auto it = mControllers.begin(); it != mControllers.end(); ++it)
         {
             DI_DELETE(*it);
         }
@@ -788,9 +783,7 @@ namespace Demi
 
         if (!mControllers.empty())
         {
-            ParticleAffectorIterator affectorIt;
-            ParticleAffectorIterator affectorItEnd = mControllers.end();
-            for (affectorIt = mControllers.begin(); affectorIt != affectorItEnd; ++affectorIt)
+            for (auto affectorIt = mControllers.begin(); affectorIt != mControllers.end(); ++affectorIt)
             {
                 if (!(*affectorIt)->IsMarkedForEmission())
                 {
@@ -822,9 +815,7 @@ namespace Demi
 
         if (!mControllers.empty())
         {
-            ParticleAffectorIterator affectorIt;
-            ParticleAffectorIterator affectorItEnd = mControllers.end();
-            for (affectorIt = mControllers.begin(); affectorIt != affectorItEnd; ++affectorIt)
+            for (auto affectorIt = mControllers.begin(); affectorIt != mControllers.end(); ++affectorIt)
             {
                 if (!(*affectorIt)->IsMarkedForEmission())
                 {
@@ -856,14 +847,10 @@ namespace Demi
     {
         if (!mControllers.empty())
         {
-            ParticleAffectorIterator affectorIt;
-            ParticleAffectorIterator affectorItEnd = mControllers.end();
-            for (affectorIt = mControllers.begin(); affectorIt != affectorItEnd; ++affectorIt)
+            for (auto affectorIt = mControllers.begin(); affectorIt != mControllers.end(); ++affectorIt)
             {
                 if (!(*affectorIt)->IsMarkedForEmission())
-                {
                     (*affectorIt)->NotifyPause();
-                }
             }
         }
 
@@ -886,14 +873,10 @@ namespace Demi
     {
         if (!mControllers.empty())
         {
-            ParticleAffectorIterator affectorIt;
-            ParticleAffectorIterator affectorItEnd = mControllers.end();
-            for (affectorIt = mControllers.begin(); affectorIt != affectorItEnd; ++affectorIt)
+            for (auto affectorIt = mControllers.begin(); affectorIt != mControllers.end(); ++affectorIt)
             {
                 if (!(*affectorIt)->IsMarkedForEmission())
-                {
                     (*affectorIt)->NotifyResume();
-                }
             }
         }
 
@@ -939,7 +922,6 @@ namespace Demi
                 else
                 {
                     InitParticleForExpiration(particle, timeElapsed);
-
                     mPool.LockLatestParticle();
                 }
 
@@ -965,14 +947,10 @@ namespace Demi
     {
         if (!mControllers.empty())
         {
-            ParticleAffectorIterator affectorIt;
-            ParticleAffectorIterator affectorItEnd = mControllers.end();
-            for (affectorIt = mControllers.begin(); affectorIt != affectorItEnd; ++affectorIt)
+            for (auto affectorIt = mControllers.begin(); affectorIt != mControllers.end(); ++affectorIt)
             {
                 if (!(*affectorIt)->IsMarkedForEmission() && (*affectorIt)->IsEnabled())
-                {
                     (*affectorIt)->ProcessParticle(this, particle, timeElapsed, firstParticle);
-                }
             }
         }
     }
@@ -987,8 +965,7 @@ namespace Demi
                     (*affectorIt)->PreProcessParticles(this, timeElapsed);
             }
         }
-        
-    }    
+    }
     
     void DiParticleElement::PostProcessParticles(float timeElapsed)
     {
@@ -1216,9 +1193,7 @@ namespace Demi
             while (!mPool.End())
             {
                 if (particle)
-                {
                     InitParticleForExpiration(particle, 0);
-                }
             
                 particle = static_cast<DiParticle*>(mPool.GetNext());
             }
@@ -1381,4 +1356,3 @@ namespace Demi
         }
     }
 }
-

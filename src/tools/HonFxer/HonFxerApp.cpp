@@ -30,8 +30,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiEditorManager* HonFxerApp::mEditorMgr = nullptr;
-
     HonFxerApp::HonFxerApp()
         : DemiDemo(DemoConfig("Hon Fxer",1400, 800))
     {
@@ -52,12 +50,12 @@ namespace Demi
             mMainPane->Update();
 
         if (Driver)
-            mEditorMgr->Update();
+            DiEditorManager::Get()->Update();
     }
 
     void HonFxerApp::Close()
     {
-        SAFE_DELETE(mEditorMgr);
+        DI_DELETE(DiEditorManager::Get());
         SAFE_DELETE(mMainPane);
 
         DialogManager::getInstance().shutdown();
@@ -148,6 +146,7 @@ namespace Demi
         new DialogManager();
         DialogManager::getInstance().initialise();
 
+        DI_NEW DiEditorManager();
         //mSetResLocWindow = new SetResLocWindow();
         //mSetResLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetResLocWindowEndDialog);
 
@@ -155,8 +154,6 @@ namespace Demi
         //mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetGameLocWindowEndDialog);
 
         //mHelpWindow = new ViewerHelper();
-
-        mEditorMgr = DI_NEW DiEditorManager();
     }
 
     HonFxerApp* HonFxerApp::GetFxApp()
