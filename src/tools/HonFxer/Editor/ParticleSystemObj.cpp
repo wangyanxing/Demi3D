@@ -58,7 +58,9 @@ namespace Demi
 
     void DiParticleSystemObj::OnDestroy()
     {
+        mParticleSystem->Stop();
         DiEffectManager::GetInstance().DestroyParticleSystemTemplate(mParticleSystem->GetTemplateName());
+        mParticleSystem.reset();
     }
 
     void DiParticleSystemObj::OnSelect()

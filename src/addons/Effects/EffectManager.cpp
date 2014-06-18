@@ -301,6 +301,7 @@ namespace Demi
         }
 
         DiParticleSystemPtr particleSystemTemplate = make_shared<DiParticleSystem>(expName);
+        particleSystemTemplate->SetTemplateName(name);
 
         AddParticleSystemTemplate(expName, particleSystemTemplate);
         mLastCreatedTemplateName = expName;
@@ -348,7 +349,10 @@ namespace Demi
         if (i != mParticleSystemTemplates.end())
         {
             mParticleSystemTemplates.erase(i);
+            return;
         }
+        
+        DI_WARNING("Cannot locate the ps template: %s", templateName.c_str());
     }
     
     void DiEffectManager::ParticleSystemTemplateNames(DiVector<DiString>& v)

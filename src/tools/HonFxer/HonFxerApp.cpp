@@ -147,6 +147,14 @@ namespace Demi
         DialogManager::getInstance().initialise();
 
         DI_NEW DiEditorManager();
+        
+        
+        DiBase::CommandMgr->ExecuteCommand("createChild ParticleSystem");
+        DiBase::CommandMgr->ExecuteCommand("createChild ParticleElement");
+        DiBase::CommandMgr->ExecuteCommand("createChild PointEmitter");
+        //DiBase::CommandMgr->ExecuteCommand("removeObj");
+        
+        
         //mSetResLocWindow = new SetResLocWindow();
         //mSetResLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetResLocWindowEndDialog);
 
