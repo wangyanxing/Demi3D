@@ -78,7 +78,15 @@ namespace Demi
         obj->Release();
         SAFE_DELETE(obj);
         
-        mMenuHost = nullptr;
+        mCurrentSel = nullptr;
+    }
+    
+    void DiEditorManager::SetCurrentSelection(DiBaseEditorObj* sel)
+    {
+        if (mCurrentSel != sel)
+        {
+            mCurrentSel = sel;
+        }
     }
 
     void DiEditorManager::InitFactories()
@@ -127,9 +135,9 @@ namespace Demi
     void DiEditorManager::InitCommands()
     {
         CommandMgr->AddCommand("removeObj", [&](Demi::DiCmdArgs* args){
-            if (mMenuHost)
+            if (mCurrentSel)
             {
-                DeleteEditorObject(mMenuHost);
+                DeleteEditorObject(mCurrentSel);
                 return true;
             }
             else
@@ -140,10 +148,10 @@ namespace Demi
         });
 
         CommandMgr->AddCommand("createChild", [&](Demi::DiCmdArgs* args){
-            if (mMenuHost)
+            if (mCurrentSel)
             {
                 DI_ASSERT(args->GetArgCount() == 2);
-                mMenuHost->_CreateChild(args->GetArg(1));
+                mCurrentSel->_CreateChild(args->GetArg(1));
                 return true;
             }
             else

@@ -54,7 +54,7 @@ namespace Demi
 
         virtual void                OnDestroyUI();
 
-        virtual void                OnSelect() {}
+        virtual void                OnSelect();
 
         virtual void                OnCreateUI();
 
@@ -72,9 +72,11 @@ namespace Demi
         
     protected:
         
+        void                        SetPropertyTableVisible(bool visible);
+        
         virtual void                InitPropertyTable(){}
         
-        virtual void                DestroyPropertyTable(){}
+        virtual void                DestroyPropertyTable();
 
     protected:
 

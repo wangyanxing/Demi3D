@@ -29,10 +29,6 @@ namespace Demi
     {
     }
 
-    void DiCircleEmitterObj::OnSelect()
-    {
-    }
-
     DiCircleEmitter* DiCircleEmitterObj::GetCircleEmitter()
     {
         return static_cast<DiCircleEmitter*>(mEmitter);

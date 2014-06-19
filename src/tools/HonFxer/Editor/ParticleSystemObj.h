@@ -46,6 +46,12 @@ namespace Demi
     public:
 
         DiParticleSystemPtr  GetParticleSystem() { return mParticleSystem; }
+        
+    protected:
+        
+        virtual void         InitPropertyTable();
+        
+        virtual void         DestroyPropertyTable();
 
     protected:
 

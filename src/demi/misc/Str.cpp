@@ -872,7 +872,7 @@ namespace Demi
         }
         else
         {
-            v = DiQuat(tokens[3].AsFloat(),  tokens[1].AsFloat(),tokens[2].AsFloat(),  tokens[0].AsFloat());
+            v = DiQuat(tokens[3].AsFloat(),  tokens[0].AsFloat(),tokens[1].AsFloat(),  tokens[2].AsFloat());
         }
 
         return v;

@@ -149,9 +149,9 @@ namespace Demi
         DI_NEW DiEditorManager();
         
         
-        DiBase::CommandMgr->ExecuteCommand("createChild ParticleSystem");
-        DiBase::CommandMgr->ExecuteCommand("createChild ParticleElement");
-        DiBase::CommandMgr->ExecuteCommand("createChild PointEmitter");
+        //DiBase::CommandMgr->ExecuteCommand("createChild ParticleSystem");
+        //DiBase::CommandMgr->ExecuteCommand("createChild ParticleElement");
+        //DiBase::CommandMgr->ExecuteCommand("createChild PointEmitter");
         //DiBase::CommandMgr->ExecuteCommand("removeObj");
         
         

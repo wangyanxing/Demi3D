@@ -42,9 +42,9 @@ namespace Demi
 
         DiString            GenerateControllerName(const DiString& type);
 
-        DiBaseEditorObj*    GetMenuHost() { return mMenuHost; }
+        DiBaseEditorObj*    GetCurrentSelection() { return mCurrentSel; }
 
-        void                SetMenuHost(DiBaseEditorObj* sel) { mMenuHost = sel; }
+        void                SetCurrentSelection(DiBaseEditorObj* sel);
 
         DiBaseEditorObj*    GetRootObject() { return mRootObject; }
         
@@ -62,7 +62,7 @@ namespace Demi
 
         DiStrHash<std::function<DiBaseEditorObj*()>> mObjFactories;
 
-        DiBaseEditorObj*    mMenuHost{ nullptr };
+        DiBaseEditorObj*    mCurrentSel{ nullptr };
 
         DiBaseEditorObj*    mRootObject{ nullptr };
         

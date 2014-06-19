@@ -32,7 +32,7 @@ namespace Demi
 
     void DiEmitterBaseObj::OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection)
     {
-        DiEditorManager::Get()->SetMenuHost(this);
+        DiEditorManager::Get()->SetCurrentSelection(this);
 
         menu->removeAllItems();
         menu->addItem("Delete", MyGUI::MenuItemType::Normal, "removeObj");
@@ -47,6 +47,7 @@ namespace Demi
 
     void DiEmitterBaseObj::OnSelect()
     {
+        DiBaseEditorObj::OnSelect();
     }
 
     DiString DiEmitterBaseObj::GetUICaption()
@@ -60,22 +61,13 @@ namespace Demi
         mEmitter = parent->GetParticleElement()->CreateEmitter(GetEmitterType());
         mEmitter->SetName(DiEditorManager::Get()->GenerateEmitterName(GetEmitterType()));
     }
-    
-    void DiEmitterBaseObj::DestroyPropertyTable()
-    {
-        for (auto g : mPropGroups)
-        {
-            DI_DELETE g;
-        }
-        mPropGroups.clear();
-    }
 
     void DiEmitterBaseObj::InitPropertyTable()
     {
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Emitter");
      
         g->AddProperty("Name"            , DI_NEW DiStringProperty([&]{ return mEmitter->GetName(); },
-                                                                   [&](DiString& val){ mEmitter->SetName(val); }));
+                                                                [&](DiString& val){ mEmitter->SetName(val); }));
 
         g->AddProperty("Emission Rate"   , DI_NEW DiDynProperty([&]{ return mEmitter->GetDynEmissionRate(); },
                                                                 [&](DiDynamicAttribute*& val){ mEmitter->SetDynEmissionRate(val); }));
@@ -135,5 +127,4 @@ namespace Demi
 
         mPropGroups.push_back(g);
     }
-
 }

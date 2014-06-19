@@ -29,10 +29,6 @@ namespace Demi
     {
     }
 
-    void DiPointEmitterObj::OnSelect()
-    {
-    }
-
     DiPointEmitter* DiPointEmitterObj::GetPointEmitter()
     {
         return static_cast<DiPointEmitter*>(mEmitter);

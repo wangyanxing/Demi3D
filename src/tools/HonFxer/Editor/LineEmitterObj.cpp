@@ -29,10 +29,6 @@ namespace Demi
     {
     }
 
-    void DiLineEmitterObj::OnSelect()
-    {
-    }
-
     DiLineEmitter* DiLineEmitterObj::GetLineEmitter()
     {
         return static_cast<DiLineEmitter*>(mEmitter);

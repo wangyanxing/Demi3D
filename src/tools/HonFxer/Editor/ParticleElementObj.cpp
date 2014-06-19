@@ -33,7 +33,7 @@ namespace Demi
 
     void DiParticleElementObj::OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection)
     {
-        DiEditorManager::Get()->SetMenuHost(this);
+        DiEditorManager::Get()->SetCurrentSelection(this);
 
         menu->removeAllItems();
         menu->addItem("Delete", MyGUI::MenuItemType::Normal, "removeObj");
@@ -88,7 +88,7 @@ namespace Demi
 
     void DiParticleElementObj::OnSelect()
     {
-
+        DiBaseEditorObj::OnSelect();
     }
 
     Demi::DiString DiParticleElementObj::GetUICaption()

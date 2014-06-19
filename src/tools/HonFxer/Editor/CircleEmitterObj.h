@@ -29,8 +29,6 @@ namespace Demi
 
     public:
 
-        virtual void         OnSelect() override;
-
         virtual DiString     GetType() override { return "CircleEmitter"; }
 
         virtual DiString     GetEmitterType() override { return "Circle"; }

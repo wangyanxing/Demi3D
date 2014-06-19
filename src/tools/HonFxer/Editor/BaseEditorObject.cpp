@@ -18,12 +18,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ResTreeControl.h"
 #include "MainWorkspaceControl.h"
 #include "MainPaneControl.h"
+#include "PanelView.h"
 
 namespace Demi
 {
     DiBaseEditorObj::DiBaseEditorObj()
     {
-        DiEditorManager::Get()->SetMenuHost(this);
+        //DiEditorManager::Get()->SetCurrentSelection(this);
     }
 
     DiBaseEditorObj::~DiBaseEditorObj()
@@ -49,7 +50,7 @@ namespace Demi
 
     void DiBaseEditorObj::OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection)
     {
-        DiEditorManager::Get()->SetMenuHost(this);
+        DiEditorManager::Get()->SetCurrentSelection(this);
 
         menu->removeAllItems();
 
@@ -98,12 +99,36 @@ namespace Demi
         // property table
         InitPropertyTable();
     }
+    
+    void DiBaseEditorObj::OnSelect()
+    {
+        auto lastSelection = DiEditorManager::Get()->GetCurrentSelection();
+        if(lastSelection)
+        {
+            lastSelection->SetPropertyTableVisible(false);
+        }
+        
+        DiEditorManager::Get()->SetCurrentSelection(this);
+        
+        SetPropertyTableVisible(true);
+    }
 
     void DiBaseEditorObj::OnDestroyUI()
     {
         mUINode->getParent()->remove(mUINode, true);
         
         DestroyPropertyTable();
+    }
+    
+    void DiBaseEditorObj::SetPropertyTableVisible(bool visible)
+    {
+        for (auto& p : mPropGroups)
+        {
+            if(p->mUIGroup)
+            {
+                p->mUIGroup->setVisible(visible);
+            }
+        }
     }
 
     void DiBaseEditorObj::Update(float dt)
@@ -112,5 +137,14 @@ namespace Demi
         {
             ch->Update(dt);
         }
+    }
+    
+    void DiBaseEditorObj::DestroyPropertyTable()
+    {
+        for (auto g : mPropGroups)
+        {
+            DI_DELETE g;
+        }
+        mPropGroups.clear();
     }
 }

@@ -305,7 +305,6 @@ namespace Demi
 
         DiCamera*               mCurrentCamera;
 
-        // 缩放，影响发射器 控制器 和渲染器
         DiVec3                  mParticleSystemScale;
 
         float                   mParticleSystemScaleVelocity;

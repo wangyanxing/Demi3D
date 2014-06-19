@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "EditorManager.h"
 #include "EffectManager.h"
 #include "ParticleSystem.h"
+#include "PropertyTypes.h"
 
 namespace Demi
 {
@@ -30,7 +31,7 @@ namespace Demi
 
     void DiParticleSystemObj::OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection)
     {
-        DiEditorManager::Get()->SetMenuHost(this);
+        DiEditorManager::Get()->SetCurrentSelection(this);
 
         menu->removeAllItems();
         menu->addItem("Delete", MyGUI::MenuItemType::Normal, "removeObj");
@@ -50,9 +51,8 @@ namespace Demi
 
         DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
-        std::shared_ptr<DiTransformUnit> ps(mParticleSystem);
         mSceneNode = sm->GetRootNode()->CreateChild();
-        mSceneNode->AttachObject(ps);
+        mSceneNode->AttachObject(mParticleSystem);
         mParticleSystem->Start();
     }
 
@@ -65,9 +65,10 @@ namespace Demi
 
     void DiParticleSystemObj::OnSelect()
     {
+        DiBaseEditorObj::OnSelect();
     }
 
-    Demi::DiString DiParticleSystemObj::GetUICaption()
+    DiString DiParticleSystemObj::GetUICaption()
     {
         return mParticleSystem->GetName();
     }
@@ -75,6 +76,34 @@ namespace Demi
     void DiParticleSystemObj::Update(float dt)
     {
         DiBaseEditorObj::Update(dt);
-        //mParticleSystem->Update(dt);
+    }
+    
+    void DiParticleSystemObj::InitPropertyTable()
+    {
+        DiPropertyGroup* g = DI_NEW DiPropertyGroup("Particle System");
+        
+        g->AddProperty("Name"            , DI_NEW DiStringProperty([&]{ return mParticleSystem->GetTemplateName(); },
+                                                                   [&](DiString& val){ mParticleSystem->SetTemplateName(val); }));
+        
+        g->AddProperty("Keep Local"      , DI_NEW DiBoolProperty(  [&]{ return mParticleSystem->IsKeepLocal(); },
+                                                                   [&](bool& val){ mParticleSystem->SetKeepLocal(val); }));
+        
+        g->AddProperty("Scale Velocity"  , DI_NEW DiFloatProperty( [&]{ return mParticleSystem->GetScaleVelocity(); },
+                                                                   [&](float& val){ mParticleSystem->SetScaleVelocity(val); }));
+        
+        g->AddProperty("Scale Time"      , DI_NEW DiFloatProperty( [&]{ return mParticleSystem->GetScaleTime(); },
+                                                                   [&](float& val){ mParticleSystem->SetScaleTime(val); }));
+        
+        g->AddProperty("Scale"           , DI_NEW DiVec3Property(  [&]{ return mParticleSystem->GetScale(); },
+                                                                   [&](DiVec3& val){ mParticleSystem->SetScale(val); }));
+    
+        g->CreateUI();
+        
+        mPropGroups.push_back(g);
+    }
+    
+    void DiParticleSystemObj::DestroyPropertyTable()
+    {
+        
     }
 }

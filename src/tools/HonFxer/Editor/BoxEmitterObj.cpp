@@ -29,10 +29,6 @@ namespace Demi
     {
     }
 
-    void DiBoxEmitterObj::OnSelect()
-    {
-    }
-
     DiBoxEmitter* DiBoxEmitterObj::GetBoxEmitter()
     {
         return static_cast<DiBoxEmitter*>(mEmitter);

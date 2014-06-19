@@ -170,8 +170,8 @@ namespace MyGUI
 
 	void TreeControl::setSelection(Node* pSelection)
 	{
-		if (mpSelection == pSelection)
-			return;
+		//if (mpSelection == pSelection)
+		//	return;
 
 		mpSelection = pSelection;
 		while (pSelection)
