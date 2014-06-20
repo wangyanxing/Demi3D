@@ -16,6 +16,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PanelGroup.h"
 #include "ColorPanel.h"
 #include "PropertyTypes.h"
+#include "MainPaneControl.h"
+#include "HonFxerApp.h"
+#include "CurveEditor.h"
 
 namespace Demi
 {
@@ -769,15 +772,66 @@ namespace Demi
         mParentGroup->NotifyRearrangeHeight();
     }
 
-    void DiDynamicPropertyItem::NotfyCurveButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    void DiDynamicPropertyItem::NotfyCurveButtonPressed(MyGUI::Widget* _sender,
+                                                        int _left, int _top,
+                                                        MyGUI::MouseButton _id)
     {
         DI_ASSERT(mType == DiDynamicAttribute::DAT_CURVED);
 
-
+        auto prop = dynamic_cast<DiDynProperty*>(mProperty);
+        DiDynamicAttribute* dynAttr = *prop;
+        
+        if(dynAttr->GetType() == DiDynamicAttribute::DAT_FIXED)
+        {
+            mCurrentCurveVal.RemoveAllControlPoints();
+            mCurrentCurveVal.AddControlPoint(0.5f, static_cast<DiAttributeFixed*>(dynAttr)->GetValue());
+        }
+        else if(dynAttr->GetType() == DiDynamicAttribute::DAT_RANDOM)
+        {
+            mCurrentCurveVal.RemoveAllControlPoints();
+            mCurrentCurveVal.AddControlPoint(0.0f, static_cast<DiAttributeRandom*>(dynAttr)->GetMin());
+            mCurrentCurveVal.AddControlPoint(1.0f, static_cast<DiAttributeRandom*>(dynAttr)->GetMax());
+        }
+        else
+        {
+            mCurrentCurveVal = *static_cast<DiAttributeCurved*>(dynAttr);
+        }
+        
+        auto curveEditor = HonFxerApp::GetFxApp()->GetMainPane()->getCurveEditor();
+        curveEditor->SetAttribute(mCurrentCurveVal);
+        
+        HonFxerApp::GetFxApp()->GetMainPane()->showCurveEditor();
     }
 
     void DiDynamicPropertyItem::RefreshValue()
     {
-
+        auto prop = dynamic_cast<DiDynProperty*>(mProperty);
+        DiDynamicAttribute* dynAttr = *prop;
+        DI_DELETE dynAttr;
+        
+        if (mType == DiDynamicAttribute::DAT_RANDOM)
+        {
+            auto val = DI_NEW DiAttributeRandom();
+            dynAttr = val;
+            
+            DiString random0 = mValueBox[0]->getCaption().asUTF8_c_str();
+            DiString random1 = mValueBox[1]->getCaption().asUTF8_c_str();
+            val->SetMinMax(random0.AsFloat(), random1.AsFloat());
+        }
+        else if (mType == DiDynamicAttribute::DAT_FIXED)
+        {
+            auto val = DI_NEW DiAttributeFixed();
+            dynAttr = val;
+            
+            DiString fixedValue = mFixedValue->getCaption().asUTF8_c_str();
+            val->SetValue(fixedValue.AsFloat());
+        }
+        else
+        {
+            auto val = DI_NEW DiAttributeCurved(mCurrentCurveVal);
+            dynAttr = val;
+        }
+        
+        *prop = dynAttr;
     }
 }

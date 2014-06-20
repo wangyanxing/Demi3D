@@ -33,5 +33,4 @@ namespace Demi
     {
         return static_cast<DiBoxEmitter*>(mEmitter);
     }
-
 }

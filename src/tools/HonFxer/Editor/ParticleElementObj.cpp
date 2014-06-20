@@ -16,7 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ParticleSystemObj.h"
 #include "HonFxerApp.h"
 #include "EditorManager.h"
-
+#include "PropertyTypes.h"
 #include "EffectManager.h"
 #include "ParticleSystem.h"
 #include "ParticleElement.h"
@@ -91,8 +91,41 @@ namespace Demi
         DiBaseEditorObj::OnSelect();
     }
 
-    Demi::DiString DiParticleElementObj::GetUICaption()
+    DiString DiParticleElementObj::GetUICaption()
     {
         return mParticleElement->GetName();
+    }
+    
+    void DiParticleElementObj::InitPropertyTable()
+    {
+        DiPropertyGroup* g = DI_NEW DiPropertyGroup("Particle Element");
+        
+        g->AddProperty("Name"            , DI_NEW DiStringProperty([&]{ return mParticleElement->GetName(); },
+                                                                   [&](DiString& val){ mParticleElement->SetName(val); }));
+        
+        g->AddProperty("Position"        , DI_NEW DiVec3Property(  [&]{ return mParticleElement->position; },
+                                                                   [&](DiVec3& val){ mParticleElement->position = val; }));
+        
+        g->AddProperty("Keep Local"      , DI_NEW DiBoolProperty(  [&]{ return mParticleElement->IsKeepLocal(); },
+                                                                   [&](bool& val){ mParticleElement->SetKeepLocal(val); }));
+        
+        g->AddProperty("Particle Quota"  , DI_NEW DiIntProperty(   [&]{ return mParticleElement->GetVisualParticleQuota(); },
+                                                                   [&](int& val){ mParticleElement->SetVisualParticleQuota(val); }));
+        
+        g->AddProperty("Default Width"   , DI_NEW DiFloatProperty( [&]{ return mParticleElement->GetDefaultWidth(); },
+                                                                   [&](float& val){ mParticleElement->SetDefaultWidth(val); }));
+        
+        g->AddProperty("Default Height"  , DI_NEW DiFloatProperty( [&]{ return mParticleElement->GetDefaultHeight(); },
+                                                                   [&](float& val){ mParticleElement->SetDefaultHeight(val); }));
+        
+        g->AddProperty("Default Depth"   , DI_NEW DiFloatProperty( [&]{ return mParticleElement->GetDefaultDepth(); },
+                                                                   [&](float& val){ mParticleElement->SetDefaultDepth(val); }));
+        
+        g->AddProperty("Max Velocity"    , DI_NEW DiFloatProperty( [&]{ return mParticleElement->GetMaxVelocity(); },
+                                                                   [&](float& val){ mParticleElement->SetMaxVelocity(val); }));
+        
+        g->CreateUI();
+        
+        mPropGroups.push_back(g);
     }
 }

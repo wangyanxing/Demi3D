@@ -42,6 +42,9 @@ namespace Demi
     class DiLineEmitter;
     
     typedef shared_ptr<DiParticleSystem> DiParticleSystemPtr;
+    
+    class DiColorController;
+    class DiVortexController;
 }
 
 

@@ -62,6 +62,7 @@ namespace Demi
         mUIGroup = propCtrl->getPanelView()->AddGroup();
         mUIGroup->SetCaption(mGroupName);
         mUIGroup->setVisible(false);
+        propCtrl->getPanelView()->markFirstInit(false);
         
         for (auto p : mProperties)
             mUIGroup->AddItem(p->mCaption, p->mProperty);

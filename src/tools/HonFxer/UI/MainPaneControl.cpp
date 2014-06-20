@@ -20,6 +20,16 @@ namespace tools
         mColorEditor = new ColorEditor();
         mColorEditor->getMainWidget()->setVisible(false);
 	}
+    
+    void MainPaneControl::showCurveEditor()
+    {
+        mCurveEditor->getMainWidget()->setVisible(true);
+    }
+    
+    void MainPaneControl::showColorEditor()
+    {
+        mCurveEditor->getMainWidget()->setVisible(true);
+    }
 
 	MainPaneControl::~MainPaneControl()
 	{

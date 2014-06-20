@@ -33,6 +33,14 @@ namespace tools
         WorkSpaceControl* GetWorkspaceControl(){ return mMainWorkspaceControl; }
 
         virtual void Update();
+        
+        void showCurveEditor();
+        
+        void showColorEditor();
+        
+        CurveEditor* getCurveEditor() {return mCurveEditor;}
+        
+        ColorEditor* getColorEditor() {return mColorEditor;}
 
 	private:
         MainMenuControl* mMainMenuControl{ nullptr };

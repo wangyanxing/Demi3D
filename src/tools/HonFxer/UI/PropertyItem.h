@@ -227,6 +227,12 @@ namespace Demi
         MyGUI::Button* mCurveButton{ nullptr };
 
         DiDynamicAttribute::DynamicAttributeType mType{ DiDynamicAttribute::DAT_FIXED };
+        
+        DiAttributeCurved mCurrentCurveVal;
+        
+        DiAttributeFixed mCurrentFixedVal;
+        
+        DiAttributeRandom mCurrentRandomVal;
     };
 }
 

@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "FxerPrerequisites.h"
 #include "BaseLayout.h"
+#include "DynamicAttribute.h"
 
 namespace Demi
 {
@@ -51,6 +52,8 @@ namespace Demi
         void RefreshNumbers();
 
         void RefreshCurve();
+        
+        void RefreshDynAttribute();
 
         void DeleteNumbersX();
 
@@ -75,8 +78,16 @@ namespace Demi
         bool CheckPosition(int _left, int _top);
 
         DiVec2 GetValue(int _left, int _top);
+        
+        MyGUI::IntPoint GetButtonPoint(DiVec2 value);
 
         void RefreshRange();
+        
+    public:
+        
+        DiAttributeCurved& GetAttribute() { return mCurvedAttr; }
+        
+        void SetAttribute(DiAttributeCurved& rhs);
 
     protected:
 
@@ -95,6 +106,8 @@ namespace Demi
         DiVector<MyGUI::Button*> mButtons;
 
         MyGUI::Button* mSplineButton;
+        
+        DiAttributeCurved mCurvedAttr;
     };
 
 } // namespace Demi

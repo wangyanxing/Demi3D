@@ -103,10 +103,12 @@ namespace Demi
     void DiBaseEditorObj::OnSelect()
     {
         auto lastSelection = DiEditorManager::Get()->GetCurrentSelection();
+        
+        if( lastSelection == this )
+            return;
+        
         if(lastSelection)
-        {
             lastSelection->SetPropertyTableVisible(false);
-        }
         
         DiEditorManager::Get()->SetCurrentSelection(this);
         

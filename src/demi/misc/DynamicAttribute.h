@@ -168,6 +168,8 @@ namespace Demi
         virtual void            CopyTo(DiDynamicAttribute* dynamicAttribute);
 
         void                    Write(DiString& ret);
+        
+        float                   GetRange() {return mRange;}
 
     protected:
 

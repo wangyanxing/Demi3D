@@ -21,6 +21,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "BoxEmitterObj.h"
 #include "EffectManager.h"
 #include "Grid.h"
+#include "ColorControllerObj.h"
+#include "VortexControllerObj.h"
 
 namespace Demi
 {
@@ -42,7 +44,6 @@ namespace Demi
         mGridPlane = make_shared<DiGridPlane>(30, 10, DiColor(0.1f, 0.1f, 0.1f), DiColor(0.5f, 0.5f, 0.5f));
         mGridPlane->SetMaterial(dbgHelperMat);
         Driver->GetSceneManager()->GetRootNode()->AttachObject(mGridPlane);
-
     }
 
     DiEditorManager::~DiEditorManager()
@@ -91,13 +92,16 @@ namespace Demi
 
     void DiEditorManager::InitFactories()
     {
-        mObjFactories["Base"]            = [](){return DI_NEW DiBaseEditorObj(); };
-        mObjFactories["ParticleSystem"]  = [](){return DI_NEW DiParticleSystemObj(); };
-        mObjFactories["ParticleElement"] = [](){return DI_NEW DiParticleElementObj(); };
-        mObjFactories["PointEmitter"]    = [](){return DI_NEW DiPointEmitterObj(); };
-        mObjFactories["BoxEmitter"]      = [](){return DI_NEW DiBoxEmitterObj(); };
-        mObjFactories["CircleEmitter"]   = [](){return DI_NEW DiCircleEmitterObj(); };
-        mObjFactories["LineEmitter"]     = [](){return DI_NEW DiLineEmitterObj(); };
+        mObjFactories["Base"]             = [](){return DI_NEW DiBaseEditorObj(); };
+        mObjFactories["ParticleSystem"]   = [](){return DI_NEW DiParticleSystemObj(); };
+        mObjFactories["ParticleElement"]  = [](){return DI_NEW DiParticleElementObj(); };
+        mObjFactories["PointEmitter"]     = [](){return DI_NEW DiPointEmitterObj(); };
+        mObjFactories["BoxEmitter"]       = [](){return DI_NEW DiBoxEmitterObj(); };
+        mObjFactories["CircleEmitter"]    = [](){return DI_NEW DiCircleEmitterObj(); };
+        mObjFactories["LineEmitter"]      = [](){return DI_NEW DiLineEmitterObj(); };
+
+        mObjFactories["ColorController"]  = [](){return DI_NEW DiColorControllerObj(); };
+        mObjFactories["VortexController"] = [](){return DI_NEW DiVortexControllerObj(); };
     }
 
     DiString DiEditorManager::GenerateSystemName()

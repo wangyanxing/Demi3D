@@ -46,6 +46,8 @@ namespace Demi
         DiParticleElement*   GetParticleElement() { return mParticleElement; }
 
     protected:
+        
+        virtual void         InitPropertyTable();
 
         DiParticleElement*   mParticleElement{ nullptr };
     };

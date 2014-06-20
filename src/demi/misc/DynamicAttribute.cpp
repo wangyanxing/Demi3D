@@ -238,9 +238,7 @@ namespace Demi
     void DiAttributeCurved::CopyTo( DiDynamicAttribute* dynamicAttribute )
     {
         if (!dynamicAttribute || dynamicAttribute->GetType() != DiDynamicAttribute::DAT_CURVED)
-        {
             return;
-        }
 
         DiAttributeCurved* dynAttr = static_cast<DiAttributeCurved*>(dynamicAttribute);
         dynAttr->mInterpolationType = mInterpolationType;

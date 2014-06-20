@@ -544,23 +544,23 @@ namespace Demi
 
     DiParticleSystemPtr DiFxTokensParser::ReadSystem(DiXMLElement& node)
     {
-        DiString name = node.GetAttribute("name");
-        if (name.empty())
+        DiString psname = node.GetAttribute("name");
+        if (psname.empty())
         {
             DI_WARNING("The name of the particle system cannot be empty!");
             return nullptr;
         }
 
-        auto ps = DiEffectManager::GetInstance().GetParticleSystemTemplate(name);
+        auto ps = DiEffectManager::GetInstance().GetParticleSystemTemplate(psname);
         if (ps)
         {
-            DI_WARNING("The particle system: %s has already existed!", name.c_str());
+            DI_WARNING("The particle system: %s has already existed!", psname.c_str());
             return ps;
         }
 
         // create a new one
-        ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate(name);
-        DI_LOG("Creating particle system template: %s", name.c_str());
+        ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate(psname);
+        DI_LOG("Creating particle system template: %s", psname.c_str());
 
         node.IterateAttributes([ps](const DiString& name, const DiString& value){
             if (name == "keepLocal")

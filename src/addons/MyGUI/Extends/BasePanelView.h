@@ -77,6 +77,11 @@ namespace wraps
 			setNeedUpdate();
 			mFirstInitialise = true;
 		}
+        
+        void markFirstInit(bool val)
+        {
+            mFirstInitialise = val;
+        }
 
 		//! Add an item to the end of a list
 		void addItem(BasePanelViewItem* _item)

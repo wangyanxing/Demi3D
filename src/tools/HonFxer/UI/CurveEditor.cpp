@@ -214,13 +214,81 @@ namespace Demi
 
         RefreshCurve();
     }
+    
+    void CurveEditor::RefreshDynAttribute()
+    {
+        mCurvedAttr.RemoveAllControlPoints();
+        mCurvedAttr.SetInterpolationType(mSplineButton->getStateSelected() ? IT_SPLINE : IT_LINEAR);
+        
+        for (auto btn : mButtons)
+        {
+            auto pos = btn->getPosition();
+            
+            auto val = GetValue(pos.left+7, pos.top+7);
+            mCurvedAttr.AddControlPoint(val.x, val.y);
+        }
+    }
+    
+    void CurveEditor::SetAttribute(DiAttributeCurved& rhs)
+    {
+        rhs.CopyTo(&mCurvedAttr);
+        
+        mSplineButton->setStateSelected(mCurvedAttr.GetInterpolationType() == IT_SPLINE);
+        
+        // delete all buttons
+        for (auto i : mButtons)
+            mCanvasWidget->_destroyChildWidget(i);
+        mButtons.clear();
+        
+        auto& pts = mCurvedAttr.GetControlPoints();
+        float minVal = 0;
+        float maxVal = 10;
+        
+        // calculate the range
+        for (auto p : pts)
+        {
+            minVal = DiMath::Min(minVal, p.y);
+            maxVal = DiMath::Max(maxVal, p.y);
+        }
+        
+        float defaultRangeMin = 0;
+        float defaultRangeMax = 10;
+        
+        if(minVal < 0)
+        {
+            int v = minVal / 10 - 1;
+            minVal = v * 10;
+        }
+        
+        if(maxVal > 10)
+        {
+            int v = maxVal / 10 + 1;
+            maxVal = v * 10;
+        }
+        
+        DiString temp;
+        temp.Format("%g", minVal);
+        mRangeMinEditBox->setCaption(temp.c_str());
+        
+        temp.Format("%g", maxVal);
+        mRangeMaxEditBox->setCaption(temp.c_str());
+        
+        RefreshRange();
+        
+        // add buttons
+        for (auto p : pts)
+        {
+            auto point = GetButtonPoint(p);
+            AddButton(point.left, point.top);
+        }
+    }
 
     void CurveEditor::RefreshCurve()
     {
         if (mButtons.size() < 2)
             return;
 
-        std::vector<MyGUI::FloatPoint> mLinePoints;
+        std::vector<MyGUI::FloatPoint> linepoints;
 
         // line
         if (!mSplineButton->getStateSelected())
@@ -228,7 +296,7 @@ namespace Demi
             for (auto btn : mButtons)
             {
                 auto pos = btn->getPosition();
-                mLinePoints.push_back(MyGUI::FloatPoint(pos.left + 7, pos.top + 7));
+                linepoints.push_back(MyGUI::FloatPoint(pos.left + 7, pos.top + 7));
             }
         }
         else
@@ -246,11 +314,13 @@ namespace Demi
             for (int i = 0; i < nums; i++)
             {
                 auto v = spline.Interpolate(i*step);
-                mLinePoints.push_back(MyGUI::FloatPoint(v.x, v.y));
+                linepoints.push_back(MyGUI::FloatPoint(v.x, v.y));
             }
         }
 
-        mCurveCanvas->setPoints(mLinePoints);
+        mCurveCanvas->setPoints(linepoints);
+        
+        RefreshDynAttribute();
     }
 
     void CurveEditor::NotifyPointMove(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
@@ -326,8 +396,6 @@ namespace Demi
 
     DiVec2 CurveEditor::GetValue(int _left, int _top)
     {
-        DiVec2 ret;
-
         auto size = mCurveCanvasWidget->getSize();
         auto width = size.width;
         auto height = size.height;
@@ -340,10 +408,33 @@ namespace Demi
         float rangeX = width - inteveralX * 2 - 4;
         float rangeY = height - inteveralY * 2 - 4;
 
+        DiVec2 ret;
         ret.x = posX / rangeX;
         ret.y = posY / rangeY;
         ret.y = mValueRange.x + ret.y*(mValueRange.y - mValueRange.x);
 
+        return ret;
+    }
+    
+    MyGUI::IntPoint CurveEditor::GetButtonPoint(DiVec2 value)
+    {
+        auto size = mCurveCanvasWidget->getSize();
+        auto width = size.width;
+        auto height = size.height;
+        auto inteveralX = width / (gridNumX + 2);
+        auto inteveralY = height / (gridNumY + 2);
+        
+        float rangeX = width - inteveralX * 2 - 4;
+        float rangeY = height - inteveralY * 2 - 4;
+
+        float x = value.x * rangeX;
+        float y = (value.y - mValueRange.x) / (mValueRange.y - mValueRange.x);
+        y = y * rangeY;
+        
+        x = x - 1 + inteveralX;
+        y = height - y - 3 - inteveralY;
+        
+        MyGUI::IntPoint ret(x,y);
         return ret;
     }
 

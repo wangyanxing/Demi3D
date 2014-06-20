@@ -101,9 +101,4 @@ namespace Demi
         
         mPropGroups.push_back(g);
     }
-    
-    void DiParticleSystemObj::DestroyPropertyTable()
-    {
-        
-    }
 }
