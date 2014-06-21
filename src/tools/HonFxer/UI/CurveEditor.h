@@ -26,6 +26,8 @@ namespace Demi
 	public:
         CurveEditor(MyGUI::Widget* _parent = nullptr);
         virtual ~CurveEditor();
+        
+        typedef MyGUI::delegates::CMultiDelegate1<DiAttributeCurved*> EventHandle_UpdateCurve;
 
 	private:
 	//%LE Widget_Declaration list start
@@ -63,7 +65,7 @@ namespace Demi
 
         void NotifyRangeLostFocus(MyGUI::Widget* _sender, MyGUI::Widget* _old);
 
-        void NotfyMousePressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+        void NotifyMousePressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
 
         void NotifyPointMove(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
 
@@ -83,11 +85,15 @@ namespace Demi
 
         void RefreshRange();
         
+        void NotifyValueUpdate();
+        
     public:
         
         DiAttributeCurved& GetAttribute() { return mCurvedAttr; }
         
         void SetAttribute(DiAttributeCurved& rhs);
+        
+		EventHandle_UpdateCurve eventUpdateCurve;
 
     protected:
 

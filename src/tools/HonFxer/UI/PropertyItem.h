@@ -207,6 +207,8 @@ namespace Demi
         void NotifyTypeChanged(MyGUI::ComboBox* _sender, size_t _index);
 
         void NotfyCurveButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+        
+        void NotfyUpdateCurve(DiAttributeCurved* curve);
 
         void RefreshValue();
     

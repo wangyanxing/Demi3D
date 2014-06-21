@@ -639,6 +639,11 @@ namespace Demi
     DiDynamicPropertyItem::~DiDynamicPropertyItem()
     {
     }
+    
+    void DiDynamicPropertyItem::NotfyUpdateCurve(DiAttributeCurved* curve)
+    {
+        RefreshValue();
+    }
 
     void DiDynamicPropertyItem::CreateUI(const DiString& caption)
     {
@@ -745,6 +750,9 @@ namespace Demi
     void DiDynamicPropertyItem::RefreshUI()
     {
         mDynType->setIndexSelected((int)mType);
+        
+        auto prop = dynamic_cast<DiDynProperty*>(mProperty);
+        DiDynamicAttribute* dynAttr = *prop;
 
         bool randomVis = mType == DiDynamicAttribute::DAT_RANDOM;
         for (size_t i = 0; i < 2; i++)
@@ -757,11 +765,22 @@ namespace Demi
         {
             mFixedValue->setVisible(false);
             mCurveButton->setVisible(false);
+            
+            DiString temp;
+            temp.Format("%g", mCurrentRandomVal.GetMin());
+            mValueBox[0]->setCaption(temp.c_str());
+            
+            temp.Format("%g", mCurrentRandomVal.GetMax());
+            mValueBox[1]->setCaption(temp.c_str());
         }
         else if (mType == DiDynamicAttribute::DAT_FIXED)
         {
             mFixedValue->setVisible(true);
             mCurveButton->setVisible(false);
+            
+            DiString temp;
+            temp.Format("%g", mCurrentFixedVal.GetValue());
+            mFixedValue->setCaption(temp.c_str());
         }
         else
         {
@@ -799,6 +818,7 @@ namespace Demi
         
         auto curveEditor = HonFxerApp::GetFxApp()->GetMainPane()->getCurveEditor();
         curveEditor->SetAttribute(mCurrentCurveVal);
+        curveEditor->eventUpdateCurve += MyGUI::newDelegate(this, &DiDynamicPropertyItem::NotfyUpdateCurve);
         
         HonFxerApp::GetFxApp()->GetMainPane()->showCurveEditor();
     }
@@ -811,27 +831,21 @@ namespace Demi
         
         if (mType == DiDynamicAttribute::DAT_RANDOM)
         {
-            auto val = DI_NEW DiAttributeRandom();
-            dynAttr = val;
-            
             DiString random0 = mValueBox[0]->getCaption().asUTF8_c_str();
             DiString random1 = mValueBox[1]->getCaption().asUTF8_c_str();
-            val->SetMinMax(random0.AsFloat(), random1.AsFloat());
+            mCurrentRandomVal.SetMinMax(random0.AsFloat(), random1.AsFloat());
+            dynAttr = &mCurrentRandomVal;
         }
         else if (mType == DiDynamicAttribute::DAT_FIXED)
         {
-            auto val = DI_NEW DiAttributeFixed();
-            dynAttr = val;
-            
             DiString fixedValue = mFixedValue->getCaption().asUTF8_c_str();
-            val->SetValue(fixedValue.AsFloat());
+            mCurrentFixedVal.SetValue(fixedValue.AsFloat());
+            dynAttr = &mCurrentFixedVal;
         }
         else
         {
-            auto val = DI_NEW DiAttributeCurved(mCurrentCurveVal);
-            dynAttr = val;
+            dynAttr = &mCurrentCurveVal;
         }
-        
         *prop = dynAttr;
     }
 }

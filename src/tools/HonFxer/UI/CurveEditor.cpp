@@ -45,7 +45,7 @@ namespace Demi
         widget->setColour(MyGUI::Colour::Red);
         main = widget->getSubWidgetMain();
         mCurveCanvas = main->castType<MyGUI::PolygonalSkin>();
-        widget->eventMouseButtonPressed += MyGUI::newDelegate(this, &CurveEditor::NotfyMousePressed);
+        widget->eventMouseButtonPressed += MyGUI::newDelegate(this, &CurveEditor::NotifyMousePressed);
         MyGUI::PolygonalSkin::CreateLineSets = false;
         mCanvasWidget = widget;
 
@@ -179,7 +179,7 @@ namespace Demi
         mNumbersX.clear();
     }
 
-    void CurveEditor::NotfyMousePressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    void CurveEditor::NotifyMousePressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
     {
         if (_id != MyGUI::MouseButton::Left)
             return;
@@ -227,6 +227,8 @@ namespace Demi
             auto val = GetValue(pos.left+7, pos.top+7);
             mCurvedAttr.AddControlPoint(val.x, val.y);
         }
+        
+        eventUpdateCurve(&mCurvedAttr);
     }
     
     void CurveEditor::SetAttribute(DiAttributeCurved& rhs)
@@ -464,6 +466,7 @@ namespace Demi
         if (_button == "close")
         {
             mMainWidget->setVisible(false);
+            eventUpdateCurve.clear();
         }
     }
 
