@@ -287,9 +287,6 @@ namespace Demi
 
     void CurveEditor::RefreshCurve()
     {
-        if (mButtons.size() < 2)
-            return;
-
         std::vector<MyGUI::FloatPoint> linepoints;
 
         // line

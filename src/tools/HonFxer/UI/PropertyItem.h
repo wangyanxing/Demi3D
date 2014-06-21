@@ -41,7 +41,7 @@ namespace Demi
 
         DiPropertyBase* mProperty{ nullptr };
 
-        DiPropertyType  mType{ PROPERTY_MAX };
+        DiPropertyType mType{ PROPERTY_MAX };
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -209,6 +209,10 @@ namespace Demi
         void NotfyCurveButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
         
         void NotfyUpdateCurve(DiAttributeCurved* curve);
+        
+        void NotifyEditAccept(MyGUI::EditBox* _sender);
+        
+        void NotifyEditKeyLostFocus(MyGUI::Widget* _sender, MyGUI::Widget* _old);
 
         void RefreshValue();
     

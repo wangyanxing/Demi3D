@@ -245,6 +245,7 @@ namespace Demi
         dynAttr->mSpline = mSpline;
         dynAttr->mRange = mRange;
 
+        dynAttr->mControlPoints.clear();
         for (auto it = mControlPoints.begin(); it != mControlPoints.end(); ++it)
         {
             DiVec2 controlPoint = *it;

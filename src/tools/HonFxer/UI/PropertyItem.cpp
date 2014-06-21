@@ -642,6 +642,8 @@ namespace Demi
     
     void DiDynamicPropertyItem::NotfyUpdateCurve(DiAttributeCurved* curve)
     {
+        curve->CopyTo(&mCurrentCurveVal);
+        
         RefreshValue();
     }
 
@@ -683,6 +685,8 @@ namespace Demi
             widgetClient->getWidth() - (curWidth + width_step), height),
             MyGUI::Align::HStretch | MyGUI::Align::Top);
         mFixedValue->setVisible(false);
+        mFixedValue->eventKeyLostFocus += MyGUI::newDelegate(this, &DiDynamicPropertyItem::NotifyEditKeyLostFocus);
+        mFixedValue->eventEditSelectAccept += MyGUI::newDelegate(this, &DiDynamicPropertyItem::NotifyEditAccept);
 
         mCurveButton = widgetClient->createWidget<MyGUI::Button>("Button",
             MyGUI::IntCoord(curWidth, currentHeight,
@@ -697,7 +701,7 @@ namespace Demi
             mValueLabel[i] = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
                 MyGUI::IntCoord(width_step, currentHeight + (i + 1)*mParentGroup->GetHeightStep(), width, height), MyGUI::Align::Left | MyGUI::Align::Top);
             mValueLabel[i]->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
-            mValueLabel[i]->setCaption(i==0?"Min":"Max");
+            mValueLabel[i]->setCaption(i==0 ? "Min" : "Max");
             mValueLabel[i]->setVisible(false);
 
             mValueBox[i] = widgetClient->createWidget<MyGUI::EditBox>("EditBox",
@@ -705,6 +709,8 @@ namespace Demi
                 widgetClient->getWidth() - (width_step + width_step + width_step + width), height),
                 MyGUI::Align::HStretch | MyGUI::Align::Top);
             mValueBox[i]->setVisible(false);
+            mValueBox[i]->eventKeyLostFocus += MyGUI::newDelegate(this, &DiDynamicPropertyItem::NotifyEditKeyLostFocus);
+            mValueBox[i]->eventEditSelectAccept += MyGUI::newDelegate(this, &DiDynamicPropertyItem::NotifyEditAccept);
         }
 
         RefreshUI();
@@ -767,10 +773,10 @@ namespace Demi
             mCurveButton->setVisible(false);
             
             DiString temp;
-            temp.Format("%g", mCurrentRandomVal.GetMin());
+            temp.Format("%g", static_cast<DiAttributeRandom*>(dynAttr)->GetMin());
             mValueBox[0]->setCaption(temp.c_str());
             
-            temp.Format("%g", mCurrentRandomVal.GetMax());
+            temp.Format("%g", static_cast<DiAttributeRandom*>(dynAttr)->GetMax());
             mValueBox[1]->setCaption(temp.c_str());
         }
         else if (mType == DiDynamicAttribute::DAT_FIXED)
@@ -779,7 +785,7 @@ namespace Demi
             mCurveButton->setVisible(false);
             
             DiString temp;
-            temp.Format("%g", mCurrentFixedVal.GetValue());
+            temp.Format("%g", static_cast<DiAttributeFixed*>(dynAttr)->GetValue());
             mFixedValue->setCaption(temp.c_str());
         }
         else
@@ -789,6 +795,16 @@ namespace Demi
         }
 
         mParentGroup->NotifyRearrangeHeight();
+    }
+    
+    void DiDynamicPropertyItem::NotifyEditAccept(MyGUI::EditBox* _sender)
+    {
+        RefreshValue();
+    }
+    
+    void DiDynamicPropertyItem::NotifyEditKeyLostFocus(MyGUI::Widget* _sender, MyGUI::Widget* _old)
+    {
+        RefreshValue();
     }
 
     void DiDynamicPropertyItem::NotfyCurveButtonPressed(MyGUI::Widget* _sender,
@@ -827,24 +843,23 @@ namespace Demi
     {
         auto prop = dynamic_cast<DiDynProperty*>(mProperty);
         DiDynamicAttribute* dynAttr = *prop;
-        DI_DELETE dynAttr;
         
         if (mType == DiDynamicAttribute::DAT_RANDOM)
         {
             DiString random0 = mValueBox[0]->getCaption().asUTF8_c_str();
             DiString random1 = mValueBox[1]->getCaption().asUTF8_c_str();
             mCurrentRandomVal.SetMinMax(random0.AsFloat(), random1.AsFloat());
-            dynAttr = &mCurrentRandomVal;
+            dynAttr = DI_NEW DiAttributeRandom(mCurrentRandomVal);
         }
         else if (mType == DiDynamicAttribute::DAT_FIXED)
         {
             DiString fixedValue = mFixedValue->getCaption().asUTF8_c_str();
             mCurrentFixedVal.SetValue(fixedValue.AsFloat());
-            dynAttr = &mCurrentFixedVal;
+            dynAttr = DI_NEW DiAttributeFixed(mCurrentFixedVal);
         }
         else
         {
-            dynAttr = &mCurrentCurveVal;
+            dynAttr = DI_NEW DiAttributeCurved(mCurrentCurveVal);
         }
         *prop = dynAttr;
     }
