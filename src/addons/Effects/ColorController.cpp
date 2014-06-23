@@ -71,14 +71,10 @@ namespace Demi
     void DiColorController::Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed)
     {
         if (mColourMap.empty())
-        {
             return;
-        }
 
         if (particle->particleType != DiParticle::PT_VISUAL)
-        {
             return;
-        }
 
         DiVisualParticle* visualParticle = static_cast<DiVisualParticle*>(particle);
 

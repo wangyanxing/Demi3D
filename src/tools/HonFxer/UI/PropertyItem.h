@@ -74,6 +74,35 @@ namespace Demi
 
         MyGUI::EditBox* mEditBox{ nullptr };
     };
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    class DiEnumPropertyItem : public DiPropertyItem
+    {
+    public:
+        
+        DiEnumPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type);
+        
+        virtual ~DiEnumPropertyItem();
+        
+    public:
+        
+        virtual void CreateUI(const DiString& caption) override;
+        
+        virtual void RearrangeUI(int height);
+        
+        void RefreshUI();
+        
+        void RefreshValue();
+        
+        void NotifyEnumChanged(MyGUI::ComboBox* _sender, size_t _index);
+        
+    protected:
+        
+        MyGUI::TextBox* mTextBox{ nullptr };
+        
+        MyGUI::ComboBox* mEnumBox{ nullptr };
+    };
 
     //////////////////////////////////////////////////////////////////////////
 

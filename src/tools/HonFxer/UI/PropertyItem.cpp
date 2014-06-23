@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MainPaneControl.h"
 #include "HonFxerApp.h"
 #include "CurveEditor.h"
+#include "EnumProperties.h"
 
 namespace Demi
 {
@@ -42,12 +43,10 @@ namespace Demi
     DiNumericPropertyItem::DiNumericPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
         :DiPropertyItem(group, prop, type)
     {
-
     }
 
     DiNumericPropertyItem::~DiNumericPropertyItem()
     {
-
     }
 
     void DiNumericPropertyItem::CreateUI(const DiString& caption)
@@ -142,7 +141,6 @@ namespace Demi
         }
     }
 
-
     void DiNumericPropertyItem::NotifyEditAccept(MyGUI::EditBox* _sender)
     {
         RefreshValue();
@@ -153,16 +151,83 @@ namespace Demi
         RefreshValue();
     }
 
+    DiEnumPropertyItem::DiEnumPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
+        :DiPropertyItem(group, prop, type)
+    {
+    }
+    
+    DiEnumPropertyItem::~DiEnumPropertyItem()
+    {
+    }
+    
+    void DiEnumPropertyItem::NotifyEnumChanged(MyGUI::ComboBox* _sender, size_t _index)
+    {
+        
+    }
+    
+    void DiEnumPropertyItem::CreateUI(const DiString& caption)
+    {
+        auto widgetClient = mParentGroup->GetClientWidget();
+        auto currentHeight = mParentGroup->GetCurrentHeight();
+        auto width_step = mParentGroup->GetWidthStep();
+        auto width = mParentGroup->GetWidth();
+        auto height = mParentGroup->GetHeight();
+        
+        mTextBox = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
+                                                              MyGUI::IntCoord(width_step, currentHeight, width, height), MyGUI::Align::Left | MyGUI::Align::Top);
+        mTextBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
+        mTextBox->setCaption(caption.c_str());
+        
+        mEnumBox = widgetClient->createWidget<MyGUI::ComboBox>("ComboBox",
+                                                              MyGUI::IntCoord(width_step + width_step + width, currentHeight,
+                                                                widgetClient->getWidth() - (width_step + width_step + width_step + width), height),
+                                                              MyGUI::Align::HStretch | MyGUI::Align::Top);
+        mEnumBox->setComboModeDrop(true);
+        mEnumBox->eventComboAccept += MyGUI::newDelegate(this, &DiEnumPropertyItem::NotifyEnumChanged);
+        
+        auto prop = dynamic_cast<DiEnumProperty*>(mProperty);
+        DiBaseEnumPropPtr enumProp = *prop;
+        auto& strs = enumProp->GetStrings();
+        for(auto& s : strs)
+        {
+            mEnumBox->addItem(s.c_str());
+        }
+        
+        RefreshUI();
+    }
+    
+    void DiEnumPropertyItem::RearrangeUI(int height)
+    {
+        auto pos = mTextBox->getPosition();
+        mTextBox->setPosition(pos.left, height);
+        
+        pos = mEnumBox->getPosition();
+        mEnumBox->setPosition(pos.left, height);
+    }
+    
+    void DiEnumPropertyItem::RefreshUI()
+    {
+        auto prop = dynamic_cast<DiEnumProperty*>(mProperty);
+        DiBaseEnumPropPtr enumProp = *prop;
+        auto val = (size_t)enumProp->enumValue;
+        DI_ASSERT(val >= 0 && val < mEnumBox->getItemCount());
+        mEnumBox->setIndexSelected(val);
+    }
+    
+    void DiEnumPropertyItem::RefreshValue()
+    {
+        auto prop = dynamic_cast<DiEnumProperty*>(mProperty);
+        DiBaseEnumPropPtr enumProp = *prop;
+        enumProp->enumValue = mEnumBox->getIndexSelected();
+    }
 
     DiBoolPropertyItem::DiBoolPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
         :DiPropertyItem(group, prop, type)
     {
-
     }
 
     DiBoolPropertyItem::~DiBoolPropertyItem()
     {
-
     }
 
     void DiBoolPropertyItem::CreateUI(const DiString& caption)
@@ -260,7 +325,8 @@ namespace Demi
         for (int i = 0; i < elements; ++i)
         {
             mValueLabel[i] = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
-                MyGUI::IntCoord(width_step, currentHeight + (i + 1)*mParentGroup->GetHeightStep(), width, height), MyGUI::Align::Left | MyGUI::Align::Top);
+                MyGUI::IntCoord(width_step, currentHeight + (i + 1)*mParentGroup->GetHeightStep(), width, height),
+                MyGUI::Align::Left | MyGUI::Align::Top);
             mValueLabel[i]->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
             mValueLabel[i]->setCaption(GetElementName(i).c_str());
             mValueLabel[i]->setVisible(false);
@@ -525,12 +591,10 @@ namespace Demi
     DiColorPropertyItem::DiColorPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
         :DiPropertyItem(group, prop, type)
     {
-
     }
 
     DiColorPropertyItem::~DiColorPropertyItem()
     {
-
     }
 
     void DiColorPropertyItem::CreateUI(const DiString& caption)

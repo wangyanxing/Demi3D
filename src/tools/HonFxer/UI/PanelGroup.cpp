@@ -17,7 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-	DiPanelGroup::DiPanelGroup() : BasePanelViewItem("")
+	DiPanelGroup::DiPanelGroup()
+        : BasePanelViewItem("")
 	{
 	}
 
@@ -34,7 +35,7 @@ namespace Demi
         mPanelCell->setCaption(cap.c_str());
     }
 
-    void DiPanelGroup::AddItem(const DiString& caption, DiPropertyBase* prop)
+    DiPropertyItem* DiPanelGroup::AddItem(const DiString& caption, DiPropertyBase* prop)
     {
         auto propType = prop->getType();
 
@@ -49,6 +50,9 @@ namespace Demi
             break;
         case Demi::PROPERTY_BOOL:
             item = DI_NEW DiBoolPropertyItem(this, prop, propType);
+            break;
+        case Demi::PROPERTY_ENUM:
+            item = DI_NEW DiEnumPropertyItem(this, prop, propType);
             break;
         case Demi::PROPERTY_VEC2:
         case Demi::PROPERTY_VEC3:
@@ -73,6 +77,8 @@ namespace Demi
             mItems.push_back(item);
             mPanelCell->setClientHeight(GetCurrentHeight(), false);
         }
+        
+        return item;
     }
 
     int DiPanelGroup::GetCurrentHeight()

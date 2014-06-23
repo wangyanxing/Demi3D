@@ -20,6 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ParticleElement.h"
 #include "ColorController.h"
 #include "ControllerBaseObj.h"
+#include "EnumProperties.h"
 
 namespace Demi
 {
@@ -46,6 +47,10 @@ namespace Demi
         DiControllerBaseObj::InitPropertyTable();
         
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Color Controller");
+        
+        g->AddProperty("Operation" , DI_NEW DiEnumProperty([&](){ return make_shared<ColorCtrlOperationEnum>(GetController()->GetColourOperation()); },
+                                                           [&](DiBaseEnumPropPtr& val){GetController()->SetColourOperation(val->getEnum<ColorCtrlOperationEnum,DiColorController::ColourOperation>());}));
+        
         g->CreateUI();
 
         mPropGroups.push_back(g);

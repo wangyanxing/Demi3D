@@ -29,6 +29,31 @@ namespace Demi
     typedef DiProperty<DiQuat             , PROPERTY_QUAT>     DiQuatProperty;
     typedef DiProperty<DiColor            , PROPERTY_COLOR>    DiColorProperty;
     typedef DiProperty<DiDynamicAttribute*, PROPERTY_DYN_ATTR> DiDynProperty;
+    
+    /// Enum property
+    class _DiBaseEnumProperty
+    {
+    public:
+        _DiBaseEnumProperty() = default;
+        
+        _DiBaseEnumProperty(int val)
+        {
+            enumValue = val;
+        }
+        
+        virtual std::vector<DiString>& GetStrings() = 0;
+        
+        template<typename T, typename EnumT>
+        EnumT getEnum(){
+            return static_cast<EnumT>(dynamic_cast<T*>(this)->enumValue);
+        }
+        
+        int enumValue;
+    };
+    
+    typedef shared_ptr<_DiBaseEnumProperty> DiBaseEnumPropPtr;
+    
+    typedef DiProperty<DiBaseEnumPropPtr, PROPERTY_ENUM> DiEnumProperty;
 }
 
 #endif // PropertyTypes_h__
