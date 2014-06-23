@@ -64,6 +64,9 @@ namespace Demi
         case Demi::PROPERTY_COLOR:
             item = DI_NEW DiColorPropertyItem(this, prop, propType);
             break;
+        case Demi::PROPERTY_COLOR_CURVE:
+            item = DI_NEW DiColorCurvePropertyItem(this, prop, propType);
+            break;
         case Demi::PROPERTY_DYN_ATTR:
             item = DI_NEW DiDynamicPropertyItem(this, prop, propType);
             break;

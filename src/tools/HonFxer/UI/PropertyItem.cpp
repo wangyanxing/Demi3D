@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MainPaneControl.h"
 #include "HonFxerApp.h"
 #include "CurveEditor.h"
+#include "ColorEditor.h"
 #include "EnumProperties.h"
 
 namespace Demi
@@ -174,7 +175,8 @@ namespace Demi
         auto height = mParentGroup->GetHeight();
         
         mTextBox = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
-                                                              MyGUI::IntCoord(width_step, currentHeight, width, height), MyGUI::Align::Left | MyGUI::Align::Top);
+                                                              MyGUI::IntCoord(width_step, currentHeight, width, height),
+                                                              MyGUI::Align::Left | MyGUI::Align::Top);
         mTextBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
         mTextBox->setCaption(caption.c_str());
         
@@ -219,6 +221,73 @@ namespace Demi
         auto prop = dynamic_cast<DiEnumProperty*>(mProperty);
         DiBaseEnumPropPtr enumProp = *prop;
         enumProp->enumValue = mEnumBox->getIndexSelected();
+    }
+    
+    DiColorCurvePropertyItem::DiColorCurvePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
+    :DiPropertyItem(group, prop, type)
+    {
+    }
+    
+    DiColorCurvePropertyItem::~DiColorCurvePropertyItem()
+    {
+    }
+    
+    void DiColorCurvePropertyItem::CreateUI(const DiString& caption)
+    {
+        auto widgetClient = mParentGroup->GetClientWidget();
+        auto currentHeight = mParentGroup->GetCurrentHeight();
+        auto width_step = mParentGroup->GetWidthStep();
+        auto width = mParentGroup->GetWidth();
+        auto height = mParentGroup->GetHeight();
+        
+        mTextBox = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
+                                                              MyGUI::IntCoord(width_step, currentHeight, width, height),
+                                                              MyGUI::Align::Left | MyGUI::Align::Top);
+        mTextBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
+        mTextBox->setCaption(caption.c_str());
+        
+        mCurveButton = widgetClient->createWidget<MyGUI::Button>("Button",
+                                                               MyGUI::IntCoord(width_step + width_step + width, currentHeight,
+                                                                               widgetClient->getWidth() - (width_step + width_step + width_step + width), height),
+                                                               MyGUI::Align::HStretch | MyGUI::Align::Top);
+        mCurveButton->eventMouseButtonPressed += MyGUI::newDelegate(this, &DiColorCurvePropertyItem::NotifyButtonPressed);
+        mCurveButton->setCaption("Edit...");
+        
+        RefreshUI();
+    }
+    
+    void DiColorCurvePropertyItem::NotifyColorUpdated(DiMap<float, DiColor>& colors)
+    {
+        auto prop = dynamic_cast<DiColorCurveProperty*>(mProperty);
+        *prop = colors;
+    }
+    
+    void DiColorCurvePropertyItem::NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    {
+        auto prop = dynamic_cast<DiColorCurveProperty*>(mProperty);
+        DiMap<float, DiColor> colors = *prop;
+        
+        auto colorEditor = HonFxerApp::GetFxApp()->GetMainPane()->getColorEditor();
+        colorEditor->SetColors(colors);
+        colorEditor->eventUpdateColors += MyGUI::newDelegate(this, &DiColorCurvePropertyItem::NotifyColorUpdated);
+        HonFxerApp::GetFxApp()->GetMainPane()->showColorEditor();
+    }
+    
+    void DiColorCurvePropertyItem::RearrangeUI(int height)
+    {
+        auto pos = mTextBox->getPosition();
+        mTextBox->setPosition(pos.left, height);
+        
+        pos = mCurveButton->getPosition();
+        mCurveButton->setPosition(pos.left, height);
+    }
+    
+    void DiColorCurvePropertyItem::RefreshUI()
+    {
+    }
+    
+    void DiColorCurvePropertyItem::RefreshValue()
+    {
     }
 
     DiBoolPropertyItem::DiBoolPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)

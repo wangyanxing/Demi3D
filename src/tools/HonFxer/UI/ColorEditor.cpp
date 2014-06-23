@@ -370,7 +370,11 @@ namespace Demi
     void ColorEditor::RefreshCurve()
     {
         if (mButtons.size() < 2)
+        {
+            auto updatecolors = GetColors();
+            eventUpdateColors(updatecolors);
             return;
+        }
 
         std::vector<MyGUI::FloatPoint> linePoints;
         std::vector<MyGUI::Colour> colors;
@@ -392,6 +396,9 @@ namespace Demi
         mCurveCanvas->setColors(colors);
         
         UpdateBackTexture();
+        
+        auto updatecolors = GetColors();
+        eventUpdateColors(updatecolors);
     }
 
     void ColorEditor::NotifyPointMove(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
@@ -508,7 +515,10 @@ namespace Demi
     void ColorEditor::NotifyWindowButtonPressed(MyGUI::Window* _sender, const std::string& _button)
     {
         if (_button == "close")
+        {
             mMainWidget->setVisible(false);
+            eventUpdateColors.clear();
+        }
     }
     
     void ColorEditor::UpdateFirst()

@@ -103,6 +103,37 @@ namespace Demi
         
         MyGUI::ComboBox* mEnumBox{ nullptr };
     };
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    class DiColorCurvePropertyItem : public DiPropertyItem
+    {
+    public:
+        
+        DiColorCurvePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type);
+        
+        virtual ~DiColorCurvePropertyItem();
+        
+    public:
+        
+        virtual void CreateUI(const DiString& caption) override;
+        
+        virtual void RearrangeUI(int height);
+        
+        void RefreshUI();
+        
+        void RefreshValue();
+        
+        void NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+        
+        void NotifyColorUpdated(DiMap<float, DiColor>& colors);
+        
+    protected:
+        
+        MyGUI::TextBox* mTextBox{ nullptr };
+        
+        MyGUI::Button* mCurveButton{ nullptr };
+    };
 
     //////////////////////////////////////////////////////////////////////////
 

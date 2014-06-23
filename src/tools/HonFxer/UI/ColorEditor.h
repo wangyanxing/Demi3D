@@ -31,6 +31,9 @@ namespace Demi
         void SetColors(const ColorMap& colors);
         
         ColorMap GetColors();
+        
+        typedef MyGUI::delegates::CMultiDelegate1<ColorMap&> EventHandle_UpdateColors;
+        EventHandle_UpdateColors eventUpdateColors;
 
 	private:
 	//%LE Widget_Declaration list start

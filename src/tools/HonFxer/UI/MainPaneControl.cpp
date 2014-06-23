@@ -28,7 +28,7 @@ namespace tools
     
     void MainPaneControl::showColorEditor()
     {
-        mCurveEditor->getMainWidget()->setVisible(true);
+        mColorEditor->getMainWidget()->setVisible(true);
     }
 
 	MainPaneControl::~MainPaneControl()

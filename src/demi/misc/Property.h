@@ -39,7 +39,8 @@ namespace Demi
         PROPERTY_QUAT,
         PROPERTY_COLOR,
         PROPERTY_DYN_ATTR,
-
+        PROPERTY_COLOR_CURVE,
+        
         PROPERTY_MAX,
     };
 

@@ -48,8 +48,11 @@ namespace Demi
         
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Color Controller");
         
-        g->AddProperty("Operation" , DI_NEW DiEnumProperty([&](){ return make_shared<ColorCtrlOperationEnum>(GetController()->GetColourOperation()); },
+        g->AddProperty("Operation"  , DI_NEW DiEnumProperty([&](){ return make_shared<ColorCtrlOperationEnum>(GetController()->GetColourOperation()); },
                                                            [&](DiBaseEnumPropPtr& val){GetController()->SetColourOperation(val->getEnum<ColorCtrlOperationEnum,DiColorController::ColourOperation>());}));
+        
+        g->AddProperty("Color Curve", DI_NEW DiColorCurveProperty([&](){ return GetController()->GetTimeAndColour(); },
+                                                           [&](DiMap<float, DiColor>& val){GetController()->SetTimeAndColour(val);}));
         
         g->CreateUI();
 

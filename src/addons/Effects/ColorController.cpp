@@ -58,9 +58,14 @@ namespace Demi
         mColourMap[timeFraction] = colour;
     }
     
-    const DiColorController::ColorMap& DiColorController::GetTimeAndColour(void) const
+    DiColorController::ColorMap& DiColorController::GetTimeAndColour(void)
     {
         return mColourMap;
+    }
+    
+    void DiColorController::SetTimeAndColour(const ColorMap& colors)
+    {
+        mColourMap = colors;
     }
     
     void DiColorController::ClearColourMap (void)
