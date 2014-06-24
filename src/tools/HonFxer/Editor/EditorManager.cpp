@@ -164,6 +164,12 @@ namespace Demi
                 return false;
             }
         });
+        
+        CommandMgr->AddCommand("selectLast", [&](Demi::DiCmdArgs* args){
+            mCurrentSel = mLastCreatedObject;
+            return true;
+        });
+
     }
 
     void DiEditorManager::Update()

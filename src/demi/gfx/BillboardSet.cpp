@@ -732,7 +732,7 @@ namespace Demi
 
     void DiBillboardSet::GenVertices( const DiVec3* const offsets, const DiBillboard& bb )
     {
-        RGBA colour = bb.mColour.GetAsARGB();
+        RGBA colour = DiBase::Driver->GetNativeColor(bb.mColour);
         RGBA* pCol;
 
         DI_ASSERT( bb.mUseTexcoordRect || bb.mTexcoordIndex < mTextureCoords.size() );

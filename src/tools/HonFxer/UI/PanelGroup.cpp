@@ -60,7 +60,6 @@ namespace Demi
         case Demi::PROPERTY_QUAT:
             item = DI_NEW DiVectorPropertyItem(this, prop, propType);
             break;
-            break;
         case Demi::PROPERTY_COLOR:
             item = DI_NEW DiColorPropertyItem(this, prop, propType);
             break;

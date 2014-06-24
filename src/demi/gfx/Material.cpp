@@ -102,6 +102,7 @@ namespace Demi
         if (!DiShaderManager::GetInstancePtr())
             return;
 
+        // no need to release these pointers since we have shader manager
         mVertexShader = DiShaderManager::GetInstance().LoadShader(vsname, SHADER_VERTEX, mShaderFlag);
         mPixelShader  = DiShaderManager::GetInstance().LoadShader(psname, SHADER_PIXEL , mShaderFlag);
 

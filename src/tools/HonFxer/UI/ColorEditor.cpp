@@ -145,7 +145,7 @@ namespace Demi
             auto pos = mButtons[i]->getPosition();
             float timePos = (float)(pos.left+7) / (float)width;
             auto col = *(mButtons[i]->getUserData<MyGUI::Colour>());
-            auto diCol = DiColor(col.red, col.green, col.blue, col.alpha);
+            auto diCol = DiColor(col.blue, col.green, col.red, col.alpha);
             ret[timePos] = diCol;
         }
         
@@ -371,8 +371,6 @@ namespace Demi
     {
         if (mButtons.size() < 2)
         {
-            auto updatecolors = GetColors();
-            eventUpdateColors(updatecolors);
             return;
         }
 
@@ -396,9 +394,6 @@ namespace Demi
         mCurveCanvas->setColors(colors);
         
         UpdateBackTexture();
-        
-        auto updatecolors = GetColors();
-        eventUpdateColors(updatecolors);
     }
 
     void ColorEditor::NotifyPointMove(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
@@ -556,6 +551,9 @@ namespace Demi
         }
         
         mBackTexture->unlock();
+        
+        auto updatecolors = GetColors();
+        eventUpdateColors(updatecolors);
     }
     
     void ColorEditor::UpdateTexture(const MyGUI::Colour& _colour)
@@ -577,6 +575,9 @@ namespace Demi
         
 		// Unlock the pixel buffer
 		mTexture->unlock();
+        
+        auto updatecolors = GetColors();
+        eventUpdateColors(updatecolors);
     }
     
     void ColorEditor::DestroyTexture()

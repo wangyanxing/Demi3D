@@ -356,6 +356,7 @@ namespace Demi
             break;
         case BLEND_ONE_INV_ALPHA:
             {
+            glEnable(GL_BLEND);
             glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
             }
             break;
@@ -364,10 +365,7 @@ namespace Demi
         }
 
         GLint func = GL_FUNC_ADD;
-        if (GLEW_VERSION_1_4 || GLEW_ARB_imaging)
-            glBlendEquation(func);
-        else if (GLEW_EXT_blend_minmax && (func == GL_MIN || func == GL_MAX))
-            glBlendEquationEXT(func);
+        glBlendEquation(func);
     }
 
     void DiGLDriver::Clear(uint32 flag, const DiColor& col, float depth, unsigned short stencil /*= 0*/)

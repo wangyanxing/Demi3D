@@ -17,4 +17,5 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi
 {
     std::vector<DiString> ColorCtrlOperationEnum::Strings = {"Multiply", "Set"};
+    std::vector<DiString> MaterialBlendModeEnum::Strings  = {"Replace", "Add", "Multiply", "Alpha", "Transparent Color", "One Inverse Alpha"};
 }

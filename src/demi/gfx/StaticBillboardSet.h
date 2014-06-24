@@ -35,7 +35,7 @@ namespace Demi
                 xPos((float)pos.x), yPos((float)pos.y), zPos((float)pos.z), xScaleHalf(0.5f * xScale), yScaleHalf(0.5f * yScale),
                 texcoordIndexU(texcrdIndexU), texcoordIndexV(texcrdIndexV)
             {
-                color = clr.GetAsARGB();
+                color = DiBase::Driver->GetNativeColor(clr);
             }
 
             float xPos, yPos, zPos;

@@ -163,7 +163,7 @@ namespace Demi
     
     void DiEnumPropertyItem::NotifyEnumChanged(MyGUI::ComboBox* _sender, size_t _index)
     {
-        
+        RefreshValue();
     }
     
     void DiEnumPropertyItem::CreateUI(const DiString& caption)
@@ -221,6 +221,7 @@ namespace Demi
         auto prop = dynamic_cast<DiEnumProperty*>(mProperty);
         DiBaseEnumPropPtr enumProp = *prop;
         enumProp->enumValue = mEnumBox->getIndexSelected();
+        *prop = enumProp;
     }
     
     DiColorCurvePropertyItem::DiColorCurvePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)

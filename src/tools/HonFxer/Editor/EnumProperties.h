@@ -31,6 +31,18 @@ namespace Demi
         }
         static std::vector<DiString> Strings;
     };
+    
+    struct MaterialBlendModeEnum : _DiBaseEnumProperty{
+        MaterialBlendModeEnum() = default;
+        MaterialBlendModeEnum(DiBlendMode v){enumValue=v;}
+        std::vector<DiString>& GetStrings(){
+            return Strings;
+        }
+        DiBlendMode get(){
+            return (DiBlendMode)enumValue;
+        }
+        static std::vector<DiString> Strings;
+    };
 }
 
 #endif

@@ -35,7 +35,7 @@ void main()
 #endif
 	
 #ifdef USE_COLOR
-	gl_FragColor = gl_FragColor * vec4( vColor.xyz, g_opacity * vColor.a );
+	gl_FragColor = gl_FragColor * vColor;
 #endif	
 
 #ifdef GAMMA_OUTPUT
