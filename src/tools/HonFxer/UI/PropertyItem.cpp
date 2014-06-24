@@ -290,6 +290,80 @@ namespace Demi
     void DiColorCurvePropertyItem::RefreshValue()
     {
     }
+    
+    DiTexturePropertyItem::DiTexturePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
+        :DiPropertyItem(group, prop, type)
+    {
+    }
+    
+    DiTexturePropertyItem::~DiTexturePropertyItem()
+    {
+    }
+    
+    void DiTexturePropertyItem::CreateUI(const DiString& caption)
+    {
+        auto widgetClient = mParentGroup->GetClientWidget();
+        auto currentHeight = mParentGroup->GetCurrentHeight();
+        auto width_step = mParentGroup->GetWidthStep();
+        auto width = mParentGroup->GetWidth();
+        auto height = mParentGroup->GetHeight();
+        
+        mTextBox = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
+                                                              MyGUI::IntCoord(width_step, currentHeight, width, height),
+                                                              MyGUI::Align::Left | MyGUI::Align::Top);
+        mTextBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
+        mTextBox->setCaption(caption.c_str());
+
+        // use a fixed size
+        auto imageboxSize = 120;
+        
+        mImagePane = widgetClient->createWidget<MyGUI::Widget>("PanelSkin",
+                                                                MyGUI::IntCoord(width_step + width_step + width, currentHeight,
+                                                                                imageboxSize, imageboxSize),
+                                                                MyGUI::Align::Left | MyGUI::Align::Top);
+        
+        auto background = mImagePane->createWidget<MyGUI::ImageBox>("ImageBox",
+                                                              MyGUI::IntCoord(4, 4, imageboxSize - 8, imageboxSize - 8),
+                                                              MyGUI::Align::Left | MyGUI::Align::Top);
+        background->setImageTexture("BackgroundTile.png");
+        background->setImageTile(MyGUI::IntSize(64,64));
+        background->eventMouseButtonPressed += MyGUI::newDelegate(this, &DiTexturePropertyItem::NotifyButtonPressed);
+
+        mImageBox = mImagePane->createWidget<MyGUI::ImageBox>("ImageBox",
+                                                                 MyGUI::IntCoord(4, 4, imageboxSize - 8, imageboxSize - 8),
+                                                                 MyGUI::Align::Left | MyGUI::Align::Top);
+        //mImageBox->setImageTexture("cloud.png");
+        mImageBox->eventMouseButtonPressed += MyGUI::newDelegate(this, &DiTexturePropertyItem::NotifyButtonPressed);
+        
+        RefreshUI();
+    }
+    
+    int DiTexturePropertyItem::GetHeight()
+    {
+        return mImagePane->getSize().height + 3;
+    }
+    
+    void DiTexturePropertyItem::NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    {
+        
+    }
+    
+    void DiTexturePropertyItem::RearrangeUI(int height)
+    {
+        auto pos = mTextBox->getPosition();
+        mTextBox->setPosition(pos.left, height);
+        
+        pos = mImagePane->getPosition();
+        mImagePane->setPosition(pos.left, height);
+    }
+    
+    void DiTexturePropertyItem::RefreshUI()
+    {
+    }
+    
+    void DiTexturePropertyItem::RefreshValue()
+    {
+    }
 
     DiBoolPropertyItem::DiBoolPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
         :DiPropertyItem(group, prop, type)

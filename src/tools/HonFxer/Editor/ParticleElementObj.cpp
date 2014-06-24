@@ -102,6 +102,25 @@ namespace Demi
         return mParticleElement->GetName();
     }
     
+    void DiParticleElementObj::SetTexture(DiTexturePtr texture)
+    {
+        auto mat = mParticleElement->GetMaterial();
+        mat->GetShaderParameter()->WriteTexture2D("map", texture);
+    }
+    
+    DiTexturePtr DiParticleElementObj::GetTexture()
+    {
+        auto mat = mParticleElement->GetMaterial();
+        auto maps = mat->GetShaderParameter()->GetShaderParams(DiShaderParameter::VARIABLE_SAMPLER2D);
+        auto it = maps.find("map");
+        if(it != maps.end())
+        {
+            DiTexture* tex = any_cast<DiTexture*>(it->second);
+            return DiTexturePtr(tex);
+        }
+        return nullptr;
+    }
+    
     void DiParticleElementObj::InitPropertyTable()
     {
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Particle Element");
@@ -138,18 +157,21 @@ namespace Demi
         
         g = DI_NEW DiPropertyGroup("Material");
         
-        g->AddProperty("Blend Mode"     , DI_NEW DiEnumProperty([&](){ return make_shared<MaterialBlendModeEnum>(mParticleElement->GetMaterial()->GetBlendMode()); },
-                                                                [&](DiBaseEnumPropPtr& val){
-                                                                mParticleElement->GetMaterial()->SetBlendMode(val->getEnum<MaterialBlendModeEnum,DiBlendMode>());}));
+        g->AddProperty("Texture"     , DI_NEW DiTextureProperty([&]{ return GetTexture(); },
+                                                                [&](DiTexturePtr& val){ SetTexture(val); }));
         
-        g->AddProperty("Depth Check"    , DI_NEW DiBoolProperty( [&]{ return mParticleElement->GetMaterial()->GetDepthCheck(); },
-                                                                 [&](bool& val){ mParticleElement->GetMaterial()->SetDepthCheck(val); }));
+        g->AddProperty("Blend Mode"  , DI_NEW DiEnumProperty([&](){ return make_shared<MaterialBlendModeEnum>(mParticleElement->GetMaterial()->GetBlendMode()); },
+                                                             [&](DiBaseEnumPropPtr& val){
+                                                             mParticleElement->GetMaterial()->SetBlendMode(val->getEnum<MaterialBlendModeEnum,DiBlendMode>());}));
         
-        g->AddProperty("Depth Write"    , DI_NEW DiBoolProperty( [&]{ return mParticleElement->GetMaterial()->GetDepthWrite(); },
-                                                                 [&](bool& val){ mParticleElement->GetMaterial()->SetDepthWrite(val); }));
+        g->AddProperty("Depth Check" , DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->GetDepthCheck(); },
+                                                             [&](bool& val){ mParticleElement->GetMaterial()->SetDepthCheck(val); }));
         
-        g->AddProperty("Wireframe"      , DI_NEW DiBoolProperty( [&]{ return mParticleElement->GetMaterial()->IsWireframe(); },
-                                                                 [&](bool& val){ mParticleElement->GetMaterial()->SetWireframe(val); }));
+        g->AddProperty("Depth Write" , DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->GetDepthWrite(); },
+                                                             [&](bool& val){ mParticleElement->GetMaterial()->SetDepthWrite(val); }));
+        
+        g->AddProperty("Wireframe"   , DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->IsWireframe(); },
+                                                             [&](bool& val){ mParticleElement->GetMaterial()->SetWireframe(val); }));
         
         g->CreateUI();
         

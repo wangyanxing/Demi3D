@@ -134,6 +134,39 @@ namespace Demi
         
         MyGUI::Button* mCurveButton{ nullptr };
     };
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    class DiTexturePropertyItem : public DiPropertyItem
+    {
+    public:
+        
+        DiTexturePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type);
+        
+        virtual ~DiTexturePropertyItem();
+        
+    public:
+        
+        virtual void CreateUI(const DiString& caption) override;
+        
+        virtual void RearrangeUI(int height);
+        
+        void RefreshUI();
+        
+        void RefreshValue();
+        
+        void NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+        
+        int GetHeight() override;
+        
+    protected:
+        
+        MyGUI::TextBox* mTextBox{ nullptr };
+        
+        MyGUI::Widget* mImagePane{ nullptr };
+        
+        MyGUI::ImageBox* mImageBox{ nullptr };
+    };
 
     //////////////////////////////////////////////////////////////////////////
 
