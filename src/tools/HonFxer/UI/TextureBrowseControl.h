@@ -55,6 +55,8 @@ namespace tools
         MyGUI::TreeControl* mResourcesTree{ nullptr };
         
         DiFileTree* mResources{ nullptr };
+        
+        DiString mCurrentDir;
 	};
 
 } // namespace tools

@@ -107,6 +107,8 @@ namespace Demi
         bool                          HasArchive(const DiString& filename);
 
         DiAssetPtr                    FindAsset(const DiString& name);
+        
+        ArchivePtr                    FindDirArchive(const DiString& name);
 
         template <class TAsset>
         shared_ptr<TAsset>            FindAsset(const DiString& name)
@@ -146,14 +148,16 @@ namespace Demi
 
         typedef DiStrHash<DiAssetPtr> AssetsTable;
         typedef DiStrHash<ArchivePtr> ArchiveTable;
-
+        
         DiVector<DiString>           mSearchPaths;
 
         AssetsTable                  mAssets;
 
         ArchiveTable                 mArchives;
         
-        DiVector<ArchivePtr>         mDirArchives;
+        DiMap<DiString, ArchivePtr, string_nocase_lt> mDirArchives;
+        
+        ArchivePtr                   mRootDirArchive;
                                      
         DiString                     mBasePath;
 

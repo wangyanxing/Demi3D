@@ -17,22 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    struct string_nocase_lt 
-    {
-        bool operator()( const char *s1,const char *s2 ) const 
-        {
-            return stricmp(s1,s2) < 0;
-        }
-
-        bool operator()( const DiString& s1,const DiString& s2 ) const 
-        {
-            return stricmp(s1.c_str(), s2.c_str()) < 0;
-        }
-    };
-
     typedef DiVector<DiString> DiKeyList;
 
-    
     class DI_GFX_API DiCmdArgs
     {
     public:
@@ -72,10 +58,10 @@ namespace Demi
         
     typedef DiMap<DiString, DiCmdInfo> DiStringCmdInfoMap;
 
-    typedef std::map<DiString, DiConsoleVar*, string_nocase_lt>  ConsoleVariablesMap;
+    typedef DiMap<DiString, DiConsoleVar*, string_nocase_lt>  ConsoleVariablesMap;
     typedef ConsoleVariablesMap::iterator                        ConsoleVariablesMapItor;
 
-    typedef std::map<DiString, DiString, string_nocase_lt>       ConfigVars;
+    typedef DiMap<DiString, DiString, string_nocase_lt>       ConfigVars;
     typedef DiList<DiConsoleVarListener*>                        ConsoleVarSinks;
 
     //////////////////////////////////////////////////////////////////////////

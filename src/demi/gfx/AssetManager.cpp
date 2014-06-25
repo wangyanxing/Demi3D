@@ -95,14 +95,25 @@ namespace Demi
     {
         mSearchPaths.clear();
     }
+    
+    ArchivePtr DiAssetManager::FindDirArchive(const DiString& name)
+    {
+        auto it = mDirArchives.find(name);
+        if( it != mDirArchives.end() )
+        {
+            return it->second;
+        }
+        return nullptr;
+    }
 
     DiAssetPtr DiAssetManager::FindAsset( const DiString& name )
     {
-        if( mAssets.find(name) != mAssets.end() )
+        auto it = mAssets.find(name);
+        if( it != mAssets.end() )
         {
-            return mAssets[name];
+            return it->second;
         }
-        return DiAssetPtr();
+        return nullptr;
     }
 
     DiAssetPtr DiAssetManager::LoadAsset(const DiString& path, const DiString& type, bool ignoreError)
@@ -233,17 +244,26 @@ namespace Demi
 
         DI_INFO("Set media path to: %s", mBasePath.c_str());
         DI_INFO("Searching for sub paths");
+        
+        if(!path.empty() && !DiString::EndsWith(path, "\\/"))
+            path += "/";
 
         DiVector<ArchivePtr> zips;
 
         ArchivePtr baseDir = mArchiveManager->Load(mBasePath);
-        mDirArchives.push_back(baseDir);
+        mRootDirArchive = baseDir;
+        auto baseName = baseDir->GetName();
+        baseName.Replace(path.c_str(), "");
+        mDirArchives[baseName] = baseDir;
         
         DiFileInfoListPtr fl = baseDir->ListFileInfo(true,true);
         for (auto it = fl->begin(); it != fl->end(); ++it)
         {
             ArchivePtr ar = mArchiveManager->Load(it->filename);
-            mDirArchives.push_back(ar);
+
+            auto curname = ar->GetName();
+            curname.Replace(path.c_str(), "");
+            mDirArchives[curname] = ar;
             
             auto vec = ar->FindFileInfo("*", false);
             for( auto i = vec->begin(); i != vec->end(); ++i )
@@ -256,7 +276,7 @@ namespace Demi
                 else
                     mArchives[i->basename] = ar;
             }
-        } 
+        }
 
         // search files in zip packs
         for (auto it = zips.begin(); it != zips.end(); ++it)
@@ -388,9 +408,9 @@ namespace Demi
     {
         DiFileTree* node = nullptr;
         
-        if(!mDirArchives.empty())
+        if(mRootDirArchive)
         {
-            node = mDirArchives[0]->GenerateFileTree(pattern);
+            node = mRootDirArchive->GenerateFileTree(pattern);
         }
     
         return node;

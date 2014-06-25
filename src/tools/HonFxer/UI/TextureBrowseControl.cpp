@@ -137,7 +137,57 @@ namespace tools
     
     void TextureBrowseControl::notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)
     {
+        if (!pNode || pNode->emptyData())
+        {
+            return;
+        }
+        DiFileTree* filetree = *(pNode->getData<DiFileTree*>(false));
+        if (!filetree)
+        {
+            return;
+        }
         
+        if(!filetree->folder)
+        {
+            filetree = filetree->parent;
+        }
+        
+        MyGUI::VectorString texs;
+
+        DiString fullpath = filetree->fileName;
+        
+        auto cur = filetree->parent;
+        while (cur->parent)
+        {
+            fullpath = cur->fileName + DiString("/") + fullpath;
+            cur = cur->parent;
+        }
+        
+        if(mCurrentDir == fullpath)
+            return;
+        
+        mCurrentDir = fullpath;
+        
+        auto ret = DiAssetManager::GetInstance().FindDirArchive(fullpath);
+        if(!ret)
+        {
+            DI_WARNING("Failed to locate the path: %s", fullpath.c_str());
+            setTextures(texs);
+            return;
+        }
+        
+        auto files = ret->Find("*.*", false, false);
+
+        for(auto str : *files)
+        {
+            std::regex regexpattern("(\\.dds|\\.tga|\\.png|\\.jpg)$",std::regex_constants::extended);
+            if(std::regex_search(str.c_str(), regexpattern))
+            {
+                texs.push_back(str.c_str());
+            }
+        }
+        
+        setTextures(texs);
     }
 
     void TextureBrowseControl::scanFiles()

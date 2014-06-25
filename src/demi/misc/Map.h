@@ -14,11 +14,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiMap_h__
 #define DiMap_h__
 
-
 #include <map>
 
-template <class KEY, class T> 
-class DiMap : public std::map<KEY, T, std::less<KEY>, std::allocator< std::pair<const KEY, T> > > 
+template <class KEY, class T, class comp = std::less<KEY>>
+class DiMap : public std::map<KEY, T, comp, std::allocator< std::pair<const KEY, T> > >
 {
 public:
 
@@ -47,6 +46,20 @@ public:
             this->erase(it);
             return true;
         }
+    }
+};
+
+
+struct string_nocase_lt
+{
+    bool operator()( const char *s1,const char *s2 ) const
+    {
+        return stricmp(s1,s2) < 0;
+    }
+    
+    bool operator()( const Demi::DiString& s1,const Demi::DiString& s2 ) const
+    {
+        return stricmp(s1.c_str(), s2.c_str()) < 0;
     }
 };
 
