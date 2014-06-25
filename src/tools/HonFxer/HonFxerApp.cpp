@@ -27,6 +27,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "CommandManager.h"
 #include "MainPaneControl.h"
 #include "EditorManager.h"
+#include "TextureBrowseControl.h"
 
 namespace Demi
 {
@@ -169,6 +170,15 @@ namespace Demi
         //mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetGameLocWindowEndDialog);
 
         //mHelpWindow = new ViewerHelper();
+        
+        MyGUI::VectorString mTextures = {"cloud.png", "lavatile.jpg",
+                                         "default.png", "waves2.dds",
+                                         "water_color.dds", "water_normal_rxgb.dds",
+                                         "HelpIcon.png"};
+        
+        tools::TextureBrowseControl* ctrl = new tools::TextureBrowseControl();
+        ctrl->setTextures(mTextures);
+        ctrl->doModal();
     }
 
     HonFxerApp* HonFxerApp::GetFxApp()

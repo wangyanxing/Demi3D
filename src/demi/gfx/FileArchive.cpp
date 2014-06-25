@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "FileArchive.h"
 #include "DataStream.h"
@@ -17,6 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <regex>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -265,6 +267,91 @@ namespace Demi
         DiStringVecPtr ret(DI_NEW StringVec);
         FindFiles(pattern, recursive, dirs, ret, DiFileInfoListPtr());
         return ret;
+    }
+    
+    void _recurGenFiles(DiFileTree* node, const DiString& filePattern, const DiString& name, const DiString& searchName)
+    {
+        long lHandle, res;
+        struct _finddata_t tagData;
+        
+        DiString pattern = "*.*";
+        
+        DiString full_pattern = concatenate_path(name, pattern);
+        
+        DiMap<DiString, DiFileTree*> nodeTable;
+        
+        lHandle = _findfirst(full_pattern.c_str(), &tagData);
+        res = 0;
+        while (lHandle != -1 && res != -1)
+        {
+            if ((tagData.attrib & _A_HIDDEN) == 0 )
+            {
+                std::regex regexpattern(filePattern.c_str(),std::regex_constants::extended);
+                
+                bool pass = (tagData.attrib & _A_SUBDIR) ? true :
+                    std::regex_search(tagData.name, regexpattern);
+                
+                if (pass)
+                {
+                    auto nd = node->AddChild(tagData.name);
+                    nd->folder = tagData.attrib & _A_SUBDIR;
+                    nodeTable[tagData.name] = nd;
+                }
+            }
+            res = _findnext( lHandle, &tagData );
+        }
+        if(lHandle != -1)
+            _findclose(lHandle);
+        
+        DiString base_dir = name;
+        
+        base_dir.append ("/*");
+        
+        DiString mask ("/");
+        mask.append(pattern);
+        
+        lHandle = _findfirst(base_dir.c_str (), &tagData);
+        res = 0;
+        while (lHandle != -1 && res != -1)
+        {
+            if ((tagData.attrib & _A_SUBDIR) &&
+                ( (tagData.attrib & _A_HIDDEN) == 0 ) &&
+                !is_reserved_dir (tagData.name))
+            {
+                auto nd = nodeTable.find(tagData.name);
+                if(nd != nodeTable.end())
+                {
+                    base_dir = name;
+                    base_dir.append(tagData.name).append (mask);
+                    
+                    DiString n = name;
+                    n += tagData.name;
+                    n += "/";
+                    _recurGenFiles(nd->second, filePattern, n, base_dir);
+                }
+                
+            }
+            res = _findnext( lHandle, &tagData );
+        }
+        if(lHandle != -1)
+        {
+            _findclose(lHandle);
+        }
+    }
+    
+    DiFileTree* DiFileArchive::GenerateFileTree(const DiString& pattern)
+    {
+        DiFileTree* node = DI_NEW DiFileTree();
+        node->folder = true;
+        
+        auto name = mName;
+        name.SimplifyPath();
+        
+        node->fileName = name.ExtractFileName();
+        
+        _recurGenFiles(node, pattern, mName, mName);
+        
+        return node;
     }
 
     Demi::DiFileInfoListPtr DiFileArchive::FindFileInfo( const DiString& pattern, 

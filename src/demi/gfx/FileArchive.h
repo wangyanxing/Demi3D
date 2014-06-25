@@ -48,6 +48,9 @@ namespace Demi
                                 bool recursive = true, bool dirs = false) const;
         
         DiString            GetFullPath(const DiString& filename);
+        
+        /// List files recursively
+        DiFileTree*         GenerateFileTree(const DiString& pattern);
 
     protected:
 

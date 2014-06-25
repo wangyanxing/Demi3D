@@ -124,6 +124,9 @@ namespace Demi
                                                         const DiString& extension, const AssetLoaderFunc& loader);
 
         void                          UnregisterAssetType(const DiString& type);
+        
+        /// List files recursively
+        DiFileTree*                   GenerateFileTree(const DiString& pattern);
 
     protected:
 
@@ -149,6 +152,8 @@ namespace Demi
         AssetsTable                  mAssets;
 
         ArchiveTable                 mArchives;
+        
+        DiVector<ArchivePtr>         mDirArchives;
                                      
         DiString                     mBasePath;
 

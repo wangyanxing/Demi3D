@@ -59,6 +59,7 @@ namespace Demi
                 ret = DI_NEW DiFileTree();
                 children[name] = ret;
                 ret->fileName = name;
+                ret->parent = this;
             }
             return ret;
         }
@@ -66,6 +67,8 @@ namespace Demi
         DiString fileName;
 
         bool folder;
+        
+        DiFileTree* parent{nullptr};
 
         DiMap<DiString, DiFileTree*> children;
     };
@@ -84,11 +87,15 @@ namespace Demi
 
         DiArchiveType                  GetType() const {return mType;}
 
-        virtual    void                Load() = 0;
+        virtual void                   Load() = 0;
 
-        virtual    void                Unload() = 0;
+        virtual void                   Unload() = 0;
         
-        virtual    DiString            GetFullPath(const DiString& filename) = 0;
+        virtual DiString               GetFullPath(const DiString& filename) = 0;
+        
+        /** pattern: regex pattern, for example (dds|tga|png|jpg)$
+         */
+        virtual DiFileTree*            GenerateFileTree(const DiString& pattern) = 0;
 
         virtual DiDataStreamPtr        Open(const DiString& filename) const = 0;
 
