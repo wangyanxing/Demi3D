@@ -100,5 +100,4 @@ namespace Demi
     }
 
     Demi::ArObjID ArEntityManager::mHeroId = INVALID_OBJ_ID;
-    Demi::ArObjID ArAutoID::sID = 0;
 }

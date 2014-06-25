@@ -17,18 +17,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaPrerequisites.h"
 #include "ArenaEntity.h"
 #include "ArenaGameDefines.h"
+#include "KyMain.h"
 
 namespace Demi
 {
-    class ArAutoID
-    {
-    public:
-        static ArObjID Gen(){ return sID++; }
-        static ArObjID sID;
-    };
-
-#define AUTO_ID ArAutoID::Gen()
-
     /** Entity manager
      */
     class ArEntityManager
