@@ -182,6 +182,6 @@ namespace Demi
 
     void DiFoliageLayer::SetColor( const DiColor& c )
     {
-        mDesc->mColor = c.GetAsARGB();
+        mDesc->mColor = DiBase::Driver->GetNativeColor(c);
     }
 }

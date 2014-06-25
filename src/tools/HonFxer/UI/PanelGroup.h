@@ -31,7 +31,7 @@ namespace Demi
 
         void                SetCaption(const DiString& cap);
 
-        void                AddItem(const DiString& caption, DiPropertyBase* prop);
+        DiPropertyItem*     AddItem(const DiString& caption, DiPropertyBase* prop);
 
         MyGUI::Widget*      GetClientWidget() { return mWidgetClient; }
 

@@ -50,9 +50,11 @@ namespace Demi
         }
     }
 
-    void DiPropertyGroup::AddProperty(const DiString& caption, DiPropertyBase* prop)
+    DiEditProperty* DiPropertyGroup::AddProperty(const DiString& caption, DiPropertyBase* prop)
     {
-        mProperties.push_back(DI_NEW DiEditProperty(caption, prop));
+        DiEditProperty* ret = DI_NEW DiEditProperty(caption, prop);
+        mProperties.push_back(ret);
+        return ret;
     }
 
     void DiPropertyGroup::CreateUI()

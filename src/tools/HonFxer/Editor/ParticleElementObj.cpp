@@ -20,6 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "EffectManager.h"
 #include "ParticleSystem.h"
 #include "ParticleElement.h"
+#include "EnumProperties.h"
 
 namespace Demi
 {
@@ -74,10 +75,15 @@ namespace Demi
     {
         DI_ASSERT(!mParticleElement);
         
+        // particle element
         auto parent = dynamic_cast<DiParticleSystemObj*>(GetParent());
         mParticleElement = parent->GetParticleSystem()->CreateElement();
         mParticleElement->SetName(DiEditorManager::Get()->GenerateElementName());
         mParticleElement->SetRenderer("Billboard");
+        
+        // material
+        auto mat = DiMaterial::QuickCreate("fx_v", "fx_p", SHADER_FLAG_USE_COLOR | SHADER_FLAG_USE_MAP);
+        mParticleElement->SetMaterialName(mat->GetName());
     }
 
     void DiParticleElementObj::OnDestroy()
@@ -94,6 +100,25 @@ namespace Demi
     DiString DiParticleElementObj::GetUICaption()
     {
         return mParticleElement->GetName();
+    }
+    
+    void DiParticleElementObj::SetTexture(DiTexturePtr texture)
+    {
+        auto mat = mParticleElement->GetMaterial();
+        mat->GetShaderParameter()->WriteTexture2D("map", texture);
+    }
+    
+    DiTexturePtr DiParticleElementObj::GetTexture()
+    {
+        auto mat = mParticleElement->GetMaterial();
+        auto maps = mat->GetShaderParameter()->GetShaderParams(DiShaderParameter::VARIABLE_SAMPLER2D);
+        auto it = maps.find("map");
+        if(it != maps.end())
+        {
+            DiTexture* tex = any_cast<DiTexture*>(it->second);
+            return DiTexturePtr(tex);
+        }
+        return nullptr;
     }
     
     void DiParticleElementObj::InitPropertyTable()
@@ -123,6 +148,30 @@ namespace Demi
         
         g->AddProperty("Max Velocity"    , DI_NEW DiFloatProperty( [&]{ return mParticleElement->GetMaxVelocity(); },
                                                                    [&](float& val){ mParticleElement->SetMaxVelocity(val); }));
+        
+        g->CreateUI();
+
+        mPropGroups.push_back(g);
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        g = DI_NEW DiPropertyGroup("Material");
+        
+        g->AddProperty("Texture"     , DI_NEW DiTextureProperty([&]{ return GetTexture(); },
+                                                                [&](DiTexturePtr& val){ SetTexture(val); }));
+        
+        g->AddProperty("Blend Mode"  , DI_NEW DiEnumProperty([&](){ return make_shared<MaterialBlendModeEnum>(mParticleElement->GetMaterial()->GetBlendMode()); },
+                                                             [&](DiBaseEnumPropPtr& val){
+                                                             mParticleElement->GetMaterial()->SetBlendMode(val->getEnum<MaterialBlendModeEnum,DiBlendMode>());}));
+        
+        g->AddProperty("Depth Check" , DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->GetDepthCheck(); },
+                                                             [&](bool& val){ mParticleElement->GetMaterial()->SetDepthCheck(val); }));
+        
+        g->AddProperty("Depth Write" , DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->GetDepthWrite(); },
+                                                             [&](bool& val){ mParticleElement->GetMaterial()->SetDepthWrite(val); }));
+        
+        g->AddProperty("Wireframe"   , DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->IsWireframe(); },
+                                                             [&](bool& val){ mParticleElement->GetMaterial()->SetWireframe(val); }));
         
         g->CreateUI();
         

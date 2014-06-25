@@ -69,6 +69,9 @@ namespace Demi
         g->AddProperty("Name"            , DI_NEW DiStringProperty([&]{ return mController->GetName(); },
                                                                    [&](DiString& val){ mController->SetName(val); }));
         
+        g->AddProperty("Enable"          , DI_NEW DiBoolProperty(  [&]{ return mController->IsEnabled(); },
+                                                                   [&](bool& val){ mController->SetEnabled(val); }));
+        
         g->AddProperty("Position"        , DI_NEW DiVec3Property(  [&]{ return mController->position; },
                                                                    [&](DiVec3& val){ mController->position = val; }));
         

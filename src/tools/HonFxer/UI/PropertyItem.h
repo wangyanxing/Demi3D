@@ -74,6 +74,99 @@ namespace Demi
 
         MyGUI::EditBox* mEditBox{ nullptr };
     };
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    class DiEnumPropertyItem : public DiPropertyItem
+    {
+    public:
+        
+        DiEnumPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type);
+        
+        virtual ~DiEnumPropertyItem();
+        
+    public:
+        
+        virtual void CreateUI(const DiString& caption) override;
+        
+        virtual void RearrangeUI(int height);
+        
+        void RefreshUI();
+        
+        void RefreshValue();
+        
+        void NotifyEnumChanged(MyGUI::ComboBox* _sender, size_t _index);
+        
+    protected:
+        
+        MyGUI::TextBox* mTextBox{ nullptr };
+        
+        MyGUI::ComboBox* mEnumBox{ nullptr };
+    };
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    class DiColorCurvePropertyItem : public DiPropertyItem
+    {
+    public:
+        
+        DiColorCurvePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type);
+        
+        virtual ~DiColorCurvePropertyItem();
+        
+    public:
+        
+        virtual void CreateUI(const DiString& caption) override;
+        
+        virtual void RearrangeUI(int height);
+        
+        void RefreshUI();
+        
+        void RefreshValue();
+        
+        void NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+        
+        void NotifyColorUpdated(DiMap<float, DiColor>& colors);
+        
+    protected:
+        
+        MyGUI::TextBox* mTextBox{ nullptr };
+        
+        MyGUI::Button* mCurveButton{ nullptr };
+    };
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    class DiTexturePropertyItem : public DiPropertyItem
+    {
+    public:
+        
+        DiTexturePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type);
+        
+        virtual ~DiTexturePropertyItem();
+        
+    public:
+        
+        virtual void CreateUI(const DiString& caption) override;
+        
+        virtual void RearrangeUI(int height);
+        
+        void RefreshUI();
+        
+        void RefreshValue();
+        
+        void NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+        
+        int GetHeight() override;
+        
+    protected:
+        
+        MyGUI::TextBox* mTextBox{ nullptr };
+        
+        MyGUI::Widget* mImagePane{ nullptr };
+        
+        MyGUI::ImageBox* mImageBox{ nullptr };
+    };
 
     //////////////////////////////////////////////////////////////////////////
 

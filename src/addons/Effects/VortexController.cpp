@@ -69,14 +69,12 @@ namespace Demi
     void DiVortexController::PreProcessParticles(DiParticleElement* particleTechnique, float timeElapsed)
     {
         DiParticleSystem* sys = mParentElement->GetParentSystem();
+        
         if (sys)
-        {
             mRotation.FromAngleAxis(DiRadian(CalculateRotationSpeed() * timeElapsed), sys->GetDerivedOrientation() * mRotationVector);
-        }
         else
-        {
             mRotation.FromAngleAxis(DiRadian(CalculateRotationSpeed() * timeElapsed), mRotationVector);
-        }
+
         GetDerivedPosition();
     }
     
@@ -88,9 +86,7 @@ namespace Demi
     void DiVortexController::Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed)
     {
         if (particle->IsFreezed())
-        {
             return;
-        }
 
         DiVec3 local = particle->position - mDerivedPosition;
         particle->position = mDerivedPosition + mRotation * local;

@@ -58,9 +58,14 @@ namespace Demi
         mColourMap[timeFraction] = colour;
     }
     
-    const DiColorController::ColorMap& DiColorController::GetTimeAndColour(void) const
+    DiColorController::ColorMap& DiColorController::GetTimeAndColour(void)
     {
         return mColourMap;
+    }
+    
+    void DiColorController::SetTimeAndColour(const ColorMap& colors)
+    {
+        mColourMap = colors;
     }
     
     void DiColorController::ClearColourMap (void)
@@ -71,14 +76,10 @@ namespace Demi
     void DiColorController::Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed)
     {
         if (mColourMap.empty())
-        {
             return;
-        }
 
         if (particle->particleType != DiParticle::PT_VISUAL)
-        {
             return;
-        }
 
         DiVisualParticle* visualParticle = static_cast<DiVisualParticle*>(particle);
 

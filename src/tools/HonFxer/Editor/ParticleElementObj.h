@@ -40,6 +40,10 @@ namespace Demi
         virtual DiString     GetType() override { return "ParticleElement"; }
 
         virtual DiString     GetUICaption() override;
+        
+        void                 SetTexture(DiTexturePtr texture);
+        
+        DiTexturePtr         GetTexture();
 
     public:
 

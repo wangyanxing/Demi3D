@@ -16,6 +16,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "MyGUI_Prerequest.h"
 #include "FxPrerequisites.h"
+#include "Property.h"
+#include "PropertyTypes.h"
 
 namespace Demi
 {
@@ -28,6 +30,8 @@ namespace Demi
     class DiBaseEditorObj; 
     class DiPanelGroup;
     class DiPropertyItem;
+    
+    typedef DiProperty<DiTexturePtr, PROPERTY_TEXTURE> DiTextureProperty;
 }
 
 namespace tools

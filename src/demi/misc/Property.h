@@ -31,6 +31,7 @@ namespace Demi
         PROPERTY_STRING,
         PROPERTY_INT,
         PROPERTY_FLOAT,
+        PROPERTY_ENUM,
         PROPERTY_BOOL,
         PROPERTY_VEC2,
         PROPERTY_VEC3,
@@ -38,7 +39,9 @@ namespace Demi
         PROPERTY_QUAT,
         PROPERTY_COLOR,
         PROPERTY_DYN_ATTR,
-
+        PROPERTY_COLOR_CURVE,
+        PROPERTY_TEXTURE,
+        
         PROPERTY_MAX,
     };
 

@@ -48,7 +48,9 @@ namespace Demi
 
         void                        AddColour(float timeFraction, const DiColor& colour);
 
-        const ColorMap&             GetTimeAndColour(void) const;
+        ColorMap&                   GetTimeAndColour(void);
+        
+        void                        SetTimeAndColour(const ColorMap& colors);
 
         void                        ClearColourMap (void);
 

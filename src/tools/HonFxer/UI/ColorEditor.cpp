@@ -145,7 +145,7 @@ namespace Demi
             auto pos = mButtons[i]->getPosition();
             float timePos = (float)(pos.left+7) / (float)width;
             auto col = *(mButtons[i]->getUserData<MyGUI::Colour>());
-            auto diCol = DiColor(col.red, col.green, col.blue, col.alpha);
+            auto diCol = DiColor(col.blue, col.green, col.red, col.alpha);
             ret[timePos] = diCol;
         }
         
@@ -370,7 +370,9 @@ namespace Demi
     void ColorEditor::RefreshCurve()
     {
         if (mButtons.size() < 2)
+        {
             return;
+        }
 
         std::vector<MyGUI::FloatPoint> linePoints;
         std::vector<MyGUI::Colour> colors;
@@ -508,7 +510,10 @@ namespace Demi
     void ColorEditor::NotifyWindowButtonPressed(MyGUI::Window* _sender, const std::string& _button)
     {
         if (_button == "close")
+        {
             mMainWidget->setVisible(false);
+            eventUpdateColors.clear();
+        }
     }
     
     void ColorEditor::UpdateFirst()
@@ -546,6 +551,9 @@ namespace Demi
         }
         
         mBackTexture->unlock();
+        
+        auto updatecolors = GetColors();
+        eventUpdateColors(updatecolors);
     }
     
     void ColorEditor::UpdateTexture(const MyGUI::Colour& _colour)
@@ -567,6 +575,9 @@ namespace Demi
         
 		// Unlock the pixel buffer
 		mTexture->unlock();
+        
+        auto updatecolors = GetColors();
+        eventUpdateColors(updatecolors);
     }
     
     void ColorEditor::DestroyTexture()

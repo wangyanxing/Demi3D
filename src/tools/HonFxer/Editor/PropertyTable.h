@@ -43,7 +43,7 @@ namespace Demi
 
         ~DiPropertyGroup();
 
-        void AddProperty(const DiString& caption, DiPropertyBase* prop);
+        DiEditProperty* AddProperty(const DiString& caption, DiPropertyBase* prop);
 
         void CreateUI();
 

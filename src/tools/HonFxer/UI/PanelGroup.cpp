@@ -17,7 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-	DiPanelGroup::DiPanelGroup() : BasePanelViewItem("")
+	DiPanelGroup::DiPanelGroup()
+        : BasePanelViewItem("")
 	{
 	}
 
@@ -34,7 +35,7 @@ namespace Demi
         mPanelCell->setCaption(cap.c_str());
     }
 
-    void DiPanelGroup::AddItem(const DiString& caption, DiPropertyBase* prop)
+    DiPropertyItem* DiPanelGroup::AddItem(const DiString& caption, DiPropertyBase* prop)
     {
         auto propType = prop->getType();
 
@@ -50,18 +51,26 @@ namespace Demi
         case Demi::PROPERTY_BOOL:
             item = DI_NEW DiBoolPropertyItem(this, prop, propType);
             break;
+        case Demi::PROPERTY_ENUM:
+            item = DI_NEW DiEnumPropertyItem(this, prop, propType);
+            break;
         case Demi::PROPERTY_VEC2:
         case Demi::PROPERTY_VEC3:
         case Demi::PROPERTY_VEC4:
         case Demi::PROPERTY_QUAT:
             item = DI_NEW DiVectorPropertyItem(this, prop, propType);
             break;
-            break;
         case Demi::PROPERTY_COLOR:
             item = DI_NEW DiColorPropertyItem(this, prop, propType);
             break;
+        case Demi::PROPERTY_COLOR_CURVE:
+            item = DI_NEW DiColorCurvePropertyItem(this, prop, propType);
+            break;
         case Demi::PROPERTY_DYN_ATTR:
             item = DI_NEW DiDynamicPropertyItem(this, prop, propType);
+            break;
+        case Demi::PROPERTY_TEXTURE:
+            item = DI_NEW DiTexturePropertyItem(this, prop, propType);
             break;
         default:
             DI_WARNING("Invalid item type: %d", propType);
@@ -73,6 +82,8 @@ namespace Demi
             mItems.push_back(item);
             mPanelCell->setClientHeight(GetCurrentHeight(), false);
         }
+        
+        return item;
     }
 
     int DiPanelGroup::GetCurrentHeight()

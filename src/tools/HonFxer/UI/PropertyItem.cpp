@@ -19,6 +19,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MainPaneControl.h"
 #include "HonFxerApp.h"
 #include "CurveEditor.h"
+#include "ColorEditor.h"
+#include "EnumProperties.h"
 
 namespace Demi
 {
@@ -42,12 +44,10 @@ namespace Demi
     DiNumericPropertyItem::DiNumericPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
         :DiPropertyItem(group, prop, type)
     {
-
     }
 
     DiNumericPropertyItem::~DiNumericPropertyItem()
     {
-
     }
 
     void DiNumericPropertyItem::CreateUI(const DiString& caption)
@@ -142,7 +142,6 @@ namespace Demi
         }
     }
 
-
     void DiNumericPropertyItem::NotifyEditAccept(MyGUI::EditBox* _sender)
     {
         RefreshValue();
@@ -153,16 +152,226 @@ namespace Demi
         RefreshValue();
     }
 
+    DiEnumPropertyItem::DiEnumPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
+        :DiPropertyItem(group, prop, type)
+    {
+    }
+    
+    DiEnumPropertyItem::~DiEnumPropertyItem()
+    {
+    }
+    
+    void DiEnumPropertyItem::NotifyEnumChanged(MyGUI::ComboBox* _sender, size_t _index)
+    {
+        RefreshValue();
+    }
+    
+    void DiEnumPropertyItem::CreateUI(const DiString& caption)
+    {
+        auto widgetClient = mParentGroup->GetClientWidget();
+        auto currentHeight = mParentGroup->GetCurrentHeight();
+        auto width_step = mParentGroup->GetWidthStep();
+        auto width = mParentGroup->GetWidth();
+        auto height = mParentGroup->GetHeight();
+        
+        mTextBox = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
+                                                              MyGUI::IntCoord(width_step, currentHeight, width, height),
+                                                              MyGUI::Align::Left | MyGUI::Align::Top);
+        mTextBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
+        mTextBox->setCaption(caption.c_str());
+        
+        mEnumBox = widgetClient->createWidget<MyGUI::ComboBox>("ComboBox",
+                                                              MyGUI::IntCoord(width_step + width_step + width, currentHeight,
+                                                                widgetClient->getWidth() - (width_step + width_step + width_step + width), height),
+                                                              MyGUI::Align::HStretch | MyGUI::Align::Top);
+        mEnumBox->setComboModeDrop(true);
+        mEnumBox->eventComboAccept += MyGUI::newDelegate(this, &DiEnumPropertyItem::NotifyEnumChanged);
+        
+        auto prop = dynamic_cast<DiEnumProperty*>(mProperty);
+        DiBaseEnumPropPtr enumProp = *prop;
+        auto& strs = enumProp->GetStrings();
+        for(auto& s : strs)
+        {
+            mEnumBox->addItem(s.c_str());
+        }
+        
+        RefreshUI();
+    }
+    
+    void DiEnumPropertyItem::RearrangeUI(int height)
+    {
+        auto pos = mTextBox->getPosition();
+        mTextBox->setPosition(pos.left, height);
+        
+        pos = mEnumBox->getPosition();
+        mEnumBox->setPosition(pos.left, height);
+    }
+    
+    void DiEnumPropertyItem::RefreshUI()
+    {
+        auto prop = dynamic_cast<DiEnumProperty*>(mProperty);
+        DiBaseEnumPropPtr enumProp = *prop;
+        auto val = (size_t)enumProp->enumValue;
+        DI_ASSERT(val >= 0 && val < mEnumBox->getItemCount());
+        mEnumBox->setIndexSelected(val);
+    }
+    
+    void DiEnumPropertyItem::RefreshValue()
+    {
+        auto prop = dynamic_cast<DiEnumProperty*>(mProperty);
+        DiBaseEnumPropPtr enumProp = *prop;
+        enumProp->enumValue = mEnumBox->getIndexSelected();
+        *prop = enumProp;
+    }
+    
+    DiColorCurvePropertyItem::DiColorCurvePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
+    :DiPropertyItem(group, prop, type)
+    {
+    }
+    
+    DiColorCurvePropertyItem::~DiColorCurvePropertyItem()
+    {
+    }
+    
+    void DiColorCurvePropertyItem::CreateUI(const DiString& caption)
+    {
+        auto widgetClient = mParentGroup->GetClientWidget();
+        auto currentHeight = mParentGroup->GetCurrentHeight();
+        auto width_step = mParentGroup->GetWidthStep();
+        auto width = mParentGroup->GetWidth();
+        auto height = mParentGroup->GetHeight();
+        
+        mTextBox = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
+                                                              MyGUI::IntCoord(width_step, currentHeight, width, height),
+                                                              MyGUI::Align::Left | MyGUI::Align::Top);
+        mTextBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
+        mTextBox->setCaption(caption.c_str());
+        
+        mCurveButton = widgetClient->createWidget<MyGUI::Button>("Button",
+                                                               MyGUI::IntCoord(width_step + width_step + width, currentHeight,
+                                                                               widgetClient->getWidth() - (width_step + width_step + width_step + width), height),
+                                                               MyGUI::Align::HStretch | MyGUI::Align::Top);
+        mCurveButton->eventMouseButtonPressed += MyGUI::newDelegate(this, &DiColorCurvePropertyItem::NotifyButtonPressed);
+        mCurveButton->setCaption("Edit...");
+        
+        RefreshUI();
+    }
+    
+    void DiColorCurvePropertyItem::NotifyColorUpdated(DiMap<float, DiColor>& colors)
+    {
+        auto prop = dynamic_cast<DiColorCurveProperty*>(mProperty);
+        *prop = colors;
+    }
+    
+    void DiColorCurvePropertyItem::NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    {
+        auto prop = dynamic_cast<DiColorCurveProperty*>(mProperty);
+        DiMap<float, DiColor> colors = *prop;
+        
+        auto colorEditor = HonFxerApp::GetFxApp()->GetMainPane()->getColorEditor();
+        colorEditor->SetColors(colors);
+        colorEditor->eventUpdateColors += MyGUI::newDelegate(this, &DiColorCurvePropertyItem::NotifyColorUpdated);
+        HonFxerApp::GetFxApp()->GetMainPane()->showColorEditor();
+    }
+    
+    void DiColorCurvePropertyItem::RearrangeUI(int height)
+    {
+        auto pos = mTextBox->getPosition();
+        mTextBox->setPosition(pos.left, height);
+        
+        pos = mCurveButton->getPosition();
+        mCurveButton->setPosition(pos.left, height);
+    }
+    
+    void DiColorCurvePropertyItem::RefreshUI()
+    {
+    }
+    
+    void DiColorCurvePropertyItem::RefreshValue()
+    {
+    }
+    
+    DiTexturePropertyItem::DiTexturePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
+        :DiPropertyItem(group, prop, type)
+    {
+    }
+    
+    DiTexturePropertyItem::~DiTexturePropertyItem()
+    {
+    }
+    
+    void DiTexturePropertyItem::CreateUI(const DiString& caption)
+    {
+        auto widgetClient = mParentGroup->GetClientWidget();
+        auto currentHeight = mParentGroup->GetCurrentHeight();
+        auto width_step = mParentGroup->GetWidthStep();
+        auto width = mParentGroup->GetWidth();
+        auto height = mParentGroup->GetHeight();
+        
+        mTextBox = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
+                                                              MyGUI::IntCoord(width_step, currentHeight, width, height),
+                                                              MyGUI::Align::Left | MyGUI::Align::Top);
+        mTextBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
+        mTextBox->setCaption(caption.c_str());
+
+        // use a fixed size
+        auto imageboxSize = 120;
+        
+        mImagePane = widgetClient->createWidget<MyGUI::Widget>("PanelSkin",
+                                                                MyGUI::IntCoord(width_step + width_step + width, currentHeight,
+                                                                                imageboxSize, imageboxSize),
+                                                                MyGUI::Align::Left | MyGUI::Align::Top);
+        
+        auto background = mImagePane->createWidget<MyGUI::ImageBox>("ImageBox",
+                                                              MyGUI::IntCoord(4, 4, imageboxSize - 8, imageboxSize - 8),
+                                                              MyGUI::Align::Left | MyGUI::Align::Top);
+        background->setImageTexture("BackgroundTile.png");
+        background->setImageTile(MyGUI::IntSize(64,64));
+        background->eventMouseButtonPressed += MyGUI::newDelegate(this, &DiTexturePropertyItem::NotifyButtonPressed);
+
+        mImageBox = mImagePane->createWidget<MyGUI::ImageBox>("ImageBox",
+                                                                 MyGUI::IntCoord(4, 4, imageboxSize - 8, imageboxSize - 8),
+                                                                 MyGUI::Align::Left | MyGUI::Align::Top);
+        //mImageBox->setImageTexture("cloud.png");
+        mImageBox->eventMouseButtonPressed += MyGUI::newDelegate(this, &DiTexturePropertyItem::NotifyButtonPressed);
+        
+        RefreshUI();
+    }
+    
+    int DiTexturePropertyItem::GetHeight()
+    {
+        return mImagePane->getSize().height + 3;
+    }
+    
+    void DiTexturePropertyItem::NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    {
+        
+    }
+    
+    void DiTexturePropertyItem::RearrangeUI(int height)
+    {
+        auto pos = mTextBox->getPosition();
+        mTextBox->setPosition(pos.left, height);
+        
+        pos = mImagePane->getPosition();
+        mImagePane->setPosition(pos.left, height);
+    }
+    
+    void DiTexturePropertyItem::RefreshUI()
+    {
+    }
+    
+    void DiTexturePropertyItem::RefreshValue()
+    {
+    }
 
     DiBoolPropertyItem::DiBoolPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
         :DiPropertyItem(group, prop, type)
     {
-
     }
 
     DiBoolPropertyItem::~DiBoolPropertyItem()
     {
-
     }
 
     void DiBoolPropertyItem::CreateUI(const DiString& caption)
@@ -260,7 +469,8 @@ namespace Demi
         for (int i = 0; i < elements; ++i)
         {
             mValueLabel[i] = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
-                MyGUI::IntCoord(width_step, currentHeight + (i + 1)*mParentGroup->GetHeightStep(), width, height), MyGUI::Align::Left | MyGUI::Align::Top);
+                MyGUI::IntCoord(width_step, currentHeight + (i + 1)*mParentGroup->GetHeightStep(), width, height),
+                MyGUI::Align::Left | MyGUI::Align::Top);
             mValueLabel[i]->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
             mValueLabel[i]->setCaption(GetElementName(i).c_str());
             mValueLabel[i]->setVisible(false);
@@ -525,12 +735,10 @@ namespace Demi
     DiColorPropertyItem::DiColorPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
         :DiPropertyItem(group, prop, type)
     {
-
     }
 
     DiColorPropertyItem::~DiColorPropertyItem()
     {
-
     }
 
     void DiColorPropertyItem::CreateUI(const DiString& caption)
