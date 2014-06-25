@@ -359,6 +359,10 @@ namespace Demi
     
     void DiTexturePropertyItem::RefreshUI()
     {
+        auto prop = dynamic_cast<DiTextureProperty*>(mProperty);
+        DiTexturePtr tex = *prop;
+        if(tex)
+            mImageBox->setImageTexture(tex->GetName().c_str());
     }
     
     void DiTexturePropertyItem::RefreshValue()
@@ -438,7 +442,6 @@ namespace Demi
 
     DiVectorPropertyItem::~DiVectorPropertyItem()
     {
-
     }
 
     void DiVectorPropertyItem::CreateUI(const DiString& caption)

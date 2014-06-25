@@ -16,8 +16,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Archive.h"
 
-typedef struct zzip_dir        ZZIP_DIR;
-typedef struct zzip_file    ZZIP_FILE;
+typedef struct zzip_dir       ZZIP_DIR;
+typedef struct zzip_file      ZZIP_FILE;
 typedef union _zzip_plugin_io zzip_plugin_io_handlers;
 
 namespace Demi

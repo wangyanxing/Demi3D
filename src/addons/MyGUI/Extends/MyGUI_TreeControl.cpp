@@ -17,7 +17,7 @@ namespace MyGUI
 	TreeControl::Node::Node(TreeControl* pOwner) :
 		GenericNode<Node, TreeControl>(pOwner),
 		mbIsPrepared(false),
-		mbIsExpanded(true),
+		mbIsExpanded(false),
 		mstrImage("Folder")
 	{
 	}
@@ -25,7 +25,7 @@ namespace MyGUI
 	TreeControl::Node::Node(const UString& strText, Node* pParent) :
 		GenericNode<Node, TreeControl>(strText, pParent),
 		mbIsPrepared(false),
-		mbIsExpanded(true),
+		mbIsExpanded(false),
 		mstrImage("Folder")
 	{
 	}
@@ -33,7 +33,7 @@ namespace MyGUI
 	TreeControl::Node::Node(const UString& strText, const UString& strImage, Node* pParent) :
 		GenericNode<Node, TreeControl>(strText, pParent),
 		mbIsPrepared(false),
-		mbIsExpanded(true),
+		mbIsExpanded(false),
 		mstrImage(strImage)
 	{
 	}

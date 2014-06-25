@@ -41,6 +41,7 @@ namespace tools
         }
 
         mResourcesTree->eventTreeNodePrepare -= newDelegate(this, &FilesView::notifyTreeNodePrepare);
+        mResourcesTree->eventTreeNodeSelected -= newDelegate(this, &FilesView::notifyTreeNodeSelected);
 	}
 
     void FilesView::notifyTreeNodePrepare(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)

@@ -219,6 +219,8 @@ namespace Demi
 
         DiString path = appPath + val;
         path.SimplifyPath();
+        
+        mDirArchives.clear();
 
         DI_LOG("Try to locate the media path: %s", path.c_str());
         // test if this folder is existed
@@ -235,11 +237,14 @@ namespace Demi
         DiVector<ArchivePtr> zips;
 
         ArchivePtr baseDir = mArchiveManager->Load(mBasePath);
+        mDirArchives.push_back(baseDir);
+        
         DiFileInfoListPtr fl = baseDir->ListFileInfo(true,true);
         for (auto it = fl->begin(); it != fl->end(); ++it)
         {
             ArchivePtr ar = mArchiveManager->Load(it->filename);
-
+            mDirArchives.push_back(ar);
+            
             auto vec = ar->FindFileInfo("*", false);
             for( auto i = vec->begin(); i != vec->end(); ++i )
             {
@@ -379,4 +384,15 @@ namespace Demi
             mAssetLoaders.erase(it);
     }
 
+    DiFileTree* DiAssetManager::GenerateFileTree(const DiString& pattern)
+    {
+        DiFileTree* node = nullptr;
+        
+        if(!mDirArchives.empty())
+        {
+            node = mDirArchives[0]->GenerateFileTree(pattern);
+        }
+    
+        return node;
+    }
 }
