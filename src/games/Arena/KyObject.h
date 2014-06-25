@@ -1,11 +1,13 @@
-#ifndef KyHandledObject_h__
-#define KyHandledObject_h__
+#ifndef KyObject_h__
+#define KyObject_h__
 
 #include "KyDefines.h"
 #include "KyHandle.h"
 
 class KyObject : public KyMainContext
 {
+	KyDeclareRootRTTI(KyObject);
+
     friend class KyRefHandle;
     friend class KyObjectMgr;
 public:
@@ -14,7 +16,7 @@ public:
 
     const KyHandle& GetHandle() const { return m_kHandle; }
     int             GetRefCount() const { return m_iRefCount; }
-    void            SetCanRemove(bool bCanRemove) { m_bCanRemove = bCanRemove; }
+	void            SetCanRemove(bool bCanRemove) { m_bCanRemove = bCanRemove; }
     bool            GetCanRemove() const { return m_bCanRemove; }
 
 private:

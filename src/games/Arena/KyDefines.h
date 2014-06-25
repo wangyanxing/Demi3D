@@ -2,15 +2,22 @@
 #define KyDefines_h__
 
 #include "ArenaPrerequisites.h"
+#include "KyRTTI.h"
 
 class KyMain;
+class KyObject;
+class KyEntity;
+class KyObjectMgr;
+class KyUnitMgr;
+class KyEffectMgr;
+
 
 class KyMainContext
 {
 public:
-    KyMain*       GetLogicMain() { DI_ASSERT(m_pkLogicMain); return m_pkLogicMain; }
-    const KyMain* GetLogicMain() const { DI_ASSERT(m_pkLogicMain); return m_pkLogicMain; }
-    void          SetLogicMain(KyMain* pkLogicMain) { m_pkLogicMain = pkLogicMain; }
+    KyMain*       GetMain() { DI_ASSERT(m_pkLogicMain); return m_pkLogicMain; }
+    const KyMain* GetMain() const { DI_ASSERT(m_pkLogicMain); return m_pkLogicMain; }
+    void          SetMain(KyMain* pkLogicMain) { m_pkLogicMain = pkLogicMain; }
 private:
     KyMain*       m_pkLogicMain{ nullptr };
 };

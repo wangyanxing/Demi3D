@@ -6,13 +6,12 @@
 
 class KyObjectMgr : public KyMainContext
 {
+	KyDeclareRootRTTI(KyObjectMgr);
 public:
     KyObjectMgr(){}
     virtual ~KyObjectMgr(){}
 
     KyObject* AddObject(uint32 uiTypeID);
-
-
 
 protected:
     virtual KyObject* _NewObject(uint32 uiTypeID) = 0;
@@ -21,6 +20,31 @@ protected:
 private:
     std::vector<KyObject*>  m_akObjects;
     std::vector<int>        m_aiBlanks;
+};
+
+
+class KyUnitMgr : public KyObjectMgr
+{
+	KyDeclareRTTI;
+public:
+	KyUnitMgr(){}
+	virtual ~KyUnitMgr(){}
+
+protected:
+	virtual KyObject* _NewObject(uint32 uiTypeID);
+	virtual void      _DeleteObject(KyObject*& rpkObject);
+};
+
+class KyEffectMgr : public KyObjectMgr
+{
+	KyDeclareRTTI;
+public:
+	KyEffectMgr(){}
+	virtual ~KyEffectMgr(){}
+
+protected:
+	virtual KyObject* _NewObject(uint32 uiTypeID);
+	virtual void      _DeleteObject(KyObject*& rpkObject);
 };
 
 #endif
