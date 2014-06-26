@@ -10,16 +10,17 @@ public:
     KyMain();
     virtual ~KyMain() {}
 
-	KyObject* GetObj(const KyHandle& rkHandle);
+    KyObject* GetObj(const KyHandle& handle);
 
-    int32     NewLogicID() { return (++m_iLogicIDGen); }
+    uint32    NewLogicID() { return (++mLogicIDGen); }
 
+    void      Update(uint32 deltaTime);
 
 private:
-    int32		 m_iLogicIDGen{ 0 };
+    uint32		 mLogicIDGen{ 0 };
 
-	KyUnitMgr*	 m_pkUnitMgr{ nullptr };
-	KyEffectMgr* m_pkEffectMgr{ nullptr };
+	KyUnitMgr*	 mUnitMgr{ nullptr };
+	KyEffectMgr* mEffectMgr{ nullptr };
 };
 
 #endif

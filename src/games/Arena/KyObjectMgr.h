@@ -8,18 +8,26 @@ class KyObjectMgr : public KyMainContext
 {
 	KyDeclareRootRTTI(KyObjectMgr);
 public:
-    KyObjectMgr(){}
+    KyObjectMgr(KyObjectType eObjectType = KOT_INVALID)
+    {
+        mObjectType = eObjectType;
+    }
+
     virtual ~KyObjectMgr(){}
 
-    KyObject* AddObject(uint32 uiTypeID);
+    void Update(uint32 deltaTime);
+
+    KyObject* AddObj(uint32 typeID);
+    KyObject* GetObj(const KyHandle& handle);
 
 protected:
-    virtual KyObject* _NewObject(uint32 uiTypeID) = 0;
-    virtual void      _DeleteObject(KyObject*& rpkObject) = 0;
+    virtual KyObject* _NewObj(uint32 typeID) = 0;
+
+    KyObjectType      mObjectType{ KOT_INVALID };
 
 private:
-    std::vector<KyObject*>  m_akObjects;
-    std::vector<int>        m_aiBlanks;
+    std::vector<KyObject*>  mObjects;
+    std::vector<size_t>     mBlankIdx;
 };
 
 
@@ -27,24 +35,22 @@ class KyUnitMgr : public KyObjectMgr
 {
 	KyDeclareRTTI;
 public:
-	KyUnitMgr(){}
+    KyUnitMgr() : KyObjectMgr(KOT_UNIT) {}
 	virtual ~KyUnitMgr(){}
 
 protected:
-	virtual KyObject* _NewObject(uint32 uiTypeID);
-	virtual void      _DeleteObject(KyObject*& rpkObject);
+    virtual KyObject* _NewObj(uint32 typeID);
 };
 
 class KyEffectMgr : public KyObjectMgr
 {
 	KyDeclareRTTI;
 public:
-	KyEffectMgr(){}
+    KyEffectMgr() : KyObjectMgr(KOT_EFFECT) {}
 	virtual ~KyEffectMgr(){}
 
 protected:
-	virtual KyObject* _NewObject(uint32 uiTypeID);
-	virtual void      _DeleteObject(KyObject*& rpkObject);
+    virtual KyObject* _NewObj(uint32 typeID);
 };
 
 #endif

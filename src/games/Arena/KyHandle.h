@@ -5,27 +5,29 @@
 
 class KyHandle
 {
+    friend class KyRefHandle;
 public:
-    KyHandle(int32 iIndex = -1, int32 iLogicID = -1, KyObjectType eObjectType = KOT_INVALID)
-        : m_iIndex(iIndex)
-        , m_iLogicID(iLogicID)
-        , m_eObjectType(eObjectType){}
+    KyHandle(size_t index = npos, uint32 logicID = -1, KyObjectType objectType = KOT_INVALID)
+        : mIndex(index)
+        , mLogicID(logicID)
+        , mObjectType(objectType){}
 
-    KyHandle(const KyHandle& rkOther)
-        : m_iIndex(rkOther.m_iIndex)
-        , m_iLogicID(rkOther.m_iLogicID)
-        , m_eObjectType(rkOther.m_eObjectType){}
+    KyHandle(const KyHandle& other)
+        : mIndex(other.mIndex)
+        , mLogicID(other.mLogicID)
+        , mObjectType(other.mObjectType){}
 
-    bool operator ==(const KyHandle& rkOther) const { return m_iLogicID == rkOther.m_iLogicID; }
-    bool operator !=(const KyHandle& rkOther) const { return m_iLogicID != rkOther.m_iLogicID; }
+    bool operator ==(const KyHandle& other) const { return mLogicID == other.mLogicID; }
+    bool operator !=(const KyHandle& other) const { return mLogicID != other.mLogicID; }
 
-    int32 GetIndex() const { return m_iIndex; }
-    int32 GetLogicID() const { return m_iLogicID; }
+    size_t       GetIndex() const { return mIndex; }
+    uint32       GetLogicID() const { return mLogicID; }
+    KyObjectType GetObjType() const { return mObjectType; }
 
 private:
-    int32          m_iIndex;
-    int32          m_iLogicID;
-    KyObjectType   m_eObjectType;
+    size_t         mIndex;
+    uint32         mLogicID;
+    KyObjectType   mObjectType;
 };
 
 #endif

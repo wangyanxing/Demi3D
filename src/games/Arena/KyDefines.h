@@ -4,6 +4,8 @@
 #include "ArenaPrerequisites.h"
 #include "KyRTTI.h"
 
+const size_t npos = static_cast<size_t>(~0);
+
 class KyMain;
 class KyObject;
 class KyEntity;
@@ -15,11 +17,12 @@ class KyEffectMgr;
 class KyMainContext
 {
 public:
-    KyMain*       GetMain() { DI_ASSERT(m_pkLogicMain); return m_pkLogicMain; }
-    const KyMain* GetMain() const { DI_ASSERT(m_pkLogicMain); return m_pkLogicMain; }
-    void          SetMain(KyMain* pkLogicMain) { m_pkLogicMain = pkLogicMain; }
+    KyMainContext(KyMain* mainContext = nullptr) : mLogicMain(mainContext) {}
+    KyMain*       GetMain() const { DI_ASSERT(mLogicMain); return mLogicMain; }
+    void          SetMain(KyMain* logicMain) { mLogicMain = logicMain; }
+
 private:
-    KyMain*       m_pkLogicMain{ nullptr };
+    KyMain*       mLogicMain{ nullptr };
 };
 
 enum KyObjectType
