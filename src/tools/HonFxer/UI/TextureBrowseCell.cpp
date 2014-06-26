@@ -10,7 +10,7 @@ namespace tools
 {
 	void TextureBrowseCell::getCellDimension(MyGUI::Widget* _sender, MyGUI::IntCoord& _coord, bool _drop)
 	{
-		_coord.set(0, 0, 180, 180);
+		_coord.set(0, 0, 130, 130);
 	}
 
 	TextureBrowseCell::TextureBrowseCell(MyGUI::Widget* _parent) :
@@ -21,13 +21,18 @@ namespace tools
 		assignWidget(mBack, "Back");
 		assignWidget(mParentBack, "ParentBack");
 		assignWidget(mImage, "Image");
+        
+        auto font = mTextureName->getFontName();
+        mTextureName->setFontName("DejaVuSans.13");
+        //mTextureName->setFontHeight(12);
 	}
 
 	void TextureBrowseCell::update(const MyGUI::IBDrawItemInfo& _info, std::string _data)
 	{
 		if (_info.update)
 		{
-			mTextureName->setCaption(_data);
+            DiString filename = _data.c_str();
+			mTextureName->setCaption(filename.ExtractFileName().c_str());
 			const MyGUI::IntSize& textureSize = MyGUI::texture_utility::getTextureSize(_data);
 
 			if (textureSize.width != 0 && textureSize.height != 0)

@@ -51,6 +51,8 @@ namespace Demi
         DiBaseEditorObj*    GetLastCreatedObject() { return mLastCreatedObject; }
         
         void                Update();
+        
+        void                SetK2ResourcePack(const DiString& resPack, const DiString& texturePack = DiString::BLANK);
 
     protected:
 

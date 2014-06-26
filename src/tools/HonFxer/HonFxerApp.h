@@ -70,6 +70,10 @@ namespace Demi
     private:
 
         MainPaneControl*    mMainPane{ nullptr };
+        
+        SetResLocWindow*    mSetResLocWindow{ nullptr };
+        
+        SetGameLocWindow*   mSetGameLocWindow{ nullptr };
     };
 }
 

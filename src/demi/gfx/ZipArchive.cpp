@@ -116,11 +116,8 @@ namespace Demi
                     // the compressed size of a folder, and if he does, its useless anyway
                     info.compressedSize = size_t (-1);
                 }
-            
                 mFileList.push_back(info);
-                
             }
-            
         }
     }
     

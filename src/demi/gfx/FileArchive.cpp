@@ -275,7 +275,6 @@ namespace Demi
         struct _finddata_t tagData;
         
         DiString pattern = "*.*";
-        
         DiString full_pattern = concatenate_path(name, pattern);
         
         DiMap<DiString, DiFileTree*> nodeTable;
@@ -288,8 +287,14 @@ namespace Demi
             {
                 std::regex regexpattern(filePattern.c_str(),std::regex_constants::extended);
                 
-                bool pass = (tagData.attrib & _A_SUBDIR) ? true :
-                    std::regex_search(tagData.name, regexpattern);
+                bool pass = (tagData.attrib & _A_SUBDIR);
+                
+                if(!pass)
+                {
+                    DiString curn = tagData.name;
+                    curn.ToLower();
+                    pass = std::regex_search(curn.c_str(), regexpattern);
+                }
                 
                 if (pass)
                 {
@@ -300,6 +305,7 @@ namespace Demi
             }
             res = _findnext( lHandle, &tagData );
         }
+        
         if(lHandle != -1)
             _findclose(lHandle);
         

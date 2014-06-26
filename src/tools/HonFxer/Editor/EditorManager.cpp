@@ -23,6 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Grid.h"
 #include "ColorControllerObj.h"
 #include "VortexControllerObj.h"
+#include "K2Configs.h"
 
 namespace Demi
 {
@@ -177,5 +178,13 @@ namespace Demi
         DiEffectManager::GetInstance().Update();
 
         mRootObject->Update(Driver->GetDeltaSecond());
+    }
+    
+    void DiEditorManager::SetK2ResourcePack(const DiString& resPack, const DiString& texturePack)
+    {
+        if (texturePack.empty())
+            DiK2Configs::SetK2ResourcePack(resPack);
+        else
+            DiK2Configs::SetK2ResourcePack(resPack, texturePack);
     }
 }

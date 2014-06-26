@@ -376,6 +376,11 @@ namespace Demi
         asset->Load(data);
         return asset;
     }
+    
+    bool DiAssetManager::HasAsset(const DiString& filename)
+    {
+        return mAssets.find(filename) != mAssets.end();
+    }
 
     bool DiAssetManager::HasArchive( const DiString& filename )
     {

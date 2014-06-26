@@ -47,7 +47,8 @@ namespace MyGUI
 
 	bool DemiDataManager::isDataExist(const std::string& _name)
 	{
-        return Demi::DiAssetManager::GetInstance().HasArchive(_name.c_str());
+        return Demi::DiAssetManager::GetInstance().HasArchive(_name.c_str()) ||
+               Demi::DiAssetManager::GetInstance().HasAsset(_name.c_str());
 	}
 
 	const VectorString& DemiDataManager::getDataListNames(const std::string& _pattern)

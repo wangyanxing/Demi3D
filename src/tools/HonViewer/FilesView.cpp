@@ -94,14 +94,11 @@ namespace tools
     void FilesView::notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)
     {
         if (!pNode || pNode->emptyData())
-        {
             return;
-        }
+
         DiFileTree* filetree = *(pNode->getData<DiFileTree*>(false));
         if (!filetree || filetree->folder)
-        {
             return;
-        }
 
         DiString fullpath = pNode->getText().asUTF8().c_str();
         MyGUI::TreeControl::Node* cur = pNode->getParent();

@@ -11,4 +11,14 @@
 			<Code hide="1104"/>
 		</Codes>
 	</Resource>
+
+	<Resource type="ResourceTrueTypeFont" name="DejaVuSans.10">
+        <Property key="Source" value="DejaVuSans.ttf"/>
+        <Property key="Size" value="6"/>
+    </Resource>
+
+    <Resource type="ResourceTrueTypeFont" name="DejaVuSans.13">
+        <Property key="Source" value="DejaVuSans.ttf"/>
+        <Property key="Size" value="8"/>
+    </Resource>
 </MyGUI>

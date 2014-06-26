@@ -28,6 +28,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MainPaneControl.h"
 #include "EditorManager.h"
 #include "TextureBrowseControl.h"
+#include "SetResLocationWindow.h"
+#include "SetGameLocationWindow.h"
 
 namespace Demi
 {
@@ -58,6 +60,8 @@ namespace Demi
     {
         DI_DELETE(DiEditorManager::Get());
         SAFE_DELETE(mMainPane);
+        SAFE_DELETE(mSetResLocWindow);
+        SAFE_DELETE(mSetGameLocWindow);
 
         DialogManager::getInstance().shutdown();
         delete DialogManager::getInstancePtr();
@@ -149,7 +153,6 @@ namespace Demi
 
         DI_NEW DiEditorManager();
         
-        
         DiBase::CommandMgr->ExecuteCommand("selectLast");
         
         DiBase::CommandMgr->ExecuteCommand("createChild ParticleSystem");
@@ -163,12 +166,13 @@ namespace Demi
         
         //DiBase::CommandMgr->ExecuteCommand("removeObj");
         
-        //mSetResLocWindow = new SetResLocWindow();
-        //mSetResLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetResLocWindowEndDialog);
-
-        //mSetGameLocWindow = new SetGameLocWindow();
-        //mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetGameLocWindowEndDialog);
-
+        
+        mSetResLocWindow = new SetResLocWindow();
+        mSetResLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetResLocWindowEndDialog);
+        
+        mSetGameLocWindow = new SetGameLocWindow();
+        mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetGameLocWindowEndDialog);
+        
         //mHelpWindow = new ViewerHelper();
         
         MyGUI::VectorString mTextures = {"cloud.png", "lavatile.jpg",
@@ -233,7 +237,7 @@ namespace Demi
         if (!CheckCommand())
             return;
 
-        //mSetGameLocWindow->doModal();
+        mSetGameLocWindow->doModal();
 
         _result = true;
     }
@@ -255,21 +259,19 @@ namespace Demi
         if (!CheckCommand())
             return;
 
-        //mSetResLocWindow->doModal();
+        mSetResLocWindow->doModal();
 
         _result = true;
     }
 
     void HonFxerApp::NotifySetResLocWindowEndDialog(Dialog* _dialog, bool _result)
     {
-//         MYGUI_ASSERT(mSetResLocWindow == _dialog, "mSetResLocWindow == _sender");
-// 
-//         if (_result)
-//         {
-//             mSetResLocWindow->saveSettings();
-//         }
-// 
-//         mSetResLocWindow->endModal();
+        MYGUI_ASSERT(mSetResLocWindow == _dialog, "mSetResLocWindow == _sender");
+
+        if (_result)
+            mSetResLocWindow->saveSettings();
+    
+        mSetResLocWindow->endModal();
     }
 
     bool HonFxerApp::CheckCommand()
@@ -285,24 +287,20 @@ namespace Demi
 
     void HonFxerApp::NotifySetGameLocWindowEndDialog(Dialog* _dialog, bool _result)
     {
-//         MYGUI_ASSERT(mSetGameLocWindow == _dialog, "mSetGameLocWindow == _sender");
-// 
-//         if (_result)
-//         {
-//             mSetGameLocWindow->saveSettings();
-//         }
-// 
-//         mSetGameLocWindow->endModal();
+        MYGUI_ASSERT(mSetGameLocWindow == _dialog, "mSetGameLocWindow == _sender");
+
+        if (_result)
+            mSetGameLocWindow->saveSettings();
+
+        mSetGameLocWindow->endModal();
     }
 
     void HonFxerApp::SetResourceLocation(const DiString& resPack, const DiString& texPack)
     {
-//         if (!texPack.empty())
-//         {
-//             GetModelViewer()->SetK2ResourcePack(resPack, texPack);
-//         }
-//         else
-//             GetModelViewer()->SetK2ResourcePack(resPack);
+        if (!texPack.empty())
+            DiEditorManager::Get()->SetK2ResourcePack(resPack, texPack);
+        else
+            DiEditorManager::Get()->SetK2ResourcePack(resPack);
     }
 
     void HonFxerApp::Command_ViewHelp(const MyGUI::UString& _commandName, bool& _result)

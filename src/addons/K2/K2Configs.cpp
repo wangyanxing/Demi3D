@@ -138,9 +138,7 @@ namespace Demi
     {
         DiString baseName = relPath.ExtractFileName();
         if (baseName.empty() || baseName[0] == '$')
-        {
             return DiK2Configs::GetSpecialTexture(baseName);
-        }
 
         DiTexturePtr ret = DiAssetManager::GetInstance().FindAsset<DiTexture>(relPath);
         if (ret)

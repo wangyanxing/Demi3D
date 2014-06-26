@@ -1,16 +1,24 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Window" skin="WindowCSX" position="24 56 784 480" layer="Overlapped" name="_Main">
+    <Widget type="Window" skin="WindowCSX" position="24 56 754 480" layer="Overlapped" name="_Main">
         <Property key="Caption" value="Texture Browser"/>
-        <Property key="MinSize" value="584 480"/>
-        <Widget type="Button" skin="Button" position="664 410 107 26" align="Right Bottom" name="OK">
+        <Property key="MinSize" value="754 480"/>
+        <Widget type="Button" skin="Button" position="634 410 107 26" align="Right Bottom" name="OK">
             <Property key="Caption" value="#{Ok}"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="205 410 107 26" align="Left Bottom" name="Cancel">
+        <Widget type="Button" skin="Button" position="507 410 107 26" align="Right Bottom" name="Cancel">
             <Property key="Caption" value="#{Cancel}"/>
         </Widget>
-        <Widget type="ItemBox" skin="ItemBox" position="204 4 567 397" align="Stretch" name="Textures"/>
+        <Widget type="ItemBox" skin="ItemBox" position="204 4 537 397" align="Stretch" name="Textures"/>
         <Widget type="TreeControl" skin="Tree" position="4 4 195 437" align="Left VStretch" name="ResourcesTree">
+        </Widget>
+
+         <Widget type="Button" skin="RadioButton" position="305 415 115 20" align="Right Bottom" name="SelMedia">
+            <Property key="Caption" value="Media Folder"/>
+            <Property key="StateSelected" value="true"/>
+        </Widget>
+        <Widget type="Button" skin="RadioButton" position="420 415 110 25" align="Right Bottom" name="SelHonPack">
+            <Property key="Caption" value="Hon Pack"/>
         </Widget>
     </Widget>
 </MyGUI>

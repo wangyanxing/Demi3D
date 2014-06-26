@@ -105,6 +105,8 @@ namespace Demi
         DiString                      GetArchivePath(const DiString& filename, bool ignoreError=false);
 
         bool                          HasArchive(const DiString& filename);
+        
+        bool                          HasAsset(const DiString& filename);
 
         DiAssetPtr                    FindAsset(const DiString& name);
         

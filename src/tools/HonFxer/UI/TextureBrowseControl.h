@@ -31,8 +31,13 @@ namespace tools
 		virtual void onEndModal();
         
         void scanFiles();
+        
+        void switchPackMode(bool usePack);
 
 	private:
+        
+        void notifyMouseSelPackButtonClick(MyGUI::Widget* _sender);
+    
 		void notifyMouseButtonClickOk(MyGUI::Widget* _sender);
 		void notifyMouseButtonClickCancel(MyGUI::Widget* _sender);
 		void notifyWindowButtonPressed(MyGUI::Window* _sender, const std::string& _name);
@@ -57,6 +62,12 @@ namespace tools
         DiFileTree* mResources{ nullptr };
         
         DiString mCurrentDir;
+        
+        bool mK2PackMode{ false };
+        
+        MyGUI::Button* mBtnSelMedia{ nullptr };
+        
+        MyGUI::Button* mBtnSelHonPack{ nullptr };
 	};
 
 } // namespace tools
