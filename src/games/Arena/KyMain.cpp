@@ -25,7 +25,11 @@ KyObject* KyMain::GetObj(const KyHandle& handle)
     return nullptr;
 }
 
-void KyMain::Update(uint32 deltaTime)
+void KyMain::Update(float deltaTime)
 {
+    mGameTime += deltaTime;
+
+    mUnitMgr->Update(deltaTime);
+    mEffectMgr->Update(deltaTime);
 
 }

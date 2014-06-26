@@ -15,7 +15,7 @@ public:
 
     virtual ~KyObjectMgr(){}
 
-    void Update(uint32 deltaTime);
+    void Update(float deltaTime);
 
     KyObject* AddObj(uint32 typeID);
     KyObject* GetObj(const KyHandle& handle);

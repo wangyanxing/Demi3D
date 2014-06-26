@@ -4,7 +4,7 @@
 #include "KyDefines.h"
 #include "KyHandle.h"
 
-class KyObject : public KyMainContext
+class KyObject : public KyMainContext , public DiBase
 {
 	KyDeclareRootRTTI(KyObject);
 
@@ -19,7 +19,7 @@ public:
     void            SetCanRemove(bool bCanRemove) { mCanRemove = bCanRemove; }
     bool            GetCanRemove() const { return mCanRemove; }
 
-    virtual void    Update(uint32 deltaTime) = 0;
+    virtual void    Update(float deltaTime) = 0;
 
 private:
     void      _SetHandle(const KyHandle& rkHandle) { mHandle = rkHandle; }

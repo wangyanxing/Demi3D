@@ -67,7 +67,7 @@ const size_t NEUTRAL_PASSIVE_SOLDIER_PLAYER_INDEX { MAX_PLAYER_COUNT + 2 };
 const size_t NEUTRAL_ALLY_SOLDIER_PLAYER_INDEX { MAX_PLAYER_COUNT + 3 };
 const size_t NEUTRAL_ENEMY_SOLDIER_PLAYER_INDEX { MAX_PLAYER_COUNT + 4 };
 
-struct KyPlayerInfo
+struct KyPlayer
 {
     uint32        uiPlayerID { 0 };
     KyPlayerType  eType{ KPT_INVALID };

@@ -14,13 +14,17 @@ public:
 
     uint32    NewLogicID() { return (++mLogicIDGen); }
 
-    void      Update(uint32 deltaTime);
+    void      Update(float deltaTime);
 
 private:
     uint32		 mLogicIDGen{ 0 };
 
-	KyUnitMgr*	 mUnitMgr{ nullptr };
-	KyEffectMgr* mEffectMgr{ nullptr };
+    float        mGameTime{ 0.f };
+
+    KyPlayer     mPlayer[MAX_PLAYER_COUNT];
+
+    KyUnitMgr*	 mUnitMgr{ nullptr };
+    KyEffectMgr* mEffectMgr{ nullptr };
 };
 
 #endif

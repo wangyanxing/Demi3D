@@ -53,7 +53,7 @@ KyObject* KyObjectMgr::GetObj(const KyHandle& handle)
     return nullptr;
 }
 
-void KyObjectMgr::Update(uint32 deltaTime)
+void KyObjectMgr::Update(float deltaTime)
 {
     for (size_t i = 0; i < mObjects.size(); ++i)
     {
