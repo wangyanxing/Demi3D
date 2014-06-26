@@ -1,38 +1,85 @@
 #include "ArenaPch.h"
 #include "KyObjectMgr.h"
+#include "KyMain.h"
 
 KyImplementRootRTTI(KyObjectMgr);
 KyImplementRTTI(KyUnitMgr,KyObjectMgr);
 KyImplementRTTI(KyEffectMgr,KyObjectMgr);
 
-KyObject* KyObjectMgr::AddObject(uint32 uiTypeID)
+KyObject* KyObjectMgr::AddObj(uint32 typeID)
 {
-    KyObject* pkObject = _NewObject(uiTypeID);
-    if (!pkObject)
+    KyObject* pkObj = _NewObj(typeID);
+    if (!pkObj)
     {
         return nullptr;
     }
 
-	pkObject->SetMain(GetMain());
-	return nullptr;
+    pkObj->SetMain(GetMain());
+
+    uint32 logicID = GetMain()->NewLogicID();
+
+    size_t index;
+    if (mBlankIdx.size() > 0)
+    {
+        index = mBlankIdx.back();
+        mBlankIdx.pop_back();
+    }
+    else
+    {
+        mObjects.push_back(nullptr);
+        index = mObjects.size() - 1;
+    }
+
+    mObjects[index] = pkObj;
+
+    pkObj->_SetHandle(KyHandle(index, logicID, mObjectType));
+
+    return pkObj;
 }
 
-KyObject* KyUnitMgr::_NewObject(uint32 uiTypeID)
+KyObject* KyObjectMgr::GetObj(const KyHandle& handle)
+{
+    size_t index = handle.GetIndex();
+    if (index < mObjects.size())
+    {
+        KyObject* pkObj = mObjects[index];
+        if (pkObj &&
+            !(pkObj->GetCanRemove() && pkObj->GetRefCount() <= 0) &&
+            pkObj->GetHandle().GetLogicID() == handle.GetLogicID())
+        {
+            return pkObj;
+        }
+    }
+    return nullptr;
+}
+
+void KyObjectMgr::Update(uint32 deltaTime)
+{
+    for (size_t i = 0; i < mObjects.size(); ++i)
+    {
+        KyObject*& object = mObjects[i];
+
+        if (object &&
+            object->GetCanRemove() &&
+            object->GetRefCount() <= 0)
+        {
+            delete object;
+            object = nullptr;
+            mBlankIdx.push_back(i);
+        }
+        else
+        {
+            object->Update(deltaTime);
+        }
+    }
+}
+
+KyObject* KyUnitMgr::_NewObj(uint32 typeID)
 {
 	return nullptr;
 }
 
-void KyUnitMgr::_DeleteObject(KyObject*& rpkObject)
-{
-
-}
-
-KyObject* KyEffectMgr::_NewObject(uint32 uiTypeID)
+KyObject* KyEffectMgr::_NewObj(uint32 typeID)
 {
 	return nullptr;
-}
-
-void KyEffectMgr::_DeleteObject(KyObject*& rpkObject)
-{
-
 }

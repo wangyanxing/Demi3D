@@ -14,20 +14,22 @@ public:
     KyObject(){}
     virtual ~KyObject(){}
 
-    const KyHandle& GetHandle() const { return m_kHandle; }
-    int             GetRefCount() const { return m_iRefCount; }
-	void            SetCanRemove(bool bCanRemove) { m_bCanRemove = bCanRemove; }
-    bool            GetCanRemove() const { return m_bCanRemove; }
+    const KyHandle& GetHandle() const { return mHandle; }
+    int32           GetRefCount() const { return mRefCount; }
+    void            SetCanRemove(bool bCanRemove) { mCanRemove = bCanRemove; }
+    bool            GetCanRemove() const { return mCanRemove; }
+
+    virtual void    Update(uint32 deltaTime) = 0;
 
 private:
-    void      _SetHandle(const KyHandle& rkHandle) { m_kHandle = rkHandle; }
-    void      _IncRefCount() { ++m_iRefCount; }
-    void      _DecRefCount() { --m_iRefCount; }
+    void      _SetHandle(const KyHandle& rkHandle) { mHandle = rkHandle; }
+    void      _IncRefCount() { ++mRefCount; }
+    void      _DecRefCount() { --mRefCount; }
 
 private:
-    KyHandle  m_kHandle;
-    int       m_iRefCount{ 0 };
-    bool      m_bCanRemove{ false };
+    KyHandle  mHandle;
+    int32     mRefCount{ 0 };
+    bool      mCanRemove{ false };
 };
 
 #endif

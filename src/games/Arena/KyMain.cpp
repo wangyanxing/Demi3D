@@ -6,14 +6,26 @@ KyMain::KyMain()
 {
 	SetMain(this);
 
-	m_pkUnitMgr = new KyUnitMgr;
-	m_pkUnitMgr->SetMain(this);
+	mUnitMgr = new KyUnitMgr;
+	mUnitMgr->SetMain(this);
 
-	m_pkEffectMgr = new KyEffectMgr;
-	m_pkEffectMgr->SetMain(this);
+	mEffectMgr = new KyEffectMgr;
+	mEffectMgr->SetMain(this);
 }
 
-KyObject* KyMain::GetObj(const KyHandle& rkHandle)
+KyObject* KyMain::GetObj(const KyHandle& handle)
 {
-	return nullptr;
+    switch (handle.GetObjType())
+    {
+    case KOT_UNIT: return mUnitMgr->GetObj(handle);
+    case KOT_EFFECT: return mEffectMgr->GetObj(handle);
+    default: return nullptr;
+    }
+
+    return nullptr;
+}
+
+void KyMain::Update(uint32 deltaTime)
+{
+
 }
