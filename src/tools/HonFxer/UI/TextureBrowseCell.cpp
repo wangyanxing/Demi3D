@@ -22,9 +22,7 @@ namespace tools
 		assignWidget(mParentBack, "ParentBack");
 		assignWidget(mImage, "Image");
         
-        auto font = mTextureName->getFontName();
         mTextureName->setFontName("DejaVuSans.13");
-        //mTextureName->setFontHeight(12);
 	}
 
 	void TextureBrowseCell::update(const MyGUI::IBDrawItemInfo& _info, std::string _data)

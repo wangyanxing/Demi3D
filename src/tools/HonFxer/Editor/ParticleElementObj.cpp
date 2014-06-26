@@ -116,7 +116,7 @@ namespace Demi
         if(it != maps.end())
         {
             DiTexture* tex = any_cast<DiTexture*>(it->second);
-            return DiTexturePtr(tex);
+            return DiAssetManager::GetInstance().GetAsset<DiTexture>(tex->GetName());
         }
         return nullptr;
     }

@@ -84,7 +84,7 @@ namespace Demi
         DiMemoryTrace::GetInstance().Free(pMemory);
         DI_FREE(pMemory);
     }
-#    else 
+#else
 
     void* DiBase::operator new( size_t stSize )
     {
@@ -100,7 +100,6 @@ namespace Demi
         return ::operator new(stSize);
     }
 
-
     void DiBase::operator delete[]( void* pMemory )
     {
         //DI_ASSERT(pMemory != 0);
@@ -112,5 +111,5 @@ namespace Demi
     {
         ::operator delete(pMemory);
     }
-#    endif
+#endif
 }

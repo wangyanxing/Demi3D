@@ -49,6 +49,7 @@ namespace tools
     class SetGameLocWindow;
     class PanelView;
     class PropertiesControl;
+    class TextureBrowseControl;
 }
 
 namespace MyGUI

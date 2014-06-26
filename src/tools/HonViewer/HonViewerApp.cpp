@@ -174,7 +174,6 @@ namespace Demi
 
         mHelpWindow = new ViewerHelper();
 
-
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
         //DiString zip("L:/Games/Savage2Res/resources0.zip");
         //DiString zipTex("L:/Games/Savage2Res/textures-high.zip");

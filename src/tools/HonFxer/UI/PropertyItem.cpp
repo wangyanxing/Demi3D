@@ -21,6 +21,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "CurveEditor.h"
 #include "ColorEditor.h"
 #include "EnumProperties.h"
+#include "TextureBrowseControl.h"
 
 namespace Demi
 {
@@ -298,6 +299,7 @@ namespace Demi
     
     DiTexturePropertyItem::~DiTexturePropertyItem()
     {
+        SAFE_DELETE(mTextureBrowser);
     }
     
     void DiTexturePropertyItem::CreateUI(const DiString& caption)
@@ -335,6 +337,9 @@ namespace Demi
         //mImageBox->setImageTexture("cloud.png");
         mImageBox->eventMouseButtonPressed += MyGUI::newDelegate(this, &DiTexturePropertyItem::NotifyButtonPressed);
         
+        mTextureBrowser = DI_NEW tools::TextureBrowseControl();
+        mTextureBrowser->eventEndDialog = MyGUI::newDelegate(this, &DiTexturePropertyItem::NotifyEndDialog);
+
         RefreshUI();
     }
     
@@ -345,7 +350,7 @@ namespace Demi
     
     void DiTexturePropertyItem::NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
     {
-        
+        mTextureBrowser->doModal();
     }
     
     void DiTexturePropertyItem::RearrangeUI(int height)
@@ -367,6 +372,22 @@ namespace Demi
     
     void DiTexturePropertyItem::RefreshValue()
     {
+    }
+    
+    void DiTexturePropertyItem::NotifyEndDialog(Dialog* _sender, bool _result)
+    {
+        mTextureBrowser->endModal();
+        auto texName = mTextureBrowser->getTextureName();
+        if(!texName.empty() && _result)
+        {
+            auto prop = dynamic_cast<DiTextureProperty*>(mProperty);
+            auto tex = DiAssetManager::GetInstance().GetAsset<DiTexture>(texName);
+            if(tex)
+            {
+                *prop = tex;
+                RefreshUI();
+            }
+        }
     }
 
     DiBoolPropertyItem::DiBoolPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)

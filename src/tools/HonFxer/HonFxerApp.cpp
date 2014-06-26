@@ -27,7 +27,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "CommandManager.h"
 #include "MainPaneControl.h"
 #include "EditorManager.h"
-#include "TextureBrowseControl.h"
 #include "SetResLocationWindow.h"
 #include "SetGameLocationWindow.h"
 
@@ -146,8 +145,6 @@ namespace Demi
 
         mMainPane = new MainPaneControl();
 
-        //mModelViewer = DI_NEW K2ModelViewer();
-
         new DialogManager();
         DialogManager::getInstance().initialise();
 
@@ -164,25 +161,11 @@ namespace Demi
         DiBase::CommandMgr->ExecuteCommand("createChild PointEmitter");
         DiBase::CommandMgr->ExecuteCommand("selectLast");
         
-        //DiBase::CommandMgr->ExecuteCommand("removeObj");
-        
-        
         mSetResLocWindow = new SetResLocWindow();
         mSetResLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetResLocWindowEndDialog);
         
         mSetGameLocWindow = new SetGameLocWindow();
         mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetGameLocWindowEndDialog);
-        
-        //mHelpWindow = new ViewerHelper();
-        
-        MyGUI::VectorString mTextures = {"cloud.png", "lavatile.jpg",
-                                         "default.png", "waves2.dds",
-                                         "water_color.dds", "water_normal_rxgb.dds",
-                                         "HelpIcon.png"};
-        
-        tools::TextureBrowseControl* ctrl = new tools::TextureBrowseControl();
-        ctrl->setTextures(mTextures);
-        ctrl->doModal();
     }
 
     HonFxerApp* HonFxerApp::GetFxApp()
@@ -305,11 +288,9 @@ namespace Demi
 
     void HonFxerApp::Command_ViewHelp(const MyGUI::UString& _commandName, bool& _result)
     {
-//         if (!CheckCommand())
-//             return;
-// 
-//         mHelpWindow->doModal();
-// 
-//         _result = true;
+        if (!CheckCommand())
+            return;
+
+        _result = true;
     }
 }

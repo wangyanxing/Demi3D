@@ -151,6 +151,8 @@ namespace Demi
         
         virtual void RearrangeUI(int height);
         
+        void NotifyEndDialog(Dialog* _sender, bool _result);
+        
         void RefreshUI();
         
         void RefreshValue();
@@ -166,6 +168,8 @@ namespace Demi
         MyGUI::Widget* mImagePane{ nullptr };
         
         MyGUI::ImageBox* mImageBox{ nullptr };
+        
+        tools::TextureBrowseControl* mTextureBrowser{ nullptr };
     };
 
     //////////////////////////////////////////////////////////////////////////
