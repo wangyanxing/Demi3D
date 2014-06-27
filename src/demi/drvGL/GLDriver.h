@@ -139,8 +139,6 @@ namespace Demi
 
         bool                    mColourWrite[4];
 
-        bool                    mDepthWrite;
-
         uint32                  mStencilMask;
 
         DiGLBufferManager*      mGLBufferManager;
@@ -152,6 +150,8 @@ namespace Demi
         ProgramMap              mProgramMaps;
 
         DiGLShaderLinker*       mCurrentProgram;
+        
+        bool                    mDepthWrite{ true };
     };
 }
 

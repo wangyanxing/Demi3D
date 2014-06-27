@@ -48,7 +48,6 @@ namespace Demi
     DiGLDriver::DiGLDriver()
         :mMainContext(nullptr),
         mGLUtil(nullptr),
-        mDepthWrite(true), 
         mStencilMask(0xFFFFFFFF),
         mGLBufferManager(nullptr),
         mCurrentContext(nullptr),
@@ -318,7 +317,10 @@ namespace Demi
         }
         else
             glDisable(GL_DEPTH_TEST);
+        
+        glDepthFunc(GL_LEQUAL);
 
+        mDepthWrite = mat->GetDepthWrite();
         glDepthMask(mat->GetDepthWrite() ? GL_TRUE : GL_FALSE);
 
         // blending mode

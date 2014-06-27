@@ -48,7 +48,19 @@ void InitFx()
 
     DiParticleElement* element = _ps->CreateElement();
     element->SetRenderer("Billboard");
+    
+    auto mat = DiMaterial::QuickCreate("psmat", "basic_v", "basic_p", SHADER_FLAG_USE_COLOR | SHADER_FLAG_USE_MAP);
+    auto texture = mat->GetShaderParameter()->WriteTexture2D("map", "glow_01.dds");
+    mat->SetBlendMode(BLEND_ADD);
+    texture->SetAddressing(AM_CLAMP);
+    mat->SetDepthWrite(false);
+    element->SetMaterialName(mat->GetName());
+    
     auto emitter = element->CreateEmitter("Point");
+    
+    DiCullNode* nd1 = sm->GetRootNode()->CreateChild();
+    k2md = make_shared<DiK2Model>("buildings/hellbourne/gate_torch/model.mdf");
+    nd1->AttachObject(k2md);
 }
 
 void InitFx_Torch()
@@ -77,7 +89,7 @@ void InitFx_Torch()
         auto texture = mat->GetShaderParameter()->WriteTexture2D("map", "dust_smoke_10.dds");
         mat->SetBlendMode(BLEND_ALPHA);
         texture->SetAddressing(AM_CLAMP);
-        mat->SetDepthWrite(false);
+        //mat->SetDepthWrite(false);
         element->SetMaterialName(mat->GetName());
 
         ((DiBoxEmitter*)emitter)->SetWidth(40);
@@ -106,7 +118,7 @@ void InitFx_Repeater02()
     nd1->AttachObject(k2md);
     //k2md->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
 
-#if 0
+#if 1
     // effect
     auto _ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate("Fx_repeater2");
     g_fxs.push_back(_ps);
@@ -123,7 +135,7 @@ void InitFx_Repeater02()
         auto texture = mat->GetShaderParameter()->WriteTexture2D("map", "smoke.dds");
         mat->SetBlendMode(BLEND_ALPHA);
         texture->SetAddressing(AM_CLAMP);
-        mat->SetDepthWrite(false);
+        //mat->SetDepthWrite(false);
         element->SetMaterialName(mat->GetName());
 
         ((DiBoxEmitter*)emitter)->SetWidth(12);
@@ -189,7 +201,7 @@ void InitFx_Repeater01()
     auto k2md = make_shared<DiK2Model>("buildings/legion/repeater1/model.mdf");
     nd1->AttachObject(k2md);
 
-#if 0
+#if 1
     // effect
     auto _ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate("Fx_repeater1");
     g_fxs.push_back(_ps);
@@ -282,8 +294,8 @@ void InitFx_Repeater01()
         texrotCtrl->SetRotation(rot);
     }
 
-    DiFxTokensParser parser;
-    parser.WriteSystem(_ps, "D:/Demi3D_release/ps.xml");
+    //DiFxTokensParser parser;
+    //parser.WriteSystem(_ps, "D:/Demi3D_release/ps.xml");
 #else
     DiFxTokensParser parser;
     auto pss = parser.LoadEffects("ps1.effect");
