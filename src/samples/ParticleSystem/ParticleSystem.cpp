@@ -57,10 +57,6 @@ void InitFx()
     element->SetMaterialName(mat->GetName());
     
     auto emitter = element->CreateEmitter("Point");
-    
-    DiCullNode* nd1 = sm->GetRootNode()->CreateChild();
-    k2md = make_shared<DiK2Model>("buildings/hellbourne/gate_torch/model.mdf");
-    nd1->AttachObject(k2md);
 }
 
 void InitFx_Torch()
@@ -69,7 +65,7 @@ void InitFx_Torch()
 
     // model
     DiCullNode* nd1 = sm->GetRootNode()->CreateChild();
-    auto k2md = make_shared<DiK2Model>("buildings/hellbourne/gate_torch/model.mdf");
+    k2md = make_shared<DiK2Model>("buildings/hellbourne/gate_torch/model.mdf");
     nd1->AttachObject(k2md);
 
     // effect
@@ -113,7 +109,7 @@ void InitFx_Repeater02()
 
     // model
     DiCullNode* nd1 = sm->GetRootNode()->CreateChild();
-    auto k2md = make_shared<DiK2Model>("buildings/legion/repeater2/model.mdf");
+    k2md = make_shared<DiK2Model>("buildings/legion/repeater2/model.mdf");
     //k2md = make_shared<DiK2Model>("heroes/aluna/model.mdf");
     nd1->AttachObject(k2md);
     //k2md->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);
@@ -198,7 +194,7 @@ void InitFx_Repeater01()
 
     // model
     DiCullNode* nd1 = sm->GetRootNode()->CreateChild();
-    auto k2md = make_shared<DiK2Model>("buildings/legion/repeater1/model.mdf");
+    k2md = make_shared<DiK2Model>("buildings/legion/repeater1/model.mdf");
     nd1->AttachObject(k2md);
 
 #if 1

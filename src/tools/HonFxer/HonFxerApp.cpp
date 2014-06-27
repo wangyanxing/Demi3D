@@ -97,6 +97,7 @@ namespace Demi
         peMgr->SetManualOutputTarget(DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas());
 
         DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.2f, 0.2f, 0.2f));
+        DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.2f, 0.2f, 0.2f));
 
         DiSceneManager* sm = DiBase::Driver->GetSceneManager();
         sm->SetAmbientColor(DiColor(0.3f, 0.3f, 0.3f));

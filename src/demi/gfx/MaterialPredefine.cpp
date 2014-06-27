@@ -15,7 +15,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiString DiMaterialDefine::PARAM_VERTEX_COLOR       = "USE_VERT_COLOR";
     DiString DiMaterialDefine::PARAM_VERTEX_INSTANCE    = "INSTANCE_TYPE";
     DiString DiMaterialDefine::PARAM_INSTANCE_NONE      = "0";
     DiString DiMaterialDefine::PARAM_INSTANCE_SHADER    = "1";

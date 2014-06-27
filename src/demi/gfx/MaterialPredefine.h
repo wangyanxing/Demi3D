@@ -25,7 +25,6 @@ namespace Demi
         static DiString        DEFAULT_MATERIAL;
 
         // some additional parameter about shader macro
-        static DiString        PARAM_VERTEX_COLOR;
         static DiString        PARAM_VERTEX_INSTANCE;
 
         static DiString        PARAM_INSTANCE_NONE;

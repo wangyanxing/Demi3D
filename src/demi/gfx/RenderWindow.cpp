@@ -206,7 +206,8 @@ namespace Demi
         mSceneCanvas->SetFlippingUV(true);
         
         float clearColor = CommandMgr->GetConsoleVar("clear_color")->GetAsFloat();
-        mSceneCanvas->SetClearColor(DiColor(clearColor,clearColor,clearColor,clearColor));
+        float clearAlpha = CommandMgr->GetConsoleVar("clear_alpha")->GetAsFloat();
+        mSceneCanvas->SetClearColor(DiColor(clearColor,clearColor,clearColor,clearAlpha));
 
         mPostEffectMgr = DI_NEW DiPostEffectManager(this);
         //mGBuffer = DI_NEW DiGBuffer(this);
