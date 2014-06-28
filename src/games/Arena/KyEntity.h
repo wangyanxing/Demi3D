@@ -10,27 +10,24 @@
 */
 #define KyDeclareProperty(Property)         \
 public:                                     \
-    Demi::Ar##Property* Get##Property()     \
+    Ar##Property* Get##Property()           \
     {                                       \
         DI_ASSERT(m##Property);             \
         return m##Property;                 \
     }                                       \
-    const Demi::Ar##Property* Get##Property() const   \
+    const Ar##Property* Get##Property() const   \
     {                                       \
         DI_ASSERT(m##Property);             \
         return m##Property;                 \
     }                                       \
 private:                                    \
-    Demi::Ar##Property*  m##Property;
+    Ar##Property*  m##Property;
 
 
 class KyEntity : public KyObject
 {
 	KyDeclareRTTI;
 public:
-	KyEntity(){}
-    virtual ~KyEntity();
-
     template<typename T> T* CreateProperty()
     {
         T* pComp = DI_NEW T();
@@ -47,26 +44,25 @@ public:
         return dynamic_cast<T*>(it->second);
     }
 
+public:
+	KyEntity(){}
+    virtual ~KyEntity();
+
     void Init();
 
     virtual void InitComponents(){}
-
     virtual void InitAttribute(){}
-
     virtual void InitAttribute(const DiString& configFile){}
-
-    template<typename EntityType>
-    EntityType* GetEntity()
-    {
-        return dynamic_cast<EntityType*>(this);
-    }
 
     virtual void Update(float deltaTime);
 
-protected:
-    typedef DiMap< Demi::ArPropertyIDType, Demi::ArProperty*> PropertyMap;
-    PropertyMap mPropertyMap;
+    DiK2RenderObject*  GetRenderObj() { return mRenderObj; }
 
+protected:
+    typedef DiMap< ArPropertyIDType, ArProperty*> PropertyMap;
+    PropertyMap        mPropertyMap;
+
+    DiK2RenderObject*  mRenderObj { nullptr };
 };
 
 #endif

@@ -4,6 +4,8 @@
 #include "ArenaPrerequisites.h"
 #include "KyRTTI.h"
 
+using namespace Demi;
+
 const size_t npos = static_cast<size_t>(~0);
 
 class KyMain;
@@ -61,11 +63,11 @@ const size_t MAX_ACTIVE_PLAYER_COUNT { 2 };
 
 const size_t MAX_PLAYER_COUNT { 2 + 5 };
 
-const size_t CAMP_A_SOLDIER_PLAYER_INDEX { MAX_PLAYER_COUNT };
-const size_t CAMP_B_SOLDIER_PLAYER_INDEX { MAX_PLAYER_COUNT + 1 };
-const size_t NEUTRAL_PASSIVE_SOLDIER_PLAYER_INDEX { MAX_PLAYER_COUNT + 2 };
-const size_t NEUTRAL_ALLY_SOLDIER_PLAYER_INDEX { MAX_PLAYER_COUNT + 3 };
-const size_t NEUTRAL_ENEMY_SOLDIER_PLAYER_INDEX { MAX_PLAYER_COUNT + 4 };
+const size_t CAMP_A_SOLDIER_PLAYER_INDEX{ MAX_ACTIVE_PLAYER_COUNT };
+const size_t CAMP_B_SOLDIER_PLAYER_INDEX{ MAX_ACTIVE_PLAYER_COUNT + 1 };
+const size_t NEUTRAL_PASSIVE_SOLDIER_PLAYER_INDEX{ MAX_ACTIVE_PLAYER_COUNT + 2 };
+const size_t NEUTRAL_ALLY_SOLDIER_PLAYER_INDEX{ MAX_ACTIVE_PLAYER_COUNT + 3 };
+const size_t NEUTRAL_ENEMY_SOLDIER_PLAYER_INDEX{ MAX_ACTIVE_PLAYER_COUNT + 4 };
 
 struct KyPlayer
 {

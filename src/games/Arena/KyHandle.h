@@ -7,7 +7,7 @@ class KyHandle
 {
     friend class KyRefHandle;
 public:
-    KyHandle(size_t index = npos, uint32 logicID = -1, KyObjectType objectType = KOT_INVALID)
+    KyHandle(size_t index = npos, uint32 logicID = (~0), KyObjectType objectType = KOT_INVALID)
         : mIndex(index)
         , mLogicID(logicID)
         , mObjectType(objectType){}
