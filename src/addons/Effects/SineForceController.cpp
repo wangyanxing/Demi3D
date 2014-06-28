@@ -65,7 +65,7 @@ namespace Demi
         }
     }
     
-    const float DiSineForceController::GetFrequencyMin(void) const
+    float DiSineForceController::GetFrequencyMin(void) const
     {
         return mFrequencyMin;
     }
@@ -79,7 +79,7 @@ namespace Demi
         }
     }
     
-    const float DiSineForceController::GetFrequencyMax(void) const
+    float DiSineForceController::GetFrequencyMax(void) const
     {
         return mFrequencyMax;
     }

@@ -28,6 +28,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GeometryRotatorControllerObj.h"
 #include "RandomiserControllerObj.h"
 #include "JetControllerObj.h"
+#include "ColliderControllerObj.h"
+#include "ForceControllerObj.h"
 #include "K2Configs.h"
 
 namespace Demi
@@ -113,6 +115,11 @@ namespace Demi
         mObjFactories["RandomiserController"]      = [](){return DI_NEW DiRandomiserControllerObj(); };
         mObjFactories["GeometryRotatorController"] = [](){return DI_NEW DiGeometryRotatorControllerObj(); };
         mObjFactories["TextureRotatorController"]  = [](){return DI_NEW DiTextureRotatorControllerObj(); };
+        mObjFactories["LinearForceController"]     = [](){return DI_NEW DiLinearForceControllerObj(); };
+        mObjFactories["SineForceController"]       = [](){return DI_NEW DiSineForceControllerObj(); };
+        mObjFactories["BoxColliderController"]     = [](){return DI_NEW DiBoxColliderControllerObj(); };
+        mObjFactories["SphereColliderController"]  = [](){return DI_NEW DiSphereColliderControllerObj(); };
+        mObjFactories["PlaneColliderController"]   = [](){return DI_NEW DiPlaneColliderControllerObj(); };
     }
 
     DiString DiEditorManager::GenerateSystemName()

@@ -39,15 +39,15 @@ namespace Demi
 
         virtual             ~DiBoxColliderController(void){}
 
-        const float         GetWidth(void) const;
+        float               GetWidth(void) const;
 
         void                SetWidth(const float width);
 
-        const float         GetHeight(void) const;
+        float               GetHeight(void) const;
 
         void                SetHeight(const float height);
 
-        const float         GetDepth(void) const;
+        float               GetDepth(void) const;
 
         void                SetDepth(const float depth);
 

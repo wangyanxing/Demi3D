@@ -50,6 +50,13 @@ namespace Demi
     class DiGeometryRotatorController;
     class DiTextureRotatorController;
     class DiRandomiserController;
+    class DiBaseForceController;
+    class DiSineForceController;
+    class DiLinearForceController;
+    class DiBaseColliderController;
+    class DiBoxColliderController;
+    class DiPlaneColliderController;
+    class DiSphereColliderController;
 }
 
 

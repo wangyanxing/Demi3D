@@ -17,6 +17,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "FxerPrerequisites.h"
 #include "PropertyTypes.h"
 #include "ColorController.h"
+#include "BaseForceController.h"
+#include "BaseColliderController.h"
 
 namespace Demi
 {
@@ -52,6 +54,42 @@ namespace Demi
         }
         DiAddMode get(){
             return (DiAddMode)enumValue;
+        }
+        static std::vector<DiString> Strings;
+    };
+    
+    struct ForceApplicationEnum : _DiBaseEnumProperty{
+        ForceApplicationEnum() = default;
+        ForceApplicationEnum(DiBaseForceController::ForceApplication v){enumValue=v;}
+        std::vector<DiString>& GetStrings(){
+            return Strings;
+        }
+        DiBaseForceController::ForceApplication get(){
+            return (DiBaseForceController::ForceApplication)enumValue;
+        }
+        static std::vector<DiString> Strings;
+    };
+    
+    struct IntersectionTypeEnum : _DiBaseEnumProperty{
+        IntersectionTypeEnum() = default;
+        IntersectionTypeEnum(DiBaseColliderController::IntersectionType v){enumValue=v;}
+        std::vector<DiString>& GetStrings(){
+            return Strings;
+        }
+        DiBaseColliderController::IntersectionType get(){
+            return (DiBaseColliderController::IntersectionType)enumValue;
+        }
+        static std::vector<DiString> Strings;
+    };
+    
+    struct CollisionTypeEnum : _DiBaseEnumProperty{
+        CollisionTypeEnum() = default;
+        CollisionTypeEnum(DiBaseColliderController::CollisionType v){enumValue=v;}
+        std::vector<DiString>& GetStrings(){
+            return Strings;
+        }
+        DiBaseColliderController::CollisionType get(){
+            return (DiBaseColliderController::CollisionType)enumValue;
         }
         static std::vector<DiString> Strings;
     };

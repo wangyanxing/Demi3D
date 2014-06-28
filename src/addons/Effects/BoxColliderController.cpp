@@ -45,7 +45,7 @@ namespace Demi
     {
     }
     
-    const float DiBoxColliderController::GetWidth(void) const
+    float DiBoxColliderController::GetWidth(void) const
     {
         return mWidth;
     }
@@ -55,7 +55,7 @@ namespace Demi
         mWidth = width;
     }
     
-    const float DiBoxColliderController::GetHeight(void) const
+    float DiBoxColliderController::GetHeight(void) const
     {
         return mHeight;
     }
@@ -65,7 +65,7 @@ namespace Demi
         mHeight = height;
     }
     
-    const float DiBoxColliderController::GetDepth(void) const
+    float DiBoxColliderController::GetDepth(void) const
     {
         return mDepth;
     }

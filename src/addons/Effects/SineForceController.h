@@ -46,11 +46,11 @@ namespace Demi
 
         virtual void     Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
 
-        const float      GetFrequencyMin(void) const;
+        float            GetFrequencyMin(void) const;
 
         void             SetFrequencyMin(const float frequencyMin);
 
-        const float      GetFrequencyMax(void) const;
+        float            GetFrequencyMax(void) const;
 
         void             SetFrequencyMax(const float frequencyMax);
 

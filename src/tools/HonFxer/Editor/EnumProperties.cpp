@@ -19,4 +19,7 @@ namespace Demi
     std::vector<DiString> ColorCtrlOperationEnum::Strings = {"Multiply", "Set"};
     std::vector<DiString> MaterialBlendModeEnum::Strings  = {"Replace", "Add", "Multiply", "Alpha", "Transparent Color", "One Inverse Alpha"};
     std::vector<DiString> TexAddrModeEnum::Strings = {"Wrap", "Mirror", "Clamp", "Border", "Mirror Once"};
+    std::vector<DiString> ForceApplicationEnum::Strings = {"Average", "Add"};
+    std::vector<DiString> IntersectionTypeEnum::Strings = {"Point", "Box"};
+    std::vector<DiString> CollisionTypeEnum::Strings = {"None", "Bounce", "Flow"};
 }
