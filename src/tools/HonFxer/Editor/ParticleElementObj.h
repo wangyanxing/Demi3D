@@ -51,9 +51,13 @@ namespace Demi
 
     protected:
         
+        void                 RefreshTextureParams();
+        
         virtual void         InitPropertyTable();
 
         DiParticleElement*   mParticleElement{ nullptr };
+        
+        DiAddMode            mTextureAddMode{ AM_WRAP };
     };
 }
 

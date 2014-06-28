@@ -21,7 +21,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef VortexController_h__
 #define VortexController_h__
 
-
 #include "FxPrerequisites.h"
 #include "ParticleController.h"
 #include "ParticleControllerFactory.h"
@@ -31,19 +30,19 @@ namespace Demi
     class DEMI_FX_API DiVortexController : public DiParticleController
     {
     public:
-        static const DiVec3            DEFAULT_ROTATION_VECTOR;
+        static const DiVec3         DEFAULT_ROTATION_VECTOR;
 
-        static const float            DEFAULT_ROTATION_SPEED;
+        static const float          DEFAULT_ROTATION_SPEED;
 
     public:
 
         DiVortexController(void);
 
-        virtual                        ~DiVortexController(void);
+        virtual                     ~DiVortexController(void);
 
     public:
 
-        const DiVec3&                GetRotationVector(void) const;
+        const DiVec3&               GetRotationVector(void) const;
 
         void                        SetRotationVector(const DiVec3& rotationVector);
 
@@ -51,11 +50,11 @@ namespace Demi
 
         void                        SetRotationSpeed(DiDynamicAttribute* dynRotationSpeed);
 
-        virtual void                 CopyTo (DiParticleController* affector);
+        virtual void                CopyTo (DiParticleController* affector);
 
-        virtual void                 PreProcessParticles(DiParticleElement* particleTechnique, float timeElapsed);
+        virtual void                PreProcessParticles(DiParticleElement* particleTechnique, float timeElapsed);
 
-        virtual void                 Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
+        virtual void                Control(DiParticleElement* particleTechnique, DiParticle* particle, float timeElapsed);
 
     protected:
 
@@ -63,15 +62,15 @@ namespace Demi
 
     protected:
 
-        DiVec3                        mRotationVector;
+        DiVec3                      mRotationVector;
 
-        DiQuat                        mRotation;
+        DiQuat                      mRotation;
         
-        DiDynamicAttribute*            mDynRotationSpeed;
+        DiDynamicAttribute*         mDynRotationSpeed;
         
         DiDynamicAttributeHelper    mDynamicAttributeHelper;
         
-        DiDynamicAttributeFactory    mDynamicAttributeFactory;
+        DiDynamicAttributeFactory   mDynamicAttributeFactory;
     };
 
     //////////////////////////////////////////////////////////////////////////
@@ -81,7 +80,7 @@ namespace Demi
     public:
         DiVortexControllerFactory(void) {}
 
-        virtual                        ~DiVortexControllerFactory(void) {}
+        virtual                     ~DiVortexControllerFactory(void) {}
 
         DiString                    GetControllerType(void) const
         {
@@ -89,7 +88,7 @@ namespace Demi
             return type;
         }
 
-        DiParticleController*        CreateController(void)
+        DiParticleController*       CreateController(void)
         {
             return CreateControllerImpl<DiVortexController>();
         }

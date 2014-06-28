@@ -23,6 +23,11 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Grid.h"
 #include "ColorControllerObj.h"
 #include "VortexControllerObj.h"
+#include "GravityControllerObj.h"
+#include "TextureRotatorControllerObj.h"
+#include "GeometryRotatorControllerObj.h"
+#include "RandomiserControllerObj.h"
+#include "JetControllerObj.h"
 #include "K2Configs.h"
 
 namespace Demi
@@ -93,16 +98,21 @@ namespace Demi
 
     void DiEditorManager::InitFactories()
     {
-        mObjFactories["Base"]             = [](){return DI_NEW DiBaseEditorObj(); };
-        mObjFactories["ParticleSystem"]   = [](){return DI_NEW DiParticleSystemObj(); };
-        mObjFactories["ParticleElement"]  = [](){return DI_NEW DiParticleElementObj(); };
-        mObjFactories["PointEmitter"]     = [](){return DI_NEW DiPointEmitterObj(); };
-        mObjFactories["BoxEmitter"]       = [](){return DI_NEW DiBoxEmitterObj(); };
-        mObjFactories["CircleEmitter"]    = [](){return DI_NEW DiCircleEmitterObj(); };
-        mObjFactories["LineEmitter"]      = [](){return DI_NEW DiLineEmitterObj(); };
+        mObjFactories["Base"]                      = [](){return DI_NEW DiBaseEditorObj(); };
+        mObjFactories["ParticleSystem"]            = [](){return DI_NEW DiParticleSystemObj(); };
+        mObjFactories["ParticleElement"]           = [](){return DI_NEW DiParticleElementObj(); };
+        mObjFactories["PointEmitter"]              = [](){return DI_NEW DiPointEmitterObj(); };
+        mObjFactories["BoxEmitter"]                = [](){return DI_NEW DiBoxEmitterObj(); };
+        mObjFactories["CircleEmitter"]             = [](){return DI_NEW DiCircleEmitterObj(); };
+        mObjFactories["LineEmitter"]               = [](){return DI_NEW DiLineEmitterObj(); };
 
-        mObjFactories["ColorController"]  = [](){return DI_NEW DiColorControllerObj(); };
-        mObjFactories["VortexController"] = [](){return DI_NEW DiVortexControllerObj(); };
+        mObjFactories["ColorController"]           = [](){return DI_NEW DiColorControllerObj(); };
+        mObjFactories["VortexController"]          = [](){return DI_NEW DiVortexControllerObj(); };
+        mObjFactories["JetController"]             = [](){return DI_NEW DiJetControllerObj(); };
+        mObjFactories["GravityController"]         = [](){return DI_NEW DiGravityControllerObj(); };
+        mObjFactories["RandomiserController"]      = [](){return DI_NEW DiRandomiserControllerObj(); };
+        mObjFactories["GeometryRotatorController"] = [](){return DI_NEW DiGeometryRotatorControllerObj(); };
+        mObjFactories["TextureRotatorController"]  = [](){return DI_NEW DiTextureRotatorControllerObj(); };
     }
 
     DiString DiEditorManager::GenerateSystemName()

@@ -145,7 +145,7 @@ namespace Demi
             auto pos = mButtons[i]->getPosition();
             float timePos = (float)(pos.left+7) / (float)width;
             auto col = *(mButtons[i]->getUserData<MyGUI::Colour>());
-            auto diCol = DiColor(col.blue, col.green, col.red, col.alpha);
+            auto diCol = DiColor(col.red, col.green, col.blue, col.alpha);
             ret[timePos] = diCol;
         }
         

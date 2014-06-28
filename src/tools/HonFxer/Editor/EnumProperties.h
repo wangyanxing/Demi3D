@@ -43,6 +43,18 @@ namespace Demi
         }
         static std::vector<DiString> Strings;
     };
+    
+    struct TexAddrModeEnum : _DiBaseEnumProperty{
+        TexAddrModeEnum() = default;
+        TexAddrModeEnum(DiAddMode v){enumValue=v;}
+        std::vector<DiString>& GetStrings(){
+            return Strings;
+        }
+        DiAddMode get(){
+            return (DiAddMode)enumValue;
+        }
+        static std::vector<DiString> Strings;
+    };
 }
 
 #endif

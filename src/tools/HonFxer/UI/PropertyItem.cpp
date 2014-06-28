@@ -128,13 +128,15 @@ namespace Demi
         case PROPERTY_INT:
             {
                 auto prop = dynamic_cast<DiIntProperty*>(mProperty);
-                *prop = str.AsInt();
+                auto val = str.AsInt();
+                *prop = val;
             }
             break;
         case PROPERTY_FLOAT:
             {
                 auto prop = dynamic_cast<DiFloatProperty*>(mProperty);
-                *prop = str.AsFloat();
+                auto val = str.AsFloat();
+                *prop = val;
             }
             break;
         default:

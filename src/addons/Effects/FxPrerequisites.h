@@ -45,6 +45,11 @@ namespace Demi
     
     class DiColorController;
     class DiVortexController;
+    class DiJetController;
+    class DiGravityController;
+    class DiGeometryRotatorController;
+    class DiTextureRotatorController;
+    class DiRandomiserController;
 }
 
 

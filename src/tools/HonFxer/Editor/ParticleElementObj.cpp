@@ -107,6 +107,10 @@ namespace Demi
     {
         auto mat = mParticleElement->GetMaterial();
         mat->GetShaderParameter()->WriteTexture2D("map", texture);
+        if(texture)
+        {
+            texture->SetAddressing(mTextureAddMode);
+        }
     }
     
     DiTexturePtr DiParticleElementObj::GetTexture()
@@ -120,6 +124,15 @@ namespace Demi
             return DiAssetManager::GetInstance().GetAsset<DiTexture>(tex->GetName());
         }
         return nullptr;
+    }
+    
+    void DiParticleElementObj::RefreshTextureParams()
+    {
+        auto tex = GetTexture();
+        if(tex)
+        {
+            tex->SetAddressing(mTextureAddMode);
+        }
     }
     
     void DiParticleElementObj::InitPropertyTable()
@@ -173,6 +186,12 @@ namespace Demi
         
         g->AddProperty("Wireframe"   , DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->IsWireframe(); },
                                                              [&](bool& val){ mParticleElement->GetMaterial()->SetWireframe(val); }));
+        
+        g->AddProperty("Texture Addressing",DI_NEW DiEnumProperty([&](){ return make_shared<TexAddrModeEnum>(mTextureAddMode); },
+                                                             [&](DiBaseEnumPropPtr& val){
+                                                                 mTextureAddMode = val->getEnum<TexAddrModeEnum,DiAddMode>();
+                                                                 RefreshTextureParams();
+                                                             }));
         
         g->CreateUI();
         
