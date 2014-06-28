@@ -3,6 +3,7 @@
 
 #include "KyDefines.h"
 #include "KyHandle.h"
+#include "KyAttribute.h"
 
 class KyObject : public KyMainContext , public DiBase
 {
@@ -27,9 +28,11 @@ private:
     void      _DecRefCount() { --mRefCount; }
 
 private:
-    KyHandle  mHandle;
-    int32     mRefCount{ 0 };
-    bool      mCanRemove{ false };
+    KyHandle     mHandle;
+    int32        mRefCount{ 0 };
+    bool         mCanRemove{ false };
+
+    KyAttribute* mAttribute{ nullptr };
 };
 
 #endif
