@@ -30,7 +30,10 @@ namespace tools
     
     void ToolTip::move(const MyGUI::IntPoint& _point)
     {
-        mWrap->setPosition(_point);
+        auto pt = _point;
+        pt.left += 8;
+        pt.top += 8;
+        mWrap->setPosition(pt);
     }
     
 	void ToolTip::show(const std::string& data, const MyGUI::IntPoint& _point)
@@ -59,4 +62,4 @@ namespace tools
 		mWrap->setVisible(false);
 	}
     
-} // namespace demo
+}

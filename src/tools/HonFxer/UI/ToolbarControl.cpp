@@ -30,7 +30,8 @@ namespace tools
         addToolButton("ToolPaste", "Paste");
         
         addSperator();
-        
+
+        addToolButton("ToolSelect", "Select");
         addToolButton("ToolMove", "Move");
         addToolButton("ToolRotate", "Rotate");
         addToolButton("ToolScale", "Scale");
@@ -87,12 +88,30 @@ namespace tools
             mTooltip[button] = tip;
         }
         
+        button->eventMouseButtonPressed += MyGUI::newDelegate(this, &ToolbarControl::notifyButtonPressed);
+        
+        std::string command = "Command_";
+        command += skin;
+        mToolCommand[button] = command;
+        
         mCurrentWidth += 30;
+    }
+    
+    void ToolbarControl::notifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    {
+        auto command = mToolCommand[_sender];
+        if(command.empty())
+        {
+            return;
+        }
+        
+        CommandManager::getInstance().executeCommand(command);
     }
     
     void ToolbarControl::addSperator()
     {
-        addToolButton("ToolSperator", "");
+        mMainWidget->createWidget<MyGUI::Button>("ToolSperator", MyGUI::IntCoord(mCurrentWidth, 7, 25, 25), MyGUI::Align::Default);
+        mCurrentWidth += 30;
     }
 
 } // namespace tools

@@ -37,6 +37,8 @@ namespace tools
         void addSperator();
         
         void notifyToolTip(MyGUI::Widget* _sender, const MyGUI::ToolTipInfo& _info);
+        
+        void notifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
 
     private:
         MyGUI::Widget* mBar{ nullptr };
@@ -44,6 +46,8 @@ namespace tools
         int mCurrentWidth{ 10 };
         
         DiMap<MyGUI::Widget*, std::string> mTooltip;
+        
+        DiMap<MyGUI::Widget*, std::string> mToolCommand;
         
         ToolTip* mTipControl{ nullptr };
 	};
