@@ -29,6 +29,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "EditorManager.h"
 #include "SetResLocationWindow.h"
 #include "SetGameLocationWindow.h"
+#include "EditorToolTip.h"
 
 namespace Demi
 {
@@ -112,7 +113,9 @@ namespace Demi
 
         MyGUI::FactoryManager::getInstance().registerFactory<MyGUI::RTTLayer>("Layer");
         MyGUI::FactoryManager::getInstance().registerFactory<MyGUI::FilterNone>("BasisSkin");
+        
         MyGUI::ResourceManager::getInstance().load("FxEditorLayers.xml");
+        MyGUI::ResourceManager::getInstance().load("FxToolbar.xml");
 
         new CommandManager();
         CommandManager::getInstance().initialise();

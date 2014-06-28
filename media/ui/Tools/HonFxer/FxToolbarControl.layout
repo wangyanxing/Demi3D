@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout">
+	<Widget type="Widget" skin="ButtonSkin" position="10 40 300 26" align="Stretch" layer="Overlapped" name="_Main">
+		<UserString key="SnapTo" value="Stretch"/>
+		
+	</Widget>
+</MyGUI>

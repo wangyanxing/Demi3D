@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Resource" version="1.1">
+    <Resource type="ResourceSkin" name="ToolPlay" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="0 0 30 30"/>
+            <State name="pushed" offset="30 0 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolPause" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="60 0 30 30"/>
+            <State name="pushed" offset="90 0 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolStop" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="120 0 30 30"/>
+            <State name="pushed" offset="150 0 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolNewFile" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="180 0 30 30"/>
+            <State name="pushed" offset="210 0 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolSaveFile" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="0 30 30 30"/>
+            <State name="pushed" offset="30 30 30 30"/>
+        </BasisSkin>
+    </Resource>
+
+    <Resource type="ResourceSkin" name="ToolDelete" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="60 30 30 30"/>
+            <State name="pushed" offset="90 30 30 30"/>
+        </BasisSkin>
+    </Resource>
+
+    <Resource type="ResourceSkin" name="ToolUndo" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="120 30 30 30"/>
+            <State name="pushed" offset="150 30 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolRedo" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="180 30 30 30"/>
+            <State name="pushed" offset="210 30 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolCut" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="0 60 30 30"/>
+            <State name="pushed" offset="30 60 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolCopy" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="60 60 30 30"/>
+            <State name="pushed" offset="90 60 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolPaste" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="120 60 30 30"/>
+            <State name="pushed" offset="150 60 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolOpenFile" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="180 60 30 30"/>
+            <State name="pushed" offset="210 60 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolMove" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="0 90 30 30"/>
+            <State name="pushed" offset="30 90 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolRotate" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="60 90 30 30"/>
+            <State name="pushed" offset="90 90 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolScale" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="120 90 30 30"/>
+            <State name="pushed" offset="150 90 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+    <Resource type="ResourceSkin" name="ToolSperator" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="180 90 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
+</MyGUI>

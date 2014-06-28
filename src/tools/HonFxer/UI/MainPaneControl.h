@@ -44,6 +44,8 @@ namespace tools
 
 	private:
         MainMenuControl* mMainMenuControl{ nullptr };
+        
+        ToolbarControl* mToolbarControl{ nullptr };
 
         WorkSpaceControl* mMainWorkspaceControl{ nullptr };
 

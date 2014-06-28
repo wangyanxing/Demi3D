@@ -3,6 +3,7 @@
 #include "MainPaneControl.h"
 #include "CurveEditor.h"
 #include "ColorEditor.h"
+#include "ToolbarControl.h"
 
 namespace tools
 {
@@ -12,6 +13,7 @@ namespace tools
 		mMainWorkspaceControl(nullptr)
 	{
 		assignBase(mMainMenuControl, "MainMenuControl");
+        assignBase(mToolbarControl, "ToolbarControl");
 		assignBase(mMainWorkspaceControl, "MainWorkspaceControl");
 
         mCurveEditor = new CurveEditor();

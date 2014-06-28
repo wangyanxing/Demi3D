@@ -50,6 +50,7 @@ namespace tools
     class PanelView;
     class PropertiesControl;
     class TextureBrowseControl;
+    class ToolbarControl;
 }
 
 namespace MyGUI

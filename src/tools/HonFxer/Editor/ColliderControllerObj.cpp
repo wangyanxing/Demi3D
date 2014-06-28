@@ -58,7 +58,7 @@ namespace Demi
                                                                  GetController()->SetIntersectionType(val->getEnum<IntersectionTypeEnum,InterMode>());}));
         
         g->AddProperty("Collision Type",   DI_NEW DiEnumProperty([&](){ return make_shared<CollisionTypeEnum>(GetController()->GetCollisionType()); },
-                                                                    [&](DiBaseEnumPropPtr& val){
+                                                                 [&](DiBaseEnumPropPtr& val){
                                                                         GetController()->SetCollisionType(val->getEnum<CollisionTypeEnum,ColliMode>());}));
         
         g->AddProperty("Friction", DI_NEW DiFloatProperty([&](){ return GetController()->GetFriction(); },
