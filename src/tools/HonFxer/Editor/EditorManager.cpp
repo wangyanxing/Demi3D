@@ -119,26 +119,38 @@ namespace Demi
     
     void DiEditorManager::Command_ToolNew(const MyGUI::UString& _commandName, bool& _result)
     {
+        DiString msg;
         
+        if (!mFxFileName.empty())
+            msg = "Do you want to keep the new effects?";
+        else
+            msg = "Do you want to save the effects?";
+        
+        auto msgBox = MyGUI::Message::createMessageBox("Message", "New",
+                                                    msg.c_str(),
+                                                    MyGUI::MessageBoxStyle::Yes|MyGUI::MessageBoxStyle::No|
+                                                    MyGUI::MessageBoxStyle::Cancel|MyGUI::MessageBoxStyle::IconDefault);
+        
+        msgBox->eventMessageBoxResultLambda = [this](MyGUI::Message*, MyGUI::MessageBoxStyle style){
+            if(style == MyGUI::MessageBoxStyle::Yes)
+            {
+                SaveAll();
+                NewFx();
+            }
+            else if(style == MyGUI::MessageBoxStyle::No)
+            {
+                NewFx();
+            }
+        };
     }
     
     void DiEditorManager::Command_ToolSave(const MyGUI::UString& _commandName, bool& _result)
     {
-        DiString outFolder;
-        void* wndHandle = DiBase::Driver->GetMainRenderWindow()->GetWindow()->GetWndHandle();
-
-        DiVector<DiString> out;
-        DiString filter = "XML effect file(fx)|*.fx|All files (*.*)|*.*";
-        DiPathLib::SaveFileDialog(wndHandle, "Effect file", DiPathLib::GetApplicationPath(), "", filter, 0, out);
-        if (out.size() >= 1)
-        {
-            SaveAll(out[0]);
-        }
+        SaveAll();
     }
     
     void DiEditorManager::Command_ToolOpen(const MyGUI::UString& _commandName, bool& _result)
     {
-        DiString outFolder;
         void* wndHandle = DiBase::Driver->GetMainRenderWindow()->GetWindow()->GetWndHandle();
         
         DiVector<DiString> out;
@@ -165,6 +177,14 @@ namespace Demi
         };
     }
     
+    void DiEditorManager::NewFx()
+    {
+        Reset();
+        
+        auto psObj = mRootObject->_CreateChild("ParticleSystem");
+        psObj->_CreateChild("ParticleElement");
+    }
+    
     void DiEditorManager::OpenFx(const DiString& fxFileName)
     {
         DiString base = fxFileName.ExtractFileName();
@@ -189,7 +209,18 @@ namespace Demi
     void DiEditorManager::Reset()
     {
         mRootObject->ClearChildren();
-        mFxFileName.clear();
+        SetCurrentFileName("");
+    }
+    
+    void DiEditorManager::SetCurrentFileName(const DiString& name)
+    {
+        mFxFileName = name;
+        
+        DiString title = "Hon Fxer";
+        if(!name.empty())
+            title.Format("Hon Fxer - %s",name.ExtractFileName().c_str());
+        
+        DiBase::Driver->GetMainRenderWindow()->GetWindow()->SetTitle(title.c_str());
     }
     
     void DiEditorManager::SaveAll(const DiString& fxFileName)
@@ -206,6 +237,28 @@ namespace Demi
         
         DiFxTokensParser parser;
         parser.WriteSystems(fxes, fxFileName);
+        
+        SetCurrentFileName(fxFileName);
+    }
+    
+    void DiEditorManager::SaveAll()
+    {
+        if (!mFxFileName.empty())
+        {
+            SaveAll(mFxFileName);
+        }
+        else
+        {
+            void* wndHandle = DiBase::Driver->GetMainRenderWindow()->GetWindow()->GetWndHandle();
+            
+            DiVector<DiString> out;
+            DiString filter = "XML effect file(fx)|*.fx|All files (*.*)|*.*";
+            DiPathLib::SaveFileDialog(wndHandle, "Effect file", DiPathLib::GetApplicationPath(), "", filter, 0, out);
+            if (out.size() >= 1)
+            {
+                SaveAll(out[0]);
+            }
+        }
     }
     
     DiBaseEditorObj* DiEditorManager::LoadParticleSystem(DiParticleSystemPtr ps)

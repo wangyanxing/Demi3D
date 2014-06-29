@@ -320,8 +320,8 @@ void InitScene()
 
     DiBase::Driver->GetMainRenderWindow()->GetRenderBuffer()->SetClearColor(DiColor(0.5f, 0.5f, 0.5f));
 	
-    InitFx();
-    //InitFx_Repeater01();
+    //InitFx();
+    InitFx_Repeater01();
     //InitFx_Repeater02();
     //InitFx_Torch();
 }

@@ -55,6 +55,8 @@ namespace Demi
         
         void                Update();
         
+        void                SetCurrentFileName(const DiString& name);
+        
         void                SetK2ResourcePack(const DiString& resPack, const DiString& texturePack = DiString::BLANK);
         
         void                Command_ToolPlay(const MyGUI::UString& _commandName, bool& _result);
@@ -79,7 +81,11 @@ namespace Demi
         
         void                SaveAll(const DiString& fxFileName);
         
+        void                SaveAll();
+        
         void                OpenFx(const DiString& fxFileName);
+        
+        void                NewFx();
         
         void                Reset();
 

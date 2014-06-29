@@ -195,6 +195,7 @@ namespace Demi
 
     void DiOSXWindow::SetWindowSize(uint32 width, uint32 height)
     {
+        // todo
     }
 
     void DiOSXWindow::GetWindowSize(uint32& width, uint32& height)
@@ -205,10 +206,15 @@ namespace Demi
 
     void DiOSXWindow::GetTitle(char *title, uint32 maxLength) const
     {
+        // todo
     }
 
     void DiOSXWindow::SetTitle(const char *title)
     {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *windowTitle = [NSString stringWithCString:title encoding:NSUTF8StringEncoding];
+        [mWindow setTitle: windowTitle];
+        [pool drain];
     }
     
     void DiOSXWindow::SetActive(bool act)
