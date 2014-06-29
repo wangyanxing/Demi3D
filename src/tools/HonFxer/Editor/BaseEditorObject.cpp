@@ -57,6 +57,31 @@ namespace Demi
         menu->addItem("Create ParticleSystem", MyGUI::MenuItemType::Normal, "createChild ParticleSystem");
         //menu->addItem("Create Reference Model", MyGUI::MenuItemType::Normal, "createChild Model");
     }
+    
+    DiBaseEditorObj* DiBaseEditorObj::LookForParent(const DiString& type)
+    {
+        if(GetType() == type)
+        {
+            return this;
+        }
+        
+        auto parent = GetParent();
+        while(parent)
+        {
+            if(parent->GetType() == type)
+                return parent;
+            parent = parent->GetParent();
+        }
+        return nullptr;
+    }
+    
+    void DiBaseEditorObj::TraversalChildren(const std::function<void(size_t, DiBaseEditorObj*)> func)
+    {
+        for(size_t i = 0; i < mChildren.size(); ++i)
+        {
+            func(i, mChildren[i]);
+        }
+    }
 
     DiBaseEditorObj* DiBaseEditorObj::_CreateChild(const DiString& type)
     {
@@ -96,6 +121,15 @@ namespace Demi
         {
             DI_WARNING("Cannot remove the editor object");
         }
+    }
+    
+    void DiBaseEditorObj::ClearChildren()
+    {
+        for(auto& c: mChildren)
+        {
+            DiEditorManager::Get()->DeleteEditorObject(c);
+        }
+        mChildren.clear();
     }
 
     void DiBaseEditorObj::OnCreateUI()

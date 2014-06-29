@@ -150,4 +150,13 @@
         </BasisSkin>
     </Resource>
     
+    <Resource type="ResourceSkin" name="ToolReset" size="30 30" texture="FxToolbar.png" >
+        <BasisSkin type="SubSkin" offset="0 0 30 30" align="Stretch">
+            <State name="normal" offset="60 120 30 30"/>
+            <State name="highlighted" offset="60 120 30 30"/>
+            <State name="pushed" offset="90 120 30 30"/>
+            <State name="disabled" offset="90 120 30 30"/>
+        </BasisSkin>
+    </Resource>
+    
 </MyGUI>

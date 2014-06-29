@@ -454,7 +454,7 @@ namespace Demi
         DiVector<DiParticleSystemPtr> ret;
 
         auto stream = DiAssetManager::GetInstance().OpenArchive(file);
-        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
         xmlfile->Load(stream->GetAsString());
         DiXMLElement root = xmlfile->GetRoot();
 
@@ -539,6 +539,20 @@ namespace Demi
         DiXMLElement root = xmlfile->CreateRoot("Effects");
         auto nd = root.CreateChild("ParticleSystem");
         WriteSystem(val, nd);
+        xmlfile->Save(filePath);
+    }
+    
+    void DiFxTokensParser::WriteSystems(DiVector<DiParticleSystemPtr>& val, const DiString& filePath)
+    {
+        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        DiXMLElement root = xmlfile->CreateRoot("Effects");
+        
+        for(auto& ps : val)
+        {
+            auto nd = root.CreateChild("ParticleSystem");
+            WriteSystem(ps, nd);
+        }
+        
         xmlfile->Save(filePath);
     }
 

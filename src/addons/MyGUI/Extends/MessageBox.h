@@ -15,6 +15,7 @@ namespace MyGUI
 	class Message;
 
 	typedef delegates::CMultiDelegate2<Message*, MessageBoxStyle> EventHandle_MessageBoxPtrMessageStyle;
+    typedef std::function<void(Message*, MessageBoxStyle)> EventMessageBoxResult;
 
     class MYGUI_EXPORT Message :
 		public wraps::BaseLayout
@@ -249,6 +250,9 @@ namespace MyGUI
 		*/
 		EventHandle_MessageBoxPtrMessageStyle
 			eventMessageBoxResult;
+        
+        EventMessageBoxResult
+            eventMessageBoxResultLambda;
 
 	protected:
 		void updateSize()
@@ -322,8 +326,11 @@ namespace MyGUI
 
 		void _destroyMessage(MessageBoxStyle _result)
 		{
-			eventMessageBoxResult(this, _result);
-
+            eventMessageBoxResult(this, _result);
+            
+            if(eventMessageBoxResultLambda)
+                eventMessageBoxResultLambda(this, _result);
+            
 			delete this;
 		}
 

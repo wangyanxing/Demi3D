@@ -43,8 +43,14 @@ namespace Demi
         virtual DiBaseEditorObj*    _CreateChildFrom(const DiString& type, const DiAny& param);
 
         virtual void                RemoveChild(const DiBaseEditorObj* child);
+        
+        virtual void                ClearChildren();
 
         DiBaseEditorObj*            GetParent() { return mParent; }
+        
+        DiBaseEditorObj*            LookForParent(const DiString& type);
+        
+        void                        TraversalChildren(const std::function<void(size_t, DiBaseEditorObj*)> func);
 
     public:
 

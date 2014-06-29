@@ -56,12 +56,32 @@ namespace Demi
         void                Update();
         
         void                SetK2ResourcePack(const DiString& resPack, const DiString& texturePack = DiString::BLANK);
+        
+        void                Command_ToolPlay(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolPause(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolStop(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolNew(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolSave(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolOpen(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolReset(const MyGUI::UString& _commandName, bool& _result);
 
     protected:
 
         void                InitFactories();
 
         void                InitCommands();
+        
+        void                SaveAll(const DiString& fxFileName);
+        
+        void                OpenFx(const DiString& fxFileName);
+        
+        void                Reset();
 
     protected:
 
@@ -75,7 +95,11 @@ namespace Demi
 
         DiGridPlanePtr      mGridPlane;
         
+        DiParticleSystemPtr mSelectingFx;
+        
         static DiEditorManager* sEditorMgr;
+        
+        DiString            mFxFileName;
     };
 }
 

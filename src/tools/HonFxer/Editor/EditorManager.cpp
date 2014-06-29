@@ -30,11 +30,19 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "JetControllerObj.h"
 #include "ColliderControllerObj.h"
 #include "ForceControllerObj.h"
+#include "ScaleControllerObj.h"
 #include "K2Configs.h"
 #include "ParticleSystem.h"
 #include "ParticleElement.h"
 #include "ParticleEmitter.h"
 #include "ParticleController.h"
+#include "CommandManager.h"
+#include "TokensParser.h"
+#include "RenderWindow.h"
+#include "Window.h"
+#include "PathLib.h"
+#include "MessageBox.h"
+#include "AssetManager.h"
 
 namespace Demi
 {
@@ -56,6 +64,14 @@ namespace Demi
         mGridPlane = make_shared<DiGridPlane>(30, 10, DiColor(0.1f, 0.1f, 0.1f), DiColor(0.5f, 0.5f, 0.5f));
         mGridPlane->SetMaterial(dbgHelperMat);
         Driver->GetSceneManager()->GetRootNode()->AttachObject(mGridPlane);
+        
+        CommandManager::getInstance().registerCommand("Command_ToolPlay", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolPlay));
+        CommandManager::getInstance().registerCommand("Command_ToolPause", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolPause));
+        CommandManager::getInstance().registerCommand("Command_ToolStop", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolStop));
+        CommandManager::getInstance().registerCommand("Command_ToolNewFile", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolNew));
+        CommandManager::getInstance().registerCommand("Command_ToolSaveFile", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolSave));
+        CommandManager::getInstance().registerCommand("Command_ToolOpenFile", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolOpen));
+        CommandManager::getInstance().registerCommand("Command_ToolReset", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolReset));
     }
 
     DiEditorManager::~DiEditorManager()
@@ -63,6 +79,133 @@ namespace Demi
         SAFE_DELETE(mRootObject);
         
         sEditorMgr = nullptr;
+    }
+    
+    void DiEditorManager::Command_ToolPlay(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if (mSelectingFx)
+        {
+            if(mSelectingFx->GetState() == DiParticleSystem::PSS_PAUSED)
+            {
+                mSelectingFx->Resume();
+            }
+            else if(mSelectingFx->GetState() == DiParticleSystem::PSS_STOPPED)
+            {
+                mSelectingFx->Start();
+            }
+            else
+            {
+                mSelectingFx->Stop();
+                mSelectingFx->Start();
+            }
+        }
+    }
+    
+    void DiEditorManager::Command_ToolPause(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if (mSelectingFx)
+        {
+            mSelectingFx->Pause();
+        }
+    }
+    
+    void DiEditorManager::Command_ToolStop(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if (mSelectingFx)
+        {
+            mSelectingFx->Stop();
+        }
+    }
+    
+    void DiEditorManager::Command_ToolNew(const MyGUI::UString& _commandName, bool& _result)
+    {
+        
+    }
+    
+    void DiEditorManager::Command_ToolSave(const MyGUI::UString& _commandName, bool& _result)
+    {
+        DiString outFolder;
+        void* wndHandle = DiBase::Driver->GetMainRenderWindow()->GetWindow()->GetWndHandle();
+
+        DiVector<DiString> out;
+        DiString filter = "XML effect file(fx)|*.fx|All files (*.*)|*.*";
+        DiPathLib::SaveFileDialog(wndHandle, "Effect file", DiPathLib::GetApplicationPath(), "", filter, 0, out);
+        if (out.size() >= 1)
+        {
+            SaveAll(out[0]);
+        }
+    }
+    
+    void DiEditorManager::Command_ToolOpen(const MyGUI::UString& _commandName, bool& _result)
+    {
+        DiString outFolder;
+        void* wndHandle = DiBase::Driver->GetMainRenderWindow()->GetWindow()->GetWndHandle();
+        
+        DiVector<DiString> out;
+        DiString filter = "XML effect file(fx)|*.fx|All files (*.*)|*.*";
+        DiPathLib::OpenFileDialog(wndHandle, "Effect file", DiAssetManager::GetInstance().GetBasePath(), "", filter, 0, out);
+        if (out.size() >= 1)
+        {
+            OpenFx(out[0]);
+        }
+    }
+    
+    void DiEditorManager::Command_ToolReset(const MyGUI::UString& _commandName, bool& _result)
+    {
+        auto msg = MyGUI::Message::createMessageBox("Message", "Reset",
+                                                    "Do you really want to reset?",
+                                                    MyGUI::MessageBoxStyle::Yes|MyGUI::MessageBoxStyle::No|
+                                                    MyGUI::MessageBoxStyle::IconDefault);
+        
+        msg->eventMessageBoxResultLambda = [this](MyGUI::Message*, MyGUI::MessageBoxStyle style){
+            if(style == MyGUI::MessageBoxStyle::Yes)
+            {
+                Reset();
+            }
+        };
+    }
+    
+    void DiEditorManager::OpenFx(const DiString& fxFileName)
+    {
+        DiString base = fxFileName.ExtractFileName();
+        if(!DiAssetManager::GetInstance().HasArchive(base))
+        {
+            DiString message;
+            message.Format("Cannot find the effect file(%s) in our media folders!", base.c_str());
+            MyGUI::Message::createMessageBox("Message", "Error", message.c_str(),
+                                             MyGUI::MessageBoxStyle::Ok|MyGUI::MessageBoxStyle::IconError);
+            
+            return;
+        }
+        
+        DiFxTokensParser parser;
+        auto res = parser.LoadEffects(base);
+        for(auto& ps : res)
+        {
+            LoadParticleSystem(ps);
+        }
+    }
+    
+    void DiEditorManager::Reset()
+    {
+        mRootObject->ClearChildren();
+        mFxFileName.clear();
+    }
+    
+    void DiEditorManager::SaveAll(const DiString& fxFileName)
+    {
+        DiVector<DiParticleSystemPtr> fxes;
+        mRootObject->TraversalChildren([&](size_t id, DiBaseEditorObj* obj){
+            if(obj->GetType() == "ParticleSystem")
+            {
+                auto psObj = dynamic_cast<DiParticleSystemObj*>(obj);
+                DiParticleSystemPtr ps = psObj->GetParticleSystem();
+                fxes.push_back(ps);
+            }
+        });
+        
+        DiFxTokensParser parser;
+        parser.WriteSystems(fxes, fxFileName);
     }
     
     DiBaseEditorObj* DiEditorManager::LoadParticleSystem(DiParticleSystemPtr ps)
@@ -121,6 +264,19 @@ namespace Demi
         if(mLastCreatedObject == obj)
             mLastCreatedObject = nullptr;
         
+        if(obj->GetType() == "ParticleSystem")
+        {
+            if(dynamic_cast<DiParticleSystemObj*>(obj)->GetParticleSystem() == mSelectingFx)
+            {
+                if(mSelectingFx)
+                {
+                    DI_DEBUG("Change selecting ps from [name = %s] to nullptr", mSelectingFx->GetName().c_str());
+                }
+                
+                mSelectingFx = nullptr;
+            }
+        }
+        
         DI_ASSERT(obj);
         obj->Release();
         SAFE_DELETE(obj);
@@ -133,6 +289,15 @@ namespace Demi
         if (mCurrentSel != sel)
         {
             mCurrentSel = sel;
+            
+            auto psParent = mCurrentSel->LookForParent("ParticleSystem");
+            if(!psParent)
+                return;
+            
+            auto psObj = dynamic_cast<DiParticleSystemObj*>(psParent);
+            
+            mSelectingFx = psObj->GetParticleSystem();
+            DI_DEBUG("Change selecting ps to [name = %s]", mSelectingFx->GetName().c_str());
         }
     }
 
@@ -147,6 +312,7 @@ namespace Demi
         mObjFactories["LineEmitter"]               = [](){return DI_NEW DiLineEmitterObj(); };
 
         mObjFactories["ColorController"]           = [](){return DI_NEW DiColorControllerObj(); };
+        mObjFactories["ScaleController"]           = [](){return DI_NEW DiScaleControllerObj(); };
         mObjFactories["VortexController"]          = [](){return DI_NEW DiVortexControllerObj(); };
         mObjFactories["JetController"]             = [](){return DI_NEW DiJetControllerObj(); };
         mObjFactories["GravityController"]         = [](){return DI_NEW DiGravityControllerObj(); };
@@ -225,7 +391,6 @@ namespace Demi
             mCurrentSel = mLastCreatedObject;
             return true;
         });
-
     }
 
     void DiEditorManager::Update()

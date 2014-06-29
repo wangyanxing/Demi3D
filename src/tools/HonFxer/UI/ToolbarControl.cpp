@@ -25,6 +25,7 @@ namespace tools
         addToolButton("ToolNewFile", "New File");
         addToolButton("ToolOpenFile", "Open File");
         addToolButton("ToolSaveFile", "Save File");
+        addToolButton("ToolReset", "Reset Effects");
         
         addSperator();
         
