@@ -55,7 +55,7 @@ namespace Demi
         menu->removeAllItems();
 
         menu->addItem("Create ParticleSystem", MyGUI::MenuItemType::Normal, "createChild ParticleSystem");
-        //menu->addItem("Create Model", MyGUI::MenuItemType::Normal, "createChild Model");
+        //menu->addItem("Create Reference Model", MyGUI::MenuItemType::Normal, "createChild Model");
     }
 
     DiBaseEditorObj* DiBaseEditorObj::_CreateChild(const DiString& type)
@@ -67,6 +67,19 @@ namespace Demi
         ret->OnCreate();
         ret->OnCreateUI();
 
+        mChildren.push_back(ret);
+        return ret;
+    }
+    
+    DiBaseEditorObj* DiBaseEditorObj::_CreateChildFrom(const DiString& type, const DiAny& param)
+    {
+        DI_LOG("Creating child object with parameter [type = %s]", type.c_str());
+        auto ret = DiEditorManager::Get()->CreateEditorObject(type);
+        
+        ret->mParent = this;
+        ret->OnCreate(param);
+        ret->OnCreateUI();
+        
         mChildren.push_back(ret);
         return ret;
     }

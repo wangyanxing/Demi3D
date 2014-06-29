@@ -39,6 +39,8 @@ namespace Demi
         }
 
         virtual DiBaseEditorObj*    _CreateChild(const DiString& type);
+        
+        virtual DiBaseEditorObj*    _CreateChildFrom(const DiString& type, const DiAny& param);
 
         virtual void                RemoveChild(const DiBaseEditorObj* child);
 
@@ -49,6 +51,8 @@ namespace Demi
         virtual void                OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection);
 
         virtual void                OnCreate() {}
+        
+        virtual void                OnCreate(const DiAny& param) {}
 
         virtual void                OnDestroy() {}
 
@@ -88,6 +92,7 @@ namespace Demi
         UINode*                     mUINode{ nullptr };
 
         PropertyGroups              mPropGroups;
+
     };
 }
 

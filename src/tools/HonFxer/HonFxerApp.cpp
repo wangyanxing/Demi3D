@@ -31,8 +31,139 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SetGameLocationWindow.h"
 #include "EditorToolTip.h"
 
+
+
+#include "EffectManager.h"
+
+#include "K2Model.h"
+#include "K2Clip.h"
+#include "K2Configs.h"
+#include "K2Plugin.h"
+
+#include "ParticleSystem.h"
+#include "ParticleElement.h"
+#include "ParticleEmitter.h"
+#include "BoxEmitter.h"
+#include "ColorController.h"
+#include "TextureRotatorController.h"
+#include "ScaleController.h"
+#include "TokensParser.h"
+
 namespace Demi
 {
+    
+    void InitFx_Repeater01()
+    {
+        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+        
+#if 1
+        // effect
+        auto _ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate("Fx_repeater1");
+        std::shared_ptr<DiTransformUnit> ps(_ps);
+        DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
+        cullnode->AttachObject(ps);
+        _ps->Start();
+        {
+            DiParticleElement* element = _ps->CreateElement();
+            element->SetRenderer("Billboard");
+            auto emitter = element->CreateEmitter("Box");
+            
+            auto mat = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR | SHADER_FLAG_USE_MAP);
+            mat->GetShaderParameter()->WriteTexture2D("map", "glow_01.dds");
+            mat->SetBlendMode(BLEND_ADD);
+            mat->SetDepthWrite(false);
+            element->SetMaterialName(mat->GetName());
+            
+            ((DiBoxEmitter*)emitter)->SetWidth(50);
+            ((DiBoxEmitter*)emitter)->SetHeight(70);
+            ((DiBoxEmitter*)emitter)->SetDepth(50);
+            emitter->position = DiVec3(0, 165, 5);
+            
+            auto rt = DI_NEW DiAttributeFixed();
+            rt->SetValue(30);
+            emitter->SetDynEmissionRate(rt);
+            
+            auto spd = DI_NEW DiAttributeFixed();
+            spd->SetValue(20);
+            emitter->SetDynVelocity(spd);
+            
+            auto ttl = DI_NEW DiAttributeRandom();
+            ttl->SetMinMax(1, 2);
+            emitter->SetDynTotalTimeToLive(ttl);
+            
+            auto sz = DI_NEW DiAttributeRandom();
+            sz->SetMinMax(20, 40);
+            emitter->SetDynParticleAllDimensions(sz);
+            
+            DiColorController* colorCtrl = (DiColorController*)element->CreateController("Color");
+            colorCtrl->AddColour(0, DiColor::Black);
+            colorCtrl->AddColour(0.5f, DiColor(0.25f, 1, 0.5f));
+            colorCtrl->AddColour(1, DiColor::Black);
+        }
+        {
+            DiParticleElement* element = _ps->CreateElement();
+            element->SetRenderer("Billboard");
+            auto emitter = element->CreateEmitter("Box");
+            
+            auto mat = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR | SHADER_FLAG_USE_MAP);
+            auto texture = mat->GetShaderParameter()->WriteTexture2D("map", "mysticenergy2.dds");
+            mat->SetBlendMode(BLEND_ADD);
+            mat->SetDepthWrite(false);
+            element->SetMaterialName(mat->GetName());
+            texture->SetAddressing(AM_CLAMP);
+            
+            ((DiBoxEmitter*)emitter)->SetWidth(50);
+            ((DiBoxEmitter*)emitter)->SetHeight(70);
+            ((DiBoxEmitter*)emitter)->SetDepth(50);
+            emitter->position = DiVec3(0, 165, 5);
+            
+            auto rt = DI_NEW DiAttributeFixed();
+            rt->SetValue(6);
+            emitter->SetDynEmissionRate(rt);
+            
+            auto spd = DI_NEW DiAttributeFixed();
+            spd->SetValue(20);
+            emitter->SetDynVelocity(spd);
+            
+            auto ttl = DI_NEW DiAttributeRandom();
+            ttl->SetMinMax(1, 2);
+            emitter->SetDynTotalTimeToLive(ttl);
+            
+            auto sz = DI_NEW DiAttributeRandom();
+            sz->SetMinMax(20, 40);
+            emitter->SetDynParticleAllDimensions(sz);
+            
+            DiColorController* colorCtrl = (DiColorController*)element->CreateController("Color");
+            colorCtrl->AddColour(0, DiColor::Black);
+            colorCtrl->AddColour(0.5f, DiColor(0.25f, 1, 0.5f));
+            colorCtrl->AddColour(1, DiColor::Black);
+            
+            DiTextureRotatorController* texrotCtrl = (DiTextureRotatorController*)element->CreateController("TextureRotator");
+            texrotCtrl->SetUseOwnRotationSpeed(true);
+            auto rotspeed = DI_NEW DiAttributeRandom();
+            rotspeed->SetMinMax(-100, 100);
+            texrotCtrl->SetRotationSpeed(rotspeed);
+            auto rot = DI_NEW DiAttributeRandom();
+            rot->SetMinMax(0, 300);
+            texrotCtrl->SetRotation(rot);
+        }
+        
+        //DiFxTokensParser parser;
+        //parser.WriteSystem(_ps, "D:/Demi3D_release/ps.xml");
+#else
+        DiFxTokensParser parser;
+        auto pss = parser.LoadEffects("ps1.effect");
+        auto _ps = pss[0];
+        g_fxs.push_back(_ps);
+        std::shared_ptr<DiTransformUnit> ps(_ps);
+        DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
+        cullnode->AttachObject(ps);
+        _ps->Start();
+#endif
+        
+        DiEditorManager::Get()->LoadParticleSystem(_ps);
+    }
+    
     HonFxerApp::HonFxerApp()
         : DemiDemo(DemoConfig("Hon Fxer",1400, 800))
     {
@@ -153,7 +284,8 @@ namespace Demi
         DialogManager::getInstance().initialise();
 
         DI_NEW DiEditorManager();
-        
+
+#if 0
         DiBase::CommandMgr->ExecuteCommand("selectLast");
         
         DiBase::CommandMgr->ExecuteCommand("createChild ParticleSystem");
@@ -164,12 +296,15 @@ namespace Demi
         
         DiBase::CommandMgr->ExecuteCommand("createChild PointEmitter");
         DiBase::CommandMgr->ExecuteCommand("selectLast");
+#endif
         
         mSetResLocWindow = new SetResLocWindow();
         mSetResLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetResLocWindowEndDialog);
         
         mSetGameLocWindow = new SetGameLocWindow();
         mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetGameLocWindowEndDialog);
+        
+        InitFx_Repeater01();
     }
 
     HonFxerApp* HonFxerApp::GetFxApp()

@@ -61,6 +61,17 @@ namespace Demi
         mController = parent->GetParticleElement()->CreateController(GetControllerType());
         mController->SetName(DiEditorManager::Get()->GenerateControllerName(GetControllerType()));
     }
+    
+    void DiControllerBaseObj::OnCreate(const DiAny& param)
+    {
+        mController = any_cast<DiParticleController*>(param);
+        
+        DI_ASSERT(mController);
+        if(mController->GetName().empty())
+        {
+            mController->SetName(DiEditorManager::Get()->GenerateControllerName(GetControllerType()));
+        }
+    }
 
     void DiControllerBaseObj::InitPropertyTable()
     {

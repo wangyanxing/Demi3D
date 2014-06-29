@@ -61,6 +61,17 @@ namespace Demi
         mEmitter = parent->GetParticleElement()->CreateEmitter(GetEmitterType());
         mEmitter->SetName(DiEditorManager::Get()->GenerateEmitterName(GetEmitterType()));
     }
+    
+    void DiEmitterBaseObj::OnCreate(const DiAny& param)
+    {
+        mEmitter = any_cast<DiParticleEmitter*>(param);
+        
+        DI_ASSERT(mEmitter);
+        if(mEmitter->GetName().empty())
+        {
+            mEmitter->SetName(DiEditorManager::Get()->GenerateEmitterName(GetEmitterType()));
+        }
+    }
 
     void DiEmitterBaseObj::InitPropertyTable()
     {

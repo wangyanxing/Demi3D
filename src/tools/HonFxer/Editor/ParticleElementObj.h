@@ -32,6 +32,8 @@ namespace Demi
         virtual void         OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection) override;
 
         virtual void         OnCreate() override;
+        
+        virtual void         OnCreate(const DiAny& param);
 
         virtual void         OnDestroy() override;
 

@@ -31,6 +31,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ColliderControllerObj.h"
 #include "ForceControllerObj.h"
 #include "K2Configs.h"
+#include "ParticleSystem.h"
+#include "ParticleElement.h"
+#include "ParticleEmitter.h"
+#include "ParticleController.h"
 
 namespace Demi
 {
@@ -59,6 +63,40 @@ namespace Demi
         SAFE_DELETE(mRootObject);
         
         sEditorMgr = nullptr;
+    }
+    
+    DiBaseEditorObj* DiEditorManager::LoadParticleSystem(DiParticleSystemPtr ps)
+    {
+        DI_ASSERT(ps);
+        
+        auto psObj = mRootObject->_CreateChildFrom("ParticleSystem", DiAny(ps));
+        
+        size_t numElements = ps->GetNumElements();
+        for(size_t i = 0; i < numElements; ++i)
+        {
+            DiParticleElement* element = ps->GetElement(i);
+            auto elementObj = psObj->_CreateChildFrom("ParticleElement", DiAny(element));
+            
+            // emitters
+            size_t numEmits = element->GetNumEmitters();
+            for(size_t e = 0; e < numEmits; ++e)
+            {
+                DiParticleEmitter* emitter = element->GetEmitter(e);
+                auto type = emitter->GetEmitterType() + "Emitter";
+                elementObj->_CreateChildFrom(type, DiAny(emitter));
+            }
+            
+            // controllers
+            size_t numCtrls = element->GetNumControllers();
+            for(size_t c = 0; c < numCtrls; ++c)
+            {
+                DiParticleController* ctrl = element->GetController(c);
+                auto type = ctrl->GetControllerType() + "Controller";
+                elementObj->_CreateChildFrom(type, DiAny(ctrl));
+            }
+        }
+        
+        return psObj;
     }
 
     DiBaseEditorObj* DiEditorManager::CreateEditorObject(const DiString& type)

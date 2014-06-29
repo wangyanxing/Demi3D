@@ -33,6 +33,9 @@ namespace Demi
         DiBaseEditorObj*    CreateEditorObject(const DiString& type);
 
         void                DeleteEditorObject(DiBaseEditorObj* obj);
+        
+        /// Create all objects from the loaded particle system
+        DiBaseEditorObj*    LoadParticleSystem(DiParticleSystemPtr ps);
 
         DiString            GenerateSystemName();
 

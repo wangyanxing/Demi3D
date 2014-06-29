@@ -55,6 +55,24 @@ namespace Demi
         mSceneNode->AttachObject(mParticleSystem);
         mParticleSystem->Start();
     }
+    
+    void DiParticleSystemObj::OnCreate(const DiAny& param)
+    {
+        mParticleSystem = any_cast<DiParticleSystemPtr>(param);
+        DI_ASSERT(mParticleSystem);
+        
+        if(!mParticleSystem)
+        {
+            DI_ERROR("Cannot init the DiParticleSystemObj with a null particle system pointer");
+            return;
+        }
+        
+        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+        
+        mSceneNode = sm->GetRootNode()->CreateChild();
+        mSceneNode->AttachObject(mParticleSystem);
+        mParticleSystem->Start();
+    }
 
     void DiParticleSystemObj::OnDestroy()
     {

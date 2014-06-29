@@ -15,6 +15,5 @@ void main()
 	if ( gl_FragColor.a < ALPHATEST ) discard;
 #endif
 	
-	gl_FragColor.rgb = gl_FragColor.rgb * vColor.rgb;
-    gl_FragColor.a = vColor.a;
+	gl_FragColor = gl_FragColor * vColor;
 }

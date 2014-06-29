@@ -82,9 +82,20 @@ namespace Demi
         mParticleElement->SetRenderer("Billboard");
         
         // material
-        auto mat = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR | SHADER_FLAG_USE_MAP);
+        auto mat = DiMaterial::QuickCreate("fx_v", "fx_p");
         mat->SetDepthWrite(false);
         mParticleElement->SetMaterialName(mat->GetName());
+    }
+    
+    void DiParticleElementObj::OnCreate(const DiAny& param)
+    {
+        mParticleElement = any_cast<DiParticleElement*>(param);
+        
+        DI_ASSERT(mParticleElement);
+        if(mParticleElement->GetName().empty())
+        {
+            mParticleElement->SetName(DiEditorManager::Get()->GenerateElementName());
+        }
     }
 
     void DiParticleElementObj::OnDestroy()
