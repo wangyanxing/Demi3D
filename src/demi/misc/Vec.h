@@ -29,6 +29,7 @@ namespace Demi
         DiVector() : std::vector<T, std::allocator<T> >() {}
         DiVector(int size) : std::vector<T, std::allocator<T> >(size) {}
         DiVector(int size, const T& val) : std::vector<T, std::allocator<T> >(size, val) {}
+        DiVector(std::initializer_list<T> __il) : std::vector<T, std::allocator<T> >(__il) {}
 
         _iterator find(const T& value)
         {

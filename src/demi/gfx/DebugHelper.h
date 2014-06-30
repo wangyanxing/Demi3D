@@ -67,6 +67,8 @@ namespace Demi
          */
         void            AddLine(const DiVec3& startPos, const DiVec3& endPos, const DiColor& lineColor);
         
+        void            AddCircle(const DiVec3& origin, float radius, const DiColor& lineColor, int segment = 64);
+        
         /** Add a bounding box
          */
         void            AddBoundingBox(const DiAABB& bounds, const DiColor& lineColor);
@@ -80,6 +82,10 @@ namespace Demi
         /** Add a frustum
          */
         void            AddFrustum(const DiFrustum* frustum, const DiColor& lineColor);
+        
+        void            SetFaceToCamera(bool v){ mFaceToCamera = v; }
+
+        bool            GetFaceToCamera(){ return mFaceToCamera; }
         
         void            Clear();
 
@@ -103,6 +109,8 @@ namespace Demi
         
         /// Bounding box
         DiAABB          mBounds;
+        
+        bool            mFaceToCamera{ false };
     };
 }
 

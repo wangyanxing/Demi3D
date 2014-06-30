@@ -129,6 +129,7 @@ namespace Demi
     class    DiConsoleLogger;
     class    DiSimpleShape;
     class    DiGfxCaps;
+    class    DiTransAxes;
 
     class    DiBspNode;
     class    DiBspScene;
@@ -164,6 +165,7 @@ namespace Demi
     typedef shared_ptr<DiTexture>           DiTexturePtr;
     typedef shared_ptr<DiTransformUnit>     DiTransUnitPtr;
     typedef shared_ptr<DiBillboardSet>      DiBillboardSetPtr;
+    typedef shared_ptr<DiTransAxes>    DiTransAxesPtr;
 }
 
 #include "GfxBase.h"

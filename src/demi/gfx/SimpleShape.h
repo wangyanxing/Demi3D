@@ -38,7 +38,8 @@ namespace Demi
         void                    CreateBox(float size = 100);
 
         void                    CreateTorus(float radius = 100, float tube = 40,
-                                            int radialSegments = 8, int tubularSegments = 6);
+                                            int radialSegments = 8, int tubularSegments = 6,
+                                            float arch = DiMath::PI * 2);
 
         void                    CreateSphere(float radius = 100, int segments = 16, int rings = 16);
 
@@ -54,8 +55,6 @@ namespace Demi
 
         DiAABB                  mAABB;
     };
-
 }
-
 
 #endif

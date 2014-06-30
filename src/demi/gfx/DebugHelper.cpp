@@ -18,6 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ShaderManager.h"
 #include "Skeleton.h"
 #include "Bone.h"
+#include "CullNode.h"
 
 namespace Demi
 {
@@ -37,7 +38,7 @@ namespace Demi
         
         mPrimitiveType = PT_LINELIST;
         
-        SetMaterial(DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_COLOR));
+        SetMaterial(DiMaterial::QuickCreate("_dbgHelp", "basic_v", "basic_p", SHADER_FLAG_USE_COLOR));
     }
 
     DiDebugHelper::~DiDebugHelper(void)
@@ -49,6 +50,30 @@ namespace Demi
     void DiDebugHelper::GetWorldTransform(DiMat4* xform) const
     {
         *xform = GetTransform();
+    }
+    
+    void DiDebugHelper::AddCircle(const DiVec3& origin, float radius, const DiColor& lineColor, int segment)
+    {
+        DiVec3 pt(radius, 0, 0);
+        
+        for(int i = 0; i < segment; ++i)
+        {
+            DiVec3 ptNext;
+            if(i == segment - 1)
+            {
+                ptNext = DiVec3(radius, 0, 0);
+            }
+            else
+            {
+                DiQuat rot;
+                DiRadian rad(DiMath::TWO_PI / segment);
+                rot.FromAngleAxis(rad, DiVec3::UNIT_Z);
+                ptNext = rot * pt;
+            }
+            
+            AddLine(origin + pt, origin + ptNext, lineColor);
+            pt = ptNext;
+        }
     }
     
     void DiDebugHelper::AddLine(const DiVec3& startPos, const DiVec3& endPos, const DiColor& lineColor)
@@ -164,6 +189,12 @@ namespace Demi
     void DiDebugHelper::Update(DiCamera* camera)
     {
         Flush();
+        
+        if(mFaceToCamera && mParentNode)
+        {
+        auto rot = camera->GetOrientation();
+            dynamic_cast<DiCullNode*>(mParentNode)->SetOrientation(rot);
+        }
     }
     
     void DiDebugHelper::Flush()

@@ -14,7 +14,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Demi.h"
 #include "DemoFrame.h"
 #include "EnginePlugin.h"
-
+#include "TransGizmo.h"
+#include "TransAxes.h"
+DiTransGizmo* gizmo;
 void InitScene()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
@@ -29,7 +31,7 @@ void InitScene()
     dirlight->SetDirection(DiVec3(0.5f,-0.86f,0).normalisedCopy());
     //dirlight->SetShadowCastEnable(true);
 
-    // visbile mesh for the point light
+#if 0
     DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>("lightSphere");
     lightSphere->CreatePlane(40,40);
     DiMaterialPtr m = DiMaterial::QuickCreate("k2_water_v", "k2_water_p", SHADER_FLAG_USE_ENV_MAP | SHADER_FLAG_ENV_MAP_MIX);
@@ -57,10 +59,15 @@ void InitScene()
     DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
     DiPostEffect* bloom = peMgr->GetEffect("Bloom");
     //bloom->SetEnable(true);
+#endif
+    
+    gizmo = DI_NEW DiTransGizmo();
+    gizmo->SetGizmoMode(Demi::DiTransGizmo::GIZMO_MOVE);
 }
 
 void UpdateScene()
 {
+    gizmo->Update();
 }
 
 int main(int argc, char *argv[])

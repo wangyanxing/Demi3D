@@ -143,10 +143,8 @@ namespace Demi
         mAABB.SetMinimum(-SPHERE_RADIUS,-SPHERE_RADIUS,-SPHERE_RADIUS);
     }
 
-    void DiSimpleShape::CreateTorus(float radius, float tube, int radialSegments, int tubularSegments)
+    void DiSimpleShape::CreateTorus(float radius, float tube, int radialSegments, int tubularSegments, float arc)
     {
-        float arc = DiMath::PI * 2;
-
         ReleaseSourceData();
         ReleaseIndexBuffer();
         ReleaseVertexDeclaration();
@@ -173,8 +171,6 @@ namespace Demi
         mVerticesNum = (radialSegments + 1) * (tubularSegments + 1);
         mPrimitiveCount = 2 * radialSegments * tubularSegments;
 
-        // data
-
         uint32 vbsize = mVerticesNum * sizeof(float) * (3 + 3 + 2);
         mSourceData[0]->Create(vbsize);
 
@@ -183,7 +179,7 @@ namespace Demi
 
         DiVec3 center(0,0,0);
 
-        for ( int j = 0; j <= radialSegments; j++ ) 
+        for ( int j = 0; j <= radialSegments; j++ )
         {
             for ( int i = 0; i <= tubularSegments; i++ ) 
             {
