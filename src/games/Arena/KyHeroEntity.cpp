@@ -1,7 +1,7 @@
 #include "ArenaPch.h"
-#include "KyEntity.h"
+#include "KyUnitEntity.h"
 #include "KyHeroEntity.h"
 
-//KyImplementRTTI(KyHeroEntity, KyEntity);
+//KyImplementRTTI(KyHeroEntity, KyUnitEntity);
 
 

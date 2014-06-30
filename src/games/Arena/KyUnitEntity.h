@@ -1,5 +1,5 @@
-#ifndef KyEntity_h__
-#define KyEntity_h__
+#ifndef KyUnitEntity_h__
+#define KyUnitEntity_h__
 
 #include "KyDefines.h"
 #include "KyObject.h"
@@ -24,7 +24,7 @@ private:                                    \
     Ar##Property*  m##Property;
 
 
-class KyEntity : public KyObject
+class KyUnitEntity : public KyObject
 {
 	KyDeclareRTTI;
 public:
@@ -45,8 +45,8 @@ public:
     }
 
 public:
-	KyEntity(){}
-    virtual ~KyEntity();
+    KyUnitEntity(){}
+    virtual ~KyUnitEntity();
 
     void Init();
 

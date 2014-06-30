@@ -23,8 +23,8 @@ private:
 
     KyPlayer     mPlayer[MAX_PLAYER_COUNT];
 
-    KyUnitMgr*	 mUnitMgr{ nullptr };
-    KyEffectMgr* mEffectMgr{ nullptr };
+    KyHeroMgr*	 mHeroMgr{ nullptr };
+    KyNpcMgr*    mNpcMgr{ nullptr };
 };
 
 #endif

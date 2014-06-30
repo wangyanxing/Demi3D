@@ -31,23 +31,23 @@ private:
 };
 
 
-class KyUnitMgr : public KyObjectMgr
+class KyHeroMgr : public KyObjectMgr
 {
 	KyDeclareRTTI;
 public:
-    KyUnitMgr() : KyObjectMgr(KOT_UNIT) {}
-	virtual ~KyUnitMgr(){}
+    KyHeroMgr() : KyObjectMgr(KOT_HERO) {}
+    virtual ~KyHeroMgr(){}
 
 protected:
     virtual KyObject* _NewObj(uint32 typeID);
 };
 
-class KyEffectMgr : public KyObjectMgr
+class KyNpcMgr : public KyObjectMgr
 {
 	KyDeclareRTTI;
 public:
-    KyEffectMgr() : KyObjectMgr(KOT_EFFECT) {}
-	virtual ~KyEffectMgr(){}
+    KyNpcMgr() : KyObjectMgr(KOT_NPC) {}
+    virtual ~KyNpcMgr(){}
 
 protected:
     virtual KyObject* _NewObj(uint32 typeID);

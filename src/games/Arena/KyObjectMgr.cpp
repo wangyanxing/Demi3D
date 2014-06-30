@@ -3,8 +3,8 @@
 #include "KyMain.h"
 
 KyImplementRootRTTI(KyObjectMgr);
-KyImplementRTTI(KyUnitMgr,KyObjectMgr);
-KyImplementRTTI(KyEffectMgr,KyObjectMgr);
+KyImplementRTTI(KyHeroMgr,KyObjectMgr);
+KyImplementRTTI(KyNpcMgr, KyObjectMgr);
 
 KyObject* KyObjectMgr::AddObj(uint32 typeID)
 {
@@ -74,12 +74,12 @@ void KyObjectMgr::Update(float deltaTime)
     }
 }
 
-KyObject* KyUnitMgr::_NewObj(uint32 typeID)
+KyObject* KyHeroMgr::_NewObj(uint32 typeID)
 {
 	return nullptr;
 }
 
-KyObject* KyEffectMgr::_NewObj(uint32 typeID)
+KyObject* KyNpcMgr::_NewObj(uint32 typeID)
 {
 	return nullptr;
 }

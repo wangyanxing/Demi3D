@@ -10,10 +10,12 @@ const size_t npos = static_cast<size_t>(~0);
 
 class KyMain;
 class KyObject;
-class KyEntity;
 class KyObjectMgr;
-class KyUnitMgr;
-class KyEffectMgr;
+class KyUnitEntity;
+class KyHeroEntity;
+class KyNpcEntity;
+class KyHeroMgr;
+class KyNpcMgr;
 
 
 class KyMainContext
@@ -31,9 +33,9 @@ enum KyObjectType
 {
     KOT_INVALID  = 0,
 
-    KOT_UNIT        ,
-    KOT_EFFECT      ,
-    KOT_SKILL       ,
+    KOT_HERO        ,
+    KOT_NPC         ,
+    KOT_ABILITY     ,
 };
 
 enum KyPlayerType

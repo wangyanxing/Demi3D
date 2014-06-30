@@ -1,9 +1,9 @@
 #include "ArenaPch.h"
-#include "KyEntity.h"
+#include "KyUnitEntity.h"
 
-KyImplementRTTI(KyEntity,KyObject);
+KyImplementRTTI(KyUnitEntity, KyObject);
 
-KyEntity::~KyEntity()
+KyUnitEntity::~KyUnitEntity()
 {
     auto it = mPropertyMap.begin();
     auto itEnd = mPropertyMap.end();
@@ -16,7 +16,7 @@ KyEntity::~KyEntity()
     mPropertyMap.clear();
 }
 
-void KyEntity::Update(float deltaTime)
+void KyUnitEntity::Update(float deltaTime)
 {
     auto it = mPropertyMap.begin();
     auto itEnd = mPropertyMap.end();
@@ -27,7 +27,7 @@ void KyEntity::Update(float deltaTime)
     }
 }
 
-void KyEntity::Init()
+void KyUnitEntity::Init()
 {
     //auto world = ArGameApp::Get()->GetWorld();
     //mRenderObj = world->CreateRenderObject(type);
