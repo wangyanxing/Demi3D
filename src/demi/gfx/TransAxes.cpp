@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "IndexBuffer.h"
 #include "VertexBuffer.h"
 #include "VertexDeclaration.h"
+#include "CullNode.h"
 
 namespace Demi
 {
@@ -80,6 +81,10 @@ namespace Demi
         ru->mPrimitiveType = primType;
         ru->mPrimitiveCount = ru->mVerticesNum;
         
+        ru->mEventUpdateTransform = [this](DiMat4* m){
+            *m = GetTransform();
+        };
+        
         return ru;
     }
     
@@ -133,14 +138,14 @@ namespace Demi
         default:
             ru->mPrimitiveCount = 0;
         }
+        
+        ru->mEventUpdateTransform = [this](DiMat4* m){
+            *m = GetTransform();
+        };
+        
         return ru;
     }
 
-    void DiTransAxes::GetWorldTransform(DiMat4* xform) const
-    {
-        *xform = GetTransform();
-    }
-    
     const DiAABB& DiTransAxes::GetBoundingBox(void) const
     {
         return mBounds;
@@ -174,6 +179,55 @@ namespace Demi
 
     void DiTransAxes::Update(DiCamera* camera)
     {
+    }
+    
+    DiTransAxes::PickResult DiTransAxes::Pick(const DiRay& ray)
+    {
+        if(!mParentNode)
+        {
+            return PICK_NONE;
+        }
+        
+        DiCullNode* node = dynamic_cast<DiCullNode*>(mParentNode);
+        DiMat4 mat = node->GetFullTransform();
+        
+        if(mShowArraow)
+        {
+            for(int i = 0; i < 3; ++i)
+            {
+                DiVector<DiVec3> verts;
+                verts.reserve(mArrawVertices[i].size());
+                
+                for (auto& v : mArrawVertices[i])
+                {
+                    verts.push_back(mat * v);
+                }
+                
+                for (size_t j = 0; j < verts.size(); j+=3)
+                {
+                    auto ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
+                    if(ret.first)
+                    {
+                        return DiTransAxes::PickResult(PICK_MOVE_X + i);
+                    }
+                }
+            }
+        }
+        
+        if(mShowScale)
+        {
+            
+        }
+        
+        for(int i = 0; i < 3; ++i)
+        {
+            if(mShowScalePlane[i])
+            {
+                
+            }
+        }
+        
+        return PICK_NONE;
     }
     
     void DiTransAxes::Create()
@@ -295,6 +349,12 @@ namespace Demi
             ids.push_back(16);
             ids.push_back(1);
             
+            // save data for picking
+            mArrawVertices[i].clear();
+            for(auto& id : ids)
+            {
+                mArrawVertices[i].push_back(DiVec3(verts[id].x,verts[id].y,verts[id].z));
+            }
             mArraw[i] = AddMeshes(verts, ids, PT_TRIANGLELIST);
         }
         

@@ -50,7 +50,10 @@ namespace Demi
 
     void DiRenderUnit::GetWorldTransform( DiMat4* xform ) const
     {
-        *xform = DiMat4::IDENTITY;
+        if(mEventUpdateTransform)
+            mEventUpdateTransform(xform);
+        else
+            *xform = DiMat4::IDENTITY;
     }
 
     DiMaterialPtr DiRenderUnit::SetMaterial( const DiString& name )

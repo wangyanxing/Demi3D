@@ -14,9 +14,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Demi.h"
 #include "DemoFrame.h"
 #include "EnginePlugin.h"
-#include "TransGizmo.h"
 #include "TransAxes.h"
-DiTransGizmo* gizmo;
+
 void InitScene()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
@@ -60,14 +59,10 @@ void InitScene()
     DiPostEffect* bloom = peMgr->GetEffect("Bloom");
     //bloom->SetEnable(true);
 #endif
-    
-    gizmo = DI_NEW DiTransGizmo();
-    gizmo->SetGizmoMode(Demi::DiTransGizmo::GIZMO_MOVE);
 }
 
 void UpdateScene()
 {
-    gizmo->Update();
 }
 
 int main(int argc, char *argv[])

@@ -14,13 +14,14 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiTransGizmoHelper_h__
 #define DiTransGizmoHelper_h__
 
-#include "GfxPrerequisites.h"
+#include "FxerPrerequisites.h"
+#include "OISMouse.h"
 
 namespace Demi
 {
     /** Transform gizmo class
      */
-    class DI_GFX_API DiTransGizmo
+    class DiTransGizmo
     {
     public:
         
@@ -40,9 +41,17 @@ namespace Demi
 
         void            Update();
         
+        void            RayPick(const DiRay& ray);
+        
         void            SetGizmoMode(GizmoMode mode);
         
         GizmoMode       GetGizmoMode() { return mMode; }
+        
+        void            OnMouseMove(const OIS::MouseEvent& event);
+        
+        void            OnMouseDown(const OIS::MouseEvent& event);
+        
+        void            OnMouseUp(const OIS::MouseEvent& event);
         
     protected:
         

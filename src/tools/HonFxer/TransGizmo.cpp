@@ -18,6 +18,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DebugHelper.h"
 #include "CullNode.h"
 #include "SceneManager.h"
+#include "RenderWindow.h"
+#include "RenderTarget.h"
 
 namespace Demi
 {
@@ -72,15 +74,27 @@ namespace Demi
         for(int i = 0; i < 3; ++i)
         {
             auto dir = camera->GetDerivedPosition() - pos;
-            
             DiPlane plane(planeNormal[i], 0);
             dir = plane.projectVector(dir);
             dir.normalise();
             
             auto rotation = dirOrig[i].getRotationTo(dir);
-            
             mRotateRingNode[i]->SetOrientation(rotation * defaultRot[i]);
         }
+        
+		DiVec4 rect;
+		int iLeft,iTop,iWidth,iHeight;
+        
+        float width = DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->GetWidth();
+        float height = DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->GetHeight();
+
+		float minsize = std::min(width, height);
+		float distance = (mBaseNode->GetDerivedPosition() - camera->GetDerivedPosition()).length();
+        
+		distance /= (minsize / 20.0f);
+		distance *= 1;
+
+        mBaseNode->SetScale(distance,distance,distance);
     }
     
     void DiTransGizmo::HideAll()
@@ -88,8 +102,40 @@ namespace Demi
         mAxesNode->SetVisible(false);
         
         mRotateCircleNode->SetVisible(false);
+        
         for(int i = 0; i < 3; ++i)
             mRotateRingNode[i]->SetVisible(false);
+    }
+    
+    void DiTransGizmo::RayPick(const DiRay& ray)
+    {
+        if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
+        {
+            DiTransAxes::PickResult ret = mAxes->Pick(ray);
+            if(ret != DiTransAxes::PICK_NONE)
+            {
+                DI_DEBUG("Pick: %d", ret);
+            }
+        }
+        else if(mMode == GIZMO_ROTATE)
+        {
+            
+        }
+    }
+    
+    void DiTransGizmo::OnMouseMove(const OIS::MouseEvent& event)
+    {
+        
+    }
+    
+    void DiTransGizmo::OnMouseDown(const OIS::MouseEvent& event)
+    {
+        
+    }
+    
+    void DiTransGizmo::OnMouseUp(const OIS::MouseEvent& event)
+    {
+        
     }
     
     void DiTransGizmo::Create()

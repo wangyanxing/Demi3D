@@ -87,6 +87,8 @@ namespace Demi
         bool                        mIdentityProjection;
 
         uint32                      mFlags;
+        
+        std::function<void(DiMat4* xform)> mEventUpdateTransform;
     };
 
 }

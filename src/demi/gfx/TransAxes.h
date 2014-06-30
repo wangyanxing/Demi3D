@@ -56,10 +56,29 @@ namespace Demi
         DiTransAxes(void);
 
         ~DiTransAxes(void);
+        
+        enum PickResult
+        {
+            PICK_NONE = 0,
+            
+            PICK_MOVE_X,
+            PICK_MOVE_Y,
+            PICK_MOVE_Z,
+            PICK_MOVE_XY,
+            PICK_MOVE_YZ,
+            PICK_MOVE_XZ,
+            PICK_MOVE_XYZ,
+            
+            PICK_SCALE_X,
+            PICK_SCALE_Y,
+            PICK_SCALE_Z,
+            PICK_SCALE_XY,
+            PICK_SCALE_YZ,
+            PICK_SCALE_XZ,
+            PICK_SCALE_XYZ,
+        };
 
     public:
-
-        void            GetWorldTransform(DiMat4* xform) const;
 
         const DiAABB&   GetBoundingBox(void) const;
 
@@ -80,6 +99,8 @@ namespace Demi
         void            SetShowScalePlane(int id, bool v) {mShowScalePlane[id] = v;}
         
         bool            GetShowScalePlane(int id) {return mShowScalePlane[id];}
+        
+        PickResult      Pick(const DiRay& ray);
         
     protected:
         
@@ -116,6 +137,9 @@ namespace Demi
         bool            mShowScale{ false };
         
         bool            mShowScalePlane[3]{false,false,false};
+        
+        /// Arraw vertices, for picking
+        DiVector<DiVec3> mArrawVertices[3];
     };
 }
 
