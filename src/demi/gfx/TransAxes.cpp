@@ -30,10 +30,23 @@ namespace Demi
 
     DiTransAxes::~DiTransAxes(void)
     {
-        for(auto& ru : mMehses)
+        mLines->ReleaseSourceData();
+        DI_DELETE mLines;
+        mLines = nullptr;
+        
+        mScaleLines->ReleaseSourceData();
+        DI_DELETE mScaleLines;
+        mScaleLines = nullptr;
+        
+        for(int i = 0; i < 3; ++i)
         {
-            ru->ReleaseSourceData();
-            DI_DELETE ru;
+            mArraw[i]->ReleaseSourceData();
+            DI_DELETE mArraw[i];
+            mArraw[i] = nullptr;
+            
+            mScaleBlock[i]->ReleaseSourceData();
+            DI_DELETE mScaleBlock[i];
+            mScaleBlock[i] = nullptr;
         }
         
         if (mVertexDecl)
@@ -42,8 +55,6 @@ namespace Demi
             DI_DELETE mVertexDecl;
             mVertexDecl = nullptr;
         }
-        
-        mMehses.clear();
     }
     
     DiRenderUnit* DiTransAxes::AddMeshes(const DiVector<GizmoVert>& verts,
@@ -68,8 +79,6 @@ namespace Demi
         ru->mVerticesNum = verts.size();
         ru->mPrimitiveType = primType;
         ru->mPrimitiveCount = ru->mVerticesNum;
-        
-        mMehses.push_back(ru);
         
         return ru;
     }
@@ -124,9 +133,6 @@ namespace Demi
         default:
             ru->mPrimitiveCount = 0;
         }
-        
-        mMehses.push_back(ru);
-
         return ru;
     }
 
@@ -137,15 +143,26 @@ namespace Demi
     
     const DiAABB& DiTransAxes::GetBoundingBox(void) const
     {
-        //return mBounds;
-        return DiAABB::BOX_INFINITE;
+        return mBounds;
     }
 
     void DiTransAxes::AddToBatchGroup(DiRenderBatchGroup* bg)
     {
-        for(auto& ru : mMehses)
+        bg->AddRenderUnit(mLines);
+        
+        if(mShowScale)
+            bg->AddRenderUnit(mScaleLines);
+        
+        for(int i = 0; i < 3; ++i)
         {
-            bg->AddRenderUnit(ru);
+            if(mShowScale)
+                bg->AddRenderUnit(mScaleBlock[i]);
+            
+            if(mShowArraow)
+                bg->AddRenderUnit(mArraw[i]);
+            
+            if(mShowScalePlane[i])
+                bg->AddRenderUnit(mScalePlane[i]);
         }
     }
 
@@ -166,14 +183,61 @@ namespace Demi
         mVertexDecl->AddElement(0, VERT_TYPE_COLOR,  VERT_USAGE_COLOR);
         mVertexDecl->Create();
         
-        DiMaterial::QuickCreate("_transformGizmo", "basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
+        auto mat = DiMaterial::QuickCreate("_transformGizmo", "basic_v", "basic_p", SHADER_FLAG_USE_COLOR);
+        mat->SetDepthCheck(false);
+        mat->SetBlendMode(BLEND_ALPHA);
         
-        AddMeshes(
+        mLines = AddMeshes(
         {
             GizmoVert(0,0,0, DiColor::Red),    GizmoVert(3,0,0, DiColor::Red),
             GizmoVert(0,0,0, DiColor::Green),  GizmoVert(0,3,0, DiColor::Green),
             GizmoVert(0,0,0, DiColor::Blue),   GizmoVert(0,0,3, DiColor::Blue),
-        },   PT_LINELIST);
+        }, PT_LINELIST);
+        
+        float scaleLine0 = 1;
+        float scaleLine1 = 1.5;
+        mScaleLines = AddMeshes(
+        {
+            GizmoVert(scaleLine0,0,0, DiColor::Red),    GizmoVert(scaleLine0/2,scaleLine0/2,0, DiColor::Red),
+            GizmoVert(scaleLine0,0,0, DiColor::Red),    GizmoVert(scaleLine0/2,0,scaleLine0/2, DiColor::Red),
+            
+            GizmoVert(0,scaleLine0,0, DiColor::Green),  GizmoVert(scaleLine0/2,scaleLine0/2,0, DiColor::Green),
+            GizmoVert(0,scaleLine0,0, DiColor::Green),  GizmoVert(0,scaleLine0/2,scaleLine0/2, DiColor::Green),
+            
+            GizmoVert(0,0,scaleLine0, DiColor::Blue),   GizmoVert(0,scaleLine0/2,scaleLine0/2, DiColor::Blue),
+            GizmoVert(0,0,scaleLine0, DiColor::Blue),   GizmoVert(scaleLine0/2,0,scaleLine0/2, DiColor::Blue),
+            
+            GizmoVert(scaleLine1,0,0, DiColor::Red),    GizmoVert(scaleLine1/2,scaleLine1/2,0, DiColor::Red),
+            GizmoVert(scaleLine1,0,0, DiColor::Red),    GizmoVert(scaleLine1/2,0,scaleLine1/2, DiColor::Red),
+            
+            GizmoVert(0,scaleLine1,0, DiColor::Green),  GizmoVert(scaleLine1/2,scaleLine1/2,0, DiColor::Green),
+            GizmoVert(0,scaleLine1,0, DiColor::Green),  GizmoVert(0,scaleLine1/2,scaleLine1/2, DiColor::Green),
+            
+            GizmoVert(0,0,scaleLine1, DiColor::Blue),   GizmoVert(0,scaleLine1/2,scaleLine1/2, DiColor::Blue),
+            GizmoVert(0,0,scaleLine1, DiColor::Blue),   GizmoVert(scaleLine1/2,0,scaleLine1/2, DiColor::Blue),
+        }, PT_LINELIST);
+        
+        DiColor planeCol(1,1,0,0.3f);
+        mScalePlane[0] = AddMeshes(
+        {
+            GizmoVert(scaleLine1,0,0, planeCol),
+            GizmoVert(0,scaleLine1,0, planeCol),
+            GizmoVert(0,0,0, planeCol),
+        }, PT_TRIANGLELIST);
+        
+        mScalePlane[1] = AddMeshes(
+        {
+            GizmoVert(scaleLine1,0,0, planeCol),
+            GizmoVert(0,0,scaleLine1, planeCol),
+            GizmoVert(0,0,0, planeCol),
+        }, PT_TRIANGLELIST);
+        
+        mScalePlane[2] = AddMeshes(
+        {
+            GizmoVert(0,scaleLine1,0, planeCol),
+            GizmoVert(0,0,scaleLine1, planeCol),
+            GizmoVert(0,0,0, planeCol),
+        }, PT_TRIANGLELIST);
         
         /////////////////////////////////////////////
         
@@ -231,7 +295,75 @@ namespace Demi
             ids.push_back(16);
             ids.push_back(1);
             
-            AddMeshes(verts, ids, PT_TRIANGLELIST);
+            mArraw[i] = AddMeshes(verts, ids, PT_TRIANGLELIST);
         }
+        
+        float CUBE_HALF_SIZE = 0.15f;
+        for(auto i = 0; i < 3; ++i)
+        {
+            DiVector<GizmoVert> verts =
+            {
+                GizmoVert(-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE,  CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                GizmoVert(-CUBE_HALF_SIZE,  CUBE_HALF_SIZE, CUBE_HALF_SIZE , color[i]),
+                
+                GizmoVert(CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                GizmoVert(-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                GizmoVert(-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                
+                GizmoVert(-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                GizmoVert(-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                GizmoVert(-CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                GizmoVert(-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                
+                GizmoVert(CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                
+                GizmoVert(-CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                GizmoVert(-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+
+                GizmoVert(-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, color[i]),
+                GizmoVert(CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+                GizmoVert(-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, color[i]),
+            };
+            
+            auto aux = bias[i] * axesLineLength;
+            
+            for(auto& vet : verts)
+            {
+                vet.x += aux.x;
+                vet.y += aux.y;
+                vet.z += aux.z;
+            }
+            
+            DiVector<uint16> ids=
+            {
+                0,1,2,
+                0,2,3,
+                4,5,6,
+                4,6,7,
+                8,9,10,
+                8,10,11,
+                12,13,14,
+                12,14,15,
+                16,17,18,
+                16,18,19,
+                20,21,22,
+                20,22,23
+            };
+            
+            mScaleBlock[i] = AddMeshes(verts, ids, PT_TRIANGLELIST);
+        }
+        
+        mBounds.Merge(DiVec3(4,0,0));
+        mBounds.Merge(DiVec3(0,4,0));
+        mBounds.Merge(DiVec3(0,0,4));
     }
 }

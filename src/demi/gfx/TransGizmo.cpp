@@ -47,6 +47,8 @@ namespace Demi
                 
             case GIZMO_ROTATE:
                 mRotateCircleNode->SetVisible(true);
+                for(int i = 0; i < 3; ++i)
+                    mRotateRingNode[i]->SetVisible(true);
                 break;
                 
             default:
@@ -56,12 +58,38 @@ namespace Demi
     
     void DiTransGizmo::Update()
     {
+        auto camera = DiBase::Driver->GetSceneManager()->GetCamera();
+        auto pos = mBaseNode->GetDerivedPosition();
+        
+        DiQuat defaultRot[3];
+        defaultRot[0].FromAngleAxis(DiRadian(DiDegree(90)), DiVec3::UNIT_Y);
+        defaultRot[1].FromAngleAxis(DiRadian(DiDegree(90)), DiVec3::UNIT_X);
+        defaultRot[2] = DiQuat::IDENTITY;
+        
+        DiVec3 planeNormal[3] = {DiVec3::UNIT_X, DiVec3::UNIT_Y, DiVec3::UNIT_Z};
+        DiVec3 dirOrig[3] = {DiVec3::UNIT_Y, DiVec3::UNIT_Z, DiVec3::UNIT_Y};
+        
+        for(int i = 0; i < 3; ++i)
+        {
+            auto dir = camera->GetDerivedPosition() - pos;
+            
+            DiPlane plane(planeNormal[i], 0);
+            dir = plane.projectVector(dir);
+            dir.normalise();
+            
+            auto rotation = dirOrig[i].getRotationTo(dir);
+            
+            mRotateRingNode[i]->SetOrientation(rotation * defaultRot[i]);
+        }
     }
     
     void DiTransGizmo::HideAll()
     {
         mAxesNode->SetVisible(false);
+        
         mRotateCircleNode->SetVisible(false);
+        for(int i = 0; i < 3; ++i)
+            mRotateRingNode[i]->SetVisible(false);
     }
     
     void DiTransGizmo::Create()
@@ -75,8 +103,8 @@ namespace Demi
         
         mCircles = make_shared<DiDebugHelper>();
         mCircles->SetFaceToCamera(true);
-        mCircles->AddCircle(DiVec3::ZERO, 4, DiColor());
-        mCircles->AddCircle(DiVec3::ZERO, 3, DiColor(0.2f,0.2f,0.2f));
+        mCircles->AddCircle(DiVec3::ZERO, 4.3f, DiColor());
+        mCircles->AddCircle(DiVec3::ZERO, 3.5f, DiColor(0.2f,0.2f,0.2f));
         mRotateCircleNode = mBaseNode->CreateChild();
         mRotateCircleNode->AttachObject(mCircles);
         
@@ -95,7 +123,6 @@ namespace Demi
             mRotateRings[i]->SetMaterial(mat);
             mRotateRingNode[i] = mBaseNode->CreateChild();
             mRotateRingNode[i]->AttachObject(mRotateRings[i]);
-            mRotateRingNode[i]->SetOrientation(rot[i]);
         }
         
         HideAll();

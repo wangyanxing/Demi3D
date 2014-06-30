@@ -69,6 +69,18 @@ namespace Demi
 
         DiString&       GetType();
         
+        bool            IsShowArraw() {return mShowArraow;}
+        
+        bool            IsShowScale() {return mShowScale;}
+        
+        void            SetShowArraw(bool v) {mShowArraow = v;}
+        
+        void            SetShowScale(bool v) {mShowScale = v;}
+        
+        void            SetShowScalePlane(int id, bool v) {mShowScalePlane[id] = v;}
+        
+        bool            GetShowScalePlane(int id) {return mShowScalePlane[id];}
+        
     protected:
         
         /** Create the geometry data
@@ -87,9 +99,23 @@ namespace Demi
         /// Bounding box
         DiAABB          mBounds;
         
-        DiVector<DiRenderUnit*> mMehses;
+        DiRenderUnit*   mLines{ nullptr };
+        
+        DiRenderUnit*   mArraw[3]{ nullptr,nullptr,nullptr };
+        
+        DiRenderUnit*   mScaleBlock[3]{ nullptr,nullptr,nullptr };
+        
+        DiRenderUnit*   mScaleLines{ nullptr };
+        
+        DiRenderUnit*   mScalePlane[3]{ nullptr,nullptr,nullptr };
         
         DiVertexDeclaration*    mVertexDecl{ nullptr };
+        
+        bool            mShowArraow{ true };
+        
+        bool            mShowScale{ false };
+        
+        bool            mShowScalePlane[3]{false,false,false};
     };
 }
 
