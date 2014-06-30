@@ -15,7 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define DiTransGizmoHelper_h__
 
 #include "FxerPrerequisites.h"
-#include "OISMouse.h"
+#include "MyGUI_MouseButton.h"
 
 namespace Demi
 {
@@ -41,17 +41,21 @@ namespace Demi
 
         void            Update();
         
-        void            RayPick(const DiRay& ray);
-        
         void            SetGizmoMode(GizmoMode mode);
         
         GizmoMode       GetGizmoMode() { return mMode; }
         
-        void            OnMouseMove(const OIS::MouseEvent& event);
+        void            OnMouseMove(int _left, int _top);
         
-        void            OnMouseDown(const OIS::MouseEvent& event);
+        void            OnMouseDown(int _left, int _top, MyGUI::MouseButton _id);
         
-        void            OnMouseUp(const OIS::MouseEvent& event);
+        void            OnMouseUp(int _left, int _top, MyGUI::MouseButton _id);
+        
+        void            Show(bool visible);
+        
+        bool            IsActive(){return mActive;}
+        
+        DiCullNode*     GetNode(){ return mBaseNode; }
         
     protected:
         
@@ -69,7 +73,7 @@ namespace Demi
         
         DiCullNode*     mScaleNode{ nullptr };
         
-        GizmoMode       mMode{GIZMO_HIDE};
+        GizmoMode       mMode{GIZMO_MOVE};
         
         DiDebugHelperPtr mCircles;
         
@@ -78,6 +82,10 @@ namespace Demi
         DiSimpleShapePtr mRotateRings[3];
         
         DiCullNode*     mRotateRingNode[3]{nullptr,nullptr,nullptr};
+        
+        bool            mPicking{ false };
+        
+        bool            mActive{ true };
     };
 }
 

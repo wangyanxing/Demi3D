@@ -30,6 +30,7 @@ namespace Demi
     class DiBaseEditorObj; 
     class DiPanelGroup;
     class DiPropertyItem;
+    class DiTransGizmo;
     
     typedef DiProperty<DiTexturePtr, PROPERTY_TEXTURE> DiTextureProperty;
 }

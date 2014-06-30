@@ -19,16 +19,19 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MainWorkspaceControl.h"
 #include "MainPaneControl.h"
 #include "PanelView.h"
+#include "TransGizmo.h"
 
 namespace Demi
 {
     DiBaseEditorObj::DiBaseEditorObj()
     {
-        //DiEditorManager::Get()->SetCurrentSelection(this);
+        mGizmo = DI_NEW DiTransGizmo();
+        mGizmo->Show(false);
     }
 
     DiBaseEditorObj::~DiBaseEditorObj()
     {
+        SAFE_DELETE(mGizmo);
     }
     
     void DiBaseEditorObj::Release()
@@ -147,6 +150,11 @@ namespace Demi
         InitPropertyTable();
     }
     
+    void DiBaseEditorObj::OnSelectLost()
+    {
+        mGizmo->Show(false);
+    }
+    
     void DiBaseEditorObj::OnSelect()
     {
         auto lastSelection = DiEditorManager::Get()->GetCurrentSelection();
@@ -160,6 +168,8 @@ namespace Demi
         DiEditorManager::Get()->SetCurrentSelection(this);
         
         SetPropertyTableVisible(true);
+        
+        mGizmo->Show(true);
     }
 
     void DiBaseEditorObj::OnDestroyUI()
@@ -182,6 +192,8 @@ namespace Demi
 
     void DiBaseEditorObj::Update(float dt)
     {
+        mGizmo->Update();
+        
         for (auto ch : mChildren)
         {
             ch->Update(dt);
@@ -195,5 +207,23 @@ namespace Demi
             DI_DELETE g;
         }
         mPropGroups.clear();
+    }
+    
+    void DiBaseEditorObj::NotifyMousePressed(int _left, int _top, MyGUI::MouseButton _id)
+    {
+        if(mGizmo->IsActive())
+            mGizmo->OnMouseDown(_left, _top, _id);
+    }
+    
+    void DiBaseEditorObj::NotifyMouseReleased(int _left, int _top, MyGUI::MouseButton _id)
+    {
+        if(mGizmo->IsActive())
+            mGizmo->OnMouseUp(_left, _top, _id);
+    }
+    
+    void DiBaseEditorObj::NotifyMouseMove(int _left, int _top)
+    {
+        if(mGizmo->IsActive())
+            mGizmo->OnMouseMove(_left, _top);
     }
 }

@@ -21,6 +21,12 @@ namespace tools
         bool mouseInCanvas();
 
         void updateInfo();
+        
+        void NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+        
+        void NotifyButtonReleased(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+        
+        void NotifyMouseMove(MyGUI::Widget* _sender, int _left, int _top);
 
     protected:
 

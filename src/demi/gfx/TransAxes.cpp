@@ -200,7 +200,7 @@ namespace Demi
                 
                 for (auto& v : mArrawVertices[i])
                 {
-                    verts.push_back(mat * v);
+                    verts.push_back(mat.transformAffine(v));
                 }
                 
                 for (size_t j = 0; j < verts.size(); j+=3)

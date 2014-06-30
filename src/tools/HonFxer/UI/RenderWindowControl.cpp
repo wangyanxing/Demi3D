@@ -11,6 +11,8 @@
 #include "InputManager.h"
 #include "HonFxerApp.h"
 #include "CameraHelper.h"
+#include "EditorManager.h"
+#include "BaseEditorObject.h"
 
 namespace tools
 {
@@ -42,11 +44,53 @@ namespace tools
 
         mCanvas->createTexture(tex->getName());
         mCanvas->requestUpdateCanvas = MyGUI::newDelegate(this, &RenderWindowControl::onUpdateCanvas);
+        mCanvas->eventMouseButtonPressed += MyGUI::newDelegate(this, &RenderWindowControl::NotifyButtonPressed);
+        mCanvas->eventMouseButtonReleased += MyGUI::newDelegate(this, &RenderWindowControl::NotifyButtonReleased);
+        mCanvas->eventMouseMove += MyGUI::newDelegate(this, &RenderWindowControl::NotifyMouseMove);
 	}
 
     RenderWindowControl::~RenderWindowControl()
 	{
 	}
+    
+    void RenderWindowControl::NotifyMouseMove(MyGUI::Widget* _sender, int _left, int _top)
+    {
+        auto pos = _sender->getAbsolutePosition();
+        _left = _left - pos.left;
+        _top = _top - pos.top;
+        
+        auto sel = DiEditorManager::Get()->GetCurrentSelection();
+        if(sel)
+        {
+            sel->NotifyMouseMove(_left, _top);
+        }
+    }
+    
+    void RenderWindowControl::NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    {
+        auto pos = _sender->getAbsolutePosition();
+        _left = _left - pos.left;
+        _top = _top - pos.top;
+        
+        auto sel = DiEditorManager::Get()->GetCurrentSelection();
+        if(sel)
+        {
+            sel->NotifyMousePressed(_left, _top, _id);
+        }
+    }
+    
+    void RenderWindowControl::NotifyButtonReleased(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    {
+        auto pos = _sender->getAbsolutePosition();
+        _left = _left - pos.left;
+        _top = _top - pos.top;
+        
+        auto sel = DiEditorManager::Get()->GetCurrentSelection();
+        if(sel)
+        {
+            sel->NotifyMouseReleased(_left, _top, _id);
+        }
+    }
 
     void RenderWindowControl::onUpdateCanvas(MyGUI::Canvas* canvas, MyGUI::Canvas::Event evt)
     {

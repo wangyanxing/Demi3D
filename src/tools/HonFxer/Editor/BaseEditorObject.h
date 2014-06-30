@@ -65,6 +65,8 @@ namespace Demi
         virtual void                OnDestroyUI();
 
         virtual void                OnSelect();
+        
+        virtual void                OnSelectLost();
 
         virtual void                OnCreateUI();
 
@@ -79,6 +81,12 @@ namespace Demi
         virtual void                Update(float dt);
         
         void                        Release();
+        
+        virtual void                NotifyMousePressed(int _left, int _top, MyGUI::MouseButton _id);
+        
+        virtual void                NotifyMouseReleased(int _left, int _top, MyGUI::MouseButton _id);
+        
+        virtual void                NotifyMouseMove(int _left, int _top);
         
     protected:
         
@@ -99,6 +107,7 @@ namespace Demi
 
         PropertyGroups              mPropGroups;
 
+        DiTransGizmo*               mGizmo{ nullptr };
     };
 }
 

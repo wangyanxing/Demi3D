@@ -47,24 +47,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "TokensParser.h"
 #include "TransGizmo.h"
 
-DiTransGizmo* gizmo;
-
-DiRay getRay(const OIS::MouseEvent& event)
-{
-    DiRenderWindow* rw = DiBase::Driver->GetMainRenderWindow();
-    
-    float screenPosX = float(event.state.X.abs) / float(rw->GetWidth());
-    float screenPosY = float(event.state.Y.abs) / float(rw->GetHeight());
-    
-    screenPosX = DiMath::Clamp<float>(screenPosX, 0, 1);
-    screenPosY = DiMath::Clamp<float>(screenPosY, 0, 1);
-    
-    auto camera = DiBase::Driver->GetSceneManager()->GetCamera();
-    DiRay ray = camera->GetCameraToViewportRay(screenPosX, screenPosY);
-    return ray;
-}
-
-
 namespace Demi
 {
     
@@ -196,8 +178,6 @@ namespace Demi
     {
         DemiDemo::Update();
         
-        gizmo->Update();
-
         if (mMainPane)
             mMainPane->Update();
 
@@ -323,18 +303,6 @@ namespace Demi
         mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetGameLocWindowEndDialog);
         
         InitFx_Repeater01();
-        
-        gizmo = DI_NEW DiTransGizmo();
-        gizmo->SetGizmoMode(Demi::DiTransGizmo::GIZMO_MOVE);
-        
-        DemiDemo::GetApp()->GetInputManager()->registerMousePressEvent("_input",
-            [&](const OIS::MouseEvent& evt, OIS::MouseButtonID id){
-                if(id == OIS::MB_Left)
-                {
-                    auto ray = getRay(evt);
-                    gizmo->RayPick(ray);
-                }
-            });
     }
 
     HonFxerApp* HonFxerApp::GetFxApp()

@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MyGUI_TreeControlItem.h"
 #include "ContextMenu.h"
 #include "BaseEditorObject.h"
+#include "EditorManager.h"
 
 namespace tools
 {
@@ -48,6 +49,12 @@ namespace tools
     {
         if (pNode)
         {
+            auto sel = DiEditorManager::Get()->GetCurrentSelection();
+            if(sel)
+            {
+                sel->OnSelectLost();
+            }
+            
             DiBaseEditorObj* obj = *(pNode->getData<DiBaseEditorObj*>());
             obj->OnSelect();
         }

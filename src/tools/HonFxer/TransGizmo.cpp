@@ -34,32 +34,32 @@ namespace Demi
     
     void DiTransGizmo::SetGizmoMode(GizmoMode mode)
     {
-        if(mMode == mode)
-            return;
-        
         mMode = mode;
      
         HideAll();
         
         switch (mode)
         {
-            case GIZMO_MOVE:
-                mAxesNode->SetVisible(true);
-                break;
-                
-            case GIZMO_ROTATE:
-                mRotateCircleNode->SetVisible(true);
-                for(int i = 0; i < 3; ++i)
-                    mRotateRingNode[i]->SetVisible(true);
-                break;
-                
-            default:
-                break;
+        case GIZMO_MOVE:
+            mAxesNode->SetVisible(true);
+            break;
+            
+        case GIZMO_ROTATE:
+            mRotateCircleNode->SetVisible(true);
+            for(int i = 0; i < 3; ++i)
+                mRotateRingNode[i]->SetVisible(true);
+            break;
+            
+        default:
+            break;
         }
     }
     
     void DiTransGizmo::Update()
     {
+        if(!mActive)
+            return;
+        
         auto camera = DiBase::Driver->GetSceneManager()->GetCamera();
         auto pos = mBaseNode->GetDerivedPosition();
         
@@ -107,14 +107,33 @@ namespace Demi
             mRotateRingNode[i]->SetVisible(false);
     }
     
-    void DiTransGizmo::RayPick(const DiRay& ray)
+    void DiTransGizmo::OnMouseMove(int _left, int _top)
     {
+        
+    }
+    
+    void DiTransGizmo::OnMouseDown(int _left, int _top, MyGUI::MouseButton _id)
+    {
+        DiRenderWindow* rw = DiBase::Driver->GetMainRenderWindow();
+        
+        auto vp = rw->GetSceneCanvas()->GetViewport();
+        
+        float screenPosX = float(_left) / float(rw->GetSceneCanvas()->GetWidth());
+        float screenPosY = float(_top) / float(rw->GetSceneCanvas()->GetHeight());
+        
+        screenPosX = DiMath::Clamp<float>(screenPosX, 0, 1);
+        screenPosY = DiMath::Clamp<float>(screenPosY, 0, 1);
+        
+        auto camera = DiBase::Driver->GetSceneManager()->GetCamera();
+        DiRay ray = camera->GetCameraToViewportRay(screenPosX, screenPosY);
+
         if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
         {
             DiTransAxes::PickResult ret = mAxes->Pick(ray);
             if(ret != DiTransAxes::PICK_NONE)
             {
                 DI_DEBUG("Pick: %d", ret);
+                mPicking = true;
             }
         }
         else if(mMode == GIZMO_ROTATE)
@@ -123,19 +142,24 @@ namespace Demi
         }
     }
     
-    void DiTransGizmo::OnMouseMove(const OIS::MouseEvent& event)
+    void DiTransGizmo::OnMouseUp(int _left, int _top, MyGUI::MouseButton _id)
     {
-        
+        mPicking = false;
     }
     
-    void DiTransGizmo::OnMouseDown(const OIS::MouseEvent& event)
+    void DiTransGizmo::Show(bool visible)
     {
-        
-    }
-    
-    void DiTransGizmo::OnMouseUp(const OIS::MouseEvent& event)
-    {
-        
+        if(mActive != visible)
+        {
+            mBaseNode->SetVisible(visible);
+            mActive = visible;
+            
+            if(mActive)
+            {
+                HideAll();
+                SetGizmoMode(mMode);
+            }
+        }
     }
     
     void DiTransGizmo::Create()
