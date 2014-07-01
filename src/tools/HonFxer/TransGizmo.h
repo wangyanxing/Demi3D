@@ -57,6 +57,8 @@ namespace Demi
         
         DiCullNode*     GetNode(){ return mBaseNode; }
         
+        DiRay           GetMouseRay(int _left, int _top);
+        
     protected:
         
         void            Create();

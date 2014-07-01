@@ -98,9 +98,13 @@ namespace Demi
         
         void            SetShowScalePlane(int id, bool v) {mShowScalePlane[id] = v;}
         
+        void            SetShowScalePlane(bool v);
+        
         bool            GetShowScalePlane(int id) {return mShowScalePlane[id];}
         
         PickResult      Pick(const DiRay& ray);
+        
+        void            Highlight(PickResult pick);
         
     protected:
         
@@ -110,17 +114,19 @@ namespace Demi
         
         DiRenderUnit*   AddMeshes(const DiVector<GizmoVert>& verts,
                                   const DiVector<uint16>& indices,
-                                  DiPrimitiveType primType);
+                                  DiPrimitiveType primType, DiMaterialPtr mat);
         
         DiRenderUnit*   AddMeshes(const DiVector<GizmoVert>& verts,
-                                  DiPrimitiveType primType);
+                                  DiPrimitiveType primType, DiMaterialPtr mat);
 
     private:
 
         /// Bounding box
         DiAABB          mBounds;
         
-        DiRenderUnit*   mLines{ nullptr };
+        DiMaterialPtr   mColorMats[3];
+        
+        DiRenderUnit*   mLines[3]{ nullptr,nullptr,nullptr };
         
         DiRenderUnit*   mArraw[3]{ nullptr,nullptr,nullptr };
         
@@ -140,6 +146,12 @@ namespace Demi
         
         /// Arraw vertices, for picking
         DiVector<DiVec3> mArrawVertices[3];
+        
+        DiVector<DiVec3> mScaleBlockVertices[3];
+        
+        DiVector<DiVec3> mScalePlaneVertices[3];
+        
+        float            mPickCenterRadius;
     };
 }
 

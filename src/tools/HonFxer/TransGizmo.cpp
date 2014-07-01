@@ -42,12 +42,21 @@ namespace Demi
         {
         case GIZMO_MOVE:
             mAxesNode->SetVisible(true);
+            mAxes->SetShowArraw(true);
+            mAxes->SetShowScale(false);
+            mAxes->SetShowScalePlane(false);
             break;
             
         case GIZMO_ROTATE:
             mRotateCircleNode->SetVisible(true);
             for(int i = 0; i < 3; ++i)
                 mRotateRingNode[i]->SetVisible(true);
+            break;
+                
+        case GIZMO_SCALE:
+            mAxesNode->SetVisible(true);
+            mAxes->SetShowArraw(false);
+            mAxes->SetShowScale(true);
             break;
             
         default:
@@ -107,12 +116,7 @@ namespace Demi
             mRotateRingNode[i]->SetVisible(false);
     }
     
-    void DiTransGizmo::OnMouseMove(int _left, int _top)
-    {
-        
-    }
-    
-    void DiTransGizmo::OnMouseDown(int _left, int _top, MyGUI::MouseButton _id)
+    DiRay DiTransGizmo::GetMouseRay(int _left, int _top)
     {
         DiRenderWindow* rw = DiBase::Driver->GetMainRenderWindow();
         
@@ -125,14 +129,33 @@ namespace Demi
         screenPosY = DiMath::Clamp<float>(screenPosY, 0, 1);
         
         auto camera = DiBase::Driver->GetSceneManager()->GetCamera();
-        DiRay ray = camera->GetCameraToViewportRay(screenPosX, screenPosY);
-
+        return camera->GetCameraToViewportRay(screenPosX, screenPosY);
+    }
+    
+    void DiTransGizmo::OnMouseMove(int _left, int _top)
+    {
+        auto ray = GetMouseRay(_left, _top);
+        
+        if(mPicking)
+        {
+            
+        }
+        else
+        {
+            DiTransAxes::PickResult ret = mAxes->Pick(ray);
+            mAxes->Highlight(ret);
+        }
+    }
+    
+    void DiTransGizmo::OnMouseDown(int _left, int _top, MyGUI::MouseButton _id)
+    {
+        auto ray = GetMouseRay(_left, _top);
+        
         if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
         {
             DiTransAxes::PickResult ret = mAxes->Pick(ray);
             if(ret != DiTransAxes::PICK_NONE)
             {
-                DI_DEBUG("Pick: %d", ret);
                 mPicking = true;
             }
         }
