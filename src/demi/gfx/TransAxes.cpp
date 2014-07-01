@@ -75,12 +75,10 @@ namespace Demi
             int id = pick - PICK_MOVE_X;
             mColorMats[id]->SetDiffuse(DiColor::Yellow);
         }
-        else if(pick == PICK_MOVE_XYZ)
+        else if(pick >= PICK_MOVE_XY && pick <= PICK_MOVE_XZ)
         {
-            for (int i = 0; i < 3; ++i)
-            {
-                mColorMats[i]->SetDiffuse(DiColor::Yellow);
-            }
+            int id = pick - PICK_MOVE_XY;
+            mShowScalePlane[id] = true;
         }
         else if(pick >= PICK_SCALE_X && pick <= PICK_SCALE_Z)
         {
@@ -92,7 +90,7 @@ namespace Demi
             int id = pick - PICK_SCALE_XY;
             mShowScalePlane[id] = true;
         }
-        else if(pick == PICK_SCALE_XYZ)
+        else if(pick == PICK_SCALE_XYZ || pick == PICK_MOVE_XYZ)
         {
             for (int i = 0; i < 3; ++i)
             {
@@ -258,6 +256,26 @@ namespace Demi
                     if(ret.first)
                     {
                         return DiTransAxes::PickResult(PICK_MOVE_X + i);
+                    }
+                }
+            }
+            
+            for(int i = 0; i < 3; ++i)
+            {
+                DiVector<DiVec3> verts;
+                verts.reserve(mScalePlaneVertices[i].size());
+                
+                for (auto& v : mScalePlaneVertices[i])
+                {
+                    verts.push_back(mat.transformAffine(v));
+                }
+                
+                for (size_t j = 0; j < verts.size(); j+=3)
+                {
+                    auto ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
+                    if(ret.first)
+                    {
+                        return DiTransAxes::PickResult(PICK_MOVE_XY + i);
                     }
                 }
             }
