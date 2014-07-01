@@ -30,6 +30,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SetResLocationWindow.h"
 #include "SetGameLocationWindow.h"
 #include "EditorToolTip.h"
+#include "HotKeyManager.h"
 
 #include "EffectManager.h"
 
@@ -203,6 +204,9 @@ namespace Demi
 
         ColourManager::getInstance().shutdown();
         delete ColourManager::getInstancePtr();
+        
+        HotKeyManager::getInstance().shutdown();
+        delete HotKeyManager::getInstancePtr();
 
         CommandManager::getInstance().shutdown();
         delete CommandManager::getInstancePtr();
@@ -239,15 +243,20 @@ namespace Demi
         dirlight->SetDirection(DiVec3(0, -0.3f, -0.4).normalisedCopy());
 
         //////////////////////////////////////////////////////////////////////////
+        
+        new CommandManager();
+        CommandManager::getInstance().initialise();
+        
+        new HotKeyManager();
+        HotKeyManager::getInstance().initialise();
+
 
         MyGUI::FactoryManager::getInstance().registerFactory<MyGUI::RTTLayer>("Layer");
         MyGUI::FactoryManager::getInstance().registerFactory<MyGUI::FilterNone>("BasisSkin");
         
         MyGUI::ResourceManager::getInstance().load("FxEditorLayers.xml");
         MyGUI::ResourceManager::getInstance().load("FxToolbar.xml");
-
-        new CommandManager();
-        CommandManager::getInstance().initialise();
+        MyGUI::ResourceManager::getInstance().load("FxHotkeys.xml");
 
         DiString userSettings = DiPathLib::GetApplicationPath() + "FxSettings.xml";
         new SettingsManager();

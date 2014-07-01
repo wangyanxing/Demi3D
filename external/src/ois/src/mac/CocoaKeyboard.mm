@@ -479,7 +479,7 @@ void CocoaKeyboard::copyKeyStates( char keys[256] ) const
     else
     {
         modsRef &= ~OIS::Keyboard::Shift;
-        [self injectEvent:KC_LSHIFT eventTime:time eventType:newstate];
+        //[self injectEvent:KC_LSHIFT eventTime:time eventType:newstate];
     }
 
     if(mods & NSAlternateKeyMask)
@@ -490,7 +490,7 @@ void CocoaKeyboard::copyKeyStates( char keys[256] ) const
     else
     {
         modsRef &= ~OIS::Keyboard::Alt;
-        [self injectEvent:KC_LMENU eventTime:time eventType:newstate];
+        //[self injectEvent:KC_LMENU eventTime:time eventType:newstate];
     }
 
     if(mods & NSControlKeyMask)
@@ -498,9 +498,10 @@ void CocoaKeyboard::copyKeyStates( char keys[256] ) const
         modsRef |= OIS::Keyboard::Ctrl;
         [self injectEvent:KC_LCONTROL eventTime:time eventType:newstate];
     }
-    else {
+    else
+    {
         modsRef &= ~OIS::Keyboard::Ctrl;
-        [self injectEvent:KC_LCONTROL eventTime:time eventType:newstate];
+        //[self injectEvent:KC_LCONTROL eventTime:time eventType:newstate];
     }
 
     if(mods & NSCommandKeyMask)

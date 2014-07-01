@@ -132,9 +132,23 @@ namespace Demi
         return camera->GetCameraToViewportRay(screenPosX, screenPosY);
     }
     
+    DiAABB DiTransGizmo::GetWorldAABB()
+    {
+        DiAABB aabb = mAxesNode->GetWorldAABB();
+        aabb.Merge(mRotateRingNode[0]->GetWorldAABB());
+        aabb.Merge(mRotateRingNode[1]->GetWorldAABB());
+        aabb.Merge(mRotateRingNode[2]->GetWorldAABB());
+        return aabb;
+    }
+    
     void DiTransGizmo::OnMouseMove(int _left, int _top)
     {
         auto ray = GetMouseRay(_left, _top);
+        
+        if(!DiMath::intersects(ray, GetWorldAABB()).first)
+        {
+            return;
+        }
         
         if(mPicking)
         {
@@ -159,9 +173,16 @@ namespace Demi
     {
         auto ray = GetMouseRay(_left, _top);
         
+        mPicking = false;
+        
+        if(!DiMath::intersects(ray, GetWorldAABB()).first)
+        {
+            return;
+        }
+
         if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
         {
-            DiTransAxes::PickResult ret = mAxes->Pick(ray);
+            auto ret = mAxes->Pick(ray);
             if(ret != DiTransAxes::PICK_NONE)
             {
                 mPicking = true;
@@ -169,7 +190,11 @@ namespace Demi
         }
         else if(mMode == GIZMO_ROTATE)
         {
-            
+            auto ret = PickRotRings(ray);
+            if(ret != PICK_NONE)
+            {
+                mPicking = true;
+            }
         }
     }
     

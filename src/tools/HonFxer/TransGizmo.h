@@ -68,6 +68,8 @@ namespace Demi
         
         DiRay           GetMouseRay(int _left, int _top);
         
+        DiAABB          GetWorldAABB();
+        
     protected:
         
         void            Create();

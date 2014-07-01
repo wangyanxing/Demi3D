@@ -354,6 +354,12 @@ namespace MyGUI
 	{
 		// проверка на переключение языков
 		firstEncoding(_key, true);
+        
+        if(eventHotKeyPressedPreprocess)
+        {
+            if(eventHotKeyPressedPreprocess(_key))
+                return false;
+        }
 
 		// запоминаем клавишу
 		storeKey(_key, _text);
@@ -371,6 +377,12 @@ namespace MyGUI
 
 	bool InputManager::injectKeyRelease(KeyCode _key)
 	{
+        if(eventHotKeyReleasedPreprocess)
+        {
+            if(eventHotKeyReleasedPreprocess(_key))
+                return false;
+        }
+        
 		// проверка на переключение языков
 		firstEncoding(_key, false);
 

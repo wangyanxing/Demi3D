@@ -438,4 +438,19 @@ namespace Demi
     {
         return mKeyReleases.removeKey(name);
     }
+    
+    bool DiInputManager::isCtrlPressing()
+    {
+        return mKeyboard->isModifierDown(OIS::Keyboard::Ctrl);
+    }
+    
+    bool DiInputManager::isShiftPressing()
+    {
+        return mKeyboard->isModifierDown(OIS::Keyboard::Shift);
+    }
+    
+    bool DiInputManager::isAltPressing()
+    {
+        return mKeyboard->isModifierDown(OIS::Keyboard::Alt);
+    }
 }

@@ -77,6 +77,8 @@ namespace Demi
         virtual DiString            GetType() { return "Base"; }
 
         UINode*                     GetUINode() { return mUINode; }
+        
+        DiTransGizmo*               GetGizmo() { return mGizmo; }
 
         virtual void                Update(float dt);
         

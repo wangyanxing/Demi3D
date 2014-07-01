@@ -143,6 +143,10 @@ namespace MyGUI
 
 		/*internal:*/
 		void _resetMouseFocusWidget();
+        
+        std::function<bool(KeyCode)> eventHotKeyPressedPreprocess;
+        
+        std::function<bool(KeyCode)> eventHotKeyReleasedPreprocess;
 
 	private:
 		// удаляем данный виджет из всех возможных мест

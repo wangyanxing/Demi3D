@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #define EditorManager_h__
 
 #include "FxerPrerequisites.h"
+#include "TransGizmo.h"
 
 namespace Demi 
 {
@@ -54,6 +55,10 @@ namespace Demi
         DiBaseEditorObj*    GetLastCreatedObject() { return mLastCreatedObject; }
         
         void                Update();
+        
+        void                SetGizmoMode(DiTransGizmo::GizmoMode);
+        
+        DiTransGizmo::GizmoMode GetGizmoMode(){return mGlobalGizmoMode;}
         
         void                SetCurrentFileName(const DiString& name);
         
@@ -106,6 +111,8 @@ namespace Demi
         static DiEditorManager* sEditorMgr;
         
         DiString            mFxFileName;
+        
+        DiTransGizmo::GizmoMode mGlobalGizmoMode{ DiTransGizmo::GIZMO_HIDE };
     };
 }
 

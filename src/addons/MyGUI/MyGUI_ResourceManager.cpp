@@ -172,6 +172,7 @@ namespace MyGUI
 		if (root->findAttribute("type", type))
 		{
 			Version version = Version::parse(root->findAttribute("version"));
+
 			auto iter = mMapLoadXmlDelegate.find(type);
 			if (iter != mMapLoadXmlDelegate.end())
 			{

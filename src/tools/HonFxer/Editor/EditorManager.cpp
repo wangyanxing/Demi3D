@@ -177,6 +177,15 @@ namespace Demi
         };
     }
     
+    void DiEditorManager::SetGizmoMode(DiTransGizmo::GizmoMode mode)
+    {
+        mGlobalGizmoMode = mode;
+        if(mCurrentSel && mCurrentSel->GetGizmo())
+        {
+            mCurrentSel->GetGizmo()->SetGizmoMode(mode);
+        }
+    }
+    
     void DiEditorManager::NewFx()
     {
         Reset();

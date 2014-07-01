@@ -90,6 +90,10 @@ namespace Demi
 
         OIS::Keyboard* getKeyboard() { return mKeyboard; }
         OIS::Mouse* getMouse() { return mMouse; }
+        
+        bool isCtrlPressing();
+        bool isShiftPressing();
+        bool isAltPressing();
 
     private:
         
