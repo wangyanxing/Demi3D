@@ -142,8 +142,16 @@ namespace Demi
         }
         else
         {
-            DiTransAxes::PickResult ret = mAxes->Pick(ray);
-            mAxes->Highlight(ret);
+            if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
+            {
+                auto ret = mAxes->Pick(ray);
+                mAxes->Highlight(ret);
+            }
+            else if(mMode == GIZMO_ROTATE)
+            {
+                auto ret = PickRotRings(ray);
+                HightlightRotRings(ret);
+            }
         }
     }
     
@@ -170,6 +178,65 @@ namespace Demi
         mPicking = false;
     }
     
+    void DiTransGizmo::HightlightRotRings(RotatePick pickret)
+    {
+        mRotatingRingsMat[0]->SetDiffuse(DiColor::Red);
+        mRotatingRingsMat[1]->SetDiffuse(DiColor::Green);
+        mRotatingRingsMat[2]->SetDiffuse(DiColor::Blue);
+        
+        if(pickret == PICK_ROT_X)
+        {
+            mRotatingRingsMat[0]->SetDiffuse(DiColor::Yellow);
+        }
+        else if(pickret == PICK_ROT_Y)
+        {
+            mRotatingRingsMat[1]->SetDiffuse(DiColor::Yellow);
+        }
+        else if(pickret == PICK_ROT_Z)
+        {
+            mRotatingRingsMat[2]->SetDiffuse(DiColor::Yellow);
+        }
+        else if(pickret == PICK_ROT_XYZ)
+        {
+            mRotatingRingsMat[0]->SetDiffuse(DiColor::Yellow);
+            mRotatingRingsMat[1]->SetDiffuse(DiColor::Yellow);
+            mRotatingRingsMat[2]->SetDiffuse(DiColor::Yellow);
+        }
+    }
+    
+    DiTransGizmo::RotatePick DiTransGizmo::PickRotRings(const DiRay& ray)
+    {
+        DiSphere center(mBaseNode->GetDerivedPosition(), 0.6f);
+        if(DiMath::intersects(ray, center).first)
+        {
+            return PICK_ROT_XYZ;
+        }
+        
+        for(int i = 0; i < 3; ++i)
+        {
+            auto mat = mRotateRingNode[i]->GetFullTransform();
+            
+            DiVector<DiVec3> verts;
+            verts.reserve(mRotatingRingsVerts.size());
+            
+            for (auto& v : mRotatingRingsVerts)
+            {
+                verts.push_back(mat.transformAffine(v));
+            }
+            
+            for (size_t j = 0; j < verts.size(); j+=3)
+            {
+                auto ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
+                if(ret.first)
+                {
+                    return DiTransGizmo::RotatePick(PICK_ROT_X + i);
+                }
+            }
+        }
+        
+        return PICK_NONE;
+    }
+    
     void DiTransGizmo::Show(bool visible)
     {
         if(mActive != visible)
@@ -181,6 +248,58 @@ namespace Demi
             {
                 HideAll();
                 SetGizmoMode(mMode);
+            }
+        }
+    }
+    
+    void DiTransGizmo::GenerateRotRingVerts()
+    {
+        mRotatingRingsVerts.clear();
+        
+        float radius = 3.5f;
+        float tube = 0.03f;
+        int radialSegments = 6;
+        int tubularSegments = 32;
+        float arc = DiMath::PI;
+
+        DiVector<DiVec3> vbs;
+        DiVec3 center(0,0,0);
+
+        for ( int j = 0; j <= radialSegments; j++ )
+        {
+            for ( int i = 0; i <= tubularSegments; i++ )
+            {
+                float u = i / (float)tubularSegments * arc;
+                float v = j / (float)radialSegments * DiMath::PI * 2;
+                
+                center.x = radius * DiMath::Cos( u );
+                center.y = radius * DiMath::Sin( u );
+                
+                DiVec3 vertex;
+                vertex.x = ( radius + tube * DiMath::Cos( v ) ) * DiMath::Cos( u );
+                vertex.y = ( radius + tube * DiMath::Cos( v ) ) * DiMath::Sin( u );
+                vertex.z = tube * DiMath::Sin( v );
+                
+                vbs.push_back(vertex);
+            }
+        }
+        
+        for ( uint16 j = 1; j <= radialSegments; j++ )
+        {
+            for ( uint16 i = 1; i <= tubularSegments; i++ )
+            {
+                
+                uint16 a = ( tubularSegments + 1 ) * j + i - 1;
+                uint16 b = ( tubularSegments + 1 ) * ( j - 1 ) + i - 1;
+                uint16 c = ( tubularSegments + 1 ) * ( j - 1 ) + i;
+                uint16 d = ( tubularSegments + 1 ) * j + i;
+                
+                mRotatingRingsVerts.push_back(vbs[a]);
+                mRotatingRingsVerts.push_back(vbs[b]);
+                mRotatingRingsVerts.push_back(vbs[d]);
+                mRotatingRingsVerts.push_back(vbs[b]);
+                mRotatingRingsVerts.push_back(vbs[c]);
+                mRotatingRingsVerts.push_back(vbs[d]);
             }
         }
     }
@@ -211,13 +330,14 @@ namespace Demi
         {
             mRotateRings[i] = make_shared<DiSimpleShape>();
             mRotateRings[i]->CreateTorus(3.5f, 0.03f, 6, 32, DiMath::PI);
-            auto mat = DiMaterial::QuickCreate("basic_v", "basic_p");
-            mat->SetDiffuse(cols[i]);
-            mRotateRings[i]->SetMaterial(mat);
+            mRotatingRingsMat[i] = DiMaterial::QuickCreate("basic_v", "basic_p");
+            mRotatingRingsMat[i]->SetDiffuse(cols[i]);
+            mRotateRings[i]->SetMaterial(mRotatingRingsMat[i]);
             mRotateRingNode[i] = mBaseNode->CreateChild();
             mRotateRingNode[i]->AttachObject(mRotateRings[i]);
         }
         
+        GenerateRotRingVerts();
         HideAll();
     }
 }

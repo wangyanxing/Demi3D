@@ -37,6 +37,15 @@ namespace Demi
             GIZMO_SCALE,
         };
         
+        enum RotatePick
+        {
+            PICK_NONE = 0,
+            PICK_ROT_X,
+            PICK_ROT_Y,
+            PICK_ROT_Z,
+            PICK_ROT_XYZ,
+        };
+        
     public:
 
         void            Update();
@@ -64,6 +73,12 @@ namespace Demi
         void            Create();
         
         void            HideAll();
+        
+        void            GenerateRotRingVerts();
+        
+        RotatePick      PickRotRings(const DiRay& ray);
+        
+        void            HightlightRotRings(RotatePick pickret);
     
     protected:
         
@@ -82,6 +97,10 @@ namespace Demi
         DiTransAxesPtr  mAxes;
         
         DiSimpleShapePtr mRotateRings[3];
+        
+        DiVector<DiVec3> mRotatingRingsVerts;
+        
+        DiMaterialPtr    mRotatingRingsMat[3];
         
         DiCullNode*     mRotateRingNode[3]{nullptr,nullptr,nullptr};
         
