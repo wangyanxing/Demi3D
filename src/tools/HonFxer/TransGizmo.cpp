@@ -20,6 +20,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "SceneManager.h"
 #include "RenderWindow.h"
 #include "RenderTarget.h"
+#include "EditorManager.h"
 
 namespace Demi
 {
@@ -165,20 +166,30 @@ namespace Demi
             return;
         }
         
+        DiVec3 out(0,0,0);
         if(mPicking)
         {
-            
+            if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
+            {
+                auto ret = mAxes->Pick(ray,out);
+                auto delta = CalculateDeltaTrans(ret, out);
+            }
+            else if(mMode == GIZMO_ROTATE)
+            {
+                //auto ret = PickRotRings(ray, out);
+                
+            }
         }
         else
         {
             if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
             {
-                auto ret = mAxes->Pick(ray);
+                auto ret = mAxes->Pick(ray,out);
                 mAxes->Highlight(ret);
             }
             else if(mMode == GIZMO_ROTATE)
             {
-                auto ret = PickRotRings(ray);
+                auto ret = PickRotRings(ray, out);
                 HightlightRotRings(ret);
             }
         }
@@ -195,19 +206,22 @@ namespace Demi
             return;
         }
 
+        DiVec3 out(0,0,0);
         if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
         {
-            auto ret = mAxes->Pick(ray);
+            auto ret = mAxes->Pick(ray,out);
             if(ret != DiTransAxes::PICK_NONE)
             {
+                mLastPos = out;
                 mPicking = true;
             }
         }
         else if(mMode == GIZMO_ROTATE)
         {
-            auto ret = PickRotRings(ray);
+            auto ret = PickRotRings(ray, out);
             if(ret != PICK_NONE)
             {
+                mLastPos = out;
                 mPicking = true;
             }
         }
@@ -216,6 +230,19 @@ namespace Demi
     void DiTransGizmo::OnMouseUp(int _left, int _top, MyGUI::MouseButton _id)
     {
         mPicking = false;
+    }
+    
+    DiVec3 DiTransGizmo::CalculateDeltaTrans(int pickResult, const DiVec3& curPos)
+    {
+        DiVec3 delta;
+        
+        DiQuat rot;
+		if(DiEditorManager::Get()->IsGizmoInWorldSpace())
+			rot = DiQuat::IDENTITY;
+        else
+            rot = mBaseNode->GetDerivedOrientation();
+        
+        return delta;
     }
     
     void DiTransGizmo::HightlightRotRings(RotatePick pickret)
@@ -244,14 +271,17 @@ namespace Demi
         }
     }
     
-    DiTransGizmo::RotatePick DiTransGizmo::PickRotRings(const DiRay& ray)
+    DiTransGizmo::RotatePick DiTransGizmo::PickRotRings(const DiRay& ray, DiVec3& out)
     {
         DiSphere center(mBaseNode->GetDerivedPosition(), 0.6f);
-        if(DiMath::intersects(ray, center).first)
+        auto ret = DiMath::intersects(ray, center);
+        if(ret.first)
         {
+            out = ray.getPoint(ret.second);
             return PICK_ROT_XYZ;
         }
         
+        RotatePick pickret[3] = {PICK_ROT_X,PICK_ROT_Y,PICK_ROT_Z};
         for(int i = 0; i < 3; ++i)
         {
             auto mat = mRotateRingNode[i]->GetFullTransform();
@@ -266,10 +296,11 @@ namespace Demi
             
             for (size_t j = 0; j < verts.size(); j+=3)
             {
-                auto ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
+                ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
                 if(ret.first)
                 {
-                    return DiTransGizmo::RotatePick(PICK_ROT_X + i);
+                    out = ray.getPoint(ret.second);
+                    return pickret[i];
                 }
             }
         }

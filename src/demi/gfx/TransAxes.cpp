@@ -69,34 +69,50 @@ namespace Demi
         
         if(pick == PICK_NONE)
             return;
-
-        if(pick >= PICK_MOVE_X && pick <= PICK_MOVE_Z)
+        
+        switch (pick)
         {
-            int id = pick - PICK_MOVE_X;
-            mColorMats[id]->SetDiffuse(DiColor::Yellow);
-        }
-        else if(pick >= PICK_MOVE_XY && pick <= PICK_MOVE_XZ)
-        {
-            int id = pick - PICK_MOVE_XY;
-            mShowScalePlane[id] = true;
-        }
-        else if(pick >= PICK_SCALE_X && pick <= PICK_SCALE_Z)
-        {
-            int id = pick - PICK_SCALE_X;
-            mColorMats[id]->SetDiffuse(DiColor::Yellow);
-        }
-        else if(pick >= PICK_SCALE_XY && pick <= PICK_SCALE_XZ)
-        {
-            int id = pick - PICK_SCALE_XY;
-            mShowScalePlane[id] = true;
-        }
-        else if(pick == PICK_SCALE_XYZ || pick == PICK_MOVE_XYZ)
-        {
-            for (int i = 0; i < 3; ++i)
-            {
-                mColorMats[i]->SetDiffuse(DiColor::Yellow);
-                mShowScalePlane[i] = true;
-            }
+            case PICK_MOVE_X:
+            case PICK_SCALE_X:
+                mColorMats[0]->SetDiffuse(DiColor::Yellow);
+                break;
+                
+            case PICK_MOVE_Y:
+            case PICK_SCALE_Y:
+                mColorMats[1]->SetDiffuse(DiColor::Yellow);
+                break;
+                
+            case PICK_MOVE_Z:
+            case PICK_SCALE_Z:
+                mColorMats[2]->SetDiffuse(DiColor::Yellow);
+                break;
+                
+            case PICK_SCALE_XY:
+            case PICK_MOVE_XY:
+                mShowScalePlane[0] = true;
+                break;
+                
+            case PICK_SCALE_YZ:
+            case PICK_MOVE_YZ:
+                mShowScalePlane[1] = true;
+                break;
+                
+            case PICK_SCALE_XZ:
+            case PICK_MOVE_XZ:
+                mShowScalePlane[2] = true;
+                break;
+                
+            case PICK_SCALE_XYZ:
+            case PICK_MOVE_XYZ:
+                for (int i = 0; i < 3; ++i)
+                {
+                    mColorMats[i]->SetDiffuse(DiColor::Yellow);
+                    mShowScalePlane[i] = true;
+                }
+                break;
+                
+            default:
+                break;
         }
     }
     
@@ -223,12 +239,17 @@ namespace Demi
     {
     }
     
-    DiTransAxes::PickResult DiTransAxes::Pick(const DiRay& ray)
+    DiTransAxes::PickResult DiTransAxes::Pick(const DiRay& ray, DiVec3& outPos)
     {
         if(!mParentNode)
         {
             return PICK_NONE;
         }
+        
+        PickResult pickMove[3] = {PICK_MOVE_X,PICK_MOVE_Y,PICK_MOVE_Z};
+        PickResult pickMovePlane[3] = {PICK_MOVE_XY,PICK_MOVE_YZ,PICK_MOVE_XZ};
+        PickResult pickScale[3] = {PICK_SCALE_X,PICK_SCALE_Y,PICK_SCALE_Z};
+        PickResult pickScalePlane[3] = {PICK_SCALE_XY,PICK_SCALE_YZ,PICK_SCALE_XZ};
         
         DiCullNode* node = dynamic_cast<DiCullNode*>(mParentNode);
         DiMat4 mat = node->GetFullTransform();
@@ -236,11 +257,13 @@ namespace Demi
         
         if(mShowArraow)
         {
-            if(DiMath::intersects(ray, center).first)
+            auto ret = DiMath::intersects(ray, center);
+            if(ret.first)
             {
+                outPos = ray.getPoint(ret.second);
                 return PICK_MOVE_XYZ;
             }
-                
+            
             for(int i = 0; i < 3; ++i)
             {
                 DiVector<DiVec3> verts;
@@ -253,10 +276,11 @@ namespace Demi
                 
                 for (size_t j = 0; j < verts.size(); j+=3)
                 {
-                    auto ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
+                    ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
                     if(ret.first)
                     {
-                        return DiTransAxes::PickResult(PICK_MOVE_X + i);
+                        outPos = ray.getPoint(ret.second);
+                        return pickMove[i];
                     }
                 }
             }
@@ -273,10 +297,11 @@ namespace Demi
                 
                 for (size_t j = 0; j < verts.size(); j+=3)
                 {
-                    auto ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
+                    ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
                     if(ret.first)
                     {
-                        return DiTransAxes::PickResult(PICK_MOVE_XY + i);
+                        outPos = ray.getPoint(ret.second);
+                        return pickMovePlane[i];
                     }
                 }
             }
@@ -284,8 +309,10 @@ namespace Demi
         
         if(mShowScale)
         {
-            if(DiMath::intersects(ray, center).first)
+            auto ret = DiMath::intersects(ray, center);
+            if(ret.first)
             {
+                outPos = ray.getPoint(ret.second);
                 return PICK_SCALE_XYZ;
             }
             
@@ -301,10 +328,11 @@ namespace Demi
                 
                 for (size_t j = 0; j < verts.size(); j+=3)
                 {
-                    auto ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
+                    ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
                     if(ret.first)
                     {
-                        return DiTransAxes::PickResult(PICK_SCALE_X + i);
+                        outPos = ray.getPoint(ret.second);
+                        return pickScale[i];
                     }
                 }
             }
@@ -321,10 +349,11 @@ namespace Demi
                 
                 for (size_t j = 0; j < verts.size(); j+=3)
                 {
-                    auto ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
+                    ret = DiMath::intersects(ray,verts[j],verts[j+1],verts[j+2], true, true);
                     if(ret.first)
                     {
-                        return DiTransAxes::PickResult(PICK_SCALE_XY + i);
+                        outPos = ray.getPoint(ret.second);
+                        return pickScalePlane[i];
                     }
                 }
             }

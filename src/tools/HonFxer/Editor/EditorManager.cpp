@@ -227,6 +227,11 @@ namespace Demi
         _result = true;
     }
     
+    void DiEditorManager::SetWorldSpaceGizmo(bool val)
+    {
+        mWorldSpaceGizmoOrientation = val;
+    }
+    
     void DiEditorManager::SetGizmoMode(DiTransGizmo::GizmoMode mode)
     {
         mGlobalGizmoMode = mode;

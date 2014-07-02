@@ -41,10 +41,10 @@ namespace Demi
         enum RotatePick
         {
             PICK_NONE = 0,
-            PICK_ROT_X,
-            PICK_ROT_Y,
-            PICK_ROT_Z,
-            PICK_ROT_XYZ,
+            PICK_ROT_X = 1<<7,
+            PICK_ROT_Y = 1<<8,
+            PICK_ROT_Z = 1<<9,
+            PICK_ROT_XYZ = PICK_ROT_X|PICK_ROT_Y|PICK_ROT_Z,
         };
         
     public:
@@ -79,9 +79,11 @@ namespace Demi
         
         void            GenerateRotRingVerts();
         
-        RotatePick      PickRotRings(const DiRay& ray);
+        RotatePick      PickRotRings(const DiRay& ray, DiVec3& out);
         
         void            HightlightRotRings(RotatePick pickret);
+        
+        DiVec3          CalculateDeltaTrans(int pickResult, const DiVec3& curPos);
     
     protected:
         
@@ -110,6 +112,8 @@ namespace Demi
         bool            mPicking{ false };
         
         bool            mActive{ true };
+        
+        DiVec3          mLastPos{ 0,0,0 };
     };
 }
 

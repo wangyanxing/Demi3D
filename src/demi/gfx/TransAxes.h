@@ -61,21 +61,21 @@ namespace Demi
         {
             PICK_NONE = 0,
             
-            PICK_MOVE_X,
-            PICK_MOVE_Y,
-            PICK_MOVE_Z,
-            PICK_MOVE_XY,
-            PICK_MOVE_YZ,
-            PICK_MOVE_XZ,
-            PICK_MOVE_XYZ,
+            PICK_MOVE_X = 1 << 1,
+            PICK_MOVE_Y = 1 << 2,
+            PICK_MOVE_Z = 1 << 3,
+            PICK_MOVE_XY = PICK_MOVE_X|PICK_MOVE_Y,
+            PICK_MOVE_YZ = PICK_MOVE_Y|PICK_MOVE_Z,
+            PICK_MOVE_XZ = PICK_MOVE_X|PICK_MOVE_Z,
+            PICK_MOVE_XYZ = PICK_MOVE_X|PICK_MOVE_Y|PICK_MOVE_Z,
             
-            PICK_SCALE_X,
-            PICK_SCALE_Y,
-            PICK_SCALE_Z,
-            PICK_SCALE_XY,
-            PICK_SCALE_YZ,
-            PICK_SCALE_XZ,
-            PICK_SCALE_XYZ,
+            PICK_SCALE_X = 1 << 4,
+            PICK_SCALE_Y = 1 << 5,
+            PICK_SCALE_Z = 1 << 6,
+            PICK_SCALE_XY = PICK_SCALE_X|PICK_SCALE_Y,
+            PICK_SCALE_YZ = PICK_SCALE_Y|PICK_SCALE_Z,
+            PICK_SCALE_XZ = PICK_SCALE_X|PICK_SCALE_Z,
+            PICK_SCALE_XYZ = PICK_SCALE_X|PICK_SCALE_Y|PICK_SCALE_Z,
         };
 
     public:
@@ -104,7 +104,7 @@ namespace Demi
         
         bool            GetShowScalePlane(int id) {return mShowScalePlane[id];}
         
-        PickResult      Pick(const DiRay& ray);
+        PickResult      Pick(const DiRay& ray, DiVec3& outPos);
         
         void            Highlight(PickResult pick);
         

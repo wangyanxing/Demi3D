@@ -14,8 +14,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef EditorManager_h__
 #define EditorManager_h__
 
+#include "DemoPrerequisites.h"
 #include "FxerPrerequisites.h"
 #include "TransGizmo.h"
+#include "MyGUI_UString.h"
 
 namespace Demi 
 {
@@ -58,11 +60,15 @@ namespace Demi
         
         void                SetGizmoMode(DiTransGizmo::GizmoMode);
         
-        DiTransGizmo::GizmoMode GetGizmoMode(){return mGlobalGizmoMode;}
+        DiTransGizmo::GizmoMode GetGizmoMode(){ return mGlobalGizmoMode; }
         
         void                SetCurrentFileName(const DiString& name);
         
         void                SetK2ResourcePack(const DiString& resPack, const DiString& texturePack = DiString::BLANK);
+        
+        void                SetWorldSpaceGizmo(bool val);
+        
+        bool                IsGizmoInWorldSpace(){return mWorldSpaceGizmoOrientation;}
         
         void                Command_ToolPlay(const MyGUI::UString& _commandName, bool& _result);
         
@@ -119,6 +125,8 @@ namespace Demi
         static DiEditorManager* sEditorMgr;
         
         DiString            mFxFileName;
+        
+        bool                mWorldSpaceGizmoOrientation{false};
         
         DiTransGizmo::GizmoMode mGlobalGizmoMode{ DiTransGizmo::GIZMO_SELECT };
     };
