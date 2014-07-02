@@ -453,4 +453,18 @@ namespace Demi
     {
         return mKeyboard->isModifierDown(OIS::Keyboard::Alt);
     }
+    
+    bool DiInputManager::isApplePressing()
+    {
+#if DEMI_PLATFORM == DEMI_OSX
+        return mKeyboard->isModifierDown(OIS::Keyboard::Apple);
+#else
+        return false;
+#endif
+    }
+    
+    void DiInputManager::clearModifiers()
+    {
+        mKeyboard->clearModifilers();
+    }
 }

@@ -189,7 +189,6 @@ namespace tools
         
         MyGUI::InputManager::getInstance().eventHotKeyPressedPreprocess = [this](MyGUI::KeyCode _key){
             MyGUI::InputManager& input = MyGUI::InputManager::getInstance();
-            DI_LOG("pressed:%d",_key);
             return onKeyEvent(_key);
         };
 	}
@@ -265,7 +264,11 @@ namespace tools
 				&& command.getControl() == HonFxerApp::GetFxApp()->GetInputManager()->isCtrlPressing())
 			{
 				if (CommandManager::getInstance().executeCommand(command.getCommand()))
+                {
 					result = true;
+                }
+                HonFxerApp::GetFxApp()->GetInputManager()->clearModifiers();
+                return result;
 			}
 		}
 

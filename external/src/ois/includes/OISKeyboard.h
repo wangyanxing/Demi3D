@@ -278,7 +278,8 @@ namespace OIS
 		{
 			Shift = 0x0000001,
 			Ctrl  = 0x0000010,
-			Alt   = 0x0000100
+			Alt   = 0x0000100,
+			Apple = 0x0001000,
 		};
 
 		/**
@@ -293,6 +294,8 @@ namespace OIS
 			(in the form of 1 is down and 0 is up)
 		*/
 		virtual void copyKeyStates(char keys[256]) const = 0;
+        
+        void clearModifilers(){mModifiers = 0;}
 		
 	protected:
 		Keyboard(const std::string &inVendor, bool inBuffered, int devID, InputManager* creator)

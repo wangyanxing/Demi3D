@@ -301,6 +301,7 @@ void MacKeyboard::_modChangeCallback( EventRef theEvent )
 			break;
 	
 		case (cmdKey): // apple
+            mModifiers &= (newstate == MAC_KEYDOWN) ? Apple : ~Apple;
 			//injectEvent( KC_RWIN, time, newstate );
 			injectEvent( KC_LWIN, time, newstate );
 			break;

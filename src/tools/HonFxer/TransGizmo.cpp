@@ -30,6 +30,14 @@ namespace Demi
 
     DiTransGizmo::~DiTransGizmo(void)
     {
+        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+        sm->DestroyNode(mBaseNode);
+        sm->DestroyNode(mAxesNode);
+        sm->DestroyNode(mRotateCircleNode);
+        for(int i = 0; i < 3; ++i)
+        {
+            sm->DestroyNode(mRotateRingNode[i]);
+        }
     }
     
     void DiTransGizmo::SetGizmoMode(GizmoMode mode)

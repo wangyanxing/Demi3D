@@ -94,6 +94,8 @@ namespace Demi
         bool isCtrlPressing();
         bool isShiftPressing();
         bool isAltPressing();
+        bool isApplePressing();
+        void clearModifiers();
 
     private:
         
