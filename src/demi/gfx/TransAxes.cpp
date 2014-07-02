@@ -199,7 +199,8 @@ namespace Demi
         
         for(int i = 0; i < 3; ++i)
         {
-            bg->AddRenderUnit(mLines[i]);
+            if(mShowLines)
+                bg->AddRenderUnit(mLines[i]);
             
             if(mShowScale)
                 bg->AddRenderUnit(mScaleBlock[i]);

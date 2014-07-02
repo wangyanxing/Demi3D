@@ -99,6 +99,11 @@ namespace tools
             DiBase::Driver->GetMainRenderWindow()->SetCustomizedCanvasSize(canvas->getWidth(), canvas->getHeight());
         }
     }
+    
+    bool RenderWindowControl::canvasFocus()
+    {
+        return MyGUI::InputManager::getInstance().getMouseFocusWidget() == mCanvas;
+    }
 
     void RenderWindowControl::update()
     {

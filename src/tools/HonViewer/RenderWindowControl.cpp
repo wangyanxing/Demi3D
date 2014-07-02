@@ -100,6 +100,11 @@ namespace tools
         info.Format("%d\n%d\n%d\n%d", numVerts, numFaces, numSubMods, numBones);
         mInfo->setCaption(info.c_str());
     }
+    
+    bool RenderWindowControl::canvasFocus()
+    {
+        return MyGUI::InputManager::getInstance().getMouseFocusWidget() == mCanvas;
+    }
 
     void RenderWindowControl::updateBoneNames(bool show)
     {

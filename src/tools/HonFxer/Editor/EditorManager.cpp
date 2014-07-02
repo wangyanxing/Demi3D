@@ -13,6 +13,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "FxerPch.h"
 #include "EditorManager.h"
+#include "HonFxerApp.h"
+#include "MainPaneControl.h"
+#include "RenderWindowControl.h"
 #include "ParticleSystemObj.h"
 #include "ParticleElementObj.h"
 #include "PointEmitterObj.h"
@@ -72,6 +75,10 @@ namespace Demi
         CommandManager::getInstance().registerCommand("Command_ToolSaveFile", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolSave));
         CommandManager::getInstance().registerCommand("Command_ToolOpenFile", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolOpen));
         CommandManager::getInstance().registerCommand("Command_ToolReset", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolReset));
+        CommandManager::getInstance().registerCommand("Command_ToolSelect", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolSelect));
+        CommandManager::getInstance().registerCommand("Command_ToolMove", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolMove));
+        CommandManager::getInstance().registerCommand("Command_ToolRotate", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolRotate));
+        CommandManager::getInstance().registerCommand("Command_ToolScale", MyGUI::newDelegate(this, &DiEditorManager::Command_ToolScale));
     }
 
     DiEditorManager::~DiEditorManager()
@@ -99,6 +106,7 @@ namespace Demi
                 mSelectingFx->Start();
             }
         }
+        _result = true;
     }
     
     void DiEditorManager::Command_ToolPause(const MyGUI::UString& _commandName, bool& _result)
@@ -107,6 +115,7 @@ namespace Demi
         {
             mSelectingFx->Pause();
         }
+        _result = true;
     }
     
     void DiEditorManager::Command_ToolStop(const MyGUI::UString& _commandName, bool& _result)
@@ -115,6 +124,7 @@ namespace Demi
         {
             mSelectingFx->Stop();
         }
+        _result = true;
     }
     
     void DiEditorManager::Command_ToolNew(const MyGUI::UString& _commandName, bool& _result)
@@ -142,11 +152,13 @@ namespace Demi
                 NewFx();
             }
         };
+        _result = true;
     }
     
     void DiEditorManager::Command_ToolSave(const MyGUI::UString& _commandName, bool& _result)
     {
         SaveAll();
+        _result = true;
     }
     
     void DiEditorManager::Command_ToolOpen(const MyGUI::UString& _commandName, bool& _result)
@@ -160,6 +172,7 @@ namespace Demi
         {
             OpenFx(out[0]);
         }
+        _result = true;
     }
     
     void DiEditorManager::Command_ToolReset(const MyGUI::UString& _commandName, bool& _result)
@@ -175,6 +188,43 @@ namespace Demi
                 Reset();
             }
         };
+        _result = true;
+    }
+    
+    void DiEditorManager::Command_ToolSelect(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if(!HonFxerApp::GetFxApp()->GetMainPane()->GetWorkspaceControl()->GetRenderWndControl()->canvasFocus())
+            return;
+        
+        SetGizmoMode(DiTransGizmo::GIZMO_SELECT);
+        _result = true;
+    }
+    
+    void DiEditorManager::Command_ToolRotate(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if(!HonFxerApp::GetFxApp()->GetMainPane()->GetWorkspaceControl()->GetRenderWndControl()->canvasFocus())
+            return;
+        
+        SetGizmoMode(DiTransGizmo::GIZMO_ROTATE);
+        _result = true;
+    }
+    
+    void DiEditorManager::Command_ToolScale(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if(!HonFxerApp::GetFxApp()->GetMainPane()->GetWorkspaceControl()->GetRenderWndControl()->canvasFocus())
+            return;
+        
+        SetGizmoMode(DiTransGizmo::GIZMO_SCALE);
+        _result = true;
+    }
+    
+    void DiEditorManager::Command_ToolMove(const MyGUI::UString& _commandName, bool& _result)
+    {
+        if(!HonFxerApp::GetFxApp()->GetMainPane()->GetWorkspaceControl()->GetRenderWndControl()->canvasFocus())
+            return;
+        
+        SetGizmoMode(DiTransGizmo::GIZMO_MOVE);
+        _result = true;
     }
     
     void DiEditorManager::SetGizmoMode(DiTransGizmo::GizmoMode mode)
@@ -351,6 +401,8 @@ namespace Demi
         if (mCurrentSel != sel)
         {
             mCurrentSel = sel;
+
+            SetGizmoMode(mGlobalGizmoMode);
             
             auto psParent = mCurrentSel->LookForParent("ParticleSystem");
             if(!psParent)

@@ -48,6 +48,13 @@ namespace Demi
         
         switch (mode)
         {
+        case GIZMO_SELECT:
+            mAxesNode->SetVisible(true);
+            mAxes->SetShowArraw(false);
+            mAxes->SetShowScale(false);
+            mAxes->SetShowScalePlane(false);
+            break;
+                
         case GIZMO_MOVE:
             mAxesNode->SetVisible(true);
             mAxes->SetShowArraw(true);
@@ -348,8 +355,8 @@ namespace Demi
         
         mCircles = make_shared<DiDebugHelper>();
         mCircles->SetFaceToCamera(true);
-        mCircles->AddCircle(DiVec3::ZERO, 4.3f, DiColor());
-        mCircles->AddCircle(DiVec3::ZERO, 3.5f, DiColor(0.2f,0.2f,0.2f));
+        mCircles->AddCircle(DiVec3::ZERO, 0.4f, DiColor());
+        mCircles->AddCircle(DiVec3::ZERO, 3.5f, DiColor(0.8f,0.8f,0.8f));
         mRotateCircleNode = mBaseNode->CreateChild();
         mRotateCircleNode->AttachObject(mCircles);
         

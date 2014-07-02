@@ -42,4 +42,24 @@
 		<Pressed>true</Pressed>
 		<Modifier>Control Shift</Modifier>
 	</Command>
+    <Command>
+		<Name>Command_ToolSelect</Name>
+		<KeyCode>Q</KeyCode>
+		<Pressed>true</Pressed>
+	</Command>
+    <Command>
+		<Name>Command_ToolMove</Name>
+		<KeyCode>W</KeyCode>
+		<Pressed>true</Pressed>
+	</Command>
+    <Command>
+		<Name>Command_ToolRotate</Name>
+		<KeyCode>E</KeyCode>
+		<Pressed>true</Pressed>
+	</Command>
+    <Command>
+		<Name>Command_ToolScale</Name>
+		<KeyCode>R</KeyCode>
+		<Pressed>true</Pressed>
+	</Command>
 </MyGUI>

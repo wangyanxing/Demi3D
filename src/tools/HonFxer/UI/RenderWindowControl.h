@@ -20,6 +20,8 @@ namespace tools
 
         bool mouseInCanvas();
 
+        bool canvasFocus();
+        
         void updateInfo();
         
         void NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);

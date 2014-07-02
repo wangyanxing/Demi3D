@@ -32,6 +32,7 @@ namespace Demi
         enum GizmoMode
         {
             GIZMO_HIDE,
+            GIZMO_SELECT,
             GIZMO_MOVE,
             GIZMO_ROTATE,
             GIZMO_SCALE,

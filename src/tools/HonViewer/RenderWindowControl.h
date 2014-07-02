@@ -21,6 +21,8 @@ namespace tools
         virtual void update();
 
         bool mouseInCanvas();
+        
+        bool canvasFocus();
 
         void updateInfo();
 

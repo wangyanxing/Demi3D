@@ -92,6 +92,8 @@ namespace Demi
         
         bool            IsShowScale() {return mShowScale;}
         
+        void            SetShowLines(bool v) {mShowLines = v;}
+        
         void            SetShowArraw(bool v) {mShowArraow = v;}
         
         void            SetShowScale(bool v) {mShowScale = v;}
@@ -139,6 +141,8 @@ namespace Demi
         DiVertexDeclaration*    mVertexDecl{ nullptr };
         
         bool            mShowArraow{ true };
+        
+        bool            mShowLines{ true };
         
         bool            mShowScale{ false };
         

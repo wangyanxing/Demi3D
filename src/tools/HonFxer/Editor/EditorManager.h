@@ -77,6 +77,14 @@ namespace Demi
         void                Command_ToolOpen(const MyGUI::UString& _commandName, bool& _result);
         
         void                Command_ToolReset(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolSelect(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolRotate(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolScale(const MyGUI::UString& _commandName, bool& _result);
+        
+        void                Command_ToolMove(const MyGUI::UString& _commandName, bool& _result);
 
     protected:
 
@@ -112,7 +120,7 @@ namespace Demi
         
         DiString            mFxFileName;
         
-        DiTransGizmo::GizmoMode mGlobalGizmoMode{ DiTransGizmo::GIZMO_HIDE };
+        DiTransGizmo::GizmoMode mGlobalGizmoMode{ DiTransGizmo::GIZMO_SELECT };
     };
 }
 
