@@ -21,8 +21,6 @@ endif()
 
 if (APPLE)
   include(CMakeForceCompiler)
-  CMAKE_FORCE_C_COMPILER(clang GNU)
-  CMAKE_FORCE_CXX_COMPILER(clang++ GNU)
   SET(CMAKE_SIZEOF_VOID_P 4)
   set(CMAKE_XCODE_ATTRIBUTE_GCC_VERSION "com.apple.compilers.llvm.clang.1_0")
   set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
