@@ -313,6 +313,7 @@ bool CDDSImage::load(DiDataStream* fp, bool flipImage)
     
     // read in file marker, make sure its a DDS file
     char filecode[4];
+    int tell = fp->Tell();
     fp->Read(filecode,4);
     if (strncmp(filecode, "DDS ", 4) != 0)
     {

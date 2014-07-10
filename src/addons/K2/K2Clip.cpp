@@ -281,7 +281,7 @@ namespace Demi
         DiK2Clip* clipTargt = anim->mTarget;
         float blendWeight = anim->mBlendElapsed / anim->mBlendTime;
         
-        if (!clip)
+        if (!clip || !clip->mKeyFrames)
             return;
 
         for (auto it = clip->mKeyFrames->boneFrames.begin(); 

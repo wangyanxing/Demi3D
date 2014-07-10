@@ -32,13 +32,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Addon)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 include_directories(${DEMI_EXTERNAL_SRC_PATH}/STB)
+include_directories(${DEMI_EXTERNAL_SRC_PATH}/ZipLib)
 include_directories(${DEMI_EXTERNAL_SRC_PATH}/zziplib)
   
 # source files
 DI_ADD_LIBRARY(DiGfx ${DI_GFX_HEADERS} ${DI_GFX_SRCS} ${DI_GFX_ADDON} ${DI_GFX_PLATFORM_SPEC})
 DI_CONFIG_CORE_LIB(DiGfx "${CMAKE_CURRENT_SOURCE_DIR}/GfxPch.h")
 
-target_link_libraries(DiGfx DiMisc ${STB_LIBRARIES} ${ZZIPLIB_LIBRARIES} ${ZLIB_LIBRARIES})
+target_link_libraries(DiGfx DiMisc ${STB_LIBRARIES} ${ZIPLIB_LIBRARIES})
 
 if (NOT DEMI_STATIC)
   set_target_properties(DiGfx PROPERTIES

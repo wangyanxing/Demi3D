@@ -75,20 +75,6 @@ set (DI_MISC_PLATFORM_SPEC
   OSX/OSXPathLib.mm
   )
   
-  if (DEMI_BUILD_PLATFORM_APPLE_IOS)
-	  file(GLOB AFNetworking_ADDONS "AFNetworking/*.h" "AFNetworking/*.m" "JSONKit/*.h" "JSONKit/*.m")
-	  file(GLOB JSONKit_ADDONS "JSONKit/*.h" "JSONKit/*.m")
-	  add_filtered_std("AFNetworking")
-	  add_filtered_std("JSONKit")
-	  
-	  set_property(SOURCE ${AFNetworking_ADDONS}
-	    PROPERTY COMPILE_FLAGS "-fobjc-arc"
-	    )
-  	  set_property(SOURCE ${JSONKit_ADDONS}
-  	    PROPERTY COMPILE_FLAGS "-fno-objc-arc"
-  	    )
-  endif()
-  
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/OSX)
   set(DI_MISC_PLATFORM_LIBS ${Carbon_LIBRARY_FWK} ${Cocoa_LIBRARY_FWK})
 endif()

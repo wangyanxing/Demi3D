@@ -16,6 +16,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Archive.h"
 
+class ZipArchive;
+typedef std::shared_ptr<ZipArchive> _ZipArchivePtr;
+
 typedef struct zzip_dir       ZZIP_DIR;
 typedef struct zzip_file      ZZIP_FILE;
 typedef union _zzip_plugin_io zzip_plugin_io_handlers;
@@ -59,48 +62,10 @@ namespace Demi
 
     protected:
 
-        /// Handle any errors from zzip
-        void                CheckZzipError(int zzipError, const DiString& operation) const;
-        
-        /// Handle to root zip file
-        ZZIP_DIR*           mZzipDir;
-
         /// File list (since zziplib seems to only allow scanning of dir tree once)
         DiFileInfoList      mFileList;
         
-        /// A pointer to file io alternative implementation
-        zzip_plugin_io_handlers* mPluginIo;
-    };
-    
-    
-    /** Specialisation of DataStream to handle streaming data from zip archives. */
-    class DI_GFX_API DiZipDataStream : public DiDataStream
-    {
-    protected:
-        ZZIP_FILE* mZzipFile;
-        
-        DiStaticCache<256> mCache;
-    public:
-        
-        DiZipDataStream(ZZIP_FILE* zzipFile, size_t uncompressedSize);
-        
-        DiZipDataStream(const DiString& name, ZZIP_FILE* zzipFile, size_t uncompressedSize);
-        
-        ~DiZipDataStream();
-        
-        size_t  Read(void* buf, size_t count);
-        
-        size_t  Write(void* buf, size_t count);
-        
-        void    Skip(long count);
-        
-        void    Seek( size_t pos );
-        
-        size_t  Tell(void) const;
-        
-        bool    Eof(void) const;
-        
-        void    Close(void);
+        _ZipArchivePtr      mZipPtr;
     };
 }
 

@@ -99,6 +99,34 @@ make_library_set(STB_LIBRARY)
 findpkg_finish(STB)
 
 #-------------------------------------------------------------------
+# Find ZIPLIB
+# - Try to find ZIPLIB
+# Once done, this will define
+#
+#  ZIPLIB_FOUND - system has ZIPLIB
+#  ZIPLIB_INCLUDE_DIRS - the ZIPLIB include directories 
+#  ZIPLIB_LIBRARIES - link these to use ZIPLIB
+
+findpkg_begin(ZIPLIB)
+set(ZIPLIB_HOME "${EXTERNAL_HOME}/src/ZIPLIB")
+
+set(ZIPLIB_LIBRARY_NAMES ZIPLIB)
+get_debug_names(ZIPLIB_LIBRARY_NAMES)
+
+if (ZIPLIB_HOME)
+  set(ZIPLIB_INC_SEARCH_PATH ${ZIPLIB_INC_SEARCH_PATH} ${ZIPLIB_HOME})
+  set(ZIPLIB_LIB_SEARCH_PATH ${ZIPLIB_LIB_SEARCH_PATH} ${EXTERNAL_LIB})
+endif()
+
+find_path(ZIPLIB_INCLUDE_DIR NAMES ZipArchive.h HINTS ${ZIPLIB_INC_SEARCH_PATH} ${ZIPLIB_PKGC_INCLUDE_DIRS} PATH_SUFFIXES ZIPLIB)
+find_library(ZIPLIB_LIBRARY_REL NAMES ${ZIPLIB_LIBRARY_NAMES} HINTS ${ZIPLIB_LIB_SEARCH_PATH} ${ZIPLIB_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" release relwithdebinfo minsizerel)
+find_library(ZIPLIB_LIBRARY_DBG NAMES ${ZIPLIB_LIBRARY_NAMES_DBG} HINTS ${ZIPLIB_LIB_SEARCH_PATH} ${ZIPLIB_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" debug)
+
+make_library_set(ZIPLIB_LIBRARY)
+
+findpkg_finish(ZIPLIB)
+
+#-------------------------------------------------------------------
 # Find Freetype
 # - Try to find Freetype
 # Once done, this will define
@@ -182,62 +210,6 @@ find_library(LUA_LIBRARY_DBG NAMES ${LUA_LIBRARY_NAMES_DBG} HINTS ${LUA_LIB_SEAR
 make_library_set(LUA_LIBRARY)
 
 findpkg_finish(LUA)
-
-#-------------------------------------------------------------------
-# Find zlib
-# - Try to find zlib
-# Once done, this will define
-#
-#  ZLIB_FOUND - system has ZLIB
-#  ZLIB_INCLUDE_DIRS - the ZLIB include directories 
-#  ZLIB_LIBRARIES - link these to use ZLIB
-
-findpkg_begin(ZLIB)
-set(ZLIB_HOME "${EXTERNAL_HOME}/src/zlib")
-
-set(ZLIB_LIBRARY_NAMES ZLIB)
-get_debug_names(ZLIB_LIBRARY_NAMES)
-
-if (ZLIB_HOME)
-  set(ZLIB_INC_SEARCH_PATH ${ZLIB_INC_SEARCH_PATH} ${ZLIB_HOME})
-  set(ZLIB_LIB_SEARCH_PATH ${ZLIB_LIB_SEARCH_PATH} ${EXTERNAL_LIB})
-endif()
-
-find_path(ZLIB_INCLUDE_DIR NAMES zlib.h HINTS ${ZLIB_INC_SEARCH_PATH} ${ZLIB_PKGC_INCLUDE_DIRS} PATH_SUFFIXES ZLIB)
-find_library(ZLIB_LIBRARY_REL NAMES ${ZLIB_LIBRARY_NAMES} HINTS ${ZLIB_LIB_SEARCH_PATH} ${ZLIB_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" release relwithdebinfo minsizerel)
-find_library(ZLIB_LIBRARY_DBG NAMES ${ZLIB_LIBRARY_NAMES_DBG} HINTS ${ZLIB_LIB_SEARCH_PATH} ${ZLIB_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" debug)
-
-make_library_set(ZLIB_LIBRARY)
-
-findpkg_finish(ZLIB)
-
-#-------------------------------------------------------------------
-# Find zziplib
-# - Try to find zziplib
-# Once done, this will define
-#
-#  ZZIPLIB_FOUND - system has ZZIPLIB
-#  ZZIPLIB_INCLUDE_DIRS - the ZZIPLIB include directories 
-#  ZZIPLIB_LIBRARIES - link these to use ZZIPLIB
-
-findpkg_begin(ZZIPLIB)
-set(ZZIPLIB_HOME "${EXTERNAL_HOME}/src/zziplib/zzip")
-
-set(ZZIPLIB_LIBRARY_NAMES ZZIPLIB)
-get_debug_names(ZZIPLIB_LIBRARY_NAMES)
-
-if (ZZIPLIB_HOME)
-  set(ZZIPLIB_INC_SEARCH_PATH ${ZZIPLIB_INC_SEARCH_PATH} ${ZZIPLIB_HOME})
-  set(ZZIPLIB_LIB_SEARCH_PATH ${ZZIPLIB_LIB_SEARCH_PATH} ${EXTERNAL_LIB})
-endif()
-
-find_path(ZZIPLIB_INCLUDE_DIR NAMES zzip.h HINTS ${ZZIPLIB_INC_SEARCH_PATH} ${ZZIPLIB_PKGC_INCLUDE_DIRS} PATH_SUFFIXES ZZIPLIB)
-find_library(ZZIPLIB_LIBRARY_REL NAMES ${ZZIPLIB_LIBRARY_NAMES} HINTS ${ZZIPLIB_LIB_SEARCH_PATH} ${ZZIPLIB_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" release relwithdebinfo minsizerel)
-find_library(ZZIPLIB_LIBRARY_DBG NAMES ${ZZIPLIB_LIBRARY_NAMES_DBG} HINTS ${ZZIPLIB_LIB_SEARCH_PATH} ${ZZIPLIB_PKGC_LIBRARY_DIRS} PATH_SUFFIXES "" debug)
-
-make_library_set(ZZIPLIB_LIBRARY)
-
-findpkg_finish(ZZIPLIB)
 
 #-------------------------------------------------------------------
 # Find Ogre

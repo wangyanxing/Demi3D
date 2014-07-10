@@ -123,7 +123,10 @@ namespace Demi
             return false;
 
         DiString head = "head";
+        
+        int t = mImageData->Tell();
         mImageData->Read(&head[0], 4);
+        t = mImageData->Tell();
         mImageData->Seek(0);
 
         if (head == "DDS ")
