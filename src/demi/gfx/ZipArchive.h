@@ -37,7 +37,7 @@ namespace Demi
 
     public:
 
-        void                Load();
+        void                Load(); 
 
         void                Unload();
 
@@ -62,7 +62,7 @@ namespace Demi
 
     protected:
 
-        /// File list (since zziplib seems to only allow scanning of dir tree once)
+        //  TODO: Get rid of it
         DiFileInfoList      mFileList;
         
         _ZipArchivePtr      mZipPtr;

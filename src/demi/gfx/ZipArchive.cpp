@@ -37,7 +37,17 @@ namespace Demi
     void DiZipArchive::Load()
     {
         DI_INFO("Loading zip archive: %s", mName.c_str());
-        mZipPtr = ZipFile::Open(mName.c_str());
+        
+        try
+        {
+            mZipPtr = ZipFile::Open(mName.c_str());
+        }
+        catch(...)
+        {
+            mZipPtr = nullptr;
+            DI_WARNING("Failed to load the zip archive");
+            return;
+        }
         
         size_t entries = mZipPtr->GetEntriesCount();
         for (size_t i = 0; i < entries; ++i)

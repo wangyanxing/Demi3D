@@ -298,37 +298,6 @@ namespace Demi
 
     };
     
-    class DI_MISC_API DiInStreamDataStream : public DiDataStream
-    {
-    public:
-        
-        DiInStreamDataStream(std::istream* s) : mInStream(s){}
-        
-        DiInStreamDataStream(const DiString& name, std::istream* s) : DiDataStream(name), mInStream(s){}
-        
-        ~DiInStreamDataStream();
-        
-        size_t            Read(void* buf, size_t count);
-        
-        size_t            Write(const void* buf, size_t count);
-        
-        size_t            ReadLine(char* buf, size_t maxCount, const DiString& delim = "\n");
-        
-        void              Skip(long count);
-        
-        void              Seek( size_t pos );
-        
-        size_t            Tell(void) const;
-        
-        bool              Eof(void) const;
-        
-        void              Close(void);
-        
-    protected:
-        
-        std::istream*     mInStream{ nullptr };
-    };
-
     class DI_MISC_API DiFileHandleDataStream : public DiDataStream
     {
     protected:
