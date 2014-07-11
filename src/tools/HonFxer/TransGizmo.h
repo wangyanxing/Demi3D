@@ -59,6 +59,8 @@ namespace Demi
         
         void            OnMouseDown(int _left, int _top, MyGUI::MouseButton _id);
         
+        void            OnMouseDrag(int _left, int _top, MyGUI::MouseButton _id);
+        
         void            OnMouseUp(int _left, int _top, MyGUI::MouseButton _id);
         
         void            Show(bool visible);
@@ -83,7 +85,9 @@ namespace Demi
         
         void            HightlightRotRings(RotatePick pickret);
         
-        DiVec3          CalculateDeltaTrans(int pickResult, const DiVec3& curPos);
+        DiVec3          CalculateDeltaTrans(const DiRay& ray, const DiPlane& plane, int pickResult, const DiVec3& curPos);
+        
+        DiPlane         FindGizmoPlane(DiRay &pickRay, int TranslationAxis);
     
     protected:
         
@@ -109,11 +113,23 @@ namespace Demi
         
         DiCullNode*     mRotateRingNode[3]{nullptr,nullptr,nullptr};
         
-        bool            mPicking{ false };
-        
         bool            mActive{ true };
         
         DiVec3          mLastPos{ 0,0,0 };
+        
+        DiVec3          mLastDerivedPos{ 0,0,0 };
+        
+        DiVec3          mLastDerivedScale{ 1,1,1 };
+        
+        DiVec3          mLastTranslationDelta{ 0,0,0 };
+        
+        DiVec3          mLast3DDelta{ 0,0,0 };
+        
+        DiPlane         mLastGizmoPlane;
+        
+        int             mLastPickResult{ 0 };
+        
+        bool            mPicking{ false };
     };
 }
 

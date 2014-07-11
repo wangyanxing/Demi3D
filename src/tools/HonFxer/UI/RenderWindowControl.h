@@ -29,6 +29,8 @@ namespace tools
         void NotifyButtonReleased(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
         
         void NotifyMouseMove(MyGUI::Widget* _sender, int _left, int _top);
+        
+        void NotifyMouseDrag(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
 
     protected:
 

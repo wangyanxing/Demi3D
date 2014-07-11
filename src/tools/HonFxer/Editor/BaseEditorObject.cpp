@@ -226,4 +226,10 @@ namespace Demi
         if(mGizmo->IsActive())
             mGizmo->OnMouseMove(_left, _top);
     }
+    
+    void DiBaseEditorObj::NotifyMouseDrag(int _left, int _top, MyGUI::MouseButton _id)
+    {
+        if(mGizmo->IsActive())
+            mGizmo->OnMouseDrag(_left, _top, _id);
+    }
 }

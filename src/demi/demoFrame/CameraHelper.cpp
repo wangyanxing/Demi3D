@@ -10,12 +10,15 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "DemoPch.h"
 #include "CameraHelper.h"
 #include "Camera.h"
 #include "GfxDriver.h"
 #include "RenderWindow.h"
 #include "GfxDriver.h"
+#include "Application.h"
+#include "InputManager.h"
 
 namespace Demi
 {
@@ -35,6 +38,7 @@ namespace Demi
         , mMoving(false)
         , mEnabled(true)
         , mMousePos(-1,-1)
+        , mOrbitingShiftKey(false)
     {
         SetCamera(cam);
         SetStyle(CS_ORBIT);    
@@ -193,10 +197,13 @@ namespace Demi
             
             if (mOrbiting)
             {
-                mCamera->SetPosition(mTarget);
-                mCamera->Yaw(DiDegree(-evt.X.rel * 0.25f));
-                mCamera->Pitch(DiDegree(-evt.Y.rel * 0.25f));
-                mCamera->MoveRelative(DiVec3(0, 0, dist));
+                if(!mOrbitingShiftKey || DemiDemo::GetApp()->GetInputManager()->isShiftPressing())
+                {
+                    mCamera->SetPosition(mTarget);
+                    mCamera->Yaw(DiDegree(-evt.X.rel * 0.25f));
+                    mCamera->Pitch(DiDegree(-evt.Y.rel * 0.25f));
+                    mCamera->MoveRelative(DiVec3(0, 0, dist));
+                }
             }
             else if (mZooming)
             {

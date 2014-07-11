@@ -47,6 +47,7 @@ namespace tools
         mCanvas->eventMouseButtonPressed += MyGUI::newDelegate(this, &RenderWindowControl::NotifyButtonPressed);
         mCanvas->eventMouseButtonReleased += MyGUI::newDelegate(this, &RenderWindowControl::NotifyButtonReleased);
         mCanvas->eventMouseMove += MyGUI::newDelegate(this, &RenderWindowControl::NotifyMouseMove);
+        mCanvas->eventMouseDrag += MyGUI::newDelegate(this, &RenderWindowControl::NotifyMouseDrag);
 	}
 
     RenderWindowControl::~RenderWindowControl()
@@ -64,6 +65,20 @@ namespace tools
         {
             sel->NotifyMouseMove(_left, _top);
         }
+    }
+    
+    void RenderWindowControl::NotifyMouseDrag(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    {
+        auto pos = _sender->getAbsolutePosition();
+        _left = _left - pos.left;
+        _top = _top - pos.top;
+        
+        auto sel = DiEditorManager::Get()->GetCurrentSelection();
+        if(sel)
+        {
+            sel->NotifyMouseDrag(_left, _top, _id);
+        }
+
     }
     
     void RenderWindowControl::NotifyButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)

@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MyGUI_TreeControlItem.h"
 #include "MessageBoxManager.h"
 #include "DialogManager.h"
+#include "CameraHelper.h"
 #include "Localise.h"
 #include "PathLib.h"
 #include "ColorManager.h"
@@ -311,9 +312,11 @@ namespace Demi
         mSetGameLocWindow = new SetGameLocWindow();
         mSetGameLocWindow->eventEndDialog = MyGUI::newDelegate(this, &HonFxerApp::NotifySetGameLocWindowEndDialog);
         
+        mCameraHelper->UseShiftKeyToOrbit(true);
+        
         InitFx_Repeater01();
     }
-
+    
     HonFxerApp* HonFxerApp::GetFxApp()
     {
         return (HonFxerApp*)sTheApp;

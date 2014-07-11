@@ -90,6 +90,8 @@ namespace Demi
         
         virtual void                NotifyMouseMove(int _left, int _top);
         
+        virtual void                NotifyMouseDrag(int _left, int _top, MyGUI::MouseButton _id);
+        
     protected:
         
         void                        SetPropertyTableVisible(bool visible);

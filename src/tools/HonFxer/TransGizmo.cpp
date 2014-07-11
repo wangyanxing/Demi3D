@@ -157,6 +157,68 @@ namespace Demi
         return aabb;
     }
     
+    void DiTransGizmo::OnMouseDrag(int _left, int _top, MyGUI::MouseButton _id)
+    {
+        if(_id != MyGUI::MouseButton::Left || !mPicking)
+        {
+            return;
+        }
+        
+        auto ray = GetMouseRay(_left, _top);
+        
+        if(mMode == GIZMO_MOVE)
+        {
+            auto vNewPos = CalculateDeltaTrans(ray, mLastGizmoPlane, mLastPickResult, mLastDerivedPos);
+            vNewPos = vNewPos - mLast3DDelta + mLastDerivedPos;
+            mBaseNode->SetDerivedPosition(vNewPos);
+        }
+        else if(mMode == GIZMO_SCALE)
+        {
+            auto vNewDist = CalculateDeltaTrans(ray, mLastGizmoPlane, mLastPickResult, mLastDerivedPos);
+            float fNewDist = vNewDist.length();
+            float fLength = mLast3DDelta.length();
+            auto vScale = mLastDerivedScale;
+            
+            if (mLastPickResult == DiTransAxes::PICK_SCALE_X)
+            {
+                vScale.x *= (fNewDist / fLength);
+            }
+            if (mLastPickResult == DiTransAxes::PICK_SCALE_Y)
+            {
+                vScale.y *= (fNewDist / fLength);
+            }
+            if (mLastPickResult == DiTransAxes::PICK_SCALE_Z)
+            {
+                vScale.z *= (fNewDist / fLength);
+            }
+            if (mLastPickResult == DiTransAxes::PICK_SCALE_XY)
+            {
+                vScale.x *= (fNewDist / fLength);
+                vScale.y *= (fNewDist / fLength);
+            }
+            if (mLastPickResult == DiTransAxes::PICK_SCALE_XZ)
+            {
+                vScale.x *= (fNewDist / fLength);
+                vScale.z *= (fNewDist / fLength);
+            }
+            if (mLastPickResult == DiTransAxes::PICK_SCALE_YZ)
+            {
+                vScale.y *= (fNewDist / fLength);
+                vScale.z *= (fNewDist / fLength);
+            }
+            if (mLastPickResult == DiTransAxes::PICK_SCALE_XYZ)
+            {
+                vScale.x *= (fNewDist / fLength);
+                vScale.y *= (fNewDist / fLength);
+                vScale.z *= (fNewDist / fLength);
+            }
+        }
+        else if(mMode == GIZMO_ROTATE)
+        {
+            //auto ret = PickRotRings(ray, out);
+        }
+    }
+    
     void DiTransGizmo::OnMouseMove(int _left, int _top)
     {
         auto ray = GetMouseRay(_left, _top);
@@ -167,39 +229,24 @@ namespace Demi
         }
         
         DiVec3 out(0,0,0);
-        if(mPicking)
+        if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
         {
-            if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
-            {
-                auto ret = mAxes->Pick(ray,out);
-                auto delta = CalculateDeltaTrans(ret, out);
-            }
-            else if(mMode == GIZMO_ROTATE)
-            {
-                //auto ret = PickRotRings(ray, out);
-                
-            }
+            auto ret = mAxes->Pick(ray,out);
+            mAxes->Highlight(ret);
         }
-        else
+        else if(mMode == GIZMO_ROTATE)
         {
-            if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
-            {
-                auto ret = mAxes->Pick(ray,out);
-                mAxes->Highlight(ret);
-            }
-            else if(mMode == GIZMO_ROTATE)
-            {
-                auto ret = PickRotRings(ray, out);
-                HightlightRotRings(ret);
-            }
+            auto ret = PickRotRings(ray, out);
+            HightlightRotRings(ret);
         }
     }
     
     void DiTransGizmo::OnMouseDown(int _left, int _top, MyGUI::MouseButton _id)
     {
-        auto ray = GetMouseRay(_left, _top);
+        if(_id != MyGUI::MouseButton::Left)
+            return;
         
-        mPicking = false;
+        auto ray = GetMouseRay(_left, _top);
         
         if(!DiMath::intersects(ray, GetWorldAABB()).first)
         {
@@ -207,42 +254,127 @@ namespace Demi
         }
 
         DiVec3 out(0,0,0);
+        int ret = 0;
         if(mMode == GIZMO_MOVE || mMode == GIZMO_SCALE)
         {
-            auto ret = mAxes->Pick(ray,out);
+            ret = mAxes->Pick(ray,out);
             if(ret != DiTransAxes::PICK_NONE)
             {
                 mLastPos = out;
-                mPicking = true;
             }
         }
         else if(mMode == GIZMO_ROTATE)
         {
-            auto ret = PickRotRings(ray, out);
+            ret = PickRotRings(ray, out);
             if(ret != PICK_NONE)
             {
                 mLastPos = out;
-                mPicking = true;
             }
         }
+        
+        if (ret != 0)
+			mPicking = true;
+		else
+			mPicking = false;
+        
+        mLastPickResult = ret;
+        mLastDerivedPos = mBaseNode->GetDerivedPosition();
+        mLastDerivedScale = mBaseNode->GetDerivedScale();
+        mLastGizmoPlane = FindGizmoPlane(ray, mLastPickResult);
+        
+        mLast3DDelta = CalculateDeltaTrans(ray, mLastGizmoPlane, mLastPickResult, mLastDerivedPos);
     }
     
     void DiTransGizmo::OnMouseUp(int _left, int _top, MyGUI::MouseButton _id)
     {
         mPicking = false;
+        mLastPickResult = 0;
     }
     
-    DiVec3 DiTransGizmo::CalculateDeltaTrans(int pickResult, const DiVec3& curPos)
+    DiPlane DiTransGizmo::FindGizmoPlane(DiRay &pickRay, int TranslationAxis)
     {
-        DiVec3 delta;
-        
-        DiQuat rot;
+        DiQuat qOrient;
 		if(DiEditorManager::Get()->IsGizmoInWorldSpace())
-			rot = DiQuat::IDENTITY;
+			qOrient = DiQuat::IDENTITY;
         else
-            rot = mBaseNode->GetDerivedOrientation();
+            qOrient = mBaseNode->GetDerivedOrientation();
         
-        return delta;
+        auto vPos = mBaseNode->GetDerivedPosition();
+        auto camera = DiBase::Driver->GetSceneManager()->GetCamera();
+        auto vCamBack = -camera->GetDirection();
+
+        if(!TranslationAxis)
+            return DiPlane(vCamBack,vPos);
+        
+        DiPlane planeX(qOrient.xAxis(), vPos);
+        DiPlane planeY(qOrient.yAxis(), vPos);
+        DiPlane planeZ(qOrient.zAxis(), vPos);
+        
+        float vX = planeX.projectVector(pickRay.getDirection()).length();
+        float vY = planeY.projectVector(pickRay.getDirection()).length();
+        float vZ = planeZ.projectVector(pickRay.getDirection()).length();
+        
+        if(TranslationAxis & DiTransAxes::PICK_MOVE_X)
+            vX = 10000.0f;
+        
+        if(TranslationAxis & DiTransAxes::PICK_MOVE_Y)
+            vY = 10000.0f;
+        
+        if(TranslationAxis & DiTransAxes::PICK_MOVE_Z)
+            vZ = 10000.0f;
+        
+        if (vX < vY && vX < vZ)
+            return planeX;
+        else
+        {
+            if (vY < vX && vY < vZ )
+                return planeY;
+            else
+                return planeZ;
+        }
+    }
+    
+    DiVec3 DiTransGizmo::CalculateDeltaTrans(const DiRay& pickRay, const DiPlane& plane, int pickResult, const DiVec3& curPos)
+    {
+        auto result = pickRay.intersects(plane);
+        
+        if (result.first)
+        {
+            DiVec3 AxisX = DiVec3::ZERO;
+            DiVec3 AxisY = DiVec3::ZERO;
+            DiVec3 AxisZ = DiVec3::ZERO;
+            
+            DiQuat rot;
+            if(DiEditorManager::Get()->IsGizmoInWorldSpace())
+                rot = DiQuat::IDENTITY;
+            else
+                rot = mBaseNode->GetDerivedOrientation();
+            
+            if(pickResult)
+            {
+                if((pickResult & DiTransAxes::PICK_MOVE_X) || (pickResult & DiTransAxes::PICK_SCALE_X))
+                    AxisX = rot.xAxis();
+                if((pickResult & DiTransAxes::PICK_MOVE_Y) || (pickResult & DiTransAxes::PICK_SCALE_Y))
+                    AxisY = rot.yAxis();
+                if((pickResult & DiTransAxes::PICK_MOVE_Z) || (pickResult & DiTransAxes::PICK_SCALE_Z))
+                    AxisZ = rot.zAxis();
+            }
+            else
+            {
+                AxisX = rot.xAxis();
+                AxisY = rot.yAxis();
+                AxisZ = rot.zAxis();
+            }
+            
+            auto Proj = pickRay.getPoint(result.second) - curPos;
+            auto vPos1 = (AxisX.dotProduct(Proj) * AxisX);
+            auto vPos2 = (AxisY.dotProduct(Proj) * AxisY);
+            auto vPos3 = (AxisZ.dotProduct(Proj) * AxisZ);
+            auto vPos = vPos1 + vPos2 + vPos3;
+            
+            mLastTranslationDelta = vPos;
+        }
+        return mLastTranslationDelta;
     }
     
     void DiTransGizmo::HightlightRotRings(RotatePick pickret)

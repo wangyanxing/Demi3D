@@ -85,6 +85,8 @@ namespace Demi
         bool                    IsZooming(){return mZooming;}
 
         void                    Enable(bool enable);
+        
+        void                    UseShiftKeyToOrbit(bool val){mOrbitingShiftKey = val;}
 
     protected:
 
@@ -121,6 +123,8 @@ namespace Demi
         bool                    mFastMove;
         
         bool                    mMoving;
+        
+        bool                    mOrbitingShiftKey;
     };
 }
 

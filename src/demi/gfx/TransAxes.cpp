@@ -94,12 +94,12 @@ namespace Demi
                 
             case PICK_SCALE_YZ:
             case PICK_MOVE_YZ:
-                mShowScalePlane[1] = true;
+                mShowScalePlane[2] = true;
                 break;
                 
             case PICK_SCALE_XZ:
             case PICK_MOVE_XZ:
-                mShowScalePlane[2] = true;
+                mShowScalePlane[1] = true;
                 break;
                 
             case PICK_SCALE_XYZ:
@@ -247,9 +247,9 @@ namespace Demi
         }
         
         PickResult pickMove[3] = {PICK_MOVE_X,PICK_MOVE_Y,PICK_MOVE_Z};
-        PickResult pickMovePlane[3] = {PICK_MOVE_XY,PICK_MOVE_YZ,PICK_MOVE_XZ};
+        PickResult pickMovePlane[3] = {PICK_MOVE_XY,PICK_MOVE_XZ,PICK_MOVE_YZ};
         PickResult pickScale[3] = {PICK_SCALE_X,PICK_SCALE_Y,PICK_SCALE_Z};
-        PickResult pickScalePlane[3] = {PICK_SCALE_XY,PICK_SCALE_YZ,PICK_SCALE_XZ};
+        PickResult pickScalePlane[3] = {PICK_SCALE_XY,PICK_SCALE_XZ,PICK_SCALE_YZ};
         
         DiCullNode* node = dynamic_cast<DiCullNode*>(mParentNode);
         DiMat4 mat = node->GetFullTransform();
