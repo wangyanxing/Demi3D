@@ -46,12 +46,16 @@ namespace Demi
         DiEditProperty* AddProperty(const DiString& caption, DiPropertyBase* prop);
 
         void CreateUI();
+        
+        void UpdateUI(const DiString& caption);
 
         DiString mGroupName;
 
         DiVector<DiEditProperty*> mProperties;
         
-        Demi::DiPanelGroup* mUIGroup{nullptr};
+        DiMap<DiString, DiVector<DiPropertyItem*>> mPropItems;
+        
+        Demi::DiPanelGroup* mUIGroup{ nullptr };
     };
 
     using PropertyGroups = DiVector<DiPropertyGroup*>;

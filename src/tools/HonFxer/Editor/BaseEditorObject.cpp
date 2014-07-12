@@ -260,6 +260,9 @@ namespace Demi
         {
             DiVec3 _p = pos;
             *mPositionProp = _p;
+            
+            // notify ui panel to update
+            UpdatePropertyUI("Position");
         }
     }
     
@@ -272,6 +275,14 @@ namespace Demi
         else
         {
             return DiVec3::ZERO;
+        }
+    }
+    
+    void DiBaseEditorObj::UpdatePropertyUI(const DiString& caption)
+    {
+        for (auto& i : mPropGroups)
+        {
+            i->UpdateUI(caption);
         }
     }
 }

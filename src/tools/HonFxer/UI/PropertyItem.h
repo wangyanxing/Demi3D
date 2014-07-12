@@ -34,6 +34,8 @@ namespace Demi
         virtual int GetHeight();
 
         virtual void RearrangeUI(int height) = 0;
+        
+        virtual void RefreshUI() = 0;
 
     protected:
 

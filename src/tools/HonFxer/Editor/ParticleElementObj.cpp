@@ -157,11 +157,11 @@ namespace Demi
         g->AddProperty("Name"            , DI_NEW DiStringProperty([&]{ return mParticleElement->GetName(); },
                                                                    [&](DiString& val){ mParticleElement->SetName(val); }));
         
-        auto prop = g->AddProperty("Position", DI_NEW DiVec3Property(  [&]{ return mParticleElement->position; },
-                                                                   [&](DiVec3& val){
-                                                                       mParticleElement->position = val;
-                                                                       NotifyTransfromUpdate();
-                                                                   }));
+        auto prop = g->AddProperty("Position", DI_NEW DiVec3Property([&]{ return mParticleElement->position; },
+                                                                     [&](DiVec3& val){
+                                                                         mParticleElement->position = val;
+                                                                         NotifyTransfromUpdate();
+                                                                     }));
         mPositionProp = static_cast<DiVec3Property*>(prop->mProperty);
         
         g->AddProperty("Keep Local"      , DI_NEW DiBoolProperty(  [&]{ return mParticleElement->IsKeepLocal(); },

@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PropertiesControl.h"
 #include "HonFxerApp.h"
 #include "PanelView.h"
+#include "PropertyItem.h"
 
 namespace Demi
 {
@@ -56,6 +57,15 @@ namespace Demi
         mProperties.push_back(ret);
         return ret;
     }
+    
+    void DiPropertyGroup::UpdateUI(const DiString& caption)
+    {
+        auto& items = mPropItems[caption];
+        for(auto i : items)
+        {
+            i->RefreshUI();
+        }
+    }
 
     void DiPropertyGroup::CreateUI()
     {
@@ -67,6 +77,9 @@ namespace Demi
         propCtrl->getPanelView()->markFirstInit(false);
         
         for (auto p : mProperties)
-            mUIGroup->AddItem(p->mCaption, p->mProperty);
+        {
+            auto item = mUIGroup->AddItem(p->mCaption, p->mProperty);
+            mPropItems[p->mCaption].push_back(item);
+        }
     }
 }

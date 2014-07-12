@@ -215,6 +215,7 @@ namespace Demi
                 vScale.z *= (fNewDist / fLength);
             }
             // SET SCALE
+            mObject->SetScale(vScale);
         }
         else if(mMode == GIZMO_ROTATE)
         {
@@ -282,7 +283,7 @@ namespace Demi
         
         mLastPickResult = ret;
         mLastDerivedPos = mObject->GetPosition();
-        mLastDerivedScale = mBaseNode->GetDerivedScale();
+        mLastDerivedScale = mObject->GetScale();
         mLastGizmoPlane = FindGizmoPlane(ray, mLastPickResult);
         
         mLast3DDelta = CalculateDeltaTrans(ray, mLastGizmoPlane, mLastPickResult, mLastDerivedPos);

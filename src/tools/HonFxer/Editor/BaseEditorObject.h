@@ -115,6 +115,8 @@ namespace Demi
         virtual void                InitPropertyTable(){}
         
         virtual void                DestroyPropertyTable();
+        
+        virtual void                UpdatePropertyUI(const DiString& caption);
 
     protected:
 
