@@ -57,6 +57,8 @@ namespace Demi
 
     void DiControllerBaseObj::OnCreate()
     {
+        DiBaseEditorObj::OnCreate();
+        
         auto parent = dynamic_cast<DiParticleElementObj*>(GetParent());
         mController = parent->GetParticleElement()->CreateController(GetControllerType());
         mController->SetName(DiEditorManager::Get()->GenerateControllerName(GetControllerType()));
@@ -64,6 +66,8 @@ namespace Demi
     
     void DiControllerBaseObj::OnCreate(const DiAny& param)
     {
+        DiBaseEditorObj::OnCreate();
+        
         mController = any_cast<DiParticleController*>(param);
         
         DI_ASSERT(mController);

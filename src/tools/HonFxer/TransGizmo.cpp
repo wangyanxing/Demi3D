@@ -21,10 +21,12 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RenderWindow.h"
 #include "RenderTarget.h"
 #include "EditorManager.h"
+#include "BaseEditorObject.h"
 
 namespace Demi
 {
-    DiTransGizmo::DiTransGizmo(void)
+    DiTransGizmo::DiTransGizmo(DiBaseEditorObj* parent)
+        :mObject(parent)
     {
         Create();
     }
@@ -170,7 +172,7 @@ namespace Demi
         {
             auto vNewPos = CalculateDeltaTrans(ray, mLastGizmoPlane, mLastPickResult, mLastDerivedPos);
             vNewPos = vNewPos - mLast3DDelta + mLastDerivedPos;
-            mBaseNode->SetDerivedPosition(vNewPos);
+            mObject->SetPosition(vNewPos);
         }
         else if(mMode == GIZMO_SCALE)
         {
@@ -212,6 +214,7 @@ namespace Demi
                 vScale.y *= (fNewDist / fLength);
                 vScale.z *= (fNewDist / fLength);
             }
+            mObject->SetScale(vScale);
         }
         else if(mMode == GIZMO_ROTATE)
         {
@@ -297,9 +300,9 @@ namespace Demi
 		if(DiEditorManager::Get()->IsGizmoInWorldSpace())
 			qOrient = DiQuat::IDENTITY;
         else
-            qOrient = mBaseNode->GetDerivedOrientation();
+            qOrient = mObject->GetRotation();
         
-        auto vPos = mBaseNode->GetDerivedPosition();
+        auto vPos = mObject->GetPosition();
         auto camera = DiBase::Driver->GetSceneManager()->GetCamera();
         auto vCamBack = -camera->GetDirection();
 
@@ -509,8 +512,7 @@ namespace Demi
     
     void DiTransGizmo::Create()
     {
-        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-        mBaseNode = sm->GetRootNode()->CreateChild();
+        mBaseNode = mObject->GetSceneNode()->CreateChild();
         
         mAxes = make_shared<DiTransAxes>();
         mAxesNode = mBaseNode->CreateChild();

@@ -142,7 +142,7 @@ namespace Demi
 
         void                    StripNameFromSoftPrefix(DiString& name);
 
-        DiParticleElement*      mParentTechnique;
+        DiParticleElement*      mParentElement;
 
         DiBillboardSet*         mBillboardSet;
 
@@ -173,8 +173,6 @@ namespace Demi
         bool                    mTextureCoordsRowsAndColumnsSet;
 
         bool                    mTextureCoordsSet;
-
-        // 软粒子相关，暂时不做
 
         bool                    mUseSoftParticles;
 

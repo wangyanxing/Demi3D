@@ -57,6 +57,8 @@ namespace Demi
 
     void DiEmitterBaseObj::OnCreate()
     {
+        DiBaseEditorObj::OnCreate();
+        
         auto parent = dynamic_cast<DiParticleElementObj*>(GetParent());
         mEmitter = parent->GetParticleElement()->CreateEmitter(GetEmitterType());
         mEmitter->SetName(DiEditorManager::Get()->GenerateEmitterName(GetEmitterType()));
@@ -64,6 +66,8 @@ namespace Demi
     
     void DiEmitterBaseObj::OnCreate(const DiAny& param)
     {
+        DiBaseEditorObj::OnCreate();
+        
         mEmitter = any_cast<DiParticleEmitter*>(param);
         
         DI_ASSERT(mEmitter);
@@ -71,6 +75,17 @@ namespace Demi
         {
             mEmitter->SetName(DiEditorManager::Get()->GenerateEmitterName(GetEmitterType()));
         }
+    }
+    
+    void DiEmitterBaseObj::SetPosition(const DiVec3& pos)
+    {
+        DiVec3 v = pos;
+        *mPositionProp = v;
+    }
+    
+    DiVec3 DiEmitterBaseObj::GetPosition()
+    {
+        return *mPositionProp;
     }
 
     void DiEmitterBaseObj::InitPropertyTable()
@@ -116,8 +131,12 @@ namespace Demi
         g->AddProperty("Original Enabled", DI_NEW DiBoolProperty([&]{ return mEmitter->GetOriginalEnabled(); },
                                                                  [&](bool& val){ mEmitter->SetOriginalEnabled(val); }));
 
-        g->AddProperty("Position"        , DI_NEW DiVec3Property([&]{ return mEmitter->position; },
-                                                                 [&](DiVec3& val){ mEmitter->position = val; }));
+        auto prop = g->AddProperty("Position", DI_NEW DiVec3Property([&]{ return mEmitter->position; },
+                                                                     [&](DiVec3& val){
+                                                                         mEmitter->position = val;
+                                                                         NotifyTransfromUpdate();
+                                                                     }));
+        mPositionProp = static_cast<DiVec3Property*>(prop->mProperty);
 
         g->AddProperty("Keep Local"      , DI_NEW DiBoolProperty([&]{ return mEmitter->IsKeepLocal(); },
                                                                  [&](bool& val){ mEmitter->SetKeepLocal(val); }));

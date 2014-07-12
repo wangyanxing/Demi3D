@@ -44,6 +44,10 @@ namespace Demi
         virtual DiString     GetUICaption() override;
 
         virtual void         Update(float dt);
+        
+        virtual void         SetPosition(const DiVec3& pos) override;
+        
+        virtual DiVec3       GetPosition() override;
 
     public:
 
@@ -56,8 +60,8 @@ namespace Demi
     protected:
 
         DiParticleSystemPtr  mParticleSystem{ nullptr };
-
-        DiCullNode*          mSceneNode{ nullptr };
+        
+        DiVec3Property*      mPositionProp{ nullptr };
     };
 }
 

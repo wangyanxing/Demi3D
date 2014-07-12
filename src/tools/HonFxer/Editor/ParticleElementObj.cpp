@@ -73,6 +73,8 @@ namespace Demi
 
     void DiParticleElementObj::OnCreate()
     {
+        DiBaseEditorObj::OnCreate();
+        
         DI_ASSERT(!mParticleElement);
         
         // particle element
@@ -89,6 +91,8 @@ namespace Demi
     
     void DiParticleElementObj::OnCreate(const DiAny& param)
     {
+        DiBaseEditorObj::OnCreate();
+        
         mParticleElement = any_cast<DiParticleElement*>(param);
         
         DI_ASSERT(mParticleElement);
@@ -146,6 +150,17 @@ namespace Demi
         }
     }
     
+    void DiParticleElementObj::SetPosition(const DiVec3& pos)
+    {
+        DiVec3 v = pos;
+        *mPositionProp = v;
+    }
+    
+    DiVec3 DiParticleElementObj::GetPosition()
+    {
+        return *mPositionProp;
+    }
+    
     void DiParticleElementObj::InitPropertyTable()
     {
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Particle Element");
@@ -153,8 +168,12 @@ namespace Demi
         g->AddProperty("Name"            , DI_NEW DiStringProperty([&]{ return mParticleElement->GetName(); },
                                                                    [&](DiString& val){ mParticleElement->SetName(val); }));
         
-        g->AddProperty("Position"        , DI_NEW DiVec3Property(  [&]{ return mParticleElement->position; },
-                                                                   [&](DiVec3& val){ mParticleElement->position = val; }));
+        auto prop = g->AddProperty("Position", DI_NEW DiVec3Property(  [&]{ return mParticleElement->position; },
+                                                                   [&](DiVec3& val){
+                                                                       mParticleElement->position = val;
+                                                                       NotifyTransfromUpdate();
+                                                                   }));
+        mPositionProp = static_cast<DiVec3Property*>(prop->mProperty);
         
         g->AddProperty("Keep Local"      , DI_NEW DiBoolProperty(  [&]{ return mParticleElement->IsKeepLocal(); },
                                                                    [&](bool& val){ mParticleElement->SetKeepLocal(val); }));

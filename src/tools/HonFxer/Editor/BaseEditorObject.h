@@ -56,7 +56,7 @@ namespace Demi
 
         virtual void                OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection);
 
-        virtual void                OnCreate() {}
+        virtual void                OnCreate();
         
         virtual void                OnCreate(const DiAny& param) {}
 
@@ -92,6 +92,22 @@ namespace Demi
         
         virtual void                NotifyMouseDrag(int _left, int _top, MyGUI::MouseButton _id);
         
+        virtual void                NotifyTransfromUpdate();
+        
+        virtual void                SetPosition(const DiVec3& pos){}
+        
+        virtual void                SetRotation(const DiQuat& rot){}
+        
+        virtual void                SetScale(const DiVec3& scale){}
+        
+        virtual DiVec3              GetPosition(){ return DiVec3::ZERO; }
+        
+        virtual DiQuat              GetRotation(){ return DiQuat::ZERO; }
+        
+        virtual DiVec3              GetScale(){ return DiVec3::UNIT_SCALE; }
+        
+        DiCullNode*                 GetSceneNode(){ return mSceneNode; }
+        
     protected:
         
         void                        SetPropertyTableVisible(bool visible);
@@ -108,6 +124,8 @@ namespace Demi
 
         /// Tree control node
         UINode*                     mUINode{ nullptr };
+        
+        DiCullNode*                 mSceneNode{ nullptr };
 
         PropertyGroups              mPropGroups;
 

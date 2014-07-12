@@ -60,8 +60,8 @@ namespace Demi
         // effect
         auto _ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate("Fx_repeater1");
         std::shared_ptr<DiTransformUnit> ps(_ps);
-        DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
-        cullnode->AttachObject(ps);
+        //DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
+        //cullnode->AttachObject(ps);
         _ps->Start();
         {
             DiParticleElement* element = _ps->CreateElement();

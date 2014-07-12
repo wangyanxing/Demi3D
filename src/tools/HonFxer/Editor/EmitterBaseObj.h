@@ -47,6 +47,10 @@ namespace Demi
         virtual DiString    GetUICaption() override;
 
         virtual DiString    GetUINodeType() { return "File"; }
+        
+        virtual void        SetPosition(const DiVec3& pos) override;
+        
+        virtual DiVec3      GetPosition() override;
 
     public:
 
@@ -59,6 +63,8 @@ namespace Demi
     protected:
 
         DiParticleEmitter*  mEmitter{ nullptr };
+        
+        DiVec3Property*     mPositionProp{ nullptr };
     };
 }
 

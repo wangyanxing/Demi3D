@@ -26,6 +26,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ParticleElement.h"
 #include "ParticleSystem.h"
 #include "RenderBatchGroup.h"
+#include "CullNode.h"
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable:4706)
@@ -47,6 +48,7 @@ namespace Demi
     {
         mBillboardSet = make_shared<DiBillboardSet>("", 0, true);
         mBillboardSet->SetBillboardsInWorldSpace(true);
+        
         autoRotate = false;
     }
     
@@ -184,6 +186,7 @@ namespace Demi
     void DiBillboardRenderer::AddToBatchGroup(DiRenderBatchGroup* group)
     {
         DiParticleRenderer::AddToBatchGroup(group);
+     
         mBillboardSet->AddToBatchGroup(group);
     }
     

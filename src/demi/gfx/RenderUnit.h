@@ -20,7 +20,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
-    //////////////////////////////////////////////////////////////////////////
     class DI_GFX_API DiRenderUnit : public DiBase
     {
     public:

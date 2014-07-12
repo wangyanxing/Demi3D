@@ -25,7 +25,7 @@ namespace Demi
     {
     public:
         
-        DiTransGizmo(void);
+        DiTransGizmo(DiBaseEditorObj* parent);
 
         ~DiTransGizmo(void);
 
@@ -130,6 +130,8 @@ namespace Demi
         int             mLastPickResult{ 0 };
         
         bool            mPicking{ false };
+        
+        DiBaseEditorObj* mObject{ nullptr };
     };
 }
 

@@ -82,7 +82,7 @@ namespace Demi
     {
         DI_ASSERT(ru->GetWorldTransformNums() < MAX_WORLD_MATS);
 
-        DiMat4* mat = NULL;
+        DiMat4* mat = nullptr;
         if (ru->GetWorldTransformNums() == 1)
         {
             mat = mPipeline->GetMatrixPool().GetFreeObject();

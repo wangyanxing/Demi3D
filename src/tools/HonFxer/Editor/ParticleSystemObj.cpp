@@ -45,19 +45,20 @@ namespace Demi
 
     void DiParticleSystemObj::OnCreate()
     {
+        DiBaseEditorObj::OnCreate();
+        
         DI_ASSERT(!mParticleSystem);
         mParticleSystem = DiEffectManager::GetInstance().CreateParticleSystemTemplate(
             DiEditorManager::Get()->GenerateSystemName());
 
-        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-
-        mSceneNode = sm->GetRootNode()->CreateChild();
         mSceneNode->AttachObject(mParticleSystem);
         mParticleSystem->Start();
     }
     
     void DiParticleSystemObj::OnCreate(const DiAny& param)
     {
+        DiBaseEditorObj::OnCreate();
+        
         mParticleSystem = any_cast<DiParticleSystemPtr>(param);
         DI_ASSERT(mParticleSystem);
         
@@ -67,9 +68,6 @@ namespace Demi
             return;
         }
         
-        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-        
-        mSceneNode = sm->GetRootNode()->CreateChild();
         mSceneNode->AttachObject(mParticleSystem);
         mParticleSystem->Start();
     }
@@ -96,6 +94,17 @@ namespace Demi
         DiBaseEditorObj::Update(dt);
     }
     
+    void DiParticleSystemObj::SetPosition(const DiVec3& pos)
+    {
+        DiVec3 v = pos;
+        *mPositionProp = v;
+    }
+    
+    DiVec3 DiParticleSystemObj::GetPosition()
+    {
+        return *mPositionProp;
+    }
+    
     void DiParticleSystemObj::InitPropertyTable()
     {
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Particle System");
@@ -103,17 +112,24 @@ namespace Demi
         g->AddProperty("Name"            , DI_NEW DiStringProperty([&]{ return mParticleSystem->GetTemplateName(); },
                                                                    [&](DiString& val){ mParticleSystem->SetTemplateName(val); }));
         
+        DiEditProperty* prop = g->AddProperty("Position", DI_NEW DiVec3Property([&]{ return mSceneNode->GetPosition(); },
+                                                                     [&](DiVec3& val){
+                                                                         mSceneNode->SetPosition(val);
+                                                                         NotifyTransfromUpdate();
+                                                                     }));
+        mPositionProp = static_cast<DiVec3Property*>(prop->mProperty);
+        
         g->AddProperty("Keep Local"      , DI_NEW DiBoolProperty(  [&]{ return mParticleSystem->IsKeepLocal(); },
-                                                                   [&](bool& val){ mParticleSystem->SetKeepLocal(val); }));
+                                                                   [&](bool& v){ mParticleSystem->SetKeepLocal(v); }));
         
         g->AddProperty("Scale Velocity"  , DI_NEW DiFloatProperty( [&]{ return mParticleSystem->GetScaleVelocity(); },
-                                                                   [&](float& val){ mParticleSystem->SetScaleVelocity(val); }));
+                                                                   [&](float& v){ mParticleSystem->SetScaleVelocity(v); }));
         
         g->AddProperty("Scale Time"      , DI_NEW DiFloatProperty( [&]{ return mParticleSystem->GetScaleTime(); },
-                                                                   [&](float& val){ mParticleSystem->SetScaleTime(val); }));
+                                                                   [&](float& v){ mParticleSystem->SetScaleTime(v); }));
         
         g->AddProperty("Scale"           , DI_NEW DiVec3Property(  [&]{ return mParticleSystem->GetScale(); },
-                                                                   [&](DiVec3& val){ mParticleSystem->SetScale(val); }));
+                                                                   [&](DiVec3& v){ mParticleSystem->SetScale(v); }));
     
         g->CreateUI();
         

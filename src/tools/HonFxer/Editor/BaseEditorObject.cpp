@@ -25,8 +25,6 @@ namespace Demi
 {
     DiBaseEditorObj::DiBaseEditorObj()
     {
-        mGizmo = DI_NEW DiTransGizmo();
-        mGizmo->Show(false);
     }
 
     DiBaseEditorObj::~DiBaseEditorObj()
@@ -94,6 +92,7 @@ namespace Demi
         ret->mParent = this;
         ret->OnCreate();
         ret->OnCreateUI();
+        ret->NotifyTransfromUpdate();
 
         mChildren.push_back(ret);
         return ret;
@@ -107,6 +106,7 @@ namespace Demi
         ret->mParent = this;
         ret->OnCreate(param);
         ret->OnCreateUI();
+        ret->NotifyTransfromUpdate();
         
         mChildren.push_back(ret);
         return ret;
@@ -207,6 +207,20 @@ namespace Demi
             DI_DELETE g;
         }
         mPropGroups.clear();
+    }
+    
+    void DiBaseEditorObj::OnCreate()
+    {
+        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+        mSceneNode = sm->GetRootNode()->CreateChild();
+        
+        mGizmo = DI_NEW DiTransGizmo(this);
+        mGizmo->Show(false);
+    }
+    
+    void DiBaseEditorObj::NotifyTransfromUpdate()
+    {
+        mSceneNode->SetPosition(GetPosition());
     }
     
     void DiBaseEditorObj::NotifyMousePressed(int _left, int _top, MyGUI::MouseButton _id)

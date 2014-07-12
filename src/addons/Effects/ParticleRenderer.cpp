@@ -36,7 +36,7 @@ namespace Demi
 
     
     DiParticleRenderer::DiParticleRenderer(void) : 
-        mParentTechnique(0),
+        mParentElement(0),
         mCullIndividual(false),
         mHeight(100),
         mWidth(100),
@@ -93,12 +93,12 @@ namespace Demi
     
     DiParticleElement* DiParticleRenderer::GetParentElement(void) const
     {
-        return mParentTechnique;
+        return mParentElement;
     }
     
     void DiParticleRenderer::SetParentElement(DiParticleElement* parentTechnique)
     {
-        mParentTechnique = parentTechnique;
+        mParentElement = parentTechnique;
     }
     
     bool DiParticleRenderer::IsRendererInitialised(void) const
