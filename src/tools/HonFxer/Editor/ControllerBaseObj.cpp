@@ -87,8 +87,12 @@ namespace Demi
         g->AddProperty("Enable"          , DI_NEW DiBoolProperty(  [&]{ return mController->IsEnabled(); },
                                                                    [&](bool& val){ mController->SetEnabled(val); }));
         
-        g->AddProperty("Position"        , DI_NEW DiVec3Property(  [&]{ return mController->position; },
-                                                                   [&](DiVec3& val){ mController->position = val; }));
+        auto prop = g->AddProperty("Position", DI_NEW DiVec3Property([&]{ return mController->position; },
+                                                                     [&](DiVec3& val){
+                                                                         mController->position = val;
+                                                                         NotifyTransfromUpdate();
+                                                                     }));
+        mPositionProp = static_cast<DiVec3Property*>(prop->mProperty);
         
         g->AddProperty("Mass"            , DI_NEW DiFloatProperty( [&]{ return mController->mass; },
                                                                    [&](float& val){ mController->mass = val; }));

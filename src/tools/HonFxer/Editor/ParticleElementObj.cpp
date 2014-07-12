@@ -150,17 +150,6 @@ namespace Demi
         }
     }
     
-    void DiParticleElementObj::SetPosition(const DiVec3& pos)
-    {
-        DiVec3 v = pos;
-        *mPositionProp = v;
-    }
-    
-    DiVec3 DiParticleElementObj::GetPosition()
-    {
-        return *mPositionProp;
-    }
-    
     void DiParticleElementObj::InitPropertyTable()
     {
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Particle Element");

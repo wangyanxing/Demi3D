@@ -77,17 +77,6 @@ namespace Demi
         }
     }
     
-    void DiEmitterBaseObj::SetPosition(const DiVec3& pos)
-    {
-        DiVec3 v = pos;
-        *mPositionProp = v;
-    }
-    
-    DiVec3 DiEmitterBaseObj::GetPosition()
-    {
-        return *mPositionProp;
-    }
-
     void DiEmitterBaseObj::InitPropertyTable()
     {
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Emitter");

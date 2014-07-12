@@ -94,17 +94,6 @@ namespace Demi
         DiBaseEditorObj::Update(dt);
     }
     
-    void DiParticleSystemObj::SetPosition(const DiVec3& pos)
-    {
-        DiVec3 v = pos;
-        *mPositionProp = v;
-    }
-    
-    DiVec3 DiParticleSystemObj::GetPosition()
-    {
-        return *mPositionProp;
-    }
-    
     void DiParticleSystemObj::InitPropertyTable()
     {
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Particle System");

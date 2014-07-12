@@ -212,7 +212,14 @@ namespace Demi
     void DiBaseEditorObj::OnCreate()
     {
         DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-        mSceneNode = sm->GetRootNode()->CreateChild();
+        if(!mParent)
+        {
+            mSceneNode = sm->GetRootNode()->CreateChild();
+        }
+        else
+        {
+            mSceneNode = mParent->GetSceneNode()->CreateChild();
+        }
         
         mGizmo = DI_NEW DiTransGizmo(this);
         mGizmo->Show(false);
@@ -245,5 +252,26 @@ namespace Demi
     {
         if(mGizmo->IsActive())
             mGizmo->OnMouseDrag(_left, _top, _id);
+    }
+    
+    void DiBaseEditorObj::SetPosition(const DiVec3& pos)
+    {
+        if(mPositionProp)
+        {
+            DiVec3 _p = pos;
+            *mPositionProp = _p;
+        }
+    }
+    
+    DiVec3 DiBaseEditorObj::GetPosition()
+    {
+        if (mPositionProp)
+        {
+            return *mPositionProp;
+        }
+        else
+        {
+            return DiVec3::ZERO;
+        }
     }
 }

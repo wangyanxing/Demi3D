@@ -214,7 +214,7 @@ namespace Demi
                 vScale.y *= (fNewDist / fLength);
                 vScale.z *= (fNewDist / fLength);
             }
-            mObject->SetScale(vScale);
+            // SET SCALE
         }
         else if(mMode == GIZMO_ROTATE)
         {
@@ -281,7 +281,7 @@ namespace Demi
 			mPicking = false;
         
         mLastPickResult = ret;
-        mLastDerivedPos = mBaseNode->GetDerivedPosition();
+        mLastDerivedPos = mObject->GetPosition();
         mLastDerivedScale = mBaseNode->GetDerivedScale();
         mLastGizmoPlane = FindGizmoPlane(ray, mLastPickResult);
         
@@ -300,9 +300,9 @@ namespace Demi
 		if(DiEditorManager::Get()->IsGizmoInWorldSpace())
 			qOrient = DiQuat::IDENTITY;
         else
-            qOrient = mObject->GetRotation();
+            qOrient = mBaseNode->GetDerivedOrientation();
         
-        auto vPos = mObject->GetPosition();
+        auto vPos = mBaseNode->GetDerivedPosition();
         auto camera = DiBase::Driver->GetSceneManager()->GetCamera();
         auto vCamBack = -camera->GetDirection();
 

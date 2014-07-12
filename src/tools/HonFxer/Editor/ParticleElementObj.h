@@ -46,10 +46,6 @@ namespace Demi
         void                 SetTexture(DiTexturePtr texture);
         
         DiTexturePtr         GetTexture();
-        
-        virtual void         SetPosition(const DiVec3& pos) override;
-        
-        virtual DiVec3       GetPosition() override;
 
     public:
 
@@ -64,8 +60,6 @@ namespace Demi
         DiParticleElement*   mParticleElement{ nullptr };
         
         DiAddMode            mTextureAddMode{ AM_WRAP };
-        
-        DiVec3Property*      mPositionProp{ nullptr };
     };
 }
 

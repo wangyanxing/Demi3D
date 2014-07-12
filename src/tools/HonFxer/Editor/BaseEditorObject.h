@@ -94,13 +94,13 @@ namespace Demi
         
         virtual void                NotifyTransfromUpdate();
         
-        virtual void                SetPosition(const DiVec3& pos){}
+        virtual void                SetPosition(const DiVec3& pos);
         
         virtual void                SetRotation(const DiQuat& rot){}
         
         virtual void                SetScale(const DiVec3& scale){}
         
-        virtual DiVec3              GetPosition(){ return DiVec3::ZERO; }
+        virtual DiVec3              GetPosition();
         
         virtual DiQuat              GetRotation(){ return DiQuat::ZERO; }
         
@@ -130,6 +130,9 @@ namespace Demi
         PropertyGroups              mPropGroups;
 
         DiTransGizmo*               mGizmo{ nullptr };
+        
+        /// Transformation properties
+        DiVec3Property*             mPositionProp{ nullptr };
     };
 }
 
