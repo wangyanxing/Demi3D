@@ -57,6 +57,12 @@ namespace Demi
         DiAssetManager::GetInstance().RegisterAssetType(DiK2ModelAsset::TYPE, "", [](const DiString& name){
             return make_shared<DiK2ModelAsset>(name);
         });
+        
+        // register the manual loader
+        DiAssetManager::GetInstance().RegisterManualLoader(DiTexture::TYPE, [&](const DiString& name){
+            auto ret = DiK2Configs::GetTexture(name);
+            return ret;
+        });
     }
 
     void DiK2Configs::Shutdown()

@@ -268,6 +268,8 @@ namespace Demi
         {
             LoadParticleSystem(ps);
         }
+        
+        SetCurrentFileName(fxFileName);
     }
     
     void DiEditorManager::Reset()

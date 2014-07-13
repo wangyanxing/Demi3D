@@ -29,6 +29,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "DebugHelper.h"
 #include "ShaderManager.h"
+#include "AssetManager.h"
 
 namespace Demi
 {
@@ -129,13 +130,13 @@ namespace Demi
         DiString diffuse = desc->mTextureTable[diftexid];
         DiString normal = desc->mTextureTable[normtexid];
 
-        DiTexturePtr textureDif = DiK2Configs::GetTexture(diffuse);
+        DiTexturePtr textureDif = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(diffuse);
         
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-        DiTexturePtr textureNor = DiK2Configs::GetTexture(normal);
+        DiTexturePtr textureNor = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(normal);
 #else
-        DiTexturePtr textureNor = DiK2Configs::GetTexture(normal + "_rxgb");
-        DiTexturePtr textureSpe = DiK2Configs::GetTexture(normal + "_s");
+        DiTexturePtr textureNor = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(normal + "_rxgb");
+        DiTexturePtr textureSpe = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(normal + "_s");
 #endif
 
         uint32 submodels = model->GetNumSubModels();

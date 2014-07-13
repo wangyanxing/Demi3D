@@ -41,8 +41,13 @@ namespace Demi
             DI_DELETE p;
         mPropGroups.clear();
         
-        for (auto ch : mChildren)
-            DI_DELETE ch;
+        while (!mChildren.empty())
+        {
+            DiBaseEditorObj* obj = *mChildren.begin();
+            obj->Release();
+            DI_DELETE obj;
+        }
+        
         mChildren.clear();
         
         OnDestroyUI();
@@ -174,6 +179,8 @@ namespace Demi
 
     void DiBaseEditorObj::OnDestroyUI()
     {
+        DI_DEBUG("Destroying ui: %s", GetType().c_str());
+        
         mUINode->getParent()->remove(mUINode, true);
         
         DestroyPropertyTable();

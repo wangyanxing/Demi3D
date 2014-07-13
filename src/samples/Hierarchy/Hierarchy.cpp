@@ -30,7 +30,7 @@ void InitScene()
     dirlight->SetColor(DiColor());
     dirlight->SetDirection(DiVec3(-1, -1, -2).normalisedCopy());
 
-    int amount = 80;
+    int amount = 2;
 
     DiCullNode* parent = sm->GetRootNode();
 

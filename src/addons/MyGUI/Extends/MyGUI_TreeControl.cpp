@@ -232,6 +232,9 @@ namespace MyGUI
 
 	void TreeControl::updateScroll()
 	{
+        if(!mClient)
+            return;
+        
 		mnScrollRange = (mnItemHeight * (int)mnExpandedNodes) - mClient->getHeight();
 
 		if (!mbScrollAlwaysVisible || mnScrollRange <= 0 || mpWidgetScroll->getLeft() <= mClient->getLeft())
@@ -256,6 +259,9 @@ namespace MyGUI
 
 	void TreeControl::updateItems()
 	{
+        if(!mClient)
+            return;
+        
 		int nPosition = mnTopIndex * mnItemHeight + mnTopOffset;
 
 		int nHeight = (int)mItemWidgets.size() * mnItemHeight - mnTopOffset;

@@ -131,6 +131,24 @@ namespace Demi
         
         /// List files recursively
         DiFileTree*                   GenerateFileTree(const DiString& pattern);
+        
+        void                          RegisterManualLoader(const DiString& type, std::function<DiAssetPtr(const DiString&)> func);
+        
+        template <class TAsset>
+        shared_ptr<TAsset>            ManualLoadAsset(const DiString& name)
+        {
+            auto loader = mManualLoaders[TAsset::TYPE];
+            if(loader)
+            {
+                auto ret = std::dynamic_pointer_cast<TAsset>(loader(name));
+                if(ret)
+                {
+                    ret->SetUseManualLoader(true);
+                    return ret;
+                }
+            }
+            return nullptr;
+        }
 
     protected:
 
@@ -150,6 +168,7 @@ namespace Demi
 
         typedef DiStrHash<DiAssetPtr> AssetsTable;
         typedef DiStrHash<ArchivePtr> ArchiveTable;
+        typedef DiStrHash<std::function<DiAssetPtr(const DiString&)>> ManualLoaderMap;
         
         DiVector<DiString>           mSearchPaths;
 
@@ -170,6 +189,8 @@ namespace Demi
         AssetTypeLoaders             mAssetLoaders;
         
         ExtensionLoaders             mExtensionLoaders;
+
+        ManualLoaderMap              mManualLoaders;
     };
 }
 

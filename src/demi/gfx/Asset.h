@@ -14,7 +14,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef DiAsset_h__
 #define DiAsset_h__
 
-
 #include "GfxPrerequisites.h"
 
 namespace Demi 
@@ -41,6 +40,10 @@ namespace Demi
         virtual bool            Load(DiDataStreamPtr data) = 0;
 
         virtual bool            Load() = 0;
+        
+        bool                    IsUseManualLoader(){ return mUsingManualLoader; }
+        
+        bool                    SetUseManualLoader(bool val){ mUsingManualLoader = val; }
 
     private:
 
@@ -51,8 +54,8 @@ namespace Demi
     protected:
 
         DiString  mName;
-
-        uint32    mByteSize;
+        
+        bool      mUsingManualLoader{ false };
     };
 }
 

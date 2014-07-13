@@ -1201,7 +1201,8 @@ namespace Demi
             else
                 colorPath = basePath + "/" + diffuseTex;
             
-            DiTexturePtr tex = DiK2Configs::GetTexture(colorPath);
+            auto assetManager = DiAssetManager::GetInstancePtr();
+            DiTexturePtr tex = assetManager->ManualLoadAsset<DiTexture>(colorPath);
             if (tex)
             {
                 sm->WriteTexture2D("map", tex);
@@ -1216,15 +1217,15 @@ namespace Demi
                 colorPath = basePath + "/" + normalTex;
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-            DiTexturePtr normtex = DiK2Configs::GetTexture(colorPath);
+            DiTexturePtr normtex = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(colorPath);
             if (normtex)
                 sm->WriteTexture2D("normalMap", normtex);
 #else
-            DiTexturePtr normtex = DiK2Configs::GetTexture(colorPath + "_rxgb");
+            DiTexturePtr normtex = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(colorPath + "_rxgb");
             if (normtex)
                 sm->WriteTexture2D("normalMap", normtex);
             
-            DiTexturePtr spectex = DiK2Configs::GetTexture(colorPath + "_s");
+            DiTexturePtr spectex = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(colorPath + "_s");
             if (spectex)
                 sm->WriteTexture2D("specularMap", spectex);
 #endif
@@ -1243,17 +1244,17 @@ namespace Demi
                 path2 = basePath + "/" + normal2Tex;
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
-            DiTexturePtr normtex1 = DiK2Configs::GetTexture(path1);
+            DiTexturePtr normtex1 = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(path1);
             if (normtex1)
                 sm->WriteTexture2D("normalmap1", normtex1);
-            DiTexturePtr normtex2 = DiK2Configs::GetTexture(path2);
+            DiTexturePtr normtex2 = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(path2);
             if (normtex2)
                 sm->WriteTexture2D("normalmap2", normtex2);
 #else
-            DiTexturePtr normtex1 = DiK2Configs::GetTexture(path1 + "_rxgb");
+            DiTexturePtr normtex1 = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(path1 + "_rxgb");
             if (normtex1)
                 sm->WriteTexture2D("normalmap1", normtex1);
-            DiTexturePtr normtex2 = DiK2Configs::GetTexture(path2 + "_rxgb");
+            DiTexturePtr normtex2 = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(path2 + "_rxgb");
             if (normtex2)
                 sm->WriteTexture2D("normalmap2", normtex2);
 #endif

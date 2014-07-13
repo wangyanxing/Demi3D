@@ -212,8 +212,6 @@ namespace Demi
 
         void                      Update(float timeElapsed);
 
-        // 有新的发射器添加或者删除现有发射器时触发函数
-        // 触发后会对现已经发射的对象进行一次重新计算
         void                      NotifyEmissionChange(void);
 
         void                      NotifyAttached(DiNode* parent);
@@ -356,7 +354,7 @@ namespace Demi
         void                     NotifyPausePooledComponents(void);
 
         void                     NotifyResumePooledComponents(void);
-
+        
     protected:
 
         DiParticleSystem*        mParentSystem;
@@ -433,6 +431,7 @@ namespace Demi
         size_t                   mMaxNumAffectorParticles;
 
         size_t                   mMaxNumSystemParticles;
+        
 };
 }
 

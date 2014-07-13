@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "MaterialSerial.h"
 #include "Material.h"
@@ -253,6 +254,8 @@ namespace Demi
 
         DiXMLElement texNode = rootNode.CreateChild("texture");
         texNode.SetAttribute("name",varname);
+        if(tex->IsUseManualLoader())
+            texNode.SetBool("manualLoader", true);
         texNode.SetValue(tex->GetName());
 
         if (tex->GetFilter() != DEFAULT_FILTER)
@@ -430,9 +433,17 @@ namespace Demi
         DiAddMode addrU = AM_WRAP;
         DiAddMode addrV = AM_WRAP;
 
+        bool useManualLoader = false;
+        
         while(child)
         {
             DiString name = child.GetAttribute("name");
+            
+            if(child.HasAttribute("manualLoader"))
+            {
+                useManualLoader = child.GetBool("manualLoader");
+            }
+
             DiString tag = child.GetName();
             DiString val = child.GetValue();
             if (name.empty())
@@ -474,10 +485,22 @@ namespace Demi
         }
 
         DiTexturePtr tex;
-        if (!cubemap)
-            tex = sm->WriteTexture2D(texName,texFileName);
+        
+        if(useManualLoader)
+        {
+            tex = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(texFileName);
+            if (!cubemap)
+                sm->WriteTexture2D(texName,tex);
+            else
+                sm->WriteTextureCUBE(texName,tex);
+        }
         else
-            tex = sm->WriteTextureCUBE(texName,texFileName);
+        {
+            if (!cubemap)
+                tex = sm->WriteTexture2D(texName,texFileName);
+            else
+                tex = sm->WriteTextureCUBE(texName,texFileName);
+        }
 
         if (tex)
         {

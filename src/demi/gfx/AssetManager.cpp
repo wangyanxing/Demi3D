@@ -420,4 +420,9 @@ namespace Demi
     
         return node;
     }
+    
+    void DiAssetManager::RegisterManualLoader(const DiString& type, std::function<DiAssetPtr(const DiString&)> func)
+    {
+        mManualLoaders[type] = func;
+    }
 }

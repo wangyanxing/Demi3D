@@ -204,7 +204,7 @@ namespace tools
                 
                 if(DiK2Configs::K2ArchiveExists(realFile, true))
                 {
-                    auto tex = DiK2Configs::GetTexture(file);
+                    auto tex = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(file);
                     texs.push_back(file);
                 }
             }

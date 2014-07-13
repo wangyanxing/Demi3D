@@ -54,14 +54,10 @@ namespace Demi
     
     void InitFx_Repeater01()
     {
-        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-        
-#if 1
         // effect
         auto _ps = DiEffectManager::GetInstance().CreateParticleSystemTemplate("Fx_repeater1");
         std::shared_ptr<DiTransformUnit> ps(_ps);
-        //DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
-        //cullnode->AttachObject(ps);
+
         _ps->Start();
         {
             DiParticleElement* element = _ps->CreateElement();
@@ -148,19 +144,7 @@ namespace Demi
             texrotCtrl->SetRotation(rot);
         }
         
-        //DiFxTokensParser parser;
-        //parser.WriteSystem(_ps, "D:/Demi3D_release/ps.xml");
-#else
-        DiFxTokensParser parser;
-        auto pss = parser.LoadEffects("ps1.effect");
-        auto _ps = pss[0];
-        g_fxs.push_back(_ps);
-        std::shared_ptr<DiTransformUnit> ps(_ps);
-        DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
-        cullnode->AttachObject(ps);
-        _ps->Start();
-#endif
-        
+        // create the editor object from the particle system
         DiEditorManager::Get()->LoadParticleSystem(_ps);
     }
     
