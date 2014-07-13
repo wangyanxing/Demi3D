@@ -122,10 +122,6 @@ namespace Demi
     {
         auto mat = mParticleElement->GetMaterial();
         mat->GetShaderParameter()->WriteTexture2D("map", texture);
-        if(texture)
-        {
-            texture->SetAddressing(mTextureAddMode);
-        }
     }
     
     DiTexturePtr DiParticleElementObj::GetTexture()
@@ -139,15 +135,6 @@ namespace Demi
             return DiAssetManager::GetInstance().GetAsset<DiTexture>(tex->GetName());
         }
         return nullptr;
-    }
-    
-    void DiParticleElementObj::RefreshTextureParams()
-    {
-        auto tex = GetTexture();
-        if(tex)
-        {
-            tex->SetAddressing(mTextureAddMode);
-        }
     }
     
     void DiParticleElementObj::InitPropertyTable()
@@ -206,10 +193,18 @@ namespace Demi
         g->AddProperty("Wireframe"   , DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->IsWireframe(); },
                                                              [&](bool& val){ mParticleElement->GetMaterial()->SetWireframe(val); }));
         
-        g->AddProperty("Texture Addressing",DI_NEW DiEnumProperty([&](){ return make_shared<TexAddrModeEnum>(mTextureAddMode); },
+        g->AddProperty("Texture Addressing",DI_NEW DiEnumProperty([&](){
+                                                                DiAddMode ret = AM_WRAP;
+                                                                auto tex = GetTexture();
+                                                                if(tex)
+                                                                    ret = tex->GetAddressingU();
+                                                                return make_shared<TexAddrModeEnum>(ret);
+                                                             },
                                                              [&](DiBaseEnumPropPtr& val){
-                                                                 mTextureAddMode = val->getEnum<TexAddrModeEnum,DiAddMode>();
-                                                                 RefreshTextureParams();
+                                                                 auto mod = val->getEnum<TexAddrModeEnum,DiAddMode>();
+                                                                 auto tex = GetTexture();
+                                                                 if(tex)
+                                                                     tex->SetAddressing(mod);
                                                              }));
         
         g->CreateUI();

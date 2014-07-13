@@ -137,9 +137,6 @@ namespace MyGUI
 	void DemiTexture::loadFromFile(const std::string& _filename)
 	{
         loadFromDemiTexture(_filename);
-
-        mTexture->SetAddressing(AM_WRAP);
-        mTexture->SetFilter(FILTER_DEFAULT);
 	}
 
 	void DemiTexture::destroy()
