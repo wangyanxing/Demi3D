@@ -95,7 +95,7 @@ namespace Demi
         
         /** pattern: regex pattern, for example (dds|tga|png|jpg)$
          */
-        virtual DiFileTree*            GenerateFileTree(const DiString& pattern) = 0;
+        virtual void                   GenerateFileTree(DiFileTree*& node, const DiString& pattern) = 0;
 
         virtual DiDataStreamPtr        Open(const DiString& filename) const = 0;
 

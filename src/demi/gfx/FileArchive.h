@@ -50,7 +50,7 @@ namespace Demi
         DiString            GetFullPath(const DiString& filename);
         
         /// List files recursively
-        DiFileTree*         GenerateFileTree(const DiString& pattern);
+        void                GenerateFileTree(DiFileTree*& node,const DiString& pattern);
 
     protected:
 

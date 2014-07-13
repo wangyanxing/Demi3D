@@ -30,6 +30,7 @@ namespace Demi
     typedef DiProperty<DiColor            , PROPERTY_COLOR>         DiColorProperty;
     typedef DiProperty<DiDynamicAttribute*, PROPERTY_DYN_ATTR>      DiDynProperty;
     typedef DiProperty<DiMap<float, DiColor>, PROPERTY_COLOR_CURVE> DiColorCurveProperty;
+    typedef DiProperty<DiString           , PROPERTY_MODEL>         DiModelProperty;
     
     /// Enum property
     class _DiBaseEnumProperty

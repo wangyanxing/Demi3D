@@ -11,12 +11,12 @@
 
 namespace tools
 {
-	class TextureBrowseCell : public wraps::BaseCellView<std::string>
+	class TextureBrowseCell : public wraps::BaseCellView<std::pair<std::string,std::string>>
 	{
 	public:
 		TextureBrowseCell(MyGUI::Widget* _parent);
 
-		void update(const MyGUI::IBDrawItemInfo& _info, std::string _data);
+		void update(const MyGUI::IBDrawItemInfo& _info, std::pair<std::string,std::string> _data);
         
 		static void getCellDimension(MyGUI::Widget* _sender, MyGUI::IntCoord& _coord, bool _drop);
 

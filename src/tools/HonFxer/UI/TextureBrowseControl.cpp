@@ -7,15 +7,15 @@
 #include "TextureBrowseControl.h"
 #include "MyGUI_TreeControlItem.h"
 #include "ZipArchive.h"
-
-
 #include <regex>
 
 namespace tools
 {
-	TextureBrowseControl::TextureBrowseControl() :
-		Dialog(),
-		mTextures(nullptr)
+	TextureBrowseControl::TextureBrowseControl(const DiString& mediaFilter, const DiString& honPackFilter)
+        : Dialog(),
+		mTextures(nullptr),
+        mMediaFilter(mediaFilter),
+        mHonPackFilter(honPackFilter)
 	{
 		initialiseByAttributes(this);
 
@@ -25,8 +25,6 @@ namespace tools
         assignWidget(mBtnSelMedia, "SelMedia");
         assignWidget(mBtnSelHonPack, "SelHonPack");
         
-        
-
         mBtnSelMedia->eventMouseButtonClick += MyGUI::newDelegate(this, &TextureBrowseControl::notifyMouseSelPackButtonClick);
         mBtnSelHonPack->eventMouseButtonClick += MyGUI::newDelegate(this, &TextureBrowseControl::notifyMouseSelPackButtonClick);
         
@@ -117,7 +115,7 @@ namespace tools
 		size_t indexSelected = MyGUI::ITEM_NONE;
 		for (size_t index = 0; index < box->getItemCount(); ++index)
 		{
-			if (*box->getItemDataAt<std::string>(index) == mCurrentTextureName)
+			if ((*box->getItemDataAt<std::pair<std::string, std::string>>(index)).first == mCurrentTextureName)
 			{
 				indexSelected = index;
 				break;
@@ -132,13 +130,15 @@ namespace tools
 		mTextures->removeAllItems();
 
 		for (MyGUI::VectorString::const_iterator item = _textures.begin(); item != _textures.end(); ++item)
-			mTextures->addItem((*item));
+        {
+            mTextures->addItem(std::make_pair(*item, mForceTexture));
+        }
 	}
 
 	void TextureBrowseControl::notifyChangeItemPosition(MyGUI::ItemBox* _sender, size_t _index)
 	{
 		if (_index != MyGUI::ITEM_NONE)
-			mCurrentTextureName = *_sender->getItemDataAt<std::string>(_index);
+			mCurrentTextureName = (*_sender->getItemDataAt<std::pair<std::string, std::string>>(_index)).first;
 		else
 			mCurrentTextureName = "";
 	}
@@ -160,6 +160,12 @@ namespace tools
                 nd->setPrepared(true);
             pNode->add(nd);
         }
+    }
+    
+    void TextureBrowseControl::enablePackSel(bool val)
+    {
+        mBtnSelMedia->setVisible(val);
+        mBtnSelHonPack->setVisible(val);
     }
     
     void TextureBrowseControl::notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode)
@@ -190,6 +196,8 @@ namespace tools
         
         mCurrentDir = fullpath;
         
+        bool textureMode = mForceTexture.empty();
+        
         if(mK2PackMode)
         {
             auto& children = filetree->children;
@@ -199,12 +207,13 @@ namespace tools
                 file += "/";
                 
                 std::string realFile = file;
-                file += cd.second->fileName.ExtractBaseName().c_str();
+                file += textureMode ? cd.second->fileName.ExtractBaseName().c_str() : cd.second->fileName.c_str();
                 realFile += cd.second->fileName.c_str();
                 
-                if(DiK2Configs::K2ArchiveExists(realFile, true))
+                if(DiK2Configs::K2ArchiveExists(realFile, textureMode))
                 {
-                    auto tex = DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(file);
+                    if(mForceTexture.empty())
+                        DiAssetManager::GetInstance().ManualLoadAsset<DiTexture>(file);
                     texs.push_back(file);
                 }
             }
@@ -226,7 +235,7 @@ namespace tools
             for(auto str : *files)
             {
                 str.ToLower();
-                std::regex regexpattern("(\\.dds|\\.tga|\\.png|\\.jpg)$",std::regex_constants::extended);
+                std::regex regexpattern(mMediaFilter.c_str(),std::regex_constants::extended);
                 if(std::regex_search(str.c_str(), regexpattern))
                 {
                     texs.push_back(str.c_str());
@@ -236,27 +245,10 @@ namespace tools
             setTextures(texs);
         }
     }
-
-    void TextureBrowseControl::scanFiles()
+    
+    void TextureBrowseControl::scanResources(MyGUI::TreeControl::Node* root, DiFileTree* filetree)
     {
-        MyGUI::TreeControl::Node* root = mResourcesTree->getRoot();
-        root->removeAll();
-
-        if(mK2PackMode)
-        {
-            DiZipArchive* zip = DiK2Configs::RESOURCE_PACK;
-            if (!zip)
-                return;
-            mResources = zip->GenerateFileTree("*.dds");
-        }
-        else
-        {
-            mResources = DiAssetManager::GetInstance().GenerateFileTree("(\\.dds|\\.tga|\\.png|\\.jpg)$");
-        }
-        
-        DiFileTree* nullfile = nullptr;
-        root->setData(nullfile);
-        for (auto i = mResources->children.begin(); i != mResources->children.end(); ++i)
+        for (auto i = filetree->children.begin(); i != filetree->children.end(); ++i)
         {
             DiFileTree* cur = i->second;
             MyGUI::TreeControl::Node* pNode = new MyGUI::TreeControl::Node(cur->fileName.c_str(), cur->folder ? "Folder" : "File");
@@ -264,6 +256,42 @@ namespace tools
             if (!cur->folder)
                 pNode->setPrepared(true);
             root->add(pNode);
+        }
+    }
+
+    void TextureBrowseControl::scanFiles()
+    {
+        SAFE_DELETE(mResources);
+        
+        MyGUI::TreeControl::Node* root = mResourcesTree->getRoot();
+        root->removeAll();
+        
+        DiFileTree* nullfile = nullptr;
+        root->setData(nullfile);
+
+        if(mK2PackMode)
+        {
+            if (!DiK2Configs::RESOURCE_PACK)
+                return;
+            
+            if (DiK2Configs::TEXTURE_PACK && DiK2Configs::TEXTURE_PACK != DiK2Configs::RESOURCE_PACK)
+            {
+                DiK2Configs::TEXTURE_PACK->GenerateFileTree(mResources, mHonPackFilter);
+                auto prefix = mResources->FindChildren("00000000");
+                auto ret = prefix ? prefix : mResources;
+                DiK2Configs::RESOURCE_PACK->GenerateFileTree(ret, mHonPackFilter);
+                scanResources(root, ret);
+            }
+            else
+            {
+                DiK2Configs::RESOURCE_PACK->GenerateFileTree(mResources, mHonPackFilter);
+                scanResources(root, mResources);
+            }
+        }
+        else
+        {
+            mResources = DiAssetManager::GetInstance().GenerateFileTree(mMediaFilter);
+            scanResources(root, mResources);
         }
     }
 } // namespace tools

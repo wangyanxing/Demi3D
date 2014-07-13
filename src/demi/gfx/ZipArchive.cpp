@@ -132,12 +132,16 @@ namespace Demi
         return ret;
     }
 
-    DiFileTree* DiZipArchive::GenerateFileTree(const DiString& pattern)
+    void DiZipArchive::GenerateFileTree(DiFileTree*& node, const DiString& pattern)
     {
         bool wildCard = pattern.find("*") != DiString::npos;
 
-        DiFileTree* node = DI_NEW DiFileTree();
-        node->folder = true;
+        if(!node)
+        {
+            node = DI_NEW DiFileTree();
+            node->folder = true;
+        }
+        
         for (auto i = mFileList.begin(); i != mFileList.end(); ++i)
         {
             if (false == (i->compressedSize == size_t(-1)) && i->basename[0]!='.')

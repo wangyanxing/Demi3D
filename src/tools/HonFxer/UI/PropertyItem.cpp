@@ -339,7 +339,7 @@ namespace Demi
         //mImageBox->setImageTexture("cloud.png");
         mImageBox->eventMouseButtonPressed += MyGUI::newDelegate(this, &DiTexturePropertyItem::NotifyButtonPressed);
         
-        mTextureBrowser = DI_NEW tools::TextureBrowseControl();
+        mTextureBrowser = DI_NEW tools::TextureBrowseControl("(\\.dds|\\.tga|\\.png|\\.jpg)$", "*.dds");
         mTextureBrowser->eventEndDialog = MyGUI::newDelegate(this, &DiTexturePropertyItem::NotifyEndDialog);
 
         RefreshUI();
@@ -861,6 +861,94 @@ namespace Demi
         DiString colStr;
         colStr.Format("%.2g,%.2g,%.2g (%.2g)", c.red, c.green, c.blue, c.alpha);
         mColorValue->setCaption(colStr.c_str());
+    }
+    
+    DiModelPropertyItem::DiModelPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
+        :DiPropertyItem(group, prop, type)
+    {
+    }
+    
+    DiModelPropertyItem::~DiModelPropertyItem()
+    {
+    }
+    
+    void DiModelPropertyItem::CreateUI(const DiString& caption)
+    {
+        auto widgetClient = mParentGroup->GetClientWidget();
+        auto currentHeight = mParentGroup->GetCurrentHeight();
+        auto widthStep = mParentGroup->GetWidthStep();
+        auto width = mParentGroup->GetWidth();
+        auto height = mParentGroup->GetHeight();
+        auto colorBtnWidth = 23;
+        auto alphaLabelWidth = 38;
+        
+        int curWidth = widthStep;
+        mTextBox = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
+                                                              MyGUI::IntCoord(curWidth, currentHeight, width, height), MyGUI::Align::Left | MyGUI::Align::Top);
+        mTextBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
+        mTextBox->setCaption(caption.c_str());
+        curWidth += widthStep + width;
+        
+        mModelButton = widgetClient->createWidget<MyGUI::Button>("Button",
+                                                                 MyGUI::IntCoord(curWidth, currentHeight,
+                                                                                 colorBtnWidth, height),
+                                                                 MyGUI::Align::Left | MyGUI::Align::Top);
+        mModelButton->setCaption("...");
+        mModelButton->eventMouseButtonPressed += MyGUI::newDelegate(this, &DiModelPropertyItem::NotfyChangeModelButtonPressed);
+        curWidth += widthStep + colorBtnWidth;
+        
+        mModelValue = widgetClient->createWidget<MyGUI::EditBox>("EditBox",
+                                                                 MyGUI::IntCoord(curWidth, currentHeight,
+                                                                                 widgetClient->getWidth() - (curWidth + widthStep), height),
+                                                                 MyGUI::Align::HStretch | MyGUI::Align::Top);
+        mModelValue->setEditReadOnly(true);
+        
+        mTextureBrowser = DI_NEW tools::TextureBrowseControl("(\\.mdf)$", "*.mdf");
+        mTextureBrowser->enablePackSel(false);
+        mTextureBrowser->setForceTexture("default.png");
+        mTextureBrowser->eventEndDialog = MyGUI::newDelegate(this, &DiModelPropertyItem::NotifyEndDialog);
+        
+        RefreshUI();
+    }
+    
+    void DiModelPropertyItem::RearrangeUI(int height)
+    {
+        auto pos = mTextBox->getPosition();
+        mTextBox->setPosition(pos.left, height);
+        
+        pos = mModelButton->getPosition();
+        mModelButton->setPosition(pos.left, height);
+        
+        pos = mModelValue->getPosition();
+        mModelValue->setPosition(pos.left, height);
+    }
+    
+    void DiModelPropertyItem::NotfyChangeModelButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id)
+    {
+        mTextureBrowser->doModal();
+    }
+    
+    void DiModelPropertyItem::NotifyEndDialog(Dialog* _sender, bool _result)
+    {
+        mTextureBrowser->endModal();
+        auto texName = mTextureBrowser->getTextureName();
+        if(!texName.empty() && _result)
+        {
+            auto prop = dynamic_cast<DiModelProperty*>(mProperty);
+
+            DiString ret = texName.c_str();
+            *prop = ret;
+            RefreshUI();
+        }
+    }
+    
+    void DiModelPropertyItem::RefreshUI()
+    {
+        DiModelProperty* mdlProp = dynamic_cast<DiModelProperty*>(mProperty);
+        DI_ASSERT(mdlProp);
+        
+        DiString name = *mdlProp;
+        mModelValue->setCaption(name.c_str());
     }
 
     DiDynamicPropertyItem::DiDynamicPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)

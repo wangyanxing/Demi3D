@@ -130,14 +130,19 @@ namespace Demi
 
     void DiCullNode::DetachObject(DiTransUnitPtr obj)
     {
+        bool found = false;
         for (auto i = mObjects.begin(); i != mObjects.end(); ++i)
         {
             if (*i == obj)
             {
                 mObjects.erase(i);
+                found = true;
                 break;
             }
         }
+        
+        if (!found)
+            return;
 
         if (obj->GetParentNode() == this)
         {

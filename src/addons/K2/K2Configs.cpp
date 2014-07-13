@@ -149,6 +149,12 @@ namespace Demi
         DiTexturePtr ret = DiAssetManager::GetInstance().FindAsset<DiTexture>(relPath);
         if (ret)
             return ret;
+        
+        bool needprefix = !TEXTURE_PACK_PREFIX_FOLDER.empty();
+        if(DiString::StartsWith(relPath, TEXTURE_PACK_PREFIX_FOLDER))
+        {
+            needprefix = false;
+        }
 
         DiString full = GetK2MediaPath(relPath, true);
         if(full.empty())
@@ -180,8 +186,11 @@ namespace Demi
             DiDataStreamPtr data;
             
             /// TODO read the descriptor file
-            tgaFile = DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER + tgaFile;
-            ddsFile = DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER + ddsFile;
+            if(needprefix)
+            {
+                tgaFile = DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER + tgaFile;
+                ddsFile = DiK2Configs::TEXTURE_PACK_PREFIX_FOLDER + ddsFile;
+            }
 
             if (TEXTURE_PACK->HasFile(ddsFile))
                 data = TEXTURE_PACK->Open(ddsFile);
@@ -206,7 +215,7 @@ namespace Demi
         }
         else
         {
-            FILE* fp = NULL;
+            FILE* fp = nullptr;
 
             // try dds
             fp = fopen(ddsFile.c_str(), "rb");

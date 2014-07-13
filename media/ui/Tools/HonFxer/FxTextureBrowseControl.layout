@@ -15,10 +15,10 @@
 
          <Widget type="Button" skin="RadioButton" position="305 415 115 20" align="Right Bottom" name="SelMedia">
             <Property key="Caption" value="Media Folder"/>
-            <Property key="StateSelected" value="true"/>
         </Widget>
         <Widget type="Button" skin="RadioButton" position="420 415 110 25" align="Right Bottom" name="SelHonPack">
             <Property key="Caption" value="Hon Pack"/>
+            <Property key="StateSelected" value="true"/>
         </Widget>
     </Widget>
 </MyGUI>

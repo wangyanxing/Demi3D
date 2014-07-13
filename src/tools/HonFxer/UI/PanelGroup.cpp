@@ -72,6 +72,9 @@ namespace Demi
         case Demi::PROPERTY_TEXTURE:
             item = DI_NEW DiTexturePropertyItem(this, prop, propType);
             break;
+        case Demi::PROPERTY_MODEL:
+            item = DI_NEW DiModelPropertyItem(this, prop, propType);
+            break;
         default:
             DI_WARNING("Invalid item type: %d", propType);
         }

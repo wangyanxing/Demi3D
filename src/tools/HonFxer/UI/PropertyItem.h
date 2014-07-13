@@ -284,6 +284,39 @@ namespace Demi
 
         MyGUI::EditBox* mColorValue{ nullptr };
     };
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    class DiModelPropertyItem : public DiPropertyItem
+    {
+    public:
+        
+        DiModelPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type);
+        
+        virtual ~DiModelPropertyItem();
+        
+    public:
+        
+        virtual void CreateUI(const DiString& caption) override;
+        
+        virtual void RearrangeUI(int height);
+        
+        void NotfyChangeModelButtonPressed(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
+        
+        void NotifyEndDialog(Dialog* _sender, bool _result);
+        
+    protected:
+        
+        void RefreshUI();
+        
+        MyGUI::TextBox* mTextBox{ nullptr };
+        
+        MyGUI::Button* mModelButton{ nullptr };
+        
+        MyGUI::EditBox* mModelValue{ nullptr };
+        
+        tools::TextureBrowseControl* mTextureBrowser{ nullptr };
+    };
 
     //////////////////////////////////////////////////////////////////////////
 

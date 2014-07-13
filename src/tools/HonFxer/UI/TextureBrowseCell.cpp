@@ -14,7 +14,7 @@ namespace tools
 	}
 
 	TextureBrowseCell::TextureBrowseCell(MyGUI::Widget* _parent) :
-		wraps::BaseCellView<std::string>("FxTextureBrowseCell.layout", _parent)
+		wraps::BaseCellView<std::pair<std::string,std::string>>("FxTextureBrowseCell.layout", _parent)
 	{
 		assignWidget(mTextureName, "TextureName");
 		assignWidget(mSelector, "Selector");
@@ -25,18 +25,20 @@ namespace tools
         mTextureName->setFontName("DejaVuSans.13");
 	}
 
-	void TextureBrowseCell::update(const MyGUI::IBDrawItemInfo& _info, std::string _data)
+	void TextureBrowseCell::update(const MyGUI::IBDrawItemInfo& _info, std::pair<std::string,std::string> _dataPair)
 	{
+        std::string _data = _dataPair.first;
+        std::string _forceTexture = _dataPair.second;
 		if (_info.update)
 		{
             DiString filename = _data.c_str();
 			mTextureName->setCaption(filename.ExtractFileName().c_str());
-			const MyGUI::IntSize& textureSize = MyGUI::texture_utility::getTextureSize(_data);
+			const MyGUI::IntSize textureSize = MyGUI::texture_utility::getTextureSize(_forceTexture.empty() ? _data : _forceTexture);
 
 			if (textureSize.width != 0 && textureSize.height != 0)
 			{
 				mBack->setVisible(true);
-				mImage->setImageTexture(_data);
+                mImage->setImageTexture(_forceTexture.empty() ? _data : _forceTexture);
 
 				const MyGUI::IntSize& targetSize = mParentBack->getSize();
 

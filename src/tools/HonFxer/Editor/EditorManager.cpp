@@ -46,6 +46,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "PathLib.h"
 #include "MessageBox.h"
 #include "AssetManager.h"
+#include "RefModelObj.h"
 
 namespace Demi
 {
@@ -445,6 +446,8 @@ namespace Demi
         mObjFactories["BoxColliderController"]     = [](){return DI_NEW DiBoxColliderControllerObj(); };
         mObjFactories["SphereColliderController"]  = [](){return DI_NEW DiSphereColliderControllerObj(); };
         mObjFactories["PlaneColliderController"]   = [](){return DI_NEW DiPlaneColliderControllerObj(); };
+
+        mObjFactories["ReferenceModel"]            = [](){return DI_NEW DiRefModelObj(); };
     }
 
     DiString DiEditorManager::GenerateSystemName()
@@ -452,6 +455,14 @@ namespace Demi
         static int id = 0;
         DiString ret;
         ret.Format("ParticleSystem_%d", id++);
+        return ret;
+    }
+    
+    DiString DiEditorManager::GenerateRefModelName()
+    {
+        static int id = 0;
+        DiString ret;
+        ret.Format("Model_%d", id++);
         return ret;
     }
 

@@ -18,13 +18,17 @@ namespace tools
 	class TextureBrowseControl : public Dialog
 	{
 	public:
-		TextureBrowseControl();
+		TextureBrowseControl(const DiString& mediaFilter, const DiString& honPackFilter);
 		virtual ~TextureBrowseControl();
 
 		const std::string& getTextureName() const;
 		void setTextureName(const std::string& _value);
 
 		void setTextures(const MyGUI::VectorString& _textures);
+        
+        void enablePackSel(bool val);
+        
+        void setForceTexture(const std::string& tex){mForceTexture = tex;}
 
 	protected:
 		virtual void onDoModal();
@@ -46,6 +50,7 @@ namespace tools
         void notifyTreeNodePrepare(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode);
         void notifyTreeNodeSelected(MyGUI::TreeControl* pTreeControl, MyGUI::TreeControl::Node* pNode);
 
+        void scanResources(MyGUI::TreeControl::Node* root, DiFileTree* filetree);
 	private:
 		ATTRIBUTE_FIELD_WIDGET_NAME(TextureBrowseControl, mOk, "OK");
 		MyGUI::Button* mOk;
@@ -63,11 +68,17 @@ namespace tools
         
         DiString mCurrentDir;
         
-        bool mK2PackMode{ false };
+        bool mK2PackMode{ true };
         
         MyGUI::Button* mBtnSelMedia{ nullptr };
         
         MyGUI::Button* mBtnSelHonPack{ nullptr };
+        
+        DiString mMediaFilter;
+        
+        DiString mHonPackFilter;
+        
+        std::string mForceTexture;
 	};
 
 } // namespace tools

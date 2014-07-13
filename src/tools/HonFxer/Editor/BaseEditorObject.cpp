@@ -61,7 +61,7 @@ namespace Demi
         menu->removeAllItems();
 
         menu->addItem("Create ParticleSystem", MyGUI::MenuItemType::Normal, "createChild ParticleSystem");
-        //menu->addItem("Create Reference Model", MyGUI::MenuItemType::Normal, "createChild Model");
+        menu->addItem("Create Reference Model", MyGUI::MenuItemType::Normal, "createChild ReferenceModel");
     }
     
     DiBaseEditorObj* DiBaseEditorObj::LookForParent(const DiString& type)

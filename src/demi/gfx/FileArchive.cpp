@@ -345,10 +345,13 @@ namespace Demi
         }
     }
     
-    DiFileTree* DiFileArchive::GenerateFileTree(const DiString& pattern)
+    void DiFileArchive::GenerateFileTree(DiFileTree*& node, const DiString& pattern)
     {
-        DiFileTree* node = DI_NEW DiFileTree();
-        node->folder = true;
+        if(!node)
+        {
+            node = DI_NEW DiFileTree();
+            node->folder = true;
+        }
         
         auto name = mName;
         name.SimplifyPath();

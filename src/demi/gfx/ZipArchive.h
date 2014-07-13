@@ -44,7 +44,7 @@ namespace Demi
         DiDataStreamPtr     Open(const DiString& filename) const;
 
         /// List files recursively
-        DiFileTree*         GenerateFileTree(const DiString& pattern);
+        void                GenerateFileTree(DiFileTree*& tree,const DiString& pattern);
 
         DiStringVecPtr      List(bool recursive = true, bool dirs = false);
 

@@ -43,6 +43,8 @@ namespace Demi
         DiString            GenerateSystemName();
 
         DiString            GenerateElementName();
+        
+        DiString            GenerateRefModelName();
 
         DiString            GenerateEmitterName(const DiString& type);
 

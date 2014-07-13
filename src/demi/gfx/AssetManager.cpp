@@ -415,7 +415,7 @@ namespace Demi
         
         if(mRootDirArchive)
         {
-            node = mRootDirArchive->GenerateFileTree(pattern);
+            mRootDirArchive->GenerateFileTree(node, pattern);
         }
     
         return node;
