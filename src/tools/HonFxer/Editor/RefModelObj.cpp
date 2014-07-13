@@ -42,7 +42,6 @@ namespace Demi
         DiBaseEditorObj::OnCreate();
         
         mName = DiEditorManager::Get()->GenerateRefModelName();
-        //mSceneNode->AttachObject(mModel);
     }
     
     void DiRefModelObj::OnCreate(const DiAny& param)
@@ -64,6 +63,8 @@ namespace Demi
 
     void DiRefModelObj::OnDestroy()
     {
+        mSceneNode->DetachObject(mModel);
+        mModel.reset();
     }
 
     void DiRefModelObj::OnSelect()
