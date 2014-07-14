@@ -111,7 +111,7 @@ namespace Demi
         
         DiMaterialPtr    mRotatingRingsMat[3];
         
-        DiCullNode*     mRotateRingNode[3]{nullptr,nullptr,nullptr};
+        DiCullNode*     mRotateRingNode[3];
         
         bool            mActive{ true };
         

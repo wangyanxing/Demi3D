@@ -180,7 +180,6 @@ namespace Demi
                 }
             }
         }
-        return node;
     }
 
     DiFileInfoListPtr DiZipArchive::ListFileInfo( bool recursive /*= true*/,

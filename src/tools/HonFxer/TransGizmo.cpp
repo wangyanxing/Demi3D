@@ -11,7 +11,7 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#include "GfxPch.h"
+#include "FxerPch.h"
 #include "TransGizmo.h"
 #include "TransAxes.h"
 #include "SimpleShape.h"
@@ -28,6 +28,10 @@ namespace Demi
     DiTransGizmo::DiTransGizmo(DiBaseEditorObj* parent)
         :mObject(parent)
     {
+        for(int i = 0; i < 3; ++i)
+        {
+            mRotateRingNode[i] = 0;
+        }
         Create();
     }
 

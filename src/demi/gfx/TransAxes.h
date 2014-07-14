@@ -128,15 +128,15 @@ namespace Demi
         
         DiMaterialPtr   mColorMats[3];
         
-        DiRenderUnit*   mLines[3]{ nullptr,nullptr,nullptr };
+        DiRenderUnit*   mLines[3];
         
-        DiRenderUnit*   mArraw[3]{ nullptr,nullptr,nullptr };
+        DiRenderUnit*   mArraw[3];
         
-        DiRenderUnit*   mScaleBlock[3]{ nullptr,nullptr,nullptr };
+        DiRenderUnit*   mScaleBlock[3];
         
         DiRenderUnit*   mScaleLines{ nullptr };
         
-        DiRenderUnit*   mScalePlane[3]{ nullptr,nullptr,nullptr };
+        DiRenderUnit*   mScalePlane[3];
         
         DiVertexDeclaration*    mVertexDecl{ nullptr };
         
@@ -146,7 +146,7 @@ namespace Demi
         
         bool            mShowScale{ false };
         
-        bool            mShowScalePlane[3]{false,false,false};
+        bool            mShowScalePlane[3];
         
         /// Arraw vertices, for picking
         DiVector<DiVec3> mArrawVertices[3];

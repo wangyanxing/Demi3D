@@ -24,6 +24,16 @@ namespace Demi
     DiTransAxes::DiTransAxes(void)
         :DiTransformUnit()
     {
+        for (int i = 0; i < 3; ++i)
+		{
+			mColorMats[i] = nullptr;
+			mLines[i] = nullptr;
+			mArraw[i] = nullptr;
+			mScaleBlock[i] = nullptr;
+			mScalePlane[i] = nullptr;
+			mShowScalePlane[i] = false;
+		}
+
         SetBatchGroup(BATCH_HELPER);
 
         Create();

@@ -359,8 +359,6 @@ namespace Demi
         node->fileName = name.ExtractFileName();
         
         _recurGenFiles(node, pattern, mName, mName);
-        
-        return node;
     }
 
     Demi::DiFileInfoListPtr DiFileArchive::FindFileInfo( const DiString& pattern, 

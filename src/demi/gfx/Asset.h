@@ -43,7 +43,7 @@ namespace Demi
         
         bool                    IsUseManualLoader(){ return mUsingManualLoader; }
         
-        bool                    SetUseManualLoader(bool val){ mUsingManualLoader = val; }
+        void                    SetUseManualLoader(bool val){ mUsingManualLoader = val; }
 
     private:
 

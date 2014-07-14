@@ -70,7 +70,8 @@ namespace tools
             return;
 
         DiTimer timer;
-        mResources = zip->GenerateFileTree("*.mdf");
+        mResources = nullptr;
+        zip->GenerateFileTree(mResources, "*.mdf");
 
         MyGUI::TreeControl::Node* root = mResourcesTree->getRoot();
         root->removeAll();
