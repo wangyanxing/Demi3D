@@ -47,6 +47,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MessageBox.h"
 #include "AssetManager.h"
 #include "RefModelObj.h"
+#include "XMLFile.h"
+#include "XMLElement.h"
 
 namespace Demi
 {
@@ -264,10 +266,32 @@ namespace Demi
         }
         
         DiFxTokensParser parser;
-        auto res = parser.LoadEffects(base);
-        for(auto& ps : res)
+        
+        auto stream = DiAssetManager::GetInstance().OpenArchive(base);
+        shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
+        xmlfile->Load(stream->GetAsString());
+        DiXMLElement root = xmlfile->GetRoot();
+        
+        if (!root.CheckName("Effects"))
         {
-            LoadParticleSystem(ps);
+            DI_WARNING("Bad effect file: %s", base.c_str());
+            return;
+        }
+        
+        auto child = root.GetChild();
+        while (child)
+        {
+            if (child.CheckName("ParticleSystem"))
+            {
+                auto ps = parser.ReadSystem(child);
+                LoadParticleSystem(ps);
+            }
+            else if(child.CheckName("ReferenceModel"))
+            {
+                LoadRefModel(child);
+            }
+            
+            child = child.GetNext();
         }
         
         SetCurrentFileName(fxFileName);
@@ -292,19 +316,27 @@ namespace Demi
     
     void DiEditorManager::SaveAll(const DiString& fxFileName)
     {
-        DiVector<DiParticleSystemPtr> fxes;
+        DiFxTokensParser parser;
+        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        DiXMLElement root = xmlfile->CreateRoot("Effects");
+        
         mRootObject->TraversalChildren([&](size_t id, DiBaseEditorObj* obj){
             if(obj->GetType() == "ParticleSystem")
             {
                 auto psObj = dynamic_cast<DiParticleSystemObj*>(obj);
                 DiParticleSystemPtr ps = psObj->GetParticleSystem();
-                fxes.push_back(ps);
+
+                auto nd = root.CreateChild("ParticleSystem");
+                parser.WriteSystem(ps, nd);
+            }
+            else if(obj->GetType() == "ReferenceModel")
+            {
+                auto refmdObj = dynamic_cast<DiRefModelObj*>(obj);
+                refmdObj->Save(root);
             }
         });
         
-        DiFxTokensParser parser;
-        parser.WriteSystems(fxes, fxFileName);
-        
+        xmlfile->Save(fxFileName);
         SetCurrentFileName(fxFileName);
     }
     
@@ -326,6 +358,12 @@ namespace Demi
                 SaveAll(out[0]);
             }
         }
+    }
+    
+    DiBaseEditorObj* DiEditorManager::LoadRefModel(const DiXMLElement& node)
+    {
+        auto psObj = mRootObject->_CreateChildFrom("ReferenceModel", DiAny(node));
+        return psObj;
     }
     
     DiBaseEditorObj* DiEditorManager::LoadParticleSystem(DiParticleSystemPtr ps)

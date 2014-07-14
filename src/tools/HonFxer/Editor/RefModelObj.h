@@ -46,7 +46,11 @@ namespace Demi
         virtual void         Update(float dt);
         
         void                 SetModel(const DiString& file);
-
+        
+        void                 Load(const DiXMLElement& node);
+        
+        void                 Save(DiXMLElement& node);
+        
     public:
 
         DiK2ModelPtr         GetModel(){ return mModel; }

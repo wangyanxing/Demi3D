@@ -48,17 +48,15 @@ namespace Demi
     {
         DiBaseEditorObj::OnCreate();
         
-        mModel = any_cast<DiK2ModelPtr>(param);
-        DI_ASSERT(mModel);
+        DiXMLElement nd = any_cast<DiXMLElement>(param);
+        Load(nd);
         
-        mName = mModel->GetName();
+        mName = DiEditorManager::Get()->GenerateRefModelName();
         if(!mModel)
         {
             DI_ERROR("Cannot init the DiRefModelObj with a null k2 model pointer");
             return;
         }
-        
-        mSceneNode->AttachObject(mModel);
     }
 
     void DiRefModelObj::OnDestroy()
@@ -87,6 +85,25 @@ namespace Demi
     void DiRefModelObj::Update(float dt)
     {
         DiBaseEditorObj::Update(dt);
+    }
+    
+    void DiRefModelObj::Load(const DiXMLElement& node)
+    {
+        DiString model = node.GetAttribute("model");
+        DiVec3 pos = node.GetVector3("pos");
+        DiQuat rot = node.GetQuaternion("rotation");
+        
+        SetModel(model);
+        SetPosition(pos);
+        SetRotation(rot);
+    }
+    
+    void DiRefModelObj::Save(DiXMLElement& node)
+    {
+        auto nd = node.CreateChild("ReferenceModel");
+        nd.SetAttribute("model", mModel ? mModel->GetName() : DiString::BLANK);
+        nd.SetVector3("pos", mSceneNode->GetPosition());
+        nd.SetQuaternion("rotation", mSceneNode->GetOrientation());
     }
     
     void DiRefModelObj::InitPropertyTable()

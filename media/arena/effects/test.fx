@@ -84,7 +84,13 @@
 					>
 						<texture
 							name="map"
-						>world/props/trees/t_ash/color</texture>
+						>mysticenergy2.dds</texture>
+						<addressing
+							name="u"
+						>CLAMP</addressing>
+						<addressing
+							name="v"
+						>CLAMP</addressing>
 					</sampler2D>
 				</variables>
 			</Material>
@@ -118,4 +124,9 @@
 			 />
 		</Element>
 	</ParticleSystem>
+	<ReferenceModel
+		model="buildings/legion/repeater1/model.mdf"
+		pos="0 0 0"
+		rotation="1 0 0 0"
+	 />
 </Effects>

@@ -179,7 +179,7 @@ namespace Demi
 
     void DiBaseEditorObj::OnDestroyUI()
     {
-        DI_DEBUG("Destroying ui: %s", GetType().c_str());
+        //DI_DEBUG("Destroying ui: %s", GetType().c_str());
         
         mUINode->getParent()->remove(mUINode, true);
         

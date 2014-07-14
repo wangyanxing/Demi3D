@@ -39,6 +39,8 @@ namespace Demi
         
         /// Create all objects from the loaded particle system
         DiBaseEditorObj*    LoadParticleSystem(DiParticleSystemPtr ps);
+        
+        DiBaseEditorObj*    LoadRefModel(const DiXMLElement& node);
 
         DiString            GenerateSystemName();
 
