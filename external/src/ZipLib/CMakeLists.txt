@@ -11,10 +11,6 @@ endif()
 # need zlib includes
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-if (WIN32)
-  add_definitions(-D_MSC_VER)
-endif ()
-
 add_library(ZipLib STATIC ${ZIPLIB_SRCS} ${ZIPLIB_C_SRCS})
 
 SET_SOURCE_FILES_PROPERTIES( ${ZIPLIB_SRCS} PROPERTIES LANGUAGE CXX )
