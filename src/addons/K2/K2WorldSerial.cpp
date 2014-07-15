@@ -66,7 +66,7 @@ namespace Demi
 
         LoadWorldConfig(pachfile->Open("worldconfig"), terrainDesc, world);
 
-        world->mTerrain = make_shared<DiTerrain>();
+        world->mTerrain = make_shared<DiTerrain>(world);
         world->mTerrain->Load(terrainDesc);
 
         // load entities
@@ -175,5 +175,43 @@ namespace Demi
         terrainDesc->mGridSize = root.GetFloat("scale");
         terrainDesc->mTextureScale = root.GetFloat("texturescale");
         terrainDesc->mCliffSize = root.GetUint("cliffsize");
+        
+        DiXMLElement child = root.GetChild();
+        while (child)
+        {
+            if(child.CheckName("var"))
+            {
+                DiString name = child.GetAttribute("name");
+                if(name == "scene_entityAmbientColor")
+                {
+                    auto col = child.GetVector3("value");
+                    world->mConfigs.mEntityAmbient = DiColor(col.x,col.y,col.z);
+                }
+                else if(name == "scene_entitySunColor")
+                {
+                    auto col = child.GetVector3("value");
+                    world->mConfigs.mEntitySunColor = DiColor(col.x,col.y,col.z);
+                }
+                else if(name == "scene_terrainAmbientColor")
+                {
+                    auto col = child.GetVector3("value");
+                    world->mConfigs.mTerrainAmbient = DiColor(col.x,col.y,col.z);
+                }
+                else if(name == "scene_terrainSunColor")
+                {
+                    auto col = child.GetVector3("value");
+                    world->mConfigs.mTerrainSunColor = DiColor(col.x,col.y,col.z);
+                }
+                else if(name == "scene_sunAltitude")
+                {
+                    world->mConfigs.mSunAltitude = child.GetFloat("value");
+                }
+                else if(name == "scene_sunAzimuth")
+                {
+                    world->mConfigs.mSunAzimuth = child.GetFloat("value");
+                }
+            }
+            child = child.GetNext();
+        }
     }
 }

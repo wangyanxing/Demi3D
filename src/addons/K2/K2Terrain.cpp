@@ -38,6 +38,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2TerrainChunk.h"
 #include "K2MapLoader.h"
 #include "K2Configs.h"
+#include "K2World.h"
 
 #if DEMI_COMPILER == DEMI_COMPILER_MSVC
 #   pragma warning(disable:4505)
@@ -45,7 +46,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    DiTerrain::DiTerrain()
+    DiTerrain::DiTerrain(DiK2World* world)
        :mVertexDecl(nullptr),
         mVertexBuffer(nullptr),
         mDesc(nullptr),
@@ -53,7 +54,8 @@ namespace Demi
         mMinHeight(10000000),
         mWaterMap(nullptr),
         mFoliageMap(nullptr),
-        mRoot(nullptr)
+        mRoot(nullptr),
+        mWorld(world)
     {
         mGroupType = BATCH_TERRAIN;
         SetShadowCastEnable(false);
@@ -62,6 +64,10 @@ namespace Demi
         AddQueryFlags(QUERY_TERRAIN);
 
         Demi::DiRenderBatchGroup* group = DiBase::Driver->GetPipeline()->GetBatchGroup(Demi::BATCH_TERRAIN);
+        group->SetPreProcess([this](){
+            Driver->GetPipeline()->GetShaderEnvironment()->globalAmbient = mWorld->mConfigs.mTerrainAmbient;
+            Driver->GetPipeline()->GetShaderEnvironment()->dirLightsColor[0] = mWorld->mConfigs.mTerrainSunColor;
+        });
         group->SetExtraProcess([this](){
             Render();
         });
@@ -566,8 +572,10 @@ namespace Demi
 
     void DiTerrain::AddTexture( const DiSet<DiString>& bs )
     {
-        for (auto it = bs.begin(); it != bs.end(); ++it)
-            AddTexture(*it);
+        for(auto& str : bs)
+        {
+            AddTexture(str);
+        }
     }
 
     int DiTerrain::AddTexture( const DiString& texBaseName )

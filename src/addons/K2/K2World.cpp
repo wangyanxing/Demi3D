@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "CullNode.h"
 #include "Model.h"
 #include "SubModel.h"
+#include "DirectionalLight.h"
 #include "ShaderParam.h"
 
 #include "K2Terrain.h"
@@ -30,6 +31,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DebugHelper.h"
 #include "ShaderManager.h"
 #include "AssetManager.h"
+#include "RenderPipeline.h"
 
 namespace Demi
 {
@@ -70,6 +72,29 @@ namespace Demi
         DiK2WorldSerial serial;
         serial.Load(path,this);
         mRootNode->AttachObject(mTerrain);
+        
+        // sun light
+        mSun = make_shared<DiDirLight>();
+        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
+        DiCullNode* dirNode = sm->GetRootNode()->CreateChild();
+        dirNode->AttachObject(mSun);
+        mSun->SetColor(DiColor());
+        
+        DiRadian altitude(DiDegree(mConfigs.mSunAltitude));
+        DiVec3 dir(0,-DiMath::Sin(altitude),DiMath::Cos(altitude));
+        
+        DiRadian azimuth(DiDegree(mConfigs.mSunAzimuth));
+        DiQuat rot(azimuth, DiVec3::UNIT_Y);
+        dir = rot * dir;
+        mSun->SetDirection(dir);
+        
+        sm->SetAmbientColor(DiColor());
+    
+        Demi::DiRenderBatchGroup* group = Driver->GetPipeline()->GetBatchGroup(Demi::BATCH_MODEL);
+        group->SetPreProcess([this](){
+            Driver->GetPipeline()->GetShaderEnvironment()->globalAmbient = mConfigs.mEntityAmbient;
+            Driver->GetPipeline()->GetShaderEnvironment()->dirLightsColor[0] = mConfigs.mEntitySunColor;
+        });
     }
 
     DiK2RenderObject* DiK2World::AddRenderObj(const DiString& mdf, 
@@ -101,6 +126,7 @@ namespace Demi
     void DiK2World::ProcessCliff(DiK2RenderObject* renderObj)
     {
         DiK2ModelPtr model = renderObj->GetModel();
+        model->SetBatchGroup(BATCH_TERRAIN);
         DiCullNode* node = renderObj->GetNode();
 
         DiVec3 pos = node->GetPosition();

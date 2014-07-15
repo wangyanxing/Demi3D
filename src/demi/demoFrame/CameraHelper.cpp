@@ -221,7 +221,7 @@ namespace Demi
                 mTarget += trans;
             }
         }
-        else if (mStyle == CS_FREELOOK)
+        else if (mStyle == CS_FREELOOK && mMoving)
         {
             mCamera->Yaw(DiDegree(-evt.X.rel * 0.15f));
             mCamera->Pitch(DiDegree(-evt.Y.rel * 0.15f));
@@ -260,6 +260,11 @@ namespace Demi
             else if (id == OIS::MB_Middle) 
                 mMoving = true;
         }
+        else if(mStyle == CS_FREELOOK)
+        {
+            if (id == OIS::MB_Left)
+                mMoving = true;
+        }
     }
 
     void DiCameraHelper::OnMouseUp(const OIS::MouseState& evt, OIS::MouseButtonID id)
@@ -274,6 +279,11 @@ namespace Demi
             else if (id == OIS::MB_Right)
                 mZooming = false;
             else if (id == OIS::MB_Middle)
+                mMoving = false;
+        }
+        else if(mStyle == CS_FREELOOK)
+        {
+            if (id == OIS::MB_Left)
                 mMoving = false;
         }
     }

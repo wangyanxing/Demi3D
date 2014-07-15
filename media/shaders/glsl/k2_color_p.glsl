@@ -155,7 +155,7 @@ void main(){
 
 	vec3 vFinalColor = gSurface.albedo.rgb * vDiffuse + vSpecular;
 	
-	gl_FragColor.rgb = vFinalColor;
+	gl_FragColor.rgb = vFinalColor.rgb;
     gl_FragColor.a = gSurface.albedo.a * g_opacity;
 	
 	

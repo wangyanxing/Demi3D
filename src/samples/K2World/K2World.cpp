@@ -11,7 +11,6 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-
 #include "Demi.h"
 #include "DemoFrame.h"
 #include "DebugHelper.h"
@@ -30,28 +29,23 @@ void InitScene()
 {
     DI_INSTALL_PLUGIN(DiK2);
     
-    DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-    sm->SetAmbientColor(DiColor(0.3f, 0.3f, 0.3f));
-    
-    DiDirLightPtr dirlight = make_shared<DiDirLight>();
-    DiCullNode* dirNode = sm->GetRootNode()->CreateChild();
-    dirNode->AttachObject(dirlight);
-    dirlight->SetColor(DiColor());
-    dirlight->SetDirection(DiVec3(-0.5f,-0.866f,0).normalisedCopy());
-    
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
     world = DI_NEW DiK2World();
-    world->Load("Arena_1.s2z");
+    world->Load("midwars.s2z");
 
     DiVec2 worldsize = world->mTerrain->GetWorldSize();
 
     auto cameraHelper = DemiDemo::GetApp()->GetCameraHelper();
     cameraHelper->SetStyle(CS_FREELOOK);
-    cameraHelper->SetTopSpeed(600);
-    cameraHelper->GetCamera()->SetPosition(worldsize.x / 2, 500, worldsize.y / 2);
-    cameraHelper->GetCamera()->SetPosition(3104.90723f, 1610.28467f, 4649.14502f);
-    cameraHelper->GetCamera()->SetOrientation(DiQuat(0.308038354f,-0.225031450f,-0.746425748,-0.545306683f));
+    cameraHelper->SetTopSpeed(300);
+    //cameraHelper->GetCamera()->SetPosition(worldsize.x / 2, 500, worldsize.y / 2);
+    //cameraHelper->GetCamera()->SetPosition(3104.90723f, 1610.28467f, 4649.14502f);
+    //cameraHelper->GetCamera()->SetOrientation(DiQuat(0.308038354f,-0.225031450f,-0.746425748,-0.545306683f));
+    
+    cameraHelper->GetCamera()->SetPosition(11720.666f, 1072.60095f, 4327.33447f);
+    //cameraHelper->GetCamera()->SetPosition(12518.6621f, 634.203735f, 3195.90112f);
+    cameraHelper->GetCamera()->SetOrientation(DiQuat(-0.383136421f,0.168790638f,-0.831088602f,-0.366114467f));
     //cameraHelper->Enable(false);
 
     DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
@@ -62,6 +56,9 @@ void InitScene()
 
 void UpdateScene()
 {
+    auto cam = DiBase::Driver->GetSceneManager()->GetCamera();
+    auto pos = cam->GetPosition();
+    auto rot = cam->GetOrientation();
 }
 
 int main(int argc, char *argv[])
@@ -71,7 +68,6 @@ int main(int argc, char *argv[])
 	app.SetUpdateCallback(UpdateScene);
     app.SetShutdownCallback([&](){
         DI_UNINSTALL_PLUGIN(DiK2);
-
     });
 	app.Open(argc, argv);
     

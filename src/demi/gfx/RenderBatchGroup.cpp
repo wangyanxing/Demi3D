@@ -66,6 +66,9 @@ namespace Demi
 
         if (mUseIdentityProj)
             BindIdentityViewProj();
+        
+        if (mPreProcess)
+            mPreProcess();
 
         mRenders.process(this);
         mTransRenders.process(this);

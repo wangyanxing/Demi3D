@@ -28,7 +28,7 @@ namespace Demi
     {
     public:
 
-        DiTerrain();
+        DiTerrain(DiK2World* world);
 
         virtual                     ~DiTerrain();
 
@@ -194,6 +194,8 @@ namespace Demi
         DiQuadNode*                 mRoot;
 
         LightPathFinder             mPathFinder;
+        
+        DiK2World*                  mWorld{ nullptr };
     };
 }
 

@@ -298,7 +298,7 @@ namespace Demi
         
         mCameraHelper->UseShiftKeyToOrbit(true);
         
-        InitFx_Repeater01();
+        //InitFx_Repeater01();
     }
     
     HonFxerApp* HonFxerApp::GetFxApp()

@@ -64,6 +64,6 @@ void main()
 
     vec3 vFinalColor = cDiffuseColor.rgb * vDiffuse + vSpecular;
 
-    gl_FragColor.rgb = vFinalColor.rgb;
+    gl_FragColor.rgb = vFinalColor;
     gl_FragColor.a = 1.0;
 }

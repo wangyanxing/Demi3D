@@ -76,15 +76,6 @@ namespace Demi
     {
         mEntityMgr = DI_NEW ArEntityManager();
 
-        DiSceneManager* sm = DiBase::Driver->GetSceneManager();
-        sm->SetAmbientColor(DiColor(0.3f, 0.3f, 0.3f));
-
-        DiDirLightPtr dirlight = make_shared<DiDirLight>();
-        DiCullNode* dirNode = sm->GetRootNode()->CreateChild();
-        dirNode->AttachObject(dirlight);
-        dirlight->SetColor(DiColor());
-        dirlight->SetDirection(DiVec3(-0.5f, -0.866f, 0).normalisedCopy());
-
         DiPostEffectManager* peMgr = DiBase::Driver->GetMainRenderWindow()->GetPostEffectManager();
         DiPostEffect* bloom = peMgr->GetEffect("Bloom");
         if (bloom)

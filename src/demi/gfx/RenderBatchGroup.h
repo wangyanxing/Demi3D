@@ -96,6 +96,8 @@ namespace Demi
         void                        SetShadowEnable(bool enableShadow) { mEnableShadow = enableShadow; }
 
         void                        SetExtraProcess(ExtraProcess val) { mExtraProcess = val; }
+        
+        void                        SetPreProcess(ExtraProcess val) { mPreProcess = val; }
 
     protected:
 
@@ -126,6 +128,8 @@ namespace Demi
         bool                        mEnableShadow;
 
         ExtraProcess                mExtraProcess;
+        
+        ExtraProcess                mPreProcess;
     };
 
 }

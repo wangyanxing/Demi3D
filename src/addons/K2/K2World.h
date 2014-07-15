@@ -20,6 +20,16 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    struct DiK2WorldConfigs
+    {
+        DiColor mTerrainAmbient;
+        DiColor mEntityAmbient;
+        DiColor mTerrainSunColor;
+        DiColor mEntitySunColor;
+        float mSunAltitude {0};
+        float mSunAzimuth {0};
+    };
+    
     class DEMI_K2_API DiK2World : public DiBase
     {
     public:
@@ -87,6 +97,9 @@ namespace Demi
 
         DiMap<int, DiVec3>  mTriggers;
 
+        DiDirLightPtr       mSun;
+        
+        DiK2WorldConfigs    mConfigs;
     };
 }
 
