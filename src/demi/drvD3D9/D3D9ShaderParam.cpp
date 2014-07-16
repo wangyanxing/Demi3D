@@ -335,49 +335,5 @@ namespace Demi
         msUniformFuncs["g_skyLightDir"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
             static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->skyLightDir);
         };
-
-        msUniformFuncs["g_fixedDepthBias"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->fixedDepthBias);
-        };
-
-        msUniformFuncs["g_gradientScaleBias"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->gradientScaleBias);
-        };
-
-        msUniformFuncs["g_shadowMapParams"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->shadowMapParams);
-        };
-
-        msUniformFuncs["g_firstCascadeTexMat"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->firstCascadeTexMat);
-        };
-
-        msUniformFuncs["g_texMatrixScaleBias"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->texMatrixScaleBias[0].x), (env->numShadowCascades - 1));
-        };
-
-        msUniformFuncs["g_csmSplitPoints"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            DiD3D9Driver::Device->SetPixelShaderConstantF(location, (float*)(&env->csmSplitPoints[0].x), env->numShadowCascades);
-        };
-
-        msUniformFuncs["g_lightViewProj"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            static_cast<DiD3D9Driver*>(DiBase::Driver)->SetShaderConsts(type, location, env->lightViewProj);
-        };
-
-        msUniformFuncs["g_shadowTexture0"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            env->shadowTexture[0]->Bind(location);
-        };
-
-        msUniformFuncs["g_shadowTexture1"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            env->shadowTexture[1]->Bind(location);
-        };
-
-        msUniformFuncs["g_shadowTexture2"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            env->shadowTexture[2]->Bind(location);
-        };
-
-        msUniformFuncs["g_shadowTexture3"] = [](const DiShaderEnvironment* env, DiShaderType type, uint32 location) {
-            env->shadowTexture[3]->Bind(location);
-        };
     }
 }

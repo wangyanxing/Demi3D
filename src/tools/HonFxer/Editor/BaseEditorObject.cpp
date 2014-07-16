@@ -133,9 +133,10 @@ namespace Demi
     
     void DiBaseEditorObj::ClearChildren()
     {
-        for(auto& c: mChildren)
+        while (!mChildren.empty())
         {
-            DiEditorManager::Get()->DeleteEditorObject(c);
+            DiBaseEditorObj* obj = *mChildren.begin();
+            DiEditorManager::Get()->DeleteEditorObject(obj);
         }
         mChildren.clear();
     }

@@ -301,7 +301,7 @@ namespace Demi
     
     DiTexturePropertyItem::~DiTexturePropertyItem()
     {
-        SAFE_DELETE(mTextureBrowser);
+        //SAFE_DELETE(mTextureBrowser);
     }
     
     void DiTexturePropertyItem::CreateUI(const DiString& caption)
