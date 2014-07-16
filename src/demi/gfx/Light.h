@@ -18,6 +18,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Shadows.h"
 #include "Texture.h"
 
+#define ENABLE_FSM 1
+
 namespace Demi 
 {
     /** Dynamic light types
@@ -68,26 +70,38 @@ namespace Demi
         /** Get TransformObj type
          */
         DiString&               GetType(void);
-
-        DiShadowParams&         GetShadowParams(void) { return mShadowParams; }
+        
+        void                    InitForShadowCasting(DiSceneManager* sm, ShadowTextureConfig config);
 
         /** Set up shadow cameras
          */
         void                    SetupShadowCamera(DiSceneManager* sceneManager){}
+        
+        virtual DiVec3          GetDerivedDirection() const { return DiVec3::ZERO; }
 
-        void                    UpdateSplitDist(DiCamera* camera);
-
-        void                    UpdateFrustumPoints(ShadowFrustum &f, const DiVec3 &center, const DiVec3 &view_dir);
-
-        void                    ApplyCropMatrix(DiCamera* shadowCam, ShadowFrustum& f);
-
-        void                    ApplyGeneralShaderConfigs();
-
-        void                    ApplyShaderConfigs(const DiCamera* texCam, int cascadeID);
+        virtual DiVec3          GetDerivedPosition() const { return DiVec3::ZERO; }
+        
+        void                    SetShadowNearClipDistance(float nearClip) { mShadowNearClipDist = nearClip; }
+        
+		float                   GetShadowNearClipDistance() const { return mShadowNearClipDist; }
+        
+		float                   DeriveShadowNearClipDistance(const DiCamera* maincam) const;
+        
+		void                    SetShadowFarClipDistance(float farClip) { mShadowFarClipDist = farClip; }
+        
+		float                   GetShadowFarClipDistance() const { return mShadowFarClipDist; }
+        
+		virtual float           DeriveShadowFarClipDistance(const DiCamera* maincam) const;
+        
+        size_t                  GetNumShadowTextures() {return mShadowTextures.size(); }
+        
+        DiTexturePtr            GetShadowTexture(size_t id) {return mShadowTextures[id]; }
+        
+        DiCamera*               GetShadowCamera(size_t id) {return mShadowCameras[id]; }
 
     protected:
 
-        void                    CreateShadowTextures();
+        void                    CreateShadowTextures(DiSceneManager* sm);
 
     protected:
 
@@ -95,48 +109,15 @@ namespace Demi
 
         DiColor                 mColor;
 
-        /// Shadow params
-        DiShadowParams          mShadowParams;
-
-        /// test
-        ShadowFrustum           mShadowFrustums[MAX_CASCADE_SPLITS];
+        float                   mShadowNearClipDist{ 0 };
         
-        bool                    mShadowCameraDirty;
+		float                   mShadowFarClipDist{ 0 };
+
+        DiVector<ShadowTextureConfig> mShadowConfig;
         
-        DiCamera*               mShadowCamera;
-
-    public:
-
-        DiTexturePtr            mShadowTextures[MAX_CASCADE_SPLITS];
-
-        DiCamera*               mShadowCameras[MAX_CASCADE_SPLITS];
-
-        float                   mCascadePartitionsFrustum[MAX_CASCADE_SPLITS];
-
-    public:
-
-        void                    GetShadowCamera(const DiCamera *cam, DiCamera *texCam, uint16 iteration);
-
-        virtual void            GetShadowCameraForCascade(const DiCamera *cam, DiCamera *texCam,
-                                    uint16 iteration, float nearSplit, float farSplit) {}
-
-        void                    SetSplitPoints(const DiVector<float>& newSplitPoints);
-
-        void                    CalculateSplitPoints(uint16 cascadeCount, float firstSplitDist, float farDist, float lambda);
-
-        uint16                  mCascadeCount;
+        DiVector<DiTexturePtr>  mShadowTextures;
         
-        DiVector<float>         mSplitPoints;
-
-        float                   mSplitPadding;
-
-        uint16                  mCurrentIteration;
-
-        DiMat4                  mFirstCascadeViewMatrix;
-        
-        float                   mFirstCascadeCamWidth;
-
-        float                   mViewRange;
+        DiVector<DiCamera*>     mShadowCameras;
     };
 }
 

@@ -26,18 +26,19 @@ namespace Demi
     {
     public:
 
-        DiViewport()
-            :mLeft(0), mTop(0), mWidth(1.0), mHeight(1.0)
-        {
-        }
+        DiViewport(DiRenderTarget* rt)
+        :mParent(rt)
+        {}
 
-        float mLeft;
+        float mLeft{ 0 };
               
-        float mTop;
+        float mTop{ 0 };
               
-        float mWidth;
+        float mWidth{ 1 };
               
-        float mHeight;
+        float mHeight{ 1 };
+        
+        DiRenderTarget* mParent{ nullptr };
     };
 
     /** Render target class, created from the texture

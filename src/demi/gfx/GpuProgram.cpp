@@ -18,7 +18,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "GfxDriver.h"
 #include "Light.h"
 
-namespace Demi 
+namespace Demi
 {
     DiShaderEnvironment::DiShaderEnvironment( void )
     {

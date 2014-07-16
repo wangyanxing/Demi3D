@@ -29,6 +29,7 @@ namespace Demi
     DiRenderTarget::DiRenderTarget()
        :mWidth(0),
         mHeight(0),
+        mViewport(this),
         mParentTex(nullptr),
         mDepthBuffer(nullptr),
         mDepthClearValue(1.0f),

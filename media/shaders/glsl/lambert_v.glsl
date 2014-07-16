@@ -19,6 +19,10 @@ attribute vec4  Color;
 varying   vec4	vColor;
 #endif
 
+#if defined( SHADOW_RECEIVER )
+varying vec4 vLightSpacePos;
+#endif
+
 varying vec3 vNormal;
 varying vec3 vViewDir;
 varying vec3 vPosWorld;
@@ -41,4 +45,10 @@ void main()
     vNormal    = (g_modelMatrix * vec4(objNormal,0.0)).xyz;
 	vPosWorld  = (g_modelMatrix * objPos).xyz;
 	vViewDir   = vPosWorld - g_eyePosition;
+    
+#if defined( SHADOW_RECEIVER )
+    vec4 worldPos = g_modelMatrix * objPos;
+    vLightSpacePos = g_texViewProjMatrix * worldPos;
+    vLightSpacePos.z = (vLightSpacePos.z - g_depthRange.x) * g_depthRange.w;
+#endif
 }

@@ -1,4 +1,5 @@
 #include "common.h"
+#include "shadows.h"
 
 varying vec3 vNormal;
 varying vec3 vViewDir;
@@ -21,6 +22,11 @@ uniform float       reflectivity;
 #	endif
 #endif
 
+#if defined( SHADOW_RECEIVER )
+varying vec4 vLightSpacePos;
+uniform float invShadowMapSize;
+uniform sampler2D shadowMap;
+#endif
 
 // Data that we can read or derive from the surface shader outputs
 struct SurfaceData{
@@ -31,6 +37,7 @@ struct SurfaceData{
 };
 
 SurfaceData gSurface;
+float fShadow = 1.0;
 
 void ComputeSurfaceDataFromGeometry() {
     gSurface.normal = normalize(vNormal);
@@ -60,7 +67,7 @@ void AccumulateDirLight(vec3 dir,vec4 color, inout vec3 lit){
 	float NdotL = max(dot(gSurface.normal, normalize(-dir)), 0.0);
 	
 	vec3 litDiffuse = color.rgb * color.a * NdotL;
-	lit += gSurface.albedo.rgb * litDiffuse;
+	lit += gSurface.albedo.rgb * litDiffuse * fShadow;
 }
 
 void AccumulatePointLight(vec3 position, float attenBegin,  float attenEnd, 
@@ -94,6 +101,10 @@ void main(){
 	ComputeSurfaceDataFromGeometry();
 	
 	vec3 lit = vec3(0.0,0.0,0.0);
+    
+#if defined( SHADOW_RECEIVER )
+	fShadow = calcDepthShadow( shadowMap, vLightSpacePos, invShadowMapSize );
+#endif
 	
 	for(int i = 0; i < g_numDirLights; i++){
 		AccumulateDirLight(g_dirLightsDir[i].xyz, g_dirLightsColor[i], lit);

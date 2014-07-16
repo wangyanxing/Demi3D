@@ -100,6 +100,10 @@ namespace Demi
 
         virtual void            SetShadowCastEnable(bool val){mShadowCastEnable = val;}
         
+        virtual bool            GetShadowReceiveEnable()const{return mShadowReceiveEnable;}
+        
+        virtual void            SetShadowReceiveEnable(bool val){mShadowReceiveEnable = val;}
+        
         ManualRayQueryFunc      GetManualRayQueryFunc() {return mManualRayFunc;}
 
         ManualAABBQueryFunc     GetManualAABBQueryFunc() { return mManualAABBFunc; }
@@ -133,6 +137,8 @@ namespace Demi
         bool                    mVisible;
 
         bool                    mShadowCastEnable;
+        
+        bool                    mShadowReceiveEnable;
 
         uint32                  mQueryFlags;
 

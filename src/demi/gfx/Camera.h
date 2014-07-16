@@ -16,8 +16,37 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "Frustum.h"
 
-namespace Demi 
+namespace Demi
 {
+    struct DI_GFX_API DiVisBoundsInfo
+	{
+		/// The axis-aligned bounds of the visible objects
+		DiAABB aabb;
+		
+        /// The axis-aligned bounds of the visible shadow receiver objects
+		DiAABB receiverAabb;
+		
+        /// The closest a visible object is to the camera
+		float minDistance{ 0 };
+		
+        /// The farthest a visible objects is from the camera
+		float maxDistance{ 0 };
+		
+        /// The closest a object in the frustum regardless of visibility / shadow caster flags
+		float minDistanceInFrustum{ 0 };
+        
+		/// The farthest object in the frustum regardless of visibility / shadow caster flags
+		float maxDistanceInFrustum{ 0 };
+        
+		DiVisBoundsInfo();
+		
+        void Reset();
+        
+		void Merge(const DiAABB& boxBounds, const DiCamera* cam, bool receiver = true);
+		
+		void MergeNonRenderedButInFrustum(const DiAABB& boxBounds, const DiCamera* cam);
+	};
+    
     /** Camera class, adapted from Ogre3D
      */
     class DI_GFX_API DiCamera : public DiFrustum
@@ -174,6 +203,10 @@ namespace Demi
         void                ForwardIntersect(const DiPlane& worldPlane, DiVector<DiVec4>* intersect3d) const;
 
         DiVector<DiVec4>    GetRayForwardIntersect(const DiVec3& anchor, const DiVec3 *dir, float planeOffset) const;
+        
+        DiVisBoundsInfo&    GetVisBoundsInfo() { return mVisBoundsInfo; }
+        
+        const DiVisBoundsInfo& GetVisBoundsInfo() const { return mVisBoundsInfo; }
 
     protected:
 
@@ -215,7 +248,9 @@ namespace Demi
 
         void                InvalidateView(void) const;
 
-        virtual void        SetWindowImpl(void) const;    
+        virtual void        SetWindowImpl(void) const;
+        
+        DiVisBoundsInfo     mVisBoundsInfo;
     };
 }
 

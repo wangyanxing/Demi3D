@@ -243,6 +243,7 @@ namespace Demi
     
     void DiOctreeCuller::Cull(DiCamera* cam)
     {
+        cam->GetVisBoundsInfo().Reset();
         WalkTree(cam, mOctree, false);
     }
     
@@ -285,6 +286,15 @@ namespace Demi
                         {
                             mSceneManager->PushVisibleObject(tu);
                             tu->NotifyCurrentCamera(camera);
+                            
+                            camera->GetVisBoundsInfo().Merge(tu->GetWorldBoundingBox(true), camera,
+                                                 tu->GetShadowReceiveEnable());
+                        }
+                        // shadow receiver
+                        else if (onlyShadowCaster && !tu->GetShadowCastEnable() &&
+                                 tu->GetShadowReceiveEnable())
+                        {
+                            camera->GetVisBoundsInfo().MergeNonRenderedButInFrustum(tu->GetWorldBoundingBox(true), camera);
                         }
                     });
                 }

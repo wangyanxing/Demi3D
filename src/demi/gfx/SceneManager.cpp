@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "SceneManager.h"
 #include "GfxDriver.h"
@@ -26,6 +27,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Command.h"
 #include "ConsoleVariable.h"
 #include "GfxDriver.h"
+#include "ShadowPolicy.h"
 
 namespace Demi 
 {
@@ -46,217 +48,6 @@ namespace Demi
         });
     }
 
-#if 0
-    enum Intersection
-    {
-        OUTSIDE   = 0,
-        INSIDE    = 1,
-        INTERSECT = 2
-    };
-
-    Intersection intersect( const DiRay &one, const DiAABB &two )
-    {
-        DiSceneManager::intersect_call++;
-        
-        if (two.IsNull())
-            return OUTSIDE;
-        
-        if (two.IsInfinite()) 
-            return INTERSECT;
-
-        bool inside = true;
-        const DiVec3& twoMin = two.GetMinimum();
-        const DiVec3& twoMax = two.GetMaximum();
-        DiVec3 origin = one.getOrigin();
-        DiVec3 dir = one.getDirection();
-
-        DiVec3 maxT(-1, -1, -1);
-
-        int i = 0;
-        for(i=0; i<3; i++ )
-        {
-            if( origin[i] < twoMin[i] )
-            {
-                inside = false;
-                if( dir[i] > 0 )
-                    maxT[i] = (twoMin[i] - origin[i])/ dir[i];
-            }
-            else if( origin[i] > twoMax[i] )
-            {
-                inside = false;
-                if( dir[i] < 0 )
-                    maxT[i] = (twoMax[i] - origin[i]) / dir[i];
-            }
-        }
-
-        if( inside )
-            return INTERSECT;
-        
-        int whichPlane = 0;
-        if( maxT[1] > maxT[whichPlane])
-            whichPlane = 1;
-
-        if( maxT[2] > maxT[whichPlane])
-            whichPlane = 2;
-
-        if( ((int)maxT[whichPlane]) & 0x80000000 )
-            return OUTSIDE;
-
-        for(i=0; i<3; i++ )
-        {
-            if( i!= whichPlane )
-            {
-                float f = origin[i] + maxT[whichPlane] * dir[i];
-                if ( f < (twoMin[i] - 0.00001f) ||
-                    f > (twoMax[i] +0.00001f ) )
-                {
-                    return OUTSIDE;
-                }
-            }
-        }
-
-        return INTERSECT;
-
-    }
-
-    Intersection intersect( const DiPlaneBoundedVol &one, const DiAABB &two )
-    {
-        DiSceneManager::intersect_call++;
-        if (two.IsNull()) 
-            return OUTSIDE;
-        if (two.IsInfinite()) 
-            return INTERSECT;
-
-        DiVec3 centre = two.GetCenter();
-        
-        DiVec3 halfSize = two.GetHalfSize();
-
-        bool all_inside = true;
-        DiCamera::PlaneList::const_iterator i, iend;
-        iend = one.planes.end();
-        for (i = one.planes.begin(); i != iend; ++i)
-        {
-            const DiPlane& plane = *i;
-
-            DiPlane::Side side = plane.getSide(centre, halfSize);
-            if(side == one.outside)
-            {
-                return OUTSIDE;
-            }
-            if(side == DiPlane::BOTH_SIDE)
-            {
-                all_inside = false; 
-            }
-        }
-
-        if ( all_inside )
-        {
-            return INSIDE;
-        }
-        else
-        {
-            return INTERSECT;
-        }
-    }
-
-    Intersection intersect( const DiAABB &one, const DiAABB &two )
-    {
-        DiSceneManager::intersect_call++;
-        if (one.IsNull() || two.IsNull()) 
-            return OUTSIDE;
-
-        if (one.IsInfinite()) 
-            return INSIDE;
-
-        if (two.IsInfinite()) 
-            return INTERSECT;
-
-        const DiVec3& insideMin = two.GetMinimum();
-        const DiVec3& insideMax = two.GetMaximum();
-
-        const DiVec3& outsideMin = one.GetMinimum();
-        const DiVec3& outsideMax = one.GetMaximum();
-
-        if (    insideMax.x < outsideMin.x ||
-            insideMax.y < outsideMin.y ||
-            insideMax.z < outsideMin.z ||
-            insideMin.x > outsideMax.x ||
-            insideMin.y > outsideMax.y ||
-            insideMin.z > outsideMax.z )
-        {
-            return OUTSIDE;
-        }
-
-        bool full = ( insideMin.x > outsideMin.x &&
-            insideMin.y > outsideMin.y &&
-            insideMin.z > outsideMin.z &&
-            insideMax.x < outsideMax.x &&
-            insideMax.y < outsideMax.y &&
-            insideMax.z < outsideMax.z );
-
-        if ( full )
-            return INSIDE;
-        else
-            return INTERSECT;
-
-    }
-
-    Intersection intersect( const DiSphere &one, const DiAABB &two )
-    {
-        DiSceneManager::intersect_call++;
-        if (two.IsNull()) 
-            return OUTSIDE;
-
-        if (two.IsInfinite()) 
-            return INTERSECT;
-
-        float sradius = one.getRadius();
-
-        sradius *= sradius;
-
-        DiVec3 scenter = one.getCenter();
-
-        const DiVec3& twoMin = two.GetMinimum();
-        const DiVec3& twoMax = two.GetMaximum();
-
-        float s, d = 0;
-
-        DiVec3 mndistance = ( twoMin - scenter );
-        DiVec3 mxdistance = ( twoMax - scenter );
-
-        if ( mndistance.squaredLength() < sradius &&
-            mxdistance.squaredLength() < sradius )
-        {
-            return INSIDE;
-        }
-
-        for ( int i = 0 ; i < 3 ; i++ )
-        {
-            if ( scenter[ i ] < twoMin[ i ] )
-            {
-                s = scenter[ i ] - twoMin[ i ];
-                d += s * s;
-            }
-
-            else if ( scenter[ i ] > twoMax[ i ] )
-            {
-                s = scenter[ i ] - twoMax[ i ];
-                d += s * s;
-            }
-
-        }
-
-        bool partial = ( d <= sradius );
-
-        if ( !partial )
-            return OUTSIDE;
-        else
-            return INTERSECT;
-    }
-#endif
-
-    //////////////////////////////////////////////////////////////////////////
-
     DiSceneManager::DiSceneManager(DiRenderWindow* parentWnd)
         :
         mParentWindow(parentWnd),
@@ -264,7 +55,10 @@ namespace Demi
         mSkybox(nullptr),
         mAmbientColor(0.3f,0.3f,0.3f),
         mCuller(nullptr),
-        mCullerFactory(nullptr)
+        mCullerFactory(nullptr),
+        mDefaultShadowFarDist(0),
+        mDefaultShadowFarDistSquared(0),
+        mShadowTextureOffset(0.6f)
     {
         mCullerFactory = DI_NEW DiSceneCullerFactory(this);
         mPipeline = Driver->GetPipeline();
@@ -278,6 +72,8 @@ namespace Demi
         mRootNode = DI_NEW DiCullNode(this,"_root");
         
         mSkybox = DI_NEW DiSkybox(this);
+        
+        mShadowPolicy = DI_NEW DiFocusedShadowPolicy();
     }
 
     DiSceneManager::~DiSceneManager(void)
@@ -287,7 +83,11 @@ namespace Demi
         mVisibleObjects.objs.clear();
 
         ClearNodes();
-        DestroyCamera("_sm_camera");
+        
+        DestroyAllCameras();
+        
+        DI_DELETE mShadowPolicy;
+        mShadowPolicy = nullptr;
         
         DI_DELETE mCuller;
         mCuller = nullptr;
@@ -403,225 +203,6 @@ namespace Demi
             mDirtyInstanceManagers.clear();
         }
     }
-#if 0
-    void _findNodes(const DiAABB &t, DiList<DiCullNode*> &list, DiCullNode *exclude, bool full, DiOctreePtr octant)
-    {
-
-        if ( !full )
-        {
-            DiAABB obox;
-            octant -> GetCullBounds( &obox );
-
-            Intersection isect = intersect( t, obox );
-
-            if ( isect == OUTSIDE )
-                return ;
-
-            full = ( isect == INSIDE );
-        }
-
-        for (DiCullNode* node = octant->mNodes.mHead; node; node = node->mNext)
-        {
-            if (node != exclude)
-            {
-                if (full)
-                    list.push_back(node);
-                else
-                {
-                    Intersection nsect = intersect(t, node->GetWorldAABB());
-                    if (nsect != OUTSIDE)
-                        list.push_back(node);
-                }
-
-            }
-        }
-
-        DiOctreePtr child;
-        for (uint16 i = 0; i < 8; i++)
-        {
-            if ((child = octant->mChildren[i]))
-                _findNodes(t, list, exclude, full, child);
-        }
-    }
-
-    void _findNodes(const DiSphere &t, DiList< DiCullNode * >&list, DiCullNode *exclude, bool full, DiOctreePtr octant)
-    {
-        if ( !full )
-        {
-            DiAABB obox;
-            octant -> GetCullBounds( &obox );
-
-            Intersection isect = intersect( t, obox );
-
-            if ( isect == OUTSIDE )
-                return ;
-
-            full = ( isect == INSIDE );
-        }
-
-        for (DiCullNode* node = octant->mNodes.mHead; node; node = node->mNext)
-        {
-            if (node != exclude)
-            {
-                if (full)
-                    list.push_back(node);
-                else
-                {
-                    Intersection nsect = intersect(t, node->GetWorldAABB());
-                    if (nsect != OUTSIDE)
-                    {
-                        list.push_back(node);
-                    }
-                }
-
-            }
-        }
-
-        DiOctreePtr child;
-        for (uint16 i = 0; i < 8; i++)
-        {
-            if ((child = octant->mChildren[i]))
-                _findNodes(t, list, exclude, full, child);
-        }
-    }
-
-
-    void _findNodes( const DiPlaneBoundedVol &t, DiList< DiCullNode * > &list, 
-        DiCullNode *exclude,  bool full, DiOctreePtr octant)
-    {
-
-        if ( !full )
-        {
-            DiAABB obox;
-            octant -> GetCullBounds( &obox );
-
-            Intersection isect = intersect( t, obox );
-
-            if ( isect == OUTSIDE )
-                return ;
-
-            full = ( isect == INSIDE );
-        }
-
-        for (DiCullNode* node = octant->mNodes.mHead; node; node = node->mNext)
-        {
-            if (node != exclude)
-            {
-                if (full)
-                    list.push_back(node);
-                else
-                {
-                    Intersection nsect = intersect(t, node->GetWorldAABB());
-                    if (nsect != OUTSIDE)
-                    {
-                        list.push_back(node);
-                    }
-                }
-
-            }
-        }
-
-        DiOctreePtr child;
-        for (uint16 i = 0; i < 8; i++)
-        {
-            if ((child = octant->mChildren[i]))
-                _findNodes(t, list, exclude, full, child);
-        }
-    }
-
-    void _findNodes(const DiRay &t, DiList< DiCullNode * >&list, DiCullNode *exclude, bool full, DiOctreePtr octant)
-    {
-        if ( !full )
-        {
-            DiAABB obox;
-            octant -> GetCullBounds( &obox );
-
-            Intersection isect = intersect( t, obox );
-
-            if ( isect == OUTSIDE )
-                return ;
-
-            full = ( isect == INSIDE );
-        }
-
-        for (DiCullNode* node = octant->mNodes.mHead; node; node = node->mNext)
-        {
-            if (node != exclude)
-            {
-                if (full)
-                    list.push_back(node);
-                else
-                {
-                    Intersection nsect = intersect(t, node->GetWorldAABB());
-                    if (nsect != OUTSIDE)
-                    {
-                        list.push_back(node);
-                    }
-                }
-
-            }
-        }
-
-        DiOctreePtr child;
-        for (uint16 i = 0; i < 8; i++)
-        {
-            if ((child = octant->mChildren[i]))
-                _findNodes(t, list, exclude, full, child);
-        }
-    }
-
-    void DiSceneManager::FindNodesIn( const DiAABB &box, DiList<DiCullNode*>& list, DiCullNode *exclude)
-    {
-        _findNodes( box, list, exclude, false, mOctree );
-    }
-
-    void DiSceneManager::FindNodesIn( const DiSphere &sphere, DiList<DiCullNode*>& list, DiCullNode *exclude )
-    {
-        _findNodes( sphere, list, exclude, false, mOctree );
-    }
-
-    void DiSceneManager::FindNodesIn( const DiPlaneBoundedVol &volume, DiList<DiCullNode*>& list, DiCullNode *exclude  )
-    {
-        _findNodes( volume, list, exclude, false, mOctree );
-    }
-
-    void DiSceneManager::FindNodesIn( const DiRay &ray, DiList<DiCullNode*>& list, DiCullNode *exclude )
-    {
-        _findNodes( ray, list, exclude, false, mOctree );
-    }
-
-    DiAABBQuery* DiSceneManager::CreateAABBQuery( const DiAABB& box, unsigned long mask )
-    {
-        DiOcAABBQuery* q = DI_NEW DiOcAABBQuery(this);
-        q->SetBox(box);
-        q->SetQueryMask(mask);
-        return q;
-    }
-
-    DiSphereSceneQuery* DiSceneManager::CreateSphereQuery( const DiSphere& sphere, unsigned long mask )
-    {
-        DiOcSphereQuery* q = DI_NEW DiOcSphereQuery(this);
-        q->SetSphere(sphere);
-        q->SetQueryMask(mask);
-        return q;
-    }
-
-    DiPBVListSceneQuery* DiSceneManager::CreatePlaneBoundedVolumeQuery( const PlaneBoundedVolumeList& volumes, unsigned long mask )
-    {
-        DiOcPBVQuery* q = DI_NEW DiOcPBVQuery(this);
-        q->SetVolumes(volumes);
-        q->SetQueryMask(mask);
-        return q;
-    }
-
-    DiRaySceneQuery* DiSceneManager::CreateRayQuery( const DiRay& ray, unsigned long mask )
-    {
-        DiOcRayQuery* q = DI_NEW DiOcRayQuery(this);
-        q->SetRay(ray);
-        q->SetQueryMask(mask);
-        return q;
-    }
-#endif
 
     DiCamera* DiSceneManager::CreateCamera( const DiString& name )
     {

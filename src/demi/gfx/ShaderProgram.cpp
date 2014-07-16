@@ -10,6 +10,7 @@ https://github.com/wangyanxing/Demi3D
 Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
+
 #include "GfxPch.h"
 #include "ShaderProgram.h"
 #include "AssetManager.h"
@@ -108,13 +109,13 @@ namespace Demi
         
         if(mShaderType == SHADER_VERTEX)
         {
-            desc.entryName  = "vs_main";
-            desc.profile    = sDefaultVsProfile;
+            desc.entryName = "vs_main";
+            desc.profile   = sDefaultVsProfile;
         }
         else
         {
-            desc.entryName  = "ps_main";
-            desc.profile    = sDefaultPsProfile;
+            desc.entryName = "ps_main";
+            desc.profile   = sDefaultPsProfile;
         }
 
         return Compile(desc);

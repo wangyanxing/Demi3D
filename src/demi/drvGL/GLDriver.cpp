@@ -570,7 +570,7 @@ namespace Demi
             return it->second;
 
         // create a new one
-        DiGLShaderLinker* ret = new DiGLShaderLinker(static_cast<DiGLShaderInstance*>(vs),
+        DiGLShaderLinker* ret = DI_NEW DiGLShaderLinker(static_cast<DiGLShaderInstance*>(vs),
             static_cast<DiGLShaderInstance*>(ps));
 
         mProgramMaps[p] = ret;

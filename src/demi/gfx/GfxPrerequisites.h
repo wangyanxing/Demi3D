@@ -130,10 +130,9 @@ namespace Demi
     class    DiSimpleShape;
     class    DiGfxCaps;
     class    DiTransAxes;
-
-    class    DiBspNode;
-    class    DiBspScene;
-
+    class    DiShadowCameraPolicy;
+    class    DiConvexBody;
+    
     class BoneMemoryManager;
     class BoneArrayMemoryManager;
     class SkeletonDef;

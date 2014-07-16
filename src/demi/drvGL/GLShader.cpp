@@ -540,5 +540,13 @@ namespace Demi
         msUniformFuncs["g_skyLightDir"] = [](const DiShaderEnvironment* env, GLuint location) {
             glUniform3fvARB(location, 1, env->skyLightDir.ptr());
         };
+        
+        msUniformFuncs["g_depthRange"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniform4fvARB(location, 1, env->depthRange.ptr());
+        };
+        
+        msUniformFuncs["g_texViewProjMatrix"] = [](const DiShaderEnvironment* env, GLuint location) {
+            glUniformMatrix4fvARB(location, 1, GL_TRUE, env->texViewProjMatrix[0]);
+        };
     }
 }

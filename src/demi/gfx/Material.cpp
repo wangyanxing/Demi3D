@@ -27,9 +27,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 namespace Demi 
 {
     DiString DiMaterial::TYPE = "Material";
+    DiMap<uint64, DiMaterialPtr> DiMaterial::sShadowCasterMats;
 
     DiMaterial::DiMaterial(const DiString& name) :
-        DiAsset(name),mShaderParameter(NULL),
+        DiAsset(name),
         mAmbient(DiColor::Black)
     {
         mOpacity         = 1.0f;
@@ -41,8 +42,6 @@ namespace Demi
         mBlendMode       = BLEND_REPLACE;
         mInstanceState   = INSTANCE_DISABLE;
         mShaderFlag      = 0;
-        mVertexShader    = nullptr;
-        mPixelShader     = nullptr;
         mShininess       = 16;
 
         if (Driver)
@@ -80,7 +79,7 @@ namespace Demi
         Driver->BindShaders(mVertexShader, mPixelShader);
         mShaderParameter->Bind();
     }
-
+    
     bool DiMaterial::Load( DiDataStreamPtr data )
     {
         DiMaterialSerializer ms;
@@ -105,10 +104,19 @@ namespace Demi
         // no need to release these pointers since we have shader manager
         mVertexShader = DiShaderManager::GetInstance().LoadShader(vsname, SHADER_VERTEX, mShaderFlag);
         mPixelShader  = DiShaderManager::GetInstance().LoadShader(psname, SHADER_PIXEL , mShaderFlag);
+        
+        mVSName = vsname;
+        mPSName = psname;
 
         mShaderParameter->LoadParameters();
+        
+        if(mShaderFlag & SHADER_FLAG_SHADOW_RECEIVER)
+        {
+            mShaderParameter->WriteTexture2D("shadowMap", "_shad_tex_0");
+            mShaderParameter->WriteFloat2("invShadowMapSize", DiVec2(1/1024.0f, 1/1024.0f)); // todo
+        }
     }
-
+    
     bool DiMaterial::LoadingComplete() const
     {
         return (mVertexShader && mPixelShader) ? true : false;
@@ -116,12 +124,12 @@ namespace Demi
 
     DiString DiMaterial::GetVertexShaderName() const
     {
-        return mVertexShader ? mVertexShader->GetShaderFileName() : DiString::BLANK;
+        return mVertexShader ? mPixelShader->GetShaderFileName() : DiString::BLANK;
     }
 
     DiString DiMaterial::GetPixelShaderName() const
     {
-        return mPixelShader ? mPixelShader->GetShaderFileName() : DiString::BLANK;
+        return mVertexShader ? mPixelShader->GetShaderFileName() : DiString::BLANK;
     }
 
     bool DiMaterial::HasTexture()
@@ -179,7 +187,7 @@ namespace Demi
         DiMaterialPtr mat = DiAssetManager::GetInstance().CreateManualAsset<DiMaterial>(newname);
 
         mat->SetShaderFlag(mat->mShaderFlag);
-        mat->LoadShader(mVertexShader->GetName().ExtractBaseName(), 
+        mat->LoadShader(mVertexShader->GetName().ExtractBaseName(),
             mPixelShader->GetName().ExtractBaseName());
 
         mat->mCullMode        = mCullMode;
@@ -233,20 +241,17 @@ namespace Demi
     {
         return mBlendMode == BLEND_ONE_INV_ALPHA || mBlendMode == BLEND_ALPHA;
     }
-
-    DiMaterialPtr DiMaterial::GetStaticShadowCasterMaterial()
+    
+    DiMaterialPtr DiMaterial::GetShadowCasterMaterial(uint64 shaderflag)
     {
-        static DiMaterialPtr StaticShadowCasterMaterial;
-        if (!StaticShadowCasterMaterial)
-            StaticShadowCasterMaterial = DiMaterial::QuickCreate("shadowCaster_v", "shadowCaster_p");
-        return StaticShadowCasterMaterial;
-    }
-
-    DiMaterialPtr DiMaterial::GetAnimatedShadowCasterMaterial()
-    {
-        static DiMaterialPtr AnimatedShadowCasterMaterial;
-        if (!AnimatedShadowCasterMaterial)
-            AnimatedShadowCasterMaterial = DiMaterial::QuickCreate("shadowCaster_v", "shadowCaster_p", SHADER_FLAG_SKINNED);
-        return AnimatedShadowCasterMaterial;
+        auto it = sShadowCasterMats.find(shaderflag);
+        if(it != sShadowCasterMats.end())
+        {
+            return it->second;
+        }
+        
+        auto ret = DiMaterial::QuickCreate("depth_shadow_caster_v", "depth_shadow_caster_p", shaderflag);
+        sShadowCasterMats[shaderflag] = ret;
+        return ret;
     }
 }

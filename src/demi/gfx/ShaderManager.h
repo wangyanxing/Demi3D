@@ -34,12 +34,10 @@ namespace Demi
     #define SHADER_FLAG_ENV_MAP_MIX         (uint64)0x200
     #define SHADER_FLAG_ENV_MAP_REFRACT     (uint64)0x400
     #define SHADER_FLAG_SKINNED             (uint64)0x800
-    #define SHADER_FLAG_SHADOW_DISABLED     (uint64)0x1000     //shadow levels
-    #define SHADER_FLAG_SHADOW_LOW          (uint64)0x2000
-    #define SHADER_FLAG_SHADOW_MEDIUM       (uint64)0x4000
-    #define SHADER_FLAG_SHADOW_HIGH         (uint64)0x8000
-    #define SHADER_FLAG_ALPHA_TEST          (uint64)0x10000
-    #define SHADER_FLAG_USE_NORMALMAP       (uint64)0x20000
+    #define SHADER_FLAG_SHADOW_CASTER       (uint64)0x1000     //shadow levels
+    #define SHADER_FLAG_SHADOW_RECEIVER     (uint64)0x2000
+    #define SHADER_FLAG_ALPHA_TEST          (uint64)0x4000
+    #define SHADER_FLAG_USE_NORMALMAP       (uint64)0x8000
 
     ////////////////////////////////////////////////////////////////////////////////
 

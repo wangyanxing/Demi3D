@@ -97,6 +97,13 @@ namespace Demi
         mShaderEnv->eyeDirection = cam->GetDirection();
         mShaderEnv->farnearPlane = DiVec4(cam->GetFarClipDistance(),cam->GetNearClipDistance(),0,0);
         mShaderEnv->viewProjMatrix = mShaderEnv->projMatrix * mShaderEnv->viewMatrix;
+        
+        auto& visbounds = cam->GetVisBoundsInfo();
+        float depthRange = visbounds.maxDistanceInFrustum - visbounds.minDistanceInFrustum;
+        mShaderEnv->depthRange = DiVec4(visbounds.minDistanceInFrustum,
+                                        visbounds.maxDistanceInFrustum,
+                                        depthRange,
+                                        1.0f / depthRange);
     }
 
     void DiRenderPipeline::SetGlobalParams(DiSceneManager*sm, DiCamera* cam)
@@ -234,13 +241,12 @@ namespace Demi
             material = DiRenderWindow::ActiveWindow->GetGBuffer()->GetMaterial().get();
         else if (mCurrentPass == P_SHADOW_PASS && batch->mMaterial)
         {
-            if(batch->mMaterial->GetShaderFlags() & SHADER_FLAG_SKINNED)
-                material = DiMaterial::GetAnimatedShadowCasterMaterial().get();
-            else
-                material = DiMaterial::GetStaticShadowCasterMaterial().get();
+            material = DiMaterial::GetShadowCasterMaterial(batch->mMaterial->GetShaderFlags()).get();
         }
         else
+        {
             material = batch->mMaterial.get();
+        }
 
         if (!material)
             return false;
@@ -335,5 +341,4 @@ namespace Demi
         }
         return ret;
     }
-
 }

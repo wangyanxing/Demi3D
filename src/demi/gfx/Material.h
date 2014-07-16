@@ -67,7 +67,7 @@ namespace Demi
         DiShaderProgram*            GetVertexShader(){return mVertexShader;}
 
         DiShaderProgram*            GetPixelShader(){return mPixelShader;}
-
+        
         bool                        Load(DiDataStreamPtr data);
 
         bool                        Load();
@@ -143,10 +143,8 @@ namespace Demi
         /** This static property is needed for assets creating method
          */
         static DiString             TYPE;
-
-        static DiMaterialPtr        GetStaticShadowCasterMaterial();
-
-        static DiMaterialPtr        GetAnimatedShadowCasterMaterial();
+        
+        static DiMaterialPtr        GetShadowCasterMaterial(uint64 shaderflag);
 
     protected:
 
@@ -163,12 +161,16 @@ namespace Demi
         DiInstanceType              mInstanceState;
 
         DiBlendMode                 mBlendMode;
+        
+        DiString                    mVSName;
+        
+        DiString                    mPSName;
+        
+        DiShaderParameter*          mShaderParameter{ nullptr };
 
-        DiShaderParameter*          mShaderParameter;
-
-        DiShaderProgram*            mVertexShader;
-
-        DiShaderProgram*            mPixelShader;
+        DiShaderProgram*            mVertexShader{ nullptr };
+        
+        DiShaderProgram*            mPixelShader{ nullptr };
 
         float                       mOpacity;
 
@@ -181,8 +183,9 @@ namespace Demi
         DiColor                     mSpecular;
 
         uint64                      mShaderFlag;
+        
+        static DiMap<uint64, DiMaterialPtr> sShadowCasterMats;
     };
-
 }
 
 #endif

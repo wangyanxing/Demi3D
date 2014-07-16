@@ -18,6 +18,48 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi 
 {
+    DiVisBoundsInfo::DiVisBoundsInfo()
+    {
+        Reset();
+    }
+    
+    void DiVisBoundsInfo::Reset()
+    {
+        aabb.SetNull();
+        receiverAabb.SetNull();
+        minDistance = minDistanceInFrustum = std::numeric_limits<float>::infinity();
+        maxDistance = maxDistanceInFrustum = 0;
+    }
+    
+    void DiVisBoundsInfo::Merge(const DiAABB& boxBounds, const DiCamera* cam, bool receiver)
+    {
+        if(boxBounds.IsInfinite())
+            return;
+        
+        aabb.Merge(boxBounds);
+        if (receiver)
+            receiverAabb.Merge(boxBounds);
+        
+        // use view matrix to determine distance, works with custom view matrices
+        DiVec3 vsSpherePos = cam->GetViewMatrix(true) * boxBounds.GetCenter();
+        float camDistToCenter = vsSpherePos.length();
+        minDistance = std::min(minDistance, std::max((float)0, camDistToCenter - boxBounds.GetRadius()));
+        maxDistance = std::max(maxDistance, camDistToCenter + boxBounds.GetRadius());
+        minDistanceInFrustum = std::min(minDistanceInFrustum, std::max((float)0, camDistToCenter - boxBounds.GetRadius()));
+        maxDistanceInFrustum = std::max(maxDistanceInFrustum, camDistToCenter + boxBounds.GetRadius());
+    }
+    
+    void DiVisBoundsInfo::MergeNonRenderedButInFrustum(const DiAABB& boxBounds, const DiCamera* cam)
+    {
+        if(boxBounds.IsInfinite())
+            return;
+        
+        DiVec3 vsSpherePos = cam->GetViewMatrix(true) * boxBounds.GetCenter();
+        float camDistToCenter = vsSpherePos.length();
+        minDistanceInFrustum = std::min(minDistanceInFrustum, std::max((float)0, camDistToCenter - boxBounds.GetRadius()));
+        maxDistanceInFrustum = std::max(maxDistanceInFrustum, camDistToCenter + boxBounds.GetRadius());
+    }
+    
     DiCamera::DiCamera( const DiString& name,DiSceneManager* sm)
         : DiFrustum(name),
         mOrientation(DiQuat::IDENTITY),

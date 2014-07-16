@@ -20,6 +20,7 @@ namespace Demi
         : mQueryFlags(sDefaultQueryFlags)
         , mVisibilityFlags(sDefaultVisibilityFlags)
         , mShadowCastEnable(false)
+        , mShadowReceiveEnable(true)
         , mGroupType(BATCH_MODEL)
     {
         mParentNode = NULL;

@@ -42,15 +42,9 @@ namespace Demi
 
         void            SetupShadowCamera(DiSceneManager* sceneManager);
 
-        void            GetShadowCameraForCascade(const DiCamera *cam, DiCamera *texCam,
-                            uint16 iteration, float nearSplit, float farSplit);
-
-    protected:
-
-        void            SetupShadowCameraImpl(DiSceneManager* sceneManager, DiCamera* shadowCamera,
-                                             float nearSplit, float farSplit);
-
-        void            QuantizeShadowCamera(DiCamera* shadowCamera, const DiRect& shadowViewport, const DiAABB& viewBox);
+        virtual DiVec3  GetDerivedDirection() const override;
+        
+        virtual DiVec3  GetDerivedPosition() const override;
 
     protected:
 

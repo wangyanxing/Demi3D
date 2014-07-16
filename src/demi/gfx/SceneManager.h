@@ -58,7 +58,7 @@ namespace Demi
         
         /** Setup shadow cameras
          */
-        void SetupShaodwCamera(DiSceneManager *sceneManager)
+        void SetupShadowCamera(DiSceneManager *sceneManager)
         {
             for(auto i = dirLights.begin(); i != dirLights.end(); ++i)
                 (*i)->SetupShadowCamera(sceneManager);
@@ -231,7 +231,31 @@ namespace Demi
         const DiAABB&           GetBoundingBox() const { return mBox; }
         
         DiSceneCuller*          GetSceneCuller() const { return mCuller; }
+        
+        virtual void            SetShadowFarDistance(float distance)
+        {
+            mDefaultShadowFarDist = distance;
+            mDefaultShadowFarDist = distance * distance;
+        }
 
+        virtual float           GetShadowFarDistance(void) const
+        { return mDefaultShadowFarDist; }
+        
+        virtual float           GetShadowFarDistanceSquared(void) const
+        { return mDefaultShadowFarDistSquared; }
+        
+        virtual void            SetShadowDirLightExtrusionDistance(float dist)
+        { mShadowDirLightExtrudeDist = dist; }
+
+        virtual float           GetShadowDirLightExtrusionDistance(void) const
+        { return mShadowDirLightExtrudeDist; }
+        
+        virtual void            SetShadowDirLightTextureOffset(float offset) { mShadowTextureOffset = offset;}
+
+		virtual float           GetShadowDirLightTextureOffset(void)  const { return mShadowTextureOffset; }
+
+        DiShadowCameraPolicy*   GetShadowPolicy(){ return mShadowPolicy; }
+        
     protected:
 
         void                    UpdateDirtyInstanceManagers();
@@ -279,6 +303,16 @@ namespace Demi
         
         DiSceneCullerFactory*   mCullerFactory;
 
+        float                   mDefaultShadowFarDist;
+        
+        float                   mDefaultShadowFarDistSquared;
+        
+        float                   mShadowTextureOffset;
+        
+        float                   mShadowDirLightExtrudeDist{ 10000 };
+        
+        DiShadowCameraPolicy*   mShadowPolicy{ nullptr };
+        
     public:
 
         static int              intersect_call;

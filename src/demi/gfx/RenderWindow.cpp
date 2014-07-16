@@ -23,6 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Window.h"
 #include "Command.h"
 #include "ConsoleVariable.h"
+#include "ShadowPolicy.h"
 
 //#define DISABLE_POST
 
@@ -103,21 +104,38 @@ namespace Demi
         // Shadow mapping pass
         rp->SetCurrentPass(DiRenderPipeline::P_SHADOW_PASS);
         auto& visLights = mSceneManager->GetVisibleLights();
-        visLights.SetupShaodwCamera(mSceneManager);
+        //visLights.SetupShadowCamera(mSceneManager);
+        
         for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
         {
             DiLight* light = *i;
             if (light->GetShadowCastEnable())
             {
-                light->ApplyGeneralShaderConfigs();
-                for (int cascadeId = 0; cascadeId < MAX_CASCADE_SPLITS; ++cascadeId)
+                for (size_t si = 0; si < light->GetNumShadowTextures(); ++si)
                 {
-                    DiCamera* cam = light->mShadowCameras[cascadeId];
+                    auto sdtex = light->GetShadowTexture(si);
+                    DiCamera* cam = light->GetShadowCamera(si);
+                    auto sdrt = sdtex->GetRenderTarget();
+                    
+                    mSceneManager->GetShadowPolicy()->getShadowCamera(mSceneManager,
+                                                      mainCam, &sdrt->GetViewport(),
+                                                      light, cam, si);
+                    
+                    static const DiMat4 PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE(
+                                            0.5,    0,    0,  0.5,
+                                            0,   -0.5,    0,  0.5,
+                                            0,      0,    1,    0,
+                                            0,      0,    0,    1);
+                    
+                    rp->GetShaderEnvironment()->texViewProjMatrix =
+                        PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE *
+                        cam->GetProjectionMatrix() * cam->GetViewMatrix();
+                    
                     rp->ClearGroup();
                     mSceneManager->SetCurrentPass(SHADOW_PASS);
                     mSceneManager->Cull(cam);
                     mSceneManager->GetVisibleObjects().AddToBatch(rp);
-                    rp->Render(mSceneManager, cam, light->mShadowTextures[cascadeId]->GetRenderTarget());
+                    rp->Render(mSceneManager, cam, sdrt);
                 }
             }
         }

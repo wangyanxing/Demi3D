@@ -124,18 +124,8 @@ namespace Demi
         DiColor       groundColor;
         DiVec3        skyLightDir;
 
-        // x: shadow fade dist, y: shadow max dist
-        // z: shadow map size,  w: 1/shadow map size
-        int           numShadowCascades;
-        DiVec4        shadowMapParams;
-        DiTexturePtr  shadowTexture[MAX_CASCADE_SPLITS];
-
-        DiMat4        firstCascadeTexMat;
-        DiVec4        texMatrixScaleBias[MAX_CASCADE_SPLITS-1];
-        DiVec4        fixedDepthBias;
-        DiVec4        gradientScaleBias;
-        DiVec4        csmSplitPoints[MAX_CASCADE_SPLITS];
-        DiMat4        lightViewProj;
+        DiVec4        depthRange;
+        DiMat4        texViewProjMatrix; // assume we only have one simultaneous shadow light
 
         void          SetIdentity();
     };

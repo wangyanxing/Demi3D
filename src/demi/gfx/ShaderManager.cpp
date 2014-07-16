@@ -41,10 +41,8 @@ namespace Demi
         mCommonFlag["ENV_MAP_MIX"]      = SHADER_FLAG_ENV_MAP_MIX;
         mCommonFlag["ENV_MAP_REFRACT"]  = SHADER_FLAG_ENV_MAP_REFRACT;
         mCommonFlag["SKINNED"]          = SHADER_FLAG_SKINNED;
-        mCommonFlag["SHADOW_DISABLED"]  = SHADER_FLAG_SHADOW_DISABLED;
-        mCommonFlag["SHADOW_LOW"]       = SHADER_FLAG_SHADOW_LOW;
-        mCommonFlag["SHADOW_MEDIUM"]    = SHADER_FLAG_SHADOW_MEDIUM;
-        mCommonFlag["SHADOW_HIGH"]      = SHADER_FLAG_SHADOW_HIGH;
+        mCommonFlag["SHADOW_RECEIVER"]  = SHADER_FLAG_SHADOW_RECEIVER;
+        mCommonFlag["SHADOW_CASTER"]    = SHADER_FLAG_SHADOW_CASTER;
         mCommonFlag["ALPHA_TEST"]       = SHADER_FLAG_ALPHA_TEST;
         mCommonFlag["USE_NORMALMAP"]    = SHADER_FLAG_USE_NORMALMAP;
     }

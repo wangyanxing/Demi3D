@@ -19,7 +19,6 @@ uniform mat4    g_projMatrix;
 uniform mat4    g_modelViewMatrix;
 uniform mat4    g_modelViewProjMatrix;
 uniform mat4    g_viewProjMatrix;
-uniform mat4    g_texViewProjMatrix;
 
 #ifdef DI_GLES2
 uniform vec4    g_boneMatrices[MAX_BONES * 3];
@@ -60,6 +59,10 @@ uniform int     g_hasSkyLight;
 uniform vec4    g_skyLightColor;
 uniform vec4    g_groundColor;
 uniform vec3    g_skyLightDir;
+
+uniform vec4    g_depthRange;
+uniform mat4    g_texViewProjMatrix;
+uniform sampler2D g_shadowMap;
 
 // global functions
 float linstep(float min, float max, float v)
