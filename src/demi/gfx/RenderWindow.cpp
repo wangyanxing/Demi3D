@@ -106,9 +106,10 @@ namespace Demi
         auto& visLights = mSceneManager->GetVisibleLights();
         //visLights.SetupShadowCamera(mSceneManager);
         
-        for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
+        //for (auto i = visLights.dirLights.begin(); i != visLights.dirLights.end(); ++i)
+        if(visLights.spotLight)
         {
-            DiLight* light = *i;
+            DiLight* light = visLights.spotLight;//*i;
             if (light->GetShadowCastEnable())
             {
                 for (size_t si = 0; si < light->GetNumShadowTextures(); ++si)

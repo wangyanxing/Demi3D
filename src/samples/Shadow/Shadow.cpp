@@ -14,9 +14,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "Demi.h"
 #include "DemoFrame.h"
 #include "DebugHelper.h"
+#include "SpotLight.h"
 
 DiDebugHelper* hp;
-DiDirLight* lt;
+DiLight* lt;
 void InitScene()
 {
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
@@ -29,8 +30,14 @@ void InitScene()
     dirNode->AttachObject(dirlight);
     dirlight->SetColor(DiColor(0.8f,0.8f,0.8f));
     dirlight->SetDirection(DiVec3(0.3f,-0.7f,0.4).normalisedCopy());
-    dirlight->InitForShadowCasting(sm, ShadowTextureConfig(1024,1024,PF_A32B32G32R32F));
-    dirNode->SetPosition(DiVec3(0, 200, 0));
+    //dirlight->InitForShadowCasting(sm, ShadowTextureConfig(1024,1024,PF_A32B32G32R32F));
+    dirNode->SetPosition(DiVec3(-300, 1000, 100));
+    
+    DiSpotLightPtr sptLt = make_shared<DiSpotLight>();
+    dirNode->AttachObject(sptLt);
+    sptLt->SetDirection(DiVec3(0.3f,-0.7f,0.4).normalisedCopy());
+    sptLt->SetRange( DiDegree(80), DiDegree(90) );
+    sptLt->InitForShadowCasting(sm, ShadowTextureConfig(1024,1024,PF_A32B32G32R32F));
     
     DiDebugHelperPtr dbghelper;
     auto mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SHADOW_RECEIVER);
@@ -45,7 +52,7 @@ void InitScene()
     //dbghelper->AddFrustum(dirlight->GetShadowCamera(0), DiColor::Red);
 
     hp = dbghelper.get();
-    lt = dirlight.get();
+    lt = sptLt.get();
 
 #if 1
     DiSimpleShapePtr plane = make_shared<DiSimpleShape>();
@@ -62,7 +69,7 @@ void InitScene()
     {
         for (int j = -size; j <= size; j++)
         {
-            DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SKINNED);
+            DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SKINNED|SHADER_FLAG_SHADOW_RECEIVER);
             mat->SetDiffuse(DiColor(1, 1, 1));
             mat->SetAmbient(DiColor(0.7f, 0.7f, 0.7f));
             

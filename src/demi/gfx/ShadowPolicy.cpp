@@ -18,6 +18,7 @@
 #include "Light.h"
 #include "Math/plane.h"
 #include "RenderTarget.h"
+#include "SpotLight.h"
 
 namespace Demi
 {
@@ -104,6 +105,40 @@ namespace Demi
 				out_cam->SetNearClipDistance(shadowOffset);
 			}
 		}
+        else if (light.GetType() == LIGHT_SPOT)
+        {
+            const DiSpotLight* spot = static_cast<const DiSpotLight*>(&light);
+            // generate view matrix if requested
+			if (out_view != NULL)
+			{
+				*out_view = buildViewMatrix(light.GetDerivedPosition(),
+                                            light.GetDerivedDirection(),
+                                            cam.GetDerivedUp());
+			}
+            
+			// generate projection matrix if requested
+			if (out_proj != NULL)
+			{
+				// set FOV slightly larger than spotlight range
+				mTempFrustum->SetFOVy(DiMath::Clamp<DiRadian>(spot->GetOuterAngle() * 1.2, DiRadian(0), DiRadian(DiMath::PI/2.0f)));
+                
+				mTempFrustum->SetNearClipDistance(light.DeriveShadowNearClipDistance(&cam));
+				mTempFrustum->SetFarClipDistance(light.DeriveShadowFarClipDistance(&cam));
+                
+				*out_proj = mTempFrustum->GetProjectionMatrix();
+			}
+            
+			// set up camera if requested
+			if (out_cam != NULL)
+			{
+				out_cam->SetProjectionType(PT_PERSPECTIVE);
+				out_cam->SetDirection(light.GetDerivedDirection());
+				out_cam->SetPosition(light.GetDerivedPosition());
+				out_cam->SetFOVy(DiMath::Clamp<DiRadian>(spot->GetOuterAngle() * 1.2, DiRadian(0), DiRadian(DiMath::PI/2.0f)));
+				out_cam->SetNearClipDistance(light.DeriveShadowNearClipDistance(&cam));
+				out_cam->SetFarClipDistance(light.DeriveShadowFarClipDistance(&cam));
+			}
+        }
 #if 0
 		else if (light.GetType() == LIGHT_POINT)
 		{
@@ -678,6 +713,26 @@ namespace Demi
             pos = q * lightSpacePos;
 			
 		}
+        else if (light->GetType() == LIGHT_SPOT)
+        {
+            const DiSpotLight* spot = static_cast<const DiSpotLight*>(light);
+            
+            // Set perspective projection
+			texCam->SetProjectionType(PT_PERSPECTIVE);
+			// set FOV slightly larger than the spotlight range to ensure coverage
+			DiRadian fovy = spot->GetOuterAngle() * 1.2;
+			// limit angle
+			if (fovy.valueDegrees() > 175)
+				fovy = DiDegree(175);
+			texCam->SetFOVy(fovy);
+            
+			// Calculate position, which same as spotlight position
+			pos = light->GetDerivedPosition();
+            
+			// Calculate direction, which same as spotlight direction
+			dir = - light->GetDerivedDirection(); // backwards since point down -z
+			dir.normalise();
+        }
 		else
         {
             DI_ASSERT_FAIL;

@@ -12,50 +12,35 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
 #include "GfxPch.h"
-#include "DirectionalLight.h"
+#include "SpotLight.h"
 #include "GpuProgram.h"
-#include "Camera.h"
 #include "SceneManager.h"
 #include "CullNode.h"
-#include "RenderWindow.h"
 
 namespace Demi 
 {
-    DiDirLight::DiDirLight()
-        :DiLight(LIGHT_DIRECTIONAL),
-        mDirection(DiVec3::UNIT_Z)
+    DiSpotLight::DiSpotLight()
+        :DiLight(LIGHT_SPOT)
     {
     }
 
-    DiDirLight::~DiDirLight(void)
+    DiSpotLight::~DiSpotLight(void)
     {
     }
 
-    const DiAABB& DiDirLight::GetBoundingBox( void ) const
+    const DiAABB& DiSpotLight::GetBoundingBox(void) const
     {
         return DiAABB::BOX_INFINITE;
     }
 
-    void DiDirLight::Update(DiCamera* camera)
+    void DiSpotLight::Update(DiCamera* camera)
     {
         DiSceneManager* sm = camera->GetSceneManager();
         if (sm->GetCurrentPass() == GEOMETRY_PASS)
-            sm->GetVisibleLights().dirLights.push_back(this);
-    }
-
-    void CreateFrustumPointsFromCascadeInterval(float fCascadeIntervalBegin,
-        float fCascadeIntervalEnd,
-        DiMat4& vProjection,
-        DiVec3* pvCornerPointsWorld)
-    {
-    }
-
-    void DiDirLight::SetupShadowCamera(DiSceneManager* sceneManager)
-    {
-        
+            sm->GetVisibleLights().spotLight = this;
     }
     
-    DiVec3 DiDirLight::GetDerivedDirection() const
+    DiVec3 DiSpotLight::GetDerivedDirection() const
     {
         if(mParentNode)
         {
@@ -67,7 +52,7 @@ namespace Demi
         }
     }
     
-    DiVec3 DiDirLight::GetDerivedPosition() const
+    DiVec3 DiSpotLight::GetDerivedPosition() const
     {
         if(mParentNode)
         {
@@ -78,4 +63,5 @@ namespace Demi
             return DiVec3::ZERO;
         }
     }
+
 }

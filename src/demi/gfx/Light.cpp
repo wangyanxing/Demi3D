@@ -87,7 +87,10 @@ namespace Demi
 			return mShadowFarClipDist;
 		else
 		{
-            return 0;
+            if (mType == LIGHT_DIRECTIONAL)
+				return 0;
+			else
+				return 500;
 		}
 	}
 }

@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SkyLight.h"
+#include "SpotLight.h"
 #include "Scene.h"
 #include "Octree.h"
 
@@ -44,7 +45,8 @@ namespace Demi
     {
         DiVector<DiDirLight*>   dirLights;
         DiVector<DiPointLight*> pointLights;
-        DiSkyLight*             skyLight;
+        DiSkyLight*             skyLight{ nullptr };
+        DiSpotLight*            spotLight{ nullptr };
 
         /** Clear all visible lights
             Called before the culling per frame
@@ -54,6 +56,7 @@ namespace Demi
             dirLights.clear();
             pointLights.clear();
             skyLight = nullptr;
+            spotLight = nullptr;
         }
         
         /** Setup shadow cameras
@@ -68,6 +71,9 @@ namespace Demi
             
             if(skyLight)
                 skyLight->SetupShadowCamera(sceneManager);
+            
+            if(spotLight)
+                spotLight->SetupShadowCamera(sceneManager);
         }
     };
 

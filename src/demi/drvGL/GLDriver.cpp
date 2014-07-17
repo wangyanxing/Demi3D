@@ -26,6 +26,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "RenderWindow.h"
 #include "RenderUnit.h"
+#include "RenderPipeline.h"
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #   include "Win32/Win32Window.h"
@@ -296,6 +297,10 @@ namespace Demi
         // culling
         bool flip = ((mNeedTextureFlipping && !mInvertVertexWinding) ||
                      (!mNeedTextureFlipping && mInvertVertexWinding));
+        
+        if(GetPipeline()->GetCurrentPass() == DiRenderPipeline::P_SHADOW_PASS)
+            flip = !flip;
+        
         if (mat->GetCullMode() == CULL_NONE)
             glDisable(GL_CULL_FACE);
         else

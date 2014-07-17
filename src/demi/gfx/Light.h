@@ -38,6 +38,8 @@ namespace Demi
         /// Hemisphere light
         LIGHT_SKY,
         
+        LIGHT_SPOT,
+        
         MAX_LIGHT_TYPES
     };
     

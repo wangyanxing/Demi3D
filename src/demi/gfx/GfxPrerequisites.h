@@ -132,6 +132,7 @@ namespace Demi
     class    DiTransAxes;
     class    DiShadowCameraPolicy;
     class    DiConvexBody;
+    class    DiSpotLight;
     
     class BoneMemoryManager;
     class BoneArrayMemoryManager;
@@ -161,10 +162,11 @@ namespace Demi
     typedef shared_ptr<DiScene>             DiScenePtr;
     typedef shared_ptr<DiSimpleShape>       DiSimpleShapePtr;
     typedef shared_ptr<DiSkyLight>          DiSkyLightPtr;
+    typedef shared_ptr<DiSpotLight>         DiSpotLightPtr;
     typedef shared_ptr<DiTexture>           DiTexturePtr;
     typedef shared_ptr<DiTransformUnit>     DiTransUnitPtr;
     typedef shared_ptr<DiBillboardSet>      DiBillboardSetPtr;
-    typedef shared_ptr<DiTransAxes>    DiTransAxesPtr;
+    typedef shared_ptr<DiTransAxes>         DiTransAxesPtr;
 }
 
 #include "GfxBase.h"
