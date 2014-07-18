@@ -128,9 +128,16 @@ namespace Demi
                                             0,      0,    1,    0,
                                             0,      0,    0,    1);
                     
+#if 1
                     rp->GetShaderEnvironment()->texViewProjMatrix =
                         PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE *
                         cam->GetProjectionMatrix() * cam->GetViewMatrix();
+#else
+                    DiMat4 mat;
+                    mat.makeTransform(cam->GetDerivedPosition(), DiVec3::UNIT_SCALE, cam->GetDerivedOrientation());
+                    rp->GetShaderEnvironment()->texViewProjMatrix = PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE *
+                    cam->GetProjectionMatrix()* mat.inverse();
+#endif
                     
                     rp->ClearGroup();
                     mSceneManager->SetCurrentPass(SHADOW_PASS);

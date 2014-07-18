@@ -23,6 +23,10 @@ attribute vec2  Texcoord1;
 varying vec2 vTexCoord1;
 #endif
 
+#if defined( SHADOW_RECEIVER )
+varying vec4 vLightSpacePos;
+#endif
+
 void main()
 {
 	GET_SPACE_POS(objPos);
@@ -39,5 +43,11 @@ void main()
 
 #if defined( USE_LIGHTMAP ) 
 	vTexCoord1.xy = Texcoord1;
+#endif
+
+#if defined( SHADOW_RECEIVER )
+    vec4 worldPos = g_modelMatrix * objPos;
+    vLightSpacePos = g_texViewProjMatrix * worldPos;
+    //vLightSpacePos.z = (vLightSpacePos.z - g_depthRange.x) * g_depthRange.w;
 #endif
 }

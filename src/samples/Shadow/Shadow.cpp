@@ -31,13 +31,15 @@ void InitScene()
     dirlight->SetColor(DiColor(0.8f,0.8f,0.8f));
     dirlight->SetDirection(DiVec3(0.3f,-0.7f,0.4).normalisedCopy());
     //dirlight->InitForShadowCasting(sm, ShadowTextureConfig(1024,1024,PF_A32B32G32R32F));
-    dirNode->SetPosition(DiVec3(-300, 1000, 100));
+    
+    auto pos = DiVec3(150,275,130)*2;
+    dirNode->SetPosition(pos);
     
     DiSpotLightPtr sptLt = make_shared<DiSpotLight>();
     dirNode->AttachObject(sptLt);
-    sptLt->SetDirection(DiVec3(0.3f,-0.7f,0.4).normalisedCopy());
+    sptLt->SetDirection((-pos).normalisedCopy());
     sptLt->SetRange( DiDegree(80), DiDegree(90) );
-    sptLt->InitForShadowCasting(sm, ShadowTextureConfig(1024,1024,PF_A32B32G32R32F));
+    sptLt->InitForShadowCasting(sm, ShadowTextureConfig(1024,1024,PF_A16B16G16R16F));
     
     DiDebugHelperPtr dbghelper;
     auto mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SHADOW_RECEIVER);
@@ -54,7 +56,7 @@ void InitScene()
     hp = dbghelper.get();
     lt = sptLt.get();
 
-#if 1
+#if 0
     DiSimpleShapePtr plane = make_shared<DiSimpleShape>();
     plane->SetShadowCastEnable(false);
     plane->CreatePlane(600, 600);
@@ -69,7 +71,7 @@ void InitScene()
     {
         for (int j = -size; j <= size; j++)
         {
-            DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SKINNED|SHADER_FLAG_SHADOW_RECEIVER);
+            DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SHADOW_RECEIVER);
             mat->SetDiffuse(DiColor(1, 1, 1));
             mat->SetAmbient(DiColor(0.7f, 0.7f, 0.7f));
             
@@ -88,6 +90,27 @@ void InitScene()
             cullnode->SetPosition(i * 140.0f, 0, j * 140.0f);
         }
     }
+    
+#else
+    
+    DiSimpleShapePtr plane = make_shared<DiSimpleShape>();
+    plane->SetShadowCastEnable(false);
+    plane->CreatePlane(300, 300);
+    plane->SetMaterial(mat);
+    plane->GetMaterial()->SetDiffuse(DiColor::White);
+    DiCullNode* planeNode = sm->GetRootNode()->CreateChild();
+    planeNode->AttachObject(plane);
+
+    DiMaterialPtr m = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_SHADOW_RECEIVER);
+    m->SetDiffuse(DiColor(0.9f, 0.9f, 0.9f));
+    
+    DiSimpleShapePtr box = make_shared<DiSimpleShape>();
+    box->SetShadowCastEnable(true);
+    box->CreateBox(10);
+    box->SetMaterial(m);
+    DiCullNode* cullnode = sm->GetRootNode()->CreateChild();
+    cullnode->SetPosition(0,5,0);
+    cullnode->AttachObject(box);
 
 #endif
 

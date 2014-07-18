@@ -90,7 +90,7 @@ namespace Demi
             if (mType == LIGHT_DIRECTIONAL)
 				return 0;
 			else
-				return 500;
+				return 10000;
 		}
 	}
 }

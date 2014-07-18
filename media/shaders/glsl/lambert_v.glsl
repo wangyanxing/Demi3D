@@ -49,6 +49,6 @@ void main()
 #if defined( SHADOW_RECEIVER )
     vec4 worldPos = g_modelMatrix * objPos;
     vLightSpacePos = g_texViewProjMatrix * worldPos;
-    vLightSpacePos.z = (vLightSpacePos.z - g_depthRange.x) * g_depthRange.w;
+    //vLightSpacePos.z = (vLightSpacePos.z - g_depthRange.x) * g_depthRange.w;
 #endif
 }

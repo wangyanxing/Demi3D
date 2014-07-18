@@ -1,4 +1,5 @@
 #include "common.h"
+#include "shadows.h"
 
 #if defined( USE_COLOR )
 varying vec4 vColor;
@@ -14,9 +15,21 @@ uniform sampler2D lightMap;
 varying vec2 vTexCoord1;
 #endif
 
+#if defined( SHADOW_RECEIVER )
+varying vec4 vLightSpacePos;
+uniform float invShadowMapSize;
+uniform sampler2D shadowMap;
+#endif
+
 void main()
 {
 	gl_FragColor = vec4( g_diffuseColor, g_opacity );
+
+	float fShadow = 1.0;
+#if defined( SHADOW_RECEIVER )
+	//fShadow = calcDepthShadow( shadowMap, vLightSpacePos, invShadowMapSize );
+	fShadow = calcSimpleShadow( shadowMap, vLightSpacePos );
+#endif
 	
 #ifdef USE_MAP
 	vec4 texelColor = texture2D( map, vTexCoord0.xy );
@@ -37,6 +50,8 @@ void main()
 #ifdef USE_COLOR
 	gl_FragColor = gl_FragColor * vColor;
 #endif	
+
+	gl_FragColor.rgb *= fShadow;
 
 #ifdef GAMMA_OUTPUT
 	gl_FragColor = sqrt( gl_FragColor.xyz );

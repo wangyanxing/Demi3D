@@ -111,9 +111,9 @@ namespace Demi
 
         DiColor                 mColor;
 
-        float                   mShadowNearClipDist{ 0 };
+        float                   mShadowNearClipDist{ -1 };
         
-		float                   mShadowFarClipDist{ 0 };
+		float                   mShadowFarClipDist{ -1 };
 
         DiVector<ShadowTextureConfig> mShadowConfig;
         

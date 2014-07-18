@@ -103,7 +103,8 @@ void main(){
 	vec3 lit = vec3(0.0,0.0,0.0);
     
 #if defined( SHADOW_RECEIVER )
-	fShadow = calcDepthShadow( shadowMap, vLightSpacePos, invShadowMapSize );
+	//fShadow = calcDepthShadow( shadowMap, vLightSpacePos, invShadowMapSize );
+	fShadow = calcSimpleShadow( shadowMap, vLightSpacePos );
 #endif
 	
 	for(int i = 0; i < g_numDirLights; i++){
