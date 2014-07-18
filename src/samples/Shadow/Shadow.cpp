@@ -35,11 +35,19 @@ void InitScene()
     auto pos = DiVec3(150,275,130)*2;
     dirNode->SetPosition(pos);
     
+    DiCullNode* spotNode = sm->GetRootNode()->CreateChild();
     DiSpotLightPtr sptLt = make_shared<DiSpotLight>();
-    dirNode->AttachObject(sptLt);
+    spotNode->AttachObject(sptLt);
+    //spotNode->SetPosition(50, 100, 40);
+    spotNode->SetPosition(pos);
     sptLt->SetDirection((-pos).normalisedCopy());
     sptLt->SetRange( DiDegree(80), DiDegree(90) );
-    sptLt->InitForShadowCasting(sm, ShadowTextureConfig(1024,1024,PF_A16B16G16R16F));
+    sptLt->InitForShadowCasting(sm, ShadowTextureConfig(1024,1024,PF_A32B32G32R32F));
+    
+    sptLt->mShadowCameraNear = 50;
+    sptLt->mShadowCameraFar = 200;
+    sptLt->mShadowCameraFov = 50;
+    sptLt->_UpdateShadowCamera();
     
     DiDebugHelperPtr dbghelper;
     auto mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SHADOW_RECEIVER);
@@ -71,7 +79,7 @@ void InitScene()
     {
         for (int j = -size; j <= size; j++)
         {
-            DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SHADOW_RECEIVER);
+            DiMaterialPtr mat = DiMaterial::QuickCreate("lambert_v", "lambert_p", SHADER_FLAG_SKINNED | SHADER_FLAG_SHADOW_RECEIVER);
             mat->SetDiffuse(DiColor(1, 1, 1));
             mat->SetAmbient(DiColor(0.7f, 0.7f, 0.7f));
             

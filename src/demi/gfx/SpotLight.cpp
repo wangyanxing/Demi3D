@@ -64,4 +64,32 @@ namespace Demi
         }
     }
 
+    void DiSpotLight::_UpdateShadowCamera()
+    {
+        if(mShadowCameras.empty())
+            return;
+        
+        mShadowCameras[0]->SetProjectionType(PT_PERSPECTIVE);
+        mShadowCameras[0]->SetFOVy(DiRadian(DiDegree(mShadowCameraFov)));
+        if(mParentNode)
+        {
+            mShadowCameras[0]->SetPosition(mParentNode->GetDerivedPosition());
+            mShadowCameras[0]->LookAt(DiVec3::ZERO);
+            //mShadowCameras[0]->SetOrientation(mParentNode->GetDerivedOrientation());
+        }
+        mShadowCameras[0]->SetNearClipDistance(mShadowCameraNear);
+        mShadowCameras[0]->SetFarClipDistance(mShadowCameraFar);
+        
+        static const DiMat4 PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE(
+                                                                          0.5,    0,    0,  0.5,
+                                                                          0,   -0.5,    0,  0.5,
+                                                                          0,      0,    1,    0,
+                                                                          0,      0,    0,    1);
+
+        DiMat4 mat;
+        mat.makeTransform(mShadowCameras[0]->GetDerivedPosition(), DiVec3::UNIT_SCALE, mShadowCameras[0]->GetDerivedOrientation());
+       
+        auto mt = PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE *
+        mShadowCameras[0]->GetProjectionMatrix()* mat.inverse();
+    }
 }

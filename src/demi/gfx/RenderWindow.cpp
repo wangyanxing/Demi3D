@@ -118,14 +118,18 @@ namespace Demi
                     DiCamera* cam = light->GetShadowCamera(si);
                     auto sdrt = sdtex->GetRenderTarget();
                     
+#if 1
                     mSceneManager->GetShadowPolicy()->getShadowCamera(mSceneManager,
                                                       mainCam, &sdrt->GetViewport(),
                                                       light, cam, si);
+#else
+                    
+#endif
                     
                     static const DiMat4 PROJECTIONCLIPSPACE2DTOIMAGESPACE_PERSPECTIVE(
                                             0.5,    0,    0,  0.5,
                                             0,   -0.5,    0,  0.5,
-                                            0,      0,    1,    0,
+                                            0,      0,  0.5,  0.5,
                                             0,      0,    0,    1);
                     
 #if 1

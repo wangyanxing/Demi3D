@@ -18,5 +18,6 @@ void main()
 	gl_Position = g_modelViewProjMatrix * objPos;
     
     vDepth.x = (gl_Position.z - g_depthRange.x) * g_depthRange.w;
+    //vDepth.x = gl_Position.z;
 	vDepth.y = g_depthRange.w;
 }

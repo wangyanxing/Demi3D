@@ -1,16 +1,38 @@
 
+//#define UNPACK
+
+#ifdef UNPACK
+float unpackDepth( const in vec4 rgba_depth ) {
+    const vec4 bit_shift = vec4( 1.0 / ( 256.0 * 256.0 * 256.0 ),
+                            1.0 / ( 256.0 * 256.0 ), 1.0 / 256.0, 1.0 );
+    float depth = dot( rgba_depth, bit_shift );
+    return depth;
+}
+#endif
+
 float calcSimpleShadow(sampler2D shadowMap, vec4 shadowMapPos)
 {
 	vec3 uv = shadowMapPos.xyz / shadowMapPos.w;
-	float depth = texture2D(shadowMap, uv.xy).r;
-	if(depth < uv.z - 0.1)
-	{
-		return 0.2;
-	}
-	else
-	{
-		return 1.0;
-	}
+    
+    bvec4 inFrustumVec = bvec4 ( uv.x >= 0.0, uv.x <= 1.0, uv.y >= 0.0, uv.y <= 1.0 );
+    bool inFrustum = all( inFrustumVec );
+    bvec2 frustumTestVec = bvec2( inFrustum, uv.z <= 1.0 );
+    bool frustumTest = all( frustumTestVec );
+    
+    if (frustumTest)
+    {
+#ifdef UNPACK
+        float depth = unpackDepth(texture2D(shadowMap, uv.xy));
+#else
+        float depth = texture2D(shadowMap, uv.xy).r;
+#endif
+        
+        if(depth < uv.z + 0.002)
+            return 0.2;
+        else
+            return 1.0;
+    }
+    return 1.0;
 }
 
 // Simple PCF

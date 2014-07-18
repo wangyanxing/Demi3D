@@ -64,6 +64,8 @@ namespace Demi
         DiVec3              GetDerivedDirection() const;
         
         DiVec3              GetDerivedPosition() const;
+        
+        void                _UpdateShadowCamera();
 
     protected:
 
@@ -76,6 +78,12 @@ namespace Demi
         float               mSpotNearClip{ 0.0f };
         
         DiVec3              mDirection;
+        
+    public:
+        
+        float mShadowCameraNear = 50;
+        float mShadowCameraFar = 5000;
+        float mShadowCameraFov = 50;
     };
 }
 

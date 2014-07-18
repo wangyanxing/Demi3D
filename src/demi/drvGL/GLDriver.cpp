@@ -298,8 +298,12 @@ namespace Demi
         bool flip = ((mNeedTextureFlipping && !mInvertVertexWinding) ||
                      (!mNeedTextureFlipping && mInvertVertexWinding));
         
+#if 1
         if(GetPipeline()->GetCurrentPass() == DiRenderPipeline::P_SHADOW_PASS)
+        {
             flip = !flip;
+        }
+#endif
         
         if (mat->GetCullMode() == CULL_NONE)
             glDisable(GL_CULL_FACE);

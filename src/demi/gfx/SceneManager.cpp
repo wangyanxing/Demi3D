@@ -73,7 +73,7 @@ namespace Demi
         
         mSkybox = DI_NEW DiSkybox(this);
         
-        mShadowPolicy = DI_NEW DiNormalShadowPolicy();
+        mShadowPolicy = DI_NEW DiFocusedShadowPolicy();
     }
 
     DiSceneManager::~DiSceneManager(void)
