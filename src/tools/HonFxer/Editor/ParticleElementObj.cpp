@@ -21,6 +21,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ParticleSystem.h"
 #include "ParticleElement.h"
 #include "EnumProperties.h"
+#include "BillboardRender.h"
 
 namespace Demi
 {
@@ -171,6 +172,27 @@ namespace Demi
         
         g->CreateUI();
 
+        mPropGroups.push_back(g);
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        g = DI_NEW DiPropertyGroup("Billboard Renderer");
+        
+        //BillboardTypeTypeEnum
+        g->AddProperty("Billboard Type"  , DI_NEW DiEnumProperty([&](){
+            auto rd = dynamic_cast<DiBillboardRenderer*>(mParticleElement->GetRenderer());
+            return make_shared<BillboardTypeTypeEnum>(rd ? rd->GetBillboardType() : BBT_POINT);
+            },
+            [&](DiBaseEnumPropPtr& val){
+                auto type = val->getEnum<BillboardTypeTypeEnum,BillboardType>();
+                auto rd = dynamic_cast<DiBillboardRenderer*>(mParticleElement->GetRenderer());
+                if(rd)
+                    rd->SetBillboardType(type);
+            }));
+        
+        
+        g->CreateUI();
+        
         mPropGroups.push_back(g);
         
         ////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -22,4 +22,5 @@ namespace Demi
     std::vector<DiString> ForceApplicationEnum::Strings = {"Average", "Add"};
     std::vector<DiString> IntersectionTypeEnum::Strings = {"Point", "Box"};
     std::vector<DiString> CollisionTypeEnum::Strings = {"None", "Bounce", "Flow"};
+    std::vector<DiString> BillboardTypeTypeEnum::Strings = {"Point", "Oriented Common", "Oriented Self", "Perpendicular Common", "Perpendicular Self", "Oriented Shape"};
 }

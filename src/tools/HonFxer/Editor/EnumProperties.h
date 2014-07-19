@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ColorController.h"
 #include "BaseForceController.h"
 #include "BaseColliderController.h"
+#include "BillboardSet.h"
 
 namespace Demi
 {
@@ -93,6 +94,19 @@ namespace Demi
         }
         static std::vector<DiString> Strings;
     };
+    
+    struct BillboardTypeTypeEnum : _DiBaseEnumProperty{
+        BillboardTypeTypeEnum() = default;
+        BillboardTypeTypeEnum(BillboardType v){enumValue=v;}
+        std::vector<DiString>& GetStrings(){
+            return Strings;
+        }
+        BillboardType get(){
+            return (BillboardType)enumValue;
+        }
+        static std::vector<DiString> Strings;
+    };
+
 }
 
 #endif
