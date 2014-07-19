@@ -95,11 +95,11 @@ namespace Demi
 
         bool                         mSinceStartSystem;
 
-        DiVec2                       mBeginScale{ 0, 0 };
+        DiVec2                       mBeginScale{ 1, 1 };
 
-        DiVec2                       mMedScale{ 0, 0 };
+        DiVec2                       mMedScale{ 1, 1 };
 
-        DiVec2                       mEndScale{ 0, 0 };
+        DiVec2                       mEndScale{ 1, 1 };
     };
 
     //////////////////////////////////////////////////////////////////////////

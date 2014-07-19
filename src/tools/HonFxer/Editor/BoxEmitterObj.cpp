@@ -33,4 +33,25 @@ namespace Demi
     {
         return static_cast<DiBoxEmitter*>(mEmitter);
     }
+    
+    void DiBoxEmitterObj::InitPropertyTable()
+    {
+        DiEmitterBaseObj::InitPropertyTable();
+        
+        DiPropertyGroup* g = DI_NEW DiPropertyGroup("Box Emitter");
+        
+        g->AddProperty("Box Width" , DI_NEW DiFloatProperty( [&]{ return GetBoxEmitter()->GetWidth(); },
+                                                             [&](float& val){ GetBoxEmitter()->SetWidth(val); }));
+        
+        g->AddProperty("Box Height", DI_NEW DiFloatProperty( [&]{ return GetBoxEmitter()->GetHeight(); },
+                                                            [&](float& val){ GetBoxEmitter()->SetHeight(val); }));
+        
+        g->AddProperty("Box Depth" , DI_NEW DiFloatProperty( [&]{ return GetBoxEmitter()->GetDepth(); },
+                                                            [&](float& val){ GetBoxEmitter()->SetDepth(val); }));
+        
+        g->CreateUI();
+        
+        mPropGroups.push_back(g);
+
+    }
 }

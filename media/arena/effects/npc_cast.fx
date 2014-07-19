@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<Effects
+>
+	<ParticleSystem
+		name="ParticleSystem_0"
+	>
+		<Element
+			name="Element_0"
+		>
+			<Material
+			>
+				<shader
+					name="vertex"
+				>fx_v</shader>
+				<shader
+					name="pixel"
+				>fx_p</shader>
+				<depthWrite
+				>false</depthWrite>
+				<blendMode
+				>ADD</blendMode>
+				<ambient
+				>0 0 0 1</ambient>
+				<shininess
+				>16</shininess>
+				<variables
+				>
+					<sampler2D
+					>
+						<texture
+							name="map"
+							manualLoader="true"
+						>00000000/shared/effects/textures/star_bolt_01</texture>
+					</sampler2D>
+				</variables>
+			</Material>
+			<Renderer
+				type="Billboard"
+			 />
+			<Emitter
+				type="Box"
+				name="Box_1"
+				emissionRate="fixed|40"
+				angle="random|0,360"
+				totalTimeToLive="fixed|0.7"
+				velocity="fixed|5"
+				allDimensions="fixed|10"
+				boxWidth="6"
+				boxHeight="6"
+				boxDepth="6"
+			 />
+			<Controller
+				type="Scale"
+				name="Scale_0"
+				medScale="0.8 0"
+				endScale="0.1 0.1"
+			 />
+			<Controller
+				type="Color"
+				name="Color_1"
+				times="0,0.365217,1"
+				colors="0.137889 0.79259 0.842105 1,0.145583 0.71158 0.754386 1,0 0 0 1"
+			 />
+		</Element>
+		<Element
+			name="Element_1"
+			position="-20.3389 0 0.137052"
+			keepLocal="true"
+			visualParticleQuota="1000"
+		>
+			<Material
+			>
+				<shader
+					name="vertex"
+				>fx_v</shader>
+				<shader
+					name="pixel"
+				>fx_p</shader>
+				<depthWrite
+				>false</depthWrite>
+				<blendMode
+				>ADD</blendMode>
+				<ambient
+				>0 0 0 1</ambient>
+				<shininess
+				>16</shininess>
+				<variables
+				>
+					<sampler2D
+					>
+						<texture
+							name="map"
+							manualLoader="true"
+						>00000000/shared/effects/textures/arrow_head</texture>
+					</sampler2D>
+				</variables>
+			</Material>
+			<Renderer
+				type="Billboard"
+			 />
+			<Emitter
+				type="Point"
+				name="Point_0"
+				emissionRate="fixed|1"
+				angle="fixed|0"
+				totalTimeToLive="fixed|1"
+				velocity="fixed|0"
+				width="fixed|44"
+				height="fixed|8"
+				color="0.431373 0.784314 0.898039 1"
+			 />
+		</Element>
+	</ParticleSystem>
+</Effects>

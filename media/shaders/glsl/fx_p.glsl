@@ -1,19 +1,20 @@
-#include "common.h"
-
 varying vec4 vColor;
 uniform sampler2D map;
 varying vec2 vTexCoord0;
 
+uniform vec3 g_diffuseColor;
+uniform float g_opacity;
+
 void main()
 {
-	gl_FragColor = vec4( g_diffuseColor, g_opacity );
+	vec4 final = vec4( g_diffuseColor, g_opacity );
 	
 	vec4 texelColor = texture2D( map, vTexCoord0.xy );
-	gl_FragColor = gl_FragColor * texelColor;
+	final = final * texelColor;
 
 #ifdef ALPHATEST
-	if ( gl_FragColor.a < ALPHATEST ) discard;
+	if ( final.a < ALPHATEST ) discard;
 #endif
 	
-	gl_FragColor = gl_FragColor * vColor;
+	gl_FragColor = final * vColor;
 }

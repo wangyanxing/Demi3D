@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<map>
+  <name>ArenaMap1</name>
+  <path>map1.s2z</path>
+  <spwanpoint>192</spwanpoint>
+  <npcpoint>193</npcpoint>
+  <npcpoint>194</npcpoint>
+  <spwanpoint_e>195</spwanpoint_e>
+  <npcpoint_e>196</npcpoint_e>
+  <npcpoint_e>197</npcpoint_e>
+</map>

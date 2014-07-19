@@ -124,7 +124,7 @@ namespace Demi
 
     DiString DiMaterial::GetVertexShaderName() const
     {
-        return mVertexShader ? mPixelShader->GetShaderFileName() : DiString::BLANK;
+        return mVertexShader ? mVertexShader->GetShaderFileName() : DiString::BLANK;
     }
 
     DiString DiMaterial::GetPixelShaderName() const

@@ -34,6 +34,8 @@ namespace Demi
         virtual DiString     GetEmitterType() override { return "Box"; }
 
         DiBoxEmitter*        GetBoxEmitter();
+        
+        void                 InitPropertyTable() override;
     };
 }
 

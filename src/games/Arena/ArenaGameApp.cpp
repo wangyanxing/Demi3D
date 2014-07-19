@@ -201,7 +201,7 @@ namespace Demi
     void ArGameApp::OpenImpl()
     {
         // iphone 5s's resolution
-        bool ret = Driver->Init(1136,640, "Game", false);
+        bool ret = Driver->Init(640,1136, "Hon Arena", false);
         DI_ASSERT(ret);
 
         mInputMgr = new ArInput();
@@ -230,6 +230,7 @@ namespace Demi
         auto mainScript = DiAssetManager::GetInstance().OpenArchive("arena_main.lua");
         DiScriptManager::Get()->RunBuffer(mainScript);
         
+#if 0
         // test NPC
         auto npc = mGame->GetEntityManager()->CreateNPC(2,"npc_test.xml");
         npc->GetRenderObj()->SetPosition(DiK2Pos(202, 42));
@@ -264,6 +265,7 @@ namespace Demi
                 break;
             }
         });
+#endif
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){
             mGame->Update();

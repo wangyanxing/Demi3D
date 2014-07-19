@@ -22,7 +22,7 @@ namespace Demi
 {
     ArGameCamera::ArGameCamera(DiCamera* camera)
         : mCamera(camera)
-        , mHeight(600)
+        , mHeight(900)
         , mStyle(STYLE_FIXED)
         , mTarget(nullptr)
     {
