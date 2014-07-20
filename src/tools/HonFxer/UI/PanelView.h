@@ -6,7 +6,7 @@
 #ifndef __PANEL_VIEW_H__
 #define __PANEL_VIEW_H__
 
-#include "FxPrerequisites.h"
+#include "K2Prerequisites.h"
 #include "BasePanelView.h"
 #include "PanelViewCell.h"
 #include "PanelGroup.h"

@@ -14,7 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef VortexControllerObject_h__
 #define VortexControllerObject_h__
 
-#include "FxPrerequisites.h"
+#include "K2Prerequisites.h"
 #include "FxerPrerequisites.h"
 #include "BaseEditorObject.h"
 #include "ControllerBaseObj.h"

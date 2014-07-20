@@ -50,7 +50,11 @@ elseif(APPLE)
 endif()
 
 DI_ADD_EXECUTABLE(HonViewer ${SAMPLE_HEADERS} ${SAMPLE_SRCS} ${RESOURCE_FILES})
-include_directories(${OIS_INCLUDE_DIRS} ${DEMI_SOURCE_DIR}/src/demi ${DEMI_SOURCE_DIR}/src/demi/demoFrame ${DEMI_SOURCE_DIR}/src/addons/K2 ${DEMI_SOURCE_DIR}/src/demi/script)
+include_directories(${OIS_INCLUDE_DIRS} ${DEMI_SOURCE_DIR}/src/demi 
+	${DEMI_SOURCE_DIR}/src/demi/demoFrame
+	${DEMI_SOURCE_DIR}/src/addons/K2
+	${DEMI_SOURCE_DIR}/src/addons/K2/Fx 
+	${DEMI_SOURCE_DIR}/src/demi/script)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/MessageBox)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/BaseLayout)

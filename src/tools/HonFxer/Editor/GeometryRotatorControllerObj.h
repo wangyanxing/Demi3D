@@ -14,7 +14,7 @@
 #ifndef GeometryRotatorControllerObject_h__
 #define GeometryRotatorControllerObject_h__
 
-#include "FxPrerequisites.h"
+#include "K2Prerequisites.h"
 #include "FxerPrerequisites.h"
 #include "BaseEditorObject.h"
 #include "ControllerBaseObj.h"

@@ -14,6 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2Pch.h"
 #include "K2Plugin.h"
 #include "K2Configs.h"
+#include "EffectManager.h"
 
 namespace Demi
 {
@@ -28,10 +29,12 @@ namespace Demi
         DI_LOG("K2 Plugin loaded");
 
         DiK2Configs::Init();
+        DI_NEW DiEffectManager();
     }
 
     void DiK2Plugin::Uninstall()
     {
+        DI_DELETE DiEffectManager::GetInstancePtr();
         DiK2Configs::Shutdown();
 
         DI_LOG("K2 Plugin unloaded");

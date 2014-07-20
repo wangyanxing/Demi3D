@@ -14,7 +14,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #ifndef JetControllerObject_h__
 #define JetControllerObject_h__
 
-#include "FxPrerequisites.h"
+#include "K2Prerequisites.h"
 #include "FxerPrerequisites.h"
 #include "BaseEditorObject.h"
 #include "ControllerBaseObj.h"

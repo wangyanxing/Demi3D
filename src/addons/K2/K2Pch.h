@@ -17,4 +17,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "MiscPch.h"
 #include "GfxPch.h"
 
+#include "K2Prerequisites.h"
+
 #endif

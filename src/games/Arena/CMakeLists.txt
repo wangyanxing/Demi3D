@@ -44,7 +44,11 @@ add_filtered_std( "BehaviorTree" )
 # source files
 DI_ADD_EXECUTABLE(Arena ${ARENA_HEADERS} ${ARENA_SRCS})
 
-include_directories(${OIS_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${DEMI_SOURCE_DIR}/src/demi ${DEMI_SOURCE_DIR}/src/demi/demoFrame ${DEMI_SOURCE_DIR}/src/addons/K2 ${DEMI_SOURCE_DIR}/src/demi/script)
+include_directories(${OIS_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${DEMI_SOURCE_DIR}/src/demi 
+	${DEMI_SOURCE_DIR}/src/demi/demoFrame 
+	${DEMI_SOURCE_DIR}/src/addons/K2 
+	${DEMI_SOURCE_DIR}/src/addons/K2/Fx
+	${DEMI_SOURCE_DIR}/src/demi/script)
 
 if (NOT APPLE)
 	set_property(TARGET Arena APPEND PROPERTY DEBUG_POSTFIX "_d")

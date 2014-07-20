@@ -34,6 +34,8 @@ namespace Demi
         virtual DiString     GetEmitterType() override { return "Line"; }
 
         DiLineEmitter*       GetLineEmitter();
+        
+        void                 InitPropertyTable() override;
     };
 }
 
