@@ -322,8 +322,8 @@ namespace Demi
     void DiParticleSystem::RemoveElement(DiParticleElement* element)
     {
         DI_ASSERT(element);
-        ParticleTechniqueIterator it;
-        for (it = mElements.begin(); it != mElements.end(); ++it)
+
+        for (auto it = mElements.begin(); it != mElements.end(); ++it)
         {
             if ((*it) == element)
             {

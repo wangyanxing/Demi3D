@@ -103,11 +103,12 @@
 				name="Point_0"
 				emissionRate="fixed|1"
 				angle="fixed|0"
-				totalTimeToLive="fixed|1"
+				totalTimeToLive="fixed|10000"
 				velocity="fixed|0"
 				width="fixed|44"
 				height="fixed|8"
 				color="0.431373 0.784314 0.898039 1"
+				forceEmission="true"
 			 />
 		</Element>
 	</ParticleSystem>

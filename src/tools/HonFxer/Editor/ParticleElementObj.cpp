@@ -178,7 +178,6 @@ namespace Demi
         
         g = DI_NEW DiPropertyGroup("Billboard Renderer");
         
-        //BillboardTypeTypeEnum
         g->AddProperty("Billboard Type"  , DI_NEW DiEnumProperty([&](){
             auto rd = dynamic_cast<DiBillboardRenderer*>(mParticleElement->GetRenderer());
             return make_shared<BillboardTypeTypeEnum>(rd ? rd->GetBillboardType() : BBT_POINT);
@@ -214,6 +213,9 @@ namespace Demi
         
         g->AddProperty("Wireframe"   , DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->IsWireframe(); },
                                                              [&](bool& val){ mParticleElement->GetMaterial()->SetWireframe(val); }));
+        
+        g->AddProperty("Double Faces", DI_NEW DiBoolProperty([&]{ return mParticleElement->GetMaterial()->GetCullMode() == CULL_NONE; },
+                                                             [&](bool& val){ mParticleElement->GetMaterial()->SetCullMode(val?CULL_NONE:CULL_CW); }));
         
         g->AddProperty("Texture Addressing",DI_NEW DiEnumProperty([&](){
                                                                 DiAddMode ret = AM_WRAP;

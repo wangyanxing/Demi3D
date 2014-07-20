@@ -791,6 +791,17 @@ namespace Demi
                 }
             }
         }
+        
+        if (!mEmitters.empty())
+		{
+			for (auto emitterIt = mEmitters.begin(); emitterIt != mEmitters.end(); ++emitterIt)
+			{
+				if (!(*emitterIt)->IsMarkedForEmission())
+				{
+					(*emitterIt)->NotifyStart();
+				}
+			}
+		}
 
         NotifyStartPooledComponents();
 
