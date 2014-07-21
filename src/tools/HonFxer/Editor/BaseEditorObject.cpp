@@ -100,6 +100,8 @@ namespace Demi
         ret->NotifyTransfromUpdate();
 
         mChildren.push_back(ret);
+        
+        ret->PostCreate();
         return ret;
     }
     
@@ -114,6 +116,8 @@ namespace Demi
         ret->NotifyTransfromUpdate();
         
         mChildren.push_back(ret);
+        
+        ret->PostCreate();
         return ret;
     }
 

@@ -315,6 +315,17 @@ namespace Demi
         }
     }
     
+    void DiK2Skeleton::IterateBoneNames(std::function<void(const DiString&,DiNode*)> func)
+    {
+        if(func)
+        {
+            for (auto& it : mBoneNames)
+            {
+                func(it.first, it.second);
+            }
+        }
+    }
+    
     void DiK2Skeleton::CacheBoneMatrices()
     {
         // yeah we just have one root bone here

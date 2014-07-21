@@ -51,9 +51,13 @@ namespace Demi
         
     protected:
         
+        void                 ChangeRefModel();
+        
         virtual void         InitPropertyTable();
 
     protected:
+        
+        DiString             mAttachedRefModel;
 
         DiParticleSystemPtr  mParticleSystem{ nullptr };
     };

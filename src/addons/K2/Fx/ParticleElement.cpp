@@ -1107,6 +1107,8 @@ namespace Demi
     {
         if (!(mEnabled && emitter->IsEnabled()))
             return;
+        
+        emitter->CalculateBoneAttachPos();
 
         float timePoint = 0.0f;
         float timeInc = timeElapsed / requested;
@@ -1182,6 +1184,12 @@ namespace Demi
             particle->direction *= (mMaxVelocity / particle->direction.length());
 
         particle->position += (particle->direction * mParticleSystemScaleVelocity * timeElapsed);
+        
+        if(particle->parentEmitter)
+        {
+            particle->position += particle->parentEmitter->GetBoneAttachPos();
+            particle->direction = particle->parentEmitter->GetBoneAttachRot() * particle->direction;
+        }
     }
     
     size_t DiParticleElement::GetNumberOfEmittedParticles(void)

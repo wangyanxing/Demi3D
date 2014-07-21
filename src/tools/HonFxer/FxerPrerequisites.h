@@ -33,6 +33,8 @@ namespace Demi
     class DiTransGizmo;
     
     typedef DiProperty<DiTexturePtr, PROPERTY_TEXTURE> DiTextureProperty;
+    
+    class DiDynamicEnumPropertyItem;
 }
 
 namespace tools

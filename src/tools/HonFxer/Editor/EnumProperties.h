@@ -95,9 +95,9 @@ namespace Demi
         static std::vector<DiString> Strings;
     };
     
-    struct BillboardTypeTypeEnum : _DiBaseEnumProperty{
-        BillboardTypeTypeEnum() = default;
-        BillboardTypeTypeEnum(BillboardType v){enumValue=v;}
+    struct BillboardTypeEnum : _DiBaseEnumProperty{
+        BillboardTypeEnum() = default;
+        BillboardTypeEnum(BillboardType v){enumValue=v;}
         std::vector<DiString>& GetStrings(){
             return Strings;
         }
@@ -107,6 +107,37 @@ namespace Demi
         static std::vector<DiString> Strings;
     };
 
+    struct K2ModelBoneNamesEnum : _DiBaseDynEnumProperty{
+        K2ModelBoneNamesEnum() = default;
+        
+        K2ModelBoneNamesEnum(DiParticleEmitter* emitter, const DiString& v = msNoneBone);
+        
+        std::vector<DiString>& GetStrings(){
+            return mStrings;
+        }
+        
+        void RefreshValues();
+        
+        std::vector<DiString> mStrings;
+        DiParticleEmitter* mEmitter{ nullptr };
+        
+        static DiString msNoneBone;
+    };
+ 
+    struct RefModelsNamesEnum : _DiBaseDynEnumProperty{
+        
+        RefModelsNamesEnum(const DiString& v = msNoneName);
+        
+        std::vector<DiString>& GetStrings(){
+            return mStrings;
+        }
+        
+        void RefreshValues();
+        
+        std::vector<DiString> mStrings;
+        
+        static DiString msNoneName;
+    };
 }
 
 #endif

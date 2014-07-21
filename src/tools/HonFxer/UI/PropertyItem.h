@@ -108,6 +108,41 @@ namespace Demi
     
     //////////////////////////////////////////////////////////////////////////
     
+    class DiDynamicEnumPropertyItem : public DiPropertyItem
+    {
+    public:
+        
+        DiDynamicEnumPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type);
+        
+        virtual ~DiDynamicEnumPropertyItem();
+        
+    public:
+        
+        virtual void CreateUI(const DiString& caption) override;
+        
+        virtual void RearrangeUI(int height);
+        
+        void RefreshUI();
+        
+        void RefreshValue();
+        
+        void NotifyDynEnumChanged();
+        
+        void NotifyEnumChanged(MyGUI::ComboBox* _sender, size_t _index);
+        
+        void SetEventName(const DiString& evt);
+        
+    protected:
+        
+        MyGUI::TextBox* mTextBox{ nullptr };
+        
+        MyGUI::ComboBox* mEnumBox{ nullptr };
+        
+        DiString mTriggerEventName;
+    };
+    
+    //////////////////////////////////////////////////////////////////////////
+    
     class DiColorCurvePropertyItem : public DiPropertyItem
     {
     public:

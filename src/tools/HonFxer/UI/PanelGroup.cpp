@@ -54,6 +54,9 @@ namespace Demi
         case Demi::PROPERTY_ENUM:
             item = DI_NEW DiEnumPropertyItem(this, prop, propType);
             break;
+        case Demi::PROPERTY_DYN_ENUMS:
+            item = DI_NEW DiDynamicEnumPropertyItem(this, prop, propType);
+            break;
         case Demi::PROPERTY_VEC2:
         case Demi::PROPERTY_VEC3:
         case Demi::PROPERTY_VEC4:

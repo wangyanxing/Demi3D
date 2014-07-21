@@ -180,10 +180,10 @@ namespace Demi
         
         g->AddProperty("Billboard Type"  , DI_NEW DiEnumProperty([&](){
             auto rd = dynamic_cast<DiBillboardRenderer*>(mParticleElement->GetRenderer());
-            return make_shared<BillboardTypeTypeEnum>(rd ? rd->GetBillboardType() : BBT_POINT);
+            return make_shared<BillboardTypeEnum>(rd ? rd->GetBillboardType() : BBT_POINT);
             },
             [&](DiBaseEnumPropPtr& val){
-                auto type = val->getEnum<BillboardTypeTypeEnum,BillboardType>();
+                auto type = val->getEnum<BillboardTypeEnum,BillboardType>();
                 auto rd = dynamic_cast<DiBillboardRenderer*>(mParticleElement->GetRenderer());
                 if(rd)
                     rd->SetBillboardType(type);

@@ -22,6 +22,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ColorEditor.h"
 #include "EnumProperties.h"
 #include "TextureBrowseControl.h"
+#include "EditorManager.h"
 
 namespace Demi
 {
@@ -227,8 +228,111 @@ namespace Demi
         *prop = enumProp;
     }
     
+    DiDynamicEnumPropertyItem::DiDynamicEnumPropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
+        : DiPropertyItem(group, prop, type)
+    {
+    }
+    
+    DiDynamicEnumPropertyItem::~DiDynamicEnumPropertyItem()
+    {
+        DiEditorManager::Get()->UnregisterDynEnumItem(this, mTriggerEventName);
+    }
+    
+    void DiDynamicEnumPropertyItem::NotifyEnumChanged(MyGUI::ComboBox* _sender, size_t _index)
+    {
+        RefreshValue();
+    }
+    
+    void DiDynamicEnumPropertyItem::CreateUI(const DiString& caption)
+    {
+        auto widgetClient = mParentGroup->GetClientWidget();
+        auto currentHeight = mParentGroup->GetCurrentHeight();
+        auto width_step = mParentGroup->GetWidthStep();
+        auto width = mParentGroup->GetWidth();
+        auto height = mParentGroup->GetHeight();
+        
+        mTextBox = widgetClient->createWidget<MyGUI::TextBox>("TextBox",
+                                                              MyGUI::IntCoord(width_step, currentHeight, width, height),
+                                                              MyGUI::Align::Left | MyGUI::Align::Top);
+        mTextBox->setTextAlign(MyGUI::Align::Right | MyGUI::Align::VCenter);
+        mTextBox->setCaption(caption.c_str());
+        
+        mEnumBox = widgetClient->createWidget<MyGUI::ComboBox>("ComboBox",
+                                                               MyGUI::IntCoord(width_step + width_step + width, currentHeight,
+                                                               widgetClient->getWidth() - (width_step + width_step + width_step + width), height),
+                                                               MyGUI::Align::HStretch | MyGUI::Align::Top);
+        mEnumBox->setComboModeDrop(true);
+        mEnumBox->eventComboAccept += MyGUI::newDelegate(this, &DiDynamicEnumPropertyItem::NotifyEnumChanged);
+        
+        mEnumBox->clearIndexSelected();
+        mEnumBox->removeAllItems();
+        auto prop = dynamic_cast<DiDynEnumProperty*>(mProperty);
+        DiDynEnumPropPtr enumProp = *prop;
+        auto& strs = enumProp->GetStrings();
+        for(auto& s : strs)
+        {
+            mEnumBox->addItem(s.c_str());
+        }
+        
+        SetEventName(enumProp->eventType);
+        
+        RefreshUI();
+    }
+    
+    void DiDynamicEnumPropertyItem::SetEventName(const DiString& evt)
+    {
+        mTriggerEventName = evt;
+        DiEditorManager::Get()->RegisterDynEnumItem(this, mTriggerEventName);
+    }
+    
+    void DiDynamicEnumPropertyItem::RearrangeUI(int height)
+    {
+        auto pos = mTextBox->getPosition();
+        mTextBox->setPosition(pos.left, height);
+        
+        pos = mEnumBox->getPosition();
+        mEnumBox->setPosition(pos.left, height);
+    }
+    
+    void DiDynamicEnumPropertyItem::RefreshUI()
+    {
+        auto prop = dynamic_cast<DiDynEnumProperty*>(mProperty);
+        DiDynEnumPropPtr enumProp = *prop;
+        auto val = enumProp->value;
+        auto index = mEnumBox->findItemIndexWith(val.c_str());
+        if(index != MyGUI::ITEM_NONE)
+        {
+            mEnumBox->setIndexSelected(index);
+        }
+    }
+    
+    void DiDynamicEnumPropertyItem::RefreshValue()
+    {
+        auto prop = dynamic_cast<DiDynEnumProperty*>(mProperty);
+        DiDynEnumPropPtr enumProp = *prop;
+        enumProp->value = mEnumBox->getItemNameAt(mEnumBox->getIndexSelected()).asUTF8_c_str();
+        *prop = enumProp;
+    }
+    
+    void DiDynamicEnumPropertyItem::NotifyDynEnumChanged()
+    {
+        auto prop = dynamic_cast<DiDynEnumProperty*>(mProperty);
+        DiDynEnumPropPtr enumProp = *prop;
+        enumProp->RefreshValues();
+        
+        mEnumBox->clearIndexSelected();
+        mEnumBox->removeAllItems();
+        auto& strs = enumProp->GetStrings();
+        for(auto& s : strs)
+        {
+            mEnumBox->addItem(s.c_str());
+        }
+        
+        RefreshUI();
+    }
+    
     DiColorCurvePropertyItem::DiColorCurvePropertyItem(DiPanelGroup* group, DiPropertyBase* prop, DiPropertyType type)
-    :DiPropertyItem(group, prop, type)
+        : DiPropertyItem(group, prop, type)
     {
     }
     

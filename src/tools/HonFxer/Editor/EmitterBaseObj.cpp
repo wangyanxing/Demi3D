@@ -19,6 +19,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ParticleElementObj.h"
 #include "ParticleElement.h"
 #include "ParticleEmitter.h"
+#include "PropertyItem.h"
+#include "K2Clip.h"
+#include "K2Model.h"
+#include "EnumProperties.h"
 
 namespace Demi
 {
@@ -54,6 +58,11 @@ namespace Demi
     {
         return mEmitter->GetName();
     }
+    
+    DiK2Skeleton* DiEmitterBaseObj::GetAttachedSkeleton()
+    {
+        return mEmitter ? mEmitter->GetAttachedSkeleton() : nullptr;
+    }
 
     void DiEmitterBaseObj::OnCreate()
     {
@@ -75,6 +84,11 @@ namespace Demi
         {
             mEmitter->SetName(DiEditorManager::Get()->GenerateEmitterName(GetEmitterType()));
         }
+    }
+    
+    void DiEmitterBaseObj::ChangeAttachBone()
+    {
+        
     }
     
     void DiEmitterBaseObj::InitPropertyTable()
@@ -120,11 +134,14 @@ namespace Demi
         g->AddProperty("Original Enabled", DI_NEW DiBoolProperty([&]{ return mEmitter->GetOriginalEnabled(); },
                                                                  [&](bool& val){ mEmitter->SetOriginalEnabled(val); }));
 
-        auto prop = g->AddProperty("Position", DI_NEW DiVec3Property([&]{ return mEmitter->position; },
-                                                                     [&](DiVec3& val){
-                                                                         mEmitter->position = val;
-                                                                         NotifyTransfromUpdate();
-                                                                     }));
+        auto prop = g->AddProperty("Position", DI_NEW DiVec3Property([&]
+                 {
+                     return mEmitter->position;
+                 },
+                 [&](DiVec3& val){
+                     mEmitter->position = val;
+                     NotifyTransfromUpdate();
+                 }));
         mPositionProp = static_cast<DiVec3Property*>(prop->mProperty);
 
         g->AddProperty("Keep Local"      , DI_NEW DiBoolProperty([&]{ return mEmitter->IsKeepLocal(); },
@@ -142,6 +159,22 @@ namespace Demi
         g->AddProperty("Force Emission"  , DI_NEW DiBoolProperty([&]{ return mEmitter->IsForceEmission(); },
                                                                  [&](bool& val){ mEmitter->SetForceEmission(val); }));
      
+        g->AddProperty("Bones"           , DI_NEW DiDynEnumProperty([&]
+                {
+                    DiDynEnumPropPtr ret;
+                    if(!mBoneName.empty())
+                        ret = make_shared<K2ModelBoneNamesEnum>(mEmitter, mBoneName);
+                    else
+                        ret = make_shared<K2ModelBoneNamesEnum>(mEmitter);
+                    if(ret)
+                        ret->eventType = "AttachRefModel";
+                    return ret;
+                },
+                [&](DiDynEnumPropPtr& v){
+                    mBoneName = v->value;
+                    ChangeAttachBone();
+                }));
+        
         g->CreateUI();
 
         mPropGroups.push_back(g);

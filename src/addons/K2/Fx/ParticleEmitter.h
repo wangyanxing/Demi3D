@@ -214,6 +214,18 @@ namespace Demi
         virtual void                NotifyResume(void){/* Do nothing */ };
 
         void                        PushEvent(DiFxEvent& DiFxEvent);
+        
+        void                        SetBone(const DiString& bone);
+        
+        DiString                    GetBone(){ return mBone; }
+        
+        void                        CalculateBoneAttachPos();
+        
+        const DiVec3&               GetBoneAttachPos(){ return mCurrentAttachPosition; }
+        
+        const DiQuat&               GetBoneAttachRot(){ return mCurrentAttachRotation; }
+        
+        DiK2Skeleton*               GetAttachedSkeleton();
 
     protected:
 
@@ -305,6 +317,12 @@ namespace Demi
         DiParticle::ParticleType    mEmitsType;
 
         DiString                    mEmitsName;
+        
+        DiString                    mBone;
+        
+        DiVec3                      mCurrentAttachPosition;
+
+        DiQuat                      mCurrentAttachRotation;
     };
 }
 

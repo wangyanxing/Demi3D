@@ -18,6 +18,9 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "EffectManager.h"
 #include "ParticleSystem.h"
 #include "PropertyTypes.h"
+#include "EnumProperties.h"
+#include "RefModelObj.h"
+#include "PropertyItem.h"
 
 namespace Demi
 {
@@ -94,6 +97,28 @@ namespace Demi
         DiBaseEditorObj::Update(dt);
     }
     
+    void DiParticleSystemObj::ChangeRefModel()
+    {
+        if(!mParticleSystem)
+            return;
+        
+        DiK2ModelPtr md = nullptr;
+
+        auto root = DiEditorManager::Get()->GetRootObject();
+        size_t children = root->GetNumChildren();
+        for(size_t i = 0; i < children; ++i)
+        {
+            if(root->GetChild(i)->GetUICaption() == mAttachedRefModel)
+            {
+                md = dynamic_cast<DiRefModelObj*>(root->GetChild(i))->GetModel();
+                break;
+            }
+        }
+        
+        mParticleSystem->AttachModel(md);
+        DiEditorManager::Get()->TriggerEvent("AttachRefModel");
+    }
+    
     void DiParticleSystemObj::InitPropertyTable()
     {
         DiPropertyGroup* g = DI_NEW DiPropertyGroup("Particle System");
@@ -119,7 +144,23 @@ namespace Demi
         
         g->AddProperty("Scale"           , DI_NEW DiVec3Property(  [&]{ return mParticleSystem->GetScale(); },
                                                                    [&](DiVec3& v){ mParticleSystem->SetScale(v); }));
-    
+        
+        g->AddProperty("Attached Model"  , DI_NEW DiDynEnumProperty([&]
+            {
+                DiDynEnumPropPtr ret;
+                if(!mAttachedRefModel.empty())
+                    ret = make_shared<RefModelsNamesEnum>(mAttachedRefModel);
+                else
+                    ret = make_shared<RefModelsNamesEnum>();
+                if(ret)
+                    ret->eventType = "RefModel";
+                return ret;
+            },
+            [&](DiDynEnumPropPtr& v){
+                mAttachedRefModel = v->value;
+                ChangeRefModel();
+            }));
+        
         g->CreateUI();
         
         mPropGroups.push_back(g);

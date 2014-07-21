@@ -49,6 +49,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RefModelObj.h"
 #include "XMLFile.h"
 #include "XMLElement.h"
+#include "PropertyItem.h"
 
 namespace Demi
 {
@@ -435,11 +436,18 @@ namespace Demi
             }
         }
         
+        bool triggerChangemodel = obj->GetType() == "ReferenceModel";
+            
         DI_ASSERT(obj);
         obj->Release();
         SAFE_DELETE(obj);
         
         mCurrentSel = nullptr;
+        
+        if(triggerChangemodel)
+        {
+            DiEditorManager::Get()->TriggerEvent("RefModel");
+        }
     }
     
     void DiEditorManager::SetCurrentSelection(DiBaseEditorObj* sel)
@@ -576,5 +584,36 @@ namespace Demi
             DiK2Configs::SetK2ResourcePack(resPack);
         else
             DiK2Configs::SetK2ResourcePack(resPack, texturePack);
+    }
+    
+    void DiEditorManager::RegisterDynEnumItem(DiDynamicEnumPropertyItem* item, const DiString& eventName)
+    {
+        mDynEnumItems[eventName].insert( item );
+    }
+    
+    void DiEditorManager::UnregisterDynEnumItem(DiDynamicEnumPropertyItem* item, const DiString& eventName)
+    {
+        auto it = mDynEnumItems.find(eventName);
+        if(it != mDynEnumItems.end())
+        {
+            auto& sets = it->second;
+            auto itemIt = sets.find(item);
+            if(itemIt != sets.end())
+            {
+                sets.erase(itemIt);
+            }
+        }
+    }
+    
+    void DiEditorManager::TriggerEvent(const DiString& eventName)
+    {
+        auto it = mDynEnumItems.find(eventName);
+        if(it != mDynEnumItems.end())
+        {
+            for(auto& s : it->second)
+            {
+                s->NotifyDynEnumChanged();
+            }
+        }
     }
 }

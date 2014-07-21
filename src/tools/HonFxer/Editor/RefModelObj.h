@@ -51,6 +51,8 @@ namespace Demi
         
         void                 Save(DiXMLElement& node);
         
+        virtual void         PostCreate();
+        
     public:
 
         DiK2ModelPtr         GetModel(){ return mModel; }

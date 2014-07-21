@@ -63,6 +63,8 @@ namespace Demi
         bool            HasBone(const DiString& name) const { return mBoneNames.find(name) != mBoneNames.end(); }
 
         DiNode*         GetBone(const DiString& name) { return mBoneNames[name]; }
+        
+        void            IterateBoneNames(std::function<void(const DiString&,DiNode*)> func);
 
         /** Apply an animation clip
          */

@@ -25,6 +25,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ParticleElement.h"
 #include "ParticleSystem.h"
 
+#include "K2Model.h"
+#include "K2Clip.h"
+#include "Node.h"
+
 namespace Demi
 {
     const bool      DiParticleEmitter::DEFAULT_ENABLED = true;
@@ -761,11 +765,11 @@ namespace Demi
     {
         // Create the event
         DiFxEvent evt;
-        evt.eventType = eventType;
+        evt.eventType     = eventType;
         evt.componentType = CT_EMITTER;
         evt.componentName = GetName();
-        evt.technique = 0;
-        evt.emitter = this;
+        evt.technique     = 0;
+        evt.emitter       = this;
         PushEvent(evt);
     }
 
@@ -775,5 +779,51 @@ namespace Demi
         if (mParentElement)
             mParentElement->PushEvent(DiFxEvent);
     }
+    
+    void DiParticleEmitter::SetBone(const DiString& bone)
+    {
+        mBone = bone;
+    }
+    
+    DiK2Skeleton* DiParticleEmitter::GetAttachedSkeleton()
+    {
+        auto ps = mParentElement->GetParentSystem();
+        auto md = ps->GetAttachedModel();
+        if(!md)
+        {
+            return nullptr;
+        }
+        
+        return md->GetSkeleton();
+    }
+    
+    void DiParticleEmitter::CalculateBoneAttachPos()
+    {
+        if(mBone.empty())
+        {
+            mCurrentAttachPosition = DiVec3::ZERO;
+            mCurrentAttachRotation = DiQuat::IDENTITY;
+            return;
+        }
+        
+        auto ps = mParentElement->GetParentSystem();
+        auto md = ps->GetAttachedModel();
+        if(!md)
+        {
+            mCurrentAttachPosition = DiVec3::ZERO;
+            mCurrentAttachRotation = DiQuat::IDENTITY;
+            return;
+        }
+        
+        auto bone = md->GetSkeleton()->GetBone(mBone);
+        if(!bone)
+        {
+            mCurrentAttachPosition = DiVec3::ZERO;
+            mCurrentAttachRotation = DiQuat::IDENTITY;
+            return;
+        }
+        
+        mCurrentAttachPosition = bone->GetPosition();
+        mCurrentAttachRotation = bone->GetOrientation();
+    }
 }
-

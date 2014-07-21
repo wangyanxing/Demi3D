@@ -244,7 +244,15 @@ namespace Demi
         inline size_t           GetNumberOfEmittedParticles(DiParticle::ParticleType particleType);
         
         virtual DiString&       GetType();
+        
+        // attach to a new model
+        DiK2ModelPtr            AttachModel(const DiString& modelName);
+        
+        // attach to an existed model
+        void                    AttachModel(DiK2ModelPtr model);
 
+        DiK2ModelPtr            GetAttachedModel(){ return mAttachedModel; }
+        
     protected:
         
         unsigned short          GetLodIndex(float distance) const;
@@ -336,6 +344,8 @@ namespace Demi
         bool                    mAtLeastOneParticleEmitted;
 
         unsigned short          mLastLodIndex;
+        
+        DiK2ModelPtr            mAttachedModel;
     };
 }
 

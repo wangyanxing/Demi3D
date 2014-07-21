@@ -27,6 +27,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ParticleEmitter.h"
 #include "EffectManager.h"
 
+#include "K2Model.h"
+
 namespace Demi
 {
     const bool      DiParticleSystem::DEFAULT_KEEP_LOCAL                 = false;
@@ -1244,6 +1246,15 @@ namespace Demi
         static DiString type = "Particle";
         return type;
     }
+    
+    DiK2ModelPtr DiParticleSystem::AttachModel(const DiString& modelName)
+    {
+        mAttachedModel = make_shared<DiK2Model>(modelName);
+        return mAttachedModel;
+    }
+    
+    void DiParticleSystem::AttachModel(DiK2ModelPtr model)
+    {
+        mAttachedModel = model;
+    }
 }
-
-

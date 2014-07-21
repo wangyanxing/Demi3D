@@ -53,10 +53,16 @@ namespace Demi
         DiParticleEmitter*  GetEmitter() { return mEmitter; }
 
     protected:
+        
+        DiK2Skeleton*       GetAttachedSkeleton();
+        
+        void                ChangeAttachBone();
 
         virtual void        InitPropertyTable() override;
 
     protected:
+        
+        DiString            mBoneName;
 
         DiParticleEmitter*  mEmitter{ nullptr };
     };

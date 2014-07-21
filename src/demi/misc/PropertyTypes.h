@@ -52,10 +52,29 @@ namespace Demi
         
         int enumValue;
     };
-    
     typedef shared_ptr<_DiBaseEnumProperty> DiBaseEnumPropPtr;
     
-    typedef DiProperty<DiBaseEnumPropPtr, PROPERTY_ENUM> DiEnumProperty;
+    /// Dynamic enum property
+    class _DiBaseDynEnumProperty
+    {
+    public:
+        _DiBaseDynEnumProperty() = default;
+        
+        virtual std::vector<DiString>& GetStrings() = 0;
+        
+        virtual void RefreshValues() = 0;
+        
+        const DiString& getValue(){ return value; }
+        
+        DiString value;
+        
+        DiString eventType;
+    };
+    typedef shared_ptr<_DiBaseDynEnumProperty> DiDynEnumPropPtr;
+
+    
+    typedef DiProperty<DiBaseEnumPropPtr, PROPERTY_ENUM>      DiEnumProperty;
+    typedef DiProperty<DiDynEnumPropPtr,  PROPERTY_DYN_ENUMS> DiDynEnumProperty;
 }
 
 #endif // PropertyTypes_h__

@@ -16,6 +16,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "DemoPrerequisites.h"
 #include "FxerPrerequisites.h"
+
 #include "TransGizmo.h"
 #include "MyGUI_UString.h"
 
@@ -73,6 +74,12 @@ namespace Demi
         void                SetWorldSpaceGizmo(bool val);
         
         bool                IsGizmoInWorldSpace(){return mWorldSpaceGizmoOrientation;}
+        
+        void                RegisterDynEnumItem(DiDynamicEnumPropertyItem* item, const DiString& eventName);
+        
+        void                UnregisterDynEnumItem(DiDynamicEnumPropertyItem* item, const DiString& eventName);
+        
+        void                TriggerEvent(const DiString& eventName);
         
         void                Command_ToolPlay(const MyGUI::UString& _commandName, bool& _result);
         
@@ -133,6 +140,8 @@ namespace Demi
         bool                mWorldSpaceGizmoOrientation{false};
         
         DiTransGizmo::GizmoMode mGlobalGizmoMode{ DiTransGizmo::GIZMO_SELECT };
+        
+        DiStrHash<DiSet<DiDynamicEnumPropertyItem*>> mDynEnumItems;
     };
 }
 

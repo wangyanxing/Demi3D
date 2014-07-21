@@ -80,11 +80,18 @@ namespace Demi
         mSceneNode->DetachObject(mModel);
         mModel = make_shared<DiK2Model>(file);
         mSceneNode->AttachObject(mModel);
+        
+        DiEditorManager::Get()->TriggerEvent("AttachRefModel");
     }
 
     void DiRefModelObj::Update(float dt)
     {
         DiBaseEditorObj::Update(dt);
+    }
+    
+    void DiRefModelObj::PostCreate()
+    {
+        DiEditorManager::Get()->TriggerEvent("RefModel");
     }
     
     void DiRefModelObj::Load(const DiXMLElement& node)

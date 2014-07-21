@@ -50,6 +50,10 @@ namespace Demi
         
         DiBaseEditorObj*            LookForParent(const DiString& type);
         
+        DiBaseEditorObj*            GetChild(size_t id) {return mChildren[id];}
+        
+        size_t                      GetNumChildren(){return mChildren.size();}
+        
         void                        TraversalChildren(const std::function<void(size_t, DiBaseEditorObj*)> func);
 
     public:
@@ -57,6 +61,8 @@ namespace Demi
         virtual void                OnMenuPopup(MyGUI::PopupMenu* menu, bool multiSelection);
 
         virtual void                OnCreate();
+        
+        virtual void                PostCreate(){}
         
         virtual void                OnCreate(const DiAny& param) {}
 

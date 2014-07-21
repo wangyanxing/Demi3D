@@ -42,6 +42,7 @@ namespace Demi
         PROPERTY_COLOR_CURVE,
         PROPERTY_TEXTURE,
         PROPERTY_MODEL,
+        PROPERTY_DYN_ENUMS,
         
         PROPERTY_MAX,
     };
