@@ -59,6 +59,12 @@ namespace Demi
         
     protected:
         
+        void                 UpdateSkeletonHelper();
+        
+        void                 UpdateBoneNames(bool show);
+        
+        void                 ShowBones(bool show);
+        
         virtual void         InitPropertyTable();
 
     protected:
@@ -66,6 +72,12 @@ namespace Demi
         DiK2ModelPtr         mModel;
         
         DiString             mName;
+        
+        bool                 mShowBones{ false };
+        
+        DiDebugHelperPtr     mSkeleton;
+        
+        DiVector<MyGUI::TextBox*> mBoneNames;
     };
 }
 

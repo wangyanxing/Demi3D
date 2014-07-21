@@ -32,6 +32,8 @@ namespace tools
         
         void NotifyMouseDrag(MyGUI::Widget* _sender, int _left, int _top, MyGUI::MouseButton _id);
 
+        MyGUI::Canvas* getCanvas(){ return mCanvas; }
+        
     protected:
 
         MyGUI::Canvas* mCanvas{ nullptr };
