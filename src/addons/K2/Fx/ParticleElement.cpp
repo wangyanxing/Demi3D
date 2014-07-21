@@ -1184,12 +1184,6 @@ namespace Demi
             particle->direction *= (mMaxVelocity / particle->direction.length());
 
         particle->position += (particle->direction * mParticleSystemScaleVelocity * timeElapsed);
-        
-        if(particle->parentEmitter)
-        {
-            particle->position += particle->parentEmitter->GetBoneAttachPos();
-            particle->direction = particle->parentEmitter->GetBoneAttachRot() * particle->direction;
-        }
     }
     
     size_t DiParticleElement::GetNumberOfEmittedParticles(void)

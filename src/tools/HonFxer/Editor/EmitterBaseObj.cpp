@@ -88,7 +88,7 @@ namespace Demi
     
     void DiEmitterBaseObj::ChangeAttachBone()
     {
-        
+        mEmitter->SetBone(mBoneName);
     }
     
     void DiEmitterBaseObj::InitPropertyTable()

@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<Effects
+>
+	<ParticleSystem
+		name="ParticleSystem_0"
+	>
+		<Element
+			name="Element_0"
+		>
+			<Material
+			>
+				<shader
+					name="vertex"
+				>fx_v</shader>
+				<shader
+					name="pixel"
+				>fx_p</shader>
+				<depthWrite
+				>false</depthWrite>
+				<ambient
+				>0 0 0 1</ambient>
+				<shininess
+				>16</shininess>
+				<variables
+				>
+					<sampler2D
+					>
+						<texture
+							name="map"
+						>default.png</texture>
+					</sampler2D>
+				</variables>
+			</Material>
+			<Renderer
+				type="Billboard"
+			 />
+			<Emitter
+				type="Point"
+				name="Point_0"
+				emissionRate="fixed|1"
+				angle="fixed|0"
+				totalTimeToLive="fixed|3000"
+				velocity="fixed|0"
+				keepLocal="true"
+				forceEmission="true"
+			 />
+		</Element>
+	</ParticleSystem>
+	<ReferenceModel
+		model="npcs/bad_siege/model.mdf"
+		pos="0 0 0"
+		rotation="1 0 0 0"
+	 />
+</Effects>

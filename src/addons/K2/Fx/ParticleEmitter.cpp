@@ -197,7 +197,7 @@ namespace Demi
         if (!mKeepLocal)
             return false;
 
-        DiVec3 diff = GetDerivedPosition() - GetDerivedPosition()/*latestPosition*/;
+        DiVec3 diff = GetDerivedPosition() - particle->latestPosition;
         particle->position += diff;
         return true;
     }
@@ -529,7 +529,7 @@ namespace Demi
         else
         {
             // Add the techniques' derived position. Use the emitters' own 'position' as offset.
-            mDerivedPosition = mParentElement->GetDerivedPosition() + 
+            mDerivedPosition = mParentElement->GetDerivedPosition() + mCurrentAttachPosition +
                 mParentElement->GetParentSystem()->GetDerivedOrientation() *
                 (mEmitterScale * position);
         }
@@ -567,6 +567,8 @@ namespace Demi
             particle->direction = mParticleDirection.randomDeviant(angle, mUpVector);
         else
             particle->direction = mParticleDirection;
+        
+        particle->direction = mCurrentAttachRotation * particle->direction;
         
         particle->originalDirection = particle->direction;
         particle->originalDirectionLength = particle->direction.length();
@@ -823,7 +825,7 @@ namespace Demi
             return;
         }
         
-        mCurrentAttachPosition = bone->GetPosition();
-        mCurrentAttachRotation = bone->GetOrientation();
+        mCurrentAttachPosition = bone->GetDerivedPosition();
+        mCurrentAttachRotation = bone->GetDerivedOrientation();
     }
 }
