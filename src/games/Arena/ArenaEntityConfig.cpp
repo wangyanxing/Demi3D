@@ -91,10 +91,10 @@ namespace Demi
             cf->attackrange = node.AsFloat();
         };
         sPropOps["attackstarteffect"] = [](const DiString& node, ArEntityConfigs* cf){
-            cf->attackstarteffect = node;
+            cf->attackstarteffect = node.Tokenize(",");
         };
         sPropOps["attackactioneffect"] = [](const DiString& node, ArEntityConfigs* cf){
-            cf->attackactioneffect = node;
+            cf->attackactioneffect = node.Tokenize(",");
         };
         sPropOps["attackimpacteffect"] = [](const DiString& node, ArEntityConfigs* cf){
             cf->attackimpacteffect = node.Tokenize(",");

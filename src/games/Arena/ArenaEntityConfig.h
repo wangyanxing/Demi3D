@@ -59,8 +59,8 @@ namespace Demi
         DiVec3      attackoffset {0.0f};
         StringVec   attackprojectile;
         float       attackrange {0.0f};
-        DiString    attackstarteffect;
-        DiString    attackactioneffect;
+        StringVec   attackstarteffect;
+        StringVec   attackactioneffect;
         StringVec   attackimpacteffect;
         DiString    attacktype;
         DiString    combattype;

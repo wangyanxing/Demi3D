@@ -179,7 +179,8 @@ namespace Demi
         for (auto it = mParticleSystemListenerList.begin();
              it != mParticleSystemListenerList.end(); ++it)
         {
-            (*it)->HandleParticleSystemEvent(this, DiFxEvent);
+            DiParticleSystemPtr ps = std::static_pointer_cast<DiParticleSystem>(shared_from_this());
+            (*it)->HandleParticleSystemEvent(ps, DiFxEvent);
         }
     }
     
@@ -1147,19 +1148,14 @@ namespace Demi
     
     void DiParticleSystem::StopFade(void)
     {
-        size_t i;
-        size_t j;
         size_t numTechniques = GetNumElements();
-        size_t numEmitters;
-        DiParticleElement* technique;
-        DiParticleEmitter* emitter;
-        for (i = 0; i < numTechniques; ++i)
+        for (size_t i = 0; i < numTechniques; ++i)
         {
-            technique = GetElement(i);
-            numEmitters = GetElement(i)->GetNumEmitters();
-            for (j = 0; j < numEmitters; ++j)
+            auto technique = GetElement(i);
+            auto numEmitters = GetElement(i)->GetNumEmitters();
+            for (size_t j = 0; j < numEmitters; ++j)
             {
-                emitter = technique->GetEmitter(j);
+                auto emitter = technique->GetEmitter(j);
                 emitter->SetEnabled(false);
             }
         }

@@ -16,12 +16,26 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "ArenaPrerequisites.h"
 #include "ArenaProperty.h"
+#include "EffectListeners.h"
 
 namespace Demi
 {
+    struct ArFxProjectileConfig
+    {
+        void Load(const DiXMLElement& node);
+
+        DiString name;
+        float    speed{ 0 };
+        float    gravity{ 0 };
+        float    modelscale{ 1 };
+        DiString model;
+        DiString traileffect;
+        DiString impacteffect;
+    };
+    
     /** state property
      */
-    class ArFxProperty : public ArProperty
+    class ArFxProperty final : public ArProperty, public DiParticleSystemListener
     {
         DEFINE_PROPERTY_ID(PROPERTY_FX)
 
@@ -33,21 +47,27 @@ namespace Demi
 
     public:
 
-        void                Update(float dt);
+        void                Update(float dt) override;
         
         void                PlayProjectile(uint32 entityID, const DiString& bone);
         
         DiParticleSystemPtr PlayParticleSystem(const DiString& templateName);
         
-    protected:
-        
-        void            Init();
+        void                HandleParticleSystemEvent(DiParticleSystemPtr particleSystem, DiFxEvent& DiFxEvent) override;
         
     protected:
         
-        DiVector<DiString> mProjectiles;
+        void                Init();
         
-        int             mFxCount{ 0 };
+    protected:
+        
+        DiVector<DiString>  mProjectiles;
+        
+        DiStrHash<ArFxProjectileConfig*> mProjectileConfigs;
+        
+        DiSet<DiParticleSystemPtr> mEffects;
+        
+        int                 mFxCount{ 0 };
     };
 }
 

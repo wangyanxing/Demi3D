@@ -32,14 +32,11 @@ namespace Demi
 
     struct DiFileTree
     {
-        void Release()
+        DiFileTree() = default;
+        
+        ~DiFileTree()
         {
-            for (auto i = children.begin(); i != children.end(); ++i)
-            {
-                i->second->Release();
-                DI_DELETE i->second;
-            }
-            children.clear();
+            Release();
         }
 
         DiFileTree* FindChildren(const DiString& name)
@@ -71,6 +68,17 @@ namespace Demi
         DiFileTree* parent{nullptr};
 
         DiMap<DiString, DiFileTree*> children;
+        
+    private:
+        
+        void Release()
+        {
+            for (auto i = children.begin(); i != children.end(); ++i)
+            {
+                DI_DELETE i->second;
+            }
+            children.clear();
+        }
     };
 
     //////////////////////////////////////////////////////////////////////////

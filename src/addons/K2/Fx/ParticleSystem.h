@@ -27,7 +27,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    class DEMI_K2_API DiParticleSystem : public DiTransformUnit, public DiParticle
+    class DEMI_K2_API DiParticleSystem : public DiTransformUnit,
+                                         public DiParticle
     {
     public:
         static const bool        DEFAULT_KEEP_LOCAL;
