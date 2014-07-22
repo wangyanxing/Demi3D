@@ -19,16 +19,11 @@ namespace Demi
 {
     ArNPCAttr::~ArNPCAttr()
     {
-        SAFE_DELETE(mNpcEntityConfig);
     }
 
-    void ArNPCAttr::LoadAttribute(const DiXMLElement& node)
+    void ArNPCAttr::LoadAttribute(const DiString& path, const DiXMLElement& node)
     {
-        mNpcEntityConfig = DI_NEW (mNpcEntityConfig) ArConfigEntity();
-
-        ArConfigEntityLoader loader(mNpcEntityConfig);
-        loader.Load(node);
-        
-        mEntityConfig.Load(mNpcEntityConfig->entity);
+        mEntityConfig.Load(node);
+        mEntityConfig.path = path;
     }
 }

@@ -11,30 +11,37 @@ Released under the MIT License
 https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 ***********************************************************************/
 
-#ifndef ArenaNPCAttribute_h__
-#define ArenaNPCAttribute_h__
+#ifndef ArenaFxProperty_h__
+#define ArenaFxProperty_h__
 
 #include "ArenaPrerequisites.h"
-#include "ArenaAttribute.h"
-#include "ArenaConfigs.h"
+#include "ArenaProperty.h"
 
 namespace Demi
 {
-    /** Attribute interface for entities
+    /** state property
      */
-    class ArNPCAttr final: public ArAttribute
+    class ArFxProperty : public ArProperty
     {
-    public:
-
-        ArNPCAttr(ArObjID id) : ArAttribute(id) {}
-
-        virtual ~ArNPCAttr();
+        DEFINE_PROPERTY_ID(PROPERTY_FX)
 
     public:
 
-        virtual void      Update(float dt) override {}
+        ArFxProperty();
 
-        virtual void      LoadAttribute(const DiString& path, const DiXMLElement& node) override;
+        ~ArFxProperty();
+
+    public:
+
+        void            Update(float dt);
+        
+    protected:
+        
+        void            Init();
+        
+    protected:
+        
+        DiVector<DiString> mProjectiles;
     };
 }
 

@@ -23,7 +23,7 @@ namespace Demi
 
         PROPERTY_MOVE = 0,
         PROPERTY_MOTION,
-        PROPERTY_MOUNT,
+        PROPERTY_FX,
         PROPERTY_ATTRIBUTE,
         PROPERTY_STATE,
         PROPERTY_ITEM,

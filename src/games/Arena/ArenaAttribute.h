@@ -35,7 +35,7 @@ namespace Demi
 
         virtual void      Update(float dt) {}
 
-        virtual void      LoadAttribute(const DiXMLElement& node) = 0;
+        virtual void      LoadAttribute(const DiString& path, const DiXMLElement& node) = 0;
 
         virtual void      LoadAttributeConfig(const DiString& configFile);
         

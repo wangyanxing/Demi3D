@@ -67,13 +67,6 @@ namespace Demi
                 DiK2Pos source = mRenderObj->GetPosition();
                 GetMoveProperty()->MoveTo(source, k2pos);
             }
-
-            // test pickup
-//             DiTransUnitPtr out;
-//             if (Driver->GetSceneManager()->GetSceneCuller()->RayQuery(ray, out, QUERY_CHARACTER))
-//             {
-//                 DI_DEBUG("Pickuped something");
-//             }
         }
     }
 
@@ -85,7 +78,17 @@ namespace Demi
     void ArHeroEntity::SetupAttribute()
     {
         auto attr = GetAttribute<ArHeroAttr>();
-        SetModel(attr->mHeroConfig->model);
+        
+        ArEntityConfigs* entityConfig = attr->GetEntityConfig();
+        if(entityConfig->model.empty())
+        {
+            DI_WARNING("Cannot locate the model name.");
+        }
+        else
+        {
+            SetModel(entityConfig->path + entityConfig->model[0]);
+        }
+
         SetupEntityConfig(attr->GetEntityConfig());
     }
 

@@ -46,10 +46,10 @@ namespace Demi
         mAIProperty = CreateProperty<ArAIProperty>();
     }
 
-    void ArNPCEntity::InitAttribute(const DiXMLElement& node)
+    void ArNPCEntity::InitAttribute(const DiString& path, const DiXMLElement& node)
     {
         InitAttribute();
-        GetAttribute<ArNPCAttr>()->LoadAttribute(node);
+        GetAttribute<ArNPCAttr>()->LoadAttribute(path, node);
         SetupAttribute();
     }
 
@@ -74,8 +74,6 @@ namespace Demi
         float scale = ett->GetMaxPreGlobalScale();
         GetRenderObj()->SetScale(DiVec3(scale));
 
-        
-        // TODO: figure out the real scale between K2's move speed and our speed
         GetMoveProperty()->SetSpeed(DiK2Pos::FromWorldScale(ett->movespeed));
         GetMoveProperty()->SetTurnSpeed(ett->turnrate);
         
@@ -86,8 +84,18 @@ namespace Demi
     void ArNPCEntity::SetupAttribute()
     {
         auto attr = GetAttribute<ArNPCAttr>();
-        SetModel(attr->mNpcEntityConfig->model);
-        SetupEntityConfig(attr->GetEntityConfig());
+        
+        ArEntityConfigs* entityConfig = attr->GetEntityConfig();
+        if(entityConfig->model.empty())
+        {
+            DI_WARNING("Cannot locate the model name.");
+        }
+        else
+        {
+            SetModel(entityConfig->path + entityConfig->model[0]);
+        }
+        
+        SetupEntityConfig(entityConfig);
     }
 
     void ArNPCEntity::Update(float dt)

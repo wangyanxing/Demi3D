@@ -86,5 +86,8 @@ namespace Demi
 
         K2PrefabClip::Clips clip = K2PrefabClip::Clips(K2PrefabClip::ANIM_ATTACK_1 + animID);
         mEntity->GetMotionProperty()->PlayClip(clip);
+        
+        // play projectile effect
+        
     }
 }

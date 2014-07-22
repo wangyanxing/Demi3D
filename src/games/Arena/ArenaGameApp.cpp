@@ -266,6 +266,28 @@ namespace Demi
             }
         });
 #endif
+        
+#if 1
+        // test NPC
+        auto npc = mGame->GetEntityManager()->CreateNPC(2,"npcs/good_range/creep.entity");
+        npc->GetRenderObj()->SetPosition(DiK2Pos(94.3f, 99.6f));
+        
+        auto npc2 = mGame->GetEntityManager()->CreateNPC(3, "npcs/good_melee/creep.entity");
+        npc2->GetRenderObj()->SetPosition(DiK2Pos(102, 108.2f));
+
+        mInputMgr->RegisterKeyPressEvent("movetest",
+         [&](const OIS::KeyEvent& e){
+             switch (e.key)
+             {
+                 case OIS::KC_1:
+                     mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(3);
+                     break;
+                 default:
+                     break;
+             }
+         });
+
+#endif
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){
             mGame->Update();

@@ -85,7 +85,7 @@ namespace Demi
             cf->attackoffset = node.AsVector3();
         };
         sPropOps["attackprojectile"] = [](const DiString& node, ArEntityConfigs* cf){
-            cf->attackprojectile = node;
+            cf->attackprojectile = node.Tokenize(",");
         };
         sPropOps["attackrange"] = [](const DiString& node, ArEntityConfigs* cf){
             cf->attackrange = node.AsFloat();

@@ -32,9 +32,7 @@ namespace Demi
 
         virtual void      Update(float dt) override {}
 
-        virtual void      LoadAttribute(const DiXMLElement& node) override;
-
-        ArConfigEntity*   mHeroConfig{ DI_NEW ArConfigEntity() };
+        virtual void      LoadAttribute(const DiString& path, const DiXMLElement& node) override;
     };
 }
 

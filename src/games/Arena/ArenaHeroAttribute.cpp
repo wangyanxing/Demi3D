@@ -19,16 +19,11 @@ namespace Demi
 {
     ArHeroAttr::~ArHeroAttr()
     {
-        SAFE_DELETE(mHeroConfig);
     }
 
-    void ArHeroAttr::LoadAttribute(const DiXMLElement& node)
+    void ArHeroAttr::LoadAttribute(const DiString& path, const DiXMLElement& node)
     {
-        mHeroConfig = DI_NEW (mHeroConfig) ArConfigEntity();
-
-        ArConfigEntityLoader loader(mHeroConfig);
-        loader.Load(node);
-        
-        mEntityConfig.Load(mHeroConfig->entity);
+        mEntityConfig.Load(node);
+        mEntityConfig.path = path;
     }
 }

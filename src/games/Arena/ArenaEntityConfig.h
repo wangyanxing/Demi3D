@@ -33,6 +33,7 @@ namespace Demi
 
     public:
         
+        DiString    path;
         DiString    name;
         
         StringVec   model;
@@ -56,7 +57,7 @@ namespace Demi
         DiVec2      attackdamagemax {0, 0};
         int         attacknumanims {0};
         DiVec3      attackoffset {0.0f};
-        DiString    attackprojectile;
+        StringVec   attackprojectile;
         float       attackrange {0.0f};
         DiString    attackstarteffect;
         DiString    attackactioneffect;

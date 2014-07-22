@@ -37,7 +37,7 @@ namespace Demi
 
         virtual void    InitComponents() override;
 
-        virtual void    InitAttribute(const DiXMLElement& node);
+        virtual void    InitAttribute(const DiString& path, const DiXMLElement& node);
 
         virtual void    InitAttribute(const DiString& config) override;
 

@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaMoveProperty.h"
 #include "ArenaStateProperty.h"
 #include "ArenaMotionProperty.h"
+#include "ArenaFxProperty.h"
 
 namespace Demi
 {
@@ -29,7 +30,8 @@ namespace Demi
         DEF_DECLARE_PRIORITY(MotionProperty)
         DEF_DECLARE_PRIORITY(StateProperty)
         DEF_DECLARE_PRIORITY(MoveProperty)
-
+        DEF_DECLARE_PRIORITY(FxProperty)
+        
     public:
 
         ArDynEntity();
