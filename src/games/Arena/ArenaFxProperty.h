@@ -33,7 +33,11 @@ namespace Demi
 
     public:
 
-        void            Update(float dt);
+        void                Update(float dt);
+        
+        void                PlayProjectile(uint32 entityID, const DiString& bone);
+        
+        DiParticleSystemPtr PlayParticleSystem(const DiString& templateName);
         
     protected:
         
@@ -42,6 +46,8 @@ namespace Demi
     protected:
         
         DiVector<DiString> mProjectiles;
+        
+        int             mFxCount{ 0 };
     };
 }
 
