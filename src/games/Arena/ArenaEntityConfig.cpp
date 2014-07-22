@@ -136,6 +136,32 @@ namespace Demi
         return ret;
     }
     
+    ArEntityConfigs::~ArEntityConfigs()
+    {
+        for (auto& i : mProjectileConfigs)
+        {
+            DI_DELETE i.second;
+        }
+        mProjectileConfigs.clear();
+    }
+    
+    void ArFxProjectileConfig::Load(const DiXMLElement& node)
+    {
+        if (!node.CheckName("projectile"))
+        {
+            DI_WARNING("Bad projectile config file!");
+            return;
+        }
+        
+        name = node.GetAttribute("name");
+        speed = node.GetFloat("speed");
+        gravity = node.GetFloat("gravity");
+        modelscale = node.GetFloat("modelscale");
+        model = node.GetAttribute("model");
+        traileffect = node.GetAttribute("traileffect");
+        impacteffect = node.GetAttribute("impacteffect");
+    }
+    
     void ArEntityConfigs::Load(const DiXMLElement& node)
     {
         if(sPropOps.empty())
@@ -143,18 +169,63 @@ namespace Demi
             InitPropOperations();
         }
         
-        node.IterateAttributes([this](const DiString& attrName, const DiString& attrVal){
+        node.IterateAttributes([this](const DiString& attrName, const DiString& attrVal)
+        {
             auto it = sPropOps.find(attrName);
             if(it != sPropOps.end())
+            {
                 it->second(attrVal, this);
+            }
         });
         
-#if 0
-        DiXMLElement child = node.GetChild();
-        while (child)
+        // load projectile configs
+        if(path.empty())
         {
-            child = child.GetNext();
+            return;
         }
-#endif
+        
+        if(path[path.size()-1] != '\\' && path[path.size()-1] != '/')
+        {
+            path.Append("/");
+        }
+        
+        static StringVec pjfiles = {
+                                    "projectile/projectile.entity",
+                                    "projectile/attack_projectile.entity",
+                                    "projectile/attack_projectile_mega.entity"
+                                   };
+        for (auto& str : pjfiles)
+        {
+            DiString file = path + str;
+            if(!DiK2Configs::K2ArchiveExists(file, false))
+            {
+                continue;
+            }
+            
+            DI_LOG("Loading projectile entity config %s", file.c_str());
+            
+            auto pjCfg = DiK2Configs::GetDataStream(file, K2_RES_XML);
+            auto ret = DI_NEW ArFxProjectileConfig();
+            
+            shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
+            xmlfile->Load(pjCfg->GetAsString());
+            DiXMLElement root = xmlfile->GetRoot();
+            ret->Load(root);
+            
+            mProjectileConfigs[ret->name] = ret;
+        }
+    }
+    
+    ArFxProjectileConfig* ArEntityConfigs::GetProjectile(const DiString& name)
+    {
+        auto it = mProjectileConfigs.find(name);
+        if(it == mProjectileConfigs.end())
+        {
+            return nullptr;
+        }
+        else
+        {
+            return it->second;
+        }
     }
 }

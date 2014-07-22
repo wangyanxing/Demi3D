@@ -20,19 +20,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    struct ArFxProjectileConfig
-    {
-        void Load(const DiXMLElement& node);
-
-        DiString name;
-        float    speed{ 0 };
-        float    gravity{ 0 };
-        float    modelscale{ 1 };
-        DiString model;
-        DiString traileffect;
-        DiString impacteffect;
-    };
-    
     /** state property
      */
     class ArFxProperty final : public ArProperty, public DiParticleSystemListener
@@ -62,8 +49,6 @@ namespace Demi
     protected:
         
         DiVector<DiString>  mProjectiles;
-        
-        DiStrHash<ArFxProjectileConfig*> mProjectileConfigs;
         
         DiSet<DiParticleSystemPtr> mEffects;
         

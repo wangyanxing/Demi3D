@@ -23,7 +23,5 @@ namespace Demi
 
     void ArHeroAttr::LoadAttribute(const DiString& path, const DiXMLElement& node)
     {
-        mEntityConfig.Load(node);
-        mEntityConfig.path = path;
     }
 }

@@ -13,6 +13,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "ArenaPch.h"
 #include "ArenaAttribute.h"
+#include "ArenaEntityManager.h"
+#include "ArenaGameApp.h"
 #include "XMLFile.h"
 #include "K2Configs.h"
 
@@ -21,19 +23,7 @@ namespace Demi
     void ArAttribute::LoadAttributeConfig(const DiString& configfile)
     {
         DI_LOG("Loading atribute[config = %s] for entity[id = %d]", configfile.c_str(), GetID());
-
-        auto file = DiK2Configs::GetDataStream(configfile, K2_RES_XML);
-
-        if (!file)
-        {
-            DI_WARNING("Failed to load the attribute");
-            return;
-        }
-
-        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
-        xmlfile->Load(file->GetAsString());
-        DiXMLElement root = xmlfile->GetRoot();
-
-        LoadAttribute(configfile.ExtractDirName(), root);
+        
+        mEntityConfig = ArGameApp::Get()->GetEntityManager()->GetEntityConfig(configfile);
     }
 }

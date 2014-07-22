@@ -19,12 +19,29 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
+    struct ArFxProjectileConfig
+    {
+        void Load(const DiXMLElement& node);
+        
+        DiString name;
+        float    speed{ 0 };
+        float    gravity{ 0 };
+        float    modelscale{ 1 };
+        DiString model;
+        DiString traileffect;
+        DiString impacteffect;
+    };
+    
     /** Entity configs
         For now we don't need all attributes
      */
     class ArEntityConfigs
     {
     public:
+        
+        ArEntityConfigs() = default;
+        ~ArEntityConfigs();
+        
         void Load(const DiXMLElement& element);
         
         void Load(const DiString& relPath);
@@ -70,8 +87,13 @@ namespace Demi
         float       sightrangeday{ 0.0f };
         float       sightrangenight{ 0.0f };
         
+        ArFxProjectileConfig* GetProjectile(const DiString& name);
+        
         static DiMap<DiString, std::function<void(const DiString&, ArEntityConfigs*)>> sPropOps;
         static void InitPropOperations();
+        
+    private:
+        DiStrHash<ArFxProjectileConfig*> mProjectileConfigs;
     };
 }
 

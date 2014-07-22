@@ -25,23 +25,6 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 namespace Demi
 {
-    void ArFxProjectileConfig::Load(const DiXMLElement& node)
-    {
-        if (!node.CheckName("projectile"))
-        {
-            DI_WARNING("Bad projectile config file!");
-            return;
-        }
-        
-        name = node.GetAttribute("name");
-        speed = node.GetFloat("speed");
-        gravity = node.GetFloat("gravity");
-        modelscale = node.GetFloat("modelscale");
-        model = node.GetAttribute("model");
-        traileffect = node.GetAttribute("traileffect");
-        impacteffect = node.GetAttribute("impacteffect");
-    }
-    
     ArFxProperty::ArFxProperty()
     {
 

@@ -27,7 +27,7 @@ namespace Demi
 
         ArAttribute(ArObjID id) : mID(id) {}
         
-        virtual ~ArAttribute(){}
+        virtual ~ArAttribute() = default;
 
     public:
 
@@ -39,14 +39,14 @@ namespace Demi
 
         virtual void      LoadAttributeConfig(const DiString& configFile);
         
-        ArEntityConfigs*  GetEntityConfig() {return &mEntityConfig;}
+        ArEntityConfigs*  GetEntityConfig() {return mEntityConfig;}
 
     protected:
 
         ArObjID mID { INVALID_OBJ_ID };
 
         /// Common configuration
-        ArEntityConfigs   mEntityConfig;
+        ArEntityConfigs*  mEntityConfig{ nullptr };
     };
 }
 

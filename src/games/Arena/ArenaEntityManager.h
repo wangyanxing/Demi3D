@@ -48,10 +48,16 @@ namespace Demi
         ArHeroEntityPtr     GetHero() { return mHeroEntity; }
 
         bool                IsHero(ArObjID id) { return id == mHeroId; }
+        
+        // Get or load an entity config structure
+        // e.g. GetEntityConfig("heroes/aluna/hero.entity");
+        ArEntityConfigs*    GetEntityConfig(const DiString& name);
 
     private:
 
         void                Release();
+        
+        ArEntityConfigs*    LoadEntityConfig(const DiString& name);
 
     private:
 
@@ -61,6 +67,8 @@ namespace Demi
         static ArObjID      mHeroId;
 
         ArHeroEntityPtr     mHeroEntity;
+        
+        DiStrHash<ArEntityConfigs*> mEntityConfigs;
     };
 }
 

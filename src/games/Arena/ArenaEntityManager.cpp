@@ -14,10 +14,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaPch.h"
 #include "ArenaGameEntity.h"
 #include "ArenaEntityManager.h"
+#include "ArenaEntityConfig.h"
 #include "ArenaHero.h"
-
+#include "XMLElement.h"
+#include "XMLFile.h"
 #include "K2RenderObjects.h"
 #include "K2Model.h"
+#include "K2Configs.h"
 
 namespace Demi
 {
@@ -97,6 +100,48 @@ namespace Demi
         mEntities.clear();
         mHeroEntity.reset();
         mHeroId = INVALID_OBJ_ID;
+        
+        for (auto& i : mEntityConfigs)
+        {
+            DI_DELETE i.second;
+        }
+    }
+    
+    ArEntityConfigs* ArEntityManager::GetEntityConfig(const DiString& name)
+    {
+        auto it = mEntityConfigs.find(name);
+        if(it == mEntityConfigs.end())
+        {
+            return LoadEntityConfig(name);
+        }
+        else
+        {
+            return it->second;
+        }
+    }
+    
+    ArEntityConfigs* ArEntityManager::LoadEntityConfig(const DiString& configfile)
+    {
+        DI_LOG("Loading entity config %s", configfile.c_str());
+        
+        auto file = DiK2Configs::GetDataStream(configfile, K2_RES_XML);
+        
+        if (!file)
+        {
+            DI_WARNING("Failed to load the attribute");
+            return;
+        }
+        
+        shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());
+        xmlfile->Load(file->GetAsString());
+        DiXMLElement root = xmlfile->GetRoot();
+        
+        auto ret = DI_NEW ArEntityConfigs();
+        ret->path = configfile.ExtractDirName();
+        ret->Load(root);
+        
+        mEntityConfigs[configfile] = ret;
+        return ret;
     }
 
     Demi::ArObjID ArEntityManager::mHeroId = INVALID_OBJ_ID;
