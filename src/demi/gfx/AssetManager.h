@@ -106,6 +106,8 @@ namespace Demi
 
         bool                          HasArchive(const DiString& filename);
         
+        void                          IterateArchive(const DiString& extension, std::function<void(const DiString&, ArchivePtr)> func);
+        
         bool                          HasAsset(const DiString& filename);
 
         DiAssetPtr                    FindAsset(const DiString& name);

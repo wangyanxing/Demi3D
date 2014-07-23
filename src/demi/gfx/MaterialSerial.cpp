@@ -254,9 +254,17 @@ namespace Demi
 
         DiXMLElement texNode = rootNode.CreateChild("texture");
         texNode.SetAttribute("name",varname);
+        
         if(tex->IsUseManualLoader())
             texNode.SetBool("manualLoader", true);
-        texNode.SetValue(tex->GetName());
+        
+        /// TOTO: ugly!!
+        DiString textureName = tex->GetName();
+        if(DiString::StartsWith(textureName, "00000000/"))
+        {
+            textureName.Replace("00000000/", "");
+        }
+        texNode.SetValue(textureName);
 
         if (tex->GetFilter() != DEFAULT_FILTER)
         {

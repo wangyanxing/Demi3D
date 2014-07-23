@@ -40,6 +40,8 @@ namespace Demi
         _DECLARE_SINGLETON(DiEffectManager)
 
     public:
+        
+        void                        LoadEffects();
 
         void                        InitFactories();
 

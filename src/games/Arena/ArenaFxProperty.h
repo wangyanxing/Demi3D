@@ -31,12 +31,22 @@ namespace Demi
         ArFxProperty();
 
         ~ArFxProperty();
+        
+        struct Projectile
+        {
+            uint32 targetID{ 0 };
+            DiParticleSystemPtr impactFx;
+            DiParticleSystemPtr trailFx;
+            DiCullNode* node{ nullptr };
+            float speed{ 0 };
+            DiVec3 curPos{ DiVec3::ZERO };
+        };
 
     public:
 
         void                Update(float dt) override;
         
-        void                PlayProjectile(uint32 entityID, const DiString& bone);
+        void                PlayProjectile(uint32 entityID);
         
         DiParticleSystemPtr PlayParticleSystem(const DiString& templateName);
         
@@ -48,9 +58,9 @@ namespace Demi
         
     protected:
         
-        DiVector<DiString>  mProjectiles;
-        
         DiSet<DiParticleSystemPtr> mEffects;
+        
+        DiVector<Projectile*> mProjectiles;
         
         int                 mFxCount{ 0 };
     };

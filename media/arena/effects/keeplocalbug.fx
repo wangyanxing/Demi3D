@@ -2,7 +2,7 @@
 <Effects
 >
 	<ParticleSystem
-		name="ParticleSystem_0"
+		name="KeepLocalBugTest"
 	>
 		<Element
 			name="Element_0"

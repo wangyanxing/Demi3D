@@ -34,6 +34,7 @@ namespace Demi
         mMotionProperty = CreateProperty<ArMotionProperty>();
         mStateProperty = CreateProperty<ArStateProperty>();
         mMoveProperty = CreateProperty<ArMoveProperty>();
+        mFxProperty = CreateProperty<ArFxProperty>();
     }
 
 }

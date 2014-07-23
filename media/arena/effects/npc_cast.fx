@@ -17,6 +17,51 @@
 				>fx_p</shader>
 				<depthWrite
 				>false</depthWrite>
+				<ambient
+				>0 0 0 1</ambient>
+				<shininess
+				>16</shininess>
+				<variables
+				>
+					<sampler2D
+					>
+						<texture
+							name="map"
+						>default.png</texture>
+					</sampler2D>
+				</variables>
+			</Material>
+			<Renderer
+				type="Billboard"
+			 />
+			<Emitter
+				type="Point"
+				name="Point_0"
+				emissionRate="fixed|1"
+				angle="fixed|0"
+				totalTimeToLive="fixed|3000"
+				velocity="fixed|0"
+				keepLocal="true"
+				forceEmission="true"
+			 />
+		</Element>
+	</ParticleSystem>
+	<ParticleSystem
+		name="npcs/good_range/projectile/effects/trail.effect"
+	>
+		<Element
+			name="Element_0"
+		>
+			<Material
+			>
+				<shader
+					name="vertex"
+				>fx_v</shader>
+				<shader
+					name="pixel"
+				>fx_p</shader>
+				<depthWrite
+				>false</depthWrite>
 				<blendMode
 				>ADD</blendMode>
 				<ambient
@@ -30,7 +75,7 @@
 						<texture
 							name="map"
 							manualLoader="true"
-						>00000000/shared/effects/textures/star_bolt_01</texture>
+						>shared/effects/textures/star_bolt_01</texture>
 					</sampler2D>
 				</variables>
 			</Material>
@@ -44,10 +89,10 @@
 				angle="random|0,360"
 				totalTimeToLive="fixed|0.7"
 				velocity="fixed|5"
-				allDimensions="fixed|10"
-				boxWidth="6"
-				boxHeight="6"
-				boxDepth="6"
+				allDimensions="fixed|30"
+				boxWidth="30"
+				boxHeight="30"
+				boxDepth="30"
 			 />
 			<Controller
 				type="Scale"

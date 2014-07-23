@@ -54,7 +54,6 @@ namespace Demi
     
     DiBillboardRenderer::~DiBillboardRenderer(void)
     {
-        DI_DEBUG("billboard renderer releasing");
     }
     
     void DiBillboardRenderer::Prepare(DiParticleElement* element)

@@ -180,6 +180,15 @@ namespace Demi
             return true;
         return false;
     }
+    
+    DiVec3 ArGameEntity::GetImpactPosition()
+    {
+        auto renderObj = GetRenderObj();
+        float scale = GetAttribute()->GetEntityConfig()->GetMaxPreGlobalScale();
+        auto offset = GetAttribute()->GetEntityConfig()->targetoffset;
+        
+        return renderObj->GetWorldPosition() + renderObj->GetRotQuat()*(scale * offset);
+    }
 
     bool ArGameEntity::CheckDistance(ArObjID target, float distance)
     {

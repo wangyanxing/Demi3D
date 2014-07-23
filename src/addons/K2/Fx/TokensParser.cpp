@@ -447,32 +447,39 @@ namespace Demi
 
         return element;
     }
-
-
-    DiVector<DiParticleSystemPtr> DiFxTokensParser::LoadEffects(const DiString& file)
+    
+    DiVector<DiParticleSystemPtr> DiFxTokensParser::LoadEffects(DiDataStreamPtr stream)
     {
+        DI_LOG("Loading fx file: %s", stream->GetName().c_str());
+        
         DiVector<DiParticleSystemPtr> ret;
-
-        auto stream = DiAssetManager::GetInstance().OpenArchive(file);
+    
         shared_ptr<DiXMLFile> xmlfile(DI_NEW DiXMLFile());
         xmlfile->Load(stream->GetAsString());
         DiXMLElement root = xmlfile->GetRoot();
-
+        
         if (!root.CheckName("Effects"))
         {
-            DI_WARNING("Bad effect file: %s", file.c_str());
+            DI_WARNING("Bad effect file: %s", stream->GetName().c_str());
         }
-
+        
         auto child = root.GetChild();
         while (child)
         {
             if (child.CheckName("ParticleSystem"))
                 ret.push_back(ReadSystem(child));
-
+            
             child = child.GetNext();
         }
-
+        
         return ret;
+    }
+
+
+    DiVector<DiParticleSystemPtr> DiFxTokensParser::LoadEffects(const DiString& file)
+    {
+        auto stream = DiAssetManager::GetInstance().OpenArchive(file);
+        return LoadEffects(stream);
     }
 
     void DiFxTokensParser::WriteSystem(DiParticleSystemPtr system, DiXMLElement& node)

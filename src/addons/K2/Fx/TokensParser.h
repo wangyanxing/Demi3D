@@ -46,6 +46,8 @@ namespace Demi
         void    WriteSystems(DiVector<DiParticleSystemPtr>& val, const DiString& filePath);
 
         DiVector<DiParticleSystemPtr>  LoadEffects(const DiString& file);
+        
+        DiVector<DiParticleSystemPtr>  LoadEffects(DiDataStreamPtr ds);
 
     public:
 

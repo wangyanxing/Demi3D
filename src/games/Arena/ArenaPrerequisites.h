@@ -33,6 +33,8 @@ namespace Demi
     class ArAICommand;
     class ArEntityConfigs;
 
+    struct ArFxProjectileConfig;
+    
     typedef shared_ptr<ArGameEntity>  ArGameEntityPtr;
     typedef shared_ptr<ArNPCEntity>   ArNPCEntityPtr;
     typedef shared_ptr<ArHeroEntity>  ArHeroEntityPtr;

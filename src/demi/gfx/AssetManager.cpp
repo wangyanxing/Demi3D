@@ -162,7 +162,6 @@ namespace Demi
         }
         if(asset)
         {
-            //DI_ASSERT(mAssets.find(filepath) == mAssets.end());
             mAssets[filepath] = asset;
         }
         return asset;
@@ -268,13 +267,16 @@ namespace Demi
             auto vec = ar->FindFileInfo("*", false);
             for( auto i = vec->begin(); i != vec->end(); ++i )
             {
-                if (i->basename.CheckFileExtension("zip"))
+                DiString ext = i->basename.GetFileExtension();
+                if (stricmp("zip", ext.c_str()) == 0)
                 {
                     ArchivePtr a = mArchiveManager->Load(i->filename, ARCHIVE_ZIP);
                     zips.push_back(a);
                 }
                 else
+                {
                     mArchives[i->basename] = ar;
+                }
             }
         }
 
@@ -305,6 +307,17 @@ namespace Demi
             DI_WARNING("Cannot locate the resouce file : %s",filename.c_str());
         }
         return DiString::BLANK;
+    }
+    
+    void DiAssetManager::IterateArchive(const DiString& extension, std::function<void(const DiString& name, ArchivePtr arc)> func)
+    {
+        for (auto& it : mArchives)
+        {
+            if(it.first.CheckFileExtension(extension))
+            {
+                func(it.first, it.second);
+            }
+        }
     }
 
     DiDataStreamPtr DiAssetManager::OpenArchive( const DiString& filename , bool ignoreError)

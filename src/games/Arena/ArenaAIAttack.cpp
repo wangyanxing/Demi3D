@@ -19,7 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaGameApp.h"
 #include "ArenaEntityManager.h"
 #include "ArenaMoveProperty.h"
-
+#include "ArenaFxProperty.h"
 #include "K2RenderObjects.h"
 
 namespace Demi
@@ -88,6 +88,6 @@ namespace Demi
         mEntity->GetMotionProperty()->PlayClip(clip);
         
         // play projectile effect
-        
+        mEntity->GetFxProperty()->PlayProjectile(mTarget);
     }
 }

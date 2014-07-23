@@ -49,9 +49,9 @@ namespace Demi
         };
         sPropOps["targetoffset"] = [](const DiString& node, ArEntityConfigs* cf){
             cf->targetoffset = node.AsVector3();
+            std::swap(cf->targetoffset.y, cf->targetoffset.z);
         };
         
-
         sPropOps["movespeed"] = [](const DiString& node, ArEntityConfigs* cf){
             cf->movespeed = node.AsFloat();
         };
@@ -83,6 +83,7 @@ namespace Demi
         };
         sPropOps["attackoffset"] = [](const DiString& node, ArEntityConfigs* cf){
             cf->attackoffset = node.AsVector3();
+            std::swap(cf->attackoffset.y, cf->attackoffset.z);
         };
         sPropOps["attackprojectile"] = [](const DiString& node, ArEntityConfigs* cf){
             cf->attackprojectile = node.Tokenize(",");
@@ -216,9 +217,9 @@ namespace Demi
         }
     }
     
-    ArFxProjectileConfig* ArEntityConfigs::GetProjectile(const DiString& name)
+    ArFxProjectileConfig* ArEntityConfigs::GetProjectile(const DiString& _name)
     {
-        auto it = mProjectileConfigs.find(name);
+        auto it = mProjectileConfigs.find(_name);
         if(it == mProjectileConfigs.end())
         {
             return nullptr;

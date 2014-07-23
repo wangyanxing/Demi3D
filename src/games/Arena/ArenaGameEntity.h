@@ -37,6 +37,8 @@ namespace Demi
         void                Init(K2ObjTypes type);
 
         DiK2RenderObject*   GetRenderObj() { return mRenderObj; }
+        
+        DiVec3              GetImpactPosition();
 
         K2ObjTypes          GetType() const { return mType; }
 

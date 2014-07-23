@@ -51,6 +51,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 #include "SceneManager.h"
 #include "RenderWindow.h"
+#include "AssetManager.h"
+#include "TokensParser.h"
 
 _IMPLEMENT_SINGLETON(Demi::DiEffectManager);
 
@@ -60,6 +62,8 @@ namespace Demi
         mLastCreatedTemplateName(DiString::BLANK)
     {
         InitFactories();
+        
+        LoadEffects();
     }
     
     DiEffectManager::~DiEffectManager ()
@@ -560,5 +564,13 @@ namespace Demi
         }
     }
 
+    void DiEffectManager::LoadEffects()
+    {
+        DiFxTokensParser parser;
+        DiAssetManager::GetInstance().IterateArchive("fx", [&](const DiString& name, ArchivePtr arc){
+            auto stream = arc->Open(name);
+            parser.LoadEffects(stream);
+        });
+    }
 }
 

@@ -95,9 +95,8 @@ namespace Demi
 #elif USE_DRV == DRV_GL_ES2
         DI_INSTALL_PLUGIN(DiDrvGLES2);
 #endif
-        DI_INSTALL_PLUGIN(DiScript);
-
-        mAssetManager = new DiAssetManager;
+        
+        mAssetManager = DI_NEW DiAssetManager;
         
 #if DEMI_PLATFORM == DEMI_PLATFORM_IOS
         mAssetManager->SetBasePath("media");
@@ -111,7 +110,9 @@ namespace Demi
             }
         }
 #endif
-
+        
+        DI_INSTALL_PLUGIN(DiScript);
+        
         CommandMgr->RegisterString("scene_type", "Octree", 0, "Scene manager type");
         CommandMgr->AddCommand("quit", Quit, "Close Application");
     }
@@ -172,10 +173,10 @@ namespace Demi
 
         SAFE_DELETE(mGame);
 
-        DiK2Configs::Shutdown();
+        DI_UNINSTALL_PLUGIN(DiK2);
 
         Driver->Shutdown();
-
+        
         DI_UNINSTALL_PLUGIN(DiScript);
 
 #if USE_DRV == DRV_DX9
@@ -204,14 +205,14 @@ namespace Demi
         bool ret = Driver->Init(640,1136, "Hon Arena", false);
         DI_ASSERT(ret);
 
-        mInputMgr = new ArInput();
+        mInputMgr = DI_NEW ArInput();
 
         DiWindow* wnd = Driver->GetMainRenderWindow()->GetWindow();
         mInputMgr->CreateInput(wnd->GetWndHandle(), wnd->GetWndViewHandle());
 
         using namespace std::placeholders;
 
-        DiK2Configs::Init();
+        DI_INSTALL_PLUGIN(DiK2);
 
         mGame = DI_NEW ArGame();
         

@@ -35,7 +35,6 @@ namespace tools
 	{
         if (mResources)
         {
-            mResources->Release();
             DI_DELETE mResources;
             mResources = nullptr;
         }
