@@ -23,13 +23,13 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaEntityConfig.h"
 #include "K2RenderObjects.h"
 #include "EffectManager.h"
+#include "ParticleElement.h"
 #include "ParticleSystem.h"
 
 namespace Demi
 {
     ArFxProperty::ArFxProperty()
     {
-
     }
 
     ArFxProperty::~ArFxProperty()
@@ -39,34 +39,55 @@ namespace Demi
 
     void ArFxProperty::Update(float dt)
     {
-        for (auto& pj : mProjectiles)
+        for(auto iter = mProjectiles.begin(); iter != mProjectiles.end(); )
         {
+            auto& pj = *iter;
+            if(pj->trailFx->GetState() == DiParticleSystem::PSS_STOPPED)
+            {
+                iter++;
+                continue;
+            }
+            
+            // update the target position
             auto entityPtr = ArGameApp::Get()->GetEntityManager()->FindEntity(pj->targetID);
             if(entityPtr)
             {
-                if(pj->trailFx->GetState() == DiParticleSystem::PSS_STOPPED)
+                pj->curTarget = entityPtr->GetImpactPosition();
+            }
+            
+            // update the motion
+            auto dir = (pj->curTarget - pj->curPos).normalisedCopy();
+            pj->curPos += dir * (dt * pj->speed);
+            pj->node->SetPosition(pj->curPos);
+            size_t numElements = pj->trailFx->GetNumElements();
+            for (size_t i = 0; i < numElements; ++i)
+            {
+                pj->trailFx->GetElement(i)->direction = -dir;
+            }
+            
+            // update the effect
+            pj->trailFx->Update(dt);
+            
+            //reach or not
+            if(DiMath::Abs(pj->curPos.distance(pj->curTarget)) < 8)
+            {
+                pj->trailFx->Stop();
+                pj->node->DetachObject(pj->trailFx);
+                DiEffectManager::GetInstance().DestroyParticleSystem(pj->trailFx);
+
+                if(entityPtr && pj->impactFx)
                 {
-                    continue;
-                }
-                auto targetPos = entityPtr->GetImpactPosition();
-                
-                //reach
-                if(DiMath::Abs(pj->curPos.distance(targetPos)) < 2)
-                {
-                    pj->trailFx->Stop();
-                    pj->node->DetachObject(pj->trailFx);
-                    
-                    if(pj->impactFx)
-                    {
-                        pj->impactFx->Start();
-                        pj->node->AttachObject(pj->impactFx);
-                    }
-                    continue;
+                    entityPtr->GetRenderObj()->GetNode()->AttachObject(pj->impactFx);
+                    pj->impactFx->AttachModel(entityPtr->GetRenderObj()->GetModel());
+                    pj->impactFx->Start();
                 }
                 
-                auto dir = (targetPos - pj->curPos).normalisedCopy();
-                pj->curPos += dir * (dt * pj->speed);
-                pj->node->SetPosition(pj->curPos);
+                DI_DELETE pj;
+                iter = mProjectiles.erase(iter);
+            }
+            else
+            {
+                ++iter;
             }
         }
     }
@@ -83,49 +104,43 @@ namespace Demi
         ret->AddParticleSystemListener(this);
         ret->Start();
 
-        mEffects.insert(ret);
+        mEffects.insert(ret.get());
         return ret;
     }
     
     void ArFxProperty::PlayProjectile(uint32 entityID)
     {
-        auto entity = GetEntity<ArDynEntity>();
-        auto entityConfig = entity->GetAttribute()->GetEntityConfig();
-        if(entityConfig->attackprojectile.empty())
+        if(!mCurrentConfig)
         {
-            return;
+            Init();
         }
         
-        DiString pjName = entityConfig->attackprojectile[0];
-        ArFxProjectileConfig* pjConfig = entityConfig->GetProjectile(pjName);
-        if(!pjConfig)
-        {
-            DI_WARNING("Failed to get the projectile config");
-            return;
-        }
+        auto entity = GetEntity<ArDynEntity>();
+        auto entityConfig = entity->GetAttribute()->GetEntityConfig();
         
         auto pos = entity->GetRenderObj()->GetWorldPosition();
         auto rot = entity->GetRenderObj()->GetNode()->GetDerivedOrientation();
         
-        DiString fxName = entityConfig->path + "projectile/" + pjConfig->traileffect;
-        DiString impactFxName = entityConfig->path + "projectile/" + pjConfig->impacteffect;
-        
         DiString name;
-        name.Format("EtFx_%d_%d", mEntity->GetID(), mFxCount++);
+        name.Format("EtPj_%d_%d", mEntity->GetID(), mFxCount++);
+        DiString impactname;
+        impactname.Format("EtImp_%d_%d", mEntity->GetID(), mFxCount++);
         
-        DiParticleSystemPtr trailFx = DiEffectManager::GetInstancePtr()->CreateParticleSystem(name, fxName);
+        DiParticleSystemPtr trailFx = DiEffectManager::GetInstancePtr()->CreateParticleSystem(name, mTrailFxName);
         DiCullNode* node = Driver->GetSceneManager()->GetRootNode()->CreateChild();
         node->AttachObject(trailFx);
         node->SetPosition(pos);
         trailFx->AttachModel(mEntity->GetRenderObj()->GetModel());
-        trailFx->AddParticleSystemListener(this);
         trailFx->Start();
         
+        DiParticleSystemPtr impactFx = DiEffectManager::GetInstancePtr()->CreateParticleSystem(impactname, mImpactFxName);
+        impactFx->AddParticleSystemListener(this);
+        
         Projectile* pj = DI_NEW Projectile();
-        pj->speed      = pjConfig->speed;
+        pj->speed      = mCurrentConfig->speed;
         pj->curPos     = pos + rot * (entityConfig->attackoffset * entityConfig->GetMaxPreGlobalScale());
         pj->trailFx    = trailFx;
-        pj->impactFx   = nullptr;
+        pj->impactFx   = impactFx;
         pj->node       = node;
         pj->targetID   = entityID;
         
@@ -138,29 +153,43 @@ namespace Demi
     {
         auto entity = GetEntity<ArDynEntity>();
         auto entityConfig = entity->GetAttribute()->GetEntityConfig();
-        if(entityConfig)
-        {
-            //mProjectiles = entityConfig->attackprojectile;
-        }
-        else
+        if(!entityConfig)
         {
             DI_WARNING("No valid entity config!");
+            return;
         }
+        
+        DiString pjName = entityConfig->attackprojectile[0];
+        mCurrentConfig = entityConfig->GetProjectile(pjName);
+        if(!mCurrentConfig)
+        {
+            DI_WARNING("Failed to get the projectile config");
+            return;
+        }
+        
+        mTrailFxName = entityConfig->path + "projectile/" + mCurrentConfig->traileffect;
+        mImpactFxName = entityConfig->path + "projectile/" + mCurrentConfig->impacteffect;
     }
     
-    void ArFxProperty::HandleParticleSystemEvent(DiParticleSystemPtr particleSystem, DiFxEvent& event)
+    void ArFxProperty::HandleParticleSystemEvent(DiParticleSystem* particleSystem, DiFxEvent& event)
     {
         if (event.eventType == PU_EVT_SYSTEM_STOPPED)
         {
+            auto node = particleSystem->GetParentCullNode();
+            node->DetachObject(particleSystem);
+            
+            DiEffectManager::GetInstance().DestroyParticleSystem(particleSystem->GetName());
+#if 0
             auto it = mEffects.find(particleSystem);
             if (it != mEffects.end())
             {
-                DiParticleSystemPtr ps = *it;
+                DiParticleSystem* ps = *it;
                 auto node = ps->GetParentCullNode();
                 Driver->GetSceneManager()->DestroyNode(node);
                 
                 mEffects.erase(it);
             }
+#endif
         }
     }
 }

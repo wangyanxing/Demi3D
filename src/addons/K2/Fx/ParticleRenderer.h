@@ -113,15 +113,15 @@ namespace Demi
 
         virtual DiSortMode      GetSortMode(void) const = 0;
 
-        const bool              IsSorted(void) const;
+        bool                    IsSorted(void) const;
 
         void                    SetSorted(bool sorted);
 
-        const uint8             GetTextureCoordsRows(void) const;
+        uint8                   GetTextureCoordsRows(void) const;
 
         void                    SetTextureCoordsRows(uint8 const textureCoordsRows);
 
-        const uint8             GetTextureCoordsColumns(void) const;
+        uint8                   GetTextureCoordsColumns(void) const;
 
         void                    SetTextureCoordsColumns(uint8 const textureCoordsColumns);
 

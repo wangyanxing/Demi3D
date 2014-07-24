@@ -45,7 +45,7 @@ namespace Demi
 
         virtual ~DiParticleSystemListener(void) {};
 
-        virtual void HandleParticleSystemEvent(DiParticleSystemPtr particleSystem, DiFxEvent& DiFxEvent) = 0;
+        virtual void HandleParticleSystemEvent(DiParticleSystem* particleSystem, DiFxEvent& DiFxEvent) = 0;
     };
 }
 #endif // EffectListeners_h__

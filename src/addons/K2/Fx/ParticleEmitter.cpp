@@ -255,6 +255,7 @@ namespace Demi
         emitter->mParticleColour                = mParticleColour;
         emitter->mParticleTextureCoords         = mParticleTextureCoords;
         emitter->mKeepLocal                     = mKeepLocal;
+        emitter->mBone                          = mBone;
 
         emitter->SetDynEmissionRate(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynEmissionRate()));
         emitter->SetDynTotalTimeToLive(mDynamicAttributeFactory.CloneDynamicAttribute(GetDynTotalTimeToLive()));

@@ -121,7 +121,7 @@ namespace Demi
         mQueueId = queueId;
     }
     
-    const bool DiParticleRenderer::IsSorted(void) const
+    bool DiParticleRenderer::IsSorted(void) const
     {
         return mSorted;
     }
@@ -131,7 +131,7 @@ namespace Demi
         mSorted = sorted;
     }
     
-    const uint8 DiParticleRenderer::GetTextureCoordsRows(void) const
+    uint8 DiParticleRenderer::GetTextureCoordsRows(void) const
     {
         return mTextureCoordsRows;
     }
@@ -142,7 +142,7 @@ namespace Demi
         mTextureCoordsRowsAndColumnsSet = true;
     }
     
-    const uint8 DiParticleRenderer::GetTextureCoordsColumns(void) const
+    uint8 DiParticleRenderer::GetTextureCoordsColumns(void) const
     {
         return mTextureCoordsColumns;
     }

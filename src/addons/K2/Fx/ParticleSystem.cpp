@@ -87,6 +87,7 @@ namespace Demi
     
     DiParticleSystem::~DiParticleSystem(void)
     {
+        //DI_DEBUG("Deleting ps: %s", GetName().c_str());
         PushSystemEvent(PU_EVT_SYSTEM_DELETING);
         DestroyAllElements();
     }
@@ -179,8 +180,7 @@ namespace Demi
         for (auto it = mParticleSystemListenerList.begin();
              it != mParticleSystemListenerList.end(); ++it)
         {
-            DiParticleSystemPtr ps = std::static_pointer_cast<DiParticleSystem>(shared_from_this());
-            (*it)->HandleParticleSystemEvent(ps, DiFxEvent);
+            (*it)->HandleParticleSystemEvent(this, DiFxEvent);
         }
     }
     

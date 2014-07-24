@@ -102,6 +102,30 @@ namespace Demi
             return nullptr;
         }
     }
+    
+    void DiCullNode::DetachObject(DiTransformUnit* obj)
+    {
+        bool found = false;
+        for (auto i = mObjects.begin(); i != mObjects.end(); ++i)
+        {
+            if ((*i).get() == obj)
+            {
+                mObjects.erase(i);
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found)
+            return;
+        
+        if (obj->GetParentNode() == this)
+        {
+            obj->NotifyAttached(nullptr);
+        }
+        
+        NeedUpdate();
+    }
 
     DiTransUnitPtr DiCullNode::DetachObject( uint32 index )
     {

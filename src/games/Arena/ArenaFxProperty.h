@@ -40,6 +40,7 @@ namespace Demi
             DiCullNode* node{ nullptr };
             float speed{ 0 };
             DiVec3 curPos{ DiVec3::ZERO };
+            DiVec3 curTarget{ DiVec3::ZERO };
         };
 
     public:
@@ -50,17 +51,21 @@ namespace Demi
         
         DiParticleSystemPtr PlayParticleSystem(const DiString& templateName);
         
-        void                HandleParticleSystemEvent(DiParticleSystemPtr particleSystem, DiFxEvent& DiFxEvent) override;
-        
-    protected:
+        void                HandleParticleSystemEvent(DiParticleSystem* particleSystem, DiFxEvent& DiFxEvent) override;
         
         void                Init();
         
     protected:
         
-        DiSet<DiParticleSystemPtr> mEffects;
+        DiSet<DiParticleSystem*> mEffects;
         
         DiVector<Projectile*> mProjectiles;
+        
+        ArFxProjectileConfig* mCurrentConfig{ nullptr };
+        
+        DiString            mTrailFxName;
+        
+        DiString            mImpactFxName;
         
         int                 mFxCount{ 0 };
     };

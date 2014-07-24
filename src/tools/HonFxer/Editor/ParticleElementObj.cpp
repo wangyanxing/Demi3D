@@ -190,6 +190,15 @@ namespace Demi
             }));
         
         
+        g->AddProperty("Element Direction" , DI_NEW DiBoolProperty([&]{
+                auto rd = dynamic_cast<DiBillboardRenderer*>(mParticleElement->GetRenderer());
+                return rd->IsUseElementDirection();
+            },
+            [&](bool& val){
+                auto rd = dynamic_cast<DiBillboardRenderer*>(mParticleElement->GetRenderer());
+                rd->SetUseElementDirection(val);
+            }));
+        
         g->CreateUI();
         
         mPropGroups.push_back(g);

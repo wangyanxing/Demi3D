@@ -84,6 +84,12 @@ namespace Demi
     {
     }
     
+    void DiBillboardRenderer::NotifyStop()
+    {
+        mBillboardSet->Clear();
+        DiParticleRenderer::NotifyStop();
+    }
+    
     void DiBillboardRenderer::SetBillboardType(BillboardType bbt)
     {
         mBillboardType = bbt;
@@ -152,7 +158,7 @@ namespace Demi
                 
                 if (mBillboardType == BBT_ORIENTED_SELF || mBillboardType == BBT_PERPENDICULAR_SELF)
                 {
-                    bb.mDirection = particle->direction;
+                    bb.mDirection = mUseElementDirection ? particle->direction : mParentElement->direction;
                     bb.mDirection.normalise();
                 }
                 else if (mBillboardType == BBT_ORIENTED_SHAPE)
@@ -255,6 +261,7 @@ namespace Demi
         billboardRenderer->SetBillboardRotationType(GetBillboardRotationType());
         billboardRenderer->SetCommonDirection(GetCommonDirection());
         billboardRenderer->SetCommonUpVector(GetCommonUpVector());
+        billboardRenderer->SetUseElementDirection(IsUseElementDirection());
     }
 
     void DiBillboardRenderer::SetBillboardOrigin( BillboardOrigin origin )

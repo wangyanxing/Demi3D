@@ -117,6 +117,9 @@ namespace Demi
 
         if (val->GetCommonUpVector() != DiBillboardRenderer::DEFAULT_COMMON_UP_VECTOR)
             node.SetVector3("commonUpVector", val->GetCommonUpVector());
+        
+        if (val->IsUseElementDirection())
+            node.SetBool("useElementDir", val->IsUseElementDirection());
     }
 
     void DiFxTokensParser::WriteRenderer(DiParticleRenderer* val, DiXMLElement& node)
@@ -148,6 +151,8 @@ namespace Demi
                 renderer->SetCommonDirection(value.AsVector3());
             else if (name == "commonUpVector")
                 renderer->SetCommonUpVector(value.AsVector3());
+            else if (name == "useElementDir")
+                renderer->SetUseElementDirection(value.AsBool());
         });
     }
 
@@ -734,6 +739,9 @@ namespace Demi
 
         if (emitter->IsForceEmission() != DiParticleEmitter::DEFAULT_FORCE_EMISSION)
             node.SetBool("forceEmission", emitter->IsForceEmission());
+        
+        if (!emitter->GetBone().empty())
+            node.SetAttribute("bone", emitter->GetBone());
     }
 
     void DiFxTokensParser::ReadBaseEmitter(DiParticleEmitter* emitter, DiXMLElement& node)
@@ -786,6 +794,8 @@ namespace Demi
                 emitter->SetAutoDirection(value.AsBool());
             else if (name == "forceEmission")
                 emitter->SetForceEmission(value.AsBool());
+            else if (name == "bone")
+                emitter->SetBone(value);
         });
     }
 

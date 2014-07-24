@@ -144,6 +144,9 @@ namespace Demi
         
         g->AddProperty("Scale"           , DI_NEW DiVec3Property(  [&]{ return mParticleSystem->GetScale(); },
                                                                    [&](DiVec3& v){ mParticleSystem->SetScale(v); }));
+    
+        g->AddProperty("Fixed Timeout"   , DI_NEW DiFloatProperty( [&]{ return mParticleSystem->GetFixedTimeout(); },
+                                                                   [&](float& v){ mParticleSystem->SetFixedTimeout(v); }));
         
         g->AddProperty("Attached Model"  , DI_NEW DiDynEnumProperty([&]
             {

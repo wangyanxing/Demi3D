@@ -78,6 +78,8 @@ namespace Demi
         /** Shoud not be called frequently
          */
         void                    DetachObject(DiTransUnitPtr obj);
+        
+        void                    DetachObject(DiTransformUnit* obj);
 
         void                    DetachAllObjects(void);
 

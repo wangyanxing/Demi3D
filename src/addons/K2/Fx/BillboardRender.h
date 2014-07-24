@@ -77,8 +77,10 @@ namespace Demi
         virtual void                 NotifyAttached(DiNode* parent);
 
         virtual void                 SetMaterialName(const DiString& materialName);
+        
+        virtual void                 NotifyStop(void) override;
 
-        virtual void                 NotifyCurrentCamera(DiCamera* cam);
+        virtual void                 NotifyCurrentCamera(DiCamera* cam) override;
 
         virtual void                 NotifyParticleQuota(size_t quota);
 
@@ -97,12 +99,18 @@ namespace Demi
         DiBillboardSetPtr            GetBillboardSet(void) const { return mBillboardSet; }
 
         virtual void                 SetVisible(bool visible);
+        
+        void                         SetUseElementDirection(bool val){ mUseSoftParticles = val; }
+        
+        bool                         IsUseElementDirection(){ return mUseSoftParticles; }
 
     protected:
 
         DiBillboardSetPtr            mBillboardSet;
 
         BillboardType                mBillboardType;
+        
+        bool                         mUseElementDirection{ false };
     };
 
     //////////////////////////////////////////////////////////////////////////
