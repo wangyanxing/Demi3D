@@ -179,17 +179,6 @@ namespace Demi
             node->DetachObject(particleSystem);
             
             DiEffectManager::GetInstance().DestroyParticleSystem(particleSystem->GetName());
-#if 0
-            auto it = mEffects.find(particleSystem);
-            if (it != mEffects.end())
-            {
-                DiParticleSystem* ps = *it;
-                auto node = ps->GetParentCullNode();
-                Driver->GetSceneManager()->DestroyNode(node);
-                
-                mEffects.erase(it);
-            }
-#endif
         }
     }
 }
