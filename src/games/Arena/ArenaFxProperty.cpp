@@ -55,6 +55,12 @@ namespace Demi
                 {
                     pj->trailFx->Stop();
                     pj->node->DetachObject(pj->trailFx);
+                    
+                    if(pj->impactFx)
+                    {
+                        pj->impactFx->Start();
+                        pj->node->AttachObject(pj->impactFx);
+                    }
                     continue;
                 }
                 
@@ -116,12 +122,13 @@ namespace Demi
         trailFx->Start();
         
         Projectile* pj = DI_NEW Projectile();
-        pj->speed = pjConfig->speed;
-        pj->curPos = pos + rot * (entityConfig->attackoffset * entityConfig->GetMaxPreGlobalScale());
-        pj->trailFx = trailFx;
-        pj->impactFx = nullptr;
-        pj->node = node;
-        pj->targetID = entityID;
+        pj->speed      = pjConfig->speed;
+        pj->curPos     = pos + rot * (entityConfig->attackoffset * entityConfig->GetMaxPreGlobalScale());
+        pj->trailFx    = trailFx;
+        pj->impactFx   = nullptr;
+        pj->node       = node;
+        pj->targetID   = entityID;
+        
         node->SetPosition(pj->curPos);
         
         mProjectiles.push_back(pj);
