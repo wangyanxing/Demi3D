@@ -287,7 +287,7 @@ namespace Demi
             {
                 std::regex regexpattern(filePattern.c_str(),std::regex_constants::extended);
                 
-                bool pass = (tagData.attrib & _A_SUBDIR);
+                bool pass = (tagData.attrib & _A_SUBDIR) ? true : false;
                 
                 if(!pass)
                 {
@@ -299,7 +299,7 @@ namespace Demi
                 if (pass)
                 {
                     auto nd = node->AddChild(tagData.name);
-                    nd->folder = tagData.attrib & _A_SUBDIR;
+                    nd->folder = (tagData.attrib & _A_SUBDIR) ? true : false;
                     nodeTable[tagData.name] = nd;
                 }
             }

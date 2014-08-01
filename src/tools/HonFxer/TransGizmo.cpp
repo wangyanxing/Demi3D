@@ -114,7 +114,6 @@ namespace Demi
         }
         
 		DiVec4 rect;
-		int iLeft,iTop,iWidth,iHeight;
         
         float width = DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->GetWidth();
         float height = DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->GetHeight();

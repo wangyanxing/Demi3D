@@ -11,6 +11,7 @@
  https://github.com/wangyanxing/Demi3D/blob/master/License.txt
  ***********************************************************************/
 
+#include "GfxPch.h"
 #include "BillboardChain.h"
 #include "CullNode.h"
 #include "RenderBatchGroup.h"

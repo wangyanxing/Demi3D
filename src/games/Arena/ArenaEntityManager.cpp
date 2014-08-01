@@ -129,7 +129,7 @@ namespace Demi
         if (!file)
         {
             DI_WARNING("Failed to load the attribute");
-            return;
+            return nullptr;
         }
         
         shared_ptr<DiXMLFile> xmlfile(new DiXMLFile());

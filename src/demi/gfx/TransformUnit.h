@@ -100,7 +100,7 @@ namespace Demi
 
         virtual void            SetShadowCastEnable(bool val){mShadowCastEnable = val;}
         
-        virtual bool            GetShadowReceiveEnable()const{return mShadowReceiveEnable;}
+        virtual bool            GetShadowReceiveEnable() const { return mShadowReceiveEnable; }
         
         virtual void            SetShadowReceiveEnable(bool val){mShadowReceiveEnable = val;}
         
