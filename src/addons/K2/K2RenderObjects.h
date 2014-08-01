@@ -50,7 +50,7 @@ namespace Demi
 
         DiVec3                  GetWorldPosition();
 
-        void                    Update(float dt);
+        virtual void            Update(float dt);
 
         void                    SetRotation(const float rotRad);
 

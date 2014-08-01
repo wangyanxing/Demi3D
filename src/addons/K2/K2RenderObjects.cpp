@@ -116,14 +116,6 @@ namespace Demi
 
     void DiK2RenderObject::Update(float dt)
     {
-        if (!mNode->IsCulled())
-        {
-#ifdef _VISUALIZE_AABB
-            mDebugger->Clear();
-            mDebugger->AddBoundingBox(mSelectBounds, DiColor::Red);
-#endif
-            mModel->UpdateAnimation(dt);
-        }
     }
 
     void DiK2RenderObject::PostInit()

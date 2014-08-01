@@ -30,6 +30,20 @@ namespace Demi
     {
     }
 
+    void DiK2AnimatedObj::Update(float dt)
+    {
+        DiK2RenderObject::Update(dt);
+        
+        if (!mNode->IsCulled())
+        {
+#ifdef _VISUALIZE_AABB
+            mDebugger->Clear();
+            mDebugger->AddBoundingBox(mSelectBounds, DiColor::Red);
+#endif
+            mModel->UpdateAnimation(dt);
+        }
+    }
+
     DiK2ModelPtr DiK2AnimatedObj::LoadModel(const DiString& mdf)
     {
         DiSceneManager* sm = Driver->GetSceneManager();

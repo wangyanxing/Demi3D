@@ -28,6 +28,8 @@ namespace Demi
         virtual ~DiK2AnimatedObj();
 
     public:
+        
+        void            Update(float dt) override;
 
         DiK2ModelPtr    LoadModel(const DiString& mdf);
 

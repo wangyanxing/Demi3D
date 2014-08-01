@@ -205,7 +205,7 @@ namespace Demi
             break;
         }
 
-        if (!ret)
+        if (ret)
             mRenderObjs.insert(ret);
 
         return ret;
@@ -264,8 +264,10 @@ namespace Demi
         {
         case Demi::K2ObjSubTypes::SUB_STATIC_TREE:
             AddRenderObj(mdf, subtype, trans, id, QUERY_TREE);
+            break;
         case Demi::K2ObjSubTypes::SUB_STATIC_CLIFF:
             AddRenderObj(mdf, subtype, trans, id, QUERY_TERRAIN);
+            break;
         case Demi::K2ObjSubTypes::SUB_STATIC_SCENERY:
         case Demi::K2ObjSubTypes::SUB_STATIC_BUILDING:
             AddRenderObj(mdf, subtype, trans, id, QUERY_STATIC_MODEL);

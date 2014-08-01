@@ -65,10 +65,10 @@ namespace Demi
         case Demi::K2ObjSubTypes::SUB_STATIC_MODEL:
         case Demi::K2ObjSubTypes::SUB_STATIC_CLIFF:
         case Demi::K2ObjSubTypes::SUB_STATIC_WATER:
-        case Demi::K2ObjSubTypes::SUB_STATIC_SCENERY:
         case Demi::K2ObjSubTypes::SUB_STATIC_BUILDING:
             return GAME_STATIC;
         case Demi::K2ObjSubTypes::SUB_SCENE_ITEM:
+        case Demi::K2ObjSubTypes::SUB_STATIC_SCENERY:
             return GAME_SCENE_ITEM;
         case Demi::K2ObjSubTypes::SUB_NPC:
             return GAME_NPC;
