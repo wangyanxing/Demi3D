@@ -62,10 +62,6 @@ namespace Demi
         DiK2RenderObject*   AddRenderObj(const DiString& mdf, K2ObjSubTypes::Type type, 
                                 const Trans& trans, int id, uint32 queryFlag = 0);
 
-        /** Remove and delete
-         */
-        bool                RemoveRenderObj(DiK2RenderObject*);
-
         void                RemoveAllRenderObjs();
 
         DiK2RenderObject*   CreateRenderObject( K2ObjTypes type );
@@ -90,6 +86,8 @@ namespace Demi
 
         typedef DiSet<DiK2RenderObject*> RenderObjs;
         RenderObjs          mRenderObjs;
+        
+        RenderObjs          mAnimatedObjs;
 
 #ifdef _DEBUG_CLIFF_POS
         DiDebugHelperPtr    mDebugger;

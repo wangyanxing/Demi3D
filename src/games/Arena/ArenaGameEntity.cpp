@@ -58,8 +58,6 @@ namespace Demi
     {
         ArEntity::Update(dt);
 
-        mRenderObj->Update(dt);
-        
 #if 0
         mDebugger->Clear();
         for (int i = 0; i < DEFAULT_FOLLOWER_NUM; ++i)

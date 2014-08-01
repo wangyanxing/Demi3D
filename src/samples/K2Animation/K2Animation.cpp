@@ -54,7 +54,9 @@ void InitScene()
     DiCullNode* nd1 = sm->GetRootNode()->CreateChild();
     //k2md2 = make_shared<DiK2Model>("npcs/n_dragon/model.mdf");
     //k2md2 = make_shared<DiK2Model>("buildings/legion/well/model.mdf");
-    k2md2 = make_shared<DiK2Model>("heroes/aluna/model.mdf");
+    //k2md2 = make_shared<DiK2Model>("heroes/aluna/model.mdf");
+    k2md2 = make_shared<DiK2Model>("buildings/legion/attack_tower/tower_4/model.mdf");
+    
     nd1->AttachObject(k2md2);
     nd1->Translate(0/*50*/, -50, 0);
     k2md2->GetAnimation()->Play(K2PrefabClip::ANIM_IDLE);

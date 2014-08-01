@@ -132,8 +132,6 @@ namespace Demi
         DiVec3 pos = node->GetPosition();
         DiQuat rot = node->GetOrientation();
 
-        //DiVec2 worldSize = mTerrain->GetWorldSize();
-
         DiTerrainDescPtr terDesc = mTerrain->GetDesc();
 
         float cliffsize = terDesc->mCliffSize * terDesc->mGridSize / 2.0f;
@@ -197,30 +195,17 @@ namespace Demi
         case GAME_NPC:
         case GAME_SCENE_ITEM:
             ret = DI_NEW DiK2AnimatedObj(this);
+            mAnimatedObjs.insert(ret);
             break;
         case GAME_STATIC:
             ret = DI_NEW DiK2StaticObj(this);
+            mRenderObjs.insert(ret);
             break;
         default:
             break;
         }
 
-        if (ret)
-            mRenderObjs.insert(ret);
-
         return ret;
-    }
-
-    bool DiK2World::RemoveRenderObj(DiK2RenderObject* obj)
-    {
-        auto i = mRenderObjs.find(obj);
-        if (i == mRenderObjs.end())
-            return false;
-        
-        DI_DELETE obj;
-
-        mRenderObjs.erase(i);
-        return true;
     }
 
     void DiK2World::RemoveAllRenderObjs()
@@ -230,6 +215,12 @@ namespace Demi
             DI_DELETE *i;
         }
         mRenderObjs.clear();
+
+        for (auto i = mAnimatedObjs.begin(); i != mAnimatedObjs.end(); ++i)
+        {
+            DI_DELETE *i;
+        }
+        mAnimatedObjs.clear();
     }
 
     void DiK2World::Update(float dt)
@@ -253,6 +244,11 @@ namespace Demi
             }
         }
 #endif
+        
+        for (auto i = mAnimatedObjs.begin(); i != mAnimatedObjs.end(); ++i)
+        {
+            (*i)->Update(dt);
+        }
     }
 
     void DiK2World::ProcessWorldEntity(const DiString& mdf, const DiString& type,
@@ -271,12 +267,12 @@ namespace Demi
         case Demi::K2ObjSubTypes::SUB_STATIC_SCENERY:
         case Demi::K2ObjSubTypes::SUB_STATIC_BUILDING:
             AddRenderObj(mdf, subtype, trans, id, QUERY_STATIC_MODEL);
-
+            break;
         //case Demi::K2ObjSubTypes::SUB_STATIC_MODEL:
         //case Demi::K2ObjSubTypes::SUB_STATIC_WATER:
         //case Demi::K2ObjSubTypes::SUB_SCENE_ITEM:
         //case Demi::K2ObjSubTypes::SUB_NPC:
-            break;
+            //break;
         
         case Demi::K2ObjSubTypes::SUB_LOGIC_TRIGGER_SPAWN_POINT:
         case Demi::K2ObjSubTypes::SUB_LOGIC_ENTITY:
