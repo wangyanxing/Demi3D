@@ -81,7 +81,9 @@ namespace Demi
         if (bloom)
             bloom->SetEnable(true);
 
-        SetCamera(ArGameCamera::STYLE_CHARACTER);
+        SetCamera(ArGameCamera::STYLE_FREE);
+        mCamera->GetCamera()->SetPosition(3358,800,4067);
+        mCamera->GetCamera()->SetOrientation(DiQuat(0.923f,-0.38f,0,0));
 
         mLevel = DI_NEW ArLevel();
     }

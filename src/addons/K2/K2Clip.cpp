@@ -296,8 +296,6 @@ namespace Demi
             Trans t;
             clip->GetFrameTrans(boneName, t);
             
-            t.scale = DiVec3(t.scale.x,t.scale.x,t.scale.x);
-            
             if (clipTargt)
             {
                 Trans tTarget;

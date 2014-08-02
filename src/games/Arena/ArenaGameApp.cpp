@@ -270,7 +270,7 @@ namespace Demi
         
 #if 1
         // test NPC
-        auto npc = mGame->GetEntityManager()->CreateNPC(2,"npcs/good_range/creep.entity");
+        auto npc = mGame->GetEntityManager()->CreateNPC(2,"npcs/bad_range/helbourne_ranged_creep.entity");
         npc->GetRenderObj()->SetPosition(DiK2Pos(94.3f, 99.6f));
         
         auto npc2 = mGame->GetEntityManager()->CreateNPC(3, "npcs/good_melee/creep.entity");

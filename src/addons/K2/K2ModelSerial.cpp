@@ -1368,7 +1368,7 @@ namespace Demi
                 auto& frames = kf->boneFrames[boneName];
                 Trans trans;
                 trans.pos = c.pos[f];
-                trans.scale = c.scale[f];
+                trans.scale = c.scale[f].x;
                 trans.rot = DiK2Configs::ConvertAngles(c.rot[f]);
 
                 if (g_trans_orit && rootbone)

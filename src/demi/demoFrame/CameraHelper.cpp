@@ -2,7 +2,7 @@
 This source file is a part of Demi3D
    __  ___  __  __  __
   |  \|_ |\/||   _)|  \ 
-  |__/|__|  ||  __)|__/ 
+  |__/|__|  ||  __)|__/
 
 Copyright (c) 2013-2014 Demi team
 https://github.com/wangyanxing/Demi3D
@@ -93,7 +93,7 @@ namespace Demi
             return false;
 
         if (mStyle == CS_FREELOOK)
-        {
+        {   
             DiVec3 accel = DiVec3::ZERO;
             if (mGoingForward) 
                 accel += mCamera->GetDirection();
@@ -296,17 +296,17 @@ namespace Demi
 
         if (mStyle == CS_FREELOOK)
         {
-            if (evt.key == OIS::KC_W || evt.key == OIS::KC_UP) 
+            if (evt.key == OIS::KC_Q)
                 mGoingForward = true;
-            else if (evt.key == OIS::KC_S || evt.key == OIS::KC_DOWN) 
+            else if (evt.key == OIS::KC_E)
                 mGoingBack = true;
             else if (evt.key == OIS::KC_A || evt.key == OIS::KC_LEFT) 
                 mGoingLeft = true;
             else if (evt.key == OIS::KC_D || evt.key == OIS::KC_RIGHT)
                 mGoingRight = true;
-            else if (evt.key == OIS::KC_PGUP)
+            else if (evt.key == OIS::KC_W || evt.key == OIS::KC_UP)
                 mGoingUp = true;
-            else if (evt.key == OIS::KC_PGDOWN) 
+            else if (evt.key == OIS::KC_S || evt.key == OIS::KC_DOWN)
                 mGoingDown = true;
             else if (evt.key == OIS::KC_LSHIFT) 
                 mFastMove = true;
@@ -320,17 +320,17 @@ namespace Demi
 
         if (mStyle == CS_FREELOOK)
         {
-            if (evt.key == OIS::KC_W || evt.key == OIS::KC_UP) 
+            if (evt.key == OIS::KC_Q)
                 mGoingForward = false;
-            else if (evt.key == OIS::KC_S || evt.key == OIS::KC_DOWN) 
+            else if (evt.key == OIS::KC_E)
                 mGoingBack = false;
             else if (evt.key == OIS::KC_A || evt.key == OIS::KC_LEFT)
                 mGoingLeft = false;
-            else if (evt.key == OIS::KC_D || evt.key == OIS::KC_RIGHT) 
+            else if (evt.key == OIS::KC_D || evt.key == OIS::KC_RIGHT)
                 mGoingRight = false;
-            else if (evt.key == OIS::KC_PGUP) 
+            else if (evt.key == OIS::KC_W || evt.key == OIS::KC_UP)
                 mGoingUp = false;
-            else if (evt.key == OIS::KC_PGDOWN) 
+            else if (evt.key == OIS::KC_S || evt.key == OIS::KC_DOWN)
                 mGoingDown = false;
             else if (evt.key == OIS::KC_LSHIFT)
                 mFastMove = false;

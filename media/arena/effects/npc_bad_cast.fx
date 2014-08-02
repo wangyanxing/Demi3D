@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<Effects
+>
+	<ParticleSystem
+		name="npcs/bad_range/projectile/effects/reaper_starbolt_01.effect"
+	>
+		<Element
+			name="Element_0"
+		>
+			<Material
+			>
+				<shader
+					name="vertex"
+				>fx_v</shader>
+				<shader
+					name="pixel"
+				>fx_p</shader>
+				<depthWrite
+				>false</depthWrite>
+				<blendMode
+				>ADD</blendMode>
+				<ambient
+				>0 0 0 1</ambient>
+				<shininess
+				>16</shininess>
+				<variables
+				>
+					<sampler2D
+					>
+						<texture
+							name="map"
+							manualLoader="true"
+						>shared/effects/textures/star_bolt_01</texture>
+						<addressing
+							name="u"
+						>CLAMP</addressing>
+						<addressing
+							name="v"
+						>CLAMP</addressing>
+					</sampler2D>
+				</variables>
+			</Material>
+			<Renderer
+				type="Billboard"
+			 />
+			<Emitter
+				type="Point"
+				name="Point_0"
+				angle="fixed|30"
+				totalTimeToLive="fixed|0.45"
+				velocity="fixed|40"
+				allDimensions="fixed|45"
+				color="1 0.196078 0 1"
+			 />
+			<Controller
+				type="Scale"
+				name="Scale_1"
+				medScale="0.6 0.6"
+				endScale="0.05 0.05"
+			 />
+			<Controller
+				type="TextureRotator"
+				name="TextureRotator_2"
+				rotation="random|0,360"
+				rotationSpeed="fixed|90"
+			 />
+		</Element>
+		<Element
+			name="Element_1"
+		>
+			<Material
+			>
+				<shader
+					name="vertex"
+				>fx_v</shader>
+				<shader
+					name="pixel"
+				>fx_p</shader>
+				<depthWrite
+				>false</depthWrite>
+				<blendMode
+				>ADD</blendMode>
+				<ambient
+				>0 0 0 1</ambient>
+				<shininess
+				>16</shininess>
+				<variables
+				>
+					<sampler2D
+					>
+						<texture
+							name="map"
+							manualLoader="true"
+						>shared/effects/textures/whitedot</texture>
+					</sampler2D>
+				</variables>
+			</Material>
+			<Renderer
+				type="Billboard"
+			 />
+			<Emitter
+				type="Box"
+				name="Box_2"
+				angle="fixed|360"
+				totalTimeToLive="fixed|0.25"
+				velocity="fixed|10"
+				allDimensions="fixed|45"
+				boxWidth="15"
+				boxHeight="15"
+				boxDepth="15"
+			 />
+			<Controller
+				type="Color"
+				name="Color_3"
+				times="0,1"
+				colors="0.22807 0 0 1,0 0 0 1"
+			 />
+			<Controller
+				type="Scale"
+				name="Scale_4"
+				medScale="2 2"
+				endScale="0.1 0.1"
+			 />
+		</Element>
+	</ParticleSystem>
+</Effects>
