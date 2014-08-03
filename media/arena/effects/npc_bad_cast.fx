@@ -48,7 +48,7 @@
 				name="Point_0"
 				angle="fixed|30"
 				totalTimeToLive="fixed|0.45"
-				velocity="fixed|40"
+				velocity="fixed|0"
 				allDimensions="fixed|45"
 				color="1 0.196078 0 1"
 			 />

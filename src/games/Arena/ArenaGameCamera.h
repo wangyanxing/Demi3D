@@ -78,28 +78,10 @@ namespace Demi
         virtual void    OnKeyInput(const K2KeyEvent& event);
 
         virtual void    Update(float dt);
-
+        
     protected:
-
-        bool            mGoingForward;
-
-        bool            mGoingBack;
-
-        bool            mGoingLeft;
-
-        bool            mGoingRight;
-
-        bool            mGoingUp;
-
-        bool            mGoingDown;
-
-        bool            mFastMove;
-
-        bool            mMoving;
-
-        float           mTopSpeed;
-
-        DiVec3          mVelocity;
+        
+        bool mMoving{ false };
     };
 
     /** Character camera
