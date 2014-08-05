@@ -1,5 +1,8 @@
 #include "common.h"
-#include "shadows.h"
+
+#if defined( SHADOW_RECEIVER )
+#   include "shadows.h"
+#endif
 
 #if defined( USE_COLOR )
 varying vec4 vColor;

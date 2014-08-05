@@ -218,7 +218,7 @@ if (DEMI_BUILD_PLATFORM_APPLE_IOS)
   add_definitions(-mno-thumb)
 
   set(CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD_INCLUDING_64_BIT)")
-  string (REPLACE "-msse" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+  #string (REPLACE "-msse" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 elseif (ANDROID)
   set(TargetPlatform "Android")
   set(DEMI_PLATFORM DEMI_PLATFORM_ANDROID)

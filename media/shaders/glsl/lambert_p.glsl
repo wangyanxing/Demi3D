@@ -1,5 +1,8 @@
 #include "common.h"
-#include "shadows.h"
+
+#if defined( SHADOW_RECEIVER )
+#   include "shadows.h"
+#endif
 
 varying vec3 vNormal;
 varying vec3 vViewDir;

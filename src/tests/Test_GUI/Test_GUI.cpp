@@ -59,6 +59,17 @@ void InitScene()
     DiPostEffect* bloom = peMgr->GetEffect("Bloom");
     //bloom->SetEnable(true);
 #endif
+    
+    auto mat = DiMaterial::QuickCreate("basic_v", "basic_p", SHADER_FLAG_USE_MAP);
+    mat->GetShaderParameter()->WriteTexture2D("map", "a.png");
+    
+    DiSimpleShapePtr model = make_shared<DiSimpleShape>();
+    model->CreatePlane();
+    model->SetMaterial(mat);
+    
+    DiCullNode* parent = sm->GetRootNode();
+    DiCullNode* node = parent->CreateChild();
+    node->AttachObject(model);
 }
 
 void UpdateScene()

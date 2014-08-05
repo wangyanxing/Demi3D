@@ -11,4 +11,4 @@ add_subdirectory(HonViewer)
 add_subdirectory(HonFxer)
 endif()
 
-add_subdirectory(ConfigGen)
+#add_subdirectory(ConfigGen)

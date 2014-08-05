@@ -85,7 +85,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
-    Demi::ArGameApp::Get()->Close();
+    Demi::ArGameApp::Get()->CloseEngine();
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

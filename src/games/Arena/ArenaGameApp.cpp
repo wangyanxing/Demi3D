@@ -19,6 +19,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "RenderWindow.h"
 #include "ArenaInput.h"
 #include "K2Configs.h"
+#include "K2Plugin.h"
 #include "EnginePlugin.h"
 #include "GfxDriver.h"
 #include "Command.h"

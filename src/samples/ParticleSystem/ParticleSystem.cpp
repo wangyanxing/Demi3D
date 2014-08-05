@@ -306,8 +306,7 @@ void InitFx_Repeater01()
 
 void InitScene()
 {
-    DI_INSTALL_PLUGIN(DiK2);    
-    DI_INSTALL_PLUGIN(DiFx);
+    DI_INSTALL_PLUGIN(DiK2);
 
     DiSceneManager* sm = DiBase::Driver->GetSceneManager();
 
@@ -339,7 +338,6 @@ int main(int argc, char *argv[])
         //k2md->UpdateAnimation(DiBase::Driver->GetDeltaSecond());
     });
     app.SetShutdownCallback([&](){
-        DI_UNINSTALL_PLUGIN(DiFx);
         DI_UNINSTALL_PLUGIN(DiK2);
     });
 	app.Open(argc, argv);
