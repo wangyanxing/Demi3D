@@ -33,7 +33,7 @@ namespace Demi
 
         mDrawable = [drawable retain];
 
-        NSUInteger renderingAPI = kEAGLRenderingAPIOpenGLES2;
+        auto renderingAPI = kEAGLRenderingAPIOpenGLES2;
 
         // If the group argument is not NULL, then we assume that an externally created EAGLSharegroup
         // is to be used and a context is created using that group.

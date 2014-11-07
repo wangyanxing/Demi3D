@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Config>
-  <Property key="k2_resource_path" value="/Users/wangya/Projects/HONres/resources0"/>
-  <Property key="k2_texture_path" value="/Users/wangya/Projects/HONres/resources0"/>
+  <Property key="k2_resource_path" value="media_ios"/>
+  <Property key="k2_texture_path" value="media_ios"/>
 </Config>

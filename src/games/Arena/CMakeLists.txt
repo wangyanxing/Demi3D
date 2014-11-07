@@ -91,6 +91,13 @@ if (NOT DEMI_STATIC)
   )
 endif ()
 
+# Copy hon resources
+if (APPLE AND DEMI_BUILD_PLATFORM_APPLE_IOS)
+add_custom_command(TARGET Arena POST_BUILD
+COMMAND ditto ${DEMI_SOURCE_DIR}/media_ios ${DEMI_SAMPLE_CONTENTS_PATH}/media_ios
+)
+endif()
+
 # specify a precompiled header to use
 use_precompiled_header(Arena 
   "${CMAKE_CURRENT_SOURCE_DIR}/ArenaPch.h"

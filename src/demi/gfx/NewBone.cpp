@@ -23,12 +23,11 @@ namespace Demi
         IdObject(0),
         mReverseBind(0),
         mTransform(BoneTransform()),
-
         mDepthLevel(0),
         mParent(0),
         mName("dummy bone"),
-        mBoneMemoryManager(0),
         mGlobalIndex(-1),
+        mBoneMemoryManager(0),
         mParentIndex(-1)
     {
     }

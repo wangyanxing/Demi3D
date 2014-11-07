@@ -32,8 +32,8 @@ void InitScene()
     DiBase::Driver->GetMainRenderWindow()->GetSceneCanvas()->SetClearColor(DiColor(0.5f,0.5f,0.5f));
 
     world = DI_NEW DiK2World();
+    //world->Load("sm_0.s2z");
     world->Load("midwars.s2z");
-    //world->Load("map1.s2z");
 
     DiVec2 worldsize = world->mTerrain->GetWorldSize();
 
@@ -41,7 +41,7 @@ void InitScene()
     cameraHelper->SetStyle(CS_FREELOOK);
     cameraHelper->SetTopSpeed(300);
     cameraHelper->GetCamera()->SetPosition(worldsize.x / 2, 500, worldsize.y / 2);
-    cameraHelper->GetCamera()->SetPosition(3104.90723f, 1610.28467f, 4649.14502f);
+    //cameraHelper->GetCamera()->SetPosition(3104.90723f, 1610.28467f, 4649.14502f);
     cameraHelper->GetCamera()->SetOrientation(DiQuat(0.308038354f,-0.225031450f,-0.746425748,-0.545306683f));
     
     //cameraHelper->GetCamera()->SetPosition(11720.666f, 1072.60095f, 4327.33447f);
@@ -64,7 +64,7 @@ void UpdateScene()
 
 int main(int argc, char *argv[])
 {
-    DemiDemo app( DemoConfig("Demi Sample: Hon World"));
+    DemiDemo app( DemoConfig("Demi Sample: Hon World",640,1136));
 	app.SetInitCallback(InitScene);
 	app.SetUpdateCallback(UpdateScene);
     app.SetShutdownCallback([&](){

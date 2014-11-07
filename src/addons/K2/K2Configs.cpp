@@ -86,6 +86,10 @@ namespace Demi
         if (!RESOURCE_PACK)
         {
             DiString baseFolder = var->GetString();
+            
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+            baseFolder = DiPathLib::GetApplicationPath() + baseFolder;
+#endif
             baseFolder += "/";
             baseFolder += relativePath;
             return baseFolder;
