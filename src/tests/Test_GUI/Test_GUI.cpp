@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "DemoFrame.h"
 #include "EnginePlugin.h"
 #include "TransAxes.h"
+#include "MyGUI.h"
 
 void InitScene()
 {
@@ -30,6 +31,7 @@ void InitScene()
     dirlight->SetDirection(DiVec3(0.5f,-0.86f,0).normalisedCopy());
     //dirlight->SetShadowCastEnable(true);
 
+#if 0
 #if 0
     DiSimpleShapePtr lightSphere = make_shared<DiSimpleShape>("lightSphere");
     lightSphere->CreatePlane(40,40);
@@ -70,6 +72,7 @@ void InitScene()
     DiCullNode* parent = sm->GetRootNode();
     DiCullNode* node = parent->CreateChild();
     node->AttachObject(model);
+#endif
 }
 
 void UpdateScene()

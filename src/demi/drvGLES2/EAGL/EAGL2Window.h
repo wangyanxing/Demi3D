@@ -67,11 +67,11 @@ namespace Demi
 
             DiEAGL2Util* mGLSupport;
         
-            DiEAGLES2Context* mContext;
+            DiEAGLES2Context* mContext{ nullptr };
 #ifdef __OBJC__
-			NativeWindowType mWindow;
-            EAGL2View *mView;
-            EAGL2ViewController *mViewController;
+            NativeWindowType mWindow{ nil };
+            EAGL2View *mView{ nil };
+            EAGL2ViewController *mViewController{ nil };
 #endif
 
             void SwitchFullScreen(bool fullscreen) { }

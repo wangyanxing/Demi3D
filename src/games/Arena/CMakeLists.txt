@@ -47,6 +47,7 @@ DI_ADD_EXECUTABLE(Arena ${ARENA_HEADERS} ${ARENA_SRCS})
 include_directories(${OIS_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR} ${DEMI_SOURCE_DIR}/src/demi 
 	${DEMI_SOURCE_DIR}/src/demi/demoFrame 
 	${DEMI_SOURCE_DIR}/src/addons/K2 
+	${DEMI_SOURCE_DIR}/src/addons/MyGUI
 	${DEMI_SOURCE_DIR}/src/addons/K2/Fx
 	${DEMI_SOURCE_DIR}/src/demi/script)
 
@@ -56,7 +57,7 @@ endif ()
 
 set_property(TARGET Arena PROPERTY FOLDER "Games")
 
-target_link_libraries(Arena DiMisc DiGfx DiK2 DiScript ${OIS_LIBRARIES})
+target_link_libraries(Arena DiMisc DiGfx DiK2 MyGUI DiScript ${OIS_LIBRARIES})
 
 DI_CONFIG_CORE_LIB(Arena "${CMAKE_CURRENT_SOURCE_DIR}/ArenaPch.h")
 

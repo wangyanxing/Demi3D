@@ -30,6 +30,10 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaBinding.h"
 #include "PathLib.h"
 
+#include "MyGUI.h"
+#include "MyGUI_DemiWrapper.h"
+#include "ArenaUIMainPane.h"
+
 #include "ArenaEntityManager.h"
 #include "ArenaGameEntity.h"
 #include "ArenaAIProperty.h"
@@ -78,6 +82,8 @@ namespace Demi
         , mInputMgr(nullptr)
         , mQuit(false)
         , mGame(nullptr)
+        , mGUIWrapper(nullptr)
+        , mMainPane(nullptr)
     {        
         DI_INIT_PROFILER;
 
@@ -171,7 +177,10 @@ namespace Demi
     void ArGameApp::CloseEngine()
     {
         SAFE_DELETE(mInputMgr);
-
+        
+        SAFE_DELETE(mMainPane);
+        SAFE_DELETE(mGUIWrapper);
+        
         SAFE_DELETE(mGame);
 
         DI_UNINSTALL_PLUGIN(DiK2);
@@ -217,6 +226,13 @@ namespace Demi
 
         mGame = DI_NEW ArGame();
         
+        mGUIWrapper = new MyGUI::DemiWrapper();
+        mGUIWrapper->init("Editor.xml");
+        MyGUI::ResourceManager::getInstance().load("Initialise.xml");
+        MyGUI::ResourceManager::getInstance().load("ArenaLayers.xml");
+        mMainPane = new MainPaneControl();
+        
+        
         // load the scripts
         DI_LOG("Binding Arena APIs to lua...");
         tolua_arenaMain_open(DiScriptManager::Get()->GetLuaState());
@@ -232,57 +248,43 @@ namespace Demi
         auto mainScript = DiAssetManager::GetInstance().OpenArchive("arena_main.lua");
         DiScriptManager::Get()->RunBuffer(mainScript);
         
-#if 0
+#if 1
         // test NPC
-        auto npc = mGame->GetEntityManager()->CreateNPC(2,"npc_test.xml");
-        npc->GetRenderObj()->SetPosition(DiK2Pos(202, 42));
+        auto npc0 = mGame->GetEntityManager()->CreateNPC(2,"npcs/good_melee/creep.entity");
+        npc0->GetRenderObj()->SetPosition(DiK2Pos(95, 96));
 
-        auto npc2 = mGame->GetEntityManager()->CreateNPC(3, "npc_test.xml");
-        npc2->GetRenderObj()->SetPosition(DiK2Pos(208, 42));
+        auto npc2 = mGame->GetEntityManager()->CreateNPC(3, "npcs/good_range/creep.entity");
+        npc2->GetRenderObj()->SetPosition(DiK2Pos(105, 100));
 
-        auto npc3 = mGame->GetEntityManager()->CreateNPC(4, "npc_test.xml");
-        npc3->GetRenderObj()->SetPosition(DiK2Pos(200, 49));
+        auto npc3 = mGame->GetEntityManager()->CreateNPC(4, "npcs/good_melee/creep.entity");
+        npc3->GetRenderObj()->SetPosition(DiK2Pos(92, 105));
 
         //npc->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1, 1);
         //mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(1);
-
-        mInputMgr->RegisterKeyPressEvent("movetest",
-            [&](const OIS::KeyEvent& e){
-            switch (e.key)
-            {
-            case OIS::KC_M:
-                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(1);
-                break;
-            case OIS::KC_2:
-                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1,3);
-                mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1,3);
-                mGame->GetEntityManager()->FindEntity(4)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1,3);
-                break;
-            case OIS::KC_1:
-                mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
-                mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
-                mGame->GetEntityManager()->FindEntity(4)->GetEntity<ArNPCEntity>()->GetAIProperty()->InitNPCBehaviorTree();
-                break;
-            default:
-                break;
-            }
-        });
 #endif
         
 #if 1
         // test NPC
-        auto npc = mGame->GetEntityManager()->CreateNPC(2,"npcs/bad_range/helbourne_ranged_creep.entity");
+        auto npc = mGame->GetEntityManager()->CreateNPC(5,"npcs/bad_range/helbourne_ranged_creep.entity");
         npc->GetRenderObj()->SetPosition(DiK2Pos(94.3f, 99.6f));
         
-        auto npc2 = mGame->GetEntityManager()->CreateNPC(3, "npcs/good_melee/creep.entity");
-        npc2->GetRenderObj()->SetPosition(DiK2Pos(102, 108.2f));
+        auto npc4 = mGame->GetEntityManager()->CreateNPC(6, "npcs/good_melee/creep.entity");
+        npc4->GetRenderObj()->SetPosition(DiK2Pos(102, 108.2f));
 
         mInputMgr->RegisterKeyPressEvent("movetest",
          [&](const OIS::KeyEvent& e){
              switch (e.key)
              {
                  case OIS::KC_1:
-                     mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(3);
+                     mGame->GetEntityManager()->FindEntity(5)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(3);
+                     break;
+                 case OIS::KC_M:
+                     mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(1);
+                     break;
+                 case OIS::KC_2:
+                     mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1,5);
+                     mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1,5);
+                     mGame->GetEntityManager()->FindEntity(4)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandFollowTo(1,5);
                      break;
                  default:
                      break;

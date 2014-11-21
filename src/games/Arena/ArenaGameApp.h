@@ -67,6 +67,10 @@ namespace Demi
         ArInput*            mInputMgr;
 
         ArGame*             mGame;
+        
+        MyGUI::DemiWrapper* mGUIWrapper;
+        
+        MainPaneControl*    mMainPane;
 
         bool                mQuit;
     };

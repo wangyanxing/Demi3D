@@ -32,12 +32,19 @@ namespace Demi
     class ArLevel;
     class ArAICommand;
     class ArEntityConfigs;
+    
+    class MainPaneControl;
 
     struct ArFxProjectileConfig;
     
     typedef shared_ptr<ArGameEntity>  ArGameEntityPtr;
     typedef shared_ptr<ArNPCEntity>   ArNPCEntityPtr;
     typedef shared_ptr<ArHeroEntity>  ArHeroEntityPtr;
+}
+
+namespace MyGUI
+{
+    class DemiWrapper;
 }
 
 namespace BehaviorTree
