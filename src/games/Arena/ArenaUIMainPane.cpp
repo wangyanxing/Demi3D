@@ -38,65 +38,60 @@ namespace Demi
         auto width = DiBase::Driver->GetMainRenderWindow()->GetWidth();
         
         float iconSize = 128 * 0.7;
+        float upperY = height-182;
+        float lowerY = height-88;
         
-        createIcon("ability_abuse.png", DiVec2(480,673),iconSize);
-        createIcon("griefing.png", DiVec2(480,767),iconSize);
-        createIcon("mentorwings.png", DiVec2(387,673),iconSize);
-        createIcon("s2_loss.png", DiVec2(387,767),iconSize);
-        createIcon("sbteye.png", DiVec2(294,673),iconSize);
-        createIcon("tech_support.png", DiVec2(294,767),iconSize);
+        createIcon("ability_abuse.png", DiVec2(480,upperY),iconSize);
+        createIcon("griefing.png", DiVec2(480,lowerY),iconSize);
+        createIcon("mentorwings.png", DiVec2(387,upperY),iconSize);
+        createIcon("s2_loss.png", DiVec2(387,lowerY),iconSize);
+        createIcon("sbteye.png", DiVec2(294,upperY),iconSize);
+        createIcon("tech_support.png", DiVec2(294,lowerY),iconSize);
     }
     
-    void MainPaneControl::createIcon(const DiString& texture, DiVec2 pos, float sizex, float sizey)
+    MyGUI::ImageBox* MainPaneControl::createIcon(const DiString& texture,
+                                                 DiVec2 pos, float sizex, float sizey, MyGUI::Widget* parent)
     {
-        auto image = mMainWidget->createWidget<MyGUI::ImageBox>(MyGUI::WidgetStyle::Overlapped,"ImageBox",
+        if (!parent) parent = mMainWidget;
+        auto image = parent->createWidget<MyGUI::ImageBox>("ImageBox",
                                                                 MyGUI::IntCoord(pos.x, pos.y, sizex, sizey),
-                                                                MyGUI::Align::Stretch, "Popup");
+                                                                MyGUI::Align::Stretch, "Main");
         image->setImageTexture(texture.c_str());
+        return image;
     }
     
-    void MainPaneControl::createIcon(const DiString& texture, DiVec2 pos, float iconSize)
+    MyGUI::ImageBox* MainPaneControl::createIcon(const DiString& texture, DiVec2 pos,
+                                                 float iconSize, MyGUI::Widget* parent)
     {
-        auto image = mMainWidget->createWidget<MyGUI::ImageBox>(MyGUI::WidgetStyle::Overlapped,"ImageBox",
+        if (!parent) parent = mMainWidget;
+        auto image = parent->createWidget<MyGUI::ImageBox>(MyGUI::WidgetStyle::Overlapped,"ImageBox",
                                                                        MyGUI::IntCoord(pos.x, pos.y, iconSize, iconSize),
-                                                                       MyGUI::Align::Stretch, "Popup");
+                                                                       MyGUI::Align::Stretch, "Main");
         image->setImageTexture(texture.c_str());
+        return image;
     }
     
     void MainPaneControl::initUI()
     {
-        initHeroBar();
-        
-        auto imageHeroBar = mMainWidget->createWidget<MyGUI::ImageBox>(MyGUI::WidgetStyle::Overlapped,"ImageBox",
-                                                                           MyGUI::IntCoord(0, 0, 256*1.5, 128*1.5),
-                                                                           MyGUI::Align::Stretch, "Popup");
-        imageHeroBar->setImageTexture("small_portrait_window.png");
-        
-        
         auto height = DiBase::Driver->GetMainRenderWindow()->GetHeight();
         auto width = DiBase::Driver->GetMainRenderWindow()->GetWidth();
         
+        initHeroBar();
+        
+        auto menuBtn = createIcon("small_logo.png", DiVec2(width-130, -25), 150, 150);
+        auto imageHeroBar = createIcon("small_portrait_window.png", DiVec2(0,0), 256*1.5, 128*1.5);
+        
         float miniMapSize = 256*1.02;
         float miniMapBaseSize = 256*0.83;
-        auto imageMiniMapBase = mMainWidget->createWidget<MyGUI::ImageBox>(MyGUI::WidgetStyle::Overlapped,"ImageBox",
-                                                                       MyGUI::IntCoord(0, height-miniMapBaseSize+3, miniMapBaseSize, miniMapBaseSize),
-                                                                       MyGUI::Align::Stretch, "Popup");
-        imageMiniMapBase->setImageTexture("minimap.png");
+        auto imageMiniMapBase = createIcon("minimap.png", DiVec2(0, height-miniMapBaseSize+3), miniMapBaseSize, miniMapBaseSize);
         
-        auto imageMiniMap = mMainWidget->createWidget<MyGUI::ImageBox>(MyGUI::WidgetStyle::Overlapped,"ImageBox",
-                                                                       MyGUI::IntCoord(0, height-miniMapSize+3, miniMapSize, miniMapSize),
-                                                                       MyGUI::Align::Stretch, "Popup");
-        imageMiniMap->setImageTexture("bot_left_altview.png");
-        
+        auto imageMiniMap = createIcon("bot_left_altview.png", DiVec2(0, height-miniMapSize+3), miniMapSize, miniMapSize);
         
         initIcons();
         
         float itemBarSizeX = 512*0.98;
         float itemBarSizeY = 256*0.98;
-        auto itemBar = mMainWidget->createWidget<MyGUI::ImageBox>(MyGUI::WidgetStyle::Overlapped,"ImageBox",
-                                                                       MyGUI::IntCoord(width-itemBarSizeX, height-itemBarSizeY+3, itemBarSizeX, itemBarSizeY),
-                                                                       MyGUI::Align::Stretch, "Popup", "_BackgroundColor");
-        itemBar->setImageTexture("bot_right_orders_altview.png");
+        auto itemBar = createIcon("bot_right_orders_altview.png", DiVec2(width-itemBarSizeX, height-itemBarSizeY+3), itemBarSizeX, itemBarSizeY);
     }
 
 } // namespace Demi

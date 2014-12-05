@@ -17,6 +17,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaPrerequisites.h"
 #include "ArenaDynEntity.h"
 #include "ArenaAIProperty.h"
+#include "ArenaGUIProperty.h"
 #include "ArenaConfigs.h"
 
 namespace Demi
@@ -26,6 +27,7 @@ namespace Demi
     class ArNPCEntity : public ArDynEntity
     {
         DEF_DECLARE_PRIORITY(AIProperty)
+        DEF_DECLARE_PRIORITY(GUIProperty)
 
     public:
 

@@ -23,6 +23,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "K2RenderObjects.h"
 #include "K2Terrain.h"
 #include "K2World.h"
+#include "K2Model.h"
 
 namespace Demi
 {
@@ -44,6 +45,7 @@ namespace Demi
     {
         ArDynEntity::InitComponents();
         mAIProperty = CreateProperty<ArAIProperty>();
+        mGUIProperty = CreateProperty<ArGUIProperty>();
     }
 
     void ArNPCEntity::InitAttribute(const DiString& path, const DiXMLElement& node)
@@ -70,6 +72,8 @@ namespace Demi
         auto level = ArGameApp::Get()->GetLevel();
         DiVec3 position = level->GetSpwanPosition();
         GetRenderObj()->SetWorldPosition(position);
+        GetRenderObj()->GetModel()->SetQueryFlags(QUERY_NPC);
+        GetRenderObj()->GetModel()->SetCustomID(GetID());
 
         float scale = ett->GetMaxPreGlobalScale();
         GetRenderObj()->SetScale(DiVec3(scale));

@@ -15,6 +15,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #include "ArenaHeroAttribute.h"
 #include "ArenaMoveProperty.h"
 #include "ArenaGameApp.h"
+#include "ArenaEntityManager.h"
 #include "ArenaHero.h"
 #include "ArenaGame.h"
 #include "ArenaConfigsLoader.h"
@@ -58,14 +59,23 @@ namespace Demi
             auto terrain = ArGameApp::Get()->GetWorld()->GetTerrain();
             
             DiRay ray = ArInput::GetPickupRay(event);
-
-            DiVec3 clickout;
-            if (terrain->RayIntersects(ray, clickout))
+            
+            DiTransUnitPtr result;
+            if (!DiBase::Driver->GetSceneManager()->GetSceneCuller()->RayQuery(ray, result, QUERY_NPC))
             {
-                DiK2Pos k2pos;
-                k2pos.FromWorldPos(clickout);
-                DiK2Pos source = mRenderObj->GetPosition();
-                GetMoveProperty()->MoveTo(source, k2pos);
+                DiVec3 clickout;
+                if (terrain->RayIntersects(ray, clickout))
+                {
+                    DiK2Pos k2pos;
+                    k2pos.FromWorldPos(clickout);
+                    DiK2Pos source = mRenderObj->GetPosition();
+                    GetMoveProperty()->MoveTo(source, k2pos);
+                    GetAIProperty()->ClearAI();
+                }
+            } else {
+                // attack enemies
+                DI_ASSERT(result);
+                GetAIProperty()->CommandAttack(result->GetCustomID());
             }
         }
     }

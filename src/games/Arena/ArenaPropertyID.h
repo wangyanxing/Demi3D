@@ -34,6 +34,7 @@ namespace Demi
         PROPERTY_AI,
         PROPERTY_SHAPE,
         PROPERTY_UNIT_SHAPE,
+        PROPERTY_GUI,
 
         PROPERTY_ID_NUM,
     };

@@ -24,8 +24,8 @@ namespace Demi
         
         void initHeroBar();
         
-        void createIcon(const DiString& texture, DiVec2 pos, float size);
-        void createIcon(const DiString& texture, DiVec2 pos, float sizex, float sizey);
+        MyGUI::ImageBox* createIcon(const DiString& texture, DiVec2 pos, float size, MyGUI::Widget* parent = nullptr);
+        MyGUI::ImageBox* createIcon(const DiString& texture, DiVec2 pos, float sizex, float sizey, MyGUI::Widget* parent = nullptr);
 	};
 
 } // namespace tools

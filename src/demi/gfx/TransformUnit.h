@@ -111,6 +111,10 @@ namespace Demi
         void                    SetManualRayQueryFunc(ManualRayQueryFunc func) {mManualRayFunc = func;}
 
         void                    SetManualAABBQueryFunc(ManualAABBQueryFunc func) { mManualAABBFunc = func; }
+        
+        void                    SetCustomID(int id) { mCustomID = id; }
+        
+        int                     GetCustomID() const { return mCustomID; }
 
         static void             SetDefaultVisibilityFlags(uint32 flags) { sDefaultVisibilityFlags = flags; }
 
@@ -143,6 +147,8 @@ namespace Demi
         uint32                  mQueryFlags;
 
         uint32                  mVisibilityFlags;
+        
+        int                     mCustomID{ -1 };
         
         ManualRayQueryFunc      mManualRayFunc;
 

@@ -115,6 +115,8 @@ namespace Demi
             Init();
         }
         
+        if (mTrailFxName.empty()) return;
+        
         auto entity = GetEntity<ArDynEntity>();
         auto entityConfig = entity->GetAttribute()->GetEntityConfig();
         
@@ -163,7 +165,7 @@ namespace Demi
         mCurrentConfig = entityConfig->GetProjectile(pjName);
         if(!mCurrentConfig)
         {
-            DI_WARNING("Failed to get the projectile config");
+            //DI_WARNING("Failed to get the projectile config");
             return;
         }
         

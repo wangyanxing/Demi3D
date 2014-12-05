@@ -250,7 +250,7 @@ namespace Demi
         
 #if 1
         // test NPC
-        auto npc0 = mGame->GetEntityManager()->CreateNPC(2,"npcs/good_melee/creep.entity");
+        auto npc0 = mGame->GetEntityManager()->CreateNPC(2, "npcs/good_melee/creep.entity");
         npc0->GetRenderObj()->SetPosition(DiK2Pos(95, 96));
 
         auto npc2 = mGame->GetEntityManager()->CreateNPC(3, "npcs/good_range/creep.entity");
@@ -276,7 +276,8 @@ namespace Demi
              switch (e.key)
              {
                  case OIS::KC_1:
-                     mGame->GetEntityManager()->FindEntity(5)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(3);
+                     mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(2);
+                     mGame->GetEntityManager()->FindEntity(5)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(6);
                      break;
                  case OIS::KC_M:
                      mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(1);

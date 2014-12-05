@@ -323,6 +323,7 @@ namespace Demi
     bool DiOctreeCuller::RayQuery(const DiRay& ray, DiVector<DiPair<DiTransUnitPtr,
         float>>& results, uint32 queryFlag)
     {
+        results.clear();
         DiList<DiCullNode*> list;
         _findNodes(ray, list, nullptr, false, mOctree);
 
@@ -350,7 +351,7 @@ namespace Demi
             ++it;
         }
 
-        return false;
+        return !results.empty();
     }
 
     bool DiOctreeCuller::RayQuery(const DiRay& ray, DiTransUnitPtr& result, uint32 queryFlag)
