@@ -96,6 +96,7 @@ namespace MyGUI
         mTexture->CreateTexture();
         mTexture->SetAddressing(AM_CLAMP);
         mTexture->SetFilter(FILTER_DEFAULT);
+        mTexture->SetNumLevels(1);
 	}
 
     void DemiTexture::loadFromDemiTexture(const std::string& _texName)

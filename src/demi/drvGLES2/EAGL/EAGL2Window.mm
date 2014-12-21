@@ -209,6 +209,7 @@ namespace Demi
             mViewController.view = mView;
         
         mWndViewHandle = mViewController.view;
+        mWndViewCtrlHandle = mViewController;
 
         CFDictionaryRef dict;   // TODO: Dummy dictionary for now
         if(eaglLayer)

@@ -11,6 +11,12 @@ namespace Demi
 	public:
 		MainPaneControl();
 		virtual ~MainPaneControl();
+        
+        // temp
+        static MainPaneControl* _this;
+        static MainPaneControl* get() {
+            return _this;
+        }
 
 		void setVisible(bool _value);
         
@@ -18,14 +24,19 @@ namespace Demi
 
         void initUI();
         
+        void showAdBar(bool val);
+        
     private:
         
         void initIcons();
         
         void initHeroBar();
         
-        MyGUI::ImageBox* createIcon(const DiString& texture, DiVec2 pos, float size, MyGUI::Widget* parent = nullptr);
-        MyGUI::ImageBox* createIcon(const DiString& texture, DiVec2 pos, float sizex, float sizey, MyGUI::Widget* parent = nullptr);
+        MyGUI::ImageBox* createIcon(const DiString& texture, DiVec2 pos, float size, MyGUI::Widget* parent = nullptr, const DiString& layer = "Statistic");
+        MyGUI::ImageBox* createIcon(const DiString& texture, DiVec2 pos, float sizex, float sizey, MyGUI::Widget* parent = nullptr, const DiString& layer = "Statistic");
+        
+        MyGUI::ImageBox* mBottomLeft{ nullptr };
+        MyGUI::ImageBox* mBottomRight{ nullptr };
 	};
 
 } // namespace tools

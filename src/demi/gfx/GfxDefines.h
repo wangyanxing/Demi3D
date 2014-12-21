@@ -50,6 +50,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 typedef void*   DiWndHandle;
 typedef void*   DiWndViewHandle;    // just for iOS
+typedef void*   DiWndViewCtrlHandle;    // just for iOS
 
 #if DEMI_PLATFORM == DEMI_PLATFORM_WIN32
 #   ifdef max

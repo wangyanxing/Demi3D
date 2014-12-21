@@ -45,6 +45,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 #   include "ArenaGameAppOSX.h"
 #elif DEMI_PLATFORM == DEMI_PLATFORM_IOS
 #   include "ArenaGameAppIOS.h"
+#   include "BannerViewController.h"
 #endif
 
 #define DRV_DX9     0
@@ -218,7 +219,30 @@ namespace Demi
         mInputMgr = DI_NEW ArInput();
 
         DiWindow* wnd = Driver->GetMainRenderWindow()->GetWindow();
+        
+#if DEMI_PLATFORM == DEMI_PLATFORM_IOS
+        auto viewCtrl = (UIViewController*)wnd->GetWndViewControllerHandle();
+        DI_ASSERT(viewCtrl);
+        
+        auto uiWindow = (UIWindow*)wnd->GetWndHandle();
+        
+        [[BannerViewController getInstance] initWithContentViewController:viewCtrl];
+        
+        if ( [[UIDevice currentDevice].systemVersion floatValue] < 6.0)
+        {
+            // warning: addSubView doesn't work on iOS6
+            [uiWindow addSubview: [BannerViewController getInstance].view];
+        }
+        else
+        {
+            // use this method on ios6
+            [uiWindow setRootViewController:[BannerViewController getInstance]];
+        }
+        [[BannerViewController getInstance] showBanner];
+        mInputMgr->CreateInput(wnd->GetWndHandle(), [BannerViewController getInstance].view);
+#else
         mInputMgr->CreateInput(wnd->GetWndHandle(), wnd->GetWndViewHandle());
+#endif
 
         using namespace std::placeholders;
 
@@ -276,8 +300,7 @@ namespace Demi
              switch (e.key)
              {
                  case OIS::KC_1:
-                     mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(2);
-                     mGame->GetEntityManager()->FindEntity(5)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(6);
+                     
                      break;
                  case OIS::KC_M:
                      mGame->GetEntityManager()->FindEntity(2)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(1);
@@ -291,12 +314,14 @@ namespace Demi
                      break;
              }
          });
-
 #endif
 
         Driver->GetMainRenderWindow()->SetUpdateCallback([this](){
             mGame->Update();
         });
+        
+        //mGame->GetEntityManager()->FindEntity(3)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(2);
+        mGame->GetEntityManager()->FindEntity(5)->GetEntity<ArNPCEntity>()->GetAIProperty()->CommandAttack(6);
     }
 
     ArGameApp* ArGameApp::sApp = nullptr;

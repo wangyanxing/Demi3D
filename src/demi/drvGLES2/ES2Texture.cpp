@@ -241,19 +241,19 @@ namespace Demi
                 break;
 
             case FILTER_BILINEAR:
-                if (mParent->GetNumLevels() < 2)
-                    DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                else
+                if (mParent->GetNumLevels() >= 2)
                     DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+                else
+                    DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 break;
 
             case FILTER_ANISOTROPIC:
             case FILTER_TRILINEAR:
-                if (mParent->GetNumLevels() < 2)
-                    DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                else
+                if (mParent->GetNumLevels() >= 2)
                     DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+                else
+                    DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 DiGLES2Driver::StateCache->setTexParameteri(mGLTextureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
                 break;
 

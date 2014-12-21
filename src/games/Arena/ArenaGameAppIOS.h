@@ -27,26 +27,26 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 {
-    CADisplayLink *mDisplayLink;
-    NSDate* mDate;
-    NSTimeInterval mLastFrameTime;
+    CADisplayLink *mArDisplayLink;
+    NSDate* mArDate;
+    NSTimeInterval mLastTime;
 }
 
 - (void)open;
 - (void)render:(id)sender;
 
-@property (nonatomic) NSTimeInterval mLastFrameTime;
+@property (nonatomic) NSTimeInterval mLastTime;
 
 @end
 
 
 @implementation AppDelegate
 
-@dynamic mLastFrameTime;
+@dynamic mLastTime;
 
-- (NSTimeInterval)mLastFrameTime
+- (NSTimeInterval)mLastTime
 {
-    return mLastFrameTime;
+    return mLastTime;
 }
 
 - (void)setLastFrameTime:(NSTimeInterval)frameInterval
@@ -59,7 +59,7 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
     // behavior.
     if (frameInterval >= 1)
     {
-        mLastFrameTime = frameInterval;
+        mLastTime = frameInterval;
     }
 }
 
@@ -75,8 +75,8 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    mLastFrameTime = DISPLAYLINK_FRAME_INTERVAL;
-    mDisplayLink = nil;
+    mLastTime = DISPLAYLINK_FRAME_INTERVAL;
+    mArDisplayLink = nil;
     
     [self open];
     
@@ -90,29 +90,29 @@ https://github.com/wangyanxing/Demi3D/blob/master/License.txt
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    mDate = [[NSDate alloc] init];
-    mLastFrameTime = DISPLAYLINK_FRAME_INTERVAL; // Reset the timer
+    mArDate = [[NSDate alloc] init];
+    mLastTime = DISPLAYLINK_FRAME_INTERVAL; // Reset the timer
     
-    mDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
-    [mDisplayLink setFrameInterval:mLastFrameTime];
-    [mDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    mArDisplayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
+    [mArDisplayLink setFrameInterval:mLastTime];
+    [mArDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    [mDate release];
-    mDate = nil;
+    [mArDate release];
+    mArDate = nil;
     
-    [mDisplayLink invalidate];
-    mDisplayLink = nil;
+    [mArDisplayLink invalidate];
+    mArDisplayLink = nil;
 }
 
 - (void)render:(id)sender
 {
     // NSTimeInterval is a simple typedef for double
-    NSTimeInterval currentFrameTime = -[mDate timeIntervalSinceNow];
+    NSTimeInterval currentFrameTime = -[mArDate timeIntervalSinceNow];
     //NSTimeInterval differenceInSeconds = currentFrameTime - mLastFrameTime;
-    mLastFrameTime = currentFrameTime;
+    mLastTime = currentFrameTime;
     
     dispatch_async(dispatch_get_main_queue(), ^(void)
     {

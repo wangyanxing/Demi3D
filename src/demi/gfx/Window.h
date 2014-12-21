@@ -55,6 +55,8 @@ namespace Demi
         DiWndHandle         GetWndHandle() { return mWndHandle; }
         
         DiWndViewHandle     GetWndViewHandle() { return mWndViewHandle; }
+        
+        DiWndViewCtrlHandle GetWndViewControllerHandle() { return mWndViewCtrlHandle; }
 
         virtual void        SetWindowSize(uint32 width, uint32 height) = 0;
 
@@ -70,9 +72,11 @@ namespace Demi
 
     protected:
 
-        DiWndHandle         mWndHandle;
+        DiWndHandle         mWndHandle{nullptr};
         
-        DiWndViewHandle     mWndViewHandle;
+        DiWndViewHandle     mWndViewHandle{nullptr};
+        
+        DiWndViewCtrlHandle mWndViewCtrlHandle{nullptr};
 
         DiRenderWindow*     mParentWnd;
 
