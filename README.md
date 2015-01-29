@@ -13,8 +13,6 @@ Effect editor:
 
 ![fx-edt-1](https://raw.github.com/wangyanxing/Demi3D/master/screenshots/fx-edt-1.png)
 
-![fx-edt-2](https://raw.github.com/wangyanxing/Demi3D/master/screenshots/fx-edt-2.png)
-
 ![fx-edt-3](https://raw.github.com/wangyanxing/Demi3D/master/screenshots/fx-edt-3.png)
 
 Model viewer:
